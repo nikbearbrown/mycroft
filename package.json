@@ -1,0 +1,14 @@
+{
+  "name": "mycroft",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Cowork agentic book repository",
+  "scripts": {
+    "verify": "echo \"Add repo-specific verification scripts under scripts/\"",
+    "svg-to-png": "node scripts/svg-to-png.mjs"
+  },
+  "dependencies": {
+    "glob": "^10.0.0",
+    "sharp": "^0.33.0"
+  }
+}
