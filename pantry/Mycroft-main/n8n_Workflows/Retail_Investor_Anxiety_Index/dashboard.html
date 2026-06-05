@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retail Investor Anxiety Index</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #F5F6FA;
+      --surface: #FFFFFF;
+      --surface-2: #F0F2F8;
+      --border: #E2E6F0;
+      --border-strong: #C8D0E0;
+      --text-primary: #1A1D2E;
+      --text-secondary: #5A6080;
+      --text-muted: #8A90A8;
+      --red: #D63B3B;
+      --red-light: #FEF0F0;
+      --orange: #D97706;
+      --orange-light: #FFFBEB;
+      --blue: #2563EB;
+      --blue-light: #EFF6FF;
+      --green: #16A34A;
+      --green-light: #F0FDF4;
+      --yellow: #CA8A04;
+      --yellow-light: #FEFCE8;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      font-family: system-ui, -apple-system, sans-serif;
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow);
+    }
+
+    .header-left h1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .header-left p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin: 4px 0 0 0;
+    }
+
+    .header-right {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .refresh-btn {
+      background: var(--blue);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .refresh-btn:hover { background: #1d4ed8; }
+
+    .last-updated {
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--surface-2);
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+
+    main {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .grid-row-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .grid-row-2 {
+      display: grid;
+      grid-template-columns: 2fr 3fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .panel {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      animation: fadeInUp 0.4s ease forwards;
+      opacity: 0;
+    }
+
+    .panel:nth-child(1) { animation-delay: 0.05s; }
+    .panel:nth-child(2) { animation-delay: 0.10s; }
+    .panel:nth-child(3) { animation-delay: 0.15s; }
+    .panel:nth-child(4) { animation-delay: 0.20s; }
+    .panel:nth-child(5) { animation-delay: 0.25s; }
+    .panel:nth-child(6) { animation-delay: 0.30s; }
+    .panel:nth-child(7) { animation-delay: 0.35s; }
+    .panel:nth-child(8) { animation-delay: 0.40s; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin: 0 0 1.25rem 0;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Loading */
+    #loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 100vh;
+      background: var(--bg);
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    /* Error */
+    #error {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 100vh;
+      background: var(--bg);
+    }
+
+    .error-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+      max-width: 420px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .error-icon { font-size: 32px; margin-bottom: 12px; }
+    .error-title { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+    #error-msg { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+
+    .retry-btn {
+      background: var(--blue);
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* ── Panel 1: Anxiety ── */
+    .score-display {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .score-number {
+      font-size: 72px;
+      font-weight: 800;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .score-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .sub-badges {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .sub-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 11px;
+    }
+
+    .sub-name { color: var(--text-secondary); }
+    .sub-score { font-weight: 700; }
+
+    .chart-container {
+      position: relative;
+      height: 130px;
+    }
+
+    /* ── Panel 2: Cycle ── */
+    .cycle-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .cycle-emoji { font-size: 36px; line-height: 1; }
+
+    .cycle-stage-name {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--orange);
+      line-height: 1;
+    }
+
+    .cycle-stage-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    .progress-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .progress-track {
+      height: 6px;
+      background: var(--surface-2);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--orange);
+      border-radius: 3px;
+      transition: width 1s ease;
+    }
+
+    .cycle-reasoning {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    /* ── Panel 3: Conviction ── */
+    .conv-layout {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .conv-chart-wrap {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      flex-shrink: 0;
+    }
+
+    .conv-stats { flex: 1; }
+
+    .conv-big {
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .conv-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      margin-top: 2px;
+    }
+
+    .conv-ratio {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .narrative-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .narrative-item {
+      font-size: 11px;
+      color: var(--text-secondary);
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      line-height: 1.45;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .narrative-item:last-child { border-bottom: none; }
+
+    /* ── Panel 4: Velocity ── */
+    .velocity-chart-wrap {
+      position: relative;
+      height: 300px;
+    }
+
+    /* ── Panel 5: Herd ── */
+    .herd-chart-wrap {
+      position: relative;
+      height: 260px;
+      margin-bottom: 12px;
+    }
+
+    .herd-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .herd-badge {
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .herd-active {
+      background: var(--red-light);
+      border: 1px solid #FECACA;
+      color: var(--red);
+    }
+
+    .herd-inactive {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    /* ── Panels 6 & 7: History ── */
+    .history-chart-wrap {
+      position: relative;
+      height: 220px;
+    }
+
+    /* ── Panel 8: Posts ── */
+    #panel-posts { margin-bottom: 0; }
+
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .post-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .post-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .post-title {
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+
+    .score-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .score-fear    { background: var(--red-light);    color: var(--red);    }
+    .score-neutral { background: var(--yellow-light); color: var(--yellow); }
+    .score-greed   { background: var(--green-light);  color: var(--green);  }
+
+    @media (max-width: 960px) {
+      .grid-row-3, .grid-row-2 { grid-template-columns: 1fr; }
+      .posts-grid               { grid-template-columns: 1fr; }
+      main                      { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading -->
+  <div id="loading">
+    <div class="spinner"></div>
+    <p class="loading-text">Loading anxiety data…</p>
+  </div>
+
+  <!-- Error -->
+  <div id="error">
+    <div class="error-box">
+      <div class="error-icon">⚠️</div>
+      <div class="error-title">Failed to load data</div>
+      <div id="error-msg"></div>
+      <button class="retry-btn" onclick="fetchData()">Retry</button>
+    </div>
+  </div>
+
+  <!-- App -->
+  <div id="app" style="display:none">
+    <header>
+      <div class="header-left">
+        <h1>Retail Investor Anxiety Index</h1>
+        <p>Reddit sentiment analysis · r/wallstreetbets · r/investing · r/stocks</p>
+      </div>
+      <div class="header-right">
+        <span class="last-updated" id="last-updated">Loading…</span>
+        <button class="refresh-btn" onclick="fetchData()">↻ Refresh</button>
+      </div>
+    </header>
+
+    <main>
+
+      <!-- Row 1: 3 columns -->
+      <div class="grid-row-3">
+
+        <div id="panel-anxiety" class="panel">
+          <h2 class="panel-title">Anxiety Index</h2>
+          <div class="score-display">
+            <span id="anxiety-score" class="score-number">—</span>
+            <span id="anxiety-label" class="score-label">—</span>
+          </div>
+          <div class="sub-badges" id="subreddit-badges"></div>
+          <div class="chart-container">
+            <canvas id="anxiety-chart"></canvas>
+          </div>
+        </div>
+
+        <div id="panel-cycle" class="panel">
+          <h2 class="panel-title">Crowd Cycle Stage</h2>
+          <div class="cycle-header">
+            <span id="cycle-emoji" class="cycle-emoji">📊</span>
+            <div>
+              <div id="cycle-stage-name" class="cycle-stage-name">—</div>
+              <div class="cycle-stage-sub">Cycle Position</div>
+            </div>
+          </div>
+          <div class="progress-label">
+            <span>Confidence</span>
+            <span id="cycle-confidence-pct">0%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="cycle-confidence-bar" style="width:0%"></div>
+          </div>
+          <div class="cycle-reasoning" id="cycle-reasoning"></div>
+          <canvas id="cycle-wheel" width="180" height="180" style="display:block;margin:0 auto"></canvas>
+        </div>
+
+        <div id="panel-conviction" class="panel">
+          <h2 class="panel-title">Conviction vs Uncertainty</h2>
+          <div class="conv-layout">
+            <div class="conv-chart-wrap">
+              <canvas id="conviction-chart"></canvas>
+            </div>
+            <div class="conv-stats">
+              <div id="conviction-pct" class="conv-big" style="color:var(--blue)">—</div>
+              <div class="conv-sub">Conviction</div>
+              <div id="uncertainty-pct" class="conv-big" style="color:var(--text-muted);font-size:28px">—</div>
+              <div class="conv-sub">Uncertainty</div>
+              <div id="conviction-ratio" class="conv-ratio"></div>
+            </div>
+          </div>
+          <div class="narrative-label">Dominant Narratives</div>
+          <div id="dominant-titles"></div>
+        </div>
+
+      </div>
+
+      <!-- Row 2: 2fr + 3fr -->
+      <div class="grid-row-2">
+
+        <div id="panel-velocity" class="panel">
+          <h2 class="panel-title">Rising Narratives</h2>
+          <div class="velocity-chart-wrap">
+            <canvas id="velocity-chart"></canvas>
+          </div>
+        </div>
+
+        <div id="panel-herd" class="panel">
+          <h2 class="panel-title">Cross-Subreddit Herd Activity</h2>
+          <div class="herd-chart-wrap">
+            <canvas id="herd-chart"></canvas>
+          </div>
+          <div class="herd-badges" id="herd-badges"></div>
+        </div>
+
+      </div>
+
+      <!-- Row 3: history -->
+      <div class="grid-row-2">
+
+        <div id="panel-subreddit-history" class="panel">
+          <h2 class="panel-title">Subreddit Anxiety Over Time</h2>
+          <div class="history-chart-wrap">
+            <canvas id="subreddit-chart"></canvas>
+          </div>
+        </div>
+
+        <div id="panel-conviction-history" class="panel">
+          <h2 class="panel-title">Conviction vs Uncertainty Over Time</h2>
+          <div class="history-chart-wrap">
+            <canvas id="conviction-history-chart"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Row 4: posts -->
+      <div id="panel-posts" class="panel">
+        <h2 class="panel-title">Most Fearful Posts</h2>
+        <div class="posts-grid" id="posts-container"></div>
+      </div>
+
+    </main>
+  </div><!-- #app -->
+
+  <script>
+    /* ════════════════════════════════
+       CONFIG
+    ════════════════════════════════ */
+    const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+    const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    const ENDPOINT     = SUPABASE_URL + '/rest/v1/anxiety_runs?order=created_at.desc&limit=7';
+
+    /* ════════════════════════════════
+       SAFE FIELD PARSER
+       Handles Supabase jsonb (already object) or text (string)
+    ════════════════════════════════ */
+    const safe = (field) => {
+      if (!field) return null;
+      if (typeof field === 'object') return field;
+      try {
+        const p = JSON.parse(field);
+        return typeof p === 'string' ? JSON.parse(p) : p;
+      } catch(e) { return null; }
+    };
+
+    /* ════════════════════════════════
+       CHART REGISTRY — destroy before re-render
+    ════════════════════════════════ */
+    const chartInstances = {};
+
+    function renderLineChart(id, labels, datasets, yOptions = {}) {
+      if (chartInstances[id]) chartInstances[id].destroy();
+      const ctx = document.getElementById(id);
+      if (!ctx) return;
+      chartInstances[id] = new Chart(ctx.getContext('2d'), {
+        type: 'line',
+        data: { labels, datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: datasets.length > 1,
+              labels: { font: { size: 11 }, color: '#5A6080', boxWidth: 12 }
+            }
+          },
+          scales: {
+            x: { grid: { color: '#F0F2F8' }, ticks: { font: { size: 11 }, color: '#8A90A8' } },
+            y: { ...yOptions, grid: { color: '#F0F2F8' }, ticks: { font: { size: 11 }, color: '#8A90A8' } }
+          }
+        }
+      });
+    }
+
+    function renderHorizontalBarChart(id, labels, data, color) {
+      if (chartInstances[id]) chartInstances[id].destroy();
+      const ctx = document.getElementById(id);
+      if (!ctx) return;
+      chartInstances[id] = new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{ data, backgroundColor: color, borderRadius: 4, label: 'Velocity Score' }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { min: 0, max: 100, grid: { color: '#F0F2F8' }, ticks: { font: { size: 11 }, color: '#8A90A8' } },
+            y: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#5A6080' } }
+          }
+        }
+      });
+    }
+
+    function renderGroupedBarChart(id, herdData) {
+      if (chartInstances[id]) chartInstances[id].destroy();
+      const ctx = document.getElementById(id);
+      if (!ctx) return;
+      chartInstances[id] = new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: herdData.map(h => h.ticker),
+          datasets: [
+            { label: 'WSB',       data: herdData.map(h => (h.mentions || {}).wallstreetbets || 0), backgroundColor: 'rgb(214,59,59)',  borderRadius: 4 },
+            { label: 'Investing', data: herdData.map(h => (h.mentions || {}).investing      || 0), backgroundColor: 'rgb(37,99,235)',  borderRadius: 4 },
+            { label: 'Stocks',    data: herdData.map(h => (h.mentions || {}).stocks         || 0), backgroundColor: 'rgb(22,163,74)', borderRadius: 4 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true, labels: { font: { size: 11 }, color: '#5A6080', boxWidth: 12 } }
+          },
+          scales: {
+            x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#5A6080' } },
+            y: { grid: { color: '#F0F2F8' }, ticks: { font: { size: 11 }, color: '#8A90A8' } }
+          }
+        }
+      });
+    }
+
+    function renderDoughnutChart(id, labels, data, colors) {
+      if (chartInstances[id]) chartInstances[id].destroy();
+      const ctx = document.getElementById(id);
+      if (!ctx) return;
+      chartInstances[id] = new Chart(ctx.getContext('2d'), {
+        type: 'doughnut',
+        data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 0 }] },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '70%',
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    /* ════════════════════════════════
+       CYCLE WHEEL (Canvas)
+    ════════════════════════════════ */
+    function renderCycleWheel(activeStage) {
+      const stages = ['Euphoria', 'Complacency', 'Hope', 'Panic', 'Denial', 'Anxiety'];
+      const canvas = document.getElementById('cycle-wheel');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const cx = 90, cy = 90, r = 72, ir = 34;
+
+      ctx.clearRect(0, 0, 180, 180);
+
+      stages.forEach((stage, i) => {
+        const start = (i / 6) * Math.PI * 2 - Math.PI / 2;
+        const end   = ((i + 1) / 6) * Math.PI * 2 - Math.PI / 2;
+        const active = stage.toLowerCase() === (activeStage || '').toLowerCase();
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, r, start + 0.04, end - 0.04);
+        ctx.closePath();
+        ctx.fillStyle = active ? '#D97706' : '#F0F2F8';
+        ctx.fill();
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        const mid = start + Math.PI / 6;
+        const lx  = cx + Math.cos(mid) * 56;
+        const ly  = cy + Math.sin(mid) * 56;
+        ctx.fillStyle = active ? '#FFFFFF' : '#8A90A8';
+        ctx.font = (active ? '700' : '500') + ' 8px system-ui';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(stage.toUpperCase(), lx, ly);
+      });
+
+      // Center hole
+      ctx.beginPath();
+      ctx.arc(cx, cy, ir, 0, Math.PI * 2);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fill();
+
+      ctx.fillStyle = '#8A90A8';
+      ctx.font = '500 8px system-ui';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('STAGE', cx, cy - 9);
+
+      ctx.fillStyle = '#D97706';
+      ctx.font = '700 10px system-ui';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText((activeStage || '—').toUpperCase().slice(0, 10), cx, cy + 7);
+    }
+
+    /* ════════════════════════════════
+       PANEL RENDERERS
+    ════════════════════════════════ */
+
+    function renderAnxietyPanel(latest, history) {
+      const score  = latest.anxiety_score || 0;
+      const sub    = safe(latest.subreddit_scores) || {};
+      const color  = score > 66 ? 'var(--red)'    : score > 33 ? 'var(--yellow)'    : 'var(--green)';
+      const bgCol  = score > 66 ? 'var(--red-light)' : score > 33 ? 'var(--yellow-light)' : 'var(--green-light)';
+      const label  = score > 66 ? 'FEAR'          : score > 33 ? 'NEUTRAL'          : 'GREED';
+
+      const scoreEl = document.getElementById('anxiety-score');
+      scoreEl.textContent = score;
+      scoreEl.style.color = color;
+
+      const labelEl = document.getElementById('anxiety-label');
+      labelEl.textContent  = label;
+      labelEl.style.color  = color;
+      labelEl.style.background = bgCol;
+
+      document.getElementById('subreddit-badges').innerHTML =
+        ['wallstreetbets', 'investing', 'stocks'].map(s => {
+          const v = sub[s] || 0;
+          const c = v > 66 ? 'var(--red)' : v > 33 ? 'var(--yellow)' : 'var(--green)';
+          return `<span class="sub-badge"><span class="sub-name">r/${s === 'wallstreetbets' ? 'wsb' : s}</span><span class="sub-score" style="color:${c}">${v}</span></span>`;
+        }).join('');
+
+      renderLineChart('anxiety-chart',
+        history.map(r => r.date),
+        [{
+          label: 'Anxiety Score',
+          data: history.map(r => r.anxiety_score || 0),
+          borderColor: 'rgb(214,59,59)',
+          backgroundColor: 'rgba(214,59,59,0.08)',
+          fill: true, tension: 0.3,
+          pointRadius: 4, pointBackgroundColor: 'rgb(214,59,59)'
+        }],
+        { min: 0, max: 100 }
+      );
+    }
+
+    function renderCyclePanel(latest) {
+      const cycle  = safe(latest.cycle_stage) || {};
+      const stage  = cycle.stage    || 'Unknown';
+      const conf   = Math.round((cycle.confidence || 0) * 100);
+      const reason = cycle.reasoning || '';
+      const emojis = { Euphoria:'🚀', Complacency:'😴', Anxiety:'😰', Denial:'🙈', Panic:'💥', Hope:'🌱', Unknown:'📊' };
+
+      document.getElementById('cycle-emoji').textContent         = emojis[stage] || '📊';
+      document.getElementById('cycle-stage-name').textContent    = stage;
+      document.getElementById('cycle-confidence-bar').style.width = conf + '%';
+      document.getElementById('cycle-confidence-pct').textContent = conf + '%';
+      document.getElementById('cycle-reasoning').textContent     = reason;
+
+      renderCycleWheel(stage);
+    }
+
+    function renderConvictionPanel(latest) {
+      const conv  = latest.conviction_score  || 0;
+      const unce  = latest.uncertainty_score || 0;
+      const ratio = latest.conviction_ratio  || 0;
+      const dom   = safe(latest.dominant_post_titles) || [];
+
+      document.getElementById('conviction-pct').textContent   = conv + '%';
+      document.getElementById('uncertainty-pct').textContent  = unce + '%';
+      document.getElementById('conviction-ratio').textContent =
+        ratio > 0 ? ratio.toFixed(1) + '× more conviction than uncertainty' : '';
+
+      document.getElementById('dominant-titles').innerHTML =
+        dom.slice(0, 3).map(t =>
+          `<div class="narrative-item" title="${String(t)}">${String(t).slice(0, 80)}${String(t).length > 80 ? '…' : ''}</div>`
+        ).join('') || '<div style="color:var(--text-muted);font-size:11px">No data yet</div>';
+
+      renderDoughnutChart('conviction-chart',
+        ['Conviction', 'Uncertainty'],
+        [Math.max(conv, 0.1), Math.max(unce, 0.1)],
+        ['rgb(37,99,235)', 'rgb(226,232,240)']
+      );
+    }
+
+    function renderVelocityPanel(latest) {
+      const velocity = safe(latest.narrative_velocity) || [];
+      const top10 = [...velocity]
+        .sort((a, b) => (b.velocityScore || 0) - (a.velocityScore || 0))
+        .slice(0, 10);
+
+      if (!top10.length) {
+        document.querySelector('.velocity-chart-wrap').innerHTML =
+          '<div style="display:flex;align-items:center;justify-content:center;height:300px;color:var(--text-muted);font-size:13px">No velocity data yet</div>';
+        return;
+      }
+      renderHorizontalBarChart('velocity-chart',
+        top10.map(v => (v.topic || '').slice(0, 28)),
+        top10.map(v => v.velocityScore || 0),
+        'rgba(217,119,6,0.85)'
+      );
+    }
+
+    function renderHerdPanel(latest) {
+      const herd = safe(latest.herd_detection) || [];
+
+      if (!herd.length) {
+        document.querySelector('.herd-chart-wrap').innerHTML =
+          '<div style="display:flex;align-items:center;justify-content:center;height:260px;color:var(--text-muted);font-size:13px">No herd activity detected</div>';
+        document.getElementById('herd-badges').innerHTML = '';
+        return;
+      }
+      renderGroupedBarChart('herd-chart', herd.slice(0, 10));
+      document.getElementById('herd-badges').innerHTML = herd.map(h =>
+        `<span class="herd-badge ${h.isHerd ? 'herd-active' : 'herd-inactive'}">${h.ticker}${h.isHerd ? ' ●' : ''}</span>`
+      ).join('');
+    }
+
+    function renderSubredditHistory(history) {
+      renderLineChart('subreddit-chart',
+        history.map(r => r.date),
+        [
+          { label: 'r/wallstreetbets', data: history.map(r => (safe(r.subreddit_scores) || {}).wallstreetbets || 0), borderColor: 'rgb(214,59,59)', backgroundColor: 'transparent', tension: 0.3, pointRadius: 4 },
+          { label: 'r/investing',      data: history.map(r => (safe(r.subreddit_scores) || {}).investing      || 0), borderColor: 'rgb(37,99,235)', backgroundColor: 'transparent', tension: 0.3, pointRadius: 4 },
+          { label: 'r/stocks',         data: history.map(r => (safe(r.subreddit_scores) || {}).stocks         || 0), borderColor: 'rgb(22,163,74)', backgroundColor: 'transparent', tension: 0.3, pointRadius: 4 }
+        ],
+        { min: 0, max: 100 }
+      );
+    }
+
+    function renderConvictionHistory(history) {
+      renderLineChart('conviction-history-chart',
+        history.map(r => r.date),
+        [
+          { label: 'Conviction',  data: history.map(r => r.conviction_score  || 0), borderColor: 'rgb(37,99,235)',  backgroundColor: 'rgba(37,99,235,0.1)',   fill: true, tension: 0.3, pointRadius: 4 },
+          { label: 'Uncertainty', data: history.map(r => r.uncertainty_score || 0), borderColor: 'rgb(200,208,224)', backgroundColor: 'rgba(200,208,224,0.3)', fill: true, tension: 0.3, pointRadius: 4 }
+        ],
+        { min: 0, max: 100 }
+      );
+    }
+
+    function renderPostsPanel(latest) {
+      const posts = safe(latest.top3_fearful_posts) || [];
+      document.getElementById('posts-container').innerHTML =
+        posts.slice(0, 3).map(p => {
+          const title = p.title || String(p);
+          const score = p.score || 0;
+          const label = score > 66 ? 'FEAR' : score > 33 ? 'NEUTRAL' : 'GREED';
+          const cls   = score > 66 ? 'score-fear' : score > 33 ? 'score-neutral' : 'score-greed';
+          return `<div class="post-card"><p class="post-title">${title}</p><span class="score-badge ${cls}">${label} ${score}</span></div>`;
+        }).join('') || '<div style="color:var(--text-muted);font-size:13px">No posts available</div>';
+    }
+
+    /* ════════════════════════════════
+       ORCHESTRATE
+    ════════════════════════════════ */
+    function renderDashboard(rows) {
+      const latest  = rows[0];
+      const history = [...rows].reverse();
+      renderAnxietyPanel(latest, history);
+      renderCyclePanel(latest);
+      renderConvictionPanel(latest);
+      renderVelocityPanel(latest);
+      renderHerdPanel(latest);
+      renderSubredditHistory(history);
+      renderConvictionHistory(history);
+      renderPostsPanel(latest);
+    }
+
+    /* ════════════════════════════════
+       UI STATE
+    ════════════════════════════════ */
+    function showLoading() {
+      document.getElementById('loading').style.display = 'flex';
+      document.getElementById('app').style.display    = 'none';
+      document.getElementById('error').style.display  = 'none';
+    }
+
+    function hideLoading() {
+      document.getElementById('loading').style.display = 'none';
+    }
+
+    function showError(msg) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('error').style.display   = 'flex';
+      document.getElementById('error-msg').textContent = msg;
+    }
+
+    function updateLastUpdated(date) {
+      document.getElementById('last-updated').textContent = 'Last updated: ' + (date || '—');
+    }
+
+    /* ════════════════════════════════
+       FETCH
+    ════════════════════════════════ */
+    async function fetchData() {
+      try {
+        showLoading();
+        const res = await fetch(ENDPOINT, {
+          headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY }
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status + ' — ' + res.statusText);
+        const rows = await res.json();
+        if (!rows || !rows.length) throw new Error('No data yet — run the n8n workflow first');
+        renderDashboard(rows);
+        hideLoading();
+        document.getElementById('app').style.display = 'block';
+        updateLastUpdated(rows[0].date);
+      } catch(e) {
+        showError(e.message);
+      }
+    }
+
+    // Auto-refresh every 30 minutes
+    setInterval(fetchData, 30 * 60 * 1000);
+
+    // Refresh when tab becomes visible
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) fetchData();
+    });
+
+    // Initial load
+    fetchData();
+  </script>
+</body>
+</html>

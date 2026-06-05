@@ -1,0 +1,229 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -432,
+        -192
+      ],
+      "id": "00d137d1-4eae-4dce-8d2a-1f2b9cbfec2f",
+      "name": "Manual Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0b7310e6-2509-4be6-88ea-77caa6caa901",
+              "name": "repos",
+              "value": "[   \"deepspeedai/DeepSpeed\",   \"NVIDIA-NeMo/NeMo\",   \"huggingface/transformers\" ]",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -224,
+        -192
+      ],
+      "id": "0a01f9dc-bcd6-46b1-8974-6cec11186fd6",
+      "name": "Set (Targets)"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $json.repos.map(r => ({ json: { full_name: r } }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        -192
+      ],
+      "id": "d829897e-d4c6-4baf-887f-8274dceb902f",
+      "name": "Code (Split into items)"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Mode: Run Once for Each Item\n\nconst full = $json.full_name;          // e.g. \"deepspeedai/DeepSpeed\"\nconst [owner, repo] = full.split('/');\n\nreturn {\n  json: {\n    ...$json,\n    owner,\n    repo,\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        192,
+        -192
+      ],
+      "id": "ec921a96-54d6-4b2f-a62d-d31d91935dc8",
+      "name": "Code (Parse owner/repo)"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.github.com/repos/{{$json.owner}}/{{$json.repo}}\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "Authorization",
+              "value": "REDACTED_GITHUB_TOKEN"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        400,
+        -192
+      ],
+      "id": "5fdb1bd8-c3f2-41a2-b750-eff3e785523b",
+      "name": "HTTP Request (Repo Metadata)"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const repoFull =\n  $json.full_name ??\n  ($json.owner?.login && $json.name ? `${$json.owner.login}/${$json.name}` : null) ??\n  $json.repo ??\n  'unknown_repo';\n\nreturn {\n  json: {\n    repo: repoFull,\n    collected_at: new Date().toISOString(),\n    metrics: {\n      stars: $json.stargazers_count ?? $json.metrics?.stars,\n      forks: $json.forks_count ?? $json.metrics?.forks,\n      pushed_at: $json.pushed_at ?? $json.metrics?.pushed_at,\n      license: $json.license?.spdx_id ?? $json.metrics?.license ?? null,\n      open_issues_count_including_prs: $json.open_issues_count ?? $json.metrics?.open_issues_count_including_prs,\n    },\n    links: {\n      repo: $json.html_url ?? $json.links?.repo,\n      releases: ($json.html_url ? `${$json.html_url}/releases` : $json.links?.releases),\n      issues: ($json.html_url ? `${$json.html_url}/issues` : $json.links?.issues),\n      pulls: ($json.html_url ? `${$json.html_url}/pulls` : $json.links?.pulls),\n      security: ($json.html_url ? `${$json.html_url}/security` : $json.links?.security),\n    },\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        -192
+      ],
+      "id": "fee1382e-2747-4de0-b7c3-915bbf4edebd",
+      "name": "Code (Build profile JSON)"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const repoFull = $json.repo ?? 'unknown_repo';\nconst safe = String(repoFull).replace(/[\\/\\\\]/g, '_'); // deepspeedai_DeepSpeed\nconst fileName = `${safe}.json`;\n\nconst content = JSON.stringify($json, null, 2);\n\nreturn {\n  json: $json,\n  binary: {\n    data: {\n      data: Buffer.from(content, 'utf8'),\n      mimeType: 'application/json',\n      fileName,\n    },\n  },\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        816,
+        -192
+      ],
+      "id": "ef8caf8c-4669-461f-9b9d-cd61c8f3b8f7",
+      "name": "Code (JSON \u2192 Binary)"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/home/node/.n8n-files/raw/{{$binary.data.fileName}}",
+        "options": {
+          "append": false
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        1024,
+        -192
+      ],
+      "id": "f20241f5-1c0f-4a58-b020-b73be9aae09c",
+      "name": "Read/Write Files from Disk"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set (Targets)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set (Targets)": {
+      "main": [
+        [
+          {
+            "node": "Code (Split into items)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code (Split into items)": {
+      "main": [
+        [
+          {
+            "node": "Code (Parse owner/repo)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code (Parse owner/repo)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request (Repo Metadata)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request (Repo Metadata)": {
+      "main": [
+        [
+          {
+            "node": "Code (Build profile JSON)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code (Build profile JSON)": {
+      "main": [
+        [
+          {
+            "node": "Code (JSON \u2192 Binary)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code (JSON \u2192 Binary)": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "bd4f655e-4acf-4786-b67f-bc95640f56f0",
+  "meta": {
+    "instanceId": "8ff053cd9571ff417f928192322ba76ba0d7edd7b90068b181122e516b70040a"
+  },
+  "id": "hbrqEjykYFjyjJaD1lsYY",
+  "tags": []
+}

@@ -1,0 +1,297 @@
+{
+  "name": "Workflow A — Extract & Store Raw Data",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "hours", "hoursInterval": 4 }]
+        }
+      },
+      "id": "node_schedule",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [200, 400]
+    },
+    {
+      "parameters": {
+        "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+        "options": { "response": { "response": { "responseFormat": "text" } } }
+      },
+      "id": "node_tc",
+      "name": "Fetch TechCrunch",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 100]
+    },
+    {
+      "parameters": {
+        "url": "https://venturebeat.com/feed/",
+        "options": { "response": { "response": { "responseFormat": "text" } } }
+      },
+      "id": "node_vb",
+      "name": "Fetch VentureBeat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 240]
+    },
+    {
+      "parameters": {
+        "url": "https://hnrss.org/frontpage?q=AI+LLM+machine+learning&count=20",
+        "options": { "response": { "response": { "responseFormat": "text" } } }
+      },
+      "id": "node_hn",
+      "name": "Fetch HackerNews",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 380]
+    },
+    {
+      "parameters": {
+        "url": "https://export.arxiv.org/rss/cs.AI",
+        "options": { "response": { "response": { "responseFormat": "text" } } }
+      },
+      "id": "node_arxiv",
+      "name": "Fetch ArXiv",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 520]
+    },
+    {
+      "parameters": {
+        "url": "https://www.reddit.com/r/artificial+MachineLearning+OpenAI.json?limit=25&sort=hot",
+        "options": { "response": { "response": { "responseFormat": "json" } } }
+      },
+      "id": "node_reddit",
+      "name": "Fetch Reddit",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 660]
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "jsCode": "PASTE_TECHCRUNCH_CODE_HERE"
+      },
+      "id": "node_parse_tc",
+      "name": "Parse TechCrunch",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 100]
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "jsCode": "PASTE_VENTUREBEAT_CODE_HERE"
+      },
+      "id": "node_parse_vb",
+      "name": "Parse VentureBeat",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 240]
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "jsCode": "PASTE_HACKERNEWS_CODE_HERE"
+      },
+      "id": "node_parse_hn",
+      "name": "Parse HackerNews",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 380]
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "jsCode": "PASTE_ARXIV_CODE_HERE"
+      },
+      "id": "node_parse_arxiv",
+      "name": "Parse ArXiv",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 520]
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "jsCode": "PASTE_REDDIT_CODE_HERE"
+      },
+      "id": "node_parse_reddit",
+      "name": "Parse Reddit",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 660]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO raw_intelligence (title, source_name, source_type, url, raw_content, published_date, pulled_date, topic_tag, processed) VALUES ($1, $2, $3, $4, $5, $6::timestamptz, NOW(), $7, FALSE) ON CONFLICT (url) DO NOTHING;",
+        "additionalFields": {
+          "queryParams": "={{ [$json.title.substring(0,500), $json.source_name, $json.source_type, $json.url, $json.raw_content.substring(0,1000), $json.published_date, $json.topic_tag] }}"
+        },
+        "options": {}
+      },
+      "id": "node_insert_tc",
+      "name": "Store TechCrunch",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [920, 100],
+      "credentials": { "postgres": { "id": "POSTGRES_CREDENTIAL_ID", "name": "Postgres — AI Monitor" } }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO raw_intelligence (title, source_name, source_type, url, raw_content, published_date, pulled_date, topic_tag, processed) VALUES ($1, $2, $3, $4, $5, $6::timestamptz, NOW(), $7, FALSE) ON CONFLICT (url) DO NOTHING;",
+        "additionalFields": {
+          "queryParams": "={{ [$json.title.substring(0,500), $json.source_name, $json.source_type, $json.url, $json.raw_content.substring(0,1000), $json.published_date, $json.topic_tag] }}"
+        },
+        "options": {}
+      },
+      "id": "node_insert_vb",
+      "name": "Store VentureBeat",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [920, 240],
+      "credentials": { "postgres": { "id": "POSTGRES_CREDENTIAL_ID", "name": "Postgres — AI Monitor" } }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO raw_intelligence (title, source_name, source_type, url, raw_content, published_date, pulled_date, topic_tag, processed) VALUES ($1, $2, $3, $4, $5, $6::timestamptz, NOW(), $7, FALSE) ON CONFLICT (url) DO NOTHING;",
+        "additionalFields": {
+          "queryParams": "={{ [$json.title.substring(0,500), $json.source_name, $json.source_type, $json.url, $json.raw_content.substring(0,1000), $json.published_date, $json.topic_tag] }}"
+        },
+        "options": {}
+      },
+      "id": "node_insert_hn",
+      "name": "Store HackerNews",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [920, 380],
+      "credentials": { "postgres": { "id": "POSTGRES_CREDENTIAL_ID", "name": "Postgres — AI Monitor" } }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO raw_intelligence (title, source_name, source_type, url, raw_content, published_date, pulled_date, topic_tag, processed) VALUES ($1, $2, $3, $4, $5, $6::timestamptz, NOW(), $7, FALSE) ON CONFLICT (url) DO NOTHING;",
+        "additionalFields": {
+          "queryParams": "={{ [$json.title.substring(0,500), $json.source_name, $json.source_type, $json.url, $json.raw_content.substring(0,1000), $json.published_date, $json.topic_tag] }}"
+        },
+        "options": {}
+      },
+      "id": "node_insert_arxiv",
+      "name": "Store ArXiv",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [920, 520],
+      "credentials": { "postgres": { "id": "POSTGRES_CREDENTIAL_ID", "name": "Postgres — AI Monitor" } }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO raw_intelligence (title, source_name, source_type, url, raw_content, published_date, pulled_date, topic_tag, processed) VALUES ($1, $2, $3, $4, $5, $6::timestamptz, NOW(), $7, FALSE) ON CONFLICT (url) DO NOTHING;",
+        "additionalFields": {
+          "queryParams": "={{ [$json.title.substring(0,500), $json.source_name, $json.source_type, $json.url, $json.raw_content.substring(0,1000), $json.published_date, $json.topic_tag] }}"
+        },
+        "options": {}
+      },
+      "id": "node_insert_reddit",
+      "name": "Store Reddit",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [920, 660],
+      "credentials": { "postgres": { "id": "POSTGRES_CREDENTIAL_ID", "name": "Postgres — AI Monitor" } }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(*) FILTER (WHERE processed = FALSE) AS new_items, COUNT(*) FILTER (WHERE pulled_date >= NOW() - INTERVAL '4 hours') AS this_cycle FROM raw_intelligence WHERE pulled_date >= NOW() - INTERVAL '4 hours';",
+        "options": {}
+      },
+      "id": "node_verify",
+      "name": "Verify — Count Stored Items",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [1160, 380],
+      "credentials": { "postgres": { "id": "POSTGRES_CREDENTIAL_ID", "name": "Postgres — AI Monitor" } }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [{
+            "value1": "={{ $json.new_items }}",
+            "operation": "larger",
+            "value2": 0
+          }]
+        }
+      },
+      "id": "node_check",
+      "name": "Check — New Items Exist?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1380, 380]
+    },
+    {
+      "parameters": {
+        "workflowId": "WORKFLOW_B_ID",
+        "waitForSubWorkflow": false,
+        "options": {}
+      },
+      "id": "node_trigger_b",
+      "name": "Trigger — Start Workflow B",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.1,
+      "position": [1600, 280],
+      "notes": "ADD YOUR DETAILS: Replace WORKFLOW_B_ID with Workflow B numeric ID."
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "jsCode": "return [{'json': {'skipped': True}}]"
+      },
+      "id": "node_skip_log",
+      "name": "Log — Skip",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1600, 480]
+    }
+  ],
+
+  "connections": {
+    "Schedule Trigger": {
+      "main": [[
+        { "node": "Fetch TechCrunch", "type": "main", "index": 0 },
+        { "node": "Fetch VentureBeat", "type": "main", "index": 0 },
+        { "node": "Fetch HackerNews",  "type": "main", "index": 0 },
+        { "node": "Fetch ArXiv",       "type": "main", "index": 0 },
+        { "node": "Fetch Reddit",      "type": "main", "index": 0 }
+      ]]
+    },
+    "Fetch TechCrunch": { "main": [[{ "node": "Parse TechCrunch", "type": "main", "index": 0 }]] },
+    "Fetch VentureBeat": { "main": [[{ "node": "Parse VentureBeat", "type": "main", "index": 0 }]] },
+    "Fetch HackerNews":  { "main": [[{ "node": "Parse HackerNews",  "type": "main", "index": 0 }]] },
+    "Fetch ArXiv":       { "main": [[{ "node": "Parse ArXiv",       "type": "main", "index": 0 }]] },
+    "Fetch Reddit":      { "main": [[{ "node": "Parse Reddit",      "type": "main", "index": 0 }]] },
+    "Parse TechCrunch":  { "main": [[{ "node": "Store TechCrunch",  "type": "main", "index": 0 }]] },
+    "Parse VentureBeat": { "main": [[{ "node": "Store VentureBeat", "type": "main", "index": 0 }]] },
+    "Parse HackerNews":  { "main": [[{ "node": "Store HackerNews",  "type": "main", "index": 0 }]] },
+    "Parse ArXiv":       { "main": [[{ "node": "Store ArXiv",       "type": "main", "index": 0 }]] },
+    "Parse Reddit":      { "main": [[{ "node": "Store Reddit",      "type": "main", "index": 0 }]] },
+    "Store TechCrunch":  { "main": [[{ "node": "Verify — Count Stored Items", "type": "main", "index": 0 }]] },
+    "Store VentureBeat": { "main": [[{ "node": "Verify — Count Stored Items", "type": "main", "index": 0 }]] },
+    "Store HackerNews":  { "main": [[{ "node": "Verify — Count Stored Items", "type": "main", "index": 0 }]] },
+    "Store ArXiv":       { "main": [[{ "node": "Verify — Count Stored Items", "type": "main", "index": 0 }]] },
+    "Store Reddit":      { "main": [[{ "node": "Verify — Count Stored Items", "type": "main", "index": 0 }]] },
+    "Verify — Count Stored Items": { "main": [[{ "node": "Check — New Items Exist?", "type": "main", "index": 0 }]] },
+    "Check — New Items Exist?": {
+      "main": [
+        [{ "node": "Trigger — Start Workflow B", "type": "main", "index": 0 }],
+        [{ "node": "Log — Skip", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+
+  "settings": { "executionOrder": "v1", "saveManualExecutions": true },
+  "tags": ["phase1", "extraction", "python"]
+}

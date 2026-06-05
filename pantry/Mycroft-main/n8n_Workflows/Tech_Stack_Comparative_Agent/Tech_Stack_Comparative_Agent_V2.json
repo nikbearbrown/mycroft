@@ -1,0 +1,564 @@
+{
+  "name": "My workflow 4",
+  "nodes": [
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "company_name",
+              "value": "={{ $json.company_name }}"
+            },
+            {
+              "name": "analysis_id",
+              "value": "={{ $now.format('yyyyMMdd_HHmmss') + '_' + $json.company_name }}"
+            },
+            {
+              "name": "github_org",
+              "value": "={{ $json.github_org }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1aa60c25-dd26-49ce-a60b-2d700ce789dc",
+      "name": "Prepare Variables",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        368
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ \"https://api.github.com/orgs/\" + ($json.github_org || $json.companies.toLowerCase()) + \"/repos\" }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "per_page",
+              "value": "25"
+            },
+            {
+              "name": "page",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a38be53d-e0c4-4f12-810b-3ccca726ca75",
+      "name": "GitHub: Get Repos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        -448,
+        272
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "[]",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "b1e96539-c090-41d5-a79c-34b2aa2df9dd",
+      "name": "Batch Repos",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 2,
+      "position": [
+        368,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ \"https://api.github.com/repos/\" + $json.full_name + \"/languages\" }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "7f62c357-13ac-4f65-831d-661839784824",
+      "name": "GitHub: Get Languages",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        480,
+        -48
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "[]",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "company_name",
+              "stringValue": "={{ $('Prepare Variables').item.json.company_name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4b08c51e-03b9-453a-be55-0a8747e50bb6",
+      "name": "Aggregate Repo Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        704,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://export.arxiv.org/api/query",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "search_query",
+              "value": "={{ \"all:\" + $json.company_name }}"
+            },
+            {
+              "name": "max_results",
+              "value": "5"
+            },
+            {
+              "name": "sortBy",
+              "value": "submittedDate"
+            },
+            {
+              "name": "sortOrder",
+              "value": "descending"
+            },
+            {
+              "name": "start",
+              "value": "0"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/atom+xml"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1bbf6ed8-87f9-45af-a7cf-7d90e36d16b9",
+      "name": "arXiv: Search Papers",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        -192,
+        432
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputs = $input.all();\n\nfunction parseXml(xmlString) {\n  const entries = xmlString.match(/<entry>[\\s\\S]*?<\\/entry>/g) || [];\n\n  return entries.slice(0, 5).map(entry => {\n    const titleMatch = entry.match(/<title>(.*?)<\\/title>/s);\n    const summaryMatch = entry.match(/<summary>(.*?)<\\/summary>/s);\n    const publishedMatch = entry.match(/<published>(.*?)<\\/published>/);\n    const idMatch = entry.match(/<id>(.*?)<\\/id>/);\n\n    return {\n      title: titleMatch ? titleMatch[1].trim().replace(/\\s+/g, ' ') : 'Unknown',\n      summary: summaryMatch\n        ? summaryMatch[1].trim().replace(/\\s+/g, ' ').substring(0, 200) + '...'\n        : 'No summary',\n      published: publishedMatch ? publishedMatch[1].split('T')[0] : 'Unknown',\n      pdf_url: idMatch ? idMatch[1] : 'Unknown'\n    };\n  });\n}\n\nreturn inputs.map(i => {\n  const xmlString = i.json.data || '';  // your HTTP node stores XML in \"data\"\n  const papers = parseXml(xmlString);\n\n  return {\n    json: {\n      company_name: i.json.company_name,          // ✅ correct company per item\n      research_papers: JSON.stringify(papers),\n      papers_count: papers.length\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        48,
+        432
+      ],
+      "id": "41836c00-e4d9-4688-944f-4b78d3d5adde",
+      "name": "Parse arXiv XML"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1456,
+        464
+      ],
+      "id": "03cc475a-e1e2-45ca-a1eb-826fe08b022f",
+      "name": "Manual Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6e00c839-c039-4023-8519-c968fe78bb02",
+              "name": "companies",
+              "value": "  [      {\"company_name\": \"OpenAI\", \"github_org\": \"openai\"},      {\"company_name\": \"Meta\", \"github_org\": \"facebookresearch\"},      {\"company_name\": \"Microsoft\", \"github_org\": \"microsoft\"},      {\"company_name\": \"Hugging Face\", \"github_org\": \"huggingface\"},      {\"company_name\": \"Stability AI\", \"github_org\": \"Stability-AI\"}    ]",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1216,
+        464
+      ],
+      "id": "f1503aee-47a5-44b9-b6d2-e253ba6c4357",
+      "name": "Input: Companies"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+              "name": "company_name",
+              "value": "={{ $('Prepare Variables').item.json.company_name }}",
+              "type": "string"
+            },
+            {
+              "id": "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+              "name": "languages",
+              "value": "={{ JSON.stringify($json) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        752,
+        -48
+      ],
+      "id": "984ccea8-10fc-4670-854c-f746879cf4d4",
+      "name": "Format Language Data"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a",
+              "name": "company_name",
+              "value": "={{ $('Prepare Variables').item.json.company_name }}\n",
+              "type": "string"
+            },
+            {
+              "id": "5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b",
+              "name": "research_papers",
+              "value": "={{ $json.research_papers }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        352,
+        432
+      ],
+      "id": "ab06d4f5-96fc-4625-aebe-049390cbe3ea",
+      "name": "Format Research Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the companies - it's stored as a STRING, so parse it\nconst companiesString = $input.first().json.companies;\n\n// Parse the JSON string into an actual array\nconst companies = JSON.parse(companiesString);\n\n// Now map over the array\nreturn companies.map(company => ({\n  json: {\n    company_name: company.company_name,\n    github_org: company.github_org\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -976,
+        464
+      ],
+      "id": "919245b2-5ede-43c3-a729-6f06f8ee8ebb",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const companyName = $json.company_name;\nconst githubOrg = $json.github_org;\n\nreturn {\n  json: {\n    company_name: companyName,\n    github_org: githubOrg,\n    repo_name: $json.name,\n    full_name: $json.full_name,\n    stars: $json.stargazers_count || 0,\n    forks: $json.forks_count || 0,\n    watchers: $json.watchers_count || 0,\n    open_issues: $json.open_issues_count || 0,\n    created_at: $json.created_at,\n    updated_at: $json.updated_at\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -32,
+        192
+      ],
+      "id": "beb1832b-ce8a-4bec-a4d0-3499968be082",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\n\n// Skip if still waiting\nif (!input.html_dashboard) {\n  return [{ json: { status: 'skipped' } }];\n}\n\nconst html = input.html_dashboard;\n\nreturn [{\n  json: {},\n  binary: {\n    data: {\n      data: Buffer.from(html, 'utf8').toString('base64'),\n      mimeType: 'text/html',\n      fileName: 'tech_stack_dashboard.html',\n      fileExtension: 'html'\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        736,
+        320
+      ],
+      "id": "b881fb90-9636-4b7e-bd27-2aaf8639337f",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// input 0: the original company item (from Prepare Variables)\n// input 1: the repos list output\nconst company = $input.first().json; // from Prepare Variables (company item)\nconst repos = $input.all().map(i => i.json); // repo items\n\nreturn repos.map(r => ({\n  json: {\n    ...r,\n    company_name: company.company_name,\n    github_org: company.github_org,\n    analysis_id: company.analysis_id\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        272
+      ],
+      "id": "9a3d2023-fae6-46bf-a6e1-3e395d9320f2",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const staticData = $getWorkflowStaticData('global');\nif (!staticData.allItems) staticData.allItems = [];\n\n$input.all().forEach(item => {\n  const d = {...item.json};\n  if (d.company_name) d.company_name = d.company_name.trim();\n  staticData.allItems.push(d);\n});\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1088,
+        432
+      ],
+      "id": "57023012-cc63-4fb7-b48f-0a987e192608",
+      "name": "Code4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const staticData = $getWorkflowStaticData('global');\nif (!staticData.allItems) staticData.allItems = [];\nif (!staticData.papers) staticData.papers = {};\nif (!staticData.runCount) staticData.runCount = 0;\n\nstaticData.runCount += 1;\n\n// Store whatever comes in\n$input.all().forEach(item => {\n  const d = item.json;\n  const name = d.company_name ? d.company_name.trim() : '';\n  if (!name) return;\n  \n  if (d.research_papers) {\n    try {\n      const papers = typeof d.research_papers === 'string' ? \n        JSON.parse(d.research_papers) : d.research_papers;\n      staticData.papers[name] = papers;\n    } catch(e) {}\n  } else {\n    staticData.allItems.push(d);\n  }\n});\n\n// Only generate HTML when BOTH inputs have arrived (runCount = 2)\nif (staticData.runCount < 2) {\n  staticData.runCount = staticData.runCount;\n  return [{ json: { status: 'waiting' } }];\n}\n\n// Reset for next run\nstaticData.runCount = 0;\nconst storedItems = staticData.allItems;\nconst papersByCompany = staticData.papers;\nstaticData.allItems = [];\nstaticData.papers = {};\n\nconst companiesMap = {};\n\nstoredItems.forEach(d => {\n  const name = d.company_name ? d.company_name.trim() : '';\n  if (!name) return;\n  if (!companiesMap[name]) {\n    companiesMap[name] = { name, repos: 0, stars: 0, forks: 0, languages: {}, papers: [] };\n  }\n  if (d.repo_name) {\n    companiesMap[name].repos += 1;\n    companiesMap[name].stars += (d.stars || 0);\n    companiesMap[name].forks += (d.forks || 0);\n  }\n  if (d.languages) {\n    try {\n      const langs = typeof d.languages === 'string' ? JSON.parse(d.languages) : d.languages;\n      Object.keys(langs).forEach(l => {\n        companiesMap[name].languages[l] = (companiesMap[name].languages[l] || 0) + langs[l];\n      });\n    } catch(e) {}\n  }\n});\n\n// Apply papers\nObject.keys(papersByCompany).forEach(name => {\n  if (companiesMap[name]) {\n    companiesMap[name].papers = papersByCompany[name];\n  }\n});\n\nconst companies = Object.values(companiesMap);\n\nconst html = `<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<title>Tech Stack Analytics Dashboard</title>\n<script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script>\n<style>\n* { margin:0; padding:0; box-sizing:border-box; }\nbody { font-family:'Segoe UI',sans-serif; background:linear-gradient(135deg,#667eea,#764ba2); min-height:100vh; padding:20px; }\n.container { max-width:1400px; margin:0 auto; }\n.header { background:white; padding:30px; border-radius:15px; margin-bottom:30px; box-shadow:0 10px 30px rgba(0,0,0,0.1); }\n.header h1 { font-size:2.5em; background:linear-gradient(135deg,#667eea,#764ba2); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }\n.header p { color:#666; margin-top:8px; }\n.stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; margin-bottom:30px; }\n.stat-card { background:white; padding:25px; border-radius:15px; box-shadow:0 5px 20px rgba(0,0,0,0.1); }\n.stat-card h3 { font-size:0.85em; color:#666; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }\n.stat-card .value { font-size:2.5em; font-weight:bold; background:linear-gradient(135deg,#667eea,#764ba2); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }\n.section { background:white; padding:30px; border-radius:15px; margin-bottom:30px; box-shadow:0 5px 20px rgba(0,0,0,0.1); }\n.section h2 { font-size:1.8em; margin-bottom:20px; border-bottom:3px solid #667eea; padding-bottom:10px; }\ntable { width:100%; border-collapse:collapse; }\nth { background:linear-gradient(135deg,#667eea,#764ba2); color:white; padding:15px; text-align:left; }\ntd { padding:15px; border-bottom:1px solid #eee; }\ntr:hover td { background:#f8f9ff; }\n.badge { display:inline-block; padding:5px 15px; border-radius:20px; font-weight:bold; color:white; }\n.high { background:#10b981; } .med { background:#f59e0b; } .low { background:#ef4444; }\n.lang-tag { display:inline-block; padding:4px 10px; margin:3px; background:#667eea; color:white; border-radius:12px; font-size:0.85em; }\n.paper-tag { display:inline-block; padding:4px 10px; margin:3px; background:#764ba2; color:white; border-radius:12px; font-size:0.85em; }\n.insight { background:#f8f9ff; padding:20px; border-left:4px solid #667eea; margin:15px 0; border-radius:5px; }\n.chart-container { position:relative; height:400px; margin:20px 0; }\n</style>\n</head>\n<body>\n<div class=\"container\">\n  <div class=\"header\">\n    <h1>🚀 Tech Stack Analytics Dashboard</h1>\n    <p>Generated: ${new Date().toISOString()} | ${companies.length} Companies Analyzed</p>\n  </div>\n  <div class=\"stats-grid\">\n    <div class=\"stat-card\"><h3>Companies</h3><div class=\"value\">${companies.length}</div></div>\n    <div class=\"stat-card\"><h3>Total Repos</h3><div class=\"value\">${companies.reduce((s,c)=>s+c.repos,0)}</div></div>\n    <div class=\"stat-card\"><h3>Languages</h3><div class=\"value\">${new Set(companies.flatMap(c=>Object.keys(c.languages))).size}</div></div>\n    <div class=\"stat-card\"><h3>Total Stars</h3><div class=\"value\">${companies.reduce((s,c)=>s+c.stars,0).toLocaleString()}</div></div>\n    <div class=\"stat-card\"><h3>Research Papers</h3><div class=\"value\">${companies.reduce((s,c)=>s+c.papers.length,0)}</div></div>\n  </div>\n  <div class=\"section\">\n    <h2>🏆 Company Leaderboard</h2>\n    <table>\n      <thead><tr><th>Rank</th><th>Company</th><th>Repos</th><th>Total Stars</th><th>Languages</th><th>Papers</th></tr></thead>\n      <tbody>\n        ${companies.sort((a,b)=>b.stars-a.stars).map((c,i)=>`\n          <tr>\n            <td><strong>${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</strong></td>\n            <td><strong>${c.name}</strong></td>\n            <td>${c.repos}</td>\n            <td><span class=\"badge ${c.stars>50000?'high':c.stars>10000?'med':'low'}\">${c.stars.toLocaleString()}</span></td>\n            <td>${Object.keys(c.languages).length}</td>\n            <td>${c.papers.length}</td>\n          </tr>`).join('')}\n      </tbody>\n    </table>\n  </div>\n  <div class=\"section\">\n    <h2>📊 Company Deep Dive</h2>\n    ${companies.map(c=>{\n      const topLangs = Object.entries(c.languages).sort((a,b)=>b[1]-a[1]).slice(0,5);\n      const totalBytes = topLangs.reduce((s,[,v])=>s+v,0)||1;\n      return `<div class=\"insight\">\n        <h3 style=\"margin-bottom:10px;color:#333\">🏢 ${c.name}</h3>\n        <p><strong>Repos:</strong> ${c.repos} | <strong>Stars:</strong> ${c.stars.toLocaleString()} | <strong>Forks:</strong> ${c.forks.toLocaleString()} | <strong>Papers:</strong> ${c.papers.length}</p>\n        <p style=\"margin-top:8px\"><strong>Top Languages:</strong></p>\n        ${topLangs.map(([lang,bytes])=>`<span class=\"lang-tag\">${lang} (${Math.round(bytes/totalBytes*100)}%)</span>`).join('')}\n        ${c.papers.length > 0 ? `\n        <p style=\"margin-top:8px\"><strong>Recent Research:</strong></p>\n        ${c.papers.slice(0,2).map(p=>`<span class=\"paper-tag\">📄 ${p.title ? p.title.substring(0,50)+'...' : 'Paper'}</span>`).join('')}` : ''}\n      </div>`;\n    }).join('')}\n  </div>\n  <div class=\"section\">\n    <h2>🔥 Language Adoption</h2>\n    <div class=\"chart-container\"><canvas id=\"langChart\"></canvas></div>\n  </div>\n</div>\n<script>\nconst ctx = document.getElementById('langChart').getContext('2d');\nconst langData = ${JSON.stringify(\n  Object.entries(\n    companies.flatMap(c=>Object.keys(c.languages))\n    .reduce((acc,lang)=>{acc[lang]=(acc[lang]||0)+1;return acc;},{})\n  ).sort((a,b)=>b[1]-a[1]).slice(0,10)\n)};\nnew Chart(ctx,{type:'bar',data:{labels:langData.map(l=>l[0]),datasets:[{label:'Companies Using',data:langData.map(l=>l[1]),backgroundColor:'rgba(102,126,234,0.8)',borderColor:'rgba(102,126,234,1)',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}});\n</script>\n</body>\n</html>`;\n\nreturn [{ json: { html_dashboard: html } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        336
+      ],
+      "id": "4dc0ee04-37d1-42be-8279-539594b9cea0",
+      "name": "Code5"
+    }
+  ],
+  "pinData": {
+    "Manual Trigger": [
+      {
+        "json": {}
+      }
+    ]
+  },
+  "connections": {
+    "Prepare Variables": {
+      "main": [
+        [
+          {
+            "node": "GitHub: Get Repos",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "arXiv: Search Papers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub: Get Repos": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Batch Repos": {
+      "main": [
+        [
+          {
+            "node": "GitHub: Get Languages",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Aggregate Repo Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub: Get Languages": {
+      "main": [
+        [
+          {
+            "node": "Format Language Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Language Data": {
+      "main": [
+        [
+          {
+            "node": "Code4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Repo Data": {
+      "main": [
+        [
+          {
+            "node": "Batch Repos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "arXiv: Search Papers": {
+      "main": [
+        [
+          {
+            "node": "Parse arXiv XML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse arXiv XML": {
+      "main": [
+        [
+          {
+            "node": "Format Research Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Research Data": {
+      "main": [
+        [
+          {
+            "node": "Code5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Input: Companies",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input: Companies": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Prepare Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Batch Repos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code4": {
+      "main": [
+        []
+      ]
+    },
+    "Code5": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c9b88b39-a6cd-4965-978f-e78b50fe67d2",
+  "meta": {
+    "instanceId": "c5605aae802302d14cf85834357505b8eaf4143631bcf5d9ab9240de503b0d2d"
+  },
+  "id": "70f6O3BLnYnQ9Iw9",
+  "tags": []
+}

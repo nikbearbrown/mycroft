@@ -1,0 +1,860 @@
+{
+  "name": "My workflow 7",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "earnings-call",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "962bd8d3-78be-4a04-81f1-313a0f886826",
+      "name": "Webhook: Receive Transcript",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1760,
+        144
+      ],
+      "webhookId": "WEBHOOK_ID_PLACEHOLDER"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body;\n\nconst errors = [];\n\nif (!body.transcript_text || body.transcript_text.trim().length < 100) {\n  errors.push('transcript_text is required and must be at least 100 characters');\n}\nif (!body.company_name) {\n  errors.push('company_name is required');\n}\nif (!body.call_date) {\n  errors.push('call_date is required (YYYY-MM-DD)');\n}\n\nif (errors.length > 0) {\n  return [{ json: { valid: false, errors, status: 400 } }];\n}\n\n// Build slugs\nconst ticker = (body.ticker || body.company_name.replace(/\\s+/g,'').substring(0,6)).toUpperCase();\nconst fiscal_quarter = body.fiscal_quarter || 'UNKNOWN';\nconst quarter_slug = fiscal_quarter.replace(/\\s+/g,'-').toUpperCase();\n\nreturn [{\n  json: {\n    valid: true,\n    company_name: body.company_name,\n    ticker,\n    call_date: body.call_date,\n    fiscal_quarter,\n    fiscal_year: body.fiscal_year || null,\n    call_type: body.call_type || 'quarterly',\n    transcript_source: body.transcript_source || 'manual',\n    transcript_text: body.transcript_text,\n    word_count: body.transcript_text.trim().split(/\\s+/).length,\n    quarter_slug\n  }\n}];"
+      },
+      "id": "a0bdafbf-44be-44ba-891e-ccbaeed22105",
+      "name": "Validate Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1536,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO earnings_calls (company_name, ticker, call_date, fiscal_quarter, fiscal_year, call_type, raw_transcript, transcript_source, word_count, processing_status)\nVALUES (\n  '{{ $json.company_name }}',\n  '{{ $json.ticker }}',\n  '{{ $json.call_date }}'::DATE,\n  '{{ $json.fiscal_quarter }}',\n  {{ $json.fiscal_year || 'NULL' }},\n  '{{ $json.call_type }}',\n  '{{ $json.transcript_text }}',\n  '{{ $json.transcript_source }}',\n  {{ $json.word_count }},\n  'processing'\n)\nRETURNING id, company_name, ticker, fiscal_quarter;",
+        "options": {}
+      },
+      "id": "2b264b5a-d777-459e-8943-42d20a835015",
+      "name": "DB: Insert earnings_call",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -1328,
+        128
+      ],
+      "credentials": {
+        "postgres": {
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "earnings_call_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "a2",
+              "name": "company_name",
+              "value": "={{ $json.company_name }}",
+              "type": "string"
+            },
+            {
+              "id": "a3",
+              "name": "ticker",
+              "value": "={{ $json.ticker }}",
+              "type": "string"
+            },
+            {
+              "id": "a4",
+              "name": "fiscal_quarter",
+              "value": "={{ $json.fiscal_quarter }}",
+              "type": "string"
+            },
+            {
+              "id": "a5",
+              "name": "transcript_text",
+              "value": "={{ $('Validate Input').first().json.transcript_text }}",
+              "type": "string"
+            },
+            {
+              "id": "a6",
+              "name": "quarter_slug",
+              "value": "={{ $('Validate Input').first().json.quarter_slug }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8a6a1b93-7f36-4119-b87f-c4e6d6f47cf1",
+      "name": "Set Call Context",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1104,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst callContext = $('Set Call Context').first().json;\n\n// Groq format\nconst rawText = response.choices?.[0]?.message?.content || '{}';\nlet parsed;\ntry {\n  const clean = rawText.replace(/```json|```/g, '').trim();\n  parsed = JSON.parse(clean);\n} catch(e) {\n  return [{ json: { error: 'Section parse failed: ' + e.message, raw: rawText, earnings_call_id: callContext.earnings_call_id } }];\n}\n\n// Enrich each section with call context\nconst sections = (parsed.sections || []).map((s, idx) => ({\n  ...s,\n  earnings_call_id: callContext.earnings_call_id,\n  company_name: callContext.company_name,\n  ticker: callContext.ticker,\n  fiscal_quarter: callContext.fiscal_quarter,\n  quarter_slug: callContext.quarter_slug,\n  transcript_text: callContext.transcript_text,\n  section_order: s.section_order || idx + 1\n}));\n\nreturn sections.map(s => ({ json: s }));"
+      },
+      "id": "f70f9ffd-a452-4def-ae96-4fba36e5a357",
+      "name": "Process Section Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -656,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO transcript_sections (earnings_call_id, section_type, speaker_name, speaker_role, speaker_firm, section_text, section_order)\nVALUES (\n  '{{ $json.earnings_call_id }}'::UUID,\n  '{{ $json.label || $json.section_type }}',\n  {{ $json.speaker_name ? \"'\" + $json.speaker_name + \"'\" : 'NULL' }},\n  '{{ $json.speaker_role || \"Other\" }}',\n  {{ $json.speaker_firm ? \"'\" + $json.speaker_firm + \"'\" : 'NULL' }},\n  '{{ $json.content || $json.section_text }}',\n  {{ $json.section_order }}\n)\nRETURNING id, section_type, speaker_role;",
+        "options": {}
+      },
+      "id": "f5a7b728-ff9f-4ea1-aee4-3b11be2c3bb0",
+      "name": "DB: Insert transcript_section",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -448,
+        128
+      ],
+      "credentials": {
+        "postgres": {
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "output": "={{ $('Process Section Response').item.json.section_type?.toLowerCase().includes('question') || $('Process Section Response').item.json.label?.toLowerCase().includes('question') ? 1 : ($('Process Section Response').item.json.section_type?.toLowerCase().includes('guidance') || $('Process Section Response').item.json.section_type?.toLowerCase().includes('financial') || $('Process Section Response').item.json.section_type?.toLowerCase().includes('segment') ? 0 : 2) }}"
+      },
+      "id": "64f5b8bf-2dd3-4f74-bdd6-669fc0a41799",
+      "name": "Route by Section Type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        -224,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst sectionCtx = $('Process Section Response').item.json;\nconst rawText = response.choices?.[0]?.message?.content || '{}';\nlet parsed;\ntry {\n  const clean = rawText.replace(/```json|```/g, '').trim();\n  parsed = JSON.parse(clean);\n} catch(e) {\n  return [{ json: { guidance_signals: [], parse_error: e.message } }];\n}\nconst runLog = {\n  earnings_call_id: sectionCtx.earnings_call_id,\n  run_type: 'guidance_extract',\n  model_used: 'llama-3.3-70b-versatile',\n  prompt_tokens: response.usage?.prompt_tokens || 0,\n  completion_tokens: response.usage?.completion_tokens || 0,\n  success: true,\n  raw_llm_response: rawText\n};\nconst signals = (parsed.guidance_signals || []).map((g, idx) => ({\n  ...g,\n  earnings_call_id: sectionCtx.earnings_call_id,\n  claim_id: g.claim_id || `${sectionCtx.ticker}-${sectionCtx.quarter_slug}-G${String(idx+1).padStart(3,'0')}`,\n  schema_valid: !!g.direction && !!g.transcript_citation && !!g.claim_text,\n  validation_errors: [\n    !g.direction && 'direction is required',\n    !g.transcript_citation && 'transcript_citation is required',\n    !g.claim_text && 'claim_text is required'\n  ].filter(Boolean),\n  falsification_flag: g.falsification_flag || !g.direction || !g.transcript_citation || (g.direction_confidence || 0) < 0.5,\n  run_log: runLog\n}));\nreturn signals.length > 0 \n  ? signals.map(s => ({ json: s }))\n  : [{ json: { guidance_signals_empty: true, earnings_call_id: sectionCtx.earnings_call_id } }];"
+      },
+      "id": "f5faa609-1590-4552-9921-4b580a01fc76",
+      "name": "Process Guidance Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst sectionCtx = $('Process Section Response').item.json;\n\nconst rawText = response.choices?.[0]?.message?.content || '{}';\nlet parsed;\ntry {\n  const clean = rawText.replace(/```json|```/g, '').trim();\n  parsed = JSON.parse(clean);\n} catch(e) {\n  return [{ json: { risk_admissions: [], parse_error: e.message } }];\n}\n\nconst runLog = {\n  earnings_call_id: sectionCtx.earnings_call_id,\n  run_type: 'risk_extract',\n  model_used: 'claude-opus-4-6',\n  prompt_tokens: response.usage?.input_tokens || 0,\n  completion_tokens: response.usage?.output_tokens || 0,\n  success: true\n};\n\nconst risks = (parsed.risk_admissions || []).map((r, idx) => ({\n  ...r,\n  earnings_call_id: sectionCtx.earnings_call_id,\n  claim_id: r.claim_id || `${sectionCtx.ticker}-${sectionCtx.quarter_slug}-R${String(idx+1).padStart(3,'0')}`,\n  schema_valid: !!r.risk_category && !!r.transcript_citation && !!r.severity,\n  run_log: runLog\n}));\n\nreturn risks.length > 0\n  ? risks.map(r => ({ json: r }))\n  : [{ json: { risk_admissions_empty: true, earnings_call_id: sectionCtx.earnings_call_id } }];"
+      },
+      "id": "1c55cf86-80cf-4e30-9169-32021cdc829c",
+      "name": "Process Risk Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst sectionCtx = $('Process Section Response').item.json;\n\nconst rawText = response.content?.[0]?.text || '{}';\nlet parsed;\ntry {\n  const clean = rawText.replace(/```json|```/g, '').trim();\n  parsed = JSON.parse(clean);\n} catch(e) {\n  return [{ json: { qa_pressure_map: [], parse_error: e.message } }];\n}\n\nconst runLog = {\n  earnings_call_id: sectionCtx.earnings_call_id,\n  run_type: 'qa_map',\n  model_used: 'claude-opus-4-6',\n  prompt_tokens: response.usage?.input_tokens || 0,\n  completion_tokens: response.usage?.output_tokens || 0,\n  success: true\n};\n\nconst qaItems = (parsed.qa_pressure_map || []).map(q => ({\n  ...q,\n  earnings_call_id: sectionCtx.earnings_call_id,\n  schema_valid: !!q.question_topic && !!q.response_type,\n  // Clamp pressure score\n  pressure_score: Math.min(10, Math.max(1, q.pressure_score || 5)),\n  run_log: runLog\n}));\n\nreturn qaItems.length > 0\n  ? qaItems.map(q => ({ json: q }))\n  : [{ json: { qa_empty: true, earnings_call_id: sectionCtx.earnings_call_id } }];"
+      },
+      "id": "be982430-c6fc-44da-92f8-3eee6718ea12",
+      "name": "Process QA Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO guidance_signals (\n  earnings_call_id, claim_id, claim_type, claim_text, claim_summary,\n  direction, direction_confidence, change_description,\n  transcript_citation, citation_speaker, citation_section,\n  metric_name, metric_value_current, metric_value_prior, metric_unit, metric_period,\n  schema_valid, validation_errors, falsification_flag, falsification_reason\n)\nSELECT\n  '{{ $json.earnings_call_id }}'::UUID,\n  '{{ $json.claim_id }}',\n  '{{ $json.claim_type || \"guidance\" }}',\n  '{{ $json.claim_text || \"\" }}',\n  '{{ $json.claim_summary || \"\" }}',\n  '{{ $json.direction || \"unchanged\" }}',\n  {{ $json.direction_confidence || 0 }},\n  '{{ $json.change_description || \"\" }}',\n  '{{ $json.transcript_citation || \"\" }}',\n  '{{ $json.citation_speaker || \"\" }}',\n  '{{ $json.citation_section || \"prepared_remarks\" }}',\n  NULL, NULL, NULL, NULL, NULL,\n  {{ $json.schema_valid || false }},\n  '[]'::JSONB,\n  {{ $json.falsification_flag || false }},\n  NULL\nWHERE '{{ $json.claim_id }}' != 'undefined' AND '{{ $json.guidance_signals_empty }}' != 'true'\nON CONFLICT (claim_id) DO UPDATE\n  SET direction = EXCLUDED.direction,\n      direction_confidence = EXCLUDED.direction_confidence,\n      transcript_citation = EXCLUDED.transcript_citation\nRETURNING id, claim_id, direction, falsification_flag;",
+        "options": {}
+      },
+      "id": "a7bac940-1257-4dff-b8bb-85e4df17761b",
+      "name": "DB: Insert guidance_signal",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        448,
+        0
+      ],
+      "credentials": {
+        "postgres": {
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO risk_admissions (\n  earnings_call_id, claim_id, risk_category, risk_text, risk_summary,\n  severity, uncertainty_language, transcript_citation, citation_speaker,\n  is_new_risk, schema_valid\n) VALUES (\n  '{{ $json.earnings_call_id }}'::UUID,\n  '{{ $json.claim_id }}',\n  '{{ $json.risk_category || \"operational\" }}',\n  '{{ $json.risk_text }}',\n  '{{ $json.risk_summary || \"\" }}',\n  '{{ $json.severity || \"low\" }}',\n  ARRAY[]::TEXT[],\n  '{{ $json.transcript_citation }}',\n  '{{ $json.citation_speaker || \"\" }}',\n  {{ $json.is_new_risk !== false }},\n  {{ $json.schema_valid || false }}\n)\nON CONFLICT (claim_id) DO NOTHING\nRETURNING id, claim_id, severity;",
+        "options": {}
+      },
+      "id": "bc01a092-af44-4afa-95c2-038efcd78fc9",
+      "name": "DB: Insert risk_admission",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        448,
+        160
+      ],
+      "credentials": {
+        "postgres": {
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO qa_pressure_map (\n  earnings_call_id, question_topic, question_text,\n  analyst_name, analyst_firm, times_asked, asked_by_firms,\n  response_type, response_text, response_summary,\n  is_repeated_topic, pressure_score, schema_valid\n) VALUES (\n  '{{ $json.earnings_call_id }}'::UUID,\n  '{{ $json.question_topic || \"General\" }}',\n  '{{ $json.question_text || \"\" }}',\n  '{{ $json.analyst_name || \"\" }}',\n  '{{ $json.analyst_firm || \"\" }}',\n  {{ $json.times_asked || 1 }},\n  ARRAY[]::TEXT[],\n  '{{ $json.response_type || \"answered\" }}',\n  '{{ $json.response_text || \"\" }}',\n  '{{ $json.response_summary || \"\" }}',\n  {{ $json.is_repeated_topic || false }},\n  {{ $json.pressure_score || 5 }},\n  false\n)\nRETURNING id, question_topic, pressure_score;",
+        "options": {}
+      },
+      "id": "051e79c0-d19a-4e4a-a0c6-d5ec32183f44",
+      "name": "DB: Insert qa_pressure",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        448,
+        320
+      ],
+      "credentials": {
+        "postgres": {
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO agent_run_log (earnings_call_id, run_type, model_used, prompt_tokens, completion_tokens, success)\nVALUES (\n  '{{ $('Set Call Context').first().json.earnings_call_id }}'::UUID,\n  'risk_extract',\n  'llama-3.3-70b-versatile',\n  0,\n  0,\n  true\n);",
+        "options": {}
+      },
+      "id": "2c8b2e6e-181c-4889-bb6d-e2ebc0bb1c64",
+      "name": "DB: Log Agent Run",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        672,
+        160
+      ],
+      "credentials": {
+        "postgres": {
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  ec.id as earnings_call_id,\n  ec.company_name,\n  ec.ticker,\n  ec.fiscal_quarter,\n  json_agg(DISTINCT jsonb_build_object(\n    'claim_id', gs.claim_id,\n    'claim_summary', gs.claim_summary,\n    'direction', gs.direction,\n    'direction_confidence', gs.direction_confidence,\n    'change_description', gs.change_description,\n    'metric_name', gs.metric_name,\n    'metric_value_current', gs.metric_value_current,\n    'falsification_flag', gs.falsification_flag\n  )) FILTER (WHERE gs.id IS NOT NULL) as guidance_signals,\n  json_agg(DISTINCT jsonb_build_object(\n    'claim_id', ra.claim_id,\n    'risk_category', ra.risk_category,\n    'risk_summary', ra.risk_summary,\n    'severity', ra.severity,\n    'is_new_risk', ra.is_new_risk\n  )) FILTER (WHERE ra.id IS NOT NULL) as risk_admissions,\n  json_agg(DISTINCT jsonb_build_object(\n    'question_topic', qa.question_topic,\n    'times_asked', qa.times_asked,\n    'response_type', qa.response_type,\n    'pressure_score', qa.pressure_score\n  )) FILTER (WHERE qa.id IS NOT NULL) as qa_pressure_map\nFROM earnings_calls ec\nLEFT JOIN guidance_signals gs ON gs.earnings_call_id = ec.id\nLEFT JOIN risk_admissions ra ON ra.earnings_call_id = ec.id\nLEFT JOIN qa_pressure_map qa ON qa.earnings_call_id = ec.id\nWHERE ec.id = '{{ $('Set Call Context').first().json.earnings_call_id }}'::UUID\nGROUP BY ec.id, ec.company_name, ec.ticker, ec.fiscal_quarter;",
+        "options": {}
+      },
+      "id": "ff082563-ec77-452e-b3b6-54f8c66dbfa6",
+      "name": "Fetch All Signals for Summary",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        672,
+        0
+      ],
+      "credentials": {
+        "postgres": {
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst callCtx = $('Set Call Context').first().json;\nconst aggData = $('Fetch All Signals for Summary').first().json;\nconst rawText = response.choices?.[0]?.message?.content || '{}';\nlet parsed;\ntry {\n  const clean = rawText.replace(/```json|```/g, '').trim();\n  parsed = JSON.parse(clean);\n} catch(e) {\n  parsed = {\n    overall_tone: 'neutral',\n    tone_confidence: 0,\n    what_changed: 'Summary generation failed',\n    what_didnt_change: '',\n    narrative_summary: 'Summary generation failed: ' + e.message\n  };\n}\n\n// Group guidance by direction\nconst guidance = aggData.guidance_signals || [];\nconst groupByDir = (dir) => guidance.filter(g => g.direction === dir).map(g => g.claim_id);\n\nreturn [{\n  json: {\n    earnings_call_id: callCtx.earnings_call_id,\n    guidance_strengthened: JSON.stringify(groupByDir('strengthened')),\n    guidance_weakened:     JSON.stringify(groupByDir('weakened')),\n    guidance_unchanged:    JSON.stringify(groupByDir('unchanged')),\n    new_signals:           JSON.stringify(groupByDir('new')),\n    retracted_signals:     JSON.stringify(groupByDir('retracted')),\n    top_pressure_topics:   JSON.stringify(parsed.top_pressure_topics || []),\n    new_risks:             JSON.stringify((aggData.risk_admissions || []).filter(r => r.is_new_risk).map(r => r.claim_id)),\n    overall_tone:          parsed.overall_tone || 'neutral',\n    tone_confidence:       parsed.tone_confidence || 0,\n    narrative_summary:     parsed.narrative_summary || '',\n    what_changed:          parsed.what_changed || '',\n    what_didnt_change:     parsed.what_didnt_change || '',\n    contradiction_flags:   JSON.stringify(parsed.contradiction_flags || []),\n    schema_valid:          !!parsed.narrative_summary && !!parsed.overall_tone,\n    decision_grade_signals: parsed.decision_grade_signals || []\n  }\n}];"
+      },
+      "id": "6cc2afed-911a-4e13-8ebc-1f2e7cccf5e6",
+      "name": "Process Summary Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1104,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO call_summaries (\n  earnings_call_id, guidance_strengthened, guidance_weakened,\n  guidance_unchanged, new_signals, retracted_signals,\n  top_pressure_topics, new_risks, overall_tone, tone_confidence,\n  narrative_summary, what_changed, what_didnt_change,\n  contradiction_flags, schema_valid\n) VALUES (\n  '{{ $json.earnings_call_id }}'::UUID,\n  '[]'::JSONB,\n  '[]'::JSONB,\n  '[]'::JSONB,\n  '[]'::JSONB,\n  '[]'::JSONB,\n  '[]'::JSONB,\n  '[]'::JSONB,\n  '{{ $json.overall_tone || \"neutral\" }}',\n  {{ $json.tone_confidence || 0 }},\n  'Summary generated',\n  'See narrative_summary field',\n  'See narrative_summary field',\n  '[]'::JSONB,\n  false\n)\nON CONFLICT (earnings_call_id) DO UPDATE SET\n  overall_tone = EXCLUDED.overall_tone,\n  schema_valid = EXCLUDED.schema_valid\nRETURNING id, earnings_call_id, overall_tone;",
+        "options": {}
+      },
+      "id": "6c1f1899-faeb-4923-b1dc-9e8be5977aef",
+      "name": "DB: Insert call_summary",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1328,
+        0
+      ],
+      "credentials": {
+        "postgres": {
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE earnings_calls SET \n  processing_status = 'complete',\n  updated_at = NOW()\nWHERE id = '{{ $json.earnings_call_id }}'::UUID\nRETURNING id, company_name, ticker, fiscal_quarter, processing_status;",
+        "options": {}
+      },
+      "id": "30a4382b-d20b-4e8e-89d7-7f01de270e0b",
+      "name": "DB: Mark Call Complete",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1552,
+        0
+      ],
+      "credentials": {
+        "postgres": {
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const callResult = $input.first().json;\nconst summaryData = $('Process Summary Response').first().json;\n\n// Falsification check\nconst falsificationFailed = summaryData.guidance_strengthened === '[]' &&\n  summaryData.guidance_weakened === '[]' &&\n  summaryData.guidance_unchanged === '[]' &&\n  summaryData.new_signals === '[]';\n\nreturn [{\n  json: {\n    success: true,\n    earnings_call_id: callResult.id,\n    company: callResult.company_name,\n    ticker: callResult.ticker,\n    quarter: callResult.fiscal_quarter,\n    status: callResult.processing_status,\n    overall_tone: summaryData.overall_tone,\n    narrative_summary: summaryData.narrative_summary,\n    what_changed: summaryData.what_changed,\n    decision_grade_signals: summaryData.decision_grade_signals,\n    falsification_warning: falsificationFailed ? 'WARNING: No guidance signals extracted — schema may need redesign' : null,\n    schema_valid: summaryData.schema_valid\n  }\n}];"
+      },
+      "id": "eea3db56-7843-4cbd-8140-51b7ec183a85",
+      "name": "Final Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "68f0d9aa-6753-4eba-a8b1-d0af58501dca",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1984,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"temperature\": 0.1,\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You must return ONLY raw JSON. No markdown, no backticks, no explanation. Start with { and end with }. You are a senior investment analyst writing a structured call summary for Mycroft.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Generate a structured call summary.\\n\\nCOMPANY: {{ $json.company_name }} | TICKER: {{ $json.ticker }} | QUARTER: {{ $json.fiscal_quarter }}\\n\\nReturn ONLY this JSON:\\n{\\\"overall_tone\\\":\\\"bullish\\\",\\\"tone_confidence\\\":0.8,\\\"what_changed\\\":\\\"narrative here\\\",\\\"what_didnt_change\\\":\\\"narrative here\\\",\\\"narrative_summary\\\":\\\"4-6 sentence summary\\\",\\\"top_pressure_topics\\\":[],\\\"contradiction_flags\\\":[],\\\"decision_grade_signals\\\":[]}\"\n    }\n  ]\n}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "595c119d-15e0-40be-b01f-9093904864d2",
+      "name": "Groq: Generate Call Summary",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": " ",
+          "name": "Header Auth account"
+        },
+        "groqApi": {
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"temperature\": 0.1,\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You must return ONLY raw JSON. No markdown, no asterisks, no explanation. Start your response directly with { and end with }. Any other format will cause a system failure. You are a financial transcript parser for Mycroft. Split the earnings call transcript into labeled sections.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"... same user prompt as before ...\"\n    }\n  ]\n}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "c3338d53-e5ce-4f08-8039-365eda5c12cb",
+      "name": "Groq: Parse Transcript Sections",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -880,
+        128
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": " ",
+          "name": "Header Auth account"
+        },
+        "groqApi": {
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"temperature\": 0.1,\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a financial analyst. You must return ONLY raw JSON. No markdown, no backticks, no explanation. Start with { and end with }.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Read this earnings call section and extract every forward-looking statement about revenue, margins, EPS, growth, capex, or guidance.\\n\\nCOMPANY: {{ $json.company_name }} | TICKER: {{ $json.ticker }} | QUARTER: {{ $json.fiscal_quarter }}\\n\\nSECTION TEXT:\\n{{ $json.content || $json.section_text }}\\n\\nFor each guidance statement found, classify direction as: strengthened | weakened | unchanged | new | retracted\\n\\nReturn this exact JSON structure:\\n{\\\"guidance_signals\\\":[{\\\"claim_id\\\":\\\"TICKER-QUARTER-G001\\\",\\\"claim_type\\\":\\\"guidance\\\",\\\"claim_text\\\":\\\"exact quote from text\\\",\\\"claim_summary\\\":\\\"one sentence summary\\\",\\\"direction\\\":\\\"strengthened\\\",\\\"direction_confidence\\\":0.9,\\\"change_description\\\":\\\"what changed\\\",\\\"transcript_citation\\\":\\\"exact quote\\\",\\\"citation_speaker\\\":\\\"speaker name\\\",\\\"citation_section\\\":\\\"prepared_remarks\\\",\\\"metric_name\\\":\\\"revenue\\\",\\\"metric_value_current\\\":400,\\\"metric_value_prior\\\":380,\\\"metric_unit\\\":\\\"billion USD\\\",\\\"metric_period\\\":\\\"FY2024\\\",\\\"falsification_flag\\\":false,\\\"falsification_reason\\\":null}]}\"\n    }\n  ]\n}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "d47b2cf0-6fdf-438b-b5d8-48030a0a577b",
+      "name": "Groq: Extract Guidance Signals",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": " ",
+          "name": "Header Auth account"
+        },
+        "groqApi": {
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"temperature\": 0.1,\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You must return ONLY raw JSON. No markdown, no backticks, no explanation. Start with { and end with }. You are a financial risk analyst extracting risk admissions for Mycroft.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Extract all risk admissions and uncertainty language.\\n\\nCategories: macro | competitive | regulatory | operational | financial\\nSeverity: critical | high | medium | low\\n\\nCOMPANY: {{ $json.company_name }} | QUARTER: {{ $json.fiscal_quarter }}\\n\\nReturn ONLY this JSON:\\n{\\\"risk_admissions\\\":[{\\\"claim_id\\\":\\\"{{ $json.ticker }}-{{ $json.quarter_slug }}-R001\\\",\\\"risk_category\\\":\\\"macro\\\",\\\"risk_text\\\":\\\"...\\\",\\\"risk_summary\\\":\\\"...\\\",\\\"severity\\\":\\\"medium\\\",\\\"uncertainty_language\\\":[\\\"may\\\",\\\"could\\\"],\\\"transcript_citation\\\":\\\"...\\\",\\\"citation_speaker\\\":\\\"...\\\",\\\"is_new_risk\\\":true}]}\\n\\nSECTION TEXT:\\n{{ $json.content || $json.section_text }}\"\n    }\n  ]\n}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "id": "b42ac5b4-421c-43f4-a6d1-aaada5c964ef",
+      "name": "Groq: Extract Risk Admissions",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        160
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": " ",
+          "name": "Header Auth account"
+        },
+        "groqApi": {
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"temperature\": 0.1,\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You must return ONLY raw JSON. No markdown, no backticks, no explanation. Start with { and end with }. You analyze Q&A sections of earnings calls for Mycroft.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Analyze this Q&A section. Group by topic, classify response, score pressure 1-10.\\n\\nResponse types: answered | deflected | deferred | partial | acknowledged\\nPressure: 1-3 single analyst answered | 4-6 multiple or partial | 7-10 repeated and deflected\\n\\nCOMPANY: {{ $json.company_name }} | QUARTER: {{ $json.fiscal_quarter }}\\n\\nReturn ONLY this JSON:\\n{\\\"qa_pressure_map\\\":[{\\\"question_topic\\\":\\\"...\\\",\\\"question_text\\\":\\\"...\\\",\\\"analyst_name\\\":\\\"...\\\",\\\"analyst_firm\\\":\\\"...\\\",\\\"times_asked\\\":1,\\\"asked_by_firms\\\":[\\\"firm1\\\"],\\\"response_type\\\":\\\"answered\\\",\\\"response_text\\\":\\\"...\\\",\\\"response_summary\\\":\\\"...\\\",\\\"is_repeated_topic\\\":false,\\\"pressure_score\\\":5}]}\\n\\nQA SECTION TEXT:\\n{{ $json.content || $json.section_text }}\"\n    }\n  ]\n}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "id": "15e2b248-ef2f-45fb-a296-659a83af57d5",
+      "name": "Groq: Map QA Pressure",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        320
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": " ",
+          "name": "Header Auth account"
+        },
+        "groqApi": {
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "-- ============================================================\n-- MYCROFT: Earnings Call Intelligence Agent\n-- PostgreSQL Schema\n-- ============================================================\n\n-- Enable UUID generation\nCREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";\n\n-- ============================================================\n-- TABLE 1: earnings_calls\n-- Master record for each processed transcript\n-- ============================================================\nCREATE TABLE IF NOT EXISTS earnings_calls (\n    id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),\n    company_name        VARCHAR(255) NOT NULL,\n    ticker              VARCHAR(20)  NOT NULL,\n    call_date           DATE         NOT NULL,\n    fiscal_quarter      VARCHAR(10),                    -- e.g. \"Q3 2024\"\n    fiscal_year         INTEGER,\n    call_type           VARCHAR(50)  DEFAULT 'quarterly', -- quarterly | annual | special\n    raw_transcript      TEXT         NOT NULL,\n    transcript_source   VARCHAR(255),                   -- manual | api | scraped\n    word_count          INTEGER,\n    processing_status   VARCHAR(50)  DEFAULT 'pending', -- pending | processing | complete | failed\n    processing_error    TEXT,\n    created_at          TIMESTAMPTZ  DEFAULT NOW(),\n    updated_at          TIMESTAMPTZ  DEFAULT NOW()\n);\n\nCREATE INDEX idx_earnings_calls_ticker      ON earnings_calls(ticker);\nCREATE INDEX idx_earnings_calls_call_date   ON earnings_calls(call_date);\nCREATE INDEX idx_earnings_calls_status      ON earnings_calls(processing_status);\n\n\n-- ============================================================\n-- TABLE 2: transcript_sections\n-- Parsed sections of the transcript (CEO / CFO / QA / Other)\n-- ============================================================\nCREATE TABLE IF NOT EXISTS transcript_sections (\n    id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),\n    earnings_call_id    UUID NOT NULL REFERENCES earnings_calls(id) ON DELETE CASCADE,\n    section_type        VARCHAR(50) NOT NULL,   -- prepared_remarks | qa | opening | closing\n    speaker_name        VARCHAR(255),\n    speaker_role        VARCHAR(255),           -- CEO | CFO | Analyst | Moderator\n    speaker_firm        VARCHAR(255),           -- for analyst Q&A\n    section_text        TEXT NOT NULL,\n    section_order       INTEGER,\n    char_start          INTEGER,               -- character offset in raw transcript\n    char_end            INTEGER,\n    created_at          TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_sections_call_id   ON transcript_sections(earnings_call_id);\nCREATE INDEX idx_sections_type      ON transcript_sections(section_type);\n\n\n-- ============================================================\n-- TABLE 3: guidance_signals\n-- Extracted management guidance statements (shared claims schema)\n-- ============================================================\nCREATE TABLE IF NOT EXISTS guidance_signals (\n    id                      UUID PRIMARY KEY DEFAULT uuid_generate_v4(),\n    earnings_call_id        UUID NOT NULL REFERENCES earnings_calls(id) ON DELETE CASCADE,\n    section_id              UUID REFERENCES transcript_sections(id),\n\n    -- Shared Claims Schema Fields\n    claim_id                VARCHAR(50) UNIQUE NOT NULL,  -- e.g. AAPL-Q3-2024-G001\n    claim_type              VARCHAR(50) NOT NULL,          -- guidance | risk | outlook | metric\n    claim_text              TEXT NOT NULL,                 -- verbatim or near-verbatim\n    claim_summary           TEXT,                          -- 1-sentence normalized summary\n\n    -- Guidance Direction (FALSIFICATION TARGET)\n    direction               VARCHAR(20) NOT NULL           -- strengthened | unchanged | weakened | new | retracted\n        CHECK (direction IN ('strengthened','unchanged','weakened','new','retracted')),\n    direction_confidence    NUMERIC(3,2)                   -- 0.00 to 1.00\n        CHECK (direction_confidence >= 0 AND direction_confidence <= 1),\n\n    -- Prior Call Comparison\n    prior_call_id           UUID REFERENCES earnings_calls(id),\n    prior_claim_text        TEXT,                          -- what was said last quarter\n    change_description      TEXT,                          -- explicit diff narrative\n\n    -- Supporting Evidence\n    transcript_citation     TEXT NOT NULL,                 -- exact quote from transcript\n    citation_speaker        VARCHAR(255),\n    citation_section        VARCHAR(50),\n\n    -- Metric Extraction (if quantitative)\n    metric_name             VARCHAR(255),                  -- \"Revenue guidance\" | \"EPS range\"\n    metric_value_current    NUMERIC,\n    metric_value_prior      NUMERIC,\n    metric_unit             VARCHAR(50),                   -- \"$B\" | \"%\" | \"units\"\n    metric_period           VARCHAR(50),                   -- \"FY2025\" | \"Q4 2024\"\n\n    -- Schema Validity\n    schema_valid            BOOLEAN DEFAULT FALSE,\n    validation_errors       JSONB,\n    falsification_flag      BOOLEAN DEFAULT FALSE,         -- true if direction is null or uncited\n    falsification_reason    TEXT,\n\n    created_at              TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_guidance_call_id       ON guidance_signals(earnings_call_id);\nCREATE INDEX idx_guidance_direction     ON guidance_signals(direction);\nCREATE INDEX idx_guidance_ticker        ON guidance_signals(claim_id);\nCREATE INDEX idx_guidance_flagged       ON guidance_signals(falsification_flag);\n\n\n-- ============================================================\n-- TABLE 4: risk_admissions\n-- Structured risk language extracted from transcript\n-- ============================================================\nCREATE TABLE IF NOT EXISTS risk_admissions (\n    id                      UUID PRIMARY KEY DEFAULT uuid_generate_v4(),\n    earnings_call_id        UUID NOT NULL REFERENCES earnings_calls(id) ON DELETE CASCADE,\n    section_id              UUID REFERENCES transcript_sections(id),\n\n    claim_id                VARCHAR(50) UNIQUE NOT NULL,   -- e.g. AAPL-Q3-2024-R001\n    risk_category           VARCHAR(100),                  -- macro | competitive | regulatory | operational | financial\n    risk_text               TEXT NOT NULL,\n    risk_summary            TEXT,\n    severity                VARCHAR(20)                    -- low | medium | high | critical\n        CHECK (severity IN ('low','medium','high','critical')),\n    uncertainty_language    TEXT[],                        -- array of hedging phrases found\n    transcript_citation     TEXT NOT NULL,\n    citation_speaker        VARCHAR(255),\n\n    -- Is this new vs. previously disclosed?\n    is_new_risk             BOOLEAN,\n    prior_disclosure_call   UUID REFERENCES earnings_calls(id),\n\n    schema_valid            BOOLEAN DEFAULT FALSE,\n    created_at              TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_risk_call_id       ON risk_admissions(earnings_call_id);\nCREATE INDEX idx_risk_category      ON risk_admissions(risk_category);\nCREATE INDEX idx_risk_severity      ON risk_admissions(severity);\n\n\n-- ============================================================\n-- TABLE 5: qa_pressure_map\n-- Analyst question patterns and management response behavior\n-- ============================================================\nCREATE TABLE IF NOT EXISTS qa_pressure_map (\n    id                      UUID PRIMARY KEY DEFAULT uuid_generate_v4(),\n    earnings_call_id        UUID NOT NULL REFERENCES earnings_calls(id) ON DELETE CASCADE,\n    section_id              UUID REFERENCES transcript_sections(id),\n\n    question_topic          VARCHAR(255) NOT NULL,\n    question_text           TEXT,\n    analyst_name            VARCHAR(255),\n    analyst_firm            VARCHAR(255),\n    times_asked             INTEGER DEFAULT 1,             -- how many analysts asked this topic\n    asked_by_firms          TEXT[],                        -- array of analyst firms\n\n    -- Response classification\n    response_type           VARCHAR(50)                    -- answered | deflected | deferred | partial | acknowledged\n        CHECK (response_type IN ('answered','deflected','deferred','partial','acknowledged')),\n    response_text           TEXT,\n    response_summary        TEXT,\n\n    -- Pressure signal\n    is_repeated_topic       BOOLEAN DEFAULT FALSE,         -- asked in prior call too?\n    prior_call_response     VARCHAR(50),                   -- how it was answered last time\n    pressure_score          INTEGER                        -- 1-10, derived from repetition + analyst tier\n        CHECK (pressure_score BETWEEN 1 AND 10),\n\n    schema_valid            BOOLEAN DEFAULT FALSE,\n    created_at              TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_qa_call_id         ON qa_pressure_map(earnings_call_id);\nCREATE INDEX idx_qa_topic           ON qa_pressure_map(question_topic);\nCREATE INDEX idx_qa_response_type   ON qa_pressure_map(response_type);\nCREATE INDEX idx_qa_pressure        ON qa_pressure_map(pressure_score);\n\n\n-- ============================================================\n-- TABLE 6: call_summaries\n-- Final \"What Changed / What Didn't\" roll-up per call\n-- ============================================================\nCREATE TABLE IF NOT EXISTS call_summaries (\n    id                      UUID PRIMARY KEY DEFAULT uuid_generate_v4(),\n    earnings_call_id        UUID UNIQUE NOT NULL REFERENCES earnings_calls(id) ON DELETE CASCADE,\n\n    -- Structured delta summary\n    guidance_strengthened   JSONB,   -- array of claim_ids that strengthened\n    guidance_weakened       JSONB,   -- array of claim_ids that weakened\n    guidance_unchanged      JSONB,   -- array of claim_ids unchanged\n    new_signals             JSONB,   -- array of claim_ids that are new this quarter\n    retracted_signals       JSONB,   -- array of claim_ids retracted vs prior\n\n    -- Top pressure topics from QA\n    top_pressure_topics     JSONB,   -- [{topic, times_asked, response_type}]\n\n    -- New risks this call\n    new_risks               JSONB,   -- array of risk_admission claim_ids\n\n    -- Overall call tone\n    overall_tone            VARCHAR(50),  -- bullish | neutral | cautious | defensive\n    tone_confidence         NUMERIC(3,2),\n\n    -- Contradiction flags for Resolver Agent\n    contradiction_flags     JSONB,        -- pre-computed flags for Resolver Agent\n\n    -- Full narrative summary\n    narrative_summary       TEXT,\n    what_changed            TEXT,\n    what_didnt_change       TEXT,\n\n    schema_valid            BOOLEAN DEFAULT FALSE,\n    generated_at            TIMESTAMPTZ DEFAULT NOW()\n);\n\n\n-- ============================================================\n-- TABLE 7: agent_run_log\n-- Audit trail for every agent execution\n-- ============================================================\nCREATE TABLE IF NOT EXISTS agent_run_log (\n    id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),\n    earnings_call_id    UUID REFERENCES earnings_calls(id),\n    run_type            VARCHAR(100),          -- section_parse | guidance_extract | risk_extract | qa_map | summary\n    model_used          VARCHAR(100),\n    prompt_tokens       INTEGER,\n    completion_tokens   INTEGER,\n    latency_ms          INTEGER,\n    success             BOOLEAN,\n    error_message       TEXT,\n    raw_llm_response    TEXT,\n    created_at          TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_runlog_call_id ON agent_run_log(earnings_call_id);\nCREATE INDEX idx_runlog_success ON agent_run_log(success);\n\n\n-- ============================================================\n-- HELPER: auto-update updated_at on earnings_calls\n-- ============================================================\nCREATE OR REPLACE FUNCTION update_updated_at_column()\nRETURNS TRIGGER AS $$\nBEGIN\n    NEW.updated_at = NOW();\n    RETURN NEW;\nEND;\n$$ LANGUAGE plpgsql;\n\nCREATE TRIGGER trg_earnings_calls_updated_at\n    BEFORE UPDATE ON earnings_calls\n    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1824,
+        -80
+      ],
+      "id": "83eeda2d-4004-4c95-9e36-da37e8596692",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook: Receive Transcript": {
+      "main": [
+        [
+          {
+            "node": "Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Input": {
+      "main": [
+        [
+          {
+            "node": "DB: Insert earnings_call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DB: Insert earnings_call": {
+      "main": [
+        [
+          {
+            "node": "Set Call Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Call Context": {
+      "main": [
+        [
+          {
+            "node": "Groq: Parse Transcript Sections",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Section Response": {
+      "main": [
+        [
+          {
+            "node": "DB: Insert transcript_section",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DB: Insert transcript_section": {
+      "main": [
+        [
+          {
+            "node": "Route by Section Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Section Type": {
+      "main": [
+        [
+          {
+            "node": "Groq: Extract Guidance Signals",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Groq: Extract Risk Admissions",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Groq: Map QA Pressure",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Groq: Extract Risk Admissions",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Groq: Extract Guidance Signals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Guidance Response": {
+      "main": [
+        [
+          {
+            "node": "DB: Insert guidance_signal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Risk Response": {
+      "main": [
+        [
+          {
+            "node": "DB: Insert risk_admission",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process QA Response": {
+      "main": [
+        [
+          {
+            "node": "DB: Insert qa_pressure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DB: Insert guidance_signal": {
+      "main": [
+        [
+          {
+            "node": "DB: Log Agent Run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DB: Insert risk_admission": {
+      "main": [
+        [
+          {
+            "node": "DB: Log Agent Run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DB: Insert qa_pressure": {
+      "main": [
+        [
+          {
+            "node": "DB: Log Agent Run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DB: Log Agent Run": {
+      "main": [
+        [
+          {
+            "node": "Fetch All Signals for Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch All Signals for Summary": {
+      "main": [
+        [
+          {
+            "node": "Groq: Generate Call Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Summary Response": {
+      "main": [
+        [
+          {
+            "node": "DB: Insert call_summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DB: Insert call_summary": {
+      "main": [
+        [
+          {
+            "node": "DB: Mark Call Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DB: Mark Call Complete": {
+      "main": [
+        [
+          {
+            "node": "Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Final Response": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq: Generate Call Summary": {
+      "main": [
+        [
+          {
+            "node": "Process Summary Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq: Parse Transcript Sections": {
+      "main": [
+        [
+          {
+            "node": "Process Section Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq: Extract Guidance Signals": {
+      "main": [
+        [
+          {
+            "node": "Process Guidance Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq: Extract Risk Admissions": {
+      "main": [
+        [
+          {
+            "node": "Process Risk Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq: Map QA Pressure": {
+      "main": [
+        [
+          {
+            "node": "Process QA Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": ""
+  },
+  "id": " ",
+  "tags": []
+}

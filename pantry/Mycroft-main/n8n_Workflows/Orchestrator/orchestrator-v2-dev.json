@@ -1,0 +1,300 @@
+{
+  "name": "Orchestrator v2 - Enhanced",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Give financial metrics for AAPL",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [-416, -128],
+      "id": "864688c6-1c41-4eab-85ef-8efb51566c9a",
+      "name": "When chat message received",
+      "webhookId": "0c0cac6c-49d3-4f8d-a22d-8b084701d4db"
+    },
+    {
+      "parameters": {
+        "model": "llama3:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [-176, 48],
+      "id": "29165b1f-3e8d-4c17-acce-32940c94fa71",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "NepUB8oUyYAo6SVD",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a tool dispatcher. Analyze the user's request and return a JSON object with the tool name and parameters. Do not include any explanation or markdown formatting. Return only the JSON object.\n\nAvailable tools and their parameters:\n\n- **patent-monitor**\n  - days_back (integer, required): Number of days to look back for patents\n  - email (string, optional): Email address for notifications\n\n- **fin-metrics**\n  - ticker (string, required): Stock ticker symbol (e.g., \"AAPL\", \"TSLA\", \"MSFT\")\n  - narrative (boolean, required): Whether to parse narrative content from SEC filings. Analyze the user's question to determine if they want narrative analysis (mentions of \"insights\", \"analysis\", \"full report\", \"detailed\") or just metrics/numbers.\n\n- **news-sentiment**\n  - company (string, required): Company name to search for recent news\n  - email (string, optional): Email address to send the sentiment report\n\n- **forecasting**\n  - ticker (string, required): Stock ticker symbol to forecast\n  - email (string, required): Email address to send forecast results\n  - horizon (integer, optional, default: 30): Number of days to forecast\n\nReturn ONLY valid JSON in this exact format with no explanation:\n```json\n{\n  \"tool\": \"tool-name\",\n  \"params\": {\n    \"param1\": \"value1\",\n    \"param2\": value2\n  }\n}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [-80, -176],
+      "id": "c1b88e65-54b4-4227-a7ca-bd10a9eeb1a1",
+      "name": "The Brain"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the raw LLM output\nlet raw = $json[\"text\"] || $json[\"data\"] || \"\";\n\n// Clean up formatting issues\nraw = raw\n  .replace(/```(json)?/gi, '')\n  .replace(/\\\\n/g, '')\n  .replace(/\\n/g, '')\n  .trim();\n\nlet parsed = {};\ntry {\n  parsed = JSON.parse(raw);\n} catch (e) {\n  return [{\n    json: {\n      tool: \"error\",\n      params: { message: \"Failed to parse JSON\", raw },\n      url: null,\n      request_id: Date.now().toString(),\n      original_query: $input.first().json.chatInput || \"unknown\"\n    }\n  }];\n}\n\n// Define tool configurations with URLs and expected parameter schemas\nconst toolConfigs = {\n  \"patent-monitor\": {\n    url: \"http://localhost:5678/webhook/patent-monitor\",\n    schema: {\n      days_back: \"number\",\n      email: \"string\"\n    }\n  },\n  \"fin-metrics\": {\n    url: \"http://localhost:5678/webhook/sec-metrics\",\n    schema: {\n      ticker: \"string\",\n      narrative: \"boolean\"\n    }\n  },\n  \"news-sentiment\": {\n    url: \"http://localhost:5678/webhook/news-sentiment\",\n    schema: {\n      company: \"string\",\n      email: \"string\"\n    }\n  },\n  \"forecasting\": {\n    url: \"http://localhost:5678/webhook/forecasting\",\n    schema: {\n      ticker: \"string\",\n      email: \"string\",\n      horizon: \"number\"\n    }\n  }\n};\n\n// Validate and structure parameters\nfunction validateParams(tool, params) {\n  const config = toolConfigs[tool];\n  if (!config) {\n    return { \n      valid: false, \n      error: `Unknown tool: ${tool}`,\n      params: null \n    };\n  }\n\n  const validatedParams = {};\n  const schema = config.schema;\n\n  for (const [key, value] of Object.entries(params)) {\n    if (schema.hasOwnProperty(key)) {\n      const expectedType = schema[key];\n      const actualType = Array.isArray(value) ? \"array\" : typeof value;\n      \n      if (actualType === expectedType || (actualType === \"object\" && expectedType === \"object\")) {\n        validatedParams[key] = value;\n      } else {\n        return {\n          valid: false,\n          error: `Parameter '${key}' should be ${expectedType}, got ${actualType}`,\n          params: null\n        };\n      }\n    }\n  }\n\n  return { valid: true, params: validatedParams };\n}\n\n// Function to build URL with query parameters\nfunction buildUrlWithParams(baseUrl, params) {\n  if (!params || Object.keys(params).length === 0) {\n    return baseUrl;\n  }\n  \n  const queryParts = [];\n  for (const [key, value] of Object.entries(params)) {\n    queryParts.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);\n  }\n  \n  const queryString = queryParts.join('&');\n  return `${baseUrl}?${queryString}`;\n}\n\n// Validate the parsed tool and params\nconst validation = validateParams(parsed.tool, parsed.params || {});\n\nif (!validation.valid) {\n  return [{\n    json: {\n      tool: \"error\",\n      params: { \n        message: validation.error,\n        original_tool: parsed.tool,\n        original_params: parsed.params\n      },\n      url: null,\n      request_id: Date.now().toString(),\n      original_query: $input.first().json.chatInput || \"unknown\"\n    }\n  }];\n}\n\n// Generate unique request ID\nconst requestId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;\n\n// Get base URL and build full URL with query parameters\nconst baseUrl = toolConfigs[parsed.tool].url;\nconst fullUrl = buildUrlWithParams(baseUrl, validation.params);\n\n// Build final payload with request tracking\nreturn [{\n  json: {\n    request_id: requestId,\n    original_query: $input.first().json.chatInput || \"unknown\",\n    tool: parsed.tool,\n    params: validation.params,\n    baseUrl: baseUrl,\n    url: fullUrl,\n    metadata: {\n      timestamp: new Date().toISOString(),\n      validated: true,\n      user_session: $input.first().json.sessionId || \"anonymous\"\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [272, -176],
+      "id": "9dc7e552-9bb0-44af-8339-6f719b2b093b",
+      "name": "The Processor"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [480, -176],
+      "id": "95408abc-d8fe-46e9-abd0-e3b5fac723f4",
+      "name": "The Router"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Combine request metadata with response data\nconst requestData = $input.first().json;\nconst responseData = $json;\n\n// Create comprehensive log entry\nconst logEntry = {\n  request_id: requestData.request_id,\n  timestamp: new Date().toISOString(),\n  \n  // Request information\n  request: {\n    original_query: requestData.original_query,\n    tool: requestData.tool,\n    params: requestData.params,\n    url: requestData.url,\n    user_session: requestData.metadata?.user_session || \"anonymous\"\n  },\n  \n  // Response information\n  response: {\n    status: \"success\",\n    data: responseData,\n    response_time_ms: Date.now() - parseInt(requestData.request_id.split('-')[0])\n  },\n  \n  // Analytics metadata\n  analytics: {\n    tool_used: requestData.tool,\n    query_length: requestData.original_query.length,\n    has_email: requestData.params.email ? true : false,\n    processing_stage: \"completed\"\n  }\n};\n\nreturn { json: logEntry };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [688, -176],
+      "id": "response-processor",
+      "name": "Response Processor"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "dataStore": "={{ $json.request.tool }}-logs",
+        "keyName": "={{ $json.request_id }}",
+        "value": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.n8nDataStore",
+      "typeVersion": 1,
+      "position": [896, -176],
+      "id": "data-store-main",
+      "name": "Store Request Log"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "dataStore": "orchestrator-analytics",
+        "keyName": "={{ $now.format('yyyy-MM-dd') }}-{{ $json.request.tool }}-{{ $json.request_id }}",
+        "value": "={{ JSON.stringify({\n  date: $now.format('yyyy-MM-dd'),\n  hour: $now.format('HH'),\n  tool: $json.request.tool,\n  query: $json.request.original_query,\n  response_time: $json.response.response_time_ms,\n  user: $json.request.user_session\n}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.n8nDataStore",
+      "typeVersion": 1,
+      "position": [896, -32],
+      "id": "analytics-store",
+      "name": "Store Analytics"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "notification-check",
+              "leftValue": "={{ $json.request.params.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1104, -176],
+      "id": "notification-check",
+      "name": "Check for Email"
+    },
+    {
+      "parameters": {
+        "fromEmail": "orchestrator@mycroft.ai",
+        "toEmail": "={{ $json.request.params.email }}",
+        "subject": "Mycroft Alert: {{ $json.request.tool }} completed",
+        "message": "=Your {{ $json.request.tool }} request has been processed.\n\nRequest ID: {{ $json.request_id }}\nQuery: {{ $json.request.original_query }}\nTool: {{ $json.request.tool }}\nTimestamp: {{ $json.timestamp }}\n\nResponse time: {{ $json.response.response_time_ms }}ms\n\nResults have been logged and are available in the data store.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1312, -272],
+      "id": "email-notification",
+      "name": "Send Notification"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate summary statistics\nconst logEntry = $json;\n\nconst summary = {\n  request_id: logEntry.request_id,\n  tool: logEntry.request.tool,\n  status: logEntry.response.status,\n  response_time: logEntry.response.response_time_ms,\n  timestamp: logEntry.timestamp,\n  user_notified: logEntry.request.params.email ? true : false\n};\n\nreturn { json: summary };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1312, -80],
+      "id": "summary-generator",
+      "name": "Generate Summary"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "The Brain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "The Brain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "The Brain": {
+      "main": [
+        [
+          {
+            "node": "The Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "The Processor": {
+      "main": [
+        [
+          {
+            "node": "The Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "The Router": {
+      "main": [
+        [
+          {
+            "node": "Response Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Response Processor": {
+      "main": [
+        [
+          {
+            "node": "Store Request Log",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Store Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Request Log": {
+      "main": [
+        [
+          {
+            "node": "Check for Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for Email": {
+      "main": [
+        [
+          {
+            "node": "Send Notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Notification": {
+      "main": [
+        [
+          {
+            "node": "Generate Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Analytics": {
+      "main": [
+        [
+          {
+            "node": "Check for Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "enhanced-v2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "54e139bdd36444c24c3c5ac8519ffbbee75318a9c1efe841874a03d85ac23aaf"
+  },
+  "id": "orchestrator-v2-enhanced",
+  "tags": ["orchestrator", "data-store", "analytics"]
+}

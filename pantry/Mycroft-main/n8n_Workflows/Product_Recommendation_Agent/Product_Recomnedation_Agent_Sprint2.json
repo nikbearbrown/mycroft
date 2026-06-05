@@ -1,0 +1,462 @@
+{
+  "name": "Product_Recomnedation_Agent_Sprint2",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE products (\n    id SERIAL PRIMARY KEY,\n    product_name VARCHAR(255) NOT NULL,\n    category VARCHAR(100),\n    description TEXT,\n    key_features TEXT,\n    price_range VARCHAR(50),\n    target_company_size VARCHAR(50),\n    industry_focus VARCHAR(100),\n    integration_capabilities TEXT,\n    user_rating DECIMAL(3,2)\n);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        288,
+        -512
+      ],
+      "id": "5456b882-1c7c-4eff-af2f-b9c33ac1fb10",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO products (product_name, category, description, key_features, price_range, target_company_size, industry_focus, integration_capabilities, user_rating) \nVALUES \n('Salesforce', 'CRM', 'Cloud-based CRM platform for sales, service, and marketing', 'Lead management, Sales forecasting, Marketing automation, Analytics', '$25-$300/user/month', 'SMB to Enterprise', 'All industries', 'REST API, Zapier, 2000+ integrations', 4.4),\n('HubSpot', 'CRM', 'All-in-one inbound marketing, sales, and service platform', 'Marketing automation, Contact management, Email tracking, Free CRM', 'Free-$3,200/month', 'Startups to Mid-market', 'B2B, SaaS', 'API, Zapier, 500+ integrations', 4.5),\n('Slack', 'Communication', 'Team collaboration and messaging platform', 'Channels, Direct messaging, File sharing, App integrations', 'Free-$12.50/user/month', 'All sizes', 'Tech, Remote teams', 'Webhooks, API, 2000+ apps', 4.6);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        496,
+        -512
+      ],
+      "id": "ed133145-df6d-4139-a4d6-c96cb4b5f3c0",
+      "name": "Execute a SQL query1",
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n    id,\n    product_name,\n    category,\n    description,\n    key_features,\n    price_range,\n    target_company_size,\n    industry_focus,\n    integration_capabilities,\n    user_rating\nFROM products\nORDER BY user_rating DESC\nLIMIT 50;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        512,
+        -304
+      ],
+      "id": "731b0edc-2e52-4d75-a8a6-117772c93a6b",
+      "name": "Execute a SQL query2",
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        -304
+      ],
+      "id": "343a683f-06b3-4ff6-ad76-1a757e766fbf",
+      "name": "Collect User Requirements"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a SaaS product recommendation expert analyzing products for small businesses.\n\nUSER REQUIREMENTS:\n- Query: {{ $('Collect User Requirements').first().json.body.user_query }}\n- Company Size: {{ $('Collect User Requirements').first().json.body.company_size }}\n- Budget: {{ $('Collect User Requirements').first().json.body.budget }}\n- Required Features: {{ $('Collect User Requirements').first().json.body.required_features }}\n- Industry: {{ $('Collect User Requirements').first().json.body.industry }}\n\nTOP MATCHING PRODUCTS (sorted by relevance):\n{{ $('Score Products by Relevance').all().map((item, i) => `\n${i+1}. ${item.json.product_name}\n   Category: ${item.json.category}\n   Price: ${item.json.price_range}\n   Rating: ${item.json.user_rating}/5\n   Match Score: ${item.json.score}/100\n   Target Size: ${item.json.target_company_size}\n   Features: ${item.json.key_features}\n   Description: ${item.json.description}\n`).join('\\n') }}\n\nLIVE SIGNALS (Real-time news pulled just now for the top recommendations):\n{{ $('Enrich Recommendations with Live Data').first().json.enriched_top3.map((p, i) => `\n${i+1}. ${p.product_name}\n   Recent news:\n   ${p.live_news && p.live_news.length\n      ? p.live_news.map(n => `- ${n.title} (${n.pubDate})`).join('\\n   ')\n      : 'No major recent announcements found.'\n   }\n`).join('\\n') }}\n\nTASK:\nProvide detailed recommendations in a clear, professional format.\n\nRESPONSE REQUIREMENTS:\n1) Recommend the TOP 3 products (ranked) with clear reasoning.\n2) Explain exactly how each matches the user’s query, required features, company size, and industry.\n3) Budget fit analysis: explicitly say whether each tool fits the budget and what plan tier is likely needed (if unknown, say “pricing varies; confirm on vendor site”).\n4) Implementation considerations: setup time, learning curve, integrations, and any common risks.\n5) Incorporate LIVE SIGNALS: if a recent release/pricing/news item is relevant, mention it briefly; otherwise say “No major recent announcements found.”\n\nFORMAT:\n- Use headings and bullet points.\n- Keep it concise but informative.\n- End with a short “Next Steps” section.\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        2256,
+        -304
+      ],
+      "id": "38143c18-f6cb-408c-9c3d-882edb2d1620",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "eSDMU9amc8KK4fBA",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "73a1379c-e294-477a-a1a9-2d76e39cd009",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        -304
+      ],
+      "id": "de068ceb-2142-43c4-b7f5-9c9fea36fa10",
+      "name": "Webhook",
+      "webhookId": "73a1379c-e294-477a-a1a9-2d76e39cd009"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE user_requests (\n    id SERIAL PRIMARY KEY,\n    user_email VARCHAR(255),\n    user_query TEXT,\n    company_size VARCHAR(100),\n    budget VARCHAR(100),\n    industry VARCHAR(100),\n    required_features TEXT,\n    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        720,
+        -512
+      ],
+      "id": "6b7a2a80-66f7-47e0-941a-7e2a473c9305",
+      "name": "Execute a SQL query3",
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO products VALUES\n(4, 'Pipedrive', 'CRM', 'Sales CRM with visual pipeline', 'Pipeline, Email, Mobile', '$14-$99/user/month', 'Small to Mid', 'B2B', 'API, 300+ apps', 4.5),\n(5, 'Zoho CRM', 'CRM', 'AI-powered CRM', 'AI assistant, Automation', '$14-$52/user/month', 'Small to Enterprise', 'All', 'API, 500+ apps', 4.3),\n(6, 'Asana', 'Project Management', 'Work management platform', 'Tasks, Timelines, Reports', 'Free-$24.99/user/month', 'Small to Enterprise', 'All', 'API, 200+ apps', 4.5),\n(7, 'Monday.com', 'Project Management', 'Work OS', 'Workflows, Automation, Dashboards', '$8-$16/user/month', 'Small to Enterprise', 'All', 'API, 200+ apps', 4.6),\n(8, 'Jira', 'Project Management', 'Agile project management', 'Scrum, Kanban, Bug tracking', '$7.75-$15.25/user/month', 'Small to Enterprise', 'Software', 'API, 3000+ apps', 4.4),\n(9, 'Trello', 'Project Management', 'Visual collaboration tool', 'Boards, Cards, Mobile', 'Free-$17.50/user/month', 'Small to Medium', 'All', 'API, 200+ apps', 4.5),\n(10, 'ClickUp', 'Project Management', 'All-in-one productivity', 'Tasks, Docs, Goals, Time tracking', 'Free-$19/user/month', 'Small to Medium', 'All', 'API, 1000+ apps', 4.7),\n(11, 'Microsoft Teams', 'Communication', 'Unified communication', 'Chat, Video, Files', '$4-$12.50/user/month', 'SMB to Enterprise', 'Corporate', 'Graph API, 1000+ apps', 4.4),\n(12, 'Zoom', 'Communication', 'Video conferencing', 'HD video, Recording, Webinars', 'Free-$19.99/host/month', 'All', 'Remote work', 'API, 1000+ apps', 4.5),\n(13, 'Mailchimp', 'Marketing', 'Email marketing platform', 'Campaigns, Automation, Analytics', 'Free-$350/month', 'Startups to Small', 'E-commerce', 'API, 300+ apps', 4.3),\n(14, 'Google Analytics', 'Analytics', 'Web analytics', 'Traffic, Conversion tracking', 'Free-$150K/year', 'All', 'All', 'APIs, Integrations', 4.5),\n(15, 'Mixpanel', 'Analytics', 'Product analytics', 'Events, Funnels, Retention', 'Free-$999+/month', 'Startups to Enterprise', 'SaaS', 'API, SDKs', 4.6),\n(16, 'Zendesk', 'Customer Support', 'Customer service software', 'Tickets, Chat, Knowledge base', '$19-$115/agent/month', 'Small to Enterprise', 'All', 'API, 1000+ apps', 4.3),\n(17, 'Intercom', 'Customer Support', 'Customer messaging platform', 'Chat, Bots, Help center', '$39-$139/month', 'Startups to Mid', 'SaaS', 'API, 300+ apps', 4.5),\n(18, 'Freshdesk', 'Customer Support', 'Helpdesk software', 'Ticketing, Automation', 'Free-$79/agent/month', 'Small to Mid', 'All', 'API, 650+ apps', 4.4);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        960,
+        -512
+      ],
+      "id": "e7a10b83-5623-4195-9599-eb732866b6dd",
+      "name": "Execute a SQL query4",
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const userInput = $('Collect User Requirements').first().json.body || {};  // <-- IMPORTANT\nconst products = $input.all();\n\nfunction scoreProduct(product, userInput) {\n  let score = 0;\n\n  // Safe fallback so it never crashes\n  const query = (userInput.user_query || '').toLowerCase();\n\n  if (product.category && query.includes(String(product.category).toLowerCase())) score += 30;\n\n  const price = (product.price_range || '').toString().toLowerCase();\n  if (price.includes('free')) score += 25;\n\n  score += (Number(product.user_rating) || 0) * 5;\n  return score;\n}\n\nconst scored = products.map(item => ({\n  json: { ...item.json, score: scoreProduct(item.json, userInput) }\n}));\n\nscored.sort((a, b) => b.json.score - a.json.score);\nreturn scored.slice(0, 5);\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        -304
+      ],
+      "id": "f6031c62-8fad-408a-b140-6d2f41f3a2a0",
+      "name": "Score Products by Relevance"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().slice(0, 3);\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        928,
+        -304
+      ],
+      "id": "a8553835-2d0a-435c-b0e0-f0a0d9db15a6",
+      "name": "Select Top 3 Recommendations"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => {\n  const name = item.json.product_name || '';\n  const q = encodeURIComponent(`${name} pricing OR release OR update OR partnership OR acquisition`);\n  // Google News RSS search feed\n  const rssUrl = `https://news.google.com/rss/search?q=${q}&hl=en-US&gl=US&ceid=US:en`;\n\n  return {\n    json: {\n      ...item.json,\n      rssUrl\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1136,
+        -304
+      ],
+      "id": "ddc98570-0d8d-4b36-b41a-0e9b30cb4502",
+      "name": "Build Live News Queries"
+    },
+    {
+      "parameters": {
+        "jsCode": "function extractHeadlines(xml, max = 2) {\n  if (!xml || typeof xml !== 'string') return [];\n\n  const items = xml.split('<item>').slice(1);\n  const out = [];\n\n  for (const it of items) {\n    const titleMatch =\n      it.match(/<title><!\\[CDATA\\[(.*?)\\]\\]><\\/title>/) ||\n      it.match(/<title>(.*?)<\\/title>/);\n\n    const linkMatch = it.match(/<link>(.*?)<\\/link>/);\n    const pubMatch = it.match(/<pubDate>(.*?)<\\/pubDate>/);\n\n    const title = (titleMatch?.[1] || '').trim();\n    const link = (linkMatch?.[1] || '').trim();\n    const pubDate = (pubMatch?.[1] || '').trim();\n\n    if (title) out.push({ title, link, pubDate });\n    if (out.length >= max) break;\n  }\n\n  return out;\n}\n\nreturn $input.all().map(item => {\n  const xml = item.json.data;   // ✅ THIS is the key fix (your RSS is in data)\n\n  return {\n    json: {\n      ...item.json,\n      live_news: extractHeadlines(xml, 2)\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        -304
+      ],
+      "id": "de05bb34-84b6-44d3-ac86-5e656c889d89",
+      "name": "Prepare News Enrichment Context"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.rssUrl }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1552,
+        -304
+      ],
+      "id": "aacef087-e8af-4885-a42e-4bff070f9595",
+      "name": "Fetch Real-Time Market Signals"
+    },
+    {
+      "parameters": {
+        "jsCode": "function extractHeadlines(xml, max = 2) {\n  if (!xml || typeof xml !== 'string') return [];\n\n  const items = xml.split('<item>').slice(1);\n  const out = [];\n\n  for (const it of items) {\n    const titleMatch =\n      it.match(/<title><!\\[CDATA\\[(.*?)\\]\\]><\\/title>/) ||\n      it.match(/<title>(.*?)<\\/title>/);\n\n    const linkMatch = it.match(/<link>(.*?)<\\/link>/);\n    const pubMatch = it.match(/<pubDate>(.*?)<\\/pubDate>/);\n\n    const title = (titleMatch?.[1] || '').trim();\n    const link = (linkMatch?.[1] || '').trim();\n    const pubDate = (pubMatch?.[1] || '').trim();\n\n    if (title) out.push({ title, link, pubDate });\n    if (out.length >= max) break;\n  }\n\n  return out;\n}\n\nreturn $input.all().map(item => {\n  const xml = item.json.data; // ✅ your RSS is in `data`\n  return {\n    json: {\n      ...item.json,\n      live_news: extractHeadlines(xml, 2)\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        -304
+      ],
+      "id": "c8d376cc-d6ab-4152-aefe-161d0be404e9",
+      "name": "Parse Live News Feeds"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst enriched = items.map(i => ({\n  product_name: i.json.product_name,\n  category: i.json.category,\n  price_range: i.json.price_range,\n  user_rating: i.json.user_rating,\n  score: i.json.score,\n  live_news: Array.isArray(i.json.live_news) ? i.json.live_news : []\n}));\n\nreturn [{ json: { enriched_top3: enriched } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1968,
+        -304
+      ],
+      "id": "ef24844f-4394-41ad-a07e-aa53944ab505",
+      "name": "Enrich Recommendations with Live Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "const aiResponse = $input.first().json;\n\n// Collect inputs safely (avoid paired-item issues)\nconst userInput = $('Collect User Requirements').first().json.body || {};\nconst topProducts = $('Score Products by Relevance').all().map(x => x.json);\nconst liveSignals = $('Enrich Recommendations with Live Data').first().json.enriched_top3 || [];\n\n// Extract the recommendation text from Gemini output (handles different response shapes)\nconst recommendation =\n  aiResponse?.content?.parts?.[0]?.text ||\n  aiResponse?.content?.text ||\n  aiResponse?.text ||\n  JSON.stringify(aiResponse);\n\n// Return one clean object for email/webhook response\nreturn [{\n  json: {\n    success: true,\n    timestamp: new Date().toISOString(),\n    user_requirements: userInput,\n    top_products: topProducts.slice(0, 5),\n    live_signals: liveSignals,\n    recommendation_text: recommendation\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2704,
+        -304
+      ],
+      "id": "bbc6d8f9-d7d4-4a7f-88fc-f7415daba973",
+      "name": "Format Final Recommendation Output"
+    },
+    {
+      "parameters": {
+        "fromEmail": "{{ $input.first().json.user_requirements.user_email }}",
+        "toEmail": "{{ $input.first().json.user_requirements.user_email }}",
+        "subject": "Your Personalized SaaS Product Recommendations",
+        "html": "=<h2>🎯 Your Personalized SaaS Product Recommendations</h2>\n\n<p><strong>Based on Your Requirements:</strong></p>\n<ul>\n  <li><strong>Query:</strong> {{ $input.first().json.user_requirements.user_query }}</li> \n  <li><strong>Budget:</strong> {{ $input.first().json.user_requirements.budget }}</li>\n  <li><strong>Company Size:</strong> {{ $input.first().json.user_requirements.company_size }}</li>\n  <li><strong>Industry:</strong> {{ $input.first().json.user_requirements.industry }}</li>\n  <li><strong>Required Features:</strong> {{ $input.first().json.user_requirements.required_features }}</li>\n</ul>\n\n<hr>\n\n<h3>📊 Top 3 Recommended Products:</h3>\n\n{{ $input.first().json.top_products.slice(0, 3).map((item, i) => `\n<div style=\"border: 2px solid #4CAF50; border-radius: 8px; padding: 20px; margin: 15px 0; background-color: #f9f9f9;\">\n  <h4 style=\"color: #4CAF50; margin-top: 0;\">${i+1}. ${item.product_name} (${item.category})</h4>\n  <p><strong>💰 Price:</strong> ${item.price_range}</p>\n  <p><strong>⭐ Rating:</strong> ${item.user_rating}/5.0</p>\n  <p><strong>🎯 Match Score:</strong> ${item.score}/100</p>\n  <p><strong>🎯 Target Size:</strong> ${item.target_company_size}</p>\n  <p><strong>📝 Description:</strong> ${item.description}</p>\n  <p><strong>✨ Key Features:</strong> ${item.key_features}</p>\n</div>\n`).join('') }}\n\n<hr>\n\n<h3>🤖 AI Analysis:</h3><div style="background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 15px 0;">
+          <p style="white-space: pre-wrap;">{{ $input.first().json.recommendation_text.substring(0, 1000) }}</p><p><em>Full detailed analysis available in the complete report.</em></p></div>\n\n<hr>\n\n<p style=\"text-align: center; color: #888; margin-top: 30px;\">\n  <em>  Powered by AI Product Recommendation Agent – Sprint 2 (Real-Time Enrichment) </em><br>\n  <small>Generated on: {{ $input.first().json.timestamp }}</small>\n</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2912,
+        -304
+      ],
+      "id": "17353e12-8535-42fc-8280-8459bce94261",
+      "name": "Send Personalized Recommendation Email",
+      "webhookId": "36466e1d-7259-4929-893f-d366a3640d2c",
+      "credentials": {
+        "smtp": {
+          "id": "6GHmSHwzqKD1HSrk",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Collect User Requirements": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query2": {
+      "main": [
+        [
+          {
+            "node": "Score Products by Relevance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Format Final Recommendation Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Collect User Requirements",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query1": {
+      "main": [
+        []
+      ]
+    },
+    "Execute a SQL query3": {
+      "main": [
+        []
+      ]
+    },
+    "Score Products by Relevance": {
+      "main": [
+        [
+          {
+            "node": "Select Top 3 Recommendations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select Top 3 Recommendations": {
+      "main": [
+        [
+          {
+            "node": "Build Live News Queries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Live News Queries": {
+      "main": [
+        [
+          {
+            "node": "Prepare News Enrichment Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare News Enrichment Context": {
+      "main": [
+        [
+          {
+            "node": "Fetch Real-Time Market Signals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Real-Time Market Signals": {
+      "main": [
+        [
+          {
+            "node": "Parse Live News Feeds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Live News Feeds": {
+      "main": [
+        [
+          {
+            "node": "Enrich Recommendations with Live Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enrich Recommendations with Live Data": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Final Recommendation Output": {
+      "main": [
+        [
+          {
+            "node": "Send Personalized Recommendation Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "cf57bf51-f0b4-4117-a038-5a0278ffea16",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c5605aae802302d14cf85834357505b8eaf4143631bcf5d9ab9240de503b0d2d"
+  },
+  "id": "xXCiJhNmDxard7ic",
+  "tags": []
+}

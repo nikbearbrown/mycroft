@@ -1,0 +1,679 @@
+{
+  "name": "Mycroft - Financial Regulatory Intelligence System - Enhanced",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://www.federalregister.gov/api/v1/documents.rss?conditions%5Bterm%5D=securities+investment",
+        "options": {}
+      },
+      "name": "Federal Register - Securities",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -224
+      ],
+      "id": "35e26423-6fe2-4b01-9ccb-e8b4f0ab43b5"
+    },
+    {
+      "parameters": {
+        "url": "https://www.sec.gov/news/pressreleases.rss",
+        "options": {}
+      },
+      "name": "SEC Press Releases",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -32
+      ],
+      "id": "6e168c2f-82e2-4c9e-ae09-483267b0c8b2"
+    },
+    {
+      "parameters": {
+        "url": "https://news.google.com/rss/search?q=FINRA+regulatory+enforcement&hl=en-US&gl=US&ceid=US:en",
+        "options": {}
+      },
+      "name": "FINRA Enforcement News",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [
+        0,
+        160
+      ],
+      "id": "3b355500-2cbf-4608-beee-c7626741fac0"
+    },
+    {
+      "parameters": {
+        "url": "https://www.federalregister.gov/api/v1/documents.rss?conditions%5Bagencies%5D%5B%5D=commodity-futures-trading-commission",
+        "options": {}
+      },
+      "name": "CFTC Regulations",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [
+        0,
+        352
+      ],
+      "id": "5241b385-bde5-4131-aaa2-ca4602e07a44"
+    },
+    {
+      "parameters": {
+        "url": "https://news.google.com/rss/search?q=investment+advisor+regulation+SEC&hl=en-US&gl=US&ceid=US:en",
+        "options": {}
+      },
+      "name": "Investment Advisor Rules",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [
+        0,
+        544
+      ],
+      "id": "c895eb88-cea0-4ae5-acbe-144fb19900d7"
+    },
+    {
+      "parameters": {
+        "numberInputs": 5
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        224,
+        112
+      ],
+      "id": "6ee7bc21-40ee-4897-8c6e-2dee747c755d",
+      "name": "Merge All Sources"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\nconst seenItems = new Map(); // Track by title+date combo\n\nconst identifySource = (link, title, creator) => {\n  const lowerTitle = title.toLowerCase();\n  const lowerLink = link.toLowerCase();\n  \n  if (lowerLink.includes('sec.gov')) return 'SEC Press Releases';\n  if (lowerLink.includes('federalregister.gov')) {\n    if (lowerLink.includes('commodity-futures') || lowerTitle.includes('cftc')) {\n      return 'CFTC Regulations';\n    }\n    return 'Federal Register - Securities';\n  }\n  if (lowerLink.includes('finra.org')) return 'FINRA Enforcement News';\n  \n  if (lowerLink.includes('news.google.com')) {\n    if (lowerTitle.includes('finra')) return 'FINRA Enforcement News';\n    if (lowerTitle.includes('investment advisor') || lowerTitle.includes('investment adviser')) {\n      return 'Investment Advisor Rules';\n    }\n    if (lowerTitle.includes('sec') || lowerTitle.includes('securities')) {\n      return 'SEC Press Releases';\n    }\n    if (lowerTitle.includes('cftc') || lowerTitle.includes('commodity')) {\n      return 'CFTC Regulations';\n    }\n  }\n  \n  if (creator) {\n    const lowerCreator = creator.toLowerCase();\n    if (lowerCreator.includes('finra')) return 'FINRA Enforcement News';\n    if (lowerCreator.includes('sec.gov')) return 'SEC Press Releases';\n    if (lowerCreator.includes('cftc')) return 'CFTC Regulations';\n  }\n  \n  return 'Unknown Source';\n};\n\n// Extract actual URL from Google News redirect\nconst extractRealUrl = (link) => {\n  if (!link.includes('news.google.com')) {\n    return link;\n  }\n  \n  try {\n    // Try to extract the real URL from Google News redirect\n    const match = link.match(/url=([^&]+)/);\n    if (match) {\n      return decodeURIComponent(match[1]);\n    }\n  } catch (e) {\n    console.log('Could not extract real URL from:', link.substring(0, 50));\n  }\n  \n  return link;\n};\n\n// Create stable unique key from title + date\nconst createUniqueKey = (title, published) => {\n  const normalizedTitle = title.toLowerCase().trim();\n  const dateOnly = published.split('T')[0]; // Just YYYY-MM-DD\n  return `${normalizedTitle}|||${dateOnly}`;\n};\n\nfor (const item of items) {\n  const json = item.json;\n  \n  const title = json.title || '';\n  const rawLink = json.link || '';\n  const creator = json.creator || json.author || 'Unknown';\n  const published = json.pubDate || json.published || json.isoDate || new Date().toISOString();\n  const content = json.content || json.contentSnippet || json.description || '';\n  \n  // Extract real URL (especially important for Google News)\n  const link = extractRealUrl(rawLink);\n  \n  // Identify source\n  const source_feed = identifySource(link, title, creator);\n  \n  // Create unique key based on title + date\n  const uniqueKey = createUniqueKey(title, published);\n  \n  // Check if we've seen this item already\n  if (seenItems.has(uniqueKey)) {\n    const existing = seenItems.get(uniqueKey);\n    \n    // If new source is better (official vs Google News), update it\n    const officialSources = ['SEC Press Releases', 'CFTC Regulations', 'Federal Register - Securities', 'FINRA Enforcement News'];\n    const existingIsOfficial = officialSources.includes(existing.source_feed);\n    const newIsOfficial = officialSources.includes(source_feed);\n    \n    if (newIsOfficial && !existingIsOfficial) {\n      console.log(`🔄 Upgrading source for \"${title.substring(0, 50)}...\" from ${existing.source_feed} to ${source_feed}`);\n      seenItems.set(uniqueKey, {\n        source: creator,\n        source_feed: source_feed,\n        title: title,\n        link: link,\n        published: published,\n        content: content,\n        scraped_at: new Date().toISOString()\n      });\n    } else {\n      console.log(`⚠️ Skipping duplicate: \"${title.substring(0, 50)}...\" from ${source_feed}`);\n    }\n    continue;\n  }\n  \n  // New item - add to map and results\n  const itemData = {\n    source: creator,\n    source_feed: source_feed,\n    title: title,\n    link: link,\n    published: published,\n    content: content,\n    scraped_at: new Date().toISOString()\n  };\n  \n  seenItems.set(uniqueKey, itemData);\n  results.push({ json: itemData });\n}\n\nconsole.log(`📊 Normalization Summary:\n- Total items processed: ${items.length}\n- Unique items (by title+date): ${results.length}\n- Duplicates removed: ${items.length - results.length}\n`);\n\nreturn results;"
+      },
+      "name": "Normalize Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        160
+      ],
+      "id": "c058d3a3-a529-4e1f-8cb5-c76f7cc042f4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.content}}",
+              "operation": "isNotEmpty"
+            },
+            {
+              "value1": "={{$json.title}}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Filter Valid Content",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        672,
+        160
+      ],
+      "id": "bccaaa75-2c4f-40b4-ab66-240f63baea38"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst highPriority = items.filter(i => i.json.urgency_score > 7);\nconst critical = items.filter(i => i.json.impact_level === 'Critical');\nconst enforcement = items.filter(i => i.json.is_enforcement);\nconst crypto = items.filter(i => i.json.keyword_matches?.crypto);\nconst withDeadlines = items.filter(i => i.json.has_deadline);\n\n// Category distribution\nconst categoryCount = {};\nitems.forEach(item => {\n  (item.json.categories || []).forEach(cat => {\n    categoryCount[cat] = (categoryCount[cat] || 0) + 1;\n  });\n});\nconst topCategories = Object.entries(categoryCount)\n  .sort((a, b) => b[1] - a[1])\n  .slice(0, 5);\n\n// Source stats\nconst sourceStats = {};\nitems.forEach(item => {\n  const source = item.json.source_feed;\n  if (!sourceStats[source]) {\n    sourceStats[source] = { count: 0, avgUrgency: 0 };\n  }\n  sourceStats[source].count++;\n  sourceStats[source].avgUrgency += item.json.urgency_score;\n});\n\nObject.keys(sourceStats).forEach(source => {\n  sourceStats[source].avgUrgency = (sourceStats[source].avgUrgency / sourceStats[source].count).toFixed(1);\n});\n\nconst html = `<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\">\n  <style>\n    body { \n      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;\n      max-width: 1200px; \n      margin: 0 auto; \n      background: #f5f7fa;\n      padding: 20px;\n    }\n    .header { \n      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); \n      color: white; \n      padding: 40px; \n      border-radius: 15px;\n      box-shadow: 0 10px 30px rgba(0,0,0,0.2);\n      margin-bottom: 30px;\n    }\n    .header h1 { margin: 0 0 10px 0; font-size: 36px; }\n    .header p { margin: 0; opacity: 0.9; font-size: 16px; }\n    \n    .stats-grid {\n      display: grid;\n      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));\n      gap: 20px;\n      margin: 30px 0;\n    }\n    .stat-card { \n      background: white;\n      padding: 25px; \n      border-radius: 12px;\n      box-shadow: 0 4px 6px rgba(0,0,0,0.1);\n      text-align: center;\n    }\n    .stat-number { \n      font-size: 42px; \n      font-weight: 700; \n      color: #667eea;\n      margin: 10px 0;\n    }\n    .stat-label {\n      color: #666;\n      font-size: 13px;\n      text-transform: uppercase;\n      letter-spacing: 0.5px;\n      font-weight: 600;\n    }\n    .stat-sublabel {\n      color: #999;\n      font-size: 11px;\n      margin-top: 5px;\n    }\n    \n    .section {\n      background: white;\n      padding: 30px;\n      margin: 20px 0;\n      border-radius: 12px;\n      box-shadow: 0 4px 6px rgba(0,0,0,0.1);\n    }\n    .section h2 { \n      margin: 0 0 20px 0; \n      color: #333;\n      font-size: 24px;\n      border-bottom: 3px solid #667eea;\n      padding-bottom: 10px;\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n    }\n    .section-count {\n      background: #667eea;\n      color: white;\n      padding: 5px 15px;\n      border-radius: 20px;\n      font-size: 14px;\n      font-weight: 600;\n    }\n    \n    .item { \n      border-left: 4px solid #667eea; \n      padding: 20px; \n      margin: 15px 0; \n      background: #f9f9f9;\n      border-radius: 0 8px 8px 0;\n    }\n    .item:hover {\n      transform: translateX(5px);\n      transition: transform 0.2s;\n    }\n    .item.urgent { \n      border-left-color: #dc2626;\n      background: #fef2f2;\n    }\n    .item h3 { \n      margin: 0 0 10px 0; \n      color: #333;\n      font-size: 18px;\n    }\n    \n    .tag {\n      display: inline-block;\n      padding: 5px 10px;\n      border-radius: 6px;\n      font-size: 12px;\n      margin-right: 8px;\n      margin-bottom: 5px;\n      font-weight: 500;\n    }\n    .tag-source { background: #e0e7ff; color: #4338ca; }\n    .tag-urgency { background: #fee2e2; color: #991b1b; }\n    .tag-impact { background: #fef3c7; color: #92400e; }\n    .tag-category { background: #dbeafe; color: #1e40af; }\n    .tag-deadline { background: #fecaca; color: #7f1d1d; }\n    \n    .badge-critical {\n      background: #dc2626;\n      color: white;\n      padding: 4px 12px;\n      border-radius: 6px;\n      font-size: 11px;\n      font-weight: bold;\n      margin-left: 10px;\n    }\n    .badge-high {\n      background: #ea580c;\n      color: white;\n      padding: 4px 12px;\n      border-radius: 6px;\n      font-size: 11px;\n      font-weight: bold;\n      margin-left: 10px;\n    }\n    \n    .item a { \n      color: #667eea; \n      text-decoration: none;\n      font-weight: 600;\n      font-size: 14px;\n    }\n    .item a:hover { \n      text-decoration: underline; \n    }\n    \n    .chart-bar {\n      background: #e5e7eb;\n      height: 35px;\n      border-radius: 8px;\n      margin: 12px 0;\n      overflow: hidden;\n    }\n    .chart-fill {\n      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);\n      height: 100%;\n      display: flex;\n      align-items: center;\n      padding: 0 12px;\n      color: white;\n      font-weight: 600;\n      font-size: 13px;\n    }\n    .chart-label {\n      display: flex;\n      justify-content: space-between;\n      margin-bottom: 6px;\n      font-size: 14px;\n    }\n    .chart-label strong { color: #333; }\n    .chart-label span { color: #666; }\n    \n    .footer {\n      text-align: center;\n      color: #888;\n      font-size: 12px;\n      margin-top: 40px;\n      padding: 20px;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"header\">\n    <h1>📊 Mycroft Regulatory Intelligence</h1>\n    <p>Daily Digest - ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>\n  </div>\n  \n  <div class=\"stats-grid\">\n    <div class=\"stat-card\">\n      <div class=\"stat-number\">${items.length}</div>\n      <div class=\"stat-label\">Total Updates</div>\n    </div>\n    <div class=\"stat-card\">\n      <div class=\"stat-number\">${critical.length}</div>\n      <div class=\"stat-label\">Critical</div>\n      <div class=\"stat-sublabel\">Immediate Action</div>\n    </div>\n    <div class=\"stat-card\">\n      <div class=\"stat-number\">${highPriority.length}</div>\n      <div class=\"stat-label\">High Priority</div>\n    </div>\n    <div class=\"stat-card\">\n      <div class=\"stat-number\">${enforcement.length}</div>\n      <div class=\"stat-label\">Enforcement</div>\n    </div>\n    <div class=\"stat-card\">\n      <div class=\"stat-number\">${crypto.length}</div>\n      <div class=\"stat-label\">Crypto Related</div>\n    </div>\n    <div class=\"stat-card\">\n      <div class=\"stat-number\">${withDeadlines.length}</div>\n      <div class=\"stat-label\">Deadlines</div>\n    </div>\n  </div>\n  \n  <div class=\"section\">\n    <h2>📈 Source Distribution</h2>\n    ${Object.entries(sourceStats).sort((a, b) => b[1].count - a[1].count).map(([source, stats]) => {\n      const percentage = (stats.count / items.length * 100).toFixed(1);\n      return `\n        <div>\n          <div class=\"chart-label\">\n            <strong>${source}</strong>\n            <span>${stats.count} items · Avg Urgency: ${stats.avgUrgency}/10</span>\n          </div>\n          <div class=\"chart-bar\">\n            <div class=\"chart-fill\" style=\"width: ${percentage}%\">\n              ${percentage}%\n            </div>\n          </div>\n        </div>\n      `;\n    }).join('')}\n  </div>\n  \n  ${topCategories.length > 0 ? `\n  <div class=\"section\">\n    <h2>🏷️ Top Categories</h2>\n    ${topCategories.map(([category, count]) => {\n      const percentage = (count / items.length * 100).toFixed(1);\n      return `\n        <div>\n          <div class=\"chart-label\">\n            <strong>${category.charAt(0).toUpperCase() + category.slice(1)}</strong>\n            <span>${count} items</span>\n          </div>\n          <div class=\"chart-bar\">\n            <div class=\"chart-fill\" style=\"width: ${percentage}%\">\n              ${percentage}%\n            </div>\n          </div>\n        </div>\n      `;\n    }).join('')}\n  </div>\n  ` : ''}\n  \n  ${highPriority.length > 0 ? `\n  <div class=\"section\">\n    <h2>\n      🔥 High Priority Items\n      <span class=\"section-count\">${highPriority.length}</span>\n    </h2>\n    ${highPriority.slice(0, 10).map(item => `\n      <div class=\"item ${item.json.urgency_score >= 9 ? 'urgent' : ''}\">\n        <h3>\n          ${item.json.title}\n          ${item.json.impact_level === 'Critical' ? '<span class=\"badge-critical\">CRITICAL</span>' : ''}\n          ${item.json.impact_level === 'High' ? '<span class=\"badge-high\">HIGH</span>' : ''}\n        </h3>\n        <div>\n          <span class=\"tag tag-source\">📍 ${item.json.source_feed}</span>\n          <span class=\"tag tag-urgency\">⚡ ${item.json.urgency_score}/10</span>\n          <span class=\"tag tag-impact\">📊 ${item.json.impact_level}</span>\n          ${item.json.has_deadline ? '<span class=\"tag tag-deadline\">⏰ Deadline</span>' : ''}\n          ${(item.json.categories || []).slice(0, 2).map(cat => \n            `<span class=\"tag tag-category\">🏷️ ${cat}</span>`\n          ).join('')}\n        </div>\n        <p style=\"color: #666; margin: 12px 0; line-height: 1.5;\">${item.json.content.substring(0, 200)}...</p>\n        <a href=\"${item.json.link}\" target=\"_blank\">Read Full Document →</a>\n      </div>\n    `).join('')}\n  </div>\n  ` : ''}\n  \n  ${enforcement.length > 0 ? `\n  <div class=\"section\">\n    <h2>\n      ⚖️ Enforcement Actions\n      <span class=\"section-count\">${enforcement.length}</span>\n    </h2>\n    ${enforcement.slice(0, 8).map(item => `\n      <div class=\"item\">\n        <h3>${item.json.title}</h3>\n        <div>\n          <span class=\"tag tag-source\">📍 ${item.json.source_feed}</span>\n          <span class=\"tag tag-urgency\">📅 ${new Date(item.json.published).toLocaleDateString()}</span>\n        </div>\n        <a href=\"${item.json.link}\" target=\"_blank\">Read More →</a>\n      </div>\n    `).join('')}\n  </div>\n  ` : ''}\n  \n  ${crypto.length > 0 ? `\n  <div class=\"section\">\n    <h2>\n      ₿ Cryptocurrency & Digital Assets\n      <span class=\"section-count\">${crypto.length}</span>\n    </h2>\n    ${crypto.slice(0, 5).map(item => `\n      <div class=\"item\">\n        <h3>${item.json.title}</h3>\n        <div>\n          <span class=\"tag tag-source\">📍 ${item.json.source_feed}</span>\n          <span class=\"tag tag-urgency\">⚡ ${item.json.urgency_score}/10</span>\n        </div>\n        <a href=\"${item.json.link}\" target=\"_blank\">Read More →</a>\n      </div>\n    `).join('')}\n  </div>\n  ` : ''}\n  \n  ${withDeadlines.length > 0 ? `\n  <div class=\"section\">\n    <h2>\n      ⏰ Compliance Deadlines\n      <span class=\"section-count\">${withDeadlines.length}</span>\n    </h2>\n    ${withDeadlines.slice(0, 5).map(item => `\n      <div class=\"item\" style=\"border-left-color: #f59e0b;\">\n        <h3>${item.json.title}</h3>\n        <div>\n          <span class=\"tag tag-source\">📍 ${item.json.source_feed}</span>\n          <span class=\"tag tag-deadline\">⏰ Contains Deadline</span>\n        </div>\n        <a href=\"${item.json.link}\" target=\"_blank\">View Details →</a>\n      </div>\n    `).join('')}\n  </div>\n  ` : ''}\n  \n  <div class=\"footer\">\n    <p>Generated by Mycroft Regulatory Intelligence System</p>\n    <p>Powered by n8n | ${new Date().toISOString()}</p>\n  </div>\n</body>\n</html>`;\n\nconst buffer = Buffer.from(html, 'utf-8');\nconst filename = `mycroft-report-${new Date().toISOString().split('T')[0]}.html`;\n\nreturn [{\n  json: {\n    report_date: new Date().toISOString(),\n    total_items: items.length,\n    high_priority: highPriority.length,\n    critical: critical.length,\n    filename: filename\n  },\n  binary: {\n    data: {\n      data: buffer.toString('base64'),\n      mimeType: 'text/html',\n      fileName: filename,\n      fileExtension: 'html'\n    }\n  }\n}];"
+      },
+      "name": "Generate HTML Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2016,
+        -32
+      ],
+      "id": "b697f74a-0f0d-4787-bbfc-c1fa53fa0548"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{$json.urgency_score}}",
+              "operation": "larger",
+              "value2": 6
+            }
+          ]
+        },
+        "combineOperation": "any"
+      },
+      "name": "High Priority Filter",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2016,
+        160
+      ],
+      "id": "902c6838-3822-463c-bd7b-b51622d81f5c"
+    },
+    {
+      "parameters": {
+        "fromEmail": "darshan.ai.assistant@gmail.com",
+        "toEmail": "therrshan@gmail.com",
+        "subject": "=🚨 Regulatory Analysis Completed {{ $now}}",
+        "html": "={{ $json.html_email }}",
+        "options": {}
+      },
+      "name": "Send Email Alert",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2688,
+        160
+      ],
+      "id": "4a4e81b1-5e3d-4535-9bd2-c3838f164162",
+      "webhookId": "73dbdd8b-1175-4d71-a99d-6cbda8787ba1",
+      "credentials": {
+        "smtp": {
+          "id": "XAW5G0VW94WuhmDQ",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/home/therrshan/mycroft/report_{{ $node['Generate HTML Report'].json.report_date }}.html",
+        "dataPropertyName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        2240,
+        -32
+      ],
+      "id": "492aca85-a311-4036-898e-0dda7bd389e3",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d4a2a6bd-ab4b-401d-bb19-d681a07b3390",
+              "leftValue": "={{ $json.has_items }}",
+              "rightValue": "false",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2464,
+        160
+      ],
+      "id": "13d278d5-d92f-42a6-9598-709d014353f7",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "fromEmail": "darshan.ai.assistant@gmail.com",
+        "toEmail": "therrshan@gmail.com",
+        "subject": "=Analysis Completed : {{ $now.toLocaleString() }}",
+        "html": "=<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n<body style=\"font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background: #f5f5f5;\">\n  <div style=\"background: white; max-width: 800px; margin: 20px auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);\">\n    \n    <!-- Header -->\n    <div style=\"background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 40px 30px; text-align: center;\">\n      <h1 style=\"margin: 0 0 10px 0; font-size: 28px; font-weight: 700;\">✅ Mycroft Regulatory Intelligence</h1>\n      <p style=\"margin: 0; font-size: 16px; opacity: 0.95;\">Daily Status Update</p>\n    </div>\n    \n    <!-- No Items Message -->\n    <div style=\"padding: 60px 40px; text-align: center; background: #f9fafb;\">\n      <div style=\"font-size: 80px; margin-bottom: 20px;\">✅</div>\n      <h2 style=\"color: #059669; margin: 0 0 15px 0; font-size: 28px; font-weight: 700;\">All Clear!</h2>\n      <p style=\"color: #4b5563; font-size: 18px; margin: 0 0 10px 0; font-weight: 500;\">No new high-priority regulatory items detected.</p>\n      <p style=\"color: #6b7280; font-size: 15px; margin: 20px 0 0 0; line-height: 1.6;\">\n        The system has completed its latest scan of SEC, FINRA, CFTC, and Federal Register feeds.<br>\n        No critical or high-priority alerts require your attention at this time.\n      </p>\n    </div>\n    \n    <!-- Monitored Sources -->\n    <div style=\"padding: 30px;\">\n      <h3 style=\"color: #374151; font-size: 18px; margin: 0 0 20px 0; text-align: center;\">Monitored Sources</h3>\n      <div style=\"display: grid; grid-template-columns: 1fr 1fr; gap: 15px;\">\n        <div style=\"padding: 15px; background: #f9fafb; border-radius: 6px; border: 1px solid #e5e7eb;\">\n          <div style=\"font-weight: 600; color: #374151; margin-bottom: 4px;\">📰 SEC Press Releases</div>\n          <div style=\"font-size: 13px; color: #6b7280;\">Securities & Exchange Commission</div>\n        </div>\n        <div style=\"padding: 15px; background: #f9fafb; border-radius: 6px; border: 1px solid #e5e7eb;\">\n          <div style=\"font-weight: 600; color: #374151; margin-bottom: 4px;\">📋 Federal Register</div>\n          <div style=\"font-size: 13px; color: #6b7280;\">Securities & Investment Rules</div>\n        </div>\n        <div style=\"padding: 15px; background: #f9fafb; border-radius: 6px; border: 1px solid #e5e7eb;\">\n          <div style=\"font-weight: 600; color: #374151; margin-bottom: 4px;\">⚖️ FINRA Enforcement</div>\n          <div style=\"font-size: 13px; color: #6b7280;\">Self-Regulatory Actions</div>\n        </div>\n        <div style=\"padding: 15px; background: #f9fafb; border-radius: 6px; border: 1px solid #e5e7eb;\">\n          <div style=\"font-weight: 600; color: #374151; margin-bottom: 4px;\">📊 CFTC Regulations</div>\n          <div style=\"font-size: 13px; color: #6b7280;\">Commodity & Derivatives</div>\n        </div>\n      </div>\n    </div>\n    \n    <!-- Footer -->\n    <div style=\"background: #1f2937; color: #9ca3af; padding: 30px; text-align: center;\">\n      <p style=\"margin: 0 0 5px 0; font-size: 14px;\"><strong style=\"color: white;\">Mycroft Financial Intelligence System</strong></p>\n      <p style=\"margin: 0; font-size: 12px; opacity: 0.7;\">Automated Regulatory Monitoring & Analysis</p>\n      <p style=\"margin: 10px 0 0 0; font-size: 11px; opacity: 0.6;\">⏰ Generated: {{ $now.toLocaleString()}}</p>\n    </div>\n    \n  </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2016,
+        352
+      ],
+      "id": "c6539ea1-7dee-4b4d-b0dd-a6383978589c",
+      "name": "Send email",
+      "webhookId": "189c3e06-3834-4ff7-be6a-21be895e047b",
+      "credentials": {
+        "smtp": {
+          "id": "XAW5G0VW94WuhmDQ",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "name": "Schedule Every Day",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -224,
+        160
+      ],
+      "id": "000b82e4-9180-46f8-b052-00a948d2e211"
+    },
+    {
+      "parameters": {
+        "jsCode": "const newItems = $(\"High Priority Filter\").all();\n\nconst hasData = newItems && newItems.length > 1 && newItems[0].json && Object.keys(newItems[0].json).length > 1;\n\nif (!hasData) {\n  return [{\n    json: {\n      has_items: false,\n      item_count: 0,\n      items: []\n    }\n  }];\n}\n\n// If no new high priority items, return empty to skip email\nif (newItems.length === 0) {\n  return [];\n}\n\nconst highPriority = newItems.filter(i => i.json.urgency_score > 7);\nconst criticalItems = newItems.filter(i => i.json.impact_level === 'Critical');\nconst highItems = newItems.filter(i => i.json.impact_level === 'High');\n\nconst htmlEmail = `\n<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n<body style=\"font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background: #f5f5f5;\">\n  <div style=\"background: white; max-width: 800px; margin: 20px auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);\">\n    \n    <!-- Header -->\n    <div style=\"background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 30px; text-align: center;\">\n      <h1 style=\"margin: 0 0 10px 0; font-size: 28px; font-weight: 700;\">🚨 Mycroft Regulatory Intelligence</h1>\n      <p style=\"margin: 0; font-size: 16px; opacity: 0.95;\">New High Priority Alerts</p>\n    </div>\n    \n    <!-- Summary Stats -->\n    <table style=\"width: 100%; background: #f8f9fa; border-collapse: collapse;\">\n      <tr>\n        <td style=\"padding: 25px 20px; text-align: center; border-right: 1px solid #e0e0e0;\">\n          <div style=\"font-size: 36px; font-weight: 700; color: #667eea; margin: 0 0 8px 0;\">${newItems.length}</div>\n          <div style=\"font-size: 13px; color: #666; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;\">New Items</div>\n        </td>\n        <td style=\"padding: 25px 20px; text-align: center; border-right: 1px solid #e0e0e0;\">\n          <div style=\"font-size: 36px; font-weight: 700; color: #dc2626; margin: 0 0 8px 0;\">${criticalItems.length}</div>\n          <div style=\"font-size: 13px; color: #666; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;\">Critical</div>\n        </td>\n        <td style=\"padding: 25px 20px; text-align: center;\">\n          <div style=\"font-size: 36px; font-weight: 700; color: #ea580c; margin: 0 0 8px 0;\">${highItems.length}</div>\n          <div style=\"font-size: 13px; color: #666; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;\">High Priority</div>\n        </td>\n      </tr>\n    </table>\n    \n    ${criticalItems.length > 0 ? `\n    <!-- Critical Items Section -->\n    <div style=\"padding: 30px;\">\n      <div style=\"display: flex; align-items: center; margin: 0 0 20px 0; padding-bottom: 15px; border-bottom: 3px solid #dc2626;\">\n        <h2 style=\"font-size: 20px; font-weight: 700; margin: 0; color: #333;\">🔴 Critical Priority Items</h2>\n        <span style=\"margin-left: auto; background: #dc2626; color: white; padding: 6px 16px; border-radius: 20px; font-size: 14px; font-weight: 600;\">${criticalItems.length}</span>\n      </div>\n      \n      ${criticalItems.map((item, idx) => `\n        <div style=\"background: #fef2f2; border-left: 4px solid #dc2626; padding: 20px; margin: 15px 0; border-radius: 0 8px 8px 0;\">\n          <div style=\"margin-bottom: 12px;\">\n            <span style=\"display: inline-block; background: #dc2626; color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-weight: 700; font-size: 14px; margin-right: 12px;\">${idx + 1}</span>\n            <strong style=\"font-size: 16px; color: #1f2937;\">${item.json.title}</strong>\n          </div>\n          <div style=\"margin: 8px 0; font-size: 13px; color: #666;\">\n            <span style=\"display: inline-block; background: #fee2e2; padding: 4px 10px; border-radius: 4px; margin-right: 8px;\">📍 ${item.json.source_feed}</span>\n            <span style=\"display: inline-block; background: #fee2e2; padding: 4px 10px; border-radius: 4px; margin-right: 8px;\">⚡ Urgency: ${item.json.urgency_score}/10</span>\n            ${item.json.categories && item.json.categories.length > 0 ? item.json.categories.map(cat => \n              `<span style=\"display: inline-block; background: #dbeafe; padding: 4px 10px; border-radius: 4px; margin-right: 8px;\">🏷️ ${cat}</span>`\n            ).join('') : ''}\n          </div>\n          <div style=\"margin-top: 12px;\">\n            <a href=\"${item.json.link}\" style=\"color: #dc2626; text-decoration: none; font-weight: 600; font-size: 14px;\">Read Full Update →</a>\n          </div>\n        </div>\n      `).join('')}\n    </div>\n    ` : ''}\n    \n    ${highItems.length > 0 ? `\n    <!-- High Priority Items Section -->\n    <div style=\"padding: 30px; background: #fafafa;\">\n      <div style=\"display: flex; align-items: center; margin: 0 0 20px 0; padding-bottom: 15px; border-bottom: 3px solid #ea580c;\">\n        <h2 style=\"font-size: 20px; font-weight: 700; margin: 0; color: #333;\">🟠 High Priority Items</h2>\n        <span style=\"margin-left: auto; background: #ea580c; color: white; padding: 6px 16px; border-radius: 20px; font-size: 14px; font-weight: 600;\">${highItems.length}</span>\n      </div>\n      \n      ${highItems.slice(0, 10).map((item, idx) => `\n        <div style=\"background: white; border-left: 4px solid #ea580c; padding: 20px; margin: 15px 0; border-radius: 0 8px 8px 0;\">\n          <div style=\"margin-bottom: 12px;\">\n            <span style=\"display: inline-block; background: #ea580c; color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-weight: 700; font-size: 14px; margin-right: 12px;\">${idx + 1}</span>\n            <strong style=\"font-size: 16px; color: #1f2937;\">${item.json.title}</strong>\n          </div>\n          <div style=\"margin: 8px 0; font-size: 13px; color: #666;\">\n            <span style=\"display: inline-block; background: #fff7ed; padding: 4px 10px; border-radius: 4px; margin-right: 8px;\">📍 ${item.json.source_feed}</span>\n            <span style=\"display: inline-block; background: #fff7ed; padding: 4px 10px; border-radius: 4px; margin-right: 8px;\">⚡ Urgency: ${item.json.urgency_score}/10</span>\n          </div>\n          <div style=\"margin-top: 12px;\">\n            <a href=\"${item.json.link}\" style=\"color: #ea580c; text-decoration: none; font-weight: 600; font-size: 14px;\">Read Full Update →</a>\n          </div>\n        </div>\n      `).join('')}\n      \n      ${highItems.length > 10 ? `\n        <div style=\"text-align: center; padding: 20px; color: #666; font-style: italic;\">\n          ... and ${highItems.length - 10} more high priority items\n        </div>\n      ` : ''}\n    </div>\n    ` : ''}\n    \n    <!-- Footer -->\n    <div style=\"background: #1f2937; color: #9ca3af; padding: 30px; text-align: center;\">\n      <p style=\"margin: 0 0 10px 0; font-size: 14px;\">📄 <strong style=\"color: white;\">Full HTML report available locally</strong></p>\n      <p style=\"margin: 0; font-size: 12px; opacity: 0.7;\">Generated by Mycroft Financial Intelligence System</p>\n      <p style=\"margin: 5px 0 0 0; font-size: 11px; opacity: 0.6;\">⏰ ${new Date().toLocaleString()}</p>\n    </div>\n    \n  </div>\n</body>\n</html>\n`;\n\nreturn [{\n  json: {\n    html_email: htmlEmail,\n    total_new: newItems.length,\n    critical_count: criticalItems.length,\n    high_count: highItems.length,\n    item_ids: newItems.map(i => i.json.id), // Track which IDs were sent\n    has_items: true\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        160
+      ],
+      "id": "c99cfb45-cd68-4c28-991b-0e7677b4f997",
+      "name": "Generate Email"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE regulatory_feeds\nSET \n  email_sent = TRUE,\n  email_sent_at = NOW()\nWHERE \n  (urgency_score > 7 OR impact_level IN ('Critical', 'High'))\n  AND email_sent = FALSE;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2912,
+        160
+      ],
+      "id": "faad5e9f-a77e-4e46-b966-b39a72bd59bf",
+      "name": "Mark email sent",
+      "credentials": {
+        "postgres": {
+          "id": "bbRl0wBIwYpgwuoE",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\n\n// Financial regulatory keywords to track\nconst keywordCategories = {\n  enforcement: ['enforcement', 'penalty', 'fine', 'violation', 'sanctioned', 'charged', 'settled'],\n  compliance: ['compliance', 'audit', 'examination', 'reporting', 'disclosure', 'filing'],\n  crypto: ['cryptocurrency', 'crypto', 'bitcoin', 'blockchain', 'digital asset', 'token'],\n  securities: ['securities', 'investment advisor', 'investment adviser', 'broker-dealer', 'mutual fund', 'etf'],\n  derivatives: ['derivatives', 'futures', 'options', 'swap', 'cftc', 'commodity'],\n  fraud: ['fraud', 'misrepresentation', 'ponzi', 'manipulation', 'insider trading', 'scheme']\n};\n\nfunction extractKeywords(text) {\n  const lowerText = text.toLowerCase();\n  const matched = {};\n  \n  for (const [category, keywords] of Object.entries(keywordCategories)) {\n    matched[category] = keywords.some(kw => lowerText.includes(kw));\n  }\n  \n  return matched;\n}\n\nfunction calculateBasicUrgency(title, content) {\n  const text = (title + ' ' + content).toLowerCase();\n  let score = 5; // baseline\n  \n  // Urgency indicators\n  if (text.includes('immediate') || text.includes('emergency')) score += 3;\n  if (text.includes('deadline') || text.includes('must comply') || text.includes('effective date')) score += 2;\n  if (text.includes('enforcement') || text.includes('penalty') || text.includes('fine')) score += 2;\n  if (text.includes('new rule') || text.includes('proposed rule') || text.includes('final rule')) score += 1;\n  if (text.includes('fraud') || text.includes('manipulation')) score += 1;\n  if (text.includes('cease and desist') || text.includes('suspension')) score += 1;\n  \n  return Math.min(score, 10);\n}\n\nfunction determineImpactLevel(urgencyScore, isEnforcement, isFraud) {\n  if (urgencyScore >= 9 || isFraud) return 'Critical';\n  if (urgencyScore >= 7 || isEnforcement) return 'High';\n  if (urgencyScore >= 5) return 'Medium';\n  return 'Low';\n}\n\nfor (const item of items) {\n  const json = item.json;\n  const fullText = `${json.title} ${json.content}`;\n  const keywordMatches = extractKeywords(fullText);\n  const urgencyScore = calculateBasicUrgency(json.title, json.content);\n  \n  results.push({\n    json: {\n      ...json,\n      keyword_matches: keywordMatches,\n      urgency_score: urgencyScore,\n      impact_level: determineImpactLevel(urgencyScore, keywordMatches.enforcement, keywordMatches.fraud),\n      word_count: json.content.split(' ').length,\n      has_deadline: fullText.toLowerCase().includes('deadline'),\n      is_enforcement: keywordMatches.enforcement,\n      categories: Object.entries(keywordMatches).filter(([k, v]) => v).map(([k]) => k)\n    }\n  });\n}\n\nreturn results;"
+      },
+      "name": "Keyword Analysis & Urgency Scoring",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        160
+      ],
+      "id": "97a5dc13-a0dd-4943-821e-6df00bd1db3e"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO regulatory_feeds (\n  source_feed, source, title, link, published, content,\n  urgency_score, impact_level, keyword_matches, categories,\n  word_count, has_deadline, is_enforcement, scraped_at\n) VALUES (\n  '{{ $json.source_feed }}',\n  '{{ $json.source }}',\n  '{{ $json.title }}',\n  '{{ $json.link }}',\n  '{{ $json.published }}',\n  '{{ $json.content }}',\n  {{ $json.urgency_score }},\n  '{{ $json.impact_level }}',\n  '{{ $json.keyword_matches_str }}'::jsonb,\n  '{{ $json.categories_str }}'::jsonb,\n  {{ $json.word_count }},\n  {{ $json.has_deadline }},\n  {{ $json.is_enforcement }},\n  '{{ $json.scraped_at }}'\n)\nON CONFLICT (title, DATE(published)) DO NOTHING\nRETURNING *;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1344,
+        160
+      ],
+      "id": "4bf71b1f-be1c-4169-b4e1-909a1cd7be94",
+      "name": "Insert data into DB",
+      "credentials": {
+        "postgres": {
+          "id": "bbRl0wBIwYpgwuoE",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const json = item.json;\n  \n  results.push({\n    json: {\n      ...json,\n      // Escape single quotes in text fields\n      source: json.source.replace(/'/g, \"''\"),\n      title: json.title.replace(/'/g, \"''\"),\n      content: json.content.replace(/'/g, \"''\"),\n      // Convert JSONB fields to properly escaped JSON strings\n      keyword_matches_str: JSON.stringify(json.keyword_matches).replace(/'/g, \"''\"),\n      categories_str: JSON.stringify(json.categories).replace(/'/g, \"''\")\n    }\n  });\n}\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        160
+      ],
+      "id": "ee3d1b80-08f9-47bf-b50e-36e8ba1c85b2",
+      "name": "Prepare Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "const insertResults = $input.all();\n\nconsole.log(`📊 Database Insert Summary:\n- Items processed: ${insertResults.length}\n- New items inserted: ${insertResults.filter(i => i.json.id).length}\n- Duplicates skipped: ${insertResults.length - insertResults.filter(i => i.json.id).length}\n`);\n\n// Filter to only successfully inserted items (those with IDs)\nconst newItems = insertResults.filter(item => item.json.id);\n\nif (newItems.length === 0) {\n  console.log('✅ No new items - all were duplicates!');\n  return [];\n}\n\nconsole.log(`🆕 ${newItems.length} new items to notify about`);\n\nreturn newItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1568,
+        160
+      ],
+      "id": "cb0170bf-bab8-49b5-b2a9-24a6403d25dc",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f6393f7c-8d3b-4397-8c9e-7cbb0eb93a8c",
+              "leftValue": "={{ $input.all().length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1792,
+        160
+      ],
+      "id": "033c093f-9129-4c74-85ed-d47a193ca4fc",
+      "name": "If2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Federal Register - Securities": {
+      "main": [
+        [
+          {
+            "node": "Merge All Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEC Press Releases": {
+      "main": [
+        [
+          {
+            "node": "Merge All Sources",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "FINRA Enforcement News": {
+      "main": [
+        [
+          {
+            "node": "Merge All Sources",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "CFTC Regulations": {
+      "main": [
+        [
+          {
+            "node": "Merge All Sources",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Investment Advisor Rules": {
+      "main": [
+        [
+          {
+            "node": "Merge All Sources",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Merge All Sources": {
+      "main": [
+        [
+          {
+            "node": "Normalize Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Data": {
+      "main": [
+        [
+          {
+            "node": "Filter Valid Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Valid Content": {
+      "main": [
+        [
+          {
+            "node": "Keyword Analysis & Urgency Scoring",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "High Priority Filter": {
+      "main": [
+        [
+          {
+            "node": "Generate Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email Alert": {
+      "main": [
+        [
+          {
+            "node": "Mark email sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate HTML Report": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Send Email Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Every Day": {
+      "main": [
+        [
+          {
+            "node": "Federal Register - Securities",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "SEC Press Releases",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "FINRA Enforcement News",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "CFTC Regulations",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Investment Advisor Rules",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Email": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Keyword Analysis & Urgency Scoring": {
+      "main": [
+        [
+          {
+            "node": "Prepare Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Data": {
+      "main": [
+        [
+          {
+            "node": "Insert data into DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert data into DB": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "High Priority Filter",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate HTML Report",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "69a3c984-5d6f-48b6-a44e-96fd6140b2f8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cd9255a6b77cecfa2a0113f9e18af5c705ea1be9dbd097a2fe10c53df63bf753"
+  },
+  "id": "oqtFi5me5Cypzy06",
+  "tags": [
+    {
+      "updatedAt": "2025-11-28T15:31:54.134Z",
+      "createdAt": "2025-11-28T15:31:54.134Z",
+      "id": "4J5a4pxME9u7Mw2c",
+      "name": "regulatory-intelligence"
+    },
+    {
+      "updatedAt": "2025-11-28T16:08:42.193Z",
+      "createdAt": "2025-11-28T16:08:42.193Z",
+      "id": "EGDxP9ehRsaU1tfM",
+      "name": "production-ready"
+    },
+    {
+      "updatedAt": "2025-11-28T15:31:54.146Z",
+      "createdAt": "2025-11-28T15:31:54.146Z",
+      "id": "lBKvuLokkttVRGwI",
+      "name": "financial-compliance"
+    }
+  ]
+}

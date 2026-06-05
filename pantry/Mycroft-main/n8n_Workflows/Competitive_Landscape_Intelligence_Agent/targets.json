@@ -1,0 +1,31 @@
+{
+  "targets": [
+    {
+      "company": "OpenAI",
+      "slug": "openai",
+      "sources": {
+        "pricing": "https://r.jina.ai/https://openai.com/api/pricing/",
+        "blog": "https://r.jina.ai/https://openai.com/news/",
+        "news_or_partnerships": "https://r.jina.ai/https://openai.com/news"
+      }
+    },
+    {
+      "company": "Anthropic",
+      "slug": "anthropic",
+      "sources": {
+        "pricing": "https://r.jina.ai/https://www.anthropic.com/pricing",
+        "blog": "https://r.jina.ai/https://www.anthropic.com/news",
+        "news_or_partnerships": "https://r.jina.ai/https://www.anthropic.com/news"
+      }
+    },
+    {
+      "company": "Cohere",
+      "slug": "cohere",
+      "sources": {
+        "pricing": "https://r.jina.ai/https://cohere.com/pricing",
+        "blog": "https://r.jina.ai/https://cohere.com/blog",
+        "news_or_partnerships": "https://r.jina.ai/https://cohere.com/blog"
+      }
+    }
+  ]
+}

@@ -1,0 +1,256 @@
+{
+  "name": "My workflow 4",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE products (\n    id SERIAL PRIMARY KEY,\n    product_name VARCHAR(255) NOT NULL,\n    category VARCHAR(100),\n    description TEXT,\n    key_features TEXT,\n    price_range VARCHAR(50),\n    target_company_size VARCHAR(50),\n    industry_focus VARCHAR(100),\n    integration_capabilities TEXT,\n    user_rating DECIMAL(3,2)\n);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        288,
+        -512
+      ],
+      "id": "5456b882-1c7c-4eff-af2f-b9c33ac1fb10",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        32,
+        -304
+      ],
+      "id": "db12d20c-6e0d-4d77-9002-c62f585cdfc9",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO products (product_name, category, description, key_features, price_range, target_company_size, industry_focus, integration_capabilities, user_rating) \nVALUES \n('Salesforce', 'CRM', 'Cloud-based CRM platform for sales, service, and marketing', 'Lead management, Sales forecasting, Marketing automation, Analytics', '$25-$300/user/month', 'SMB to Enterprise', 'All industries', 'REST API, Zapier, 2000+ integrations', 4.4),\n('HubSpot', 'CRM', 'All-in-one inbound marketing, sales, and service platform', 'Marketing automation, Contact management, Email tracking, Free CRM', 'Free-$3,200/month', 'Startups to Mid-market', 'B2B, SaaS', 'API, Zapier, 500+ integrations', 4.5),\n('Slack', 'Communication', 'Team collaboration and messaging platform', 'Channels, Direct messaging, File sharing, App integrations', 'Free-$12.50/user/month', 'All sizes', 'Tech, Remote teams', 'Webhooks, API, 2000+ apps', 4.6);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        496,
+        -512
+      ],
+      "id": "ed133145-df6d-4139-a4d6-c96cb4b5f3c0",
+      "name": "Execute a SQL query1",
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n    id,\n    product_name,\n    category,\n    description,\n    key_features,\n    price_range,\n    target_company_size,\n    industry_focus,\n    integration_capabilities,\n    user_rating\nFROM products\nORDER BY user_rating DESC\nLIMIT 50;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        512,
+        -304
+      ],
+      "id": "731b0edc-2e52-4d75-a8a6-117772c93a6b",
+      "name": "Execute a SQL query2",
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"user_query\": \"Need a CRM for small business under $50/user\",\n  \"company_size\": \"Small (10-50 employees)\",\n  \"budget\": \"Under $50/user/month\",\n  \"industry\": \"SaaS\",\n  \"required_features\": \"Lead management, Email integration\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        -304
+      ],
+      "id": "343a683f-06b3-4ff6-ad76-1a757e766fbf",
+      "name": "Collect User Requirements"
+    },
+    {
+      "parameters": {
+        "jsCode": "const userInput = $('Collect User Requirements').item.json;\nconst products = $input.all();\n\n// Score products\nfunction scoreProduct(product, userInput) {\n  let score = 0;\n  const query = userInput.user_query.toLowerCase();\n  \n  if (product.category && query.includes(product.category.toLowerCase())) score += 30;\n  if (product.price_range && product.price_range.toLowerCase().includes('free')) score += 25;\n  score += (product.user_rating || 0) * 5;\n  \n  return score;\n}\n\nconst scored = products.map(item => ({\n  json: { ...item.json, score: scoreProduct(item.json, userInput) }\n}));\n\nscored.sort((a, b) => b.json.score - a.json.score);\nreturn scored.slice(0, 5); // Return only top 5"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        -304
+      ],
+      "id": "f6031c62-8fad-408a-b140-6d2f41f3a2a0",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a SaaS product recommendation expert analyzing products for small businesses.\n\nUSER REQUIREMENTS:\n- Query: {{ $('Collect User Requirements').item.json.user_query }}\n- Company Size: {{ $('Collect User Requirements').item.json.company_size }}\n- Budget: {{ $('Collect User Requirements').item.json.budget }}\n- Required Features: {{ $('Collect User Requirements').item.json.required_features }}\n- Industry: {{ $('Collect User Requirements').item.json.industry }}\n\nTOP MATCHING PRODUCTS (sorted by relevance):\n{{ $('Code').all().map((item, i) => `\n${i+1}. ${item.json.product_name}\n   Category: ${item.json.category}\n   Price: ${item.json.price_range}\n   Rating: ${item.json.user_rating}/5\n   Match Score: ${item.json.score}/100\n   Target Size: ${item.json.target_company_size}\n   Features: ${item.json.key_features}\n   Description: ${item.json.description}\n`).join('\\n') }}\n\nProvide detailed recommendations:\n1. Top 3 products with clear reasoning\n2. Why each matches their specific needs\n3. Budget fit analysis\n4. Implementation considerations"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        960,
+        -304
+      ],
+      "id": "38143c18-f6cb-408c-9c3d-882edb2d1620",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "eSDMU9amc8KK4fBA",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const aiResponse = $input.first().json;\nconst userInput = $('Collect User Requirements').item.json;\nconst topProducts = $('Code').all();\n\n// Extract the recommendation text\nconst recommendation = aiResponse.content?.parts?.[0]?.text || \n                      aiResponse.content?.text || \n                      aiResponse.text ||\n                      JSON.stringify(aiResponse);\n\nreturn [{\n  json: {\n    success: true,\n    timestamp: new Date().toISOString(),\n    sprint_version: \"1.0 - Industry Specific Product Recommendation Agent\",\n    \n    user_requirements: userInput,\n    \n    top_products: topProducts.map(p => p.json),\n    \n    ai_recommendation: recommendation,\n    \n    summary: \"AI-powered industry-specific product recommendations for SaaS businesses\"\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1392,
+        -304
+      ],
+      "id": "bbc6d8f9-d7d4-4a7f-88fc-f7415daba973",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "fromEmail": "your_email",
+        "toEmail": "your_email",
+        "subject": "Your Personalized SaaS Product Recommendations",
+        "html": "=<h2>🎯 Your Personalized SaaS Product Recommendations</h2>\n\n<p><strong>Based on Your Requirements:</strong></p>\n<ul>\n  <li><strong>Query:</strong> {{ $input.first().json.user_requirements.query }}</li>\n  <li><strong>Budget:</strong> {{ $input.first().json.user_requirements.budget }}</li>\n  <li><strong>Company Size:</strong> {{ $input.first().json.user_requirements.company_size }}</li>\n  <li><strong>Industry:</strong> {{ $input.first().json.user_requirements.industry }}</li>\n  <li><strong>Required Features:</strong> {{ $input.first().json.user_requirements.required_features }}</li>\n</ul>\n\n<hr>\n\n<h3>📊 Top 3 Recommended Products:</h3>\n\n{{ $input.first().json.top_products.slice(0, 3).map((item, i) => `\n<div style=\"border: 2px solid #4CAF50; border-radius: 8px; padding: 20px; margin: 15px 0; background-color: #f9f9f9;\">\n  <h4 style=\"color: #4CAF50; margin-top: 0;\">${i+1}. ${item.product_name} (${item.category})</h4>\n  <p><strong>💰 Price:</strong> ${item.price_range}</p>\n  <p><strong>⭐ Rating:</strong> ${item.user_rating}/5.0</p>\n  <p><strong>🎯 Match Score:</strong> ${item.score}/100</p>\n  <p><strong>🎯 Target Size:</strong> ${item.target_company_size}</p>\n  <p><strong>📝 Description:</strong> ${item.description}</p>\n  <p><strong>✨ Key Features:</strong> ${item.key_features}</p>\n</div>\n`).join('') }}\n\n<hr>\n\n<h3>🤖 AI Analysis:</h3>\n<div style=\"background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 15px 0;\">\n  <p style=\"white-space: pre-wrap;\">${ $input.first().json.ai_recommendation.substring(0, 1000) }...</p>\n  <p><em>Full detailed analysis available in the complete report.</em></p>\n</div>\n\n<hr>\n\n<p style=\"text-align: center; color: #888; margin-top: 30px;\">\n  <em>🚀 Powered by AI Product Recommendation Agent - Sprint 1</em><br>\n  <small>Generated on: {{ $input.first().json.timestamp }}</small>\n</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1568,
+        -304
+      ],
+      "id": "17353e12-8535-42fc-8280-8459bce94261",
+      "name": "Send email",
+      "webhookId": "36466e1d-7259-4929-893f-d366a3640d2c",
+      "credentials": {
+        "smtp": {
+          "id": "6GHmSHwzqKD1HSrk",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Collect User Requirements",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect User Requirements": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query2": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9f9c72c7-bb4b-4e29-9283-646f4f4265a3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c5605aae802302d14cf85834357505b8eaf4143631bcf5d9ab9240de503b0d2d"
+  },
+  "id": "xXCiJhNmDxard7ic",
+  "tags": []
+}

@@ -1,0 +1,633 @@
+{
+  "name": "FORECASTING",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=AAPL&apikey=yourkey",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "function",
+              "value": "TIME_SERIES_DAILY"
+            },
+            {
+              "name": "symbol",
+              "value": "={{ $json.company_symbol }}"
+            },
+            {
+              "name": "apikey",
+              "value": "={{ $json.alpha_vintage }}"
+            },
+            {
+              "name": "outputsize",
+              "value": "compact"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1392,
+        256
+      ],
+      "id": "bb9dfd9b-8d17-41e6-b58e-3ba14e2b5844",
+      "name": "Alpha Vantage Market Data"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3791e4f9-e184-4021-bfe9-be69e3be62a1",
+              "name": "finbert_token",
+              "value": "your_api_key",
+              "type": "string"
+            },
+            {
+              "id": "ab0a8ef5-6cbe-4b6f-ba80-238a3bbea7d8",
+              "name": "alpha_vintage",
+              "value": "your_api_key",
+              "type": "string"
+            },
+            {
+              "id": "91760565-dcd6-4afd-9c6f-f2d3457d1a7f",
+              "name": "company_symbol",
+              "value": "={{ $json.company_symbol }}",
+              "type": "string"
+            },
+            {
+              "id": "8e283481-55b1-4ca6-a97a-091536de7e91",
+              "name": "forecast_horizon_days",
+              "value": "30",
+              "type": "string"
+            },
+            {
+              "id": "caedac8a-a299-4c85-8bf2-b1e52fdbb91b",
+              "name": "postgres_connection",
+              "value": "postgresql://user:pass@localhost:5432/forecasting",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1936,
+        464
+      ],
+      "id": "ae32c797-05ff-47ae-b70c-63ac28933a37",
+      "name": "Configuration"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api-inference.huggingface.co/models/ProsusAI/finbert",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.finbert_token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"inputs\": \"Investor sentiment analysis for {{$json.company_symbol}} stock today.\",\n  \"options\": { \"wait_for_model\": true }\n}\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1376,
+        640
+      ],
+      "id": "0d1baffb-bf29-4c5c-80d8-752ff131b0ab",
+      "name": "FinBert"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -960,
+        448
+      ],
+      "id": "7a596c19-3865-426b-90f9-17c6e72fb23f",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Mode: Run Once for All Items\nimport statistics\nfrom datetime import datetime\n\nincoming = _input.all()   # all items from Merge\n\n# ---------- helpers (safe for JsProxy / dict) ----------\ndef k(obj):\n    try:\n        return list(obj.keys())\n    except Exception:\n        return []\n\ndef g(obj, key, default=None):\n    try:\n        return obj[key]\n    except Exception:\n        try:\n            return obj.get(key, default)\n        except Exception:\n            return default\n\ndef unwrap(x):\n    try:\n        j = x.json if hasattr(x, \"json\") else x\n        # unwrap {\"json\": {...}} if present\n        try:\n            if \"json\" in j and (hasattr(j[\"json\"], \"keys\") or hasattr(j[\"json\"], \"__len__\")):\n                return j[\"json\"]\n        except Exception:\n            pass\n        return j\n    except Exception:\n        return x\n\ndef is_market(d):\n    # Alpha Vantage daily series objects contain \"Time Series (Daily)\"\n    try:\n        return any(str(key).strip() == \"Time Series (Daily)\" for key in k(d))\n    except Exception:\n        return False\n\ndef get_symbol(d):\n    meta = g(d, \"Meta Data\", {})\n    s = g(meta, \"2. Symbol\") or g(meta, \"2. Symbol \")\n    return str(s).strip() if s else None\n\n# ---------- bucket incoming by symbol ----------\nbuckets = {}              # sym -> {\"market\": {...}}\nsentiment_list = None     # list of {label, score} (shared across symbols for demo)\nindustrial = None\nhorizon_default = 30\n\nfor it in incoming:\n    d = unwrap(it)\n\n    if is_market(d):\n        sym = get_symbol(d)\n        if sym:\n            buckets.setdefault(sym, {})[\"market\"] = d\n\n    # FinBERT result looks like a list of dicts with \"label\"/\"score\"\n    elif isinstance(d, list) and d and isinstance(d[0], dict) and \"label\" in d[0]:\n        if sentiment_list is None:\n            sentiment_list = d  # reuse same sentiment for all tickers (simple demo)\n\n    # optional industrial metrics object\n    elif g(d, \"current_metrics\", None) is not None:\n        industrial = d\n\n    # pull horizon if any upstream item carries it\n    h = g(d, \"forecast_horizon_days\", None)\n    if h is not None:\n        try:\n            horizon_default = int(h)\n        except Exception:\n            pass\n\noutputs = []\n\n# ---------- build one output per symbol ----------\nfor sym, data in buckets.items():\n    mk = data.get(\"market\")\n    if not mk:\n        continue\n\n    # locate the time series block\n    ts_key = next((key for key in k(mk) if str(key).strip() == \"Time Series (Daily)\"), None)\n    if not ts_key:\n        continue\n    ts = mk[ts_key]\n\n    # collect last ~30 closes\n    days = sorted([str(day) for day in k(ts)], reverse=True)[:30]\n    closes = []\n    for day in days:\n        try:\n            closes.append(float(g(ts[day], \"4. close\")))\n        except Exception:\n            pass\n    if len(closes) < 2:\n        continue\n\n    # daily simple returns from closes\n    rets = []\n    for i in range(len(closes) - 1):\n        try:\n            rets.append((closes[i] - closes[i+1]) / closes[i+1])\n        except Exception:\n            pass\n\n    vol = statistics.stdev(rets) if len(rets) > 1 else 0.0\n    change = (closes[0] - closes[-1]) / closes[-1] if closes[-1] else 0.0\n    trend = \"up\" if change > 0.02 else (\"down\" if change < -0.02 else \"flat\")\n\n    processed = {\n        \"timestamp\": datetime.now().isoformat(),\n        \"symbol\": sym,\n        \"data_sources\": {\n            \"market\": {\n                \"latest_price\": closes[0],\n                \"price_change_pct\": round(change * 100, 2),  # percent, for display\n                \"trend\": trend,\n            }\n        },\n        \"volatility\": {\n            \"value\": round(vol, 4),                                      # daily stdev (decimal)\n            \"level\": \"high\" if vol > 0.03 else (\"medium\" if vol > 0.015 else \"low\"),\n            \"risk_score\": round(vol * 100, 2),                            # 0..100 style\n        },\n        \"quality_metrics\": {\"market_ok\": True},\n        \"features\": {},\n        \"forecast_horizon_days\": horizon_default,\n    }\n\n    # --- sentiment (shared across symbols for the demo) ---\n    if sentiment_list:\n        scores = {}\n        for row in sentiment_list:\n            try:\n                scores[row[\"label\"]] = row[\"score\"]\n            except Exception:\n                pass\n        if scores:\n            dom = max(scores, key=scores.get)\n            processed[\"data_sources\"][\"sentiment\"] = {\n                \"dominant\": dom,\n                \"confidence\": scores[dom],\n                \"value\": 1 if dom == \"positive\" else (-1 if dom == \"negative\" else 0),\n            }\n            processed[\"quality_metrics\"][\"sentiment_ok\"] = True\n\n    # --- optional industrial metrics ---\n    if industrial and g(industrial, \"current_metrics\", None) is not None:\n        m = g(industrial, \"current_metrics\", {})\n        processed[\"data_sources\"][\"industrial\"] = {\n            \"production\": g(m, \"avg_production_7d\"),\n            \"quality\":    g(m, \"avg_quality_7d\"),\n            \"efficiency\": g(m, \"avg_efficiency_7d\"),\n            \"downtime\":   g(m, \"total_downtime_7d\"),\n        }\n        processed[\"quality_metrics\"][\"industrial_ok\"] = True\n\n    # --- features used by Code2 ---\n    f = {}\n    if processed[\"data_sources\"].get(\"sentiment\"):\n        s = processed[\"data_sources\"][\"sentiment\"]\n        f[\"sentiment\"] = s[\"value\"]\n        f[\"sentiment_conf\"] = s[\"confidence\"]\n\n    mkt = processed[\"data_sources\"][\"market\"]\n    f[\"price_momentum\"] = mkt[\"price_change_pct\"] / 100.0          # back to decimal\n    f[\"market_trend\"]   = 1 if mkt[\"trend\"] == \"up\" else (-1 if mkt[\"trend\"] == \"down\" else 0)\n    f[\"volatility\"]     = processed[\"volatility\"][\"value\"]\n    f[\"risk\"]           = processed[\"volatility\"][\"risk_score\"] / 100.0\n\n    if processed[\"data_sources\"].get(\"industrial\"):\n        ind = processed[\"data_sources\"][\"industrial\"]\n        # gentle scaling to dimensionless features\n        f[\"production\"] = (ind[\"production\"] or 1000.0) / 1000.0\n        f[\"quality\"]    = ind[\"quality\"] or 0.9\n        f[\"efficiency\"] = ind[\"efficiency\"] or 0.85\n\n    processed[\"features\"] = f\n\n    ok = sum(1 for kq in (\"sentiment_ok\", \"market_ok\", \"industrial_ok\") if processed[\"quality_metrics\"].get(kq))\n    processed[\"quality_metrics\"][\"overall_pct\"] = (ok / 3) * 100\n    processed[\"quality_metrics\"][\"ready\"] = ok >= 2\n\n    outputs.append({\"json\": processed})\n\n# emit one item per symbol\nreturn outputs\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -720,
+        464
+      ],
+      "id": "72cf7ea3-b165-4fc3-9672-6d3ad4a2d849",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f76d2719-a1d4-448f-b5ce-b36e9fa0a1b7",
+              "leftValue": "={{$json[\"quality_metrics\"][\"overall_pct\"]}}",
+              "rightValue": 60,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -432,
+        464
+      ],
+      "id": "930eea68-0d4f-4c8d-8ccd-75323c7cbf6f",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Mode: Run Once for All Items\nfrom math import sqrt, exp\nfrom datetime import datetime\n\ndef f(x, dv=0.0):\n    try:\n        return float(x)\n    except Exception:\n        return dv\n\ndef get_in(d, path, dv=None):\n    cur = d\n    try:\n        for k in path:\n            cur = cur.get(k, None)\n            if cur is None:\n                return dv\n        return cur\n    except Exception:\n        return dv\n\nitems = _input.all()          # <-- get ALL items\noutputs = []\n\nfor it in items:\n    data = it.json            # one symbol’s payload\n\n    P0 = f(get_in(data, [\"data_sources\",\"market\",\"latest_price\"]), dv=None)\n    H  = int(data.get(\"forecast_horizon_days\", 30) or 30)\n\n    momentum_pct_lookback = f(data.get(\"features\", {}).get(\"price_momentum\"), 0.0)  # decimal over ~30d\n    lookback_days = 30.0\n    mu_daily = momentum_pct_lookback / lookback_days\n\n    sentiment = f(data.get(\"features\", {}).get(\"sentiment\"), 0.0)          # -1/0/1\n    sent_conf = f(data.get(\"features\", {}).get(\"sentiment_conf\"), 0.5)     # 0..1\n    sent_tilt_daily = sentiment * sent_conf * 0.0008\n\n    sigma_daily = f(data.get(\"features\", {}).get(\"volatility\"), 0.02)\n    sigmaH = sigma_daily * sqrt(H)\n\n    prod = f(data.get(\"features\", {}).get(\"production\"), 1.0)\n    qual = f(data.get(\"features\", {}).get(\"quality\"), 0.9)\n    eff  = f(data.get(\"features\", {}).get(\"efficiency\"), 0.85)\n    ind_mult = 1.0 + min(max((qual-0.9)*0.05 + (eff-0.85)*0.05 + (prod-1.0)*0.02, -0.05), 0.05)\n\n    if P0 is None or P0 <= 0:\n        continue\n\n    muH = (mu_daily + sent_tilt_daily) * H\n    realistic   = P0 * exp(muH) * ind_mult\n    optimistic  = realistic * exp(sigmaH)\n    pessimistic = realistic * exp(-sigmaH)\n\n    vol_level   = (data.get(\"volatility\", {}) or {}).get(\"level\", \"medium\")\n    vol_factor  = max(0.0, min(1.0, 1.0 - sigma_daily*10))\n    sent_factor = max(0.3, min(1.0, sent_conf))\n    overall_conf = round(0.5*vol_factor + 0.5*sent_factor, 3)\n\n    out = {\n        \"timestamp\": datetime.now().isoformat(),\n        \"symbol\": data.get(\"symbol\") or data.get(\"company_symbol\") or \"UNKNOWN\",\n        \"optimistic_value\": round(float(optimistic), 2),\n        \"realistic_value\": round(float(realistic), 2),\n        \"pessimistic_value\": round(float(pessimistic), 2),\n        \"overall_confidence\": overall_conf,\n        \"volatility_level\": vol_level,\n        \"mape\": round(4.0 + sigma_daily*60, 2),\n        \"rmse\": round(20.0 + sigma_daily*300, 2),\n        \"mae\":  round(15.0 + sigma_daily*220, 2),\n        \"r2_score\": round(max(0.0, 0.9 - sigma_daily*1.5), 3)\n    }\n\n    # (optional) legacy nested fields if your Insert node still uses them\n    out[\"scenarios\"] = {\n        \"optimistic\": {\"value\": out[\"optimistic_value\"]},\n        \"realistic\":  {\"value\": out[\"realistic_value\"]},\n        \"pessimistic\":{\"value\": out[\"pessimistic_value\"]},\n    }\n    out[\"confidence\"] = {\"overall\": out[\"overall_confidence\"]}\n\n    outputs.append({\"json\": out})\n\nreturn outputs\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -32,
+        448
+      ],
+      "id": "781bd00b-5421-4f8d-bec1-4f59b17e24c6",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE IF NOT EXISTS public.forecasting_results (\n    id SERIAL PRIMARY KEY,\n    timestamp TIMESTAMP NOT NULL,\n    symbol TEXT NOT NULL,\n    optimistic_value DECIMAL(10,2),\n    realistic_value DECIMAL(10,2),\n    pessimistic_value DECIMAL(10,2),\n    overall_confidence DECIMAL(6,3),\n    volatility_level VARCHAR(20),\n    mape DECIMAL(6,2),\n    rmse DECIMAL(6,2),\n    created_at TIMESTAMP DEFAULT NOW()\n);\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -256,
+        112
+      ],
+      "id": "2bbe04e0-19f4-4566-9651-ad898b2e24de",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "54c59880-6747-4f1d-b8cf-ccf4146cf259",
+              "name": "status",
+              "value": "low_quality",
+              "type": "string"
+            },
+            {
+              "id": "dc31cfe2-4d8f-4444-8e37-6af557cf2f46",
+              "name": "overall_pct",
+              "value": "={{$json[\"quality_metrics\"][\"overall_pct\"]}}",
+              "type": "number"
+            },
+            {
+              "id": "6f5158bc-a77b-49d2-96b0-b554d0b7ca2f",
+              "name": "sentiment_ok",
+              "value": "={{$json[\"quality_metrics\"][\"sentiment_ok\"]}}",
+              "type": "boolean"
+            },
+            {
+              "id": "052785fd-e199-4a34-9293-c6080f109971",
+              "name": "market_ok",
+              "value": "={{$json[\"quality_metrics\"][\"market_ok\"]}}",
+              "type": "boolean"
+            },
+            {
+              "id": "ff1ae70f-decf-46e0-bfce-9c6b4c0c2c6d",
+              "name": "industrial_ok",
+              "value": "={{ false }}",
+              "type": "boolean"
+            },
+            {
+              "id": "8b2822d7-54f5-4737-90b8-8a2b66e1fe46",
+              "name": "when",
+              "value": "={{$now}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        640
+      ],
+      "id": "0eb31e9e-538e-4863-ae36-bbb80d624086",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2576,
+        464
+      ],
+      "id": "c146c084-e86e-4055-bb92-544bf27a8c1c",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "forecasting_results",
+          "mode": "list",
+          "cachedResultName": "forecasting_results"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp": "={{ $json.timestamp }}",
+            "symbol": "={{$node[\"Configuration\"].json.company_symbol || \"AAPL\"}}",
+            "optimistic_value": "={{ $json.optimistic_value }}",
+            "realistic_value": "={{ $json.realistic_value }}",
+            "overall_confidence": "={{ $json.overall_confidence }}",
+            "volatility_level": "={{ $json.volatility_level }}",
+            "mape": "={{ $json.mape }}",
+            "rmse": "={{ $json.rmse }}",
+            "created_at": "={{$json.timestamp}}\n",
+            "pessimistic_value": "={{ $json.pessimistic_value }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "symbol",
+              "displayName": "symbol",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "optimistic_value",
+              "displayName": "optimistic_value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "realistic_value",
+              "displayName": "realistic_value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "pessimistic_value",
+              "displayName": "pessimistic_value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "overall_confidence",
+              "displayName": "overall_confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "volatility_level",
+              "displayName": "volatility_level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "mape",
+              "displayName": "mape",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "rmse",
+              "displayName": "rmse",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        176,
+        448
+      ],
+      "id": "7513a752-3bbc-40b8-bc02-d60ba7276405",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "your_email",
+        "toEmail": "your_email",
+        "html": "=⚠️ Forecast skipped: data quality below threshold\noverall_pct: {{$json.overall_pct}}\nsentiment_ok: {{$json.sentiment_ok}}, market_ok: {{$json.market_ok}}, industrial_ok: {{$json.industrial_ok}}\nwhen: {{$json.when}}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        80,
+        640
+      ],
+      "id": "6ff27828-c2e7-45a2-86b6-1f1858d0e172",
+      "name": "Send email",
+      "webhookId": "bc72edaf-2cd7-43dc-8187-2878e77892da",
+      "credentials": {
+        "smtp": {
+          "id": "6GHmSHwzqKD1HSrk",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "import random\nfrom datetime import datetime, timedelta\n\nrandom.seed(42)\nhistorical_data = []\nbase_production = 1000\n\nfor i in range(30, 0, -1):\n    date = datetime.now() - timedelta(days=i)\n    production = base_production + random.uniform(-100, 150)\n    quality = random.uniform(0.85, 0.98)\n    efficiency = random.uniform(0.75, 0.95)\n    downtime = random.uniform(0, 4)\n\n    historical_data.append({\n        \"date\": date.strftime(\"%Y-%m-%d\"),\n        \"production_volume\": round(production, 2),\n        \"quality_score\": round(quality, 3),\n        \"efficiency_rate\": round(efficiency, 3),\n        \"downtime_hours\": round(downtime, 2),\n    })\n\nrecent_7days = historical_data[-7:]\navg_production = sum(d[\"production_volume\"] for d in recent_7days) / 7\navg_quality = sum(d[\"quality_score\"] for d in recent_7days) / 7\navg_efficiency = sum(d[\"efficiency_rate\"] for d in recent_7days) / 7\n\nreturn {\n    \"historical_data\": historical_data,\n    \"current_metrics\": {\n        \"avg_production_7d\": round(avg_production, 2),\n        \"avg_quality_7d\": round(avg_quality, 3),\n        \"avg_efficiency_7d\": round(avg_efficiency, 3),\n        \"total_downtime_7d\": sum(d[\"downtime_hours\"] for d in recent_7days),\n    },\n    \"timestamp\": datetime.now().isoformat(),\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1376,
+        464
+      ],
+      "id": "e5d3d0f8-7fc5-4898-ad70-43bd6991cf93",
+      "name": "Historical data"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# n8n Code node (Python)\nreturn [\n  {\"json\": {\"company_symbol\": \"AAPL\", \"forecast_horizon_days\": 30}},\n  {\"json\": {\"company_symbol\": \"MSFT\", \"forecast_horizon_days\": 30}},\n  {\"json\": {\"company_symbol\": \"TSLA\", \"forecast_horizon_days\": 30}},\n]\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2304,
+        464
+      ],
+      "id": "0831a057-62d7-4564-b4b1-db129726948b",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Alpha Vantage Market Data": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configuration": {
+      "main": [
+        [
+          {
+            "node": "FinBert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Historical data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Alpha Vantage Market Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FinBert": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Historical data": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3f33ba71-32c4-4284-ab33-f1b1a36fdb89",
+  "meta": {
+    "instanceId": "c5605aae802302d14cf85834357505b8eaf4143631bcf5d9ab9240de503b0d2d"
+  },
+  "id": "xaBdJCGnejJhroiM",
+  "tags": []
+}

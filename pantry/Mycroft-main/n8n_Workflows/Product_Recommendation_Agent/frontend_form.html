@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Recommendations</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .container { background: white; max-width: 600px; padding: 40px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        h1 { color: #2d3748; margin-bottom: 10px; }
+        p { color: #718096; margin-bottom: 25px; }
+        label { display: block; color: #2d3748; font-weight: 600; margin: 15px 0 5px; }
+        input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 15px; }
+        textarea { min-height: 80px; resize: vertical; }
+        button { width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; font-size: 17px; font-weight: 600; cursor: pointer; margin-top: 25px; }
+        .success { display: none; padding: 20px; background: #48bb78; color: white; border-radius: 6px; margin-top: 20px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 AI Product Recommendations</h1>
+        <p>Get personalized software recommendations in seconds</p>
+        
+        <form id="form">
+            <label>What do you need? *</label>
+            <textarea name="user_query" required placeholder="e.g., CRM for small business with email tracking"></textarea>
+            
+            <label>Your Email *</label>
+            <input type="email" name="user_email" required placeholder="you@company.com">
+            
+            <label>Company Size *</label>
+            <select name="company_size" required>
+                <option value="">Select...</option>
+                <option value="Startup (1-10)">Startup (1-10)</option>
+                <option value="Small (10-50)">Small (10-50)</option>
+                <option value="Medium (50-200)">Medium (50-200)</option>
+                <option value="Large (200+)">Large (200+)</option>
+            </select>
+            
+            <label>Budget per User/Month *</label>
+            <select name="budget" required>
+                <option value="">Select...</option>
+                <option value="Under $20/user/month">Under $20</option>
+                <option value="$20-$50/user/month">$20-$50</option>
+                <option value="$50-$100/user/month">$50-$100</option>
+                <option value="$100+/user/month">$100+</option>
+            </select>
+            
+            <label>Industry *</label>
+            <select name="industry" required>
+                <option value="">Select...</option>
+                <option value="SaaS">SaaS</option>
+                <option value="E-commerce">E-commerce</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Finance">Finance</option>
+            </select>
+            
+            <label>Required Features</label>
+            <input type="text" name="required_features" placeholder="e.g., Lead management, Analytics">
+            
+            <button type="submit">Get AI Recommendations 🚀</button>
+        </form>
+        
+        <div class="success" id="success">✅ Success! Check your email in 10 seconds!</div>
+    </div>
+    
+  <script>
+  const URL = 'your_webhook_url'; <!-- Replace with your webhook production url -->
+
+
+  document.getElementById('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const btn = form.querySelector('button');
+    const originalText = btn.innerText;
+
+    btn.disabled = true;
+    btn.innerText = 'Generating...';
+
+    try {
+      const payload = Object.fromEntries(new FormData(form));
+      const res = await fetch(URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error(`Webhook failed with status ${res.status}`);
+
+      form.style.display = 'none';
+      document.getElementById('success').style.display = 'block';
+    } catch (err) {
+      alert(
+        "Button worked, but webhook failed.\n\n" +
+        "Check: n8n running + workflow ACTIVE + correct webhook URL.\n\n" +
+        err.message
+      );
+      btn.disabled = false;
+      btn.innerText = originalText;
+    }
+  });
+</script>
+
+</body>
+</html>

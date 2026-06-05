@@ -1,0 +1,681 @@
+{
+  "name": "Mycroft - Financial Intelligence Hub",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+        
+      },
+      "id": "e82e279c-22ea-4fc5-83ee-526c0ed82d0b",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1840,
+        -432
+      ],
+      "webhookId": "intelligence-hub-chat"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "exec-id",
+              "name": "execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "string"
+            },
+            {
+              "id": "start-time",
+              "name": "start_time",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "log-file",
+              "name": "log_file",
+              "value": "=/tmp/mycroft_logs/hub_{{ $execution.id }}.json",
+              "type": "string"
+            },
+            {
+              "id": "query",
+              "name": "user_query",
+              "value": "={{ $json.chatInput }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "797cbb9f-3259-4204-a29d-bda30d94dcd9",
+      "name": "Initialize Hub",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1616,
+        -432
+      ]
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "import json\nimport os\n\nlog_data = {\n    'workflow': 'Intelligence_Hub',\n    'execution_id': _input.first().json['execution_id'],\n    'query': _input.first().json['user_query'],\n    'started_at': _input.first().json['start_time'],\n    'steps': []\n}\n\nos.makedirs('/tmp/mycroft_logs', exist_ok=True)\n\nwith open(_input.first().json['log_file'], 'w') as f:\n    json.dump(log_data, f)\n\nreturn _input.all()"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1392,
+        -432
+      ],
+      "id": "bc868667-b5e8-4a17-9ff1-8dab27e200b9",
+      "name": "Initialize Logging"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.user_query }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a query router for a financial and patent intelligence system. Your ONLY job is to decide which analysis tools to call based on user queries.  # CRITICAL RULES: 1. You MUST call at least ONE tool for every query (unless it's completely unrelated to finance/patents) 2. When in doubt, call BOTH tools - comprehensive analysis is better than missing information 3. ALWAYS extract company tickers and time periods even if not explicitly stated 4. Default to calling tools rather than refusing  # Available Tools:  ## analyze_sec_filings **Use when**: ANY mention of a company name, ticker, financials, earnings, revenue, performance, filings, reports, or business metrics **Parameters**:    - ticker: REQUIRED (convert company names to tickers)  **Company → Ticker Map**: Apple→AAPL, Tesla→TSLA, Microsoft→MSFT, Google→GOOGL, Amazon→AMZN, Meta→META, NVIDIA→NVDA, IBM→IBM, Netflix→NFLX, AMD→AMD  ## analyze_patents **Use when**: ANY mention of innovation, patents, IP, R&D, technology, AI trends, or inventions **Parameters**:   - days_back: REQUIRED (default: 100)  **Time conversions**: 1 week=7, 2 weeks=14, 1 month=30, 3 months=90, 6 months=180, 1 year=365  # Decision Framework:  **If query mentions a company** → ALWAYS call analyze_sec_filings **If query mentions patents/innovation/tech** → ALWAYS call analyze_patents **If query mentions both or is vague about a company** → Call BOTH tools \n\nOnly respond with the json object, do not add any more stuff to the response message. Dont mention the name of the parameter in the json, just the value"
+            }
+          ]
+        }
+      },
+      "id": "05fddedf-430d-41dd-9a80-0bed862f8f97",
+      "name": "LLM Chain Router",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        -1168,
+        -432
+      ]
+    },
+    {
+      "parameters": {
+        "model": "llama3:latest",
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "id": "7efdf095-5de8-436f-9084-5b08a5372589",
+      "name": "Ollama Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -1160,
+        -208
+      ],
+      "credentials": {
+        "ollamaApi": {
+          "id": "NepUB8oUyYAo6SVD",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "check-sec",
+              "leftValue": "={{ $json.output.tools_to_call }}",
+              "rightValue": "analyze_sec_filings",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -816,
+        -576
+      ],
+      "id": "e9dcf122-3c3a-40c5-a407-50ce3a28d529",
+      "name": "Call SEC?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "check-patent",
+              "leftValue": "={{ $json.output.tools_to_call }}",
+              "rightValue": "analyze_patents",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -816,
+        -288
+      ],
+      "id": "ecacbda5-92ea-4a74-8737-a19161e8a9ac",
+      "name": "Call Patent?"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5678/webhook/sec-analysis-enhanced",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "ticker",
+              "value": "={{ $json.output.parameters[0] }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -592,
+        -624
+      ],
+      "id": "efd47780-398f-474f-994c-9fa43f099c48",
+      "name": "Call SEC Workflow"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5678/webhook/patent-analysis",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.parameters.analyze_patents) }}",
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -592,
+        -240
+      ],
+      "id": "16ead2da-68f1-4d18-b370-587e34be42fb",
+      "name": "Call Patent Workflow"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "import json\nfrom datetime import datetime\n\n# Get log_file from the input data\nlog_file = _('Initialize Hub').first().json.log_file\n\nwith open(log_file, 'r') as f:\n    log = json.load(f)\n\nlog['steps'].append({\n    'step': 'Execute SEC Workflow',\n    'description': '⚡ Calling SEC analysis',\n    'status': 'completed',\n    'progress': 40,\n    'timestamp': datetime.utcnow().isoformat() + 'Z'\n})\n\nwith open(log_file, 'w') as f:\n    json.dump(log, f)\n\nreturn _input.all()"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -368,
+        -624
+      ],
+      "id": "e5040110-9f6b-4874-9a45-32bbae5a007c",
+      "name": "Log: SEC Called"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "import json\nfrom datetime import datetime\n\nlog_file = _node['Initialize Hub'].json['log_file']\n\nwith open(log_file, 'r') as f:\n    log = json.load(f)\n\nlog['steps'].append({\n    'step': 'Execute Patent Workflow',\n    'description': '⚡ Calling patent analysis',\n    'status': 'completed',\n    'progress': 40,\n    'timestamp': datetime.utcnow().isoformat() + 'Z'\n})\n\nwith open(log_file, 'w') as f:\n    json.dump(log, f)\n\nreturn _input.all()"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -368,
+        -240
+      ],
+      "id": "2956c7ff-ff8f-4161-8558-2b0cf7a3787b",
+      "name": "Log: Patent Called"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "import json\nimport os\nimport time\n\n# Wait for workflows to complete\ntime.sleep(5)\n\n# Get routing decision from LLM Chain Router\nrouting_output = _('LLM Chain Router').first().json.output\n\n# Parse if it's a string\nif isinstance(routing_output, str):\n    try:\n        routing = json.loads(routing_output)\n    except:\n        routing = {'tools_to_call': [], 'parameters': {}}\nelse:\n    routing = routing_output\n\n# Get execution context\nexecution_id = _('Initialize Hub').first().json.execution_id\nquery = _('Initialize Hub').first().json.user_query\nlog_file = _('Initialize Hub').first().json.log_file\n\n# Initialize results\nresults = {\n    'routing': routing,\n    'query': query,\n    'sec_data': None,\n    'patent_data': None,\n    'data_sources': [],\n    'log_file': log_file,\n    'execution_id': execution_id\n}\n\ndate_str = time.strftime('%Y-%m-%d')\n\n# Load SEC data if requested\nif 'analyze_sec_filings' in routing.get('tools_to_call', []):\n    try:\n        params = routing.get('parameters', {}).get('analyze_sec_filings', {})\n        ticker = params.get('ticker', 'UNKNOWN')\n        \n        sec_file = f\"/tmp/mycroft_data/sec_{ticker}_{date_str}/analysis.json\"\n        \n        if os.path.exists(sec_file):\n            with open(sec_file, 'r') as f:\n                results['sec_data'] = json.load(f)\n                results['data_sources'].append('SEC EDGAR')\n        else:\n            print(f\"SEC file not found: {sec_file}\")\n            \n    except Exception as e:\n        print(f\"SEC data load error: {e}\")\n\n# Load Patent data if requested\nif 'analyze_patents' in routing.get('tools_to_call', []):\n    try:\n        params = routing.get('parameters', {}).get('analyze_patents', {})\n        days_back = params.get('days_back', 100)\n        \n        patent_dir = f\"/tmp/mycroft_data/patent_{days_back}days_{date_str}\"\n        metrics_file = f\"{patent_dir}/data/processed_patents_recent_metrics.json\"\n        \n        if os.path.exists(metrics_file):\n            with open(metrics_file, 'r') as f:\n                results['patent_data'] = json.load(f)\n                results['data_sources'].append('USPTO PatentsView')\n        else:\n            print(f\"Patent file not found: {metrics_file}\")\n            \n    except Exception as e:\n        print(f\"Patent data load error: {e}\")\n\n# Return results\nreturn results"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -144,
+        -432
+      ],
+      "id": "cc8f31a4-0586-472e-8338-9fd5f557d5f6",
+      "name": "Aggregate Results"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "import json\nfrom datetime import datetime\n\nlog_file = _input.first().json['log_file']\n\nwith open(log_file, 'r') as f:\n    log = json.load(f)\n\nlog['steps'].append({\n    'step': 'Load Results',\n    'description': '📊 Aggregating analysis results',\n    'status': 'completed',\n    'progress': 60,\n    'timestamp': datetime.utcnow().isoformat() + 'Z'\n})\n\nwith open(log_file, 'w') as f:\n    json.dump(log, f)\n\nreturn _input.all()"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -528
+      ],
+      "id": "c9958e57-a2a1-4f02-8a2b-add314ac581a",
+      "name": "Log: Results Aggregated"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# Analysis Request\n\nUser Query: {{ $('Aggregate Results').item.json.query }}\n\n# Available Data:{{ $json.data }}\n\n\n## SEC Filing Analysis:\n{{ $json.sec_data ? JSON.stringify($json.sec_data, null, 2) : 'Not requested or unavailable' }}\n\n## Patent Analysis:\n{{ $json.patent_data ? JSON.stringify($json.patent_data, null, 2) : 'Not requested or unavailable' }}\n\n# Your Task:\nProvide a comprehensive, actionable intelligence report based on the data above. Include:\n\n1. **Executive Summary** (2-3 sentences summarizing key insights)\n2. **Key Findings** (4-6 specific, data-driven findings with numbers)\n3. **Strategic Recommendations** (3-5 actionable recommendations)\n4. **Risk Factors** (if relevant from the data)\n5. **Opportunities** (if relevant from the data)\n\nBe specific, cite actual numbers from the data, and focus on business value. Write in a professional analyst tone."
+      },
+      "id": "30840af8-5373-4adc-987e-41dbc71271bd",
+      "name": "LLM Chain Analyst",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        528,
+        -336
+      ]
+    },
+    {
+      "parameters": {
+        "model": "llama3:latest",
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "id": "6c257dd0-6060-4552-a9b2-bc3c7029cb12",
+      "name": "Ollama Analyst Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        600,
+        -112
+      ],
+      "credentials": {
+        "ollamaApi": {
+          "id": "NepUB8oUyYAo6SVD",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "import json\nfrom datetime import datetime\n\nlog_file = _('Aggregate Results').first().json.log_file\n\nwith open(log_file, 'r') as f:\n    log = json.load(f)\n\nlog['steps'].append({\n    'step': 'AI Analysis',\n    'description': '💡 Generated insights and recommendations',\n    'status': 'completed',\n    'progress': 90,\n    'timestamp': datetime.utcnow().isoformat() + 'Z'\n})\n\nwith open(log_file, 'w') as f:\n    json.dump(log, f)\n\nreturn _input.all()"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -336
+      ],
+      "id": "f77b8b9a-eda8-4d4a-80bb-35e9f3702138",
+      "name": "Log: Analysis Complete"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format final response for chat\nconst analysis = $input.first().json.output;\nconst aggregateData = $node['Aggregate Results'].json;\nconst hubData = $node['Initialize Hub'].json;\n\nconst executionTime = Date.now() - new Date(hubData.start_time).getTime();\n\nconst response = `🎯 **MYCROFT INTELLIGENCE REPORT**\n\n📋 **Query**: ${aggregateData.query}\n⏱️ **Execution Time**: ${executionTime}ms\n📊 **Data Sources**: ${aggregateData.data_sources.join(', ')}\n\n---\n\n${analysis}\n\n---\n\n🆔 Execution ID: ${hubData.execution_id}\n📁 Full log: ${aggregateData.log_file}`;\n\nreturn [{\n  json: {\n    response: response,\n    execution_id: hubData.execution_id,\n    execution_time_ms: executionTime\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1104,
+        -336
+      ],
+      "id": "7e714f17-d2a5-4ae2-946c-4efbb2ed1ffa",
+      "name": "Format Chat Response"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "import json\nfrom datetime import datetime\n\nlog_file = _('Aggregate Results').first().json.log_file\n\nwith open(log_file, 'r') as f:\n    log = json.load(f)\n\nlog['steps'].append({\n    'step': 'Complete',\n    'description': '✅ Hub analysis complete',\n    'status': 'completed',\n    'progress': 100,\n    'timestamp': datetime.utcnow().isoformat() + 'Z'\n})\n\nlog['completed_at'] = datetime.utcnow().isoformat() + 'Z'\nlog['status'] = 'completed'\n\nwith open(log_file, 'w') as f:\n    json.dump(log, f)\n\nreturn _input.all()"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1328,
+        -336
+      ],
+      "id": "3a7cd9a0-a9b8-43fb-bbc6-402a75866208",
+      "name": "Log: Complete"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Handle case when no tools need to be called\nconst routing = $json;\n\nreturn [{\n  json: {\n    routing: routing,\n    query: $node['Initialize Hub'].json.user_query,\n    sec_data: null,\n    patent_data: null,\n    data_sources: [],\n    log_file: $node['Initialize Hub'].json.log_file,\n    message: 'No specific data requested or query too vague'\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -592,
+        -432
+      ],
+      "id": "5931b84b-df94-4a3e-995e-8f55fa81137b",
+      "name": "No Tools Needed"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"tools_to_call\": \"analyze_sec_filings\",\n\t\"parameters\": [\"AAPL\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -1032,
+        -208
+      ],
+      "id": "0252fe79-395c-4adf-971d-9cff89cd4763",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $node['Call SEC Workflow'].json.narratives_path }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        80,
+        -336
+      ],
+      "id": "5015e09e-8025-41b3-bd3a-353004c92041",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        304,
+        -336
+      ],
+      "id": "96efdda0-0a33-4105-9df2-61962fd1b82a",
+      "name": "Extract from File"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Initialize Hub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initialize Hub": {
+      "main": [
+        [
+          {
+            "node": "Initialize Logging",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initialize Logging": {
+      "main": [
+        [
+          {
+            "node": "LLM Chain Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM Chain Router": {
+      "main": [
+        [
+          {
+            "node": "Call SEC?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Call Patent?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call SEC?": {
+      "main": [
+        [
+          {
+            "node": "Call SEC Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Tools Needed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Patent?": {
+      "main": [
+        [
+          {
+            "node": "Call Patent Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Tools Needed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call SEC Workflow": {
+      "main": [
+        [
+          {
+            "node": "Log: SEC Called",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Patent Workflow": {
+      "main": [
+        [
+          {
+            "node": "Log: Patent Called",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: SEC Called": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: Patent Called": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Tools Needed": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Results": {
+      "main": [
+        [
+          {
+            "node": "Log: Results Aggregated",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: Results Aggregated": {
+      "main": [
+        []
+      ]
+    },
+    "LLM Chain Analyst": {
+      "main": [
+        [
+          {
+            "node": "Log: Analysis Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: Analysis Complete": {
+      "main": [
+        [
+          {
+            "node": "Format Chat Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Chat Response": {
+      "main": [
+        [
+          {
+            "node": "Log: Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "LLM Chain Router",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "LLM Chain Router",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Analyst Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "LLM Chain Analyst",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "LLM Chain Analyst",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6e3dd1c1-0b37-440d-804f-af6541211acb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "54e139bdd36444c24c3c5ac8519ffbbee75318a9c1efe841874a03d85ac23aaf"
+  },
+  "id": "Y6jrUj04CT3su7UK",
+  "tags": []
+}

@@ -1,0 +1,539 @@
+{
+  "name": "Investor agent - part 2",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -32
+      ],
+      "id": "28320830-e802-4460-99c6-9d14d85ea9b0",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://techcrunch.com/tag/artificial-intelligence/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -192,
+        -32
+      ],
+      "id": "adecee03-555f-4d3b-b145-eee3d3cab072",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Turn RSS articles into rough funding_deal objects for funding_rounds.\n\nconst items = $input.all();\n\nconst INVESTOR_KEYWORDS = [\n  'Sequoia', 'Andreessen Horowitz', 'a16z', 'Accel', 'Greylock',\n  'Index Ventures', 'Lightspeed', 'General Catalyst', 'Bessemer',\n  'Tiger Global', 'SoftBank', 'Khosla', 'Founders Fund'\n];\n\nfunction guessAmountUsd(text) {\n  const m = text.match(/\\$([\\d,.]+)\\s*(million|billion|m|b)?/i);\n  if (!m) return null;\n\n  let num = parseFloat(m[1].replace(/,/g, ''));\n  const unit = (m[2] || '').toLowerCase();\n\n  if (unit === 'b' || unit.includes('billion')) {\n    num *= 1_000_000_000;\n  } else if (unit === 'm' || unit.includes('million')) {\n    num *= 1_000_000;\n  }\n\n  return Math.round(num);\n}\n\nfunction guessRoundType(text) {\n  const t = text.toLowerCase();\n  if (t.includes('pre-seed')) return 'Pre-Seed';\n  if (t.includes('seed round') || t.includes('seed funding')) return 'Seed';\n  if (t.includes('series a')) return 'Series A';\n  if (t.includes('series b')) return 'Series B';\n  if (t.includes('series c')) return 'Series C';\n  if (t.includes('series d')) return 'Series D';\n  if (t.includes('ipo')) return 'IPO';\n  return 'Unknown';\n}\n\nfunction guessInvestors(text) {\n  const investors = [];\n  for (const name of INVESTOR_KEYWORDS) {\n    const pattern = new RegExp(name.replace(/\\s+/g, '\\\\s+'), 'i');\n    if (pattern.test(text)) investors.push(name);\n  }\n  return Array.from(new Set(investors));\n}\n\nfunction guessStartupName(title) {\n  // e.g. \"AI robotics startup XYZ raises $80M Series B\"\n  const part = title.split(/raises|lands|secures|nabs/i)[0];\n  return part.replace(/AI (startup|company)/gi, '').trim();\n}\n\nconst deals = items.map(item => {\n  const j = item.json;\n\n  const title = j.title || '';\n  const content = j.content || j.description || '';\n  const link = j.link || '';\n\n  const fullText = `${title} ${content}`;\n\n  const startupName = guessStartupName(title) || 'Unknown AI company';\n  const amountUsd = guessAmountUsd(fullText);\n  const roundType = guessRoundType(fullText);\n  const investors = guessInvestors(fullText);\n\n  return {\n    json: {\n      startup_name: startupName,\n      amount_usd: amountUsd,\n      round_type: roundType,\n      announced_date: new Date().toISOString().slice(0, 10),\n      description: fullText.slice(0, 2000),\n      source: 'TechCrunch AI RSS',\n      source_url: link,\n      investors\n    }\n  };\n});\n\nreturn deals;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16,
+        -32
+      ],
+      "id": "de6a0352-d9f7-44ba-9197-590996806334",
+      "name": "Extract Funding Deals"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "funding_rounds",
+          "mode": "list",
+          "cachedResultName": "funding_rounds"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "startup_name": "={{ $json.startup_name }}",
+            "amount": "={{ $json.amount_usd }}",
+            "round_type": "={{ $json.round_type }}",
+            "description": "={{ $json.description }}",
+            "source": "={{ $json.source }}",
+            "source_url": "={{ $json.source_url }}",
+            "quality_score": "={{ Number($json.amount_usd || 0) }}\n",
+            "announced_date": "={{ $json.announced_date }}",
+            "normalized_startup_name": "=({{ $json.startup_name }})",
+            "currency": " 'USD'",
+            "created_at": "2025-11-17T00:00:00",
+            "updated_at": "2025-11-17T00:00:00"
+          },
+          "matchingColumns": [
+            "normalized_startup_name",
+            "announced_date",
+            "round_type"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "startup_name",
+              "displayName": "startup_name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "normalized_startup_name",
+              "displayName": "normalized_startup_name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "amount",
+              "displayName": "amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "announced_date",
+              "displayName": "announced_date",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "round_type",
+              "displayName": "round_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source_url",
+              "displayName": "source_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "quality_score",
+              "displayName": "quality_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        336,
+        -176
+      ],
+      "id": "23463b88-5406-4c6b-94c4-1c7dcf4e9e8c",
+      "name": "Insert or update rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst out = [];\n\nfor (const item of items) {\n  const j = item.json;\n  const text = (j.description || \"\").toLowerCase();\n  \n\n  // Simple extraction patterns\n  let investors = [];\n\n  // Pattern 1: \"investors include X, Y\"\n  const m1 = text.match(/investors? include(?:s)? (.*?)\\./);\n  if (m1) {\n    investors = m1[1].split(\",\").map(s => s.trim());\n  }\n\n  // Pattern 2: \"led by X\"\n  const m2 = text.match(/led by ([a-zA-Z0-9 &]+)/);\n  if (m2) {\n    investors.push(m2[1].trim());\n  }\n\n  // Pattern 3: \"backed by X\"\n  const m3 = text.match(/backed by ([a-zA-Z0-9 &,]+)/);\n  if (m3) {\n    investors.push(...m3[1].split(\",\").map(s => s.trim()));\n  }\n\n  const nameLower = (j.startup_name || \"\").toLowerCase();\n\n// Demo-only heuristic – treat big companies as 'investors'\nif (nameLower.includes(\"meta\")) investors.push(\"Meta\");\nif (nameLower.includes(\"google\")) investors.push(\"Google\");\nif (nameLower.includes(\"microsoft\")) investors.push(\"Microsoft\");\nif (nameLower.includes(\"nvidia\")) investors.push(\"NVIDIA\");\n\n\n  // Deduplicate + basic cleanup\n  investors = [...new Set(investors)];\n\n  out.push({\n    json: {\n      ...j,\n      investors\n    }\n  });\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        64
+      ],
+      "id": "8de1e005-0b1b-4fb6-8db7-b7b3e73029b9",
+      "name": "extract investor"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE IF NOT EXISTS investor_links (\n    id SERIAL PRIMARY KEY,\n    investor_name              VARCHAR(255) NOT NULL,\n    normalized_investor_name   VARCHAR(255) NOT NULL,\n    startup_name               VARCHAR(255) NOT NULL,\n    normalized_startup_name    VARCHAR(255) NOT NULL,\n    announced_date             DATE NOT NULL,\n    round_type                 VARCHAR(50),\n    amount_usd                 DECIMAL(15,2),\n    source                     VARCHAR(100),\n    source_url                 VARCHAR(500),\n    created_at                 TIMESTAMP DEFAULT NOW(),\n    UNIQUE (normalized_investor_name, normalized_startup_name, announced_date, round_type)\n);\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        64,
+        -432
+      ],
+      "id": "f7595a46-b3df-416f-9916-fb6fd9807347",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst out = [];\n\nfor (const item of items) {\n  const j = item.json;\n  const investors = j.investors || [];\n\n  for (const raw of investors) {\n    const name = (raw || '').trim();\n    if (!name) continue;\n\n    const normInvestor = name.toLowerCase();\n    const normStartup  = (j.normalized_startup_name || j.startup_name || '')\n                          .toLowerCase()\n                          .trim();\n\n    out.push({\n      json: {\n        investor_name: name,\n        normalized_investor_name: normInvestor,\n        startup_name: j.startup_name,\n        normalized_startup_name: normStartup,\n        announced_date: j.announced_date,\n        round_type: j.round_type,\n        amount_usd: j.amount_usd,\n        source: j.source,\n        source_url: j.source_url\n      }\n    });\n  }\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        48
+      ],
+      "id": "83d8b75e-7253-4967-8af1-758dfe314c3c",
+      "name": "Build Investor Links"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "investor_links",
+          "mode": "list",
+          "cachedResultName": "investor_links"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "normalized_investor_name": "={{ $json.normalized_investor_name }}",
+            "normalized_startup_name": "={{ $json.normalized_startup_name }}",
+            "investor_name": "={{ $json.investor_name }}",
+            "startup_name": "={{ $json.startup_name }}",
+            "announced_date": "={{ $json.announced_date }}",
+            "round_type": "={{ $json.round_type }}",
+            "amount_usd": "={{ $json.amount_usd }}",
+            "source": "={{ $json.source }}",
+            "source_url": "={{ $json.source_url }}",
+            "created_at": "2025-11-17T00:00:00"
+          },
+          "matchingColumns": [
+            "normalized_investor_name",
+            "normalized_startup_name"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "investor_name",
+              "displayName": "investor_name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "normalized_investor_name",
+              "displayName": "normalized_investor_name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "startup_name",
+              "displayName": "startup_name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "normalized_startup_name",
+              "displayName": "normalized_startup_name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "announced_date",
+              "displayName": "announced_date",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "round_type",
+              "displayName": "round_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "amount_usd",
+              "displayName": "amount_usd",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "source_url",
+              "displayName": "source_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        752,
+        32
+      ],
+      "id": "8a13be39-e4d8-4b86-a856-bd644e685ab5",
+      "name": "Insert or update rows in a table1",
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "ALTER TABLE investor_links\nADD CONSTRAINT investor_links_unique\nUNIQUE (normalized_investor_name, normalized_startup_name);\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        432,
+        -432
+      ],
+      "id": "a0e3a0a9-3702-4f59-a93d-31a361e2fcc7",
+      "name": "Execute a SQL query1",
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Extract Funding Deals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Funding Deals": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "extract investor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert or update rows in a table": {
+      "main": [
+        []
+      ]
+    },
+    "extract investor": {
+      "main": [
+        [
+          {
+            "node": "Build Investor Links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Investor Links": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert or update rows in a table1": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f8f38ee6-ae4c-4cbf-9d60-4054cd2a4077",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c5605aae802302d14cf85834357505b8eaf4143631bcf5d9ab9240de503b0d2d"
+  },
+  "id": "YiyRhhbhSLPdU5vu",
+  "tags": []
+}

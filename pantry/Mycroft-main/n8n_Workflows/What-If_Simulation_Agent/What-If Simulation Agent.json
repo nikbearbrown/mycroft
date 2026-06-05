@@ -1,0 +1,381 @@
+{
+  "name": "What-If Simulation Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mycroft-whatif",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": false
+        }
+      },
+      "id": "64d8d5b2-1138-4d63-acbe-5ec918f70dc4",
+      "name": "🎯 Webhook — Receive Simulation Request",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -2352,
+        96
+      ],
+      "webhookId": "REPLACE_ON_IMPORT"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── MYCROFT: Input Parser & Validator ───────────────────────────────────────\nconst body = $input.first().json.body || $input.first().json;\n\n// Apply defaults and parse types\nconst input = {\n  company:             String(body.company              || 'Unknown Company'),\n  ticker:              String(body.ticker               || 'N/A').toUpperCase(),\n  revenue_growth:      parseFloat(body.revenue_growth   ?? 0.15),\n  sentiment_score:     parseFloat(body.sentiment_score  ?? 0.50),\n  risk_appetite:       String(body.risk_appetite         || 'medium').toLowerCase(),\n  time_horizon:        String(body.time_horizon          || '1year').toLowerCase(),\n  current_price:       parseFloat(body.current_price     ?? 100),\n  pe_ratio:            parseFloat(body.pe_ratio           ?? 25),\n  debt_equity:         parseFloat(body.debt_equity        ?? 0.50),\n  market_cap_billions: parseFloat(body.market_cap_billions ?? 10)\n};\n\n// Validation rules\nconst errors = [];\nif (input.revenue_growth < -1   || input.revenue_growth > 20)  errors.push('revenue_growth must be between -1.0 and 20.0');\nif (input.sentiment_score < 0   || input.sentiment_score > 1)  errors.push('sentiment_score must be 0–1');\nif (!['low','medium','high'].includes(input.risk_appetite))     errors.push('risk_appetite must be low | medium | high');\nif (input.pe_ratio < 0)                                         errors.push('pe_ratio must be positive');\nif (input.debt_equity < 0)                                      errors.push('debt_equity must be positive');\n\n// Normalise time horizon\nif (!['3month','1year','5year'].includes(input.time_horizon)) input.time_horizon = '1year';\n\nif (errors.length > 0) throw new Error('Validation Failed: ' + errors.join(' | '));\n\n// Generate unique simulation ID\nconst rand = Math.random().toString(36).substr(2, 6).toUpperCase();\nconst simulation_id = `SIM-${Date.now()}-${rand}`;\n\nreturn [{ json: { ...input, simulation_id, timestamp: new Date().toISOString() } }];"
+      },
+      "id": "138c670c-857d-4d56-9315-1c1f55f8ad2c",
+      "name": "🔍 Parse & Validate Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2112,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── SIMULATION 1: Growth vs Sentiment Tradeoff ──────────────────────────────\n// Core Principle: If fundamentals and market sentiment diverge → detect the conflict\nconst data   = $input.first().json;\nconst growth    = data.revenue_growth;\nconst sentiment = data.sentiment_score;\n\n// Level classifiers\nconst growthLevel    = growth    >= 0.25 ? 'HIGH' : growth    >= 0.10 ? 'MEDIUM' : 'LOW';\nconst sentimentLevel = sentiment >= 0.65 ? 'HIGH' : sentiment >= 0.40 ? 'MEDIUM' : 'LOW';\n\n// 3×3 Signal Matrix — each cell is a full decision profile\nconst signalMatrix = {\n  HIGH_HIGH:   { signal:'STRONG_BUY',       confidence:0.88, risk:'LOW',         short_term:'+15 to +25%',  long_term:'+60 to +120%', description:'Both fundamentals and market conviction are aligned — ideal setup.' },\n  HIGH_MEDIUM: { signal:'BUY',              confidence:0.72, risk:'LOW_MEDIUM',  short_term:'+8 to +15%',   long_term:'+40 to +80%',  description:'Strong fundamentals; market is starting to recognise the value.' },\n  HIGH_LOW:    { signal:'FUNDAMENTAL_BUY',  confidence:0.61, risk:'MEDIUM',      short_term:'-5 to +5%',    long_term:'+30 to +70%',  description:'Market undervaluing strong fundamentals — contrarian value play.' },\n  MEDIUM_HIGH: { signal:'HOLD_WATCH',       confidence:0.55, risk:'MEDIUM',      short_term:'+5 to +12%',   long_term:'+15 to +35%',  description:'Sentiment slightly ahead of fundamentals — monitor for convergence.' },\n  MEDIUM_MEDIUM:{ signal:'HOLD',            confidence:0.65, risk:'MEDIUM',      short_term:'0 to +8%',     long_term:'+10 to +25%',  description:'Balanced but lacks a strong catalyst either way.' },\n  MEDIUM_LOW:  { signal:'UNDERPERFORM',     confidence:0.60, risk:'MEDIUM_HIGH', short_term:'-5 to +5%',    long_term:'+5 to +15%',   description:'Adequate fundamentals dragged down by weak sentiment.' },\n  LOW_HIGH:    { signal:'BUBBLE_RISK',      confidence:0.75, risk:'HIGH',        short_term:'+5 to +15%',   long_term:'-20 to 0%',    description:'DANGER: Sentiment massively disconnected from weak fundamentals.' },\n  LOW_MEDIUM:  { signal:'SELL',             confidence:0.68, risk:'HIGH',        short_term:'-5 to -15%',   long_term:'-10 to +10%',  description:'Deteriorating fundamentals with fading sentiment support.' },\n  LOW_LOW:     { signal:'STRONG_SELL',      confidence:0.82, risk:'VERY_HIGH',   short_term:'-15 to -30%',  long_term:'-30 to -10%',  description:'Both fundamentals and market sentiment fully bearish.' }\n};\n\nconst matrixKey = `${growthLevel}_${sentimentLevel}`;\nconst result    = signalMatrix[matrixKey];\n\n// Conflict & Bubble Detection\nconst conflictDetected = (growthLevel === 'HIGH'   && sentimentLevel === 'LOW') ||\n                         (growthLevel === 'LOW'    && sentimentLevel === 'HIGH');\n\nconst bubbleRiskScore =\n  (growthLevel === 'LOW'    && sentimentLevel === 'HIGH')   ? 0.85 :\n  (growthLevel === 'MEDIUM' && sentimentLevel === 'HIGH')   ? 0.48 :\n  (growthLevel === 'LOW'    && sentimentLevel === 'MEDIUM') ? 0.35 : 0.12;\n\nconst correctionProbability =\n  bubbleRiskScore > 0.70 ? 'HIGH (>65%)'  :\n  bubbleRiskScore > 0.40 ? 'MEDIUM (30–65%)' : 'LOW (<30%)';\n\n// Key Insight — human-readable narrative\nlet keyInsight;\nif (growthLevel === 'HIGH' && sentimentLevel === 'LOW') {\n  keyInsight = `⚠️ CONFLICT DETECTED: Strong ${Math.round(growth*100)}% revenue growth is being ignored by the market (sentiment ${(sentiment*100).toFixed(0)}%). Classic value opportunity — patience required.`;\n} else if (growthLevel === 'LOW' && sentimentLevel === 'HIGH') {\n  keyInsight = `🚨 BUBBLE RISK: High sentiment (${(sentiment*100).toFixed(0)}%) is NOT supported by ${Math.round(growth*100)}% growth. Correction probability is ${correctionProbability}.`;\n} else {\n  keyInsight = `${growthLevel} growth + ${sentimentLevel} sentiment → ${result.signal}. ${result.description}`;\n}\n\nreturn [{ json: {\n  ...data,\n  sim1_growth_sentiment: {\n    simulation:        'GROWTH_VS_SENTIMENT',\n    inputs:            { growth_rate: growth, sentiment_score: sentiment, growth_level: growthLevel, sentiment_level: sentimentLevel },\n    output:            result,\n    conflict_detected: conflictDetected,\n    bubble_risk_score: bubbleRiskScore,\n    correction_probability: correctionProbability,\n    key_insight:       keyInsight\n  }\n} }];"
+      },
+      "id": "b9e5fe29-be12-498b-b0db-aa96f8c066c4",
+      "name": "📈 Sim 1 — Growth vs Sentiment Tradeoff",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1872,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── SIMULATION 2: Risk Appetite Simulator ───────────────────────────────────\n// Core Principle: Same stock → different decisions for different investor types\nconst data      = $input.first().json;\nconst riskLevel = data.risk_appetite;\nconst growth    = data.revenue_growth;\nconst sentiment = data.sentiment_score;\nconst pe        = data.pe_ratio;\nconst de        = data.debt_equity;\n\n// Full investor profile definitions\nconst profiles = {\n  low: {\n    name: 'Conservative', icon: '🔵',\n    growth_threshold:    0.15,\n    sentiment_threshold: 0.60,\n    pe_max:              25,\n    de_max:              0.50,\n    max_position_pct:    5,\n    stop_loss_pct:       5,\n    take_profit_pct:     12,\n    preferred_horizon:   '3–5 years',\n    max_drawdown:        '10%',\n    description:         'Capital preservation is paramount. Prefers stable, established companies with low volatility and dividends.'\n  },\n  medium: {\n    name: 'Balanced', icon: '🟢',\n    growth_threshold:    0.10,\n    sentiment_threshold: 0.45,\n    pe_max:              40,\n    de_max:              0.80,\n    max_position_pct:    10,\n    stop_loss_pct:       10,\n    take_profit_pct:     25,\n    preferred_horizon:   '1–3 years',\n    max_drawdown:        '20%',\n    description:         'Balanced growth and protection. Accepts moderate volatility in exchange for higher long-term returns.'\n  },\n  high: {\n    name: 'Aggressive', icon: '🟠',\n    growth_threshold:    0.05,\n    sentiment_threshold: 0.35,\n    pe_max:              80,\n    de_max:              1.50,\n    max_position_pct:    20,\n    stop_loss_pct:       20,\n    take_profit_pct:     60,\n    preferred_horizon:   '6–18 months',\n    max_drawdown:        '40%',\n    description:         'Maximum growth orientation. High volatility tolerance. Seeks asymmetric upside opportunities.'\n  }\n};\n\nconst profile = profiles[riskLevel];\n\n// Evaluate this stock against the selected profile — 4 weighted criteria\nconst criteria = [\n  { name: 'Revenue Growth',  pass: growth    >= profile.growth_threshold,    actual: `${Math.round(growth*100)}%`,        required: `≥ ${Math.round(profile.growth_threshold*100)}%`,   weight: 0.30 },\n  { name: 'Market Sentiment',pass: sentiment >= profile.sentiment_threshold, actual: sentiment.toFixed(2),                required: `≥ ${profile.sentiment_threshold.toFixed(2)}`,      weight: 0.25 },\n  { name: 'P/E Ratio',       pass: pe        <= profile.pe_max,               actual: pe.toFixed(1),                       required: `≤ ${profile.pe_max}`,                              weight: 0.25 },\n  { name: 'Debt / Equity',   pass: de        <= profile.de_max,               actual: de.toFixed(2),                       required: `≤ ${profile.de_max}`,                              weight: 0.20 }\n];\n\nconst weightedPassRate = criteria.reduce((sum, c) => sum + (c.pass ? c.weight : 0), 0);\nconst passCount        = criteria.filter(c => c.pass).length;\n\nconst recommendation =\n  weightedPassRate >= 0.80 ? 'ENTER_FULL_POSITION'    :\n  weightedPassRate >= 0.55 ? 'ENTER_PARTIAL_POSITION' :\n  weightedPassRate >= 0.30 ? 'WATCHLIST_ONLY'         : 'AVOID';\n\n// Cross-profile comparison — how does the SAME stock look to each investor type?\nconst crossProfileComparison = Object.entries(profiles).map(([level, p]) => {\n  const criteriaScores = [\n    { pass: growth    >= p.growth_threshold,    weight: 0.30 },\n    { pass: sentiment >= p.sentiment_threshold, weight: 0.25 },\n    { pass: pe        <= p.pe_max,              weight: 0.25 },\n    { pass: de        <= p.de_max,              weight: 0.20 }\n  ];\n  const wpr = criteriaScores.reduce((s, c) => s + (c.pass ? c.weight : 0), 0);\n  const rec = wpr >= 0.80 ? 'ENTER' : wpr >= 0.55 ? 'PARTIAL' : wpr >= 0.30 ? 'WATCH' : 'AVOID';\n  return {\n    risk_level:     level,\n    investor_type:  p.name,\n    fit_score_pct:  Math.round(wpr * 100),\n    recommendation: rec,\n    max_position:   `${p.max_position_pct}%`,\n    stop_loss:      `${p.stop_loss_pct}%`,\n    is_selected:    level === riskLevel\n  };\n});\n\nconst keyInsight = `${profile.icon} ${profile.name} investor → ${recommendation} | ${Math.round(weightedPassRate*100)}% criteria met (${passCount}/4 passed) | Max position: ${profile.max_position_pct}% | Stop-loss: ${profile.stop_loss_pct}%`;\n\nreturn [{ json: {\n  ...data,\n  sim2_risk_appetite: {\n    simulation:                'RISK_APPETITE',\n    inputs:                    { risk_appetite: riskLevel, pe_ratio: pe, debt_equity: de, revenue_growth: growth, sentiment_score: sentiment },\n    profile,\n    criteria_evaluation:       criteria,\n    weighted_pass_rate:        Math.round(weightedPassRate * 100) / 100,\n    pass_count:                `${passCount}/4`,\n    recommendation,\n    cross_profile_comparison:  crossProfileComparison,\n    key_insight:               keyInsight\n  }\n} }];"
+      },
+      "id": "8f0dafcd-595b-41e8-8be9-421e85d80bd6",
+      "name": "⚖️ Sim 2 — Risk Appetite Simulator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1632,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── SIMULATION 3: Threshold Break Simulator ─────────────────────────────────\n// Core Principle: At what exact point does the recommendation CHANGE?\nconst data             = $input.first().json;\nconst currentGrowth    = data.revenue_growth;\nconst currentSentiment = data.sentiment_score;\n\n// Shared signal classifier (mirrors Sim1 logic)\nfunction classify(g, s) {\n  const gL = g >= 0.25 ? 'HIGH' : g >= 0.10 ? 'MEDIUM' : 'LOW';\n  const sL = s >= 0.65 ? 'HIGH' : s >= 0.40 ? 'MEDIUM' : 'LOW';\n  const m  = {\n    HIGH_HIGH:'STRONG_BUY', HIGH_MEDIUM:'BUY', HIGH_LOW:'FUNDAMENTAL_BUY',\n    MEDIUM_HIGH:'HOLD_WATCH', MEDIUM_MEDIUM:'HOLD', MEDIUM_LOW:'UNDERPERFORM',\n    LOW_HIGH:'BUBBLE_RISK', LOW_MEDIUM:'SELL', LOW_LOW:'STRONG_SELL'\n  };\n  return m[`${gL}_${sL}`] || 'HOLD';\n}\n\nconst baseRecommendation = classify(currentGrowth, currentSentiment);\n\n// Helper: find breakpoints by sweeping a variable\nfunction findBreakpoints(sweepVar, fixedGrowth, fixedSentiment, min, max, step) {\n  const sweep = [];\n  for (let v = min; v <= max + 0.0001; v = Math.round((v + step) * 1000) / 1000) {\n    const g = sweepVar === 'growth'    ? v : fixedGrowth;\n    const s = sweepVar === 'sentiment' ? v : fixedSentiment;\n    sweep.push({ value: v, recommendation: classify(g, s) });\n  }\n  const breaks = [];\n  for (let i = 1; i < sweep.length; i++) {\n    if (sweep[i].recommendation !== sweep[i-1].recommendation) {\n      const threshold    = Math.round(((sweep[i-1].value + sweep[i].value) / 2) * 1000) / 1000;\n      const currentValue = sweepVar === 'growth' ? fixedGrowth : fixedSentiment;\n      const distFromCurrent = Math.abs(threshold - currentValue);\n      breaks.push({\n        transition:          `${sweep[i-1].recommendation} → ${sweep[i].recommendation}`,\n        threshold_approx:    threshold,\n        direction:           sweep[i].value > currentValue ? 'MUST_INCREASE_TO_TRIGGER' : 'BREAKS_IF_DECREASES',\n        distance_from_current: Math.round(distFromCurrent * 1000) / 1000,\n        is_nearest:          false\n      });\n    }\n  }\n  // Mark nearest breakpoint\n  if (breaks.length > 0) {\n    const nearestIdx = breaks.reduce((ni, b, i, arr) =>\n      b.distance_from_current < arr[ni].distance_from_current ? i : ni, 0);\n    breaks[nearestIdx].is_nearest = true;\n  }\n  return breaks;\n}\n\n// Sweep sentiment (0.00 → 1.00, step 0.05)\nconst sentimentBreakpoints = findBreakpoints('sentiment', currentGrowth, currentSentiment, 0.00, 1.00, 0.05);\n\n// Sweep growth (-0.10 → 0.60, step 0.05)\nconst growthBreakpoints = findBreakpoints('growth', currentGrowth, currentSentiment, -0.10, 0.60, 0.05);\n\n// Sensitivity scoring: how many breakpoints lie within ±0.15 of current values\nconst sentimentBreaksNearby = sentimentBreakpoints.filter(b => b.distance_from_current <= 0.15).length;\nconst growthBreaksNearby    = growthBreakpoints.filter(b => b.distance_from_current    <= 0.10).length;\nconst primaryDriver         = sentimentBreaksNearby >= growthBreaksNearby ? 'SENTIMENT' : 'GROWTH';\n\n// Stability score: distance from nearest breakpoints (1.0 = very stable, 0.0 = at a breakpoint)\nconst minSentDist   = sentimentBreakpoints.length > 0 ? Math.min(...sentimentBreakpoints.map(b => b.distance_from_current)) : 0.50;\nconst minGrowthDist = growthBreakpoints.length    > 0 ? Math.min(...growthBreakpoints.map(b => b.distance_from_current))    : 0.50;\nconst stabilityScore = Math.round(Math.min(1, (minSentDist * 2.0 + minGrowthDist * 3.0) / 2.5) * 100) / 100;\n\n// Two-way stress tests: what does ±10% change in each variable cause?\nconst stressTests = [\n  { scenario: 'Sentiment −10%',  g: currentGrowth,    s: Math.max(0, currentSentiment - 0.10), result: classify(currentGrowth, Math.max(0, currentSentiment - 0.10))   },\n  { scenario: 'Sentiment +10%',  g: currentGrowth,    s: Math.min(1, currentSentiment + 0.10), result: classify(currentGrowth, Math.min(1, currentSentiment + 0.10))   },\n  { scenario: 'Growth −10pp',    g: currentGrowth - 0.10, s: currentSentiment,                  result: classify(currentGrowth - 0.10, currentSentiment)                 },\n  { scenario: 'Growth +10pp',    g: currentGrowth + 0.10, s: currentSentiment,                  result: classify(currentGrowth + 0.10, currentSentiment)                 },\n  { scenario: 'Both −10%',       g: currentGrowth - 0.10, s: Math.max(0, currentSentiment - 0.10), result: classify(currentGrowth - 0.10, Math.max(0, currentSentiment - 0.10)) },\n  { scenario: 'Both +10%',       g: currentGrowth + 0.10, s: Math.min(1, currentSentiment + 0.10), result: classify(currentGrowth + 0.10, Math.min(1, currentSentiment + 0.10)) }\n].map(t => ({\n  scenario: t.scenario,\n  result:   t.result,\n  changed:  t.result !== baseRecommendation,\n  delta:    t.result !== baseRecommendation ? `${baseRecommendation} → ${t.result}` : 'No change'\n}));\n\n// Number of stress tests that triggered a recommendation change\nconst stressBreachCount = stressTests.filter(t => t.changed).length;\nconst stressResiliency  = stressBreachCount === 0 ? 'HIGH' : stressBreachCount <= 2 ? 'MEDIUM' : 'LOW';\n\nconst nearestSentBreak = sentimentBreakpoints.find(b => b.is_nearest);\nconst nearestGrowthBreak = growthBreakpoints.find(b => b.is_nearest);\n\nlet keyInsight;\nif (nearestSentBreak && nearestSentBreak.distance_from_current < 0.10) {\n  keyInsight = `🚨 HIGH SENSITIVITY: Decision is ${(nearestSentBreak.distance_from_current * 100).toFixed(0)} sentiment-points from a change (${nearestSentBreak.transition}). Primary driver: ${primaryDriver}.`;\n} else if (stabilityScore > 0.7) {\n  keyInsight = `✅ STABLE: Current recommendation (${baseRecommendation}) is robust. Nearest trigger is ${(minSentDist * 100).toFixed(0)} sentiment-points away. Primary driver: ${primaryDriver}.`;\n} else {\n  keyInsight = `⚠️ MODERATE SENSITIVITY: ${primaryDriver} is the primary driver. ${nearestSentBreak ? `Sentiment threshold: ${nearestSentBreak.transition} at ~${nearestSentBreak.threshold_approx}` : ''}. Stability: ${stabilityScore}.`;\n}\n\nreturn [{ json: {\n  ...data,\n  sim3_threshold_break: {\n    simulation:          'THRESHOLD_BREAK',\n    current_state:       { recommendation: baseRecommendation, growth: currentGrowth, sentiment: currentSentiment },\n    sentiment_breakpoints: sentimentBreakpoints,\n    growth_breakpoints:  growthBreakpoints,\n    stress_tests:        stressTests,\n    sensitivity: {\n      sentiment_breaks_nearby: sentimentBreaksNearby,\n      growth_breaks_nearby:    growthBreaksNearby,\n      primary_driver:          primaryDriver,\n      stress_resiliency:       stressResiliency,\n      stress_breach_count:     `${stressBreachCount}/6`\n    },\n    stability_score:     stabilityScore,\n    key_insight:         keyInsight\n  }\n} }];"
+      },
+      "id": "6ed385b8-211e-4c6b-af7f-dde724144a36",
+      "name": "🎯 Sim 3 — Threshold Break Simulator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1392,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── AGGREGATE ENGINE: Combine all 3 simulations into a final verdict ─────────\nconst data = $input.first().json;\nconst sim1 = data.sim1_growth_sentiment;\nconst sim2 = data.sim2_risk_appetite;\nconst sim3 = data.sim3_threshold_break;\n\n// Convert signals to numeric scores (1–5 scale)\nconst signalScores = {\n  'STRONG_BUY':5.0, 'BUY':4.2, 'FUNDAMENTAL_BUY':3.8,\n  'HOLD_WATCH':3.2, 'HOLD':3.0, 'UNDERPERFORM':2.2,\n  'BUBBLE_RISK':1.8, 'SELL':1.5, 'STRONG_SELL':1.0\n};\nconst recScores = {\n  'ENTER_FULL_POSITION':5.0, 'ENTER_PARTIAL_POSITION':3.8,\n  'WATCHLIST_ONLY':2.5, 'AVOID':1.0\n};\n\n// Weighted scoring: Sim1 most important (market signal), Sim2 next (fit), Sim3 as risk modifier\nconst s1Raw    = (signalScores[sim1.output.signal] || 3.0) * sim1.output.confidence;\nconst s2Raw    = recScores[sim2.recommendation] || 3.0;\nconst s3Raw    = sim3.stability_score * 5.0;\n\nconst weights  = { sim1: 0.45, sim2: 0.35, sim3: 0.20 };\nconst rawScore = (s1Raw * weights.sim1) + (s2Raw * weights.sim2) + (s3Raw * weights.sim3);\nconst score    = Math.round(Math.min(5.0, Math.max(1.0, rawScore)) * 100) / 100;\n\nconst finalRecommendation =\n  score >= 4.2 ? 'STRONG_BUY'  :\n  score >= 3.6 ? 'BUY'         :\n  score >= 2.8 ? 'HOLD'        :\n  score >= 1.8 ? 'SELL'        : 'STRONG_SELL';\n\n// ── Probabilistic Scenario Engine ────────────────────────────────────────────\nconst norm           = score / 5.0;\nconst thorizonMult   = data.time_horizon === '5year' ? 3.0 : data.time_horizon === '3month' ? 0.25 : 1.0;\nconst baseReturn     = (score - 3.0) * 18;  // % return expected per year at base\n\nconst bestCaseProb   = Math.round(Math.min(65, Math.max(5,  norm * 60 + 5)));\nconst worstCaseProb  = Math.round(Math.min(65, Math.max(5, (1 - norm) * 55 + 5)));\nconst expectedProb   = 100 - bestCaseProb - worstCaseProb;\n\nconst scenarios = {\n  best_case: {\n    probability:    bestCaseProb,\n    label:          'All tailwinds materialise',\n    return_estimate:`+${Math.round((baseReturn + 28) * thorizonMult)}%`,\n    conditions:     ['Revenue growth beats estimates', 'Positive sentiment momentum', 'Macro conditions remain favourable', 'No sector disruptions']\n  },\n  expected_case: {\n    probability:    expectedProb,\n    label:          'Base case — current trajectory continues',\n    return_estimate:`${baseReturn >= 0 ? '+' : ''}${Math.round(baseReturn * thorizonMult)}%`,\n    conditions:     ['Current growth rate maintained', 'Sentiment stable', 'Normal market conditions', 'No major earnings surprises']\n  },\n  worst_case: {\n    probability:    worstCaseProb,\n    label:          'Headwinds emerge',\n    return_estimate:`-${Math.round((Math.abs(baseReturn) + 22) * thorizonMult)}%`,\n    conditions:     ['Sentiment deteriorates sharply', 'Revenue misses estimates', 'Macro headwinds', 'Sector rotation away']\n  }\n};\n\n// ── Risk Flag Engine ──────────────────────────────────────────────────────────\nconst riskFlags = [];\nif (sim1.conflict_detected)                                  riskFlags.push({ severity:'MEDIUM', flag:'Growth–Sentiment conflict detected',            action:'Consider scaling in gradually' });\nif (sim1.bubble_risk_score > 0.60)                           riskFlags.push({ severity:'HIGH',   flag:`Bubble risk score: ${sim1.bubble_risk_score}`,  action:'Avoid new positions; set tight stop-loss' });\nif (sim3.stability_score < 0.40)                             riskFlags.push({ severity:'HIGH',   flag:'Recommendation near multiple breakpoints',      action:'Monitor daily; do not hold large position' });\nif (sim3.sensitivity.sentiment_breaks_nearby > 2)            riskFlags.push({ severity:'MEDIUM', flag:'Highly sentiment-sensitive — 3+ triggers nearby', action:'Watch social/news sentiment closely' });\nif (data.pe_ratio > 60 && data.revenue_growth < 0.20)        riskFlags.push({ severity:'HIGH',   flag:`P/E ${data.pe_ratio}x not justified by ${Math.round(data.revenue_growth*100)}% growth`, action:'Valuations stretched — wait for pullback' });\nif (data.debt_equity > 1.0)                                  riskFlags.push({ severity:'MEDIUM', flag:`Elevated D/E ratio: ${data.debt_equity}`,        action:'Monitor debt levels and cash flow' });\nif (parseInt(sim3.sensitivity.stress_breach_count) > 4)      riskFlags.push({ severity:'HIGH',   flag:'Low stress resiliency — 5+ scenarios trigger change', action:'Only trade with defined risk limits' });\n\n// ── Confidence Score ──────────────────────────────────────────────────────────\nconst confidenceInputs  = [sim1.output.confidence, sim2.weighted_pass_rate, sim3.stability_score];\nconst overallConfidence = Math.round(confidenceInputs.reduce((a, b) => a + b, 0) / 3 * 100);\n\nreturn [{ json: {\n  ...data,\n  aggregate: {\n    final_recommendation: finalRecommendation,\n    score,\n    score_label:          `${score}/5.0`,\n    confidence_pct:       overallConfidence,\n    simulation_weights:   weights,\n    component_scores:     { sim1_weighted: Math.round(s1Raw * weights.sim1 * 100)/100, sim2_weighted: Math.round(s2Raw * weights.sim2 * 100)/100, sim3_weighted: Math.round(s3Raw * weights.sim3 * 100)/100 },\n    scenarios,\n    risk_flags:           riskFlags,\n    risk_flag_count:      riskFlags.length,\n    primary_risk_driver:  sim3.sensitivity.primary_driver,\n    key_signals: [\n      sim1.key_insight,\n      sim2.key_insight,\n      sim3.key_insight\n    ].filter(Boolean)\n  }\n} }];"
+      },
+      "id": "be1bfc4e-7109-41bf-9030-c4e13422af12",
+      "name": "🧠 Aggregate & Score All Simulations",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1152,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 1500, temperature: 0.3, messages: [{ role: 'system', content: 'You are Mycroft, an expert AI investment analyst. You always respond with valid, parseable JSON only. No markdown code blocks, no preamble, no trailing text outside the JSON.' }, { role: 'user', content: $json.ai_prompt }] }) }}",
+        "options": {
+          "response": {
+            "response": {}
+          },
+          "timeout": 30000
+        }
+      },
+      "id": "8ef16a58-8fa0-4c7d-8194-c7af8d999824",
+      "name": "🤖 Groq — Generate Investment Insights",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -672,
+        96
+      ],
+      "credentials": {
+        "groqApi": {
+          "name": "GROQ_API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── RESPONSE PARSER: Extract structured insights from Groq (OpenAI format) ───\nconst apiResponse = $input.first().json;\n// Retrieve full simulation data from the last code node before the HTTP call\nconst prevData    = $('📝 Build AI Prompt').first().json;\n\n// Groq uses OpenAI-compatible format: choices[0].message.content\nlet aiText = '';\nif (apiResponse.choices && Array.isArray(apiResponse.choices) && apiResponse.choices.length > 0) {\n  aiText = apiResponse.choices[0]?.message?.content || '';\n} else if (apiResponse.error) {\n  // Groq error response\n  throw new Error(`Groq API Error: ${apiResponse.error.message || JSON.stringify(apiResponse.error)}`);\n}\n\n// Parse JSON — strip potential markdown fences if the model added them\nlet aiInsights = {};\ntry {\n  const cleaned = aiText\n    .replace(/^```json\\s*/i, '')\n    .replace(/^```\\s*/i, '')\n    .replace(/```\\s*$/, '')\n    .trim();\n  aiInsights = JSON.parse(cleaned);\n} catch (parseErr) {\n  // Fallback: construct a basic insights object from raw text\n  console.error('Groq JSON parse failed:', parseErr.message);\n  aiInsights = {\n    executive_summary:    aiText.substring(0, 300) || 'AI analysis unavailable — review quantitative data.',\n    bull_case:            'See simulation results for fundamental signals.',\n    bear_case:            'See risk flags for downside scenarios.',\n    key_risk_narrative:   `Primary risk driver: ${prevData.aggregate.primary_risk_driver || 'SENTIMENT'}.`,\n    opportunity_narrative:'Review Sim 1 growth vs sentiment analysis.',\n    action_plan: {\n      immediate:           `${prevData.aggregate.final_recommendation} based on quantitative analysis`,\n      monitor_weekly:      'Revenue growth rate and sentiment score',\n      exit_trigger:        'If score drops below 2.8, revisit recommendation',\n      position_sizing_note:`See risk appetite simulation for position guidance`\n    },\n    mycroft_verdict:      `${prevData.aggregate.final_recommendation} — score ${prevData.aggregate.score_label} with ${prevData.aggregate.confidence_pct}% confidence.`,\n    confidence_rationale: `Confidence based on ${prevData.aggregate.confidence_pct}% pass rate across 3 simulation engines.`\n  };\n}\n\n// Log Groq token usage for cost tracking (Groq is free but has rate limits)\nconst usage = apiResponse.usage || {};\nconsole.log(`Groq tokens — prompt: ${usage.prompt_tokens || 0}, completion: ${usage.completion_tokens || 0}, total: ${usage.total_tokens || 0}`);\n\nreturn [{ json: { ...prevData, ai_insights: aiInsights, ai_raw_text: aiText, groq_usage: usage } }];"
+      },
+      "id": "ef673e08-7919-484d-bf05-b9ae48f3b70f",
+      "name": "🔄 Parse Groq Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -432,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── DB PREP: Sanitise and structure data for PostgreSQL insertion ─────────────\n// NOTE: For production use, replace string interpolation with parameterised queries.\nconst d = $input.first().json;\n\n// Safe string escape for SQL (MVP-grade — use pgp or parameterised queries in prod)\nconst esc = (v) => String(v ?? '').replace(/'/g, \"''\");\n\nconst inputParamsJson       = esc(JSON.stringify({\n  revenue_growth:      d.revenue_growth,\n  sentiment_score:     d.sentiment_score,\n  pe_ratio:            d.pe_ratio,\n  debt_equity:         d.debt_equity,\n  current_price:       d.current_price,\n  market_cap_billions: d.market_cap_billions\n}));\n\nconst simResultsJson = esc(JSON.stringify({\n  sim1: d.sim1_growth_sentiment,\n  sim2: d.sim2_risk_appetite,\n  sim3: d.sim3_threshold_break,\n  aggregate: d.aggregate\n}));\n\nconst aiInsightsJson = esc(JSON.stringify(d.ai_insights || {}));\n\nconst dbQuery = `\nINSERT INTO mycroft_whatif_simulations (\n  simulation_id,\n  company,\n  ticker,\n  risk_appetite,\n  time_horizon,\n  final_recommendation,\n  confidence_pct,\n  aggregate_score,\n  bubble_risk_score,\n  stability_score,\n  input_params,\n  simulation_results,\n  ai_insights,\n  ai_verdict\n) VALUES (\n  '${esc(d.simulation_id)}',\n  '${esc(d.company)}',\n  '${esc(d.ticker)}',\n  '${esc(d.risk_appetite)}',\n  '${esc(d.time_horizon)}',\n  '${esc(d.aggregate.final_recommendation)}',\n  ${d.aggregate.confidence_pct},\n  ${d.aggregate.score},\n  ${d.sim1_growth_sentiment.bubble_risk_score},\n  ${d.sim3_threshold_break.stability_score},\n  '${inputParamsJson}'::jsonb,\n  '${simResultsJson}'::jsonb,\n  '${aiInsightsJson}'::jsonb,\n  '${esc(d.ai_insights?.mycroft_verdict || '')}'\n)\nON CONFLICT (simulation_id) DO UPDATE\n  SET ai_verdict = EXCLUDED.ai_verdict,\n      final_recommendation = EXCLUDED.final_recommendation\nRETURNING id, simulation_id;\n`.trim();\n\nreturn [{ json: { ...d, db_query: dbQuery } }];"
+      },
+      "id": "b7a1860a-f042-4a83-bc43-cd2a985d27e9",
+      "name": "🗄️ Prepare DB Record",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -192,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "={{ $json.db_query }}",
+        "options": {
+          "queryBatching": "single"
+        }
+      },
+      "id": "f5a82825-d117-4fbe-9a9a-44dc46b26059",
+      "name": "💾 Save to PostgreSQL",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        48,
+        96
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "your_id",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── RESPONSE BUILDER: Assemble the final structured API response ─────────────\n// PostgreSQL node returns only the RETURNING row — we need to pull full data back\nconst fullData = $('🔄 Parse Groq Response').first().json;\nconst dbResult = $input.first().json;  // Has { id, simulation_id } from RETURNING\n\nconst d   = fullData;\nconst agg = d.aggregate;\nconst s1  = d.sim1_growth_sentiment;\nconst s2  = d.sim2_risk_appetite;\nconst s3  = d.sim3_threshold_break;\nconst ai  = d.ai_insights;\n\n// Recommendation icons\nconst recEmoji = {\n  'STRONG_BUY':'🚀', 'BUY':'📈', 'FUNDAMENTAL_BUY':'💎',\n  'HOLD_WATCH':'👀', 'HOLD':'⚖️', 'UNDERPERFORM':'😐',\n  'BUBBLE_RISK':'⚠️', 'SELL':'📉', 'STRONG_SELL':'🚨'\n};\n\nconst processingMs = Date.now() - new Date(d.timestamp).getTime();\n\nconst response = {\n  status:        'SUCCESS',\n  simulation_id: d.simulation_id,\n  db_record_id:  dbResult.id || null,\n  timestamp:     d.timestamp,\n  processed_in_ms: processingMs,\n\n  // ── Company ──────────────────────────────────────────────────────────────\n  company: {\n    name:          d.company,\n    ticker:        d.ticker,\n    current_price: `$${d.current_price}`,\n    market_cap:    `$${d.market_cap_billions}B`\n  },\n\n  // ── Final Verdict ─────────────────────────────────────────────────────────\n  verdict: {\n    emoji:          recEmoji[agg.final_recommendation] || '❓',\n    recommendation: agg.final_recommendation,\n    score:          agg.score_label,\n    confidence:     `${agg.confidence_pct}%`,\n    mycroft_says:   ai.mycroft_verdict || `${agg.final_recommendation} — based on 3-simulation analysis`\n  },\n\n  // ── AI Narrative ──────────────────────────────────────────────────────────\n  analysis: {\n    executive_summary:    ai.executive_summary,\n    bull_case:            ai.bull_case,\n    bear_case:            ai.bear_case,\n    opportunity:          ai.opportunity_narrative,\n    key_risk:             ai.key_risk_narrative,\n    confidence_rationale: ai.confidence_rationale\n  },\n\n  // ── Action Plan ───────────────────────────────────────────────────────────\n  action_plan: {\n    immediate:       ai.action_plan?.immediate       || `Review ${agg.final_recommendation} signal`,\n    monitor_weekly:  ai.action_plan?.monitor_weekly  || `${agg.primary_risk_driver} score`,\n    exit_trigger:    ai.action_plan?.exit_trigger    || 'Significant deterioration in primary driver',\n    position_sizing: ai.action_plan?.position_sizing_note || `Max ${s2.profile.max_position_pct}% of portfolio (${s2.profile.name} profile)`\n  },\n\n  // ── Simulation Detail ─────────────────────────────────────────────────────\n  simulations: {\n    sim1_growth_vs_sentiment: {\n      label:            '📈 Growth vs Sentiment Tradeoff',\n      signal:           s1.output.signal,\n      confidence:       `${Math.round(s1.output.confidence * 100)}%`,\n      conflict:         s1.conflict_detected,\n      bubble_risk:      s1.bubble_risk_score,\n      expected_returns: { short_term: s1.output.short_term, long_term: s1.output.long_term },\n      insight:          s1.key_insight\n    },\n    sim2_risk_appetite: {\n      label:            '⚖️ Risk Appetite Simulator',\n      investor_type:    s2.profile.name,\n      recommendation:   s2.recommendation,\n      criteria_passed:  s2.pass_count,\n      weighted_fit:     `${Math.round(s2.weighted_pass_rate * 100)}%`,\n      position_limit:   `${s2.profile.max_position_pct}% of portfolio`,\n      stop_loss:        `${s2.profile.stop_loss_pct}%`,\n      take_profit:      `${s2.profile.take_profit_pct}%`,\n      cross_profile:    s2.cross_profile_comparison,\n      insight:          s2.key_insight\n    },\n    sim3_threshold_break: {\n      label:              '🎯 Threshold Break Simulator',\n      current_signal:     s3.current_state.recommendation,\n      stability_score:    s3.stability_score,\n      primary_driver:     s3.sensitivity.primary_driver,\n      stress_resiliency:  s3.sensitivity.stress_resiliency,\n      stress_tests:       s3.stress_tests,\n      critical_thresholds: [\n        ...s3.sentiment_breakpoints.filter(b => b.is_nearest).map(b => ({ type:'SENTIMENT', ...b })),\n        ...s3.growth_breakpoints.filter(b => b.is_nearest).map(b => ({ type:'GROWTH', ...b }))\n      ],\n      insight: s3.key_insight\n    }\n  },\n\n  // ── Scenarios ─────────────────────────────────────────────────────────────\n  scenarios: {\n    best_case:     agg.scenarios.best_case,\n    expected_case: agg.scenarios.expected_case,\n    worst_case:    agg.scenarios.worst_case\n  },\n\n  // ── Risk Summary ──────────────────────────────────────────────────────────\n  risk_summary: {\n    flag_count:          agg.risk_flag_count,\n   overall_risk_level: agg.risk_flags.some(f => f.severity === 'HIGH') ? 'HIGH' : agg.risk_flags.some(f => f.severity === 'MEDIUM') ? 'MEDIUM' : 'LOW',\n    flags:               agg.risk_flags,\n    primary_driver:      agg.primary_risk_driver\n  },\n\n  // ── Metadata ──────────────────────────────────────────────────────────────\n  metadata: {\n    model:          'Mycroft-WhatIf-MVP-v1.0',\n    simulations_run: 3,\n    ai_model:       'groq/llama-3.3-70b-versatile',\n    processing_ms:  processingMs,\n    investor_profile: { risk: d.risk_appetite, horizon: d.time_horizon }\n  }\n};\n\nreturn [{ json: response }];"
+      },
+      "id": "cbd4aa15-0aa9-426a-a145-c818eba4833a",
+      "name": "📊 Build Final Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        288,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "X-Mycroft-Version",
+                "value": "1.0.0"
+              },
+              {
+                "name": "X-Simulation-ID",
+                "value": "={{ $json.simulation_id }}"
+              },
+              {
+                "name": "X-Recommendation",
+                "value": "={{ $json.verdict.recommendation }}"
+              },
+              {
+                "name": "X-Confidence",
+                "value": "={{ $json.verdict.confidence }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "42466b0e-2b18-4bfd-b117-df5f9136cc17",
+      "name": "✅ Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        528,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── PROMPT ENGINEER: Build structured analysis prompt for Claude ─────────────\nconst d   = $input.first().json;\nconst agg = d.aggregate;\nconst s1  = d.sim1_growth_sentiment;\nconst s2  = d.sim2_risk_appetite;\nconst s3  = d.sim3_threshold_break;\n\nconst prompt = `You are Mycroft, an expert AI investment analyst from the Mycroft open-source project.\nAnalyse the following What-If simulation output and return a structured JSON investment report.\n\n═══════════════════════════════════════════\nCOMPANY PROFILE\n═══════════════════════════════════════════\nCompany:         ${d.company} (${d.ticker})\nCurrent Price:   $${d.current_price}\nRevenue Growth:  ${Math.round(d.revenue_growth * 100)}% YoY\nSentiment Score: ${d.sentiment_score}/1.0\nP/E Ratio:       ${d.pe_ratio}x\nDebt/Equity:     ${d.debt_equity}\nMarket Cap:      $${d.market_cap_billions}B\nRisk Profile:    ${d.risk_appetite.toUpperCase()}\nTime Horizon:    ${d.time_horizon}\n\n═══════════════════════════════════════════\nSIMULATION 1 — Growth vs Sentiment Tradeoff\n═══════════════════════════════════════════\nSignal:             ${s1.output.signal}\nConfidence:         ${Math.round(s1.output.confidence * 100)}%\nConflict:           ${s1.conflict_detected ? '⚠️ YES — fundamentals and sentiment diverge' : 'No conflict'}\nBubble Risk Score:  ${s1.bubble_risk_score}/1.0\nShort-term Return:  ${s1.output.short_term}\nLong-term Return:   ${s1.output.long_term}\nInsight:            ${s1.key_insight}\n\n═══════════════════════════════════════════\nSIMULATION 2 — Risk Appetite (${s2.profile.name} Investor)\n═══════════════════════════════════════════\nRecommendation:     ${s2.recommendation}\nCriteria Passed:    ${s2.pass_count}\nWeighted Pass Rate: ${Math.round(s2.weighted_pass_rate * 100)}%\nMax Position Size:  ${s2.profile.max_position_pct}% of portfolio\nStop-Loss:          ${s2.profile.stop_loss_pct}%\nTake-Profit Target: ${s2.profile.take_profit_pct}%\nInsight:            ${s2.key_insight}\n\nCross-Profile Summary:\n${s2.cross_profile_comparison.map(p => `  ${p.investor_type}: ${p.recommendation} (${p.fit_score_pct}% fit)`).join('\\n')}\n\n═══════════════════════════════════════════\nSIMULATION 3 — Threshold Break Analysis\n═══════════════════════════════════════════\nCurrent Signal:         ${s3.current_state.recommendation}\nStability Score:        ${s3.stability_score}/1.0\nPrimary Driver:         ${s3.sensitivity.primary_driver}\nSentiment Breaks Near:  ${s3.sensitivity.sentiment_breaks_nearby}\nStress Resiliency:      ${s3.sensitivity.stress_resiliency}\nStress Breach Count:    ${s3.sensitivity.stress_breach_count} scenarios triggered a change\nInsight:                ${s3.key_insight}\n\nStress Test Results:\n${s3.stress_tests.map(t => `  ${t.scenario}: ${t.result} (${t.changed ? '⚠️ CHANGED — ' + t.delta : '✅ unchanged'})`).join('\\n')}\n\n═══════════════════════════════════════════\nAGGREGATE VERDICT\n═══════════════════════════════════════════\nFINAL RECOMMENDATION:  ${agg.final_recommendation}\nScore:                 ${agg.score_label}\nConfidence:            ${agg.confidence_pct}%\nRisk Flags (${agg.risk_flag_count}):     ${agg.risk_flags.map(f => f.flag).join(' | ') || 'None'}\n\nScenario Probabilities:\n  Best Case  (${agg.scenarios.best_case.probability}%):    ${agg.scenarios.best_case.return_estimate}\n  Expected   (${agg.scenarios.expected_case.probability}%):    ${agg.scenarios.expected_case.return_estimate}\n  Worst Case (${agg.scenarios.worst_case.probability}%):    ${agg.scenarios.worst_case.return_estimate}\n\n═══════════════════════════════════════════\nYOUR TASK\n═══════════════════════════════════════════\nReturn ONLY the following JSON — no markdown, no explanation outside the JSON:\n\n{\n  \"executive_summary\": \"2–3 sentences covering the most important aspects of this investment case\",\n  \"bull_case\": \"The single strongest argument FOR investing in this company right now\",\n  \"bear_case\": \"The single most important risk that could invalidate the bullish thesis\",\n  \"key_risk_narrative\": \"Explain the #1 risk in 1–2 sentences, with the specific trigger to watch for\",\n  \"opportunity_narrative\": \"Explain the primary upside catalyst in 1–2 sentences\",\n  \"action_plan\": {\n    \"immediate\": \"Exactly what a ${d.risk_appetite} investor should do TODAY\",\n    \"monitor_weekly\": \"The single most important metric to track each week\",\n    \"exit_trigger\": \"The precise condition (with threshold) that would change the recommendation\",\n    \"position_sizing_note\": \"Brief note on how large this position should be and why\"\n  },\n  \"mycroft_verdict\": \"One powerful, memorable sentence that captures the entire investment thesis for ${d.company}\",\n  \"confidence_rationale\": \"Why the confidence is ${agg.confidence_pct}% — what is certain and what is uncertain\"\n}\nIMPORTANT: Your action_plan.immediate must strictly match \"${agg.final_recommendation}\". If HOLD — say hold, do not say enter.\n`;\n\nreturn [{ json: { ...d, ai_prompt: prompt } }];"
+      },
+      "id": "da8a521f-bdf2-45a6-9cd3-7853da1f3f65",
+      "name": "📝 Build AI Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -912,
+        96
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "🎯 Webhook — Receive Simulation Request": {
+      "main": [
+        [
+          {
+            "node": "🔍 Parse & Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔍 Parse & Validate Input": {
+      "main": [
+        [
+          {
+            "node": "📈 Sim 1 — Growth vs Sentiment Tradeoff",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📈 Sim 1 — Growth vs Sentiment Tradeoff": {
+      "main": [
+        [
+          {
+            "node": "⚖️ Sim 2 — Risk Appetite Simulator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "⚖️ Sim 2 — Risk Appetite Simulator": {
+      "main": [
+        [
+          {
+            "node": "🎯 Sim 3 — Threshold Break Simulator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎯 Sim 3 — Threshold Break Simulator": {
+      "main": [
+        [
+          {
+            "node": "🧠 Aggregate & Score All Simulations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧠 Aggregate & Score All Simulations": {
+      "main": [
+        [
+          {
+            "node": "📝 Build AI Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🤖 Groq — Generate Investment Insights": {
+      "main": [
+        [
+          {
+            "node": "🔄 Parse Groq Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔄 Parse Groq Response": {
+      "main": [
+        [
+          {
+            "node": "🗄️ Prepare DB Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🗄️ Prepare DB Record": {
+      "main": [
+        [
+          {
+            "node": "💾 Save to PostgreSQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "💾 Save to PostgreSQL": {
+      "main": [
+        [
+          {
+            "node": "📊 Build Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Build Final Response": {
+      "main": [
+        [
+          {
+            "node": "✅ Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📝 Build AI Prompt": {
+      "main": [
+        [
+          {
+            "node": "🤖 Groq — Generate Investment Insights",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3d54f75b-d1cb-4a62-9c0e-cf8fd6214516",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c5605aae802302d14cf85834357505b8eaf4143631bcf5d9ab9240de503b0d2d"
+  },
+  "id": "0nVYqvYo15rziJJJ",
+  "tags": []
+}

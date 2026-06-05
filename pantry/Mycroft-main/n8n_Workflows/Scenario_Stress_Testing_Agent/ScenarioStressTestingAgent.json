@@ -1,0 +1,497 @@
+{
+  "name": "ScenarioStressTestingAgent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "stress-test",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "8657f946-3f52-4e67-b363-1cdc6d26b7b9",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -2096,
+        48
+      ],
+      "webhookId": "9239c63e-c9aa-4786-9a7f-46431c1c8986"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "9997ca50-a7e4-4cce-9ac2-ab7ff2fae0b2",
+      "name": "Parse Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        -1904,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3cca52bb-4ce3-4fec-b06c-8cff4334f743",
+              "name": "portfolio",
+              "value": "={{ $json.body.portfolio }}",
+              "type": "object"
+            },
+            {
+              "id": "3eff49bd-9f64-45b5-ae45-399adc1d1f9c",
+              "name": "scenario_type",
+              "value": "={{ $json.body.scenario_type }}",
+              "type": "string"
+            },
+            {
+              "id": "24576b4d-26bb-4346-84d8-00c1156ff41b",
+              "name": "custom_scenario",
+              "value": "={{ $json.body.custom_scenario }}",
+              "type": "string"
+            },
+            {
+              "id": "5239285d-93cc-4718-b4aa-af6f689b0184",
+              "name": "horizon_days",
+              "value": "={{ $json.body.horizon_days }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1696,
+        48
+      ],
+      "id": "1eda4f6c-2582-469f-9d19-e61dcac30012",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const portfolio = $input.item.json.portfolio;\n\n// Check if portfolio exists and has holdings\nif (!portfolio || !portfolio.holdings) {\n  throw new Error('Portfolio must have holdings array');\n}\n\n// Calculate total weight\nlet totalWeight = 0;\nfor (const holding of portfolio.holdings) {\n  totalWeight += holding.weight || 0;\n}\n\n// Normalize weights to sum to 1.0\nif (Math.abs(totalWeight - 1.0) > 0.01) {\n  for (const holding of portfolio.holdings) {\n    holding.weight = holding.weight / totalWeight;\n  }\n}\n\n// Check each holding has a ticker\nfor (const holding of portfolio.holdings) {\n  if (!holding.ticker) {\n    throw new Error('Each holding must have a ticker');\n  }\n}\n\nreturn {\n  json: {\n    portfolio: portfolio,\n    scenario_type: $input.item.json.scenario_type,\n    custom_scenario: $input.item.json.custom_scenario,\n    horizon_days: $input.item.json.horizon_days\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1504,
+        144
+      ],
+      "id": "4f39092d-3c4a-4ccf-bee2-bf6ea07f35f2",
+      "name": "Validate Portfolio"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ddd83a22-ba17-499d-b618-3819ca47112d",
+              "leftValue": "={{ $json.custom_scenario }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1104,
+        16
+      ],
+      "id": "0ef6ad50-7aea-4d18-9c35-2512dff48ff5",
+      "name": "Custom Scenario?"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Get scenario type from Parse Input node\nscenario_type = _input.item.json.get('scenario_type', 'tech_crash')\n\nscenarios = {\n    'tech_crash': {\n        'name': 'Tech Sector Crash',\n        'description': 'Major tech selloff triggered by regulatory concerns',\n        'shocks': {\n            'market': -0.15,\n            'tech_sector': -0.30,\n            'ai_stocks': -0.40,\n            'semiconductor': -0.35,\n            'volatility_spike': 2.5\n        }\n    },\n    'rate_hike': {\n        'name': 'Aggressive Rate Hike',\n        'description': 'Fed raises rates more than expected',\n        'shocks': {\n            'market': -0.10,\n            'growth_stocks': -0.20,\n            'tech_sector': -0.15,\n            'volatility_spike': 1.8\n        }\n    },\n    'ai_regulation': {\n        'name': 'AI Regulation Announcement',\n        'description': 'Major new AI safety regulations announced',\n        'shocks': {\n            'market': -0.05,\n            'ai_stocks': -0.25,\n            'big_tech': -0.15,\n            'volatility_spike': 2.0\n        }\n    },\n    'chip_shortage': {\n        'name': 'Semiconductor Supply Shock',\n        'description': 'Critical chip shortage impacting AI infrastructure',\n        'shocks': {\n            'market': -0.08,\n            'semiconductor': -0.30,\n            'tech_sector': -0.20,\n            'volatility_spike': 1.5\n        }\n    },\n    'black_swan': {\n        'name': 'Black Swan Event',\n        'description': 'Extreme tail-risk event',\n        'shocks': {\n            'market': -0.35,\n            'all_sectors': -0.30,\n            'volatility_spike': 4.0\n        }\n    }\n}\n\nscenario = scenarios.get(scenario_type, scenarios['tech_crash'])\n# Get portfolio from input - check all items from Merge\nportfolio = None\nfor item in _input.all():\n    if 'portfolio' in item.json:\n        portfolio = item.json['portfolio']\n        break\n    # Also check if it's the root level holdings\n    if 'holdings' in item.json:\n        portfolio = {'holdings': item.json['holdings']}\n        break\nif not portfolio:\n    # If still not found, just proceed without it for now\n    # The Stress_Test_Engine will handle the error\n    pass\nreturn {\n    'json': {\n        'scenario': scenario,\n        'scenario_source': 'template',\n        'portfolio': portfolio\n    }\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -720,
+        192
+      ],
+      "id": "6b080c43-c642-451c-aa72-54e921ada83e",
+      "name": "Load_Template_Scenario"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -896,
+        -192
+      ],
+      "id": "77bf0b67-32fc-455c-9e5b-5ada554b9912",
+      "name": "When chat message received",
+      "webhookId": "87fb1f7e-cae2-4ca5-bc3d-5015a01e54eb"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a financial stress testing expert. Convert this user's scenario description into a structured JSON format.\n\nUser Scenario: {{ $json.custom_scenario }}\n\nAnalyze what market shocks this scenario implies and output ONLY a JSON object with this structure:\n{\n  \"name\": \"Short scenario name\",\n  \"description\": \"Detailed description\",\n  \"shocks\": {\n    \"market\": -0.XX,\n    \"sector_name\": -0.XX,\n    \"volatility_spike\": X.X\n  }\n}\n\nCommon shock categories: market, tech_sector, ai_stocks, semiconductor, growth_stocks, big_tech\n\nExample: If user says \"China bans AI chips\", output:\n{\n  \"name\": \"China AI Chip Ban\",\n  \"description\": \"China prohibits AI chip exports\",\n  \"shocks\": {\n    \"market\": -0.08,\n    \"semiconductor\": -0.35,\n    \"ai_stocks\": -0.25,\n    \"volatility_spike\": 2.2\n  }\n}\n\nOutput ONLY valid JSON, no markdown, no explanation.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -752,
+        -176
+      ],
+      "id": "e57cac69-3715-4cb8-a9a7-e677a0c7b8ef",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -592,
+        -64
+      ],
+      "id": "65496088-86a3-4d72-bdf1-38cad3789df9",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "YOUR_GROQ_CREDENTIAL_ID",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "import json\nimport re\n\n# Get LLM response\nllm_output = _input.item.json.get('text', '') or _input.item.json.get('response', '') or _input.item.json.get('output', '')\n\n# Try to extract JSON from markdown code blocks if present\nmatch = re.search(r'```json\\s*(.*?)\\s*```', llm_output, re.DOTALL)\nif match:\n    llm_output = match.group(1)\n\n# Remove any remaining markdown or extra text\nllm_output = llm_output.strip()\n\n# Parse JSON\ntry:\n    scenario = json.loads(llm_output)\nexcept:\n    # If parsing fails, use a default scenario\n    scenario = {\n        'name': 'Custom Scenario',\n        'description': 'User defined scenario',\n        'shocks': {\n            'market': -0.10,\n            'tech_sector': -0.15,\n            'volatility_spike': 2.0\n        }\n    }\n\n# Get the saved portfolio from earlier in the workflow\nportfolio = None\nfor item in _input.all():\n    if 'saved_portfolio' in item.json:\n        portfolio = item.json['saved_portfolio']\n        break\n    if 'portfolio' in item.json:\n        portfolio = item.json['portfolio']\n        break\n\nreturn {\n    'json': {\n        'scenario': scenario,\n        'scenario_source': 'custom_llm',\n        'portfolio': portfolio\n    }\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -352,
+        16
+      ],
+      "id": "80324437-1ac9-4acf-947f-6fd027a63cc8",
+      "name": "Parse_LLM_Response"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "import json\n\n# Get scenario from current input\nscenario = _input.item.json.get('scenario')\n\nif not scenario:\n    return {\n        \"json\": {\n            \"error\": \"Scenario not found in input\",\n            \"debug\": {\n                \"current_item\": _input.item.json,\n                \"all_items\": [item.json for item in _input.all()]\n            }\n        }\n    }\n\n# Try to get portfolio from multiple sources\nportfolio = None\n\n# Method 1: Check current item\nif 'portfolio' in _input.item.json:\n    portfolio = _input.item.json['portfolio']\n\n# Method 2: Check all items from Merge\nif not portfolio:\n    for item in _input.all():\n        if 'portfolio' in item.json:\n            portfolio = item.json['portfolio']\n            break\n\n# Method 3: Check for nested portfolio in scenario\nif not portfolio and 'portfolio' in scenario:\n    portfolio = scenario['portfolio']\n\n# 🚨 Graceful debug output instead of exception\nif not portfolio:\n    return {\n        \"json\": {\n            \"error\": \"Portfolio not found\",\n            \"debug\": {\n                \"available_keys_current_item\": list(_input.item.json.keys()),\n                \"scenario_keys\": list(scenario.keys()) if isinstance(scenario, dict) else None,\n                \"current_item\": _input.item.json,\n                \"all_items\": [item.json for item in _input.all()]\n            }\n        }\n    }\n\n# Validate portfolio structure\nif 'holdings' not in portfolio:\n    return {\n        \"json\": {\n            \"error\": \"Portfolio found but missing holdings array\",\n            \"portfolio_received\": portfolio\n        }\n    }\n\nshocks = scenario['shocks']\nholdings = portfolio['holdings']\n\n# Sector mapping\nsector_map = {\n    'NVDA': 'semiconductor',\n    'AMD': 'semiconductor',\n    'INTC': 'semiconductor',\n    'TSM': 'semiconductor',\n    'GOOGL': 'big_tech',\n    'MSFT': 'big_tech',\n    'META': 'big_tech',\n    'AAPL': 'big_tech',\n    'AMZN': 'big_tech',\n    'TSLA': 'tech_sector'\n}\n\nai_stocks = ['NVDA', 'AMD', 'GOOGL', 'MSFT', 'META', 'TSLA']\ngrowth_stocks = ['NVDA', 'TSLA', 'META', 'AMD']\n\n# Calculate impact\nresults = []\ntotal_loss = 0\ninitial_value = 10000\n\nfor holding in holdings:\n    ticker = holding['ticker']\n    weight = holding['weight']\n    position_value = initial_value * weight\n\n    total_shock = shocks.get('market', 0)\n\n    sector = sector_map.get(ticker, 'tech_sector')\n    total_shock += shocks.get(sector, 0)\n\n    if ticker in ai_stocks:\n        total_shock += shocks.get('ai_stocks', 0)\n    if ticker in growth_stocks:\n        total_shock += shocks.get('growth_stocks', 0)\n\n    position_loss = position_value * total_shock\n    total_loss += position_loss\n\n    results.append({\n        'ticker': ticker,\n        'weight': weight,\n        'initial_value': round(position_value, 2),\n        'shock_pct': round(total_shock * 100, 2),\n        'loss': round(position_loss, 2),\n        'final_value': round(position_value + position_loss, 2)\n    })\n\nresults.sort(key=lambda x: x['loss'])\ntop_losers = results[:3]\n\nfinal_value = initial_value + total_loss\ndrawdown_pct = (total_loss / initial_value) * 100\n\nif abs(drawdown_pct) > 30:\n    risk_level = 'CRITICAL'\nelif abs(drawdown_pct) > 20:\n    risk_level = 'HIGH'\nelif abs(drawdown_pct) > 10:\n    risk_level = 'MODERATE'\nelse:\n    risk_level = 'LOW'\n\noutput = {\n    'scenario_name': scenario['name'],\n    'scenario_description': scenario['description'],\n    'initial_portfolio_value': initial_value,\n    'final_portfolio_value': round(final_value, 2),\n    'total_loss': round(total_loss, 2),\n    'drawdown_pct': round(drawdown_pct, 2),\n    'top_losers': top_losers,\n    'all_positions': results,\n    'risk_level': risk_level\n}\n\nreturn {'json': output}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -208,
+        176
+      ],
+      "id": "7ce071ff-ed2c-4698-b4d1-898caa4d2399",
+      "name": "Stress_Test_Engine"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"data\": $json } }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        -48,
+        176
+      ],
+      "id": "1994dc06-a099-4a34-8ee5-3480b32ab49e",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "url": "https://www.alphavantage.co/query",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "function",
+              "value": "TIME_SERIES_DAILY"
+            },
+            {
+              "name": "symbol",
+              "value": "NVDA"
+            },
+            {
+              "name": "apikey",
+              "value": "YOUR_ACTUAL_KEY_HERE"
+            },
+            {
+              "name": "outputsize",
+              "value": "compact"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1504,
+        -64
+      ],
+      "id": "854e30d0-c6cd-47c0-8738-6d255ff7119e",
+      "name": "Fetch_Data"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -1312,
+        16
+      ],
+      "id": "1929cb52-1678-4d6e-826c-46da5a767046",
+      "name": "Merge"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -416,
+        176
+      ],
+      "id": "a96abf97-f49a-4697-946e-eeefae4f522d",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Save portfolio before LLM processing\nportfolio = None\ncustom_scenario = _input.item.json.get('custom_scenario', '')\n\n# Find portfolio in input\nfor item in _input.all():\n    if 'portfolio' in item.json:\n        portfolio = item.json['portfolio']\n        break\n\nreturn {\n    'json': {\n        'custom_scenario': custom_scenario,\n        'saved_portfolio': portfolio\n    }\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -880,
+        16
+      ],
+      "id": "b5765d7d-6f94-48f7-b309-e5285ad8c9ad",
+      "name": "Save_Portfolio_Before_LLM"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Parse Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Input": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Validate Portfolio",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch_Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Portfolio": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Custom Scenario?": {
+      "main": [
+        [
+          {
+            "node": "Save_Portfolio_Before_LLM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Load_Template_Scenario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Parse_LLM_Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse_LLM_Response": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load_Template_Scenario": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Stress_Test_Engine": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch_Data": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Custom Scenario?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Stress_Test_Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save_Portfolio_Before_LLM": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Parse_LLM_Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4614752d-f461-4f05-aa71-5484bd9907d2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c5605aae802302d14cf85834357505b8eaf4143631bcf5d9ab9240de503b0d2d"
+  },
+  "id": "xBu0cvyuel04S5kv",
+  "tags": []
+}

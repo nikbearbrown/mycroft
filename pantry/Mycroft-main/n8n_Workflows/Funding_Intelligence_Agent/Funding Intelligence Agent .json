@@ -1,0 +1,736 @@
+{
+  "name": "Funding Intelligence Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        128
+      ],
+      "id": "a96402ed-5382-4e94-9b8d-2841b0b00b32",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.zyte.com/v1/extract",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"url\": \"https://techcrunch.com/tag/artificial-intelligence/\",\n  \"httpResponseBody\": true\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "403e145e-aebc-4ab9-9bdb-37cc06e649ec",
+      "name": "Zyte_TechCrunch_Scraper",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "RVG1MGW9j2QKJIQv",
+          "name": "Header Auth account"
+        },
+        "httpBasicAuth": {
+          "id": "WaeAEyvsJinb63UE",
+          "name": "Zyte API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "titles",
+              "cssSelector": ".loop-card__title-link",
+              "returnArray": true
+            },
+            {
+              "key": "urls",
+              "cssSelector": ".loop-card__title-link",
+              "returnValue": "attribute",
+              "returnArray": true
+            },
+            {
+              "key": "dates",
+              "cssSelector": ".loop-card__time",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        832,
+        0
+      ],
+      "id": "f407f6c7-570f-4977-8258-1d14f793a6d6",
+      "name": "HTML"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.zyte.com/v1/extract",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": " application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"url\": \"https://venturebeat.com/category/ai/\",\n  \"httpResponseBody\": true\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        432,
+        272
+      ],
+      "id": "eac14bfe-6c33-4d3f-8555-55661eb7c797",
+      "name": "Zyte_VentureBeat",
+      "alwaysOutputData": false,
+      "retryOnFail": false,
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "WaeAEyvsJinb63UE",
+          "name": "Zyte API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const base64Html = $json.httpResponseBody;\nconst html = Buffer.from(base64Html, 'base64').toString('utf-8');\n\nreturn {\n  json: {\n    html: html,\n    source: 'VentureBeat'\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        624,
+        272
+      ],
+      "id": "790ac9ec-fd8f-4f74-a95f-abe25704a168",
+      "name": "Decode_VB"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get Base64 HTML from previous node\nconst base64Html = $json.httpResponseBody;\n\n// Decode to regular HTML text\nconst html = Buffer.from(base64Html, 'base64').toString('utf-8');\n\n// Return it\nreturn {\n  json: {\n    html: html\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "89d28fcd-ee78-489f-8a02-4caca13df2ab",
+      "name": "Decode_TC"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": " titles",
+              "cssSelector": "a",
+              "returnArray": true
+            },
+            {
+              "key": "urls",
+              "cssSelector": "a ",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            },
+            {
+              "key": "dates",
+              "cssSelector": "time",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        816,
+        272
+      ],
+      "id": "9a0e807d-b96e-420c-8d22-fa525f758093",
+      "name": "HTML1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1312,
+        128
+      ],
+      "id": "b42be4e5-636a-4fc2-93f9-0b2dfdefd4cb",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Get the raw HTML arrays from HTML1\ntitles_raw = _input.first().json.get('titles', [])\nurls_raw = _input.first().json.get('urls', [])\ndates_raw = _input.first().json.get('dates', [])\n\nprint(f\"Raw input - titles: {len(titles_raw)}, urls: {len(urls_raw)}, dates: {len(dates_raw)}\")\n\n# Track unique URLs\nseen_urls = set()\narticles = []\n\n# Process each URL\nfor i in range(len(urls_raw)):\n    url = urls_raw[i] if i < len(urls_raw) else ''\n    \n    # Skip if not an article URL or already seen\n    if not url.startswith('/ai/'):\n        continue\n    if url in seen_urls:\n        continue\n    if len(url) < 15:  # Too short to be real article\n        continue\n        \n    seen_urls.add(url)\n    \n    # Create title from URL slug\n    slug = url.split('/')[-1]\n    title = slug.replace('-', ' ').title()  # Better capitalization\n    \n    # Get date\n    date = dates_raw[i] if i < len(dates_raw) else 'October 2025'\n    \n    # Create article item\n    articles.append({\n        'json': {\n            'title': title,\n            'url': 'https://venturebeat.com' + url,\n            'date': date,\n            'source': 'VentureBeat',\n            'source_priority': 2\n        }\n    })\n\nprint(f\"Filtered to {len(articles)} unique articles\")\n\nreturn articles"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1024,
+        272
+      ],
+      "id": "20992258-ecf5-4860-9ad7-e491d41cf3ce",
+      "name": "Filter and split VB"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Get the arrays from the input\ntitles = _input.first().json.get('titles', [])\nurls = _input.first().json.get('urls', [])\ndates = _input.first().json.get('dates', [])\n\n# Create individual article items with proper n8n format\narticles = []\n\nfor i in range(len(titles)):\n    articles.append({\n        'json': {\n            'title': titles[i] if i < len(titles) else '',\n            'url': urls[i] if i < len(urls) else '',\n            'date': dates[i] if i < len(dates) else '',\n            'source': 'TechCrunch',\n            'index': i\n        }\n    })\n\n# Return the articles\nreturn articles"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "74168c0b-f4b2-48b6-acf5-005206ac27b1",
+      "name": "Filter and split tech_crunch"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Get all input items\nitems = _input.all()\n\n# Funding keywords\nstrong_keywords = [\n    'raised', 'raises', 'raising',\n    'secures funding', 'closes funding',\n    'announces funding', 'lands funding',\n    'funding round', 'investment round',\n    'series a', 'series b', 'series c',\n    'seed round', 'pre-seed'\n]\n\nmoney_keywords = ['million', 'billion', '$', 'usd']\nsupport_keywords = ['funding', 'investment', 'investors', 'valuation', 'round', 'backs', 'leads']\n\n# Filter funding articles\nfunding_articles = []\n\nfor item in items:\n    # Safely get title and URL, convert to string\n    title = str(item.json.get('title', ''))\n    url = str(item.json.get('url', ''))\n    \n    # Convert to lowercase\n    title = title.lower()\n    url = url.lower()\n    combined = title + ' ' + url\n    \n    # Count matches\n    strong_count = sum(1 for kw in strong_keywords if kw in combined)\n    money_count = sum(1 for kw in money_keywords if kw in combined)\n    support_count = sum(1 for kw in support_keywords if kw in combined)\n    \n    # Check if funding\n    is_funding = (strong_count >= 1) or (money_count >= 1 and support_count >= 1)\n    \n    if is_funding:\n        funding_articles.append({'json': item.json})\n\nprint(f\"Filtered from {len(items)} to {len(funding_articles)} funding articles\")\n\n# Return all funding articles\nreturn funding_articles"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1536,
+        128
+      ],
+      "id": "7415515b-a3f2-491c-8c34-60271e774e8f",
+      "name": "Filter_Funding_Keywords",
+      "alwaysOutputData": false,
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "language": "python",
+        "pythonCode": "# Industry taxonomy with keywords\nindustries = {\n    'Healthcare & Life Sciences AI': [\n        'healthcare', 'medical', 'biotech', 'health tech', \n        'pharma', 'clinical', 'patient', 'diagnosis',\n        'drug discovery', 'telemedicine', 'hospital', 'doctor'\n    ],\n    'FinTech & Financial Services AI': [\n        'fintech', 'banking', 'payment', 'finance', \n        'lending', 'crypto', 'blockchain', 'trading',\n        'fraud detection', 'insurance', 'credit', 'wallet'\n    ],\n    'Climate Tech & Sustainability': [\n        'climate', 'carbon', 'renewable', 'energy',\n        'sustainability', 'green tech', 'solar', 'wind',\n        'emissions', 'esg', 'waste', 'recycling', 'environment'\n    ],\n    'Transportation & Mobility AI': [\n        'transportation', 'vehicle', 'autonomous', 'self-driving',\n        'mobility', 'fleet', 'logistics', 'delivery', 'automotive',\n        'car', 'truck', 'inspection'\n    ],\n    'Enterprise Software & Automation': [\n        'enterprise', 'b2b', 'saas', 'automation',\n        'productivity', 'workflow', 'business intelligence',\n        'operations', 'analytics'\n    ],\n    'Robotics & Hardware': [\n        'robotics', 'robot', 'hardware', 'manufacturing',\n        'warehouse', 'automation hardware', 'machinery',\n        'sorting', 'facilities'\n    ],\n    'EdTech & Learning': [\n        'education', 'edtech', 'learning', 'student',\n        'school', 'university', 'training', 'mycroft'\n    ],\n    'Consumer & Retail AI': [\n        'consumer', 'retail', 'e-commerce', 'shopping',\n        'marketplace', 'lifestyle', 'entertainment'\n    ],\n    'Developer Tools & Infrastructure': [\n        'developer', 'devops', 'infrastructure', 'cloud',\n        'api', 'platform', 'software development'\n    ]\n}\n\n# Get article data\ntitle = str(_input.item.json.get('title', ''))\nurl = str(_input.item.json.get('url', ''))\ncombined = (title + ' ' + url).lower()\n\n# Score each industry\nindustry_matches = []\n\nfor industry, keywords in industries.items():\n    score = 0\n    matched_keywords = []\n    \n    for keyword in keywords:\n        if keyword in combined:\n            score += 1\n            matched_keywords.append(keyword)\n    \n    if score > 0:\n        industry_matches.append({\n            'industry': industry,\n            'score': score,\n            'keywords': matched_keywords\n        })\n\n# Sort by score (highest first)\nindustry_matches.sort(key=lambda x: x['score'], reverse=True)\n\n# Get primary and secondary industries\nprimary = industry_matches[0] if industry_matches else None\nsecondary = industry_matches[1:3] if len(industry_matches) > 1 else []\n\n# Return with classification\nreturn {\n    'json': {\n        **_input.item.json,\n        'primary_industry': primary['industry'] if primary else 'General AI',\n        'primary_industry_score': primary['score'] if primary else 0,\n        'primary_keywords': primary['keywords'] if primary else [],\n        'secondary_industries': [s['industry'] for s in secondary],\n        'all_industry_matches': industry_matches,\n        'classification_complete': True\n    }\n}\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1744,
+        128
+      ],
+      "id": "9cc18eed-85eb-4b7f-be7b-096c0ce9c7b6",
+      "name": "Classify_Industry"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DROP TABLE IF EXISTS funding_deals CASCADE;\n\nCREATE TABLE funding_deals (\n    id SERIAL PRIMARY KEY,\n    title TEXT NOT NULL,\n    url TEXT UNIQUE NOT NULL,\n    date VARCHAR(50),\n    source VARCHAR(50),\n    primary_industry VARCHAR(100),\n    primary_industry_score INTEGER,\n    scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE INDEX idx_primary_industry ON funding_deals(primary_industry);\nCREATE INDEX idx_date ON funding_deals(date);\nCREATE INDEX idx_scraped_at ON funding_deals(scraped_at DESC);\nTRUNCATE TABLE funding_deals;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1952,
+        448
+      ],
+      "id": "6d4d4ba3-5ed3-4358-ae32-32d4a2515865",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "funding_deals",
+          "mode": "list",
+          "cachedResultName": "funding_deals"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "title": "={{ $json.title }}",
+            "url": "={{ $json.url }}",
+            "source": "={{ $json.source }}",
+            "date": "={{ $json.date }}",
+            "primary_industry": "={{ $json.primary_industry }}",
+            "primary_industry_score": "={{ $json.primary_industry_score }}",
+            "scraped_at": "2025-10-26T00:00:00"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "primary_industry",
+              "displayName": "primary_industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "primary_industry_score",
+              "displayName": "primary_industry_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "scraped_at",
+              "displayName": "scraped_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1952,
+        128
+      ],
+      "id": "fbce1a47-746b-4ed9-ae26-560b1eae6194",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "your_email",
+        "toEmail": "your_email",
+        "emailFormat": "text",
+        "text": "=🤖 MYCROFT AI FUNDING INTELLIGENCE REPORT\n═══════════════════════════════════════════════════════════\n\n📊 SUMMARY\n─────────────────────────────────────────────────────────\nTotal Deals Today: {{ $input.all().length }}\nSources: TechCrunch, VentureBeat\nReport Date: {{ new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) }}\n\n═══════════════════════════════════════════════════════════\n\n💰 FUNDING ANNOUNCEMENTS\n─────────────────────────────────────────────────────────\n\n{{ $input.all().map((item, index) => `\n${index + 1}. ${item.json.title}\n\n   📰 Source: ${item.json.source}\n   📅 Date: ${item.json.date}\n   🏢 Industry: ${item.json.primary_industry}\n   🔗 Link: ${typeof item.json.url === 'object' ? item.json.url.href : item.json.url}\n\n   ─────────────────────────────────────────────────────────\n`).join('') }}\n\n═══════════════════════════════════════════════════════════\n\n🤖 Powered by Mycroft Funding Intelligence Agent\nAutomated AI • Multi-Source Intelligence • Daily Reports\n\nThis report was automatically generated by your n8n workflow.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2368,
+        128
+      ],
+      "id": "f10cc37b-b822-417c-9ec2-41f9e416015e",
+      "name": "Send email",
+      "webhookId": "06d2f7db-fd6c-470f-adfc-5885c69d452e",
+      "executeOnce": true,
+      "credentials": {
+        "smtp": {
+          "id": "6GHmSHwzqKD1HSrk",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1EFiuQAeognYk3NJOd3Vohwndi2fV853_N9wavYfqgtI",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1EFiuQAeognYk3NJOd3Vohwndi2fV853_N9wavYfqgtI/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "title": "={{ $json.title }}",
+            "url": "={{ $json.url }}",
+            "date": "={{ $json.date }}",
+            "source": "={{ $json.source }}",
+            "primary_industry_score": "={{ $json.primary_industry_score }}",
+            "primary_industry": "={{ $json.primary_industry }}",
+            "scrapped_at": "={{ $json.scraped_at }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "primary_industry",
+              "displayName": "primary_industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "primary_industry_score",
+              "displayName": "primary_industry_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "scrapped_at",
+              "displayName": "scrapped_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        2368,
+        336
+      ],
+      "id": "4136daf1-c3f4-462a-8b7a-f5ec70541322",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleApi": {
+          "id": "IFeCE8kq6Pd2xS2G",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Zyte_TechCrunch_Scraper",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Zyte_VentureBeat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zyte_TechCrunch_Scraper": {
+      "main": [
+        [
+          {
+            "node": "Decode_TC",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Filter and split tech_crunch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zyte_VentureBeat": {
+      "main": [
+        [
+          {
+            "node": "Decode_VB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decode_TC": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decode_VB": {
+      "main": [
+        [
+          {
+            "node": "HTML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML1": {
+      "main": [
+        [
+          {
+            "node": "Filter and split VB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter and split VB": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter and split tech_crunch": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Filter_Funding_Keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter_Funding_Keywords": {
+      "main": [
+        [
+          {
+            "node": "Classify_Industry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classify_Industry": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        []
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email": {
+      "main": [
+        []
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "dcf872d3-02fc-4de0-bf1f-e3235bf4755d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c5605aae802302d14cf85834357505b8eaf4143631bcf5d9ab9240de503b0d2d"
+  },
+  "id": "B5Tv8cIPBxnz1Zhi",
+  "tags": []
+}

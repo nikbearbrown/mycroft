@@ -1,0 +1,353 @@
+{
+  "name": "rag grader",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "x-ai/grok-4.1-fast:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        3328,
+        4448
+      ],
+      "id": "6ad5bee4-9e6b-4beb-a62b-c2663958b10a",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "fMqYjvUcz8YIeGFP",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "numberInputs": 3,
+        "options": {
+          "clashHandling": {
+            "values": {
+              "resolveClash": "addSuffix"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4000,
+        4112
+      ],
+      "id": "47014719-b02b-4040-9583-e7fa8ee2795e",
+      "name": "Merge7"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# QUESTION\n{{ $json.question }}\n\n# STUDENT ANSWER\n{{ $json.output }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=Today is {{ $now.toISO() }}\n\nYou are a teacher grading a quiz. You will be given a QUESTION and the STUDENT ANSWER. Here is the grade criteria to follow:\n(1) Grade the student answers based ONLY on their factual accuracy. (2) Ensure that the student answer does not contain any conflicting statements.\n(3) It is OK if the student answer contains more information, as long as it is factually accurate.\n\nCorrectness:\nA correctness value of True means that the student's answer meets all of the criteria.\nA correctness value of False means that the student's answer does not meet all of the criteria.\n\nExplain your reasoning in a step-by-step manner to ensure your reasoning and conclusion are correct. Avoid simply stating the correct answer at the outset."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        3536,
+        4000
+      ],
+      "id": "bba7e920-7905-4fd1-a942-3f11891aa5b6",
+      "name": "Correctness grader"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# QUESTION\n{{ $json.question }}\n\n# STUDENT ANSWER\n{{ $json.output }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=Today is {{ $now.toISO() }}\nYou are a teacher grading a quiz. You will be given a QUESTION and a STUDENT ANSWER. Here is the grade criteria to follow:\n(1) Ensure the STUDENT ANSWER is concise and relevant to the QUESTION\n(2) Ensure the STUDENT ANSWER helps to answer the QUESTION\n\nRelevance:\nA relevance value of True means that the student's answer meets all of the criteria.\nA relevance value of False means that the student's answer does not meet all of the criteria.\n\nExplain your reasoning in a step-by-step manner to ensure your reasoning and conclusion are correct. Avoid simply stating the correct answer at the outset."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        3536,
+        4128
+      ],
+      "id": "2c028d94-6d58-44b1-95f7-29e5050000cc",
+      "name": "Relevance grader"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# Facts\n\n{{ $json.intermediateSteps.map(item => item.observation) }}\n\n# STUDENTS ANSWER\n\n{{ $json.output }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=Today is {{ $now.toISO() }}\nYou are a teacher grading a quiz. You will be given FACTS and a STUDENT ANSWER. Here is the grade criteria to follow:\n(1) Ensure the STUDENT ANSWER is grounded in the FACTS. (2) Ensure the STUDENT ANSWER does not contain \"hallucinated\" information outside the scope of the FACTS.\n\nGrounded:\nA grounded value of True means that the student's answer meets all of the criteria.\nA grounded value of False means that the student's answer does not meet all of the criteria.\n\nExplain your reasoning in a step-by-step manner to ensure your reasoning and conclusion are correct. Avoid simply stating the correct answer at the outset."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        3536,
+        4256
+      ],
+      "id": "518ec3f4-b5f9-4a6a-9067-20aa1425b072",
+      "name": "Groundedness grader"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"required\": [\"explanation\", \"grounded\"],\n  \"properties\": {\n    \"explanation\": {\n      \"type\": \"string\",\n      \"description\": \"Explain your reasoning for the score\"\n    },\n    \"grounded\": {\n      \"type\": \"boolean\",\n      \"description\": \"Provide the score on if the answer hallucinates from the documents\"\n    }\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        3696,
+        4656
+      ],
+      "id": "53cbcbc1-935e-488e-bb39-4dd0958b40f5",
+      "name": "Groundedness output parser"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"required\": [\"explanation\", \"relevant\"],\n  \"properties\": {\n    \"explanation\": {\n      \"type\": \"string\",\n      \"description\": \"Explain your reasoning for the score\"\n    },\n    \"relevant\": {\n      \"type\": \"boolean\",\n      \"description\": \"Provide the score on whether the answer addresses the question\"\n    }\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        3808,
+        4576
+      ],
+      "id": "46d36ef4-4946-4b2a-be94-0828c1e999d1",
+      "name": "Relevance output parser"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"required\": [\"explanation\", \"correct\"],\n  \"properties\": {\n    \"explanation\": {\n      \"type\": \"string\",\n      \"description\": \"Explain your reasoning for the score\"\n    },\n    \"correct\": {\n      \"type\": \"boolean\",\n      \"description\": \"True if the answer is correct, False otherwise.\"\n    }\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        3904,
+        4448
+      ],
+      "id": "66f7c99d-9486-460c-b680-40e1d7067a1b",
+      "name": "Correctness output parser"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all()"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3232,
+        4128
+      ],
+      "id": "95bba318-b3bb-416c-91fd-f2e799d450e7",
+      "name": "Dummy node"
+    },
+    {
+      "parameters": {
+        "model": "x-ai/grok-4.1-fast:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        3408,
+        4576
+      ],
+      "id": "bc33866c-b333-4861-9748-92f1542f38a7",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "fMqYjvUcz8YIeGFP",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "x-ai/grok-4.1-fast:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        3536,
+        4656
+      ],
+      "id": "793528ac-70a3-4f11-92bd-79f597a9aaa0",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "fMqYjvUcz8YIeGFP",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "4231ecdf-d083-4233-b3a4-fa349dace697",
+      "typeVersion": 1.1,
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        3024,
+        4128
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Correctness grader",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Correctness grader": {
+      "main": [
+        [
+          {
+            "node": "Merge7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Relevance grader": {
+      "main": [
+        [
+          {
+            "node": "Merge7",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Groundedness grader": {
+      "main": [
+        [
+          {
+            "node": "Merge7",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Groundedness output parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Groundedness grader",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Relevance output parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Relevance grader",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Correctness output parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Correctness grader",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dummy node": {
+      "main": [
+        [
+          {
+            "node": "Correctness grader",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Relevance grader",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Groundedness grader",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Groundedness grader",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Relevance grader",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Dummy node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "54043caf-9a06-441b-9cf1-0262c250f5ec",
+  "meta": {
+    "instanceId": "4df59e55eb4c9d02a5d795fa6cc746458af443d709994c50e77097449a89a302"
+  },
+  "id": "bdG1Zbr7FX4rdLSC",
+  "tags": []
+}

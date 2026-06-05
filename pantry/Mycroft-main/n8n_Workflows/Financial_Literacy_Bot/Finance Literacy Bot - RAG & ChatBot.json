@@ -1,0 +1,193 @@
+{
+  "name": "Finance Literacy Bot - RAG & ChatBot",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -560,
+        -64
+      ],
+      "id": "8871e4c4-c0f0-4ecf-89a6-6bd8e9d66879",
+      "name": "When chat message received",
+      "webhookId": "fd2ddfa0-c2a4-49e9-85d8-00698a43931d"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are a financial literacy educator. Answer the user's question by searching your tools and providing well-formatted, helpful responses.\\n\\n**YOUR TOOLS:**\\n1. **Vector Store** - Your PDF educational library (7 financial literacy documents)\\n2. **Web Search** - Current internet information\\n\\n**TOOL SELECTION:**\\n- Definitions, concepts, fundamentals → Use Vector Store\\n- Current prices, recent news, market data → Use Web Search  \\n- Concepts + current examples → Use BOTH\\n\\n**MANDATORY:** Always search before answering. Never rely on training data alone.\\n\\n**RESPONSE FORMAT:**\\n\\n🎯 **ANSWER**\\n[Clear, direct answer in 2-3 sentences]\\n\\n---\\n\\n📚 **FROM YOUR EDUCATIONAL MATERIALS**\\n[If you searched PDFs, include this section]\\n\\n[Detailed explanation from the PDF content]\\n\\n**Source Document:** [PDF filename without technical IDs]\\n\\n---\\n\\n🌐 **CURRENT INFORMATION**\\n[If you searched web, include this section]\\n\\n[Current data, news, or market information]\\n\\n**Source:** [Website name and URL]\\n\\n---\\n\\n💡 **KEY POINTS**\\n• [Important point 1]\\n• [Important point 2]\\n• [Important point 3]\\n• [Important point 4]\\n• [Important point 5]\\n\\n---\\n\\n📌 **WHY THIS MATTERS**\\n[Practical relevance and application]\\n\\n---\\n\\n🔍 **SOURCES USED**\\n✓ PDF Documents: [List filenames clearly]\\n✓ Web Sources: [List websites if used]\\n\\n---\\n\\n**FORMATTING RULES:**\\n1. Use emojis for visual clarity\\n2. Keep sections organized with horizontal lines (---)\\n3. Make it easy to read and scan\\n4. List PDF names without technical IDs or metadata\\n5. Be conversational but professional\\n6. Provide actionable information\\n\\n**EXAMPLE - Good Response:**\\n\\n🎯 **ANSWER**\\nCredit history is a record of your borrowing and repayment behavior over time. It shows lenders how reliably you've handled debt in the past.\\n\\n---\\n\\n📚 **FROM YOUR EDUCATIONAL MATERIALS**\\n\\nYour credit history includes:\\n- Payment history on all loans and credit cards\\n- Total amounts owed\\n- Length of credit history\\n- Types of credit used\\n- Recent credit inquiries\\n\\nLenders use this information to assess your creditworthiness and determine whether to approve new credit applications.\\n\\n**Source Document:** Financial Basics Guide\\n\\n---\\n\\n💡 **KEY POINTS**\\n• Payment history is the most important factor (35% of credit score)\\n• Late payments can stay on your report for 7 years\\n• Longer credit history is generally better\\n• Mix of credit types (cards, loans) is beneficial\\n• Too many hard inquiries can lower your score\\n\\n---\\n\\n📌 **WHY THIS MATTERS**\\nYour credit history directly impacts your ability to get loans, credit cards, apartments, and even jobs. Better credit history means lower interest rates and more financial opportunities.\\n\\n---\\n\\n🔍 **SOURCES USED**\\n✓ PDF Documents: MSYA-Module-09-PG.pdf\\n\\n---\\n\\nNow answer the user's question following this exact format.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -352,
+        -64
+      ],
+      "id": "4a2d12fe-51da-4c87-8da5-9c5f9db2998a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {
+          "maxTokensToSample": 2000,
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        176
+      ],
+      "id": "e04c1803-7386-4813-952d-53a8c8651a7a",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Retrieve information from any company documents",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "finance-literacy",
+          "mode": "list",
+          "cachedResultName": "finance-literacy"
+        },
+        "topK": 3,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -32,
+        128
+      ],
+      "id": "e36c65d7-4d05-45ac-b6d8-9f348558b9a8",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "sentence-transformers/all-MiniLM-L6-v2",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsHuggingFaceInference",
+      "typeVersion": 1,
+      "position": [
+        48,
+        320
+      ],
+      "id": "f67364c0-e6e1-4ff4-9527-bf3271b18db5",
+      "name": "Embeddings HuggingFace Inference1",
+      "credentials": {
+        "huggingFaceApi": {
+          "id": "",
+          "name": "HuggingFaceApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        240
+      ],
+      "id": "6b571ecc-9060-4621-9881-f9d0551fe166",
+      "name": "SerpAPI",
+      "credentials": {
+        "serpApi": {
+          "id": "",
+          "name": "SerpAPI account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings HuggingFace Inference1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": ""
+  },
+  "id": "",
+  "tags": []
+}

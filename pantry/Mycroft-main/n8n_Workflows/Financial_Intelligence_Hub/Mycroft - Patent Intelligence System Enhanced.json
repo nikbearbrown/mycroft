@@ -1,0 +1,663 @@
+{
+  "name": "Mycroft - Patent Intelligence System Enhanced",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "78db0104-55a2-4142-bb82-370d63d9bdf5",
+              "name": "github_repo_url",
+              "value": "https://github.com/Humanitariansai/Mycroft",
+              "type": "string"
+            },
+            {
+              "id": "985331f1-aa8c-4888-aae7-d29cbde21a6c",
+              "name": "scripts_path",
+              "value": "Core_Components/Patents_Analysis_Agent",
+              "type": "string"
+            },
+            {
+              "id": "4731832b-6c7e-4517-8d89-6add5414aebd",
+              "name": "temp_dir",
+              "value": "/tmp",
+              "type": "string"
+            },
+            {
+              "id": "c2ff31ae-dd77-4d02-b3b0-a26898280d06",
+              "name": "days_back",
+              "value": "100",
+              "type": "string"
+            },
+            {
+              "id": "a8f92e1b-3c4d-4f2a-9b8e-7d5f6e8a9c2b",
+              "name": "api_key",
+              "value": "=xM1ScdAa.06Lz8WKH2U5FLdiqXbRtPIygexgeNP3L",
+              "type": "string"
+            },
+            {
+              "id": "b9c83f2c-4d5e-5f3a-0c9f-8e6g7f9a0d3c",
+              "name": "notify_email",
+              "value": "=therrshan@gmail.com",
+              "type": "string"
+            },
+            {
+              "id": "g4h38k7h-9i0j-0k8f-5h4k-3j1l2k4f5i8h",
+              "name": "from_email",
+              "value": "darshan.ai.assistant@gmail.com",
+              "type": "string"
+            },
+            {
+              "id": "exec-id-001",
+              "name": "execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "string"
+            },
+            {
+              "id": "start-time-001",
+              "name": "start_time",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "log-path-001",
+              "name": "log_file",
+              "value": "=/tmp/mycroft_logs/patent_{{ $execution.id }}.json",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0c0137cb-7526-440e-ae4e-89b4d82aedc1",
+      "name": "Set Variables",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2240,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=mkdir -p /tmp/mycroft_logs /tmp/mycroft_data && python3 -c \"import json; json.dump({'workflow':'Patent_Intelligence_System','execution_id':'{{ $json.execution_id }}','days_back':{{ $json.days_back }},'started_at':'{{ $json.start_time }}','steps':[]}, open('{{ $json.log_file }}', 'w'))\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -2016,
+        144
+      ],
+      "id": "536f191c-6e6e-43a7-8c4f-a8fb82f11e21",
+      "name": "Initialize Logging"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $node['Set Variables'].json.temp_dir }} && rm -rf patent_intelligence && git clone {{ $node['Set Variables'].json.github_repo_url }} patent_intelligence"
+      },
+      "id": "051f705b-0d49-45d7-8980-4815a9fdf85e",
+      "name": "Setup Github Repo",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -1792,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=python3 -c \"import json; from datetime import datetime; log=json.load(open('{{ $node['Set Variables'].json.log_file }}')); log['steps'].append({'step':'Setup Github Repo','description':'📦 Cloning analysis scripts','status':'completed','progress':15,'timestamp':datetime.utcnow().isoformat()+'Z'}); json.dump(log, open('{{ $node['Set Variables'].json.log_file }}', 'w'))\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -1568,
+        144
+      ],
+      "id": "a8ebe63c-3662-4b9f-a26e-afa66726ffdc",
+      "name": "Log: Repo Cloned"
+    },
+    {
+      "parameters": {
+        "jsCode": "const config = $node['Set Variables'].json;\n\nconst repoDir = `${config.temp_dir}/patent_intelligence`;\nconst scriptsDir = `${config.temp_dir}/patent_intelligence/${config.scripts_path}`;\nconst outputDir = `${config.temp_dir}/patent_output`;\n\nreturn [{\n  json: {\n    ...config,\n    repo_dir: repoDir,\n    scripts_dir: scriptsDir,\n    output_dir: outputDir,\n    clone_success: true\n  }\n}];"
+      },
+      "id": "27ec564e-9555-4490-bb5b-a9279e7d1043",
+      "name": "Set Path Variables",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1344,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=rm -rf {{ $json.output_dir }} && mkdir -p {{ $json.output_dir }}/data && cd {{ $json.scripts_dir }} && python3 -m pip install -r requirements.txt --user --quiet"
+      },
+      "id": "7049ae78-8cd0-4eb2-b317-7a09984a4381",
+      "name": "Setup Environment and Output Directories",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=python3 -c \"import json; from datetime import datetime; log=json.load(open('{{ $node['Set Variables'].json.log_file }}')); log['steps'].append({'step':'Setup Environment','description':'🐍 Installing dependencies','status':'completed','progress':30,'timestamp':datetime.utcnow().isoformat()+'Z'}); json.dump(log, open('{{ $node['Set Variables'].json.log_file }}', 'w'))\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        48
+      ],
+      "id": "398b131a-55d7-4dde-88a0-fac36a1ca31d",
+      "name": "Log: Environment Setup"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $json.scripts_dir }} && python3 patent_fetcher.py --days_back 200 --output {{ $json.output_dir }}/data/patents_recent.csv --api_key {{ $json.api_key }}"
+      },
+      "id": "879c3252-d6f9-466b-8155-487630501dfd",
+      "name": "Extract Patents",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=python3 -c \"import json; from datetime import datetime; log=json.load(open('{{ $node['Set Variables'].json.log_file }}')); log['steps'].append({'step':'Extract Patents','description':'📥 Fetching patents from USPTO','status':'completed','progress':50,'timestamp':datetime.utcnow().isoformat()+'Z'}); json.dump(log, open('{{ $node['Set Variables'].json.log_file }}', 'w'))\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        240
+      ],
+      "id": "c40e25bf-b3e8-44c4-b15a-a1caac094392",
+      "name": "Log: Patents Extracted"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "e5f6g7h8-i9j0-1234-efgh-567890123457",
+              "leftValue": "={{ $node['Extract Patents'].json.exitCode }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8219f111-d471-4555-ab6e-128bae6ca06c",
+      "name": "Check Extraction Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -672,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $node['Set Path Variables'].json.scripts_dir }} && python3 patent_processor.py {{ $node['Set Path Variables'].json.output_dir }}/data/patents_recent.csv --output {{ $node['Set Path Variables'].json.output_dir }}/data/processed_patents_recent.csv"
+      },
+      "id": "de8f4b12-45a4-4cd1-a118-9d062ace6155",
+      "name": "Process Patents",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=python3 -c \"import json; from datetime import datetime; log=json.load(open('{{ $node['Set Variables'].json.log_file }}')); log['steps'].append({'step':'Process Patents','description':'🤖 AI classification and processing','status':'completed','progress':70,'timestamp':datetime.utcnow().isoformat()+'Z'}); json.dump(log, open('{{ $node['Set Variables'].json.log_file }}', 'w'))\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        144
+      ],
+      "id": "0cf0914e-ea34-4b98-a9d5-82ab79a28a2f",
+      "name": "Log: Processing Complete"
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $node['Set Path Variables'].json.output_dir }}/data/processed_patents_recent.csv"
+      },
+      "id": "4d6f14f6-023f-4d59-bf62-b3b5299ed0a3",
+      "name": "Read Processed Data",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        0,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $node['Set Path Variables'].json.output_dir }}/data/processed_patents_recent_metrics.json",
+        "dataPropertyName": "metrics"
+      },
+      "id": "10bc066c-b720-44b9-b07a-3b750401232e",
+      "name": "Read Metrics",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=python3 -c \"import json; from datetime import datetime; log=json.load(open('{{ $node['Set Variables'].json.log_file }}')); log['steps'].append({'step':'Read Results','description':'📊 Loading analysis results','status':'completed','progress':85,'timestamp':datetime.utcnow().isoformat()+'Z'}); json.dump(log, open('{{ $node['Set Variables'].json.log_file }}', 'w'))\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        224,
+        96
+      ],
+      "id": "91d0fde6-1fe6-4612-9ce6-c017fec78f6b",
+      "name": "Log: Results Loaded"
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $node['Set Path Variables'].json.from_email }}",
+        "toEmail": "={{ $node['Set Path Variables'].json.notify_email }}",
+        "subject": "=Patent Intelligence Report - {{ $now.toFormat('yyyy-MM-dd') }}",
+        "text": "=Workflow executed successfully.",
+        "options": {
+          "attachments": "=data, metrics",
+          "allowUnauthorizedCerts": false
+        }
+      },
+      "id": "087349a1-cadd-4156-a9b0-c546d934567e",
+      "name": "Send Report Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        448,
+        96
+      ],
+      "webhookId": "d0b886bb-ba85-4ddf-a2e5-6be800b1db01",
+      "credentials": {
+        "smtp": {
+          "id": "1REREAfOfjpAuWeF",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "=rm -rf {{ $node['Set Path Variables'].json.repo_dir }} && mv {{ $node['Set Path Variables'].json.output_dir }} /tmp/mycroft_data/patent_{{ $node['Set Variables'].json.days_back }}days_$(date +%Y-%m-%d) && echo \"🧹 Cleanup completed and data moved\""
+      },
+      "id": "cb3e4ac6-0f4a-488e-9400-8b0e59555845",
+      "name": "Cleanup and Save Data",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        672,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=python3 -c \"import json; from datetime import datetime; log=json.load(open('{{ $node['Set Variables'].json.log_file }}')); log['steps'].append({'step':'Cleanup','description':'✅ Analysis complete','status':'completed','progress':100,'timestamp':datetime.utcnow().isoformat()+'Z'}); log['completed_at']=datetime.utcnow().isoformat()+'Z'; log['status']='completed'; json.dump(log, open('{{ $node['Set Variables'].json.log_file }}', 'w')); print(json.dumps(log, indent=2))\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        896,
+        96
+      ],
+      "id": "1c06623c-4636-42a5-ab87-9396673a7690",
+      "name": "Log Completion"
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $json.from_email }}",
+        "toEmail": "={{ $json.notify_email }}",
+        "subject": "Patent Intelligence Error",
+        "text": "The workflow has failed.",
+        "options": {
+          "allowUnauthorizedCerts": false
+        }
+      },
+      "id": "91cb05dc-3b1b-4a3f-bc7e-782e0c1b2cfc",
+      "name": "Error Notification",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        336
+      ],
+      "webhookId": "0e30da4e-e599-454c-a66a-977b5309e2a8",
+      "credentials": {
+        "smtp": {
+          "id": "1REREAfOfjpAuWeF",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "=python3 -c \"import json; from datetime import datetime; log=json.load(open('{{ $node['Set Variables'].json.log_file }}')); log['steps'].append({'step':'Error','description':'❌ Workflow failed','status':'failed','progress':0,'timestamp':datetime.utcnow().isoformat()+'Z'}); log['status']='failed'; log['completed_at']=datetime.utcnow().isoformat()+'Z'; json.dump(log, open('{{ $node['Set Variables'].json.log_file }}', 'w'))\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        336
+      ],
+      "id": "e1394616-7c4b-4b50-927b-be97449943c7",
+      "name": "Log Error"
+    },
+    {
+      "parameters": {
+        "command": "=rm -rf {{ $node['Set Path Variables'].json.repo_dir }} && rm -rf {{ $node['Set Path Variables'].json.output_dir }} && echo \"Error cleanup completed\""
+      },
+      "id": "469b1c7b-045a-4096-920e-98fc95aa656a",
+      "name": "Cleanup Repository Error",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        0,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "path": "analyze-patents-enhanced",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2496,
+        144
+      ],
+      "id": "5e8c5956-eb18-4bf1-a498-6734b1281ad1",
+      "name": "Webhook",
+      "webhookId": "4856195c-726d-4b86-98f4-fc604eaf2880"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1104,
+        96
+      ],
+      "id": "24e8e12e-148c-44ba-8dee-7ab55105a49e",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Set Variables": {
+      "main": [
+        [
+          {
+            "node": "Initialize Logging",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initialize Logging": {
+      "main": [
+        [
+          {
+            "node": "Setup Github Repo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setup Github Repo": {
+      "main": [
+        [
+          {
+            "node": "Log: Repo Cloned",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: Repo Cloned": {
+      "main": [
+        [
+          {
+            "node": "Set Path Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Path Variables": {
+      "main": [
+        [
+          {
+            "node": "Setup Environment and Output Directories",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Extract Patents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setup Environment and Output Directories": {
+      "main": [
+        [
+          {
+            "node": "Log: Environment Setup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Patents": {
+      "main": [
+        [
+          {
+            "node": "Log: Patents Extracted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: Patents Extracted": {
+      "main": [
+        [
+          {
+            "node": "Check Extraction Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Extraction Success": {
+      "main": [
+        [
+          {
+            "node": "Process Patents",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Patents": {
+      "main": [
+        [
+          {
+            "node": "Log: Processing Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: Processing Complete": {
+      "main": [
+        [
+          {
+            "node": "Read Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Processed Data": {
+      "main": [
+        [
+          {
+            "node": "Log: Results Loaded",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Metrics": {
+      "main": [
+        [
+          {
+            "node": "Read Processed Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: Results Loaded": {
+      "main": [
+        [
+          {
+            "node": "Send Report Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Report Email": {
+      "main": [
+        [
+          {
+            "node": "Cleanup and Save Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cleanup and Save Data": {
+      "main": [
+        [
+          {
+            "node": "Log Completion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Notification": {
+      "main": [
+        [
+          {
+            "node": "Log Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Error": {
+      "main": [
+        [
+          {
+            "node": "Cleanup Repository Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Completion": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9edc883d-ab12-468f-b266-59db0b3d72ea",
+  "meta": {
+    "instanceId": "54e139bdd36444c24c3c5ac8519ffbbee75318a9c1efe841874a03d85ac23aaf"
+  },
+  "id": "bDfdrBoCAbIPg2nn",
+  "tags": []
+}

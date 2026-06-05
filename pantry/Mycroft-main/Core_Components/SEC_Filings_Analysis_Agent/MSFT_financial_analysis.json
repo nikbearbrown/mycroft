@@ -1,0 +1,1520 @@
+{
+  "success": true,
+  "ticker": "MSFT",
+  "company_info": {
+    "ticker": "MSFT",
+    "company_name": "MICROSOFT CORPORATION",
+    "cik": 789019,
+    "sic": "N/A",
+    "sic_description": "N/A",
+    "analysis_timestamp": "2025-08-27T12:03:11.908327"
+  },
+  "latest_annual_metrics": {
+    "revenue": {
+      "value": 62484000000,
+      "period_end": "2010-06-30",
+      "fiscal_year": 2010,
+      "fiscal_period": "FY",
+      "form": "10-K",
+      "filed_date": "2010-07-30"
+    },
+    "cost_of_revenue": {
+      "value": 34261000000,
+      "period_end": "2017-06-30",
+      "fiscal_year": 2017,
+      "fiscal_period": "FY",
+      "form": "10-K",
+      "filed_date": "2017-08-02"
+    },
+    "gross_profit": {
+      "value": 193893000000,
+      "period_end": "2025-06-30",
+      "fiscal_year": 2025,
+      "fiscal_period": "FY",
+      "form": "10-K",
+      "filed_date": "2025-07-30"
+    },
+    "research_development": {
+      "value": 32488000000,
+      "period_end": "2025-06-30",
+      "fiscal_year": 2025,
+      "fiscal_period": "FY",
+      "form": "10-K",
+      "filed_date": "2025-07-30"
+    },
+    "operating_income": {
+      "value": 128528000000,
+      "period_end": "2025-06-30",
+      "fiscal_year": 2025,
+      "fiscal_period": "FY",
+      "form": "10-K",
+      "filed_date": "2025-07-30"
+    },
+    "net_income": {
+      "value": 101832000000,
+      "period_end": "2025-06-30",
+      "fiscal_year": 2025,
+      "fiscal_period": "FY",
+      "form": "10-K",
+      "filed_date": "2025-07-30"
+    },
+    "cash_and_equivalents": {
+      "value": 30242000000,
+      "period_end": "2025-06-30",
+      "fiscal_year": 2025,
+      "fiscal_period": "FY",
+      "form": "10-K",
+      "filed_date": "2025-07-30"
+    },
+    "total_current_assets": {
+      "value": 191131000000,
+      "period_end": "2025-06-30",
+      "fiscal_year": 2025,
+      "fiscal_period": "FY",
+      "form": "10-K",
+      "filed_date": "2025-07-30"
+    },
+    "total_assets": {
+      "value": 619003000000,
+      "period_end": "2025-06-30",
+      "fiscal_year": 2025,
+      "fiscal_period": "FY",
+      "form": "10-K",
+      "filed_date": "2025-07-30"
+    },
+    "current_liabilities": {
+      "value": 141218000000,
+      "period_end": "2025-06-30",
+      "fiscal_year": 2025,
+      "fiscal_period": "FY",
+      "form": "10-K",
+      "filed_date": "2025-07-30"
+    },
+    "long_term_debt": {
+      "value": 43151000000,
+      "period_end": "2025-06-30",
+      "fiscal_year": 2025,
+      "fiscal_period": "FY",
+      "form": "10-K",
+      "filed_date": "2025-07-30"
+    },
+    "total_liabilities": {
+      "value": 275524000000,
+      "period_end": "2025-06-30",
+      "fiscal_year": 2025,
+      "fiscal_period": "FY",
+      "form": "10-K",
+      "filed_date": "2025-07-30"
+    },
+    "shareholders_equity": {
+      "value": 343479000000,
+      "period_end": "2025-06-30",
+      "fiscal_year": 2025,
+      "fiscal_period": "FY",
+      "form": "10-K",
+      "filed_date": "2025-07-30"
+    },
+    "operating_cash_flow": {
+      "value": 136162000000,
+      "period_end": "2025-06-30",
+      "fiscal_year": 2025,
+      "fiscal_period": "FY",
+      "form": "10-K",
+      "filed_date": "2025-07-30"
+    },
+    "capital_expenditures": {
+      "value": 64551000000,
+      "period_end": "2025-06-30",
+      "fiscal_year": 2025,
+      "fiscal_period": "FY",
+      "form": "10-K",
+      "filed_date": "2025-07-30"
+    }
+  },
+  "latest_quarterly_metrics": {
+    "revenue": {
+      "value": 36148000000,
+      "period_end": "2010-12-31",
+      "fiscal_year": 2011,
+      "fiscal_period": "Q2",
+      "form": "10-Q",
+      "filed_date": "2011-01-27"
+    },
+    "cost_of_revenue": {
+      "value": 28611000000,
+      "period_end": "2018-03-31",
+      "fiscal_year": 2018,
+      "fiscal_period": "Q3",
+      "form": "10-Q",
+      "filed_date": "2018-04-26"
+    },
+    "gross_profit": {
+      "value": 141466000000,
+      "period_end": "2025-03-31",
+      "fiscal_year": 2025,
+      "fiscal_period": "Q3",
+      "form": "10-Q",
+      "filed_date": "2025-04-30"
+    },
+    "research_development": {
+      "value": 23659000000,
+      "period_end": "2025-03-31",
+      "fiscal_year": 2025,
+      "fiscal_period": "Q3",
+      "form": "10-Q",
+      "filed_date": "2025-04-30"
+    },
+    "operating_income": {
+      "value": 94205000000,
+      "period_end": "2025-03-31",
+      "fiscal_year": 2025,
+      "fiscal_period": "Q3",
+      "form": "10-Q",
+      "filed_date": "2025-04-30"
+    },
+    "net_income": {
+      "value": 74599000000,
+      "period_end": "2025-03-31",
+      "fiscal_year": 2025,
+      "fiscal_period": "Q3",
+      "form": "10-Q",
+      "filed_date": "2025-04-30"
+    },
+    "cash_and_equivalents": {
+      "value": 28828000000,
+      "period_end": "2025-03-31",
+      "fiscal_year": 2025,
+      "fiscal_period": "Q3",
+      "form": "10-Q",
+      "filed_date": "2025-04-30"
+    },
+    "total_current_assets": {
+      "value": 156644000000,
+      "period_end": "2025-03-31",
+      "fiscal_year": 2025,
+      "fiscal_period": "Q3",
+      "form": "10-Q",
+      "filed_date": "2025-04-30"
+    },
+    "total_assets": {
+      "value": 562624000000,
+      "period_end": "2025-03-31",
+      "fiscal_year": 2025,
+      "fiscal_period": "Q3",
+      "form": "10-Q",
+      "filed_date": "2025-04-30"
+    },
+    "current_liabilities": {
+      "value": 114206000000,
+      "period_end": "2025-03-31",
+      "fiscal_year": 2025,
+      "fiscal_period": "Q3",
+      "form": "10-Q",
+      "filed_date": "2025-04-30"
+    },
+    "long_term_debt": {
+      "value": 42881000000,
+      "period_end": "2025-03-31",
+      "fiscal_year": 2025,
+      "fiscal_period": "Q3",
+      "form": "10-Q",
+      "filed_date": "2025-04-30"
+    },
+    "total_liabilities": {
+      "value": 240733000000,
+      "period_end": "2025-03-31",
+      "fiscal_year": 2025,
+      "fiscal_period": "Q3",
+      "form": "10-Q",
+      "filed_date": "2025-04-30"
+    },
+    "shareholders_equity": {
+      "value": 321891000000,
+      "period_end": "2025-03-31",
+      "fiscal_year": 2025,
+      "fiscal_period": "Q3",
+      "form": "10-Q",
+      "filed_date": "2025-04-30"
+    },
+    "operating_cash_flow": {
+      "value": 93515000000,
+      "period_end": "2025-03-31",
+      "fiscal_year": 2025,
+      "fiscal_period": "Q3",
+      "form": "10-Q",
+      "filed_date": "2025-04-30"
+    },
+    "capital_expenditures": {
+      "value": 47472000000,
+      "period_end": "2025-03-31",
+      "fiscal_year": 2025,
+      "fiscal_period": "Q3",
+      "form": "10-Q",
+      "filed_date": "2025-04-30"
+    }
+  },
+  "financial_ratios": {
+    "gross_margin_pct": 310.30823890916076,
+    "operating_margin_pct": 205.69745854938867,
+    "net_margin_pct": 162.97292106779335,
+    "return_on_assets_pct": 16.450970350709124,
+    "return_on_equity_pct": 29.647227341409522,
+    "debt_to_equity": 0.8021567548525529,
+    "debt_to_assets": 0.44510931287893596,
+    "current_ratio": 1.3534464445042416,
+    "operating_cash_flow_ratio": 0.964197198657395
+  },
+  "historical_data_summary": {
+    "revenue": 10,
+    "cost_of_revenue": 10,
+    "gross_profit": 10,
+    "research_development": 10,
+    "operating_income": 10,
+    "net_income": 10,
+    "cash_and_equivalents": 10,
+    "total_current_assets": 10,
+    "total_assets": 10,
+    "current_liabilities": 10,
+    "long_term_debt": 10,
+    "total_liabilities": 10,
+    "shareholders_equity": 10,
+    "operating_cash_flow": 10,
+    "capital_expenditures": 10
+  },
+  "key_insights": [
+    "Latest annual revenue: $62,484,000,000",
+    "Strong profitability with 163.0% net margin"
+  ],
+  "full_historical_data": {
+    "revenue": [
+      {
+        "value": 36148000000,
+        "period_end": "2010-12-31",
+        "fiscal_year": 2011,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2011-01-27"
+      },
+      {
+        "value": 19953000000,
+        "period_end": "2010-12-31",
+        "fiscal_year": 2011,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2011-01-27"
+      },
+      {
+        "value": 16195000000,
+        "period_end": "2010-09-30",
+        "fiscal_year": 2011,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2010-10-28"
+      },
+      {
+        "value": 62484000000,
+        "period_end": "2010-06-30",
+        "fiscal_year": 2010,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2010-07-30"
+      },
+      {
+        "value": 16039000000,
+        "period_end": "2010-06-30",
+        "fiscal_year": 2010,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2010-07-30"
+      },
+      {
+        "value": 46445000000,
+        "period_end": "2010-03-31",
+        "fiscal_year": 2010,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2010-04-22"
+      },
+      {
+        "value": 14503000000,
+        "period_end": "2010-03-31",
+        "fiscal_year": 2010,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2010-07-30"
+      },
+      {
+        "value": 14503000000,
+        "period_end": "2010-03-31",
+        "fiscal_year": 2010,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2010-04-22"
+      },
+      {
+        "value": 31942000000,
+        "period_end": "2009-12-31",
+        "fiscal_year": 2011,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2011-01-27"
+      },
+      {
+        "value": 31942000000,
+        "period_end": "2009-12-31",
+        "fiscal_year": 2010,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2010-01-28"
+      }
+    ],
+    "cost_of_revenue": [
+      {
+        "value": 28611000000,
+        "period_end": "2018-03-31",
+        "fiscal_year": 2018,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2018-04-26"
+      },
+      {
+        "value": 9269000000,
+        "period_end": "2018-03-31",
+        "fiscal_year": 2018,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2018-04-26"
+      },
+      {
+        "value": 19342000000,
+        "period_end": "2017-12-31",
+        "fiscal_year": 2018,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2018-01-31"
+      },
+      {
+        "value": 11064000000,
+        "period_end": "2017-12-31",
+        "fiscal_year": 2018,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2018-01-31"
+      },
+      {
+        "value": 8278000000,
+        "period_end": "2017-09-30",
+        "fiscal_year": 2018,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2017-10-26"
+      },
+      {
+        "value": 34261000000,
+        "period_end": "2017-06-30",
+        "fiscal_year": 2017,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2017-08-02"
+      },
+      {
+        "value": 25805000000,
+        "period_end": "2017-03-31",
+        "fiscal_year": 2017,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2017-04-27"
+      },
+      {
+        "value": 25805000000,
+        "period_end": "2017-03-31",
+        "fiscal_year": 2018,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2018-04-26"
+      },
+      {
+        "value": 8060000000,
+        "period_end": "2017-03-31",
+        "fiscal_year": 2017,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2017-04-27"
+      },
+      {
+        "value": 8060000000,
+        "period_end": "2017-03-31",
+        "fiscal_year": 2018,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2018-04-26"
+      }
+    ],
+    "gross_profit": [
+      {
+        "value": 193893000000,
+        "period_end": "2025-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 141466000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 48147000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 93319000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 47833000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 45486000000,
+        "period_end": "2024-09-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 171008000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2024,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2024-07-30"
+      },
+      {
+        "value": 171008000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": null,
+        "fiscal_period": null,
+        "form": "8-K",
+        "filed_date": "2024-12-03"
+      },
+      {
+        "value": 171008000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 125965000000,
+        "period_end": "2024-03-31",
+        "fiscal_year": 2024,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2024-04-25"
+      }
+    ],
+    "research_development": [
+      {
+        "value": 32488000000,
+        "period_end": "2025-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 23659000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 8198000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 15461000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 7917000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 7544000000,
+        "period_end": "2024-09-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 29510000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2024,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2024-07-30"
+      },
+      {
+        "value": 29510000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": null,
+        "fiscal_period": null,
+        "form": "8-K",
+        "filed_date": "2024-12-03"
+      },
+      {
+        "value": 29510000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 21454000000,
+        "period_end": "2024-03-31",
+        "fiscal_year": 2024,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2024-04-25"
+      }
+    ],
+    "operating_income": [
+      {
+        "value": 128528000000,
+        "period_end": "2025-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 94205000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 32000000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 62205000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 31653000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 30552000000,
+        "period_end": "2024-09-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 109433000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2024,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2024-07-30"
+      },
+      {
+        "value": 109433000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": null,
+        "fiscal_period": null,
+        "form": "8-K",
+        "filed_date": "2024-12-03"
+      },
+      {
+        "value": 109433000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 81508000000,
+        "period_end": "2024-03-31",
+        "fiscal_year": 2024,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2024-04-25"
+      }
+    ],
+    "net_income": [
+      {
+        "value": 101832000000,
+        "period_end": "2025-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 74599000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 25824000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 48775000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 24108000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 24667000000,
+        "period_end": "2024-09-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 88136000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2024,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2024-07-30"
+      },
+      {
+        "value": 88136000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": null,
+        "fiscal_period": null,
+        "form": "8-K",
+        "filed_date": "2024-12-03"
+      },
+      {
+        "value": 88136000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 66100000000,
+        "period_end": "2024-03-31",
+        "fiscal_year": 2024,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2024-04-25"
+      }
+    ],
+    "cash_and_equivalents": [
+      {
+        "value": 30242000000,
+        "period_end": "2025-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 28828000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 17482000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 20840000000,
+        "period_end": "2024-09-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 18315000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2024,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2024-07-30"
+      },
+      {
+        "value": 18315000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 18315000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": null,
+        "fiscal_period": null,
+        "form": "8-K",
+        "filed_date": "2024-12-03"
+      },
+      {
+        "value": 18315000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 18315000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 18315000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      }
+    ],
+    "total_current_assets": [
+      {
+        "value": 191131000000,
+        "period_end": "2025-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 156644000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 147080000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 149926000000,
+        "period_end": "2024-09-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 159734000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2024,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2024-07-30"
+      },
+      {
+        "value": 159734000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 159734000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": null,
+        "fiscal_period": null,
+        "form": "8-K",
+        "filed_date": "2024-12-03"
+      },
+      {
+        "value": 159734000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 159734000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 159734000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      }
+    ],
+    "total_assets": [
+      {
+        "value": 619003000000,
+        "period_end": "2025-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 562624000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 533898000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 523013000000,
+        "period_end": "2024-09-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 512163000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2024,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2024-07-30"
+      },
+      {
+        "value": 512163000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 512163000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": null,
+        "fiscal_period": null,
+        "form": "8-K",
+        "filed_date": "2024-12-03"
+      },
+      {
+        "value": 512163000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 512163000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 512163000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      }
+    ],
+    "current_liabilities": [
+      {
+        "value": 141218000000,
+        "period_end": "2025-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 114206000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 108882000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 115200000000,
+        "period_end": "2024-09-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 125286000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2024,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2024-07-30"
+      },
+      {
+        "value": 125286000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 125286000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": null,
+        "fiscal_period": null,
+        "form": "8-K",
+        "filed_date": "2024-12-03"
+      },
+      {
+        "value": 125286000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 125286000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 125286000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      }
+    ],
+    "long_term_debt": [
+      {
+        "value": 43151000000,
+        "period_end": "2025-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 42881000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 44970000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 45117000000,
+        "period_end": "2024-09-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 44937000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2024,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2024-07-30"
+      },
+      {
+        "value": 44937000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 44937000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": null,
+        "fiscal_period": null,
+        "form": "8-K",
+        "filed_date": "2024-12-03"
+      },
+      {
+        "value": 44937000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 44937000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 44937000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      }
+    ],
+    "total_liabilities": [
+      {
+        "value": 275524000000,
+        "period_end": "2025-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 240733000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 231203000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 235290000000,
+        "period_end": "2024-09-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 243686000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2024,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2024-07-30"
+      },
+      {
+        "value": 243686000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 243686000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": null,
+        "fiscal_period": null,
+        "form": "8-K",
+        "filed_date": "2024-12-03"
+      },
+      {
+        "value": 243686000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 243686000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 243686000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      }
+    ],
+    "shareholders_equity": [
+      {
+        "value": 343479000000,
+        "period_end": "2025-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 321891000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 302695000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 287723000000,
+        "period_end": "2024-09-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 268477000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2024,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2024-07-30"
+      },
+      {
+        "value": 268477000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 268477000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": null,
+        "fiscal_period": null,
+        "form": "8-K",
+        "filed_date": "2024-12-03"
+      },
+      {
+        "value": 268477000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 268477000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 268477000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      }
+    ],
+    "operating_cash_flow": [
+      {
+        "value": 136162000000,
+        "period_end": "2025-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 93515000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 37044000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 56471000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 22291000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 34180000000,
+        "period_end": "2024-09-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 118548000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2024,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2024-07-30"
+      },
+      {
+        "value": 118548000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": null,
+        "fiscal_period": null,
+        "form": "8-K",
+        "filed_date": "2024-12-03"
+      },
+      {
+        "value": 118548000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 81353000000,
+        "period_end": "2024-03-31",
+        "fiscal_year": 2024,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2024-04-25"
+      }
+    ],
+    "capital_expenditures": [
+      {
+        "value": 64551000000,
+        "period_end": "2025-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 47472000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 16745000000,
+        "period_end": "2025-03-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2025-04-30"
+      },
+      {
+        "value": 30727000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 15804000000,
+        "period_end": "2024-12-31",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q2",
+        "form": "10-Q",
+        "filed_date": "2025-01-29"
+      },
+      {
+        "value": 14923000000,
+        "period_end": "2024-09-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "Q1",
+        "form": "10-Q",
+        "filed_date": "2024-10-30"
+      },
+      {
+        "value": 44477000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2024,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2024-07-30"
+      },
+      {
+        "value": 44477000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": null,
+        "fiscal_period": null,
+        "form": "8-K",
+        "filed_date": "2024-12-03"
+      },
+      {
+        "value": 44477000000,
+        "period_end": "2024-06-30",
+        "fiscal_year": 2025,
+        "fiscal_period": "FY",
+        "form": "10-K",
+        "filed_date": "2025-07-30"
+      },
+      {
+        "value": 30604000000,
+        "period_end": "2024-03-31",
+        "fiscal_year": 2024,
+        "fiscal_period": "Q3",
+        "form": "10-Q",
+        "filed_date": "2024-04-25"
+      }
+    ]
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "name": "Portfolio Price Fetcher",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const portfolio = [\n  { ticker: 'NVDA', shares: 50, buyPrice: 450 },\n  { ticker: 'MSFT', shares: 30, buyPrice: 350 },\n  { ticker: 'GOOGL', shares: 40, buyPrice: 140 },\n  { ticker: 'META', shares: 25, buyPrice: 320 },\n  { ticker: 'AMD', shares: 60, buyPrice: 120 }\n];\n\nreturn portfolio.map(stock => ({ json: stock }));"
+      },
+      "name": "Define Portfolio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://query1.finance.yahoo.com/v8/finance/chart/{{$json.ticker}}",
+        "options": {}
+      },
+      "name": "Fetch Stock Prices",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const yahooData = $input.item.json;\nconst result = yahooData.chart.result[0];\nconst ticker = result.meta.symbol;\nconst currentPrice = result.meta.regularMarketPrice || result.meta.previousClose;\n\nconst portfolio = {\n  'NVDA': { shares: 50, buyPrice: 450 },\n  'MSFT': { shares: 30, buyPrice: 350 },\n  'GOOGL': { shares: 40, buyPrice: 140 },\n  'META': { shares: 25, buyPrice: 320 },\n  'AMD': { shares: 60, buyPrice: 120 }\n};\n\nconst myStock = portfolio[ticker];\nconst shares = myStock.shares;\nconst buyPrice = myStock.buyPrice;\nconst currentValue = shares * currentPrice;\nconst costBasis = shares * buyPrice;\nconst gainLoss = currentValue - costBasis;\nconst gainLossPct = ((gainLoss / costBasis) * 100).toFixed(2);\n\nreturn {\n  json: {\n    ticker: ticker,\n    shares: shares,\n    buyPrice: buyPrice,\n    currentPrice: currentPrice,\n    currentValue: currentValue,\n    costBasis: costBasis,\n    gainLoss: gainLoss,\n    gainLossPct: gainLossPct\n  }\n};"
+      },
+      "name": "Calculate Metrics",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "let allStocks;\n\nif (Array.isArray($input.all())) {\n  allStocks = $input.all().map(item => item.json);\n} else {\n  allStocks = [$input.item.json];\n}\n\nlet totalValue = 0;\nlet totalCost = 0;\n\nfor (let i = 0; i < allStocks.length; i++) {\n  totalValue = totalValue + allStocks[i].currentValue;\n  totalCost = totalCost + allStocks[i].costBasis;\n}\n\nconst totalGain = totalValue - totalCost;\nconst totalReturn = ((totalGain / totalCost) * 100).toFixed(2);\n\nreturn [{\n  json: {\n    stocks: allStocks,\n    summary: {\n      totalStocks: allStocks.length,\n      totalCurrentValue: totalValue.toFixed(2),\n      totalCostBasis: totalCost.toFixed(2),\n      totalGainLoss: totalGain.toFixed(2),\n      totalReturn: totalReturn,\n      lastUpdated: new Date().toISOString(),\n      lastUpdatedFormatted: new Date().toLocaleString()\n    }\n  }\n}];"
+      },
+      "name": "Aggregate Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Define Portfolio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Define Portfolio": {
+      "main": [
+        [
+          {
+            "node": "Fetch Stock Prices",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Stock Prices": {
+      "main": [
+        [
+          {
+            "node": "Calculate Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Metrics": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {}
+}

@@ -1,0 +1,328 @@
+/* =====================================================
+   CSS Variables & Reset
+   ===================================================== */
+:root {
+  --navy:         #0a1628;
+  --navy-light:   #1a2e4a;
+  --accent:       #2563eb;
+  --accent-hover: #1d4ed8;
+  --green:        #16a34a;
+  --yellow:       #ca8a04;
+  --red:          #dc2626;
+  --gray-bg:      #f8fafc;
+  --border:       #e2e8f0;
+  --text:         #1e293b;
+  --text-muted:   #64748b;
+
+  --radius:       6px;
+  --radius-lg:    10px;
+  --shadow-sm:    0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:    0 4px 12px rgba(0,0,0,.12);
+  --transition:   0.18s ease;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont,
+               'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: var(--gray-bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+/* =====================================================
+   Layout helpers
+   ===================================================== */
+.page-main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+/* =====================================================
+   Buttons
+   ===================================================== */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 20px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), opacity var(--transition);
+  white-space: nowrap;
+}
+.btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: #fff;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+}
+.btn-secondary:hover { background: var(--gray-bg); border-color: #cbd5e1; }
+
+/* =====================================================
+   Cards
+   ===================================================== */
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 24px;
+}
+
+/* =====================================================
+   Badges
+   ===================================================== */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.badge-dod {
+  background: #dbeafe;
+  color: #1e40af;
+}
+.badge-intel {
+  background: #ede9fe;
+  color: #6b21a8;
+}
+.badge-civilian {
+  background: #dcfce7;
+  color: #14532d;
+}
+.badge-unknown {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+/* score badges */
+.badge-high   { background: #fee2e2; color: var(--red); }
+.badge-medium { background: #fef9c3; color: #854d0e; }
+.badge-low    { background: #dbeafe; color: #1e40af; }
+.badge-none   { background: #f1f5f9; color: #475569; }
+
+/* =====================================================
+   Table
+   ===================================================== */
+.data-table-wrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: 0.875rem;
+}
+
+.data-table thead tr {
+  background: var(--navy);
+  color: #fff;
+}
+
+.data-table thead th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  user-select: none;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.data-table thead th:hover { background: var(--navy-light); }
+.data-table thead th .sort-icon { margin-left: 4px; opacity: 0.7; }
+
+.data-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.data-table tbody tr:nth-child(even) { background: #f8fafc; }
+.data-table tbody tr:hover { background: #eff6ff; }
+
+.data-table td {
+  padding: 11px 16px;
+  vertical-align: middle;
+}
+
+.data-table .col-desc {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =====================================================
+   Form Inputs
+   ===================================================== */
+.form-input,
+.form-select {
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  color: var(--text);
+  background: #fff;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline: none;
+}
+.form-input:focus,
+.form-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+}
+
+.form-input[type="number"] { width: 90px; }
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  width: 140px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+input[type="range"]::-webkit-slider-thumb:hover { background: var(--accent-hover); }
+
+/* =====================================================
+   Spinner
+   ===================================================== */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.spinner-dark {
+  border-color: rgba(30,41,59,0.25);
+  border-top-color: var(--text);
+}
+
+/* =====================================================
+   Status dot
+   ===================================================== */
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+.status-dot.live    { background: #4ade80; box-shadow: 0 0 6px #4ade80; }
+.status-dot.offline { background: #f87171; }
+
+/* =====================================================
+   Error / info banners
+   ===================================================== */
+.error-banner {
+  padding: 12px 18px;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: var(--radius);
+  color: #991b1b;
+  font-size: 0.875rem;
+  margin-bottom: 20px;
+}
+
+.warn-banner {
+  padding: 12px 18px;
+  background: #fefce8;
+  border: 1px solid #fde047;
+  border-radius: var(--radius);
+  color: #854d0e;
+  font-size: 0.875rem;
+  margin-bottom: 20px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 56px 24px;
+  color: var(--text-muted);
+  background: #fff;
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--border);
+}
+.empty-state h3 { font-size: 1.1rem; margin-bottom: 6px; color: var(--text); }
+
+/* =====================================================
+   Misc utility
+   ===================================================== */
+.text-muted  { color: var(--text-muted); }
+.text-sm     { font-size: 0.875rem; }
+.font-bold   { font-weight: 700; }
+.mt-1  { margin-top: 4px; }
+.mt-2  { margin-top: 8px; }
+.mt-4  { margin-top: 16px; }
+.mt-6  { margin-top: 24px; }
+.mb-2  { margin-bottom: 8px; }
+.mb-4  { margin-bottom: 16px; }
+.mb-6  { margin-bottom: 24px; }
+.gap-2 { gap: 8px; }
+.flex  { display: flex; }
+.items-center { align-items: center; }
+.flex-wrap { flex-wrap: wrap; }

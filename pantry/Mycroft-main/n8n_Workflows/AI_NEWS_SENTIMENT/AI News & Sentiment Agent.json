@@ -1,0 +1,341 @@
+{
+  "name": "AI News & Sentiment Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b6fbf1cf-4096-40ad-84bc-49b664dc02af",
+              "name": "ticker",
+              "value": "AI",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "4e4a277f-00fd-4305-9bc3-a5082df64892",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "url": "https://newsapi.org/v2/everything?q=nvidia&language=en&pageSize=5&sortBy=publishedAt&apiKey=74aed4a897234f8fbe869c1c8c62db39",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "9d6ed0bd-6abb-4f26-bdeb-b569722f90b9",
+      "name": "HTTP Request",
+      "alwaysOutputData": false,
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "articles",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        624,
+        0
+      ],
+      "id": "6f048b48-e0dc-4e21-91d7-2306c720766e",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "language": "python",
+        "pythonCode": "title = item.get(\"json\", {}).get(\"title\", \"\").lower()\n\nif \"gain\" in title or \"raise\" in title:\n    sentiment = \"positive\"\nelif \"loss\" in title or \"drop\" in title or \"fall\" in title:\n    sentiment = \"negative\"\nelse:\n    sentiment = \"neutral\"\n\nreturn {\n    \"json\": {\n        \"title\": item[\"json\"][\"title\"],\n        \"sentiment\": sentiment,\n        \"source\": item[\"json\"][\"source\"][\"name\"],\n        \"publishedAt\": item[\"json\"][\"publishedAt\"],\n        \"url\": item[\"json\"][\"url\"]\n    }\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        832,
+        0
+      ],
+      "id": "1adf07ed-eba0-4a5f-a0e2-dd645a4296a5",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "https://airtable.com/appjrMkF75EUvqTh1/tblJsYXCmrUAhANBP/viwftNf4G1sVIK8km",
+          "mode": "url"
+        },
+        "table": {
+          "__rl": true,
+          "value": "https://airtable.com/appjrMkF75EUvqTh1/tblJsYXCmrUAhANBP/viwftNf4G1sVIK8km",
+          "mode": "url"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "title": "={{$json[\"title\"]}}",
+            "sentiment": "={{$json[\"sentiment\"]}}\n",
+            "source": "={{$json[\"source\"]}}",
+            "url": "={{$json[\"url\"]}}",
+            "publisheAt": "={{$json[\"publishedAt\"]}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "sentiment",
+              "displayName": "sentiment",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "publisheAt",
+              "displayName": "publisheAt",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1056,
+        0
+      ],
+      "id": "c07aec65-0b99-4c42-9435-3ffa6162c7fe",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ukvMhLZW2h3xLmvj",
+          "name": "Airtable Personal Access Token account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "08fc97ef-edb9-4762-97c2-7f9b6ab79ed0",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "fromEmail": "khandelwalanshi11@gmail.com",
+        "toEmail": "anshikhandelwal11@gmail.com",
+        "subject": "⚠️ Negative AI News Detected",
+        "html": "=A negative sentiment article was found:\n\nTitle: {{$json[\"fields\"][\"title\"]}}\nSource: {{$json[\"fields\"][\"source\"]}}\nPublished At: {{$json[\"fields\"][\"publishAt\"]}}\nSentiment: {{$json[\"fields\"][\"sentiment\"].trim()}}\nLink: {{$json[\"fields\"][\"url\"]}}\n\nPlease review the article for further action.\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1280,
+        16
+      ],
+      "id": "80fb8706-64dd-4507-9b55-adf11fabf011",
+      "name": "Send email",
+      "webhookId": "cf4d12c8-89dd-4491-b8c4-19d6aba3919a",
+      "credentials": {
+        "smtp": {
+          "id": "6GHmSHwzqKD1HSrk",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "07aa1aa9-ad87-4306-9c79-00ac7a4480b6",
+              "leftValue": "=\n{{ $json.fields.sentiment }}",
+              "rightValue": "negative",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        -176
+      ],
+      "id": "5cb7d508-2add-4a77-8871-0a1bb5531d61",
+      "name": "Filter",
+      "alwaysOutputData": false
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b1d82abe-862f-47e7-81d7-f10fb3adedd1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c5605aae802302d14cf85834357505b8eaf4143631bcf5d9ab9240de503b0d2d"
+  },
+  "id": "N7TxVxZvDYhYmMe0",
+  "tags": []
+}

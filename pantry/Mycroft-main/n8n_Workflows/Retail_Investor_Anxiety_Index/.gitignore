@@ -1,0 +1,21 @@
+# Generated data files — do not commit
+anxiety_log.json
+output.json
+
+# Old dashboard file — replaced by dashboard.html
+index.html
+
+# Mac system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment files (if added later)
+.env
+.env.local

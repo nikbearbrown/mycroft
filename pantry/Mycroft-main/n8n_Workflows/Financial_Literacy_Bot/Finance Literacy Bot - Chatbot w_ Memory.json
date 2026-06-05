@@ -1,0 +1,547 @@
+{
+  "name": "Finance Literacy Bot - Chatbot w/ Memory",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -576,
+        -64
+      ],
+      "id": "fecd88d7-3284-4b68-8420-ce42eab6871f",
+      "name": "When chat message received",
+      "webhookId": ""
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are a financial literacy educator with memory of this user's learning journey.\n\n**USER LEARNING CONTEXT:**\n- Session: {{ $json.session_id }}\n- Current Question: {{ $json.current_question }}\n- Knowledge Level: {{ $json.gap_analysis.knowledge_level }}\n- Current Topic: {{ $json.gap_analysis.current_topic }}\n- Identified Gaps: {{ JSON.stringify($json.gap_analysis.identified_gaps) }}\n- Prerequisites Needed: {{ JSON.stringify($json.gap_analysis.prerequisites_needed) }}\n\n**YOUR KNOWLEDGE SOURCE:**\nYou have access to comprehensive PDF educational materials covering all aspects of financial literacy.\n\n**YOUR SINGLE TOOL:**\n- **Vector Store (PDF Knowledge Base)** - Search your educational documents\n\n**INSTRUCTIONS:**\n1. Search your PDF knowledge base for relevant information\n2. Adapt your explanation to their knowledge level ({{ $json.gap_analysis.knowledge_level }})\n3. Address any identified gaps: {{ JSON.stringify($json.gap_analysis.identified_gaps) }}\n4. Reference their learning journey when relevant\n5. Build on concepts they've already learned\n6. Suggest logical next learning steps\n\n**IF ASKED ABOUT CURRENT MARKET DATA:**\n\"I specialize in financial education and timeless concepts from educational materials. For current stock prices and market news, please check Yahoo Finance, Bloomberg, or Google Finance. However, I can explain the fundamental concepts and how to analyze that data!\"\n\n**RESPONSE FORMAT:**\n\n🎯 **ANSWER**\n[Clear explanation adapted to {{ $json.gap_analysis.knowledge_level }} level]\n\n📚 **FROM YOUR EDUCATIONAL MATERIALS**\n[Detailed information from PDFs]\n\nSource Document: [PDF filename]\n\n💡 **PERSONALIZED FOR YOU**\n- Your Knowledge Level: {{ $json.gap_analysis.knowledge_level }}\n- This Addresses Your Gaps: {{ JSON.stringify($json.gap_analysis.identified_gaps) }}\n- Prerequisites You Need: {{ JSON.stringify($json.gap_analysis.prerequisites_needed) }}\n\n✅ **KEY TAKEAWAYS**\n- [Important point 1]\n- [Important point 2]\n- [Important point 3]\n- [Important point 4]\n- [Important point 5]\n\n📖 **YOUR NEXT LEARNING STEPS**\nBased on your journey, I recommend learning about:\n{{ JSON.stringify($json.gap_analysis.recommended_next_topics) }}\n\n🔍 **SOURCES USED**\nPDF Documents: [List specific PDFs used]\n\nBe encouraging, clear, and educational!",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        688,
+        -64
+      ],
+      "id": "edf5f696-c5bc-4aee-9cc5-90d515f501dd",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {
+          "maxTokensToSample": 2000,
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        512,
+        224
+      ],
+      "id": "b9547f9f-1766-4b09-a2bb-b6637b7b3e62",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Retrieve information from any company documents",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "finance-literacy",
+          "mode": "list",
+          "cachedResultName": "finance-literacy"
+        },
+        "topK": 3,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        1024,
+        192
+      ],
+      "id": "bcbfe3f2-63e0-4813-bde7-5d0fc8cdc035",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "sentence-transformers/all-MiniLM-L6-v2",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsHuggingFaceInference",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        416
+      ],
+      "id": "82a129f4-3964-47c1-aa8d-42bb7822f3b7",
+      "name": "Embeddings HuggingFace Inference1",
+      "credentials": {
+        "huggingFaceApi": {
+          "id": "",
+          "name": "HuggingFaceApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  user_id,\n  question,\n  topics_covered,\n  knowledge_gaps,\n  timestamp\nFROM user_interactions \nWHERE user_id = '{{ $json.sessionId }}'\nORDER BY timestamp DESC \nLIMIT 10",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -304,
+        -64
+      ],
+      "id": "24c5abf6-5359-4842-90eb-794166c9f3e5",
+      "name": "Fetch User History",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get user history and current question\nconst history = $input.all();\nconst currentQuestion = $('When chat message received').first().json.chatInput;\nconst sessionId = $('When chat message received').first().json.sessionId;\n\n// Check if history is empty (new user)\nif (history.length === 0 || !history[0].json.user_id) {\n  // New user - create simple prompt\n  return [{\n    json: {\n      prompt: `Analyze this user's FIRST question. They are a new user.\n      \nCURRENT QUESTION: ${currentQuestion}\n\nProvide basic assessment in JSON:\n{\n  \"current_topic\": \"main topic\",\n  \"knowledge_level\": \"beginner\",\n  \"identified_gaps\": [],\n  \"prerequisites_needed\": [],\n  \"recommended_next_topics\": [\"topic1\", \"topic2\"],\n  \"learning_pattern\": \"New user - first question\"\n}`,\n      currentQuestion: currentQuestion,\n      sessionId: sessionId,\n      historyCount: 0\n    }\n  }];\n}\n\n// Existing user - extract history\nconst previousTopics = history\n  .map(item => item.json.topics_covered)\n  .filter(Boolean)\n  .join(', ');\n\nconst previousGaps = history\n  .map(item => item.json.knowledge_gaps)\n  .filter(Boolean)\n  .map(gap => {\n    try {\n      return JSON.parse(gap);\n    } catch (e) {\n      return gap;\n    }\n  })\n  .flat()\n  .join(', ');\n\n// Create analysis prompt for existing user\nconst analysisPrompt = `Analyze this user's financial literacy learning journey:\n\nCURRENT QUESTION: ${currentQuestion}\n\nPREVIOUS TOPICS COVERED: ${previousTopics}\n\nPREVIOUS KNOWLEDGE GAPS: ${previousGaps}\n\nProvide analysis in JSON format:\n{\n  \"current_topic\": \"main topic of current question\",\n  \"knowledge_level\": \"beginner|intermediate|advanced\",\n  \"identified_gaps\": [\"gap1\", \"gap2\"],\n  \"prerequisites_needed\": [\"concept1\", \"concept2\"],\n  \"recommended_next_topics\": [\"topic1\", \"topic2\"],\n  \"learning_pattern\": \"description of their learning behavior\"\n}`;\n\nreturn [{\n  json: {\n    prompt: analysisPrompt,\n    currentQuestion: currentQuestion,\n    sessionId: sessionId,\n    historyCount: history.length\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        -64
+      ],
+      "id": "0143ee24-7c18-4488-9085-9b8609749f92",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7faac440-8df4-4a5b-99f3-73e41dfe088d",
+              "name": "gap_analysis",
+              "value": "={{ JSON.parse($json.choices[0].message.content) }}",
+              "type": "object"
+            },
+            {
+              "id": "fa644696-245b-4b53-9f02-9f999df1a463",
+              "name": "session_id",
+              "value": "={{ $('When chat message received').first().json.sessionId }}",
+              "type": "string"
+            },
+            {
+              "id": "beb2290b-b235-4bd9-b702-6f966b513843",
+              "name": "current_question",
+              "value": "={{ $('When chat message received').first().json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "860fbbe3-4cf0-4c85-96da-b10c56e810d4",
+              "name": "raw_response",
+              "value": "={{ $json.choices[0].message.content }}",
+              "type": "string"
+            },
+            {
+              "id": "125af81c-1c6d-43ee-ac08-34d23266d666",
+              "name": "chatInput",
+              "value": "={{ $('When chat message received').first().json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "8e097752-3c6c-4c10-a7e1-7d4c07a801ef",
+              "name": "action",
+              "value": "={{ $('When chat message received').first().json.action }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        -64
+      ],
+      "id": "d62abaa9-fa1e-44f1-bcad-ca76497bec21",
+      "name": "Parse Gap Analysis"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.prompt) }}\n    }\n  ],\n  \"temperature\": 0.6,\n  \"max_tokens\": 1000,\n  \"response_format\": {\n    \"type\": \"json_object\"\n  }\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        160,
+        -64
+      ],
+      "id": "a4065e9a-eb4d-4647-b005-7292c8b9083a",
+      "name": "Groq - Gap Analysis",
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "Header Auth account"
+        },
+        "groqApi": {
+          "id": "",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "user_interactions",
+          "mode": "list",
+          "cachedResultName": "user_interactions"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_id": "={{ $('When chat message received').first().json.sessionId }}",
+            "question": "={{ $('When chat message received').first().json.chatInput }}",
+            "response": "={{ $json.output }}",
+            "topics_covered": "={{ $('Parse Gap Analysis').item.json.gap_analysis.current_topic }}",
+            "knowledge_level": "={{ $('Parse Gap Analysis').item.json.gap_analysis.knowledge_level }}",
+            "knowledge_gaps": "={{ $('Parse Gap Analysis').item.json.raw_response }}",
+            "prerequisites_needed": "={{ $('Parse Gap Analysis').item.json.raw_response }}",
+            "timestamp": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "question",
+              "displayName": "question",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "response",
+              "displayName": "response",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "topics_covered",
+              "displayName": "topics_covered",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "knowledge_level",
+              "displayName": "knowledge_level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "knowledge_gaps",
+              "displayName": "knowledge_gaps",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "object",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "prerequisites_needed",
+              "displayName": "prerequisites_needed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "object",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1376,
+        -272
+      ],
+      "id": "b2ead293-545b-411a-af5e-0ccb152c5b15",
+      "name": "Update DB - User Interactions",
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO user_knowledge_profile (\n  user_id, \n  knowledge_level, \n  weak_topics, \n  learning_pattern, \n  last_updated\n)\nVALUES (\n  '{{ $('When chat message received').first().json.sessionId }}',\n  '{{ $('Parse Gap Analysis').item.json.gap_analysis.knowledge_level }}',\n  '{{ $('Parse Gap Analysis').item.json.raw_response }}'::jsonb,\n  '{{ $('Parse Gap Analysis').item.json.gap_analysis.learning_pattern }}',\n  NOW()\n)\nON CONFLICT (user_id) \nDO UPDATE SET\n  knowledge_level = EXCLUDED.knowledge_level,\n  weak_topics = EXCLUDED.weak_topics,\n  learning_pattern = EXCLUDED.learning_pattern,\n  last_updated = NOW()",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1104,
+        -480
+      ],
+      "id": "16a4cb28-74b9-4ed1-afc6-cc6b3f7cbf7f",
+      "name": "Update DB - User Knowledge Profile",
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1408,
+        16
+      ],
+      "id": "72fa406f-a865-4946-afc2-ca543fbe6d5c",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('When chat message received').first().json.sessionId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        624,
+        416
+      ],
+      "id": "75f720b7-4a1e-4f4b-887b-3079a5987ecb",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Fetch User History",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings HuggingFace Inference1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch User History": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Groq - Gap Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Gap Analysis": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq - Gap Analysis": {
+      "main": [
+        [
+          {
+            "node": "Parse Gap Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update DB - User Knowledge Profile",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update DB - User Interactions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": ""
+  },
+  "id": "",
+  "tags": []
+}

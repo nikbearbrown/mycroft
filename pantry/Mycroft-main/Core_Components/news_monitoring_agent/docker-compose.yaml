@@ -1,0 +1,93 @@
+volumes:
+  db_storage:
+  n8n_storage:
+  qdrant_storage:
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    restart: always
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - POSTGRES_NON_ROOT_USER
+      - POSTGRES_NON_ROOT_PASSWORD
+    volumes:
+      - db_storage:/var/lib/postgresql/data
+      - ./init-data.sh:/docker-entrypoint-initdb.d/init-data.sh
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -h localhost -U ${POSTGRES_USER} -d ${POSTGRES_DB}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    restart: always
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=${POSTGRES_DB}
+      - DB_POSTGRESDB_USER=${POSTGRES_NON_ROOT_USER}
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_NON_ROOT_PASSWORD}
+    ports:
+      - 5678:5678
+    links:
+      - postgres
+      - newshelper
+    volumes:
+      - n8n_storage:/home/node/.n8n
+      - ./local-files:/shared-files
+    depends_on:
+      postgres:
+        condition: service_healthy
+      # newshelper:
+      #   condition: service_healthy
+
+  qdrant:
+    image: qdrant/qdrant
+    hostname: qdrant
+    restart: unless-stopped
+    environment:
+      - API_KEY=${QDRANT_API_KEY}
+    ports:
+      - 6333:6333
+    volumes:
+      - qdrant_storage:/qdrant/storage
+
+  newshelper:
+    build: ./webserver/
+    restart: always
+    ports:
+      - 8000:8000
+    develop:
+      # Create a `watch` configuration to update the app
+      # https://docs.docker.com/compose/file-watch/#compose-watch-versus-bind-mounts
+      watch:
+        # Sync the working directory with the `/app` directory in the container
+        - action: sync
+          path: ./webserver
+          target: /app
+          # Exclude the project virtual environment — it could be for a
+          # different platform in the container
+          ignore:
+            - .venv/
+
+        # Rebuild the image if dependencies change by checking uv.lock
+        - action: rebuild
+          path: ./webserver/uv.lock
+    # healthcheck:
+    #   test:
+    #     [
+    #       "CMD-SHELL",
+    #       "curl -s -o /dev/null -w '%{http_code}\n' 'localhost:8000/health'",
+    #     ]
+    #   interval: 5s
+    #   timeout: 30s
+    #   retries: 10

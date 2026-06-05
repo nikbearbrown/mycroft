@@ -1,0 +1,388 @@
+{
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "85e6f555-d8d5-4e24-96b7-100f19359bf7",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [-2400, 256]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Portfolio",
+          "mode": "name"
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "detectAutomatically",
+              "readRowsUntil": "firstEmptyRow"
+            }
+          }
+        }
+      },
+      "id": "5cb4c2ea-f503-4b91-b4a2-7a5a255a87da",
+      "name": "Get Portfolio from Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [-2208, 256],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_SHEETS_CREDENTIAL_ID",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={{$json.Ticker}}&apikey=YOUR_ALPHA_VANTAGE_KEY",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "3208ab41-b091-4c05-bd86-cfac31ee883d",
+      "name": "Fetch Live Prices",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [-1984, 240]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const priceResponse = $input.item.json;\nconst allPortfolioItems = $('Get Portfolio from Sheets').all();\n\nconst ticker = priceResponse['Global Quote']?.['01. symbol'];\nconst portfolioItem = allPortfolioItems.find(item => item.json.Ticker === ticker)?.json;\n\nif (!portfolioItem) {\n  throw new Error(`No portfolio match for ${ticker}`);\n}\n\nconst shares = parseFloat(portfolioItem.Shares);\nconst avgCost = parseFloat(portfolioItem.Avg_Cost);\nconst portfolioValue = parseFloat(portfolioItem.Portfolio_Value);\nconst priceData = priceResponse['Global Quote'] || {};\nconst currentPrice = parseFloat(priceData['05. price']);\n\nconst positionValue = shares * currentPrice;\nconst positionPercent = (positionValue / portfolioValue) * 100;\nconst unrealizedPL = (currentPrice - avgCost) * shares;\nconst unrealizedPLPercent = ((currentPrice - avgCost) / avgCost) * 100;\nconst dailyChange = parseFloat(priceData['09. change'] || 0);\nconst volatility = Math.abs(dailyChange / currentPrice) * Math.sqrt(252) * 100;\n\nconst maxPositionPercent = 5;\nconst baseStopLoss = 8;\nconst volatilityAdjustedStopLoss = baseStopLoss * (1 + volatility / 100);\nconst stopLossPrice = avgCost * (1 - volatilityAdjustedStopLoss / 100);\nconst trailingStopPrice = currentPrice * 0.92;\n\nlet riskScore = 0;\nlet riskFactors = [];\n\nif (positionPercent > maxPositionPercent * 1.5) {\n  riskScore += 40;\n  riskFactors.push('Position severely oversized');\n} else if (positionPercent > maxPositionPercent) {\n  riskScore += 20;\n  riskFactors.push('Position oversized');\n}\n\nif (currentPrice < stopLossPrice) {\n  riskScore += 50;\n  riskFactors.push('Below stop loss');\n} else if (currentPrice < stopLossPrice * 1.05) {\n  riskScore += 25;\n  riskFactors.push('Near stop loss');\n}\n\nif (unrealizedPLPercent < -15) {\n  riskScore += 30;\n  riskFactors.push('Significant loss');\n} else if (unrealizedPLPercent < -8) {\n  riskScore += 15;\n  riskFactors.push('Moderate loss');\n}\n\nif (unrealizedPLPercent > 100) {\n  riskScore += 10;\n  riskFactors.push('Consider profit taking');\n} else if (unrealizedPLPercent > 50) {\n  riskScore += 5;\n  riskFactors.push('Strong gains - monitor closely');\n}\n\nif (volatility > 50) {\n  riskScore += 20;\n  riskFactors.push('High volatility');\n}\n\nlet action = 'HOLD';\nlet urgency = 'LOW';\n\nif (currentPrice < stopLossPrice) {\n  action = 'SELL';\n  urgency = 'HIGH';\n} else if (positionPercent > maxPositionPercent * 2) {\n  action = 'TRIM 50%';\n  urgency = 'MEDIUM';\n} else if (positionPercent > maxPositionPercent * 1.5) {\n  action = 'TRIM 25%';\n  urgency = 'MEDIUM';\n} else if (unrealizedPLPercent > 100) {\n  action = 'TRIM 25% - Take profits';\n  urgency = 'LOW';\n} else if (unrealizedPLPercent < -15) {\n  action = 'EVALUATE - Consider exit';\n  urgency = 'HIGH';\n}\n\nreturn {\n  ticker: ticker,\n  timestamp: new Date().toISOString(),\n  metrics: {\n    shares: shares,\n    avg_cost: avgCost.toFixed(2),\n    current_price: currentPrice.toFixed(2),\n    position_value: positionValue.toFixed(2),\n    position_percent: positionPercent.toFixed(2),\n    portfolio_value: portfolioValue\n  },\n  performance: {\n    unrealized_pl: unrealizedPL.toFixed(2),\n    unrealized_pl_percent: unrealizedPLPercent.toFixed(2),\n    daily_change: dailyChange,\n    volatility: volatility.toFixed(2)\n  },\n  risk: {\n    risk_score: riskScore,\n    risk_factors: riskFactors,\n    stop_loss_price: stopLossPrice.toFixed(2),\n    trailing_stop_price: trailingStopPrice.toFixed(2),\n    max_position_percent: maxPositionPercent\n  },\n  recommendation: {\n    action: action,\n    urgency: urgency,\n    rationale: riskFactors.join('; ')\n  }\n};"
+      },
+      "id": "1234ba77-0f6d-4c9e-afbf-1a020d9365c6",
+      "name": "Calculate Advanced Risk",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-1824, 240]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const riskData = $input.item.json;\n\nreturn {\n  original_data: riskData,\n  risk_summary: {\n    ticker: riskData.ticker,\n    risk_score: riskData.risk.risk_score,\n    current_price: riskData.metrics.current_price,\n    unrealized_pl_percent: riskData.performance.unrealized_pl_percent,\n    volatility: riskData.performance.volatility,\n    risk_factors: riskData.risk.risk_factors.join(', '),\n    recommended_action: riskData.recommendation.action,\n    urgency: riskData.recommendation.urgency\n  }\n};"
+      },
+      "id": "938b4c76-ae1d-410b-a5a0-481d565fd5f5",
+      "name": "Prepare for LLM",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-1664, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer YOUR_GROQ_API_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama-3.1-8b-instant\",\n  \"temperature\": 0.3,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Analyze this portfolio risk data and provide a concise assessment:\\n\\nTicker: {{$json.risk_summary.ticker}}\\nRisk Score: {{$json.risk_summary.risk_score}}/100\\nCurrent Price: ${{$json.risk_summary.current_price}}\\nUnrealized P/L: {{$json.risk_summary.unrealized_pl_percent}}%\\nVolatility: {{$json.risk_summary.volatility}}%\\nRisk Factors: {{$json.risk_summary.risk_factors}}\\nRecommended Action: {{$json.risk_summary.recommended_action}}\\nUrgency: {{$json.risk_summary.urgency}}\\n\\nProvide:\\n1. One sentence risk assessment\\n2. Why this action is recommended (1-2 sentences)\\n3. Key watch point for next review\\n\\nBe direct and actionable.\"\n    }\n  ]\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "cfa62aed-42ef-4c9d-8b8f-171149757c4a",
+      "name": "Call Groq API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [-1488, 256]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const input = $input.item.json;\nconst llmResponse = input.choices?.[0]?.message?.content || 'Analysis pending';\nconst prepareNode = $('Prepare for LLM').item.json;\n\nif (!prepareNode || !prepareNode.original_data) {\n  throw new Error('Cannot find original risk data from previous nodes');\n}\n\nconst originalData = prepareNode.original_data;\n\nlet alertLevel = 'INFO';\nif (originalData.risk.risk_score >= 70) {\n  alertLevel = 'CRITICAL';\n} else if (originalData.risk.risk_score >= 40) {\n  alertLevel = 'WARNING';\n} else if (originalData.risk.risk_score >= 20) {\n  alertLevel = 'MONITOR';\n}\n\nreturn {\n  timestamp: new Date().toISOString(),\n  ticker: originalData.ticker,\n  risk_score: originalData.risk.risk_score,\n  alert_level: alertLevel,\n  current_price: originalData.metrics.current_price,\n  position_value: originalData.metrics.position_value,\n  unrealized_pl: originalData.performance.unrealized_pl,\n  risk_factors: originalData.risk.risk_factors.join(', ') || 'None',\n  action: originalData.recommendation.action,\n  urgency: originalData.recommendation.urgency,\n  position_percent: originalData.metrics.position_percent,\n  stop_loss_price: originalData.risk.stop_loss_price,\n  volatility: originalData.performance.volatility,\n  ai_analysis: llmResponse\n};"
+      },
+      "id": "d075a5d3-7a19-4369-a489-f0a71f612f4e",
+      "name": "Format Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-1312, 272]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Mycroft Risk Portfolio",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "YOUR_SHEET_GID",
+          "mode": "list",
+          "cachedResultName": "RiskLog",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit#gid=YOUR_SHEET_GID"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ticker",
+              "displayName": "ticker",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "risk_score",
+              "displayName": "risk_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "alert_level",
+              "displayName": "alert_level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "current_price",
+              "displayName": "current_price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "position_value",
+              "displayName": "position_value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "unrealized_pl",
+              "displayName": "unrealized_pl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "risk_factors",
+              "displayName": "risk_factors",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "action",
+              "displayName": "action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "urgency",
+              "displayName": "urgency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "position_percent",
+              "displayName": "position_percent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "stop_loss_price",
+              "displayName": "stop_loss_price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "volatility",
+              "displayName": "volatility",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ai_analysis",
+              "displayName": "ai_analysis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "012d13e9-de69-49d2-a1a6-c4c9b24ec032",
+      "name": "Log to Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [-1056, 272],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_SHEETS_CREDENTIAL_ID",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Portfolio from Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Portfolio from Sheets": {
+      "main": [
+        [
+          {
+            "node": "Fetch Live Prices",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Live Prices": {
+      "main": [
+        [
+          {
+            "node": "Calculate Advanced Risk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Advanced Risk": {
+      "main": [
+        [
+          {
+            "node": "Prepare for LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare for LLM": {
+      "main": [
+        [
+          {
+            "node": "Call Groq API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Groq API": {
+      "main": [
+        [
+          {
+            "node": "Format Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Report": {
+      "main": [
+        [
+          {
+            "node": "Log to Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

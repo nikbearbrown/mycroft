@@ -1,0 +1,771 @@
+{
+  "name": "Mycroft - SEC_Filings_Analysis_Enhanced",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "78db0104-55a2-4142-bb82-370d63d9bdf5",
+              "name": "ticker",
+              "value": "={{ $json.query.ticker }}",
+              "type": "string"
+            },
+            {
+              "id": "985331f1-aa8c-4888-aae7-d29cbde21a6c",
+              "name": "user_agent",
+              "value": "Humanitarians AI hr@humanitariansai.com",
+              "type": "string"
+            },
+            {
+              "id": "4731832b-6c7e-4517-8d89-6add5414aebd",
+              "name": "github_repo_url",
+              "value": "https://github.com/Humanitariansai/Mycroft",
+              "type": "string"
+            },
+            {
+              "id": "c2ff31ae-dd77-4d02-b3b0-a26898280d06",
+              "name": "scripts_path",
+              "value": "Core_Components/SEC_Filings_Analysis_Agent/",
+              "type": "string"
+            },
+            {
+              "id": "a8f92e1b-3c4d-4f2a-9b8e-7d5f6e8a9c2b",
+              "name": "temp_dir",
+              "value": "/tmp",
+              "type": "string"
+            },
+            {
+              "id": "exec-id-001",
+              "name": "execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "string"
+            },
+            {
+              "id": "start-time-001",
+              "name": "start_time",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "log-path-001",
+              "name": "log_file",
+              "value": "=/tmp/mycroft_logs/sec_{{ $execution.id }}.json",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -256,
+        240
+      ],
+      "id": "b4fb36cf-fe0f-49a1-998c-b01f1eb8e1b5",
+      "name": "Set Variables"
+    },
+    {
+      "parameters": {
+        "command": "=mkdir -p /tmp/mycroft_logs /tmp/mycroft_data && python3 -c \"import json; json.dump({'workflow':'SEC_Filings_Analysis','execution_id':'{{ $json.execution_id }}','ticker':'{{ $json.ticker }}','started_at':'{{ $json.start_time }}','steps':[]}, open('{{ $json.log_file }}', 'w'))\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        240
+      ],
+      "id": "77c9d2d1-d246-4fd4-ae3e-52033e77fe2b",
+      "name": "Initialize Logging"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $node['Set Variables'].json.temp_dir }} && rm -rf sec_analysis && git clone {{ $node['Set Variables'].json.github_repo_url }} sec_analysis"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        192,
+        240
+      ],
+      "id": "025d881c-278e-4dfc-9f53-54d2280e3451",
+      "name": "Setup Github Repo"
+    },
+    {
+      "parameters": {
+        "command": "=python3 -c \"import json; from datetime import datetime; log=json.load(open('{{ $node['Set Variables'].json.log_file }}')); log['steps'].append({'step':'Setup Github Repo','description':'📦 Cloning analysis scripts','status':'completed','progress':20,'timestamp':datetime.utcnow().isoformat()+'Z'}); json.dump(log, open('{{ $node['Set Variables'].json.log_file }}', 'w'))\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        416,
+        240
+      ],
+      "id": "d8c1c3d4-f85a-4189-ae1c-f2b06db75c37",
+      "name": "Log: Repo Cloned"
+    },
+    {
+      "parameters": {
+        "jsCode": "const config = $node['Set Variables'].json;\n\nconst repoDir = `${config.temp_dir}/sec_analysis`;\nconst scriptsDir = `${config.temp_dir}/sec_analysis/${config.scripts_path}`;\nconst outputDir = `${config.temp_dir}/sec_output`;\n\nreturn [{\n  json: {\n    ...config,\n    repo_dir: repoDir,\n    scripts_dir: scriptsDir,\n    output_dir: outputDir,\n    clone_success: true\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        240
+      ],
+      "id": "5b97cdd1-5f34-4be6-b69e-f98f9a35ed1c",
+      "name": "Set Path Variables"
+    },
+    {
+      "parameters": {
+        "command": "=rm -rf {{ $json.temp_dir }}/sec_output && mkdir -p {{ $json.temp_dir }}/sec_output/data && cd {{ $json.temp_dir }}/sec_analysis/{{ $json.scripts_path}} && python3 -m pip install -r requirements.txt --user --quiet"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        864,
+        48
+      ],
+      "id": "db9a67ba-3b71-4424-8ae2-6b6f43f7f61b",
+      "name": "Setup Python Enviornment and Output Directories"
+    },
+    {
+      "parameters": {
+        "command": "=python3 -c \"import json; from datetime import datetime; log=json.load(open('{{ $node['Set Variables'].json.log_file }}')); log['steps'].append({'step':'Setup Python Environment','description':'🐍 Installing dependencies','status':'completed','progress':30,'timestamp':datetime.utcnow().isoformat()+'Z'}); json.dump(log, open('{{ $node['Set Variables'].json.log_file }}', 'w'))\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1088,
+        48
+      ],
+      "id": "267debc2-9ff4-41ea-bf91-15ec0c50a479",
+      "name": "Log: Python Setup"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $json.temp_dir }}/sec_analysis/{{ $json.scripts_path }} && python3 edgar_fetcher.py --ticker {{ $json.ticker }} --output-dir {{ $json.temp_dir }}/sec_output/data --user-agent \"{{ $json.user_agent }}\" --forms 10-K,10-Q --max-per-type 1"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        864,
+        240
+      ],
+      "id": "06d7f1a4-df38-49df-a758-0c7380f24461",
+      "name": "Edgar_Fetcher"
+    },
+    {
+      "parameters": {
+        "jsCode": "const stdout = $input.first().json.stdout;\nconst stderr = $input.first().json.stderr;\nconst exitCode = $input.first().json.exitCode;\n\nconsole.log('EDGAR stdout:', stdout);\nconsole.log('EDGAR stderr:', stderr);\n\nif (exitCode !== 0) {\n  return [{\n    json: {\n      success: false,\n      error: `EDGAR failed: ${stderr}`,\n      ticker: $node['Set Path Variables'].json.ticker\n    }\n  }];\n}\n\nlet result = {};\ntry {\n  const jsonMatch = stdout.match(/\\{[\\s\\S]*\\}/);\n  if (jsonMatch) {\n    result = JSON.parse(jsonMatch[0]);\n  } else {\n    throw new Error('No JSON output found');\n  }\n} catch (e) {\n  return [{\n    json: {\n      success: false,\n      error: `Parse error: ${e.message}`,\n      raw_output: stdout\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    ...result,\n    ticker: $node['Set Path Variables'].json.ticker,\n    user_agent: $node['Set Path Variables'].json.user_agent,\n    scripts_path: $node['Set Path Variables'].json.scripts_path,\n    temp_dir: $node['Set Path Variables'].json.temp_dir,\n    log_file: $node['Set Variables'].json.log_file,\n    files_downloaded: result.files_downloaded || 0\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1088,
+        240
+      ],
+      "id": "ffae4a82-52c6-4f1f-aff6-2d276948faf1",
+      "name": "Validate Fetcher"
+    },
+    {
+      "parameters": {
+        "command": "=python3 -c \"import json; from datetime import datetime; log=json.load(open('{{ $json.log_file }}')); log['steps'].append({'step':'Edgar_Fetcher','description':'📊 Downloaded SEC filings','status':'completed','progress':40,'timestamp':datetime.utcnow().isoformat()+'Z','files_downloaded':{{ $json.files_downloaded }}}); json.dump(log, open('{{ $json.log_file }}', 'w'))\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1312,
+        240
+      ],
+      "id": "01584878-01d2-4849-ada1-b76dfb56d2a4",
+      "name": "Log: Fetcher Complete"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ad7edb79-74c7-4b79-96a9-2108c3256e60",
+              "leftValue": "={{ $node['Validate Fetcher'].json.success }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1536,
+        240
+      ],
+      "id": "1dcd4b09-d6a5-4f51-924b-86974c9f47ff",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $node['Set Variables'].json.temp_dir }}/sec_analysis/{{ $node['Set Variables'].json.scripts_path }} && python3 financial_analyzer.py --ticker {{ $node['Set Variables'].json.ticker }} --user-agent \"{{ $node['Set Variables'].json.user_agent }}\" --output-dir {{ $node['Set Variables'].json.temp_dir }}/sec_output/data"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1760,
+        48
+      ],
+      "id": "28458bff-65c9-4dfb-ac9a-a6f5ada53bdb",
+      "name": "Financial Analyzer"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $node['Set Variables'].json.temp_dir }}/sec_analysis/{{ $node['Set Variables'].json.scripts_path }} && python3 narrative_parser.py --input-dir {{ $node['Validate Fetcher'].json.output_directory }} --output-dir {{ $node['Set Variables'].json.temp_dir }}/sec_output/data/narratives --ticker {{ $node['Set Variables'].json.ticker }}"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1760,
+        240
+      ],
+      "id": "f4238e56-e02e-4ebc-aff8-5596ec91a425",
+      "name": "Narrative Parser"
+    },
+    {
+      "parameters": {
+        "jsCode": "const stdout = $input.first().json.stdout;\nconst exitCode = $input.first().json.exitCode;\n\nif (exitCode !== 0) {\n  return [{\n    json: {\n      success: false,\n      error: 'Financial analysis failed'\n    }\n  }];\n}\n\nlet result = {};\ntry {\n  const jsonMatch = stdout.match(/\\{[\\s\\S]*\\}/);\n  if (jsonMatch) {\n    result = JSON.parse(jsonMatch[0]);\n  }\n} catch (e) {\n  result = { raw_output: stdout };\n}\n\nreturn [{\n  json: {\n    success: true,\n    financial_data: result,\n    ticker: $node['Set Path Variables'].json.ticker,\n    scripts_path: $node['Set Path Variables'].json.scripts_path,\n    temp_dir: $node['Set Path Variables'].json.temp_dir,\n    log_file: $node['Set Variables'].json.log_file\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1984,
+        48
+      ],
+      "id": "195b749c-34dc-4600-845d-762d79ba1744",
+      "name": "Validate Financial Metrics"
+    },
+    {
+      "parameters": {
+        "jsCode": "const stdout = $input.first().json.stdout;\nconst exitCode = $input.first().json.exitCode;\n\nif (exitCode !== 0) {\n  return [{\n    json: {\n      success: false,\n      error: 'Narrative analysis failed'\n    }\n  }];\n}\n\nlet result = {};\ntry {\n  const jsonMatch = stdout.match(/\\{[\\s\\S]*\\}/);\n  if (jsonMatch) {\n    result = JSON.parse(jsonMatch[0]);\n  }\n} catch (e) {\n  result = { raw_output: stdout };\n}\n\nreturn [{\n  json: {\n    success: true,\n    narrative_data: result,\n    ticker: $node['Set Path Variables'].json.ticker,\n    log_file: $node['Set Variables'].json.log_file\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1984,
+        240
+      ],
+      "id": "b04388cc-328f-45db-b35a-a61f52bfda42",
+      "name": "Validate Narrative Content"
+    },
+    {
+      "parameters": {
+        "command": "=python3 -c \"import json; from datetime import datetime; log=json.load(open('{{ $json.log_file }}')); log['steps'].append({'step':'Financial Analyzer','description':'💰 Financial analysis complete','status':'completed','progress':60,'timestamp':datetime.utcnow().isoformat()+'Z'}); json.dump(log, open('{{ $json.log_file }}', 'w'))\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2224,
+        -224
+      ],
+      "id": "ce32140e-78a9-4202-91fc-1ff1fee9181a",
+      "name": "Log: Financial Complete"
+    },
+    {
+      "parameters": {
+        "command": "=python3 -c \"import json; from datetime import datetime; log=json.load(open('{{ $json.log_file }}')); log['steps'].append({'step':'Narrative Parser','description':'📖 Narrative extraction complete','status':'completed','progress':60,'timestamp':datetime.utcnow().isoformat()+'Z'}); json.dump(log, open('{{ $json.log_file }}', 'w'))\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2208,
+        240
+      ],
+      "id": "b367e1e9-6483-4131-8b02-0c3aaf1bec63",
+      "name": "Log: Narrative Complete"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Merge results from both parallel branches\nconst financial = $('Validate Financial Metrics').first().json;\nconst narrative = $('Validate Narrative Content').first().json;\nconst startTime = $node['Set Variables'].json.start_time;\n\nconst mergedResult = {\n  execution_id: $execution.id,\n  ticker: financial.ticker,\n  timestamp: new Date().toISOString(),\n  duration_ms: Date.now() - new Date(startTime).getTime(),\n  analysis: {\n    financial: financial.financial_data,\n    narrative: narrative.narrative_data\n  },\n  success: financial.success && narrative.success,\n  metadata: {\n    workflow: 'SEC_Filings_Analysis',\n    version: '2.0',\n    scripts_path: financial.scripts_path\n  },\n  log_file: financial.log_file\n};\n\nreturn [{ json: mergedResult }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2432,
+        144
+      ],
+      "id": "64ed0776-a902-4793-be10-8c26199bf458",
+      "name": "Merge Results"
+    },
+    {
+      "parameters": {
+        "command": "=python3 -c \"import json; from datetime import datetime; log=json.load(open('{{ $node['Set Variables'].json.log_file }}')); log['steps'].append({'step':'Merge Results','description':'🔀 Results merged','status':'completed','progress':80,'timestamp':datetime.utcnow().isoformat()+'Z'}); json.dump(log, open('{{ $node['Set Variables'].json.log_file }}', 'w'))\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2656,
+        144
+      ],
+      "id": "ae8f778e-4844-42a3-b20e-8e0a27145197",
+      "name": "Log: Merge Complete"
+    },
+    {
+      "parameters": {
+        "command": "=python3 << 'SCRIPT'\nimport json\nfrom datetime import datetime\nimport os\n\n# Read the merged result from stdin or use the data\ndata = json.loads('''{{ JSON.stringify($node['Merge Results'].json) }}''')\n\nticker = data['ticker']\ndate_str = datetime.now().strftime('%Y-%m-%d')\n\n# Save analysis data\ndata_file = f'/tmp/mycroft_data/sec_{ticker}_{date_str}.json'\nwith open(data_file, 'w') as f:\n    json.dump(data, f, indent=2)\n\n# Create symlink for latest\nlatest_file = f'/tmp/mycroft_data/sec_{ticker}_latest.json'\nif os.path.exists(latest_file):\n    os.remove(latest_file)\nos.symlink(data_file, latest_file)\n\nprint(f'Saved to {data_file}')\nSCRIPT"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2880,
+        144
+      ],
+      "id": "5e324b7e-3ebe-46d7-8894-77117e1bee0e",
+      "name": "Save to Database"
+    },
+    {
+      "parameters": {
+        "command": "=python3 -c \"import json; from datetime import datetime; log=json.load(open('{{ $node['Merge Results'].json.log_file }}')); log['steps'].append({'step':'Save to Database','description':'💾 Analysis saved','status':'completed','progress':90,'timestamp':datetime.utcnow().isoformat()+'Z'}); json.dump(log, open('{{ $node['Merge Results'].json.log_file }}', 'w'))\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        3104,
+        144
+      ],
+      "id": "30ce8af0-28f0-4e72-a8b9-3b9b2b1bfeca",
+      "name": "Log: Saved"
+    },
+    {
+      "parameters": {
+        "command": "=rm -rf {{ $node['Set Variables'].json.temp_dir }}/sec_analysis && mv {{ $node['Set Variables'].json.temp_dir }}/sec_output/data/narratives /tmp/mycroft_data/sec_{{ $node['Merge Results'].json.ticker }}_$(date +%Y-%m-%d) && echo \"🧹 Cleanup completed and data moved\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        3328,
+        144
+      ],
+      "id": "7577a484-385f-44b1-b1dc-4bbecd334dd6",
+      "name": "Cleanup Temp Directories"
+    },
+    {
+      "parameters": {
+        "command": "=python3 -c \"import json; from datetime import datetime; log=json.load(open('{{ $node['Merge Results'].json.log_file }}')); log['steps'].append({'step':'Cleanup','description':'✅ Analysis complete','status':'completed','progress':100,'timestamp':datetime.utcnow().isoformat()+'Z'}); log['completed_at']=datetime.utcnow().isoformat()+'Z'; log['status']='completed'; json.dump(log, open('{{ $node['Merge Results'].json.log_file }}', 'w')); print(json.dumps(log, indent=2))\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        3552,
+        144
+      ],
+      "id": "0702dfd7-1090-4c47-aba1-0bae23981e1a",
+      "name": "Log Completion"
+    },
+    {
+      "parameters": {
+        "jsCode": "const errorData = $node['Validate Fetcher'].json;\n\nconst report = `❌ Analysis failed: ${errorData.error}\\n\\n🧹 Cleanup completed`;\n\nreturn [{\n  json: {\n    success: false,\n    error: errorData.error,\n    report: report,\n    log_file: $node['Set Variables'].json.log_file,\n    cleanup_status: 'pending'\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        432
+      ],
+      "id": "2d08e8c4-b783-450f-804b-6abb4546b7fe",
+      "name": "Error Handling"
+    },
+    {
+      "parameters": {
+        "command": "=python3 -c \"import json; from datetime import datetime; log=json.load(open('{{ $node['Set Variables'].json.log_file }}')); log['steps'].append({'step':'Error','description':'❌ Workflow failed','status':'failed','progress':0,'timestamp':datetime.utcnow().isoformat()+'Z','error':'{{ $json.error }}'}); log['status']='failed'; log['completed_at']=datetime.utcnow().isoformat()+'Z'; json.dump(log, open('{{ $node['Set Variables'].json.log_file }}', 'w'))\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1984,
+        432
+      ],
+      "id": "f898acae-a24f-4163-9980-df2363f51adb",
+      "name": "Log Error"
+    },
+    {
+      "parameters": {
+        "command": "=rm -rf {{ $node['Set Variables'].json.temp_dir }}/sec_analysis && rm -rf {{ $node['Set Variables'].json.temp_dir }}/sec_output && echo \"Error cleanup completed\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2208,
+        432
+      ],
+      "id": "386e2ad2-fa03-4fd6-a99a-45a4e654b825",
+      "name": "Cleanup On Error"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sec-analysis-enhanced",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -544,
+        208
+      ],
+      "id": "ab2051f9-90ee-436a-ac7a-4313ac60de62",
+      "name": "Webhook",
+      "webhookId": "89276d9b-5eb8-4142-a1ab-4e8caaa8fe80"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        3984,
+        144
+      ],
+      "id": "25e5603b-aecc-4db6-8b0e-ef623c472c7f",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst ticker = $('Merge Results').first().json.analysis.financial.ticker\nconst date = $now.toFormat('yyyy-MM-dd');\n\nreturn {\n  json: {\n    financials: $('Merge Results').first().json.analysis.financial,\n    narratives_path: `/tmp/mycroft_data/sec_${ticker}_${date}.json`,\n    narratives: $('Merge Results').first().json.analysis.narrative,\n    ticker: ticker,\n    timestamp: date\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3760,
+        144
+      ],
+      "id": "2bd78561-eedd-46e1-b9b2-bb248a35f7c1",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Set Variables": {
+      "main": [
+        [
+          {
+            "node": "Initialize Logging",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initialize Logging": {
+      "main": [
+        [
+          {
+            "node": "Setup Github Repo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setup Github Repo": {
+      "main": [
+        [
+          {
+            "node": "Log: Repo Cloned",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: Repo Cloned": {
+      "main": [
+        [
+          {
+            "node": "Set Path Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Path Variables": {
+      "main": [
+        [
+          {
+            "node": "Setup Python Enviornment and Output Directories",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edgar_Fetcher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setup Python Enviornment and Output Directories": {
+      "main": [
+        [
+          {
+            "node": "Log: Python Setup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edgar_Fetcher": {
+      "main": [
+        [
+          {
+            "node": "Validate Fetcher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Fetcher": {
+      "main": [
+        [
+          {
+            "node": "Log: Fetcher Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: Fetcher Complete": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Financial Analyzer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Handling",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Financial Analyzer": {
+      "main": [
+        [
+          {
+            "node": "Validate Financial Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Narrative Parser": {
+      "main": [
+        [
+          {
+            "node": "Validate Narrative Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Financial Metrics": {
+      "main": [
+        [
+          {
+            "node": "Log: Financial Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Narrative Content": {
+      "main": [
+        [
+          {
+            "node": "Log: Narrative Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: Financial Complete": {
+      "main": [
+        [
+          {
+            "node": "Narrative Parser",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: Narrative Complete": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Results": {
+      "main": [
+        [
+          {
+            "node": "Log: Merge Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: Merge Complete": {
+      "main": [
+        [
+          {
+            "node": "Save to Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Database": {
+      "main": [
+        [
+          {
+            "node": "Log: Saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: Saved": {
+      "main": [
+        [
+          {
+            "node": "Cleanup Temp Directories",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cleanup Temp Directories": {
+      "main": [
+        [
+          {
+            "node": "Log Completion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Handling": {
+      "main": [
+        [
+          {
+            "node": "Log Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Error": {
+      "main": [
+        [
+          {
+            "node": "Cleanup On Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Completion": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "212dcdbb-fb10-45b2-b28b-494f3bb53a86",
+  "meta": {
+    "instanceId": "54e139bdd36444c24c3c5ac8519ffbbee75318a9c1efe841874a03d85ac23aaf"
+  },
+  "id": "X3ysexlT74fdXdZP",
+  "tags": []
+}

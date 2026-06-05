@@ -1,0 +1,1013 @@
+{
+  "name": "Retail Investor Anxiety Index",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "a4a3b16b-8fc6-4e54-bdba-d25442570e64",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -4544,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "path": "run-pipeline",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "manual-run-trigger",
+      "name": "Manual Run Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -4544,
+        224
+      ],
+      "webhookId": "run-pipeline"
+    },
+    {
+      "parameters": {
+        "url": "https://www.reddit.com/r/wallstreetbets.json?limit=25",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "AnxietyBot/1.0 (by /u/YOUR_REDDIT_USERNAME)"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f03819f7-f736-47b3-ae60-fb992db20538",
+      "name": "Fetch WSB",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4304,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.reddit.com/r/investing.json?limit=25",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "AnxietyBot/1.0 (by /u/YOUR_REDDIT_USERNAME)"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ea1668c9-e213-4b91-ad6d-73d3aec46f12",
+      "name": "Fetch Investing",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4304,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.reddit.com/r/stocks.json?limit=25",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "AnxietyBot/1.0 (by /u/YOUR_REDDIT_USERNAME)"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9a98f91f-7ae8-4740-a79b-61a161121338",
+      "name": "Fetch Stocks",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4304,
+        592
+      ]
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "id": "b93a1db2-0273-40e7-8618-54a8ff34f097",
+      "name": "Merge Reddit Feeds",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -4064,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Node 1A: Raw Merge & Structural Clean\nconst allItems = [];\nfor (const item of $input.all()) {\n  const body = item.json;\n  let posts = [];\n  if (body && body.data && Array.isArray(body.data.children)) {\n    posts = body.data.children;\n  }\n  for (const child of posts) {\n    const d = child.data;\n    if (!d) continue;\n    const title = (d.title || '').trim();\n    if (!title) continue;\n    allItems.push({\n      id: d.id || null,\n      title: title,\n      subreddit: (d.subreddit || '').toLowerCase(),\n      score: typeof d.score === 'number' ? d.score : null,\n      numComments: typeof d.num_comments === 'number' ? d.num_comments : null,\n      createdUtc: typeof d.created_utc === 'number' ? d.created_utc : null,\n      upvoteRatio: typeof d.upvote_ratio === 'number' ? d.upvote_ratio : null\n    });\n  }\n}\nconst seen = new Set();\nconst deduped = [];\nfor (const post of allItems) {\n  if (post.id && !seen.has(post.id)) {\n    seen.add(post.id);\n    deduped.push(post);\n  } else if (!post.id) {\n    deduped.push(post);\n  }\n}\nreturn deduped.map(post => ({ json: post }));\n"
+      },
+      "id": "3ff5e7f8-c7a3-4b76-aab5-fe632c2d1553",
+      "name": "1A: Raw Merge & Structural Clean",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3808,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Node 1B: Linguistic & Relevance Filter\n// FIX 1: Extract both $TICKER and bare uppercase tickers\nconst COMMON_WORDS = new Set([\n  'I','A','AI','IT','US','UK','THE','AND','FOR',\n  'IPO','CEO','GDP','FED','IMF','ETF','SEC','IRA',\n  'BUT','NOT','ARE','ALL','NEW','NOW','GET','GOT'\n]);\n\nconst output = [];\nfor (const item of $input.all()) {\n  const post = item.json;\n  let title = post.title || '';\n  let cleanTitle = title.toLowerCase();\n\n  // Extract $TICKER format\n  const dollarTickers = title.match(/\\$[A-Z]{1,5}\\b/g) || [];\n\n  // Extract standalone uppercase tickers (2-5 chars), excluding common words\n  const upperTickers = title.match(/\\b[A-Z]{2,5}\\b/g) || [];\n  const filteredUpper = upperTickers.filter(t => !COMMON_WORDS.has(t));\n\n  // Merge and deduplicate\n  const allTickers = [\n    ...dollarTickers.map(t => t.replace('$', '')),\n    ...filteredUpper\n  ];\n  const tickers = [...new Set(allTickers)];\n\n  // Clean title for NLP (strip $ tickers, URLs, emoji, special chars)\n  cleanTitle = cleanTitle.replace(/\\$[a-z]{1,5}\\b/g, '').trim();\n  cleanTitle = cleanTitle.replace(/https?:\\/\\/[^\\s]+/g, '').trim();\n  cleanTitle = cleanTitle.replace(/[\\u{1F600}-\\u{1F64F}\\u{1F300}-\\u{1F5FF}\\u{1F680}-\\u{1F6FF}\\u{1F700}-\\u{1F77F}\\u{1F780}-\\u{1F7FF}\\u{1F800}-\\u{1F8FF}\\u{1F900}-\\u{1F9FF}\\u{1FA00}-\\u{1FA6F}\\u{1FA70}-\\u{1FAFF}\\u{2600}-\\u{26FF}\\u{2700}-\\u{27BF}\\u{FE00}-\\u{FE0F}\\u{1F1E0}-\\u{1F1FF}]/gu, '').trim();\n  cleanTitle = cleanTitle.replace(/[^a-z0-9 '\\-?]/g, ' ').replace(/\\s+/g, ' ').trim();\n\n  const words = cleanTitle.split(' ').filter(w => w.length > 0);\n  const wordCount = words.length;\n  if (wordCount < 4) continue;\n\n  const isQuestion = title.trimEnd().endsWith('?');\n  output.push({ json: { id: post.id, title: post.title, cleanTitle, subreddit: post.subreddit, tickers, isQuestion, wordCount, score: post.score, upvoteRatio: post.upvoteRatio } });\n}\nreturn output;\n"
+      },
+      "id": "60b8e0f9-3c96-4d73-909b-b2c4c3ab99f5",
+      "name": "1B: Linguistic & Relevance Filter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3552,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Keyword Pre-Scorer\nconst FEAR_HIGH = [\n  'crash','collapse','margin call','panic','bankrupt',\n  'recession','going to lose','lose it all','losing everything',\n  'worst quarter','get out now','catastrophe','obliterated',\n  'devastating','rekt','wiped out','capitulate','capitulation',\n  'blood bath','bloodbath','implode','imploding'\n];\nconst FEAR_MID = [\n  'dump','sell','down','loss','scared','bubble','warn',\n  'fear','correction','pullback','volatile','volatility',\n  'selloff','sell off','bleeding','hurt','pain','worried',\n  'concerning','tariff','war','conflict','crisis','inflation',\n  'layoffs','overvalued','bearish','bear','puts','short',\n  'hedge','defensive','caution','risk','downside','drop',\n  'fell','fallen','sinking','tanking','tank','worst'\n];\nconst GREED_HIGH = [\n  'moon','all in','yolo','lambo','tendies',\n  'to the moon','diamond hands','sending it',\n  'short squeeze','squeeze','ape'\n];\nconst GREED_MID = [\n  'buy','bull','pump','gain','profit','green','up',\n  'rally','recover','bounce','dip','buy the dip',\n  'bullish','calls','upside','growth','opportunity',\n  'ripping','mooning','printing','loaded'\n];\nconst AMPLIFIERS = [\n  'huge','massive','insane','breaking','historic',\n  'unprecedented','extreme','critical','urgent',\n  'serious','major','significant'\n];\nfunction countMatches(text, phrases) {\n  let count = 0;\n  for (const phrase of phrases) {\n    const escaped = phrase.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');\n    const pattern = phrase.includes(' ') ? new RegExp(escaped,'g') : new RegExp('\\\\b'+escaped+'\\\\b','g');\n    const hits = text.match(pattern);\n    if (hits) count += hits.length;\n  }\n  return count;\n}\nconst output = [];\nfor (const item of $input.all()) {\n  const post = item.json;\n  const text = post.cleanTitle || '';\n  const fearHighCount  = countMatches(text, FEAR_HIGH);\n  const fearMidCount   = countMatches(text, FEAR_MID);\n  const greedHighCount = countMatches(text, GREED_HIGH);\n  const greedMidCount  = countMatches(text, GREED_MID);\n  const ampCount       = countMatches(text, AMPLIFIERS);\n  const fearPoints  = (fearHighCount * 20) + (fearMidCount * 10);\n  const greedPoints = (greedHighCount * 20) + (greedMidCount * 10);\n  let rawScore = 50 + fearPoints - greedPoints;\n  if (ampCount > 0) {\n    const deviation = rawScore - 50;\n    rawScore = 50 + deviation * Math.pow(1.2, ampCount);\n  }\n  const keywordScore = Math.round(Math.min(100, Math.max(0, rawScore)));\n  const totalSignal = fearHighCount + fearMidCount + greedHighCount + greedMidCount;\n  const keywordConfidence = totalSignal === 0 ? 'low' : totalSignal <= 2 ? 'medium' : 'high';\n  const zone = keywordScore >= 61 ? 'CLEAR_FEAR' : keywordScore >= 40 ? 'AMBIGUOUS' : 'CLEAR_GREED';\n  output.push({ json: { ...post, keywordScore, keywordConfidence, zone } });\n}\nreturn output;\n"
+      },
+      "id": "8a3ea511-b0c5-4edb-a325-9923670735ab",
+      "name": "Keyword Pre-Scorer",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3296,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Aggregate for Claude\n// Uses workflow static data instead of fs module\nconst posts = $input.all().map(item => item.json);\n\n// Read previousTopics from static data (no fs required)\nconst staticData = $getWorkflowStaticData('global');\nconst log = staticData.anxietyLog || [];\nconst previousTopics = log.length > 0\n  ? (log[log.length - 1].narrativeVelocity || [])\n  : [];\n\nconst tickersBySubreddit = {};\nfor (const post of posts) {\n  const sub = post.subreddit || 'unknown';\n  if (!tickersBySubreddit[sub]) tickersBySubreddit[sub] = {};\n  for (const ticker of (post.tickers || [])) {\n    tickersBySubreddit[sub][ticker] = (tickersBySubreddit[sub][ticker] || 0) + 1;\n  }\n}\n\nreturn [{\n  json: {\n    allPosts: posts,\n    previousTopics,\n    tickersBySubreddit\n  }\n}];\n"
+      },
+      "id": "8c1431df-9b33-44ea-83a4-e6099add1ee2",
+      "name": "Aggregate for Claude",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3040,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a financial sentiment analyzer scoring Reddit posts from r/wallstreetbets, r/investing, r/stocks.\n\nScore each post title for investor fear/anxiety 0-100:\n  0-20  = strong greed/euphoria (YOLO, moon, massive gains)\n  21-40 = mild optimism (buy the dip, bullish, opportunity)\n  41-60 = neutral or genuine question with no emotional charge\n  61-80 = mild fear (worried, concerned, volatile, correction)\n  81-100 = strong panic (losing everything, crash, worst ever, rekt)\n\nCRITICAL RULES:\n- Be decisive. Do NOT cluster scores around 50.\n- A post about large losses must score 75+\n- A post about market crashes or worst quarters must score 70+\n- A post expressing strong bullish conviction must score 25 or below\n- A neutral factual question with no fear or greed scores 45-55\n- Posts mentioning war, geopolitical risk, or economic crisis score 65+\n- Use the full 0-100 range across the batch of posts\n\nUse the exact id provided. Do not renumber.\nReturn ONLY a JSON array: [{ \"id\": <original_id>, \"score\": <number> }]\n\nPosts: {{ JSON.stringify($json.allPosts.map(p => ({ id: p.id, title: p.cleanTitle }))) }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a financial sentiment analyzer. Always respond with valid JSON only. No markdown, no explanation."
+            }
+          ]
+        }
+      },
+      "id": "3d612907-b07c-47f2-9ccc-723dd7cbd410",
+      "name": "Claude 1: Anxiety Score",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        -2784,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Extract the top 10 emerging topics or themes from these Reddit post titles.\nCompare their frequency to the previous run topics provided.\nIf previousTopics is empty, this is the first run — set previousCount to 0 for all topics and set velocityScore based on how dominant each topic is in the current titles (high mention count = higher velocity, scale 0-100).\nReturn ONLY a JSON array:\n[{ \"topic\": <string>, \"currentCount\": <number>, \"previousCount\": <number>, \"velocityScore\": <number> }]\n\nCurrent titles: {{ JSON.stringify($json.allPosts.map(p => p.cleanTitle)) }}\nPrevious topics: {{ JSON.stringify($json.previousTopics || []) }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a trend analyst for financial social media. Always respond with valid JSON only. No markdown, no explanation."
+            }
+          ]
+        }
+      },
+      "id": "85fcbbab-71a8-46b2-8961-72c350ec176f",
+      "name": "Claude 2: Narrative Velocity",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        -2784,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a market pattern detector. Analyze these Reddit post titles from 3 subreddits and identify stocks, companies, or themes discussed across multiple communities.\n\nLook beyond $ tickers — find company names, ETFs, indices, macro themes discussed in multiple subreddits.\n\nExamples to look for: Nvidia/NVDA, Apple/AAPL, Microsoft/MSFT, Tesla/TSLA, SPY, QQQ, META, oil, gold, Fed, AI stocks, tech stocks, China stocks, defense stocks etc.\n\nSet isHerd = true if topic appears in 2 or more subreddits.\nAlways return at least 3-5 results even if isHerd is false for some — show the top cross-subreddit themes regardless.\n\nReturn ONLY JSON array:\n[{ \n  \"ticker\": <string>, \n  \"mentions\": { \"wallstreetbets\": <number>, \"investing\": <number>, \"stocks\": <number> }, \n  \"isHerd\": <boolean> \n}]\nsorted by total mentions descending.\n\nwallstreetbets posts: {{ JSON.stringify($json.allPosts.filter(p => p.subreddit === 'wallstreetbets').map(p => p.cleanTitle)) }}\ninvesting posts: {{ JSON.stringify($json.allPosts.filter(p => p.subreddit === 'investing').map(p => p.cleanTitle)) }}\nstocks posts: {{ JSON.stringify($json.allPosts.filter(p => p.subreddit === 'stocks').map(p => p.cleanTitle)) }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a market pattern detector analyzing retail investor behavior. Always respond with valid JSON only. No markdown, no explanation."
+            }
+          ]
+        }
+      },
+      "id": "4a5aedec-53a2-44a0-a0d2-30ce9b63d2e4",
+      "name": "Claude 3: Herd Detection",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        -2784,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Score assertive vs uncertain language in these Reddit post titles.\nAssertive: bold claims, definitive statements, strong calls to action.\nUncertain: questions, hedging, maybe/should I/not sure language.\nReturn ONLY JSON:\n{\n  \"convictionScore\": <number>,\n  \"uncertaintyScore\": <number>,\n  \"ratio\": <number>,\n  \"dominantPostTitles\": [<top 3 most assertive titles>]\n}\nScores must sum to 100.\n\nTitles with question flags: {{ JSON.stringify($json.allPosts.map(p => ({ title: p.cleanTitle, isQuestion: p.isQuestion }))) }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a linguistic analyst specializing in investor sentiment. Always respond with valid JSON only. No markdown, no explanation."
+            }
+          ]
+        }
+      },
+      "id": "b29d133a-892d-4c7b-908e-84a57efbd86a",
+      "name": "Claude 4: Conviction vs Uncertainty",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        -2784,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Classify the current retail investor crowd narrative into exactly one stage:\nEuphoria, Complacency, Anxiety, Denial, Panic, or Hope.\n\nStage definitions:\n- Euphoria: extreme optimism, everyone is winning, FOMO language\n- Complacency: calm, passive, low urgency\n- Anxiety: worried but not panicking, lots of questions and hedging\n- Denial: ignoring bad signs, rationalizing losses\n- Panic: extreme fear, selling everything, catastrophic language\n- Hope: cautious optimism after a down period, early recovery language\n\nReturn ONLY JSON:\n{\n  \"stage\": <one of the 6 stages>,\n  \"confidence\": <number 0-1>,\n  \"reasoning\": <max 2 sentences>\n}\n\nTitles: {{ JSON.stringify($json.allPosts.map(p => p.cleanTitle)) }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a behavioral finance expert analyzing crowd psychology. Always respond with valid JSON only. No markdown, no explanation."
+            }
+          ]
+        }
+      },
+      "id": "c9b9a110-d401-4177-89ae-4bc849f29fc6",
+      "name": "Claude 5: Crowd Cycle Stage",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        -2784,
+        1424
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-20250514",
+          "mode": "list"
+        },
+        "options": {
+          "maxTokensToSample": 1000
+        }
+      },
+      "id": "94f01430-aca7-48da-8f1f-5874accf622e",
+      "name": "Anthropic Model 1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -2784,
+        64
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "TxJGOaoFMKGRz73M",
+          "name": "Anthropic account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-20250514",
+          "mode": "list"
+        },
+        "options": {
+          "maxTokensToSample": 1000
+        }
+      },
+      "id": "b083823c-f04a-404d-9ad5-ebd4f6fb948e",
+      "name": "Anthropic Model 2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -2784,
+        352
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "TxJGOaoFMKGRz73M",
+          "name": "Anthropic account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-20250514",
+          "mode": "list"
+        },
+        "options": {
+          "maxTokensToSample": 1000
+        }
+      },
+      "id": "ee2f7ede-b7f9-4dd8-a1e5-bd7d2639fbb8",
+      "name": "Anthropic Model 3",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -2784,
+        656
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "TxJGOaoFMKGRz73M",
+          "name": "Anthropic account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-20250514",
+          "mode": "list"
+        },
+        "options": {
+          "maxTokensToSample": 1000
+        }
+      },
+      "id": "86a33294-6d27-4be6-9de0-e79fe3eeaec0",
+      "name": "Anthropic Model 4",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -2784,
+        960
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "TxJGOaoFMKGRz73M",
+          "name": "Anthropic account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-20250514",
+          "mode": "list"
+        },
+        "options": {
+          "maxTokensToSample": 1000
+        }
+      },
+      "id": "f5072312-5c01-4e04-943f-ea804d4f36e3",
+      "name": "Anthropic Model 5",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -2784,
+        1264
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "TxJGOaoFMKGRz73M",
+          "name": "Anthropic account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 5
+      },
+      "id": "f99efd49-f1f8-4122-b0ed-76b429901d93",
+      "name": "Merge Claude Outputs",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -2336,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Signal Aggregator\nfunction parseLlmOutput(text) {\n  if (!text) return null;\n  try {\n    const clean = (text + '')\n      .replace(/^```[\\w]*\\n?/m, '')\n      .replace(/\\n?```$/m, '')\n      .trim();\n    return JSON.parse(clean);\n  } catch (e) {\n    return null;\n  }\n}\n\nconst items = $input.all();\n\nlet anxietyScores     = null;\nlet narrativeVelocity = null;\nlet herdDetection     = null;\nlet conviction        = null;\nlet cycleStage        = null;\n\nfor (const item of items) {\n  const parsed = parseLlmOutput(item.json.text);\n  if (parsed === null) continue;\n\n  if (Array.isArray(parsed) && parsed.length > 0) {\n    const first = parsed[0];\n    if ('score' in first && 'id' in first) {\n      anxietyScores = parsed;\n    } else if ('velocityScore' in first || 'currentCount' in first) {\n      narrativeVelocity = parsed;\n    } else if ('ticker' in first || 'isHerd' in first) {\n      herdDetection = parsed;\n    }\n  } else if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n    if ('convictionScore' in parsed || 'uncertaintyScore' in parsed) {\n      conviction = parsed;\n    } else if ('stage' in parsed || 'confidence' in parsed) {\n      cycleStage = parsed;\n    }\n  }\n}\n\nanxietyScores     = anxietyScores     || [];\nnarrativeVelocity = narrativeVelocity || [];\nherdDetection     = herdDetection     || [];\nconviction        = conviction        || {};\ncycleStage        = cycleStage        || {};\n\nconst aggregateData = $('Aggregate for Claude').first().json;\nconst allPosts = (aggregateData.allPosts || []).map(p => ({ ...p }));\n\nconst scoreMap = {};\nfor (const item of anxietyScores) {\n  if (item.id != null) scoreMap[String(item.id)] = Number(item.score);\n}\n\nconst scoredPosts = allPosts\n  .map(post => {\n    const claudeScore = scoreMap[String(post.id)];\n    const finalScore = claudeScore !== undefined ? claudeScore : post.keywordScore;\n    return { ...post, finalScore };\n  })\n  .filter(p => typeof p.finalScore === 'number');\n\nconst averageAnxietyScore = scoredPosts.length\n  ? Math.round(scoredPosts.reduce((s, p) => s + p.finalScore, 0) / scoredPosts.length)\n  : 50;\n\nconst avg = arr =>\n  arr.length ? Math.round(arr.reduce((s, v) => s + v, 0) / arr.length) : 50;\n\nconst subBuckets = { wallstreetbets: [], investing: [], stocks: [] };\nfor (const post of scoredPosts) {\n  if (subBuckets[post.subreddit]) subBuckets[post.subreddit].push(post.finalScore);\n}\nconst subredditScores = {\n  wallstreetbets: avg(subBuckets.wallstreetbets),\n  investing:      avg(subBuckets.investing),\n  stocks:         avg(subBuckets.stocks),\n};\n\nconst top3FearfulPosts = [...scoredPosts]\n  .sort((a, b) => b.finalScore - a.finalScore)\n  .slice(0, 3)\n  .map(p => ({ title: p.cleanTitle, score: p.finalScore }));\n\nreturn [{\n  json: {\n    anxietyScores,\n    narrativeVelocity,\n    herdDetection,\n    conviction,\n    cycleStage,\n    averageAnxietyScore,\n    anxietyScore: averageAnxietyScore,\n    subredditScores,\n    top3FearfulPosts,\n    timestamp: new Date().toISOString(),\n    date:      new Date().toISOString().split('T')[0],\n    postCount: allPosts.length,\n  }\n}];\n"
+      },
+      "id": "8d5c740c-cecf-49b7-ab27-aa3ccb2e7bcd",
+      "name": "Signal Aggregator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2128,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Persist to File — uses workflow static data instead of fs module\nconst staticData = $getWorkflowStaticData('global');\nconst data = $input.first().json;\nlet log = staticData.anxietyLog || [];\n\nconst entry = {\n  date:              data.date,\n  timestamp:         data.timestamp,\n  postCount:         data.postCount,\n  anxietyScore:      data.anxietyScore,\n  subredditScores:   data.subredditScores,\n  top3FearfulPosts:  data.top3FearfulPosts,\n  narrativeVelocity: data.narrativeVelocity,\n  herdDetection:     data.herdDetection,\n  conviction:        data.conviction,\n  cycleStage:        data.cycleStage\n};\n\nlog.push(entry);\n\nconst cutoff = new Date();\ncutoff.setDate(cutoff.getDate() - 7);\nlog = log.filter(e => new Date(e.timestamp) >= cutoff);\n\nstaticData.anxietyLog = log;\n\nreturn [{ json: { ...data, log } }];\n"
+      },
+      "id": "6679100f-3e06-4d76-9253-f567f50239fa",
+      "name": "Persist to File",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1904,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate Quickchart URLs\nconst BASE = 'https://quickchart.io/chart?c=';\nconst data = $input.first().json;\nconst log  = data.log || [];\nconst last7 = log.slice(-7);\nconst chart1 = { type: 'line', data: { labels: last7.map(e => e.date), datasets: [{ label: 'Anxiety Score', data: last7.map(e => e.anxietyScore), borderColor: '#E24B4A', backgroundColor: 'rgba(226,75,74,0.2)', fill: true, tension: 0.3 }] }, options: { scales: { y: { min: 0, max: 100 } }, plugins: { legend: { display: true } } } };\nconst anxietyChartUrl = BASE + encodeURIComponent(JSON.stringify(chart1));\nconst velocityItems = (Array.isArray(data.narrativeVelocity) ? data.narrativeVelocity : []).slice(0, 10);\nconst chart2 = { type: 'horizontalBar', data: { labels: velocityItems.map(t => t.topic), datasets: [{ label: 'Velocity Score', data: velocityItems.map(t => t.velocityScore), backgroundColor: '#EF9F27' }] }, options: { scales: { x: { min: 0, max: 100 } } } };\nconst velocityChartUrl = BASE + encodeURIComponent(JSON.stringify(chart2));\nconst herdTickers = (Array.isArray(data.herdDetection) ? data.herdDetection : []).filter(t => t.isHerd);\nconst chart3 = { type: 'bar', data: { labels: herdTickers.map(t => t.ticker), datasets: [ { label: 'wallstreetbets', data: herdTickers.map(t => (t.mentions||{}).wallstreetbets||0), backgroundColor: '#E24B4A' }, { label: 'investing', data: herdTickers.map(t => (t.mentions||{}).investing||0), backgroundColor: '#378ADD' }, { label: 'stocks', data: herdTickers.map(t => (t.mentions||{}).stocks||0), backgroundColor: '#639922' } ] } };\nconst herdChartUrl = BASE + encodeURIComponent(JSON.stringify(chart3));\nconst conv = data.conviction || { convictionScore: 50, uncertaintyScore: 50 };\nconst chart4 = { type: 'doughnut', data: { labels: ['Conviction','Uncertainty'], datasets: [{ data: [conv.convictionScore||0, conv.uncertaintyScore||0], backgroundColor: ['#378ADD','#B4B2A9'] }] } };\nconst convictionChartUrl = BASE + encodeURIComponent(JSON.stringify(chart4));\nreturn [{ json: { ...data, anxietyChartUrl, velocityChartUrl, herdChartUrl, convictionChartUrl } }];\n"
+      },
+      "id": "58736250-ec2c-4ec3-8c57-c28783cb7092",
+      "name": "Generate Quickchart URLs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1680,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Write output.json — stores in static data instead of filesystem\nconst staticData = $getWorkflowStaticData('global');\nconst data = $input.first().json;\nconst cs   = data.cycleStage  || {};\nconst conv = data.conviction  || {};\nconst herd = Array.isArray(data.herdDetection) ? data.herdDetection : [];\n\nconst output = {\n  latestDate:         data.date,\n  postCount:          data.postCount,\n  anxietyScore:       data.anxietyScore,\n  subredditScores:    data.subredditScores,\n  top3FearfulPosts:   data.top3FearfulPosts,\n  narrativeVelocity:  Array.isArray(data.narrativeVelocity) ? data.narrativeVelocity : [],\n  herdDetection:      herd,\n  anxietyChartUrl:    data.anxietyChartUrl,\n  velocityChartUrl:   data.velocityChartUrl,\n  herdChartUrl:       data.herdChartUrl,\n  convictionChartUrl: data.convictionChartUrl,\n  cycleStage:         cs.stage      || null,\n  cycleConfidence:    cs.confidence || null,\n  cycleReasoning:     cs.reasoning  || null,\n  herdTickers:        herd.filter(t => t.isHerd).map(t => t.ticker),\n  convictionScore:    conv.convictionScore  ?? null,\n  uncertaintyScore:   conv.uncertaintyScore ?? null,\n  convictionRatio:    conv.ratio            ?? null,\n  dominantPostTitles: conv.dominantPostTitles || []\n};\n\nstaticData.latestOutput = output;\n\nreturn [{ json: output }];\n"
+      },
+      "id": "c1c41868-39eb-425a-b71a-2af4365e15ab",
+      "name": "Write output.json",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1424,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "YOUR_SUPABASE_URL/rest/v1/anxiety_runs",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "YOUR_SUPABASE_ANON_KEY"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=minimal"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "date",
+              "value": "={{ $json.latestDate }}"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{ $json.latestDate }}"
+            },
+            {
+              "name": "post_count",
+              "value": "={{ $json.postCount }}"
+            },
+            {
+              "name": "anxiety_score",
+              "value": "={{ $json.anxietyScore }}"
+            },
+            {
+              "name": "subreddit_scores",
+              "value": "={{ JSON.stringify($json.subredditScores) }}"
+            },
+            {
+              "name": "top3_fearful_posts",
+              "value": "={{ JSON.stringify($json.top3FearfulPosts) }}"
+            },
+            {
+              "name": "narrative_velocity",
+              "value": "={{ JSON.stringify($json.narrativeVelocity) }}"
+            },
+            {
+              "name": "herd_detection",
+              "value": "={{ JSON.stringify($json.herdDetection) }}"
+            },
+            {
+              "name": "conviction",
+              "value": "={{ JSON.stringify({ convictionScore: $json.convictionScore, uncertaintyScore: $json.uncertaintyScore, ratio: $json.convictionRatio, dominantPostTitles: $json.dominantPostTitles }) }}"
+            },
+            {
+              "name": "cycle_stage",
+              "value": "={{ JSON.stringify({ stage: $json.cycleStage, confidence: $json.cycleConfidence, reasoning: $json.cycleReasoning }) }}"
+            },
+            {
+              "name": "anxiety_chart_url",
+              "value": "={{ $json.anxietyChartUrl }}"
+            },
+            {
+              "name": "velocity_chart_url",
+              "value": "={{ $json.velocityChartUrl }}"
+            },
+            {
+              "name": "herd_chart_url",
+              "value": "={{ $json.herdChartUrl }}"
+            },
+            {
+              "name": "conviction_chart_url",
+              "value": "={{ $json.convictionChartUrl }}"
+            },
+            {
+              "name": "herd_tickers",
+              "value": "={{ JSON.stringify($json.herdTickers) }}"
+            },
+            {
+              "name": "conviction_score",
+              "value": "={{ $json.convictionScore }}"
+            },
+            {
+              "name": "uncertainty_score",
+              "value": "={{ $json.uncertaintyScore }}"
+            },
+            {
+              "name": "conviction_ratio",
+              "value": "={{ $json.convictionRatio }}"
+            },
+            {
+              "name": "dominant_post_titles",
+              "value": "={{ JSON.stringify($json.dominantPostTitles) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b7a6850c-7b62-4c64-b952-1fb1815bac37",
+      "name": "Insert to Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1152,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'success', message: 'Pipeline completed', anxietyScore: $('Write output.json').first().json.anxietyScore, date: $('Write output.json').first().json.latestDate, postCount: $('Write output.json').first().json.postCount }) }}",
+        "options": {}
+      },
+      "id": "pipeline-response",
+      "name": "Pipeline Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        528
+      ]
+    },
+    {
+      "id": "dashboard-webhook",
+      "name": "Dashboard Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -4544,
+        -200
+      ],
+      "parameters": {
+        "path": "dashboard",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "webhookId": "dashboard"
+    },
+    {
+      "id": "build-dashboard-response",
+      "name": "Build Dashboard Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -4304,
+        -200
+      ],
+      "parameters": {
+        "jsCode": "const html = `<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Retail Investor Anxiety Index</title>\n  <script src=\"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js\"></script>\n  <style>\n    :root {\n      --bg: #F5F6FA;\n      --surface: #FFFFFF;\n      --surface-2: #F0F2F8;\n      --border: #E2E6F0;\n      --border-strong: #C8D0E0;\n      --text-primary: #1A1D2E;\n      --text-secondary: #5A6080;\n      --text-muted: #8A90A8;\n      --red: #D63B3B;\n      --red-light: #FEF0F0;\n      --orange: #D97706;\n      --orange-light: #FFFBEB;\n      --blue: #2563EB;\n      --blue-light: #EFF6FF;\n      --green: #16A34A;\n      --green-light: #F0FDF4;\n      --yellow: #CA8A04;\n      --yellow-light: #FEFCE8;\n      --shadow: 0 1px 3px rgba(0,0,0,0.08);\n      --shadow-md: 0 4px 6px rgba(0,0,0,0.07);\n      --radius: 12px;\n      --radius-sm: 8px;\n    }\n\n    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }\n\n    body {\n      background: var(--bg);\n      font-family: system-ui, -apple-system, sans-serif;\n      color: var(--text-primary);\n      font-size: 14px;\n      line-height: 1.5;\n    }\n\n    header {\n      background: var(--surface);\n      border-bottom: 1px solid var(--border);\n      padding: 1.25rem 2rem;\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      position: sticky;\n      top: 0;\n      z-index: 100;\n      box-shadow: var(--shadow);\n    }\n\n    .header-left h1 {\n      font-size: 18px;\n      font-weight: 700;\n      color: var(--text-primary);\n      margin: 0;\n    }\n\n    .header-left p {\n      font-size: 12px;\n      color: var(--text-muted);\n      margin: 4px 0 0 0;\n    }\n\n    .header-right {\n      display: flex;\n      gap: 12px;\n      align-items: center;\n    }\n\n    .refresh-btn {\n      background: var(--blue);\n      color: white;\n      border: none;\n      padding: 8px 16px;\n      border-radius: 8px;\n      font-size: 13px;\n      font-weight: 600;\n      cursor: pointer;\n      transition: background 0.15s;\n    }\n\n    .refresh-btn:hover { background: #1d4ed8; }\n\n    .last-updated {\n      font-size: 12px;\n      color: var(--text-muted);\n      background: var(--surface-2);\n      padding: 6px 12px;\n      border-radius: 20px;\n      border: 1px solid var(--border);\n    }\n\n    main {\n      padding: 2rem;\n      max-width: 1400px;\n      margin: 0 auto;\n    }\n\n    .grid-row-3 {\n      display: grid;\n      grid-template-columns: repeat(3, 1fr);\n      gap: 1.5rem;\n      margin-bottom: 1.5rem;\n    }\n\n    .grid-row-2 {\n      display: grid;\n      grid-template-columns: 2fr 3fr;\n      gap: 1.5rem;\n      margin-bottom: 1.5rem;\n    }\n\n    .panel {\n      background: var(--surface);\n      border-radius: var(--radius);\n      border: 1px solid var(--border);\n      padding: 1.5rem;\n      box-shadow: var(--shadow);\n      animation: fadeInUp 0.4s ease forwards;\n      opacity: 0;\n    }\n\n    .panel:nth-child(1) { animation-delay: 0.05s; }\n    .panel:nth-child(2) { animation-delay: 0.10s; }\n    .panel:nth-child(3) { animation-delay: 0.15s; }\n    .panel:nth-child(4) { animation-delay: 0.20s; }\n    .panel:nth-child(5) { animation-delay: 0.25s; }\n    .panel:nth-child(6) { animation-delay: 0.30s; }\n    .panel:nth-child(7) { animation-delay: 0.35s; }\n    .panel:nth-child(8) { animation-delay: 0.40s; }\n\n    @keyframes fadeInUp {\n      from { opacity: 0; transform: translateY(16px); }\n      to   { opacity: 1; transform: translateY(0); }\n    }\n\n    .panel-title {\n      font-size: 11px;\n      font-weight: 600;\n      letter-spacing: 0.1em;\n      text-transform: uppercase;\n      color: var(--text-muted);\n      margin: 0 0 1.25rem 0;\n      padding-bottom: 0.75rem;\n      border-bottom: 1px solid var(--border);\n    }\n\n    /* Loading */\n    #loading {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      flex-direction: column;\n      gap: 16px;\n      min-height: 100vh;\n      background: var(--bg);\n    }\n\n    .spinner {\n      width: 36px;\n      height: 36px;\n      border: 3px solid var(--border);\n      border-top-color: var(--blue);\n      border-radius: 50%;\n      animation: spin 0.7s linear infinite;\n    }\n\n    @keyframes spin { to { transform: rotate(360deg); } }\n\n    .loading-text {\n      font-size: 14px;\n      color: var(--text-secondary);\n    }\n\n    /* Error */\n    #error {\n      display: none;\n      align-items: center;\n      justify-content: center;\n      flex-direction: column;\n      gap: 16px;\n      min-height: 100vh;\n      background: var(--bg);\n    }\n\n    .error-box {\n      background: var(--surface);\n      border: 1px solid var(--border);\n      border-radius: var(--radius);\n      padding: 2rem;\n      text-align: center;\n      max-width: 420px;\n      box-shadow: var(--shadow-md);\n    }\n\n    .error-icon { font-size: 32px; margin-bottom: 12px; }\n    .error-title { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }\n    #error-msg { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }\n\n    .retry-btn {\n      background: var(--blue);\n      color: white;\n      border: none;\n      padding: 8px 20px;\n      border-radius: 8px;\n      font-size: 13px;\n      font-weight: 600;\n      cursor: pointer;\n    }\n\n    /* ── Panel 1: Anxiety ── */\n    .score-display {\n      display: flex;\n      align-items: baseline;\n      gap: 12px;\n      margin-bottom: 12px;\n    }\n\n    .score-number {\n      font-size: 72px;\n      font-weight: 800;\n      line-height: 1;\n      font-variant-numeric: tabular-nums;\n    }\n\n    .score-label {\n      font-size: 12px;\n      font-weight: 700;\n      letter-spacing: 0.15em;\n      padding: 3px 10px;\n      border-radius: 20px;\n    }\n\n    .sub-badges {\n      display: flex;\n      gap: 8px;\n      margin-bottom: 16px;\n      flex-wrap: wrap;\n    }\n\n    .sub-badge {\n      display: inline-flex;\n      align-items: center;\n      gap: 6px;\n      padding: 4px 10px;\n      background: var(--surface-2);\n      border: 1px solid var(--border);\n      border-radius: 20px;\n      font-size: 11px;\n    }\n\n    .sub-name { color: var(--text-secondary); }\n    .sub-score { font-weight: 700; }\n\n    .chart-container {\n      position: relative;\n      height: 130px;\n    }\n\n    /* ── Panel 2: Cycle ── */\n    .cycle-header {\n      display: flex;\n      align-items: center;\n      gap: 12px;\n      margin-bottom: 16px;\n    }\n\n    .cycle-emoji { font-size: 36px; line-height: 1; }\n\n    .cycle-stage-name {\n      font-size: 28px;\n      font-weight: 700;\n      color: var(--orange);\n      line-height: 1;\n    }\n\n    .cycle-stage-sub {\n      font-size: 10px;\n      color: var(--text-muted);\n      letter-spacing: 0.1em;\n      text-transform: uppercase;\n      margin-top: 3px;\n    }\n\n    .progress-label {\n      font-size: 11px;\n      color: var(--text-muted);\n      margin-bottom: 4px;\n      display: flex;\n      justify-content: space-between;\n    }\n\n    .progress-track {\n      height: 6px;\n      background: var(--surface-2);\n      border-radius: 3px;\n      overflow: hidden;\n      margin-bottom: 16px;\n      border: 1px solid var(--border);\n    }\n\n    .progress-fill {\n      height: 100%;\n      background: var(--orange);\n      border-radius: 3px;\n      transition: width 1s ease;\n    }\n\n    .cycle-reasoning {\n      font-size: 12px;\n      color: var(--text-secondary);\n      line-height: 1.6;\n      margin-bottom: 12px;\n    }\n\n    /* ── Panel 3: Conviction ── */\n    .conv-layout {\n      display: flex;\n      gap: 16px;\n      align-items: flex-start;\n      margin-bottom: 16px;\n    }\n\n    .conv-chart-wrap {\n      position: relative;\n      width: 140px;\n      height: 140px;\n      flex-shrink: 0;\n    }\n\n    .conv-stats { flex: 1; }\n\n    .conv-big {\n      font-size: 36px;\n      font-weight: 700;\n      line-height: 1;\n    }\n\n    .conv-sub {\n      font-size: 10px;\n      color: var(--text-muted);\n      letter-spacing: 0.1em;\n      text-transform: uppercase;\n      margin-bottom: 12px;\n      margin-top: 2px;\n    }\n\n    .conv-ratio {\n      font-size: 11px;\n      color: var(--text-secondary);\n    }\n\n    .narrative-label {\n      font-size: 10px;\n      font-weight: 600;\n      letter-spacing: 0.1em;\n      text-transform: uppercase;\n      color: var(--text-muted);\n      margin-bottom: 8px;\n    }\n\n    .narrative-item {\n      font-size: 11px;\n      color: var(--text-secondary);\n      padding: 6px 0;\n      border-bottom: 1px solid var(--border);\n      line-height: 1.45;\n      overflow: hidden;\n      text-overflow: ellipsis;\n      white-space: nowrap;\n    }\n\n    .narrative-item:last-child { border-bottom: none; }\n\n    /* ── Panel 4: Velocity ── */\n    .velocity-chart-wrap {\n      position: relative;\n      height: 300px;\n    }\n\n    /* ── Panel 5: Herd ── */\n    .herd-chart-wrap {\n      position: relative;\n      height: 260px;\n      margin-bottom: 12px;\n    }\n\n    .herd-badges {\n      display: flex;\n      flex-wrap: wrap;\n      gap: 6px;\n      margin-top: 4px;\n    }\n\n    .herd-badge {\n      padding: 3px 10px;\n      border-radius: 4px;\n      font-size: 11px;\n      font-weight: 600;\n    }\n\n    .herd-active {\n      background: var(--red-light);\n      border: 1px solid #FECACA;\n      color: var(--red);\n    }\n\n    .herd-inactive {\n      background: var(--surface-2);\n      border: 1px solid var(--border);\n      color: var(--text-secondary);\n    }\n\n    /* ── Panels 6 & 7: History ── */\n    .history-chart-wrap {\n      position: relative;\n      height: 220px;\n    }\n\n    /* ── Panel 8: Posts ── */\n    #panel-posts { margin-bottom: 0; }\n\n    .posts-grid {\n      display: grid;\n      grid-template-columns: repeat(3, 1fr);\n      gap: 1rem;\n    }\n\n    .post-card {\n      background: var(--surface-2);\n      border: 1px solid var(--border);\n      border-radius: var(--radius-sm);\n      padding: 1rem;\n      transition: transform 0.15s, box-shadow 0.15s;\n    }\n\n    .post-card:hover {\n      transform: translateY(-2px);\n      box-shadow: var(--shadow-md);\n    }\n\n    .post-title {\n      font-size: 13px;\n      line-height: 1.55;\n      color: var(--text-primary);\n      margin-bottom: 10px;\n    }\n\n    .score-badge {\n      display: inline-block;\n      padding: 3px 10px;\n      border-radius: 4px;\n      font-size: 11px;\n      font-weight: 700;\n    }\n\n    .score-fear    { background: var(--red-light);    color: var(--red);    }\n    .score-neutral { background: var(--yellow-light); color: var(--yellow); }\n    .score-greed   { background: var(--green-light);  color: var(--green);  }\n\n    @media (max-width: 960px) {\n      .grid-row-3, .grid-row-2 { grid-template-columns: 1fr; }\n      .posts-grid               { grid-template-columns: 1fr; }\n      main                      { padding: 1rem; }\n    }\n  </style>\n</head>\n<body>\n\n  <!-- Loading -->\n  <div id=\"loading\">\n    <div class=\"spinner\"></div>\n    <p class=\"loading-text\">Loading anxiety data…</p>\n  </div>\n\n  <!-- Error -->\n  <div id=\"error\">\n    <div class=\"error-box\">\n      <div class=\"error-icon\">⚠️</div>\n      <div class=\"error-title\">Failed to load data</div>\n      <div id=\"error-msg\"></div>\n      <button class=\"retry-btn\" onclick=\"fetchData()\">Retry</button>\n    </div>\n  </div>\n\n  <!-- App -->\n  <div id=\"app\" style=\"display:none\">\n    <header>\n      <div class=\"header-left\">\n        <h1>Retail Investor Anxiety Index</h1>\n        <p>Reddit sentiment analysis · r/wallstreetbets · r/investing · r/stocks</p>\n      </div>\n      <div class=\"header-right\">\n        <span class=\"last-updated\" id=\"last-updated\">Loading…</span>\n        <button class=\"refresh-btn\" onclick=\"fetchData()\">↻ Refresh</button>\n      </div>\n    </header>\n\n    <main>\n\n      <!-- Row 1: 3 columns -->\n      <div class=\"grid-row-3\">\n\n        <div id=\"panel-anxiety\" class=\"panel\">\n          <h2 class=\"panel-title\">Anxiety Index</h2>\n          <div class=\"score-display\">\n            <span id=\"anxiety-score\" class=\"score-number\">—</span>\n            <span id=\"anxiety-label\" class=\"score-label\">—</span>\n          </div>\n          <div class=\"sub-badges\" id=\"subreddit-badges\"></div>\n          <div class=\"chart-container\">\n            <canvas id=\"anxiety-chart\"></canvas>\n          </div>\n        </div>\n\n        <div id=\"panel-cycle\" class=\"panel\">\n          <h2 class=\"panel-title\">Crowd Cycle Stage</h2>\n          <div class=\"cycle-header\">\n            <span id=\"cycle-emoji\" class=\"cycle-emoji\">📊</span>\n            <div>\n              <div id=\"cycle-stage-name\" class=\"cycle-stage-name\">—</div>\n              <div class=\"cycle-stage-sub\">Cycle Position</div>\n            </div>\n          </div>\n          <div class=\"progress-label\">\n            <span>Confidence</span>\n            <span id=\"cycle-confidence-pct\">0%</span>\n          </div>\n          <div class=\"progress-track\">\n            <div class=\"progress-fill\" id=\"cycle-confidence-bar\" style=\"width:0%\"></div>\n          </div>\n          <div class=\"cycle-reasoning\" id=\"cycle-reasoning\"></div>\n          <canvas id=\"cycle-wheel\" width=\"180\" height=\"180\" style=\"display:block;margin:0 auto\"></canvas>\n        </div>\n\n        <div id=\"panel-conviction\" class=\"panel\">\n          <h2 class=\"panel-title\">Conviction vs Uncertainty</h2>\n          <div class=\"conv-layout\">\n            <div class=\"conv-chart-wrap\">\n              <canvas id=\"conviction-chart\"></canvas>\n            </div>\n            <div class=\"conv-stats\">\n              <div id=\"conviction-pct\" class=\"conv-big\" style=\"color:var(--blue)\">—</div>\n              <div class=\"conv-sub\">Conviction</div>\n              <div id=\"uncertainty-pct\" class=\"conv-big\" style=\"color:var(--text-muted);font-size:28px\">—</div>\n              <div class=\"conv-sub\">Uncertainty</div>\n              <div id=\"conviction-ratio\" class=\"conv-ratio\"></div>\n            </div>\n          </div>\n          <div class=\"narrative-label\">Dominant Narratives</div>\n          <div id=\"dominant-titles\"></div>\n        </div>\n\n      </div>\n\n      <!-- Row 2: 2fr + 3fr -->\n      <div class=\"grid-row-2\">\n\n        <div id=\"panel-velocity\" class=\"panel\">\n          <h2 class=\"panel-title\">Rising Narratives</h2>\n          <div class=\"velocity-chart-wrap\">\n            <canvas id=\"velocity-chart\"></canvas>\n          </div>\n        </div>\n\n        <div id=\"panel-herd\" class=\"panel\">\n          <h2 class=\"panel-title\">Cross-Subreddit Herd Activity</h2>\n          <div class=\"herd-chart-wrap\">\n            <canvas id=\"herd-chart\"></canvas>\n          </div>\n          <div class=\"herd-badges\" id=\"herd-badges\"></div>\n        </div>\n\n      </div>\n\n      <!-- Row 3: history -->\n      <div class=\"grid-row-2\">\n\n        <div id=\"panel-subreddit-history\" class=\"panel\">\n          <h2 class=\"panel-title\">Subreddit Anxiety Over Time</h2>\n          <div class=\"history-chart-wrap\">\n            <canvas id=\"subreddit-chart\"></canvas>\n          </div>\n        </div>\n\n        <div id=\"panel-conviction-history\" class=\"panel\">\n          <h2 class=\"panel-title\">Conviction vs Uncertainty Over Time</h2>\n          <div class=\"history-chart-wrap\">\n            <canvas id=\"conviction-history-chart\"></canvas>\n          </div>\n        </div>\n\n      </div>\n\n      <!-- Row 4: posts -->\n      <div id=\"panel-posts\" class=\"panel\">\n        <h2 class=\"panel-title\">Most Fearful Posts</h2>\n        <div class=\"posts-grid\" id=\"posts-container\"></div>\n      </div>\n\n    </main>\n  </div><!-- #app -->\n\n  <script>\n    /* ════════════════════════════════\n       CONFIG\n    ════════════════════════════════ */\n    const SUPABASE_URL = 'YOUR_SUPABASE_URL';\n    const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';\n    const ENDPOINT     = SUPABASE_URL + '/rest/v1/anxiety_runs?order=created_at.desc&limit=7';\n\n    /* ════════════════════════════════\n       SAFE FIELD PARSER\n       Handles Supabase jsonb (already object) or text (string)\n    ════════════════════════════════ */\n    const safe = (field) => {\n      if (!field) return null;\n      if (typeof field === 'object') return field;\n      try {\n        const p = JSON.parse(field);\n        return typeof p === 'string' ? JSON.parse(p) : p;\n      } catch(e) { return null; }\n    };\n\n    /* ════════════════════════════════\n       CHART REGISTRY — destroy before re-render\n    ════════════════════════════════ */\n    const chartInstances = {};\n\n    function renderLineChart(id, labels, datasets, yOptions = {}) {\n      if (chartInstances[id]) chartInstances[id].destroy();\n      const ctx = document.getElementById(id);\n      if (!ctx) return;\n      chartInstances[id] = new Chart(ctx.getContext('2d'), {\n        type: 'line',\n        data: { labels, datasets },\n        options: {\n          responsive: true,\n          maintainAspectRatio: false,\n          plugins: {\n            legend: {\n              display: datasets.length > 1,\n              labels: { font: { size: 11 }, color: '#5A6080', boxWidth: 12 }\n            }\n          },\n          scales: {\n            x: { grid: { color: '#F0F2F8' }, ticks: { font: { size: 11 }, color: '#8A90A8' } },\n            y: { ...yOptions, grid: { color: '#F0F2F8' }, ticks: { font: { size: 11 }, color: '#8A90A8' } }\n          }\n        }\n      });\n    }\n\n    function renderHorizontalBarChart(id, labels, data, color) {\n      if (chartInstances[id]) chartInstances[id].destroy();\n      const ctx = document.getElementById(id);\n      if (!ctx) return;\n      chartInstances[id] = new Chart(ctx.getContext('2d'), {\n        type: 'bar',\n        data: {\n          labels,\n          datasets: [{ data, backgroundColor: color, borderRadius: 4, label: 'Velocity Score' }]\n        },\n        options: {\n          indexAxis: 'y',\n          responsive: true,\n          maintainAspectRatio: false,\n          plugins: { legend: { display: false } },\n          scales: {\n            x: { min: 0, max: 100, grid: { color: '#F0F2F8' }, ticks: { font: { size: 11 }, color: '#8A90A8' } },\n            y: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#5A6080' } }\n          }\n        }\n      });\n    }\n\n    function renderGroupedBarChart(id, herdData) {\n      if (chartInstances[id]) chartInstances[id].destroy();\n      const ctx = document.getElementById(id);\n      if (!ctx) return;\n      chartInstances[id] = new Chart(ctx.getContext('2d'), {\n        type: 'bar',\n        data: {\n          labels: herdData.map(h => h.ticker),\n          datasets: [\n            { label: 'WSB',       data: herdData.map(h => (h.mentions || {}).wallstreetbets || 0), backgroundColor: 'rgb(214,59,59)',  borderRadius: 4 },\n            { label: 'Investing', data: herdData.map(h => (h.mentions || {}).investing      || 0), backgroundColor: 'rgb(37,99,235)',  borderRadius: 4 },\n            { label: 'Stocks',    data: herdData.map(h => (h.mentions || {}).stocks         || 0), backgroundColor: 'rgb(22,163,74)', borderRadius: 4 }\n          ]\n        },\n        options: {\n          responsive: true,\n          maintainAspectRatio: false,\n          plugins: {\n            legend: { display: true, labels: { font: { size: 11 }, color: '#5A6080', boxWidth: 12 } }\n          },\n          scales: {\n            x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#5A6080' } },\n            y: { grid: { color: '#F0F2F8' }, ticks: { font: { size: 11 }, color: '#8A90A8' } }\n          }\n        }\n      });\n    }\n\n    function renderDoughnutChart(id, labels, data, colors) {\n      if (chartInstances[id]) chartInstances[id].destroy();\n      const ctx = document.getElementById(id);\n      if (!ctx) return;\n      chartInstances[id] = new Chart(ctx.getContext('2d'), {\n        type: 'doughnut',\n        data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 0 }] },\n        options: {\n          responsive: true,\n          maintainAspectRatio: false,\n          cutout: '70%',\n          plugins: { legend: { display: false } }\n        }\n      });\n    }\n\n    /* ════════════════════════════════\n       CYCLE WHEEL (Canvas)\n    ════════════════════════════════ */\n    function renderCycleWheel(activeStage) {\n      const stages = ['Euphoria', 'Complacency', 'Hope', 'Panic', 'Denial', 'Anxiety'];\n      const canvas = document.getElementById('cycle-wheel');\n      if (!canvas) return;\n      const ctx = canvas.getContext('2d');\n      const cx = 90, cy = 90, r = 72, ir = 34;\n\n      ctx.clearRect(0, 0, 180, 180);\n\n      stages.forEach((stage, i) => {\n        const start = (i / 6) * Math.PI * 2 - Math.PI / 2;\n        const end   = ((i + 1) / 6) * Math.PI * 2 - Math.PI / 2;\n        const active = stage.toLowerCase() === (activeStage || '').toLowerCase();\n\n        ctx.beginPath();\n        ctx.moveTo(cx, cy);\n        ctx.arc(cx, cy, r, start + 0.04, end - 0.04);\n        ctx.closePath();\n        ctx.fillStyle = active ? '#D97706' : '#F0F2F8';\n        ctx.fill();\n        ctx.strokeStyle = '#FFFFFF';\n        ctx.lineWidth = 2;\n        ctx.stroke();\n\n        const mid = start + Math.PI / 6;\n        const lx  = cx + Math.cos(mid) * 56;\n        const ly  = cy + Math.sin(mid) * 56;\n        ctx.fillStyle = active ? '#FFFFFF' : '#8A90A8';\n        ctx.font = (active ? '700' : '500') + ' 8px system-ui';\n        ctx.textAlign = 'center';\n        ctx.textBaseline = 'middle';\n        ctx.fillText(stage.toUpperCase(), lx, ly);\n      });\n\n      // Center hole\n      ctx.beginPath();\n      ctx.arc(cx, cy, ir, 0, Math.PI * 2);\n      ctx.fillStyle = '#FFFFFF';\n      ctx.fill();\n\n      ctx.fillStyle = '#8A90A8';\n      ctx.font = '500 8px system-ui';\n      ctx.textAlign = 'center';\n      ctx.textBaseline = 'middle';\n      ctx.fillText('STAGE', cx, cy - 9);\n\n      ctx.fillStyle = '#D97706';\n      ctx.font = '700 10px system-ui';\n      ctx.textAlign = 'center';\n      ctx.textBaseline = 'middle';\n      ctx.fillText((activeStage || '—').toUpperCase().slice(0, 10), cx, cy + 7);\n    }\n\n    /* ════════════════════════════════\n       PANEL RENDERERS\n    ════════════════════════════════ */\n\n    function renderAnxietyPanel(latest, history) {\n      const score  = latest.anxiety_score || 0;\n      const sub    = safe(latest.subreddit_scores) || {};\n      const color  = score > 66 ? 'var(--red)'    : score > 33 ? 'var(--yellow)'    : 'var(--green)';\n      const bgCol  = score > 66 ? 'var(--red-light)' : score > 33 ? 'var(--yellow-light)' : 'var(--green-light)';\n      const label  = score > 66 ? 'FEAR'          : score > 33 ? 'NEUTRAL'          : 'GREED';\n\n      const scoreEl = document.getElementById('anxiety-score');\n      scoreEl.textContent = score;\n      scoreEl.style.color = color;\n\n      const labelEl = document.getElementById('anxiety-label');\n      labelEl.textContent  = label;\n      labelEl.style.color  = color;\n      labelEl.style.background = bgCol;\n\n      document.getElementById('subreddit-badges').innerHTML =\n        ['wallstreetbets', 'investing', 'stocks'].map(s => {\n          const v = sub[s] || 0;\n          const c = v > 66 ? 'var(--red)' : v > 33 ? 'var(--yellow)' : 'var(--green)';\n          return \\`<span class=\"sub-badge\"><span class=\"sub-name\">r/\\${s === 'wallstreetbets' ? 'wsb' : s}</span><span class=\"sub-score\" style=\"color:\\${c}\">\\${v}</span></span>\\`;\n        }).join('');\n\n      renderLineChart('anxiety-chart',\n        history.map(r => r.date),\n        [{\n          label: 'Anxiety Score',\n          data: history.map(r => r.anxiety_score || 0),\n          borderColor: 'rgb(214,59,59)',\n          backgroundColor: 'rgba(214,59,59,0.08)',\n          fill: true, tension: 0.3,\n          pointRadius: 4, pointBackgroundColor: 'rgb(214,59,59)'\n        }],\n        { min: 0, max: 100 }\n      );\n    }\n\n    function renderCyclePanel(latest) {\n      const cycle  = safe(latest.cycle_stage) || {};\n      const stage  = cycle.stage    || 'Unknown';\n      const conf   = Math.round((cycle.confidence || 0) * 100);\n      const reason = cycle.reasoning || '';\n      const emojis = { Euphoria:'🚀', Complacency:'😴', Anxiety:'😰', Denial:'🙈', Panic:'💥', Hope:'🌱', Unknown:'📊' };\n\n      document.getElementById('cycle-emoji').textContent         = emojis[stage] || '📊';\n      document.getElementById('cycle-stage-name').textContent    = stage;\n      document.getElementById('cycle-confidence-bar').style.width = conf + '%';\n      document.getElementById('cycle-confidence-pct').textContent = conf + '%';\n      document.getElementById('cycle-reasoning').textContent     = reason;\n\n      renderCycleWheel(stage);\n    }\n\n    function renderConvictionPanel(latest) {\n      const conv  = latest.conviction_score  || 0;\n      const unce  = latest.uncertainty_score || 0;\n      const ratio = latest.conviction_ratio  || 0;\n      const dom   = safe(latest.dominant_post_titles) || [];\n\n      document.getElementById('conviction-pct').textContent   = conv + '%';\n      document.getElementById('uncertainty-pct').textContent  = unce + '%';\n      document.getElementById('conviction-ratio').textContent =\n        ratio > 0 ? ratio.toFixed(1) + '× more conviction than uncertainty' : '';\n\n      document.getElementById('dominant-titles').innerHTML =\n        dom.slice(0, 3).map(t =>\n          \\`<div class=\"narrative-item\" title=\"\\${String(t)}\">\\${String(t).slice(0, 80)}\\${String(t).length > 80 ? '…' : ''}</div>\\`\n        ).join('') || '<div style=\"color:var(--text-muted);font-size:11px\">No data yet</div>';\n\n      renderDoughnutChart('conviction-chart',\n        ['Conviction', 'Uncertainty'],\n        [Math.max(conv, 0.1), Math.max(unce, 0.1)],\n        ['rgb(37,99,235)', 'rgb(226,232,240)']\n      );\n    }\n\n    function renderVelocityPanel(latest) {\n      const velocity = safe(latest.narrative_velocity) || [];\n      const top10 = [...velocity]\n        .sort((a, b) => (b.velocityScore || 0) - (a.velocityScore || 0))\n        .slice(0, 10);\n\n      if (!top10.length) {\n        document.querySelector('.velocity-chart-wrap').innerHTML =\n          '<div style=\"display:flex;align-items:center;justify-content:center;height:300px;color:var(--text-muted);font-size:13px\">No velocity data yet</div>';\n        return;\n      }\n      renderHorizontalBarChart('velocity-chart',\n        top10.map(v => (v.topic || '').slice(0, 28)),\n        top10.map(v => v.velocityScore || 0),\n        'rgba(217,119,6,0.85)'\n      );\n    }\n\n    function renderHerdPanel(latest) {\n      const herd = safe(latest.herd_detection) || [];\n\n      if (!herd.length) {\n        document.querySelector('.herd-chart-wrap').innerHTML =\n          '<div style=\"display:flex;align-items:center;justify-content:center;height:260px;color:var(--text-muted);font-size:13px\">No herd activity detected</div>';\n        document.getElementById('herd-badges').innerHTML = '';\n        return;\n      }\n      renderGroupedBarChart('herd-chart', herd.slice(0, 10));\n      document.getElementById('herd-badges').innerHTML = herd.map(h =>\n        \\`<span class=\"herd-badge \\${h.isHerd ? 'herd-active' : 'herd-inactive'}\">\\${h.ticker}\\${h.isHerd ? ' ●' : ''}</span>\\`\n      ).join('');\n    }\n\n    function renderSubredditHistory(history) {\n      renderLineChart('subreddit-chart',\n        history.map(r => r.date),\n        [\n          { label: 'r/wallstreetbets', data: history.map(r => (safe(r.subreddit_scores) || {}).wallstreetbets || 0), borderColor: 'rgb(214,59,59)', backgroundColor: 'transparent', tension: 0.3, pointRadius: 4 },\n          { label: 'r/investing',      data: history.map(r => (safe(r.subreddit_scores) || {}).investing      || 0), borderColor: 'rgb(37,99,235)', backgroundColor: 'transparent', tension: 0.3, pointRadius: 4 },\n          { label: 'r/stocks',         data: history.map(r => (safe(r.subreddit_scores) || {}).stocks         || 0), borderColor: 'rgb(22,163,74)', backgroundColor: 'transparent', tension: 0.3, pointRadius: 4 }\n        ],\n        { min: 0, max: 100 }\n      );\n    }\n\n    function renderConvictionHistory(history) {\n      renderLineChart('conviction-history-chart',\n        history.map(r => r.date),\n        [\n          { label: 'Conviction',  data: history.map(r => r.conviction_score  || 0), borderColor: 'rgb(37,99,235)',  backgroundColor: 'rgba(37,99,235,0.1)',   fill: true, tension: 0.3, pointRadius: 4 },\n          { label: 'Uncertainty', data: history.map(r => r.uncertainty_score || 0), borderColor: 'rgb(200,208,224)', backgroundColor: 'rgba(200,208,224,0.3)', fill: true, tension: 0.3, pointRadius: 4 }\n        ],\n        { min: 0, max: 100 }\n      );\n    }\n\n    function renderPostsPanel(latest) {\n      const posts = safe(latest.top3_fearful_posts) || [];\n      document.getElementById('posts-container').innerHTML =\n        posts.slice(0, 3).map(p => {\n          const title = p.title || String(p);\n          const score = p.score || 0;\n          const label = score > 66 ? 'FEAR' : score > 33 ? 'NEUTRAL' : 'GREED';\n          const cls   = score > 66 ? 'score-fear' : score > 33 ? 'score-neutral' : 'score-greed';\n          return \\`<div class=\"post-card\"><p class=\"post-title\">\\${title}</p><span class=\"score-badge \\${cls}\">\\${label} \\${score}</span></div>\\`;\n        }).join('') || '<div style=\"color:var(--text-muted);font-size:13px\">No posts available</div>';\n    }\n\n    /* ════════════════════════════════\n       ORCHESTRATE\n    ════════════════════════════════ */\n    function renderDashboard(rows) {\n      const latest  = rows[0];\n      const history = [...rows].reverse();\n      renderAnxietyPanel(latest, history);\n      renderCyclePanel(latest);\n      renderConvictionPanel(latest);\n      renderVelocityPanel(latest);\n      renderHerdPanel(latest);\n      renderSubredditHistory(history);\n      renderConvictionHistory(history);\n      renderPostsPanel(latest);\n    }\n\n    /* ════════════════════════════════\n       UI STATE\n    ════════════════════════════════ */\n    function showLoading() {\n      document.getElementById('loading').style.display = 'flex';\n      document.getElementById('app').style.display    = 'none';\n      document.getElementById('error').style.display  = 'none';\n    }\n\n    function hideLoading() {\n      document.getElementById('loading').style.display = 'none';\n    }\n\n    function showError(msg) {\n      document.getElementById('loading').style.display = 'none';\n      document.getElementById('error').style.display   = 'flex';\n      document.getElementById('error-msg').textContent = msg;\n    }\n\n    function updateLastUpdated(date) {\n      document.getElementById('last-updated').textContent = 'Last updated: ' + (date || '—');\n    }\n\n    /* ════════════════════════════════\n       FETCH\n    ════════════════════════════════ */\n    async function fetchData() {\n      try {\n        showLoading();\n        const res = await fetch(ENDPOINT, {\n          headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY }\n        });\n        if (!res.ok) throw new Error('HTTP ' + res.status + ' — ' + res.statusText);\n        const rows = await res.json();\n        if (!rows || !rows.length) throw new Error('No data yet — run the n8n workflow first');\n        renderDashboard(rows);\n        hideLoading();\n        document.getElementById('app').style.display = 'block';\n        updateLastUpdated(rows[0].date);\n      } catch(e) {\n        showError(e.message);\n      }\n    }\n\n    // Auto-refresh every 30 minutes\n    setInterval(fetchData, 30 * 60 * 1000);\n\n    // Refresh when tab becomes visible\n    document.addEventListener('visibilitychange', () => {\n      if (!document.hidden) fetchData();\n    });\n\n    // Initial load\n    fetchData();\n  </script>\n</body>\n</html>\n`\nreturn [{ json: { html } }]"
+      }
+    },
+    {
+      "id": "serve-dashboard-html",
+      "name": "Serve Dashboard HTML",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -4064,
+        -200
+      ],
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.html }}",
+        "options": {}
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch WSB",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Investing",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Stocks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Run Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch WSB",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Investing",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Stocks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch WSB": {
+      "main": [
+        [
+          {
+            "node": "Merge Reddit Feeds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Investing": {
+      "main": [
+        [
+          {
+            "node": "Merge Reddit Feeds",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Fetch Stocks": {
+      "main": [
+        [
+          {
+            "node": "Merge Reddit Feeds",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge Reddit Feeds": {
+      "main": [
+        [
+          {
+            "node": "1A: Raw Merge & Structural Clean",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1A: Raw Merge & Structural Clean": {
+      "main": [
+        [
+          {
+            "node": "1B: Linguistic & Relevance Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1B: Linguistic & Relevance Filter": {
+      "main": [
+        [
+          {
+            "node": "Keyword Pre-Scorer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Keyword Pre-Scorer": {
+      "main": [
+        [
+          {
+            "node": "Aggregate for Claude",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate for Claude": {
+      "main": [
+        [
+          {
+            "node": "Claude 1: Anxiety Score",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Claude 2: Narrative Velocity",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Claude 3: Herd Detection",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Claude 4: Conviction vs Uncertainty",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Claude 5: Crowd Cycle Stage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude 1: Anxiety Score": {
+      "main": [
+        [
+          {
+            "node": "Merge Claude Outputs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude 2: Narrative Velocity": {
+      "main": [
+        [
+          {
+            "node": "Merge Claude Outputs",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Claude 3: Herd Detection": {
+      "main": [
+        [
+          {
+            "node": "Merge Claude Outputs",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Claude 4: Conviction vs Uncertainty": {
+      "main": [
+        [
+          {
+            "node": "Merge Claude Outputs",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Claude 5: Crowd Cycle Stage": {
+      "main": [
+        [
+          {
+            "node": "Merge Claude Outputs",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Merge Claude Outputs": {
+      "main": [
+        [
+          {
+            "node": "Signal Aggregator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signal Aggregator": {
+      "main": [
+        [
+          {
+            "node": "Persist to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Persist to File": {
+      "main": [
+        [
+          {
+            "node": "Generate Quickchart URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Quickchart URLs": {
+      "main": [
+        [
+          {
+            "node": "Write output.json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write output.json": {
+      "main": [
+        [
+          {
+            "node": "Insert to Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert to Supabase": {
+      "main": [
+        [
+          {
+            "node": "Pipeline Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Model 1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Claude 1: Anxiety Score",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Model 2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Claude 2: Narrative Velocity",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Model 3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Claude 3: Herd Detection",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Model 4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Claude 4: Conviction vs Uncertainty",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Model 5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Claude 5: Crowd Cycle Stage",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dashboard Webhook": {
+      "main": [
+        [
+          {
+            "node": "Build Dashboard Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Dashboard Response": {
+      "main": [
+        [
+          {
+            "node": "Serve Dashboard HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "405b2dee-d9a4-4224-ac1b-2e18b1d3c611",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f92ba833cfc01dd064a94201fa4bb20b3305c9c67348abfd124c90886d0575b8"
+  },
+  "id": "peQNrxGaucaP2FQI",
+  "tags": []
+}

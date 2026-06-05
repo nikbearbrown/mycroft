@@ -1,0 +1,414 @@
+{
+  "name": "Part1 -Investor_ Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// Support both test mode and production mode\nconst body =\n  $json.body ||          // production webhook mode\n  ($json.query ? $json : null) ||   // test mode sends {query, body}\n  $json ||\n  {};\n\n// Extract message from multiple possible fields\nlet raw =\n  body.message ||\n  body.query ||\n  body.question ||\n  $json.message ||       // fallback\n  \"\";\n\n// Ensure raw is a string\nif (typeof raw !== \"string\") {\n  try {\n    raw = JSON.stringify(raw);\n  } catch (e) {\n    raw = \"\";\n  }\n}\n\nraw = raw.trim().toLowerCase();\n\n// Parsed question\nconst question = raw;\n\n// Defaults\nlet query_type = \"generic\";\nlet investor_name = null;\nlet startup_name = null;\n\n// Routing logic\nif (\n  question.includes(\"top ai investors\") ||\n  question.includes(\"top investors\") ||\n  question.includes(\"robotics investors\") ||\n  question.includes(\"ai robotics\") ||\n  question.includes(\"top vc\")\n) {\n  query_type = \"top_investors\";\n}\n\nelse if (question.includes(\"insights\") && question.includes(\"investors\")) {\n  query_type = \"top_investors_insights\";\n}\n\nelse if (\n  question.includes(\"recent ai funding\") ||\n  question.startsWith(\"what are recent\")\n) {\n  query_type = \"recent_funding\";\n}\n\nelse if (question.includes(\"sequoia\")) {\n  query_type = \"investor_profile\";\n  investor_name = \"Sequoia Capital\";\n}\n\nelse if (question.includes(\"openai\") && question.includes(\"invest\")) {\n  query_type = \"startup_investors\";\n  startup_name = \"OpenAI\";\n}\n\nreturn [{\n  json: {\n    success: true,\n    query: question,\n    query_type,\n    investor_name,\n    startup_name,\n    channel: body.channel || \"web_test\",\n    user_id: body.user_id || \"test_user\",\n    start_time: Date.now()\n  }\n}];\n"
+      },
+      "id": "4500c09c-b1fa-4314-8ec9-8f2f90fb831f",
+      "name": "Parse User Question",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -192,
+        -144
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  startup_name,\n  normalized_startup_name,\n  amount_usd,\n  round_type,\n  announced_date,\n  description,\n  source,\n  source_url\nFROM funding_rounds\nORDER BY announced_date DESC\nLIMIT 10;\n\n",
+        "options": {}
+      },
+      "id": "5a321e9f-1776-4193-93fe-492675c5f957",
+      "name": "DB - Get Recent Deals",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        512,
+        -272
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ------------------------------------------------------\n// MAIN FORMAT NODE (ALL QUERY TYPES) – CLEAN & WORKING\n// ------------------------------------------------------\n\nconst original = $node[\"Parse User Question\"].json;\nconst db = $input.first().json;\nconst payload = db.payload || {};\n\nconst question = original.query || \"\";\nconst queryType = original.query_type || payload.query_type || \"generic\";\n\nconst money = (x) => \"$\" + Number(x || 0).toLocaleString();\n\n// Output containers\nlet answer = \"\";\nlet highlights = [];\nlet table = [];\nlet followups = [];\n\n// ------------------------------------------------------\n// A) TOP INVESTORS\n// ------------------------------------------------------\nif (queryType === \"top_investors\") {\n\n    const investors = payload.top_investors || [];\n\n    answer = `## 🌟 Top AI Investors\nHere are the most active and influential AI investors ranked by deal volume and capital deployed.\\n\\n`;\n\n    investors.forEach((inv, idx) => {\n        const name = inv.name || \"Unknown Investor\";\n        const deals = inv.deal_count || 0;\n        const invested = money(inv.total_invested || 0);\n\n        answer += `${idx + 1}. **${name}** — ${deals} deals, **${invested} invested**\\n`;\n\n        if (inv.startups?.length > 0) {\n            answer += `   • Startups: ${inv.startups.slice(0,5).join(\", \")}\\n`;\n        }\n\n        answer += `\\n`;\n    });\n\n    table = investors;\n\n    followups = [\n        \"Show Tier-1 investors only\",\n        \"Which investors are most active in robotics?\",\n        \"Compare Sequoia with Microsoft as investors\"\n    ];\n}\n\n// ------------------------------------------------------\n// B) RECENT FUNDING\n// ------------------------------------------------------\nelse if (queryType === \"recent_funding\") {\n\n    const recentFunding = $input.all().map(i => i.json) || [];\n\n    answer = `## 🚀 Recent AI Funding Rounds\\n`;\n\n    if (recentFunding.length === 0) {\n        answer += \"No recent funding rounds found.\";\n    } else {\n        recentFunding.forEach(d => {\n            answer += `- **${d.startup_name}** — ${d.round_type} — ${money(d.amount_usd)} — ${d.announced_date}\\n`;\n        });\n\n        highlights = recentFunding.slice(0, 3).map(d =>\n            `${d.startup_name} — ${d.round_type} round`\n        );\n    }\n\n    table = recentFunding;\n\n    followups = [\n        \"Filter recent deals to AI robotics\",\n        \"Show me investors active in the past 90 days\"\n    ];\n}\n\n// ------------------------------------------------------\n// C) INVESTOR PROFILE\n// ------------------------------------------------------\nelse if (queryType === \"investor_profile\") {\n\n    const p = db.payload?.summary || {};\n    const name =\n        db.payload?.investor_name ||\n        original.investor_name ||\n        p.name ||\n        \"Unknown Investor\";\n\n    answer = `## 🏦 ${name} — Investor Profile\\n\\n`;\n\n    answer += `**Overview:**  \n${name} has participated in **${p.total_investments || 0} investments**, deploying approximately **${money(p.total_invested_usd)}**.\\n\\n`;\n\n    if (p.last_activity) {\n        answer += `**Last Deal:** ${p.last_activity}\\n\\n`;\n    }\n\n    highlights = [\n        `${name} has invested ${money(p.total_invested_usd)} across ${p.total_investments || 0} deals.`,\n        `Latest deal on ${p.last_activity || \"N/A\"}.`\n    ];\n\n    table = db.payload?.recent_deals || [];\n\n    followups = [\n        `Show me recent deals involving ${name}`,\n        `Compare ${name} with another investor`\n    ];\n}\n\n// ------------------------------------------------------\n// D) STARTUP INVESTORS\n// ------------------------------------------------------\nelse if (queryType === \"startup_investors\") {\n\n    const startup = original.startup_name || db.startup_name || \"this startup\";\n    const investors = db.investors || [];\n\n    answer = `## 🧠 Investors Backing ${startup}\\n`;\n\n    if (investors.length === 0) {\n        answer += `No investor dataset exists yet for **${startup}**.\\n\\n`;\n    } else {\n        investors.forEach((i, idx) => {\n            answer += `${idx + 1}. **${i.name}** — appeared in ${i.deals_together || 1} related rounds\\n`;\n        });\n        highlights = investors.slice(0, 3).map(i => i.name);\n    }\n\n    table = investors;\n\n    followups = [\n        `Show recent funding rounds for ${startup}`,\n        \"Who are the top AI investors overall?\"\n    ];\n}\n\n// ------------------------------------------------------\n// E) FALLBACK\n// ------------------------------------------------------\nelse {\n\n    answer = `I understood your request but it did not match a specific investor-intelligence category.\\n\\nTry asking:\\n- \"Who are the top AI investors?\"\\n- \"Tell me about Sequoia Capital\"\\n- \"What are recent AI deals?\"`;\n\n    followups = [\n        \"Who are the top AI investors?\",\n        \"Show recent AI funding rounds\",\n        \"Tell me about Sequoia Capital\"\n    ];\n}\n\n// ------------------------------------------------------\n// FINAL RETURN (ONE RETURN ONLY)\n// ------------------------------------------------------\nreturn [{\n    json: {\n        success: true,\n        question,\n        query_type: queryType,\n        answer,\n        sections: {\n            highlights,\n            table,\n            suggested_followups: followups\n        }\n    }\n}];\n"
+      },
+      "id": "a0264bde-489c-485e-8317-dfeeeb84d5a4",
+      "name": "Format Chatbot Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        832,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "3df716be-ad0e-44b3-90f1-116504e7c4c4",
+      "name": "Send Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT json_build_object(\n  'query_type', 'top_investors',\n  'top_investors',\n    COALESCE(\n      (\n        SELECT json_agg(row_to_json(t))\n        FROM (\n          SELECT\n            il.normalized_investor_name AS name,\n            COUNT(*) AS deal_count,\n            COALESCE(SUM(il.amount_usd), 0) AS total_invested,\n            ARRAY_AGG(DISTINCT il.startup_name) AS startups\n          FROM investor_links il\n          GROUP BY il.normalized_investor_name\n          ORDER BY deal_count DESC, total_invested DESC\n          LIMIT 10\n        ) t\n      ), '[]'::json\n    )\n) AS payload;\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        496,
+        -512
+      ],
+      "id": "453f665a-ebb7-4476-a2c3-34523decf2a5",
+      "name": "Get top investor",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.query_type}}",
+                    "rightValue": "top_investors",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "284db14f-d773-4903-b741-5cd850312e7a"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c046760c-33c9-45da-90ac-2611860693bc",
+                    "leftValue": "={{$json.query_type}}",
+                    "rightValue": "recent_funding",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "26a6998a-d207-477c-9e06-30818431d203",
+                    "leftValue": "={{ $json.query_type }}",
+                    "rightValue": "investor_profile",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "75286856-1cf6-426d-83b8-6031fa0662f1",
+                    "leftValue": "={{$json.query_type}}",
+                    "rightValue": "startup_investors",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        144,
+        -192
+      ],
+      "id": "69f02a1f-c8f7-413a-bded-1cbe64895646",
+      "name": "Route by Query Type "
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH investor_data AS (\n    SELECT\n        il.investor_name,\n        il.normalized_investor_name,\n        il.startup_name,\n        il.normalized_startup_name,\n        il.announced_date,\n        il.round_type,\n        il.amount_usd,\n        il.source,\n        il.source_url\n    FROM investor_links il\n    WHERE il.normalized_investor_name ILIKE '%' || LOWER('{{ $json.investor_name }}') || '%'\n),\n\nsummary AS (\n    SELECT\n        COUNT(*) AS total_investments,\n        COALESCE(SUM(amount_usd), 0) AS total_invested_usd,\n        MIN(announced_date) AS first_activity,\n        MAX(announced_date) AS last_activity\n    FROM investor_data\n),\n\nsectors AS (\n    SELECT\n        normalized_startup_name,\n        COUNT(*) AS count\n    FROM investor_data\n    GROUP BY normalized_startup_name\n    ORDER BY count DESC\n    LIMIT 3\n),\n\nrounds AS (\n    SELECT\n        round_type,\n        COUNT(*) AS count\n    FROM investor_data\n    GROUP BY round_type\n    ORDER BY count DESC\n    LIMIT 5\n),\n\nrecent_deals AS (\n    SELECT\n        startup_name,\n        round_type,\n        amount_usd,\n        announced_date\n    FROM investor_data\n    ORDER BY announced_date DESC\n    LIMIT 5\n),\n\nco_investors AS (\n    SELECT\n        il2.investor_name,\n        COUNT(*) AS deals_together\n    FROM investor_links il1\n    JOIN investor_links il2\n        ON il1.startup_name = il2.startup_name\n       AND il1.normalized_investor_name != il2.normalized_investor_name\n    WHERE il1.normalized_investor_name ILIKE '%' || LOWER('{{ $json.investor_name }}') || '%'\n    GROUP BY il2.investor_name\n    ORDER BY deals_together DESC\n    LIMIT 5\n)\n\nSELECT\n    json_build_object(\n        'query_type', 'investor_profile',\n        'investor_name', '{{ $json.investor_name }}',\n\n        'summary', (SELECT row_to_json(summary) FROM summary),\n\n        'top_sectors', (SELECT json_agg(row_to_json(sectors)) FROM sectors),\n\n        'round_breakdown', (SELECT json_agg(row_to_json(rounds)) FROM rounds),\n\n        'recent_deals', (SELECT json_agg(row_to_json(recent_deals)) FROM recent_deals),\n\n        'co_investors', (SELECT json_agg(row_to_json(co_investors)) FROM co_investors)\n    ) AS payload;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        512,
+        -80
+      ],
+      "id": "bd4db548-5dbc-4574-8921-a321d0492817",
+      "name": "Investor Profile SQL node",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT json_build_object(\n    'query_type', 'startup_investors',\n    'startup_name', '{{ $json.startup_name }}',\n    'investors', COALESCE(\n        (SELECT json_agg(row_to_json(t))\n         FROM (\n            SELECT \n                normalized_investor_name AS investor,\n                amount_usd,\n                announced_date\n            FROM investor_links\n            WHERE normalized_startup_name ILIKE '%' || LOWER('{{ $json.startup_name }}') || '%'\n         ) t\n        ),\n        '[]'::json\n    )\n) AS payload;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        512,
+        112
+      ],
+      "id": "d46e79ac-d038-4fff-8d8c-d3d9c4158963",
+      "name": "Startup Investors SQL node",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO investor_links\n(\n  investor_name,\n  normalized_investor_name,\n  startup_name,\n  normalized_startup_name,\n  announced_date,\n  round_type,\n  amount_usd,\n  source,\n  source_url\n)\nVALUES\n(\n  'Sequoia Capital',\n  'sequoia capital',\n  'OpenAI',\n  'openai',\n  '2025-11-20',\n  'Series F',\n  50000000,\n  'manual_seed',\n  'https://example.com/sequoia-openai'\n);\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -32,
+        -480
+      ],
+      "id": "c3b2cd30-50b1-43c5-b45b-600402ce0267",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "ydA5H01dOa6VvZyg",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "investor-chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -464,
+        -144
+      ],
+      "id": "fa33fdee-a5c0-4e8c-a560-77abd6298349",
+      "name": "Webhook",
+      "webhookId": "0250ae5b-84f6-4788-b1fe-c4b5a470a2d8"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Parse User Question": {
+      "main": [
+        [
+          {
+            "node": "Route by Query Type ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DB - Get Recent Deals": {
+      "main": [
+        [
+          {
+            "node": "Format Chatbot Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Chatbot Response": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get top investor": {
+      "main": [
+        [
+          {
+            "node": "Format Chatbot Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Query Type ": {
+      "main": [
+        [
+          {
+            "node": "Get top investor",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "DB - Get Recent Deals",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Investor Profile SQL node",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Startup Investors SQL node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Investor Profile SQL node": {
+      "main": [
+        [
+          {
+            "node": "Format Chatbot Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Startup Investors SQL node": {
+      "main": [
+        [
+          {
+            "node": "Format Chatbot Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Parse User Question",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a4ea6815-8d38-40ed-9e18-6b47d00d1547",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c5605aae802302d14cf85834357505b8eaf4143631bcf5d9ab9240de503b0d2d"
+  },
+  "id": "TOKGJ9DAsTqioPI7",
+  "tags": []
+}

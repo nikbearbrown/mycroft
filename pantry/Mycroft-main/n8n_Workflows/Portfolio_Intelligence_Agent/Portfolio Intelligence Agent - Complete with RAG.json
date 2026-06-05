@@ -1,0 +1,601 @@
+{
+  "name": "Portfolio Intelligence Agent - Complete with RAG",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "a88b636d-ab6a-4cae-ab74-8da295e86bd7",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 17 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "25ad4113-8252-45e3-a57c-2229140b3566",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -144,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "filePath": "/Users/sahitinallamolu/Humanitarians/Portfolio_Intelligence_Agent/data/holdings.json"
+      },
+      "id": "3237e868-434f-43f3-aaea-9d3c5b47a492",
+      "name": "Read Holdings File",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        128,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nif (!items || items.length === 0) {\n  throw new Error('No input items');\n}\n\nconst item = items[0];\nconst binaryData = item.binary;\n\nif (!binaryData) {\n  throw new Error('No binary data found');\n}\n\nconst binaryPropertyName = Object.keys(binaryData)[0];\nconst buffer = Buffer.from(binaryData[binaryPropertyName].data, 'base64');\n\nconst jsonString = buffer.toString('utf-8');\nlet holdings = JSON.parse(jsonString);\n\nif (Array.isArray(holdings) && holdings.length > 0 && Array.isArray(holdings[0])) {\n  holdings = holdings[0];\n}\n\nif (!Array.isArray(holdings)) {\n  throw new Error('Holdings must be an array');\n}\n\nreturn holdings.map(holding => ({\n  json: holding\n}));"
+      },
+      "id": "2b39de8d-129c-4b3b-a79c-9b5bfd3d1c6d",
+      "name": "Parse JSON Holdings",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        336,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all holdings directly from the previous node\nconst inputItems = $input.all();\n\n// Extract the json from each item\nconst holdings = inputItems.map(item => item.json);\n\nconsole.log('Holdings received:', holdings.length);\nconsole.log('First holding:', JSON.stringify(holdings[0]));\n\nif (!holdings || holdings.length === 0) {\n  throw new Error('No holdings data');\n}\n\n// Calculate total value\nconst totalValue = holdings.reduce((sum, h) => {\n  const val = parseFloat(h.value);\n  console.log(`Adding ${h.ticker}: $${val}`);\n  return sum + val;\n}, 0);\n\nconsole.log('Total Value:', totalValue);\n\n// Add weights to each holding\nconst enrichedHoldings = holdings.map(h => {\n  const weight = h.value / totalValue;\n  return {\n    ...h,\n    weight: parseFloat(weight.toFixed(4))\n  };\n});\n\n// Find top holding\nconst sorted = [...enrichedHoldings].sort((a, b) => b.value - a.value);\nconst topHolding = sorted[0];\n\n// Calculate sector concentrations\nconst sectorWeights = {};\nenrichedHoldings.forEach(h => {\n  if (!sectorWeights[h.sector]) {\n    sectorWeights[h.sector] = 0;\n  }\n  sectorWeights[h.sector] += h.weight;\n});\n\nconsole.log(`Portfolio Total Value: $${totalValue.toFixed(2)}`);\nconsole.log(`Top Holding: ${topHolding.ticker} (${(topHolding.weight * 100).toFixed(1)}%)`);\n\nreturn {\n  json: {\n    date: holdings[0].date,\n    total_value: parseFloat(totalValue.toFixed(2)),\n    holdings: enrichedHoldings,\n    top_holding: topHolding.ticker,\n    top_holding_weight: topHolding.weight,\n    sector_weights: sectorWeights\n  }\n};"
+      },
+      "id": "df8962cf-5ba7-4fe9-bbe6-0f28cd713a35",
+      "name": "Calculate Portfolio Metrics",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        816,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "filePath": "/Users/sahitinallamolu/Humanitarians/Portfolio_Intelligence_Agent/data/daily_summaries.csv"
+      },
+      "id": "e171cc65-2fde-43d5-ba40-8135560dd8aa",
+      "name": "Read Previous Summaries",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        1664,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all holdings\nconst allHoldings = $('Parse JSON Holdings').all();\n\nif (!allHoldings || allHoldings.length === 0) {\n  throw new Error('No holdings found');\n}\n\nconst today = new Date().toISOString().split('T')[0];\n\n// Fetch all prices in parallel\nconst pricePromises = allHoldings.map(async (holdingItem) => {\n  const holding = holdingItem.json;\n  const ticker = holding.ticker;\n  \n  try {\n    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`;\n    const response = await this.helpers.request({\n      method: 'GET',\n      url: url,\n      json: true\n    });\n    \n    const price = response.chart.result[0].meta.regularMarketPrice;\n    const value = holding.quantity * price;\n    \n    return {\n      date: today,\n      ticker: ticker,\n      quantity: holding.quantity,\n      sector: holding.sector,\n      price: parseFloat(price.toFixed(2)),\n      value: parseFloat(value.toFixed(2))\n    };\n    \n  } catch (error) {\n    console.log(`Error fetching ${ticker}: ${error.message}`);\n    return null;\n  }\n});\n\n// Wait for all requests to complete\nconst results = await Promise.all(pricePromises);\n\n// Filter out any failed requests\nconst validResults = results.filter(r => r !== null);\n\nconsole.log(`Successfully fetched ${validResults.length} out of ${allHoldings.length} prices`);\n\n// Return all results as separate items\nreturn validResults.map(item => ({ json: item }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        80
+      ],
+      "id": "0c62adc3-b714-44c7-ba42-b5722563fad0",
+      "name": "Fetch & Extract Stock Prices"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get today's data from previous node\nconst todayData = $input.item.json;\nconst todayValue = parseFloat(todayData.total_value);\n\nconsole.log('Today Value:', todayValue);\n\n// Initialize variables\nlet yesterdayValue = null;\nlet summaries = [];\nlet patterns = [];\n\n// Check if this node received binary data from readBinaryFile\n// We need to look at the items array to find the binary data\nconst allItems = $input.all();\n\n// Find the item with binary data (the CSV file)\nlet binaryItem = null;\nfor (const item of allItems) {\n  if (item.binary) {\n    binaryItem = item;\n    break;\n  }\n}\n\nif (binaryItem && binaryItem.binary) {\n  try {\n    const binaryPropertyName = Object.keys(binaryItem.binary)[0];\n    const buffer = Buffer.from(binaryItem.binary[binaryPropertyName].data, 'base64');\n    const csvText = buffer.toString('utf-8').trim();\n    const lines = csvText.split('\\n').filter(line => line.trim());\n\n    console.log(`CSV lines found: ${lines.length}`);\n\n    if (lines.length > 1) {\n      // Parse summaries (skip header)\n      for (let i = 1; i < lines.length; i++) {\n        const line = lines[i];\n        const parts = line.split(',');\n        \n        if (parts.length >= 3) {\n          summaries.push({\n            date: parts[0],\n            total_value: parseFloat(parts[1]),\n            daily_return: parseFloat(parts[2])\n          });\n        }\n      }\n      \n      // Get yesterday's value (last entry)\n      if (summaries.length > 0) {\n        yesterdayValue = summaries[summaries.length - 1].total_value;\n        console.log('Yesterday value found:', yesterdayValue);\n      }\n      \n      // Extract patterns from recent summaries\n      const recentSummaries = summaries.slice(-7);\n      \n      let consecutiveGains = 0;\n      let consecutiveLosses = 0;\n      \n      for (let i = recentSummaries.length - 1; i >= 0; i--) {\n        const ret = recentSummaries[i].daily_return;\n        if (ret > 0) {\n          consecutiveGains++;\n          if (consecutiveLosses > 0) break;\n        } else if (ret < 0) {\n          consecutiveLosses++;\n          if (consecutiveGains > 0) break;\n        }\n      }\n      \n      if (consecutiveGains >= 3) {\n        patterns.push(`Portfolio gained for ${consecutiveGains} consecutive days`);\n      }\n      if (consecutiveLosses >= 3) {\n        patterns.push(`Portfolio declined for ${consecutiveLosses} consecutive days`);\n      }\n    }\n  } catch (error) {\n    console.log('Error parsing summaries:', error.message);\n  }\n}\n\n// Calculate daily return\nlet dailyReturn = 0;\nlet dailyReturnPct = 0;\n\nif (yesterdayValue && yesterdayValue > 0) {\n  dailyReturn = (todayValue - yesterdayValue) / yesterdayValue;\n  dailyReturnPct = dailyReturn * 100;\n  console.log(`Return: ${dailyReturnPct.toFixed(2)}%`);\n} else {\n  console.log('First run - no previous data');\n}\n\n// Prepare learnings\nconst learnings = [];\n\n// Learning from historical analysis\nif (todayData.historical_analysis && todayData.historical_analysis.days_tracked > 0) {\n  const ha = todayData.historical_analysis;\n  learnings.push({\n    category: 'historical_performance',\n    content: `Portfolio tracked ${ha.days_tracked} days with ${ha.total_return_pct}% return`,\n    relevance: 'high'\n  });\n}\n\n// Learning from patterns\npatterns.forEach(pattern => {\n  learnings.push({\n    category: 'pattern',\n    content: pattern,\n    relevance: 'medium'\n  });\n});\n\n// Learning from significant movement\nif (Math.abs(dailyReturnPct) > 2) {\n  learnings.push({\n    category: 'observation',\n    content: `Significant ${dailyReturnPct > 0 ? 'gain' : 'decline'} of ${Math.abs(dailyReturnPct).toFixed(2)}% observed`,\n    relevance: 'medium'\n  });\n}\n\n// Learning from concentration\nconst topWeight = parseFloat(todayData.top_holding_weight);\nif (topWeight > 0.35) {\n  learnings.push({\n    category: 'observation',\n    content: `${todayData.top_holding} concentration at ${(topWeight * 100).toFixed(1)}%`,\n    relevance: 'high'\n  });\n}\n\n// Format as CSV\nlet kbCsv = '';\nif (learnings.length > 0) {\n  const today = todayData.date;\n  const csvRows = learnings.map((learning, idx) => {\n    const id = Date.now() + idx;\n    const cleanContent = learning.content.replace(/\"/g, '\"\"');\n    return `${id},${today},${learning.category},\"${cleanContent}\",${learning.relevance}`;\n  });\n  \n  kbCsv = csvRows.join('\\n') + '\\n';\n}\n\nconsole.log(`Prepared ${learnings.length} learnings`);\n\nreturn {\n  json: {\n    ...todayData,\n    daily_return: dailyReturn.toFixed(4),\n    daily_return_pct: dailyReturnPct.toFixed(2),\n    yesterday_value: yesterdayValue,\n    summary_count: summaries.length,\n    recent_patterns: patterns,\n    kb_update_csv: kbCsv,\n    kb_updates_count: learnings.length\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1904,
+        80
+      ],
+      "id": "598765b2-a7e6-4ec9-b58c-3908d2ebfde7",
+      "name": "Parse Summaries CSV"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get today's portfolio data from Calculate Portfolio Metrics\nconst portfolioData = $('Calculate Portfolio Metrics').item.json;\nconst todayValue = parseFloat(portfolioData.total_value);\n\nconsole.log('Today Value:', todayValue);\n\n// Parse the summaries CSV from binary data\nlet yesterdayValue = null;\nlet summaries = [];\nlet patterns = [];\n\nconst allItems = $input.all();\nlet binaryItem = null;\n\n// Find the item with binary data (the CSV file we just read)\nfor (const item of allItems) {\n  if (item.binary) {\n    binaryItem = item;\n    break;\n  }\n}\n\nif (binaryItem && binaryItem.binary) {\n  try {\n    const binaryPropertyName = Object.keys(binaryItem.binary)[0];\n    const buffer = Buffer.from(binaryItem.binary[binaryPropertyName].data, 'base64');\n    const csvText = buffer.toString('utf-8').trim();\n    const lines = csvText.split('\\n').filter(line => line.trim());\n\n    console.log(`CSV lines found: ${lines.length}`);\n\n    if (lines.length > 1) {\n      // Parse summaries (skip header)\n      for (let i = 1; i < lines.length; i++) {\n        const parts = lines[i].split(',');\n        if (parts.length >= 3) {\n          summaries.push({\n            date: parts[0],\n            total_value: parseFloat(parts[1]),\n            daily_return: parseFloat(parts[2])\n          });\n        }\n      }\n      \n      // Get yesterday's value (last entry)\n      if (summaries.length > 0) {\n        yesterdayValue = summaries[summaries.length - 1].total_value;\n        console.log('Yesterday value:', yesterdayValue);\n      }\n      \n      // Extract patterns from recent summaries (last 7 days)\n      const recentSummaries = summaries.slice(-7);\n      let consecutiveGains = 0;\n      let consecutiveLosses = 0;\n      \n      for (let i = recentSummaries.length - 1; i >= 0; i--) {\n        const ret = recentSummaries[i].daily_return;\n        if (ret > 0) {\n          consecutiveGains++;\n          if (consecutiveLosses > 0) break;\n        } else if (ret < 0) {\n          consecutiveLosses++;\n          if (consecutiveGains > 0) break;\n        }\n      }\n      \n      if (consecutiveGains >= 3) {\n        patterns.push(`Portfolio gained for ${consecutiveGains} consecutive days`);\n      }\n      if (consecutiveLosses >= 3) {\n        patterns.push(`Portfolio declined for ${consecutiveLosses} consecutive days`);\n      }\n    }\n  } catch (error) {\n    console.log('Error parsing summaries:', error.message);\n  }\n}\n\n// Calculate daily return\nlet dailyReturn = 0;\nlet dailyReturnPct = 0;\n\nif (yesterdayValue && yesterdayValue > 0) {\n  dailyReturn = (todayValue - yesterdayValue) / yesterdayValue;\n  dailyReturnPct = dailyReturn * 100;\n  \n  console.log(`Today: $${todayValue.toFixed(2)}`);\n  console.log(`Yesterday: $${yesterdayValue.toFixed(2)}`);\n  console.log(`Change: $${(todayValue - yesterdayValue).toFixed(2)}`);\n  console.log(`Daily Return: ${dailyReturnPct.toFixed(2)}%`);\n} else {\n  console.log('No previous data - this is the first run');\n  console.log(`Today's Value: $${todayValue.toFixed(2)}`);\n}\n\n// Extract learnings for knowledge base\nconst learnings = [];\nconst today = portfolioData.date;\n\n// Learning 1: From detected patterns\npatterns.forEach(pattern => {\n  learnings.push({\n    category: 'pattern',\n    content: pattern,\n    relevance: 'medium'\n  });\n});\n\n// Learning 2: Significant movement\nif (Math.abs(dailyReturnPct) > 2) {\n  learnings.push({\n    category: 'observation',\n    content: `Significant ${dailyReturnPct > 0 ? 'gain' : 'decline'} of ${Math.abs(dailyReturnPct).toFixed(2)}% observed on ${today}`,\n    relevance: 'medium'\n  });\n}\n\n// Learning 3: Concentration risk\nconst topWeight = parseFloat(portfolioData.top_holding_weight);\nif (topWeight > 0.35) {\n  learnings.push({\n    category: 'observation',\n    content: `${portfolioData.top_holding} concentration at ${(topWeight * 100).toFixed(1)}%, approaching rebalancing threshold`,\n    relevance: 'high'\n  });\n}\n\n// Format learnings as CSV\nlet kbCsv = '';\nif (learnings.length > 0) {\n  const csvRows = learnings.map((learning, idx) => {\n    const id = Date.now() + idx;\n    const cleanContent = learning.content.replace(/\"/g, '\"\"');\n    return `${id},${today},${learning.category},\"${cleanContent}\",${learning.relevance}`;\n  });\n  kbCsv = csvRows.join('\\n') + '\\n';\n}\n\nconsole.log(`Prepared ${learnings.length} learnings for knowledge base`);\n\n// Return complete data\nreturn {\n  json: {\n    date: portfolioData.date,\n    total_value: todayValue.toFixed(2),\n    daily_return: dailyReturn.toFixed(4),\n    daily_return_pct: dailyReturnPct.toFixed(2),\n    top_holding: portfolioData.top_holding,\n    top_holding_weight: portfolioData.top_holding_weight,\n    sector_weights: portfolioData.sector_weights,\n    holdings: portfolioData.holdings,\n    \n    // Historical context fields\n    yesterday_value: yesterdayValue,\n    summary_count: summaries.length,\n    recent_patterns: patterns,\n    \n    // Knowledge base update fields\n    kb_update_csv: kbCsv,\n    kb_updates_count: Number(learnings.length)  // Explicitly convert to number\n  }\n};"
+      },
+      "id": "73ed63b8-9273-41be-9257-78dea0c8efe3",
+      "name": "Calculate Daily Return",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2128,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "fileSelector": "/Users/sahitinallamolu/Humanitarians/Portfolio_Intelligence_Agent/data/knowledge_base.csv",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        2368,
+        80
+      ],
+      "id": "9bb20683-2985-4f3c-b91a-ca3893619e62",
+      "name": "Read Knowledge Base1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nif (!items || items.length === 0 || !items[0].binary) {\n  console.log('No knowledge base found');\n  return [{ json: { knowledge: [] } }];\n}\n\ntry {\n  const binaryPropertyName = Object.keys(items[0].binary)[0];\n  const buffer = Buffer.from(items[0].binary[binaryPropertyName].data, 'base64');\n  const csvText = buffer.toString('utf-8').trim();\n\n  const lines = csvText.split('\\n').filter(line => line.trim());\n\n  if (lines.length <= 1) {\n    console.log('Knowledge base is empty');\n    return [{ json: { knowledge: [] } }];\n  }\n\n  // Parse header\n  const header = lines[0].split(',');\n\n  // Parse CSV with quote handling\n  const parseCSVLine = (line) => {\n    const result = [];\n    let current = '';\n    let inQuotes = false;\n    \n    for (let i = 0; i < line.length; i++) {\n      const char = line[i];\n      \n      if (char === '\"') {\n        inQuotes = !inQuotes;\n      } else if (char === ',' && !inQuotes) {\n        result.push(current.replace(/^\"|\"$/g, ''));\n        current = '';\n      } else {\n        current += char;\n      }\n    }\n    result.push(current.replace(/^\"|\"$/g, ''));\n    return result;\n  };\n\n  // Parse all data rows\n  const data = [];\n  for (let i = 1; i < lines.length; i++) {\n    const values = parseCSVLine(lines[i]);\n    const obj = {};\n    \n    for (let j = 0; j < header.length; j++) {\n      obj[header[j]] = values[j];\n    }\n    \n    data.push(obj);\n  }\n\n  console.log(`Loaded ${data.length} knowledge base entries`);\n\n  // Return as a single item with knowledge array inside json\n  return [{ json: { knowledge: data } }];\n  \n} catch (error) {\n  console.log('Error parsing knowledge base:', error.message);\n  return [{ json: { knowledge: [] } }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2592,
+        80
+      ],
+      "id": "e166fd5c-a1c0-481e-a02f-237f10646462",
+      "name": "Parse Knowledge Base CSV"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/Users/sahitinallamolu/Humanitarians/Portfolio_Intelligence_Agent/data/portfolio_history.csv",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        80
+      ],
+      "id": "f61acb4d-9707-4eec-88ba-2b414f97598b",
+      "name": "Read Portfolio History CSV"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nif (!items || items.length === 0 || !items[0].binary) {\n  console.log('No portfolio history found');\n  return [{ json: { history: [] } }];\n}\n\ntry {\n  const binaryPropertyName = Object.keys(items[0].binary)[0];\n  const buffer = Buffer.from(items[0].binary[binaryPropertyName].data, 'base64');\n  const csvText = buffer.toString('utf-8').trim();\n\n  const lines = csvText.split('\\n').filter(line => line.trim());\n\n  if (lines.length <= 1) {\n    console.log('History is empty');\n    return [{ json: { history: [] } }];\n  }\n\n  // Parse CSV\n  const header = lines[0].split(',');\n  const data = [];\n  \n  for (let i = 1; i < lines.length; i++) {\n    const values = lines[i].split(',');\n    const obj = {};\n    \n    for (let j = 0; j < header.length; j++) {\n      obj[header[j]] = values[j];\n    }\n    \n    data.push(obj);\n  }\n\n  console.log(`Loaded ${data.length} historical records`);\n\n  return [{ json: { history: data } }];\n  \n} catch (error) {\n  console.log('Error parsing history:', error.message);\n  return [{ json: { history: [] } }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1232,
+        80
+      ],
+      "id": "4fcf8068-f3af-47f9-b3d4-d27505e7c357",
+      "name": "Parse Portfolio History Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get today's portfolio data from earlier node\nconst todayData = $('Calculate Portfolio Metrics').item.json;\n\n// Validate today's data exists\nif (!todayData) {\n  throw new Error('Cannot find Calculate Portfolio Metrics node output');\n}\n\nconst todayValue = parseFloat(todayData.total_value);\nconst todayHoldings = todayData.holdings || [];\n\nconsole.log('Today Value:', todayValue);\nconsole.log('Today Holdings:', todayHoldings.length);\n\n// Parse the binary CSV file\nconst items = $input.all();\n\nlet history = [];\n\nif (items && items.length > 0 && items[0].binary) {\n  try {\n    const binaryPropertyName = Object.keys(items[0].binary)[0];\n    const buffer = Buffer.from(items[0].binary[binaryPropertyName].data, 'base64');\n    const csvText = buffer.toString('utf-8').trim();\n\n    const lines = csvText.split('\\n').filter(line => line.trim());\n\n    if (lines.length > 1) {\n      const header = lines[0].split(',');\n      \n      for (let i = 1; i < lines.length; i++) {\n        const values = lines[i].split(',');\n        const obj = {};\n        \n        for (let j = 0; j < header.length && j < values.length; j++) {\n          obj[header[j]] = values[j];\n        }\n        \n        history.push(obj);\n      }\n    }\n  } catch (error) {\n    console.log('Error parsing history:', error.message);\n  }\n}\n\nconsole.log(`Loaded ${history.length} historical records`);\n\n// Build comparative analysis\nlet analysis = {\n  days_tracked: 0,\n  first_value: null,\n  total_return_pct: '0.00',\n  avg_daily_value: 0,\n  max_value: todayValue,\n  min_value: todayValue,\n  volatility: '0.00',\n  holdings_comparison: []\n};\n\nif (history.length > 0) {\n  const dates = [...new Set(history.map(h => h.date))];\n  analysis.days_tracked = dates.length;\n  \n  const dailyTotals = {};\n  history.forEach(h => {\n    if (!dailyTotals[h.date]) {\n      dailyTotals[h.date] = 0;\n    }\n    dailyTotals[h.date] += parseFloat(h.value) || 0;\n  });\n  \n  const values = Object.values(dailyTotals).filter(v => !isNaN(v) && v > 0);\n  \n  if (values.length > 0) {\n    analysis.first_value = values[0];\n    analysis.avg_daily_value = values.reduce((a, b) => a + b, 0) / values.length;\n    analysis.max_value = Math.max(...values, todayValue);\n    analysis.min_value = Math.min(...values, todayValue);\n    \n    if (analysis.first_value > 0) {\n      analysis.total_return_pct = ((todayValue - analysis.first_value) / analysis.first_value * 100).toFixed(2);\n    }\n    \n    const mean = analysis.avg_daily_value;\n    const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length;\n    analysis.volatility = Math.sqrt(variance).toFixed(2);\n  }\n  \n  // FIXED: Check if todayHoldings exists and is an array before forEach\n  if (Array.isArray(todayHoldings) && todayHoldings.length > 0) {\n    todayHoldings.forEach(holding => {\n      const historicalRecords = history.filter(h => h.ticker === holding.ticker);\n      \n      if (historicalRecords.length > 0) {\n        const prices = historicalRecords.map(h => parseFloat(h.price)).filter(p => !isNaN(p));\n        \n        if (prices.length > 0) {\n          const avgHistoricalPrice = prices.reduce((sum, p) => sum + p, 0) / prices.length;\n          const priceChange = ((holding.price - avgHistoricalPrice) / avgHistoricalPrice * 100).toFixed(2);\n          \n          analysis.holdings_comparison.push({\n            ticker: holding.ticker,\n            current_price: holding.price,\n            avg_historical_price: avgHistoricalPrice.toFixed(2),\n            price_change_pct: priceChange\n          });\n        }\n      }\n    });\n  } else {\n    console.log('Warning: No holdings found in today data');\n  }\n}\n\nconsole.log(`Analysis complete:`);\nconsole.log(`- Days tracked: ${analysis.days_tracked}`);\nconsole.log(`- Total Return: ${analysis.total_return_pct}%`);\nconsole.log(`- Volatility: $${analysis.volatility}`);\nconsole.log(`- Holdings compared: ${analysis.holdings_comparison.length}`);\n\nreturn {\n  json: {\n    ...todayData,\n    historical_analysis: analysis\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        80
+      ],
+      "id": "969d9d00-2c12-4d10-a46d-b88922881e08",
+      "name": "Build Portfolio Analysis"
+    },
+    {
+      "parameters": {
+        "jsCode": "// The previous node (Parse Knowledge Base CSV) returns { knowledge: [...] }\n// We need to get BOTH the knowledge AND the portfolio data\n\nconst allItems = $input.all();\n\n// Initialize\nlet knowledge = [];\nlet portfolioData = null;\n\nconsole.log('Total items received:', allItems.length);\n\n// Strategy: Look through all items to find what we need\nfor (const item of allItems) {\n  const data = item.json;\n  \n  // Check if this item has knowledge base\n  if (data.knowledge && Array.isArray(data.knowledge)) {\n    knowledge = data.knowledge;\n    console.log('Found knowledge:', knowledge.length, 'entries');\n  }\n  \n  // Check if this item has portfolio data\n  if (data.total_value && data.daily_return !== undefined) {\n    portfolioData = data;\n    console.log('Found portfolio data');\n  }\n}\n\n// If we didn't find portfolio data in items, try to get it from a previous node\nif (!portfolioData) {\n  console.log('Portfolio data not in current items, fetching from Calculate Daily Return node');\n  portfolioData = $('Calculate Daily Return').item.json;\n}\n\n// Validate we have what we need\nif (!portfolioData) {\n  throw new Error('Cannot find portfolio data. Check that Calculate Daily Return node executed successfully.');\n}\n\nif (!knowledge || knowledge.length === 0) {\n  console.log('Warning: Knowledge base is empty');\n  // Continue anyway with empty context\n  return {\n    json: {\n      ...portfolioData,\n      rag_context: '',\n      context_count: 0,\n      context_categories: '',\n      context_used: false\n    }\n  };\n}\n\n// Extract portfolio metrics\nconst currentReturn = parseFloat(portfolioData.daily_return);\nconst returnPct = parseFloat(portfolioData.daily_return_pct);\nconst topHolding = portfolioData.top_holding;\nconst topWeight = parseFloat(portfolioData.top_holding_weight);\n\nconsole.log(`Analyzing: Return ${returnPct}%, Top ${topHolding} (${(topWeight*100).toFixed(1)}%)`);\n\n// Score each knowledge entry for relevance\nconst scoredContext = knowledge.map(k => {\n  let score = 0;\n  \n  // Base relevance score\n  if (k.relevance_score === 'high') score += 3;\n  else if (k.relevance_score === 'medium') score += 2;\n  else score += 1;\n  \n  const content = (k.content || '').toLowerCase();\n  \n  // Large movement boost\n  if (Math.abs(currentReturn) > 0.02 && content.includes('pattern')) {\n    score += 5;\n  }\n  \n  // Concentration risk boost\n  if (topWeight > 0.35 && content.includes('concentration')) {\n    score += 5;\n  }\n  \n  // Top holding mention boost\n  if (content.includes(topHolding.toLowerCase())) {\n    score += 3;\n  }\n  \n  // Recovery/drawdown boost\n  if (currentReturn < 0 && (content.includes('recovery') || content.includes('drawdown'))) {\n    score += 4;\n  }\n  \n  // User preference boost\n  if (k.category === 'user_preference') {\n    score += 2;\n  }\n  \n  return { ...k, rag_score: score };\n});\n\n// Sort by score and take top 7\nconst topContext = scoredContext\n  .sort((a, b) => b.rag_score - a.rag_score)\n  .slice(0, 7);\n\n// Format for LLM\nconst contextString = topContext\n  .map((k, idx) => `${idx + 1}. [${k.category}] ${k.content}`)\n  .join('\\n');\n\nconst categories = [...new Set(topContext.map(k => k.category))];\n\nconsole.log(`Retrieved ${topContext.length} relevant insights`);\nconsole.log(`Top categories: ${categories.join(', ')}`);\n\nreturn {\n  json: {\n    ...portfolioData,\n    rag_context: contextString,\n    context_count: topContext.length,\n    context_categories: categories.join(','),\n    context_used: topContext.length > 0\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2800,
+        80
+      ],
+      "id": "fe716f42-588c-4863-909f-05370778625c",
+      "name": "RAG-Retrieve Context"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get Groq API response\nconst groqResponse = $input.item.json;\n\n// Extract the AI-generated text\nconst summaryText = groqResponse.choices[0].message.content;\n\n// Clean for CSV\nconst cleanSummary = summaryText\n  .replace(/\\n/g, ' ')\n  .replace(/\"/g, '\"\"')\n  .trim();\n\n// SAFE: Get portfolio data from all previous items\nconst allItems = $input.all();\nlet portfolioData = null;\n\n// Search through all items for portfolio data\nfor (const item of allItems) {\n  if (item.json.total_value && item.json.daily_return !== undefined && item.json.holdings) {\n    portfolioData = item.json;\n    break;\n  }\n}\n\n// If not found in items, try common node names\nif (!portfolioData) {\n  try {\n    portfolioData = $('Calculate Daily Return').item.json;\n  } catch (e) {\n    console.log('Could not find Calculate Daily Return node');\n  }\n}\n\nif (!portfolioData) {\n  try {\n    portfolioData = $('Parse Summaries & Calculate Return').item.json;\n  } catch (e) {\n    console.log('Could not find Parse Summaries node');\n  }\n}\n\nif (!portfolioData) {\n  throw new Error('Cannot find portfolio data. Available fields: ' + Object.keys($input.item.json).join(', '));\n}\n\nconsole.log('✓ AI Summary extracted');\nconsole.log('  Summary length:', summaryText.length);\nconsole.log('  Portfolio date:', portfolioData.date);\nconsole.log('  Portfolio value:', portfolioData.total_value);\n\nreturn {\n  json: {\n    date: portfolioData.date,\n    total_value: portfolioData.total_value,\n    daily_return: portfolioData.daily_return,\n    daily_return_pct: portfolioData.daily_return_pct,\n    top_holding: portfolioData.top_holding,\n    top_holding_weight: portfolioData.top_holding_weight,\n    holdings: portfolioData.holdings,\n    sector_weights: portfolioData.sector_weights,\n    \n    // AI summaries\n    ai_summary: cleanSummary,\n    ai_summary_raw: summaryText,\n    \n    // RAG metadata\n    rag_context_count: portfolioData.context_count || 0,\n    rag_used: portfolioData.context_used || false\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3232,
+        80
+      ],
+      "id": "3a9274ba-dc5d-4023-9e11-6fb802d70664",
+      "name": "Extract AI Summary"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "holdings",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        3536,
+        80
+      ],
+      "id": "79a25fc1-b674-4e21-8dfe-e3b3cae4dde4",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer "
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"max_tokens\": 1500,\n  \"temperature\": 0.7,\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are Mycroft, an AI portfolio analyst. Provide 4-5 concise, educational bullet points about portfolio performance and risk.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Analyze this portfolio and provide insights.\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3008,
+        80
+      ],
+      "id": "a38a9a9f-2a96-4852-ad51-cf9fba166078",
+      "name": "Generate AI Summary (Groq)"
+    },
+    {
+      "parameters": {
+        "sendTo": "",
+        "subject": "==Mycroft Portfolio Report - {{ $json.date }}",
+        "message": "==<!DOCTYPE html>\n<html>\n<head>\n    <style>\n        body { \n            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n            max-width: 600px; \n            margin: 0 auto;\n            background-color: #f5f5f5;\n            padding: 20px;\n        }\n        .container {\n            background-color: white;\n            border-radius: 10px;\n            overflow: hidden;\n            box-shadow: 0 2px 10px rgba(0,0,0,0.1);\n        }\n        .header { \n            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n            color: white; \n            padding: 30px; \n            text-align: center;\n        }\n        .header h1 { margin: 0; font-size: 24px; }\n        .header p { margin: 5px 0 0 0; opacity: 0.9; }\n        .content { padding: 30px; }\n        .metric { \n            background: #f8f9fa;\n            padding: 20px;\n            margin: 15px 0;\n            border-radius: 8px;\n            border-left: 4px solid #667eea;\n        }\n        .metric h3 {\n            margin: 0 0 10px 0;\n            color: #333;\n            font-size: 14px;\n            text-transform: uppercase;\n            letter-spacing: 1px;\n        }\n        .metric .value {\n            font-size: 32px;\n            font-weight: bold;\n            margin: 0;\n            color: #667eea;\n        }\n        .positive { color: #10b981 !important; }\n        .negative { color: #ef4444 !important; }\n        .summary { \n            background: #ecfdf5;\n            padding: 20px;\n            margin: 20px 0;\n            border-radius: 8px;\n            border-left: 4px solid #10b981;\n        }\n        .summary h3 { margin: 0 0 15px 0; color: #065f46; }\n        .summary p {\n            line-height: 1.6;\n            color: #064e3b;\n            margin: 0;\n            white-space: pre-line;\n        }\n        .badge {\n            display: inline-block;\n            padding: 6px 12px;\n            border-radius: 6px;\n            font-size: 11px;\n            font-weight: 600;\n            margin: 8px 4px 0 0;\n            background: #f3e8ff;\n            color: #6b21a8;\n        }\n        .footer {\n            text-align: center;\n            padding: 20px;\n            color: #666;\n            font-size: 12px;\n            border-top: 1px solid #eee;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <div class=\"header\">\n            <h1>📊 Portfolio Intelligence Report</h1>\n            <p>{{ $json.date }}</p>\n        </div>\n        \n        <div class=\"content\">\n            <div class=\"metric\">\n                <h3>Portfolio Value</h3>\n                <p class=\"value\">${{ $json.total_value }}</p>\n            </div>\n            \n            <div class=\"metric\">\n                <h3>Daily Return</h3>\n                <p class=\"value {{ parseFloat($json.daily_return) >= 0 ? 'positive' : 'negative' }}\">\n                    {{ parseFloat($json.daily_return) >= 0 ? '+' : '' }}{{ $json.daily_return_pct }}%\n                </p>\n            </div>\n            \n            <div class=\"metric\">\n                <h3>Top Holding</h3>\n                <p class=\"value\" style=\"font-size: 24px;\">{{ $json.top_holding }}</p>\n                <p style=\"margin: 10px 0 0 0; color: #666;\">\n                    {{ (parseFloat($json.top_holding_weight) * 100).toFixed(1) }}% of portfolio\n                </p>\n            </div>\n            \n            <div class=\"summary\">\n                <h3>🤖 AI Analysis</h3>\n                <p>{{ $json.ai_summary_raw }}</p>\n                \n                {{ $json.rag_used ? '<div class=\"badge\">🧠 Enhanced with ' + $json.rag_context_count + ' historical insights</div>' : '' }}\n            </div>\n        </div>\n        \n        <div class=\"footer\">\n            <p><strong>Mycroft Investment Intelligence Framework</strong></p>\n            <p>RAG-Enhanced AI Portfolio Analysis</p>\n            <p style=\"margin-top: 10px;\">Using AI to Invest in AI: Building and Learning Together</p>\n        </div>\n    </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        3568,
+        -144
+      ],
+      "id": "5b5fee0b-782e-429e-a5e1-8fec407e14ab",
+      "name": "Send a message",
+      "webhookId": "95bebc9b-ab30-49ac-862c-49a25fbb41f0",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "i4Tjb3VLxkaJC18e",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/Users/sahitinallamolu/Humanitarians/Portfolio_Intelligence_Agent/data/portfolio_history.csv",
+        "options": {
+          "append": true
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        3952,
+        80
+      ],
+      "id": "cf19347f-0c1e-4652-969a-067badb9bafd",
+      "name": "Append Portfolio History1"
+    },
+    {
+      "parameters": {
+        "options": {
+          "fileName": "holdings.csv"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        3744,
+        80
+      ],
+      "id": "0a03ad42-68ef-4d8d-8b67-7e65dfea17b5",
+      "name": "Convert Holdings to CSV"
+    },
+    {
+      "parameters": {
+        "options": {
+          "fileName": "summary.csv"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        3552,
+        -368
+      ],
+      "id": "9bcb8699-cb30-4c2c-80aa-169741ea4bc3",
+      "name": "Convert Summary to CSV"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/Users/sahitinallamolu/Humanitarians/Portfolio_Intelligence_Agent/data/daily_summaries.csv",
+        "options": {
+          "append": true
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        3776,
+        -368
+      ],
+      "id": "0777df25-77b7-4e64-a6ce-2ee5605d18c1",
+      "name": "Append Daily Summary"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Read Holdings File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Read Holdings File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Holdings File": {
+      "main": [
+        [
+          {
+            "node": "Parse JSON Holdings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse JSON Holdings": {
+      "main": [
+        [
+          {
+            "node": "Fetch & Extract Stock Prices",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Portfolio Metrics": {
+      "main": [
+        [
+          {
+            "node": "Read Portfolio History CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Previous Summaries": {
+      "main": [
+        [
+          {
+            "node": "Parse Summaries CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch & Extract Stock Prices": {
+      "main": [
+        [
+          {
+            "node": "Calculate Portfolio Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Summaries CSV": {
+      "main": [
+        [
+          {
+            "node": "Calculate Daily Return",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Daily Return": {
+      "main": [
+        [
+          {
+            "node": "Read Knowledge Base1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Knowledge Base1": {
+      "main": [
+        [
+          {
+            "node": "Parse Knowledge Base CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Portfolio History CSV": {
+      "main": [
+        [
+          {
+            "node": "Parse Portfolio History Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Portfolio History Data": {
+      "main": [
+        [
+          {
+            "node": "Build Portfolio Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Portfolio Analysis": {
+      "main": [
+        [
+          {
+            "node": "Read Previous Summaries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Knowledge Base CSV": {
+      "main": [
+        [
+          {
+            "node": "RAG-Retrieve Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RAG-Retrieve Context": {
+      "main": [
+        [
+          {
+            "node": "Generate AI Summary (Groq)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract AI Summary": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Convert Summary to CSV",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate AI Summary (Groq)": {
+      "main": [
+        [
+          {
+            "node": "Extract AI Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Convert Holdings to CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Holdings to CSV": {
+      "main": [
+        [
+          {
+            "node": "Append Portfolio History1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Summary to CSV": {
+      "main": [
+        [
+          {
+            "node": "Append Daily Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Daily Summary": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6d0c1c63-3f28-4698-a7b8-f399bdfe9815",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f92ba833cfc01dd064a94201fa4bb20b3305c9c67348abfd124c90886d0575b8"
+  },
+  "id": "qVZRLK7BQ57DlWy5",
+  "tags": []
+}

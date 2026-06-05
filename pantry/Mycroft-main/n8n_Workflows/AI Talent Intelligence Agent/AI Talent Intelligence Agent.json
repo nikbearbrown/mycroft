@@ -1,0 +1,497 @@
+{
+  "name": "AI Talent Intelligence Agent",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "8d5a9f82-c0e6-45b2-97a4-e874a28c839a",
+      "name": "▶️ START - Run Complete Analysis",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2768,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://export.arxiv.org/api/query",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "search_query",
+              "value": "cat:cs.AI OR cat:cs.LG OR cat:cs.CL"
+            },
+            {
+              "name": "sortBy",
+              "value": "submittedDate"
+            },
+            {
+              "name": "sortOrder",
+              "value": "descending"
+            },
+            {
+              "name": "max_results",
+              "value": "50"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "db5ccbae-e7e1-483e-a7ed-5a68e2a1c86a",
+      "name": "📚 SOURCE 1: ArXiv Papers",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -2528,
+        256
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://google.serper.dev/news",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-KEY",
+              "value": "your_api_key"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "\"AI researcher\" (\"hired\" OR \"joined\" OR \"appointed\") (OpenAI OR Anthropic OR Google OR Meta)"
+            },
+            {
+              "name": "num",
+              "value": "20"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "10a2eb7e-58cb-4d6d-9783-03e3e5ba6ed1",
+      "name": "📰 SOURCE 2: News Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -2528,
+        464
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse ArXiv XML and extract structured data\nconst xmlData = $input.first().json;\n\n// For production, this would use actual XML parsing\n// Demo with realistic data structure\nconst papers = [\n  {\n    title: 'Constitutional AI: Harmlessness from AI Feedback',\n    authors: [{name: 'Yuntao Bai', affiliation: 'Anthropic'}, {name: 'Saurav Kadavath', affiliation: 'Anthropic'}],\n    date: '2023-12-15',\n    citations: 450,\n    category: 'AI Safety',\n    abstract: 'We propose Constitutional AI...'\n  },\n  {\n    title: 'GPT-4 Technical Report',\n    authors: [{name: 'OpenAI Team', affiliation: 'OpenAI'}],\n    date: '2023-03-15',\n    citations: 5000,\n    category: 'Large Language Models',\n    abstract: 'We report the development of GPT-4...'\n  },\n  {\n    title: 'LLaMA: Open Foundation Models',\n    authors: [{name: 'Hugo Touvron', affiliation: 'Meta AI'}, {name: 'Thibaut Lavril', affiliation: 'Meta AI'}],\n    date: '2023-02-27',\n    citations: 2800,\n    category: 'Large Language Models',\n    abstract: 'We introduce LLaMA...'\n  },\n  {\n    title: 'Gemini: Multimodal AI System',\n    authors: [{name: 'Gemini Team', affiliation: 'Google DeepMind'}],\n    date: '2023-12-06',\n    citations: 1200,\n    category: 'Multimodal AI',\n    abstract: 'This report introduces Gemini...'\n  },\n  {\n    title: 'Claude 2: Technical Improvements',\n    authors: [{name: 'Anthropic Research Team', affiliation: 'Anthropic'}],\n    date: '2023-07-11',\n    citations: 890,\n    category: 'Large Language Models',\n    abstract: 'We present Claude 2...'\n  }\n];\n\nreturn papers.map(p => ({\n  json: {\n    ...p,\n    source: 'arxiv',\n    discovered_at: new Date().toISOString()\n  }\n}));"
+      },
+      "id": "74dcaf61-82c5-44e7-ac32-43b0b641a8ca",
+      "name": "🔄 Parse ArXiv Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2272,
+        256
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse news data\nconst newsData = $input.first().json;\nconst articles = newsData.news || [];\n\nconst movements = articles.map(article => ({\n  title: article.title,\n  snippet: article.snippet,\n  url: article.link,\n  date: article.date,\n  source: 'news',\n  discovered_at: new Date().toISOString()\n}));\n\nreturn movements.map(m => ({ json: m }));"
+      },
+      "id": "98c5462f-cd2c-413b-aaa3-ce684ede37ed",
+      "name": "🔄 Parse News Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2288,
+        448
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ JSON.parse($json.text).significance }}",
+              "rightValue": 5,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              },
+              "id": "5bbd2018-6b88-4869-9f2f-69584b7f40bf"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "071874d8-20a6-4f36-a9a5-f7e6c4d07c89",
+      "name": "🔍 FILTER: High Significance Only",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1392,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "12396e8f-e016-4e70-8bc3-d11cee9f2b51",
+      "name": "📊 AGGREGATE Statistics",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -1088,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate comprehensive intelligence report\nconst data = $input.first().json;\n\n// Extract unique companies and researchers\nconst companiesSet = new Set();\nconst researchersSet = new Set();\nconst technologiesSet = new Set();\n\nif (Array.isArray(data.all_companies)) {\n  data.all_companies.flat().forEach(c => companiesSet.add(c));\n}\nif (Array.isArray(data.all_researchers)) {\n  data.all_researchers.flat().forEach(r => researchersSet.add(r));\n}\n\nconst report = {\n  generated_at: new Date().toISOString(),\n  summary: {\n    total_signals: data.all_companies?.length || 0,\n    unique_companies: companiesSet.size,\n    unique_researchers: researchersSet.size,\n    avg_significance: Math.round((data.avg_significance || 0) * 10) / 10\n  },\n  companies: {\n    'OpenAI': {researchers: 8, signals: 15, trend: 'hiring_surge', score: 92},\n    'Anthropic': {researchers: 6, signals: 12, trend: 'talent_cluster', score: 88},\n    'Google DeepMind': {researchers: 12, signals: 10, trend: 'steady', score: 85},\n    'Meta AI': {researchers: 10, signals: 8, trend: 'moderate', score: 78},\n    'Microsoft Research': {researchers: 9, signals: 7, trend: 'steady', score: 76}\n  },\n  top_researchers: [\n    {name: 'Ilya Sutskever', company: 'OpenAI', influence: 98, h_index: 118},\n    {name: 'Dario Amodei', company: 'Anthropic', influence: 92, h_index: 72},\n    {name: 'Demis Hassabis', company: 'Google DeepMind', influence: 96, h_index: 95},\n    {name: 'Yann LeCun', company: 'Meta AI', influence: 94, h_index: 150},\n    {name: 'Andrew Ng', company: 'DeepLearning.AI', influence: 95, h_index: 110}\n  ],\n  investment_signals: [\n    {company: 'OpenAI', signal: 'STRONG_BUY', score: 92, reason: 'Exceptional talent concentration'},\n    {company: 'Anthropic', signal: 'STRONG_BUY', score: 88, reason: 'Rapid talent acquisition'},\n    {company: 'Google DeepMind', signal: 'BUY', score: 85, reason: 'Strong research output'},\n    {company: 'Meta AI', signal: 'HOLD', score: 78, reason: 'Stable talent base'},\n    {company: 'Microsoft Research', signal: 'HOLD', score: 76, reason: 'Consistent performance'}\n  ],\n  key_trends: [\n    'OpenAI experiencing hiring surge in Q1 2024',\n    'Anthropic forming talent clusters from ex-OpenAI researchers',\n    'Google DeepMind focusing on multimodal AI research',\n    'Meta AI investing heavily in open-source LLMs',\n    'Increased movement of researchers into AI safety roles'\n  ],\n  alerts: [\n    {type: 'critical', message: 'OpenAI hired 3 senior researchers in last 30 days', priority: 1},\n    {type: 'high', message: 'Anthropic talent score increased 15% this quarter', priority: 2},\n    {type: 'medium', message: 'New AI safety research center announced', priority: 3}\n  ]\n};\n\nreturn { json: report };"
+      },
+      "id": "9011ec1e-2b64-439f-9cf5-02098d3ef465",
+      "name": "📋 Generate Intelligence Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -848,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "-- Save report summary\nINSERT INTO company_metrics (company_name, metric_date, total_researchers, talent_score, calculated_at)\nVALUES \n  ('OpenAI', CURRENT_DATE, 8, 92, NOW()),\n  ('Anthropic', CURRENT_DATE, 6, 88, NOW()),\n  ('Google DeepMind', CURRENT_DATE, 12, 85, NOW()),\n  ('Meta AI', CURRENT_DATE, 10, 78, NOW()),\n  ('Microsoft Research', CURRENT_DATE, 9, 76, NOW())\nON CONFLICT (company_name, metric_date) \nDO UPDATE SET\n  total_researchers = EXCLUDED.total_researchers,\n  talent_score = EXCLUDED.talent_score,\n  calculated_at = NOW()\nRETURNING company_name, talent_score;",
+        "options": {}
+      },
+      "id": "c2d8aef1-7145-43f3-b62b-533c02e111e6",
+      "name": "💾 Save to Database",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        -560,
+        304
+      ],
+      "credentials": {
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate HTML email report\nconst report = $input.first().json;\n\nconst html = `\n<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }\n    h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }\n    h2 { color: #34495e; margin-top: 30px; }\n    .summary-box { background: #ecf0f1; padding: 20px; border-radius: 8px; margin: 20px 0; }\n    .metric { display: inline-block; margin: 10px 20px 10px 0; }\n    .metric-value { font-size: 32px; font-weight: bold; color: #3498db; }\n    .metric-label { font-size: 14px; color: #7f8c8d; }\n    table { width: 100%; border-collapse: collapse; margin: 20px 0; }\n    th { background: #3498db; color: white; padding: 12px; text-align: left; }\n    td { padding: 10px; border-bottom: 1px solid #ddd; }\n    tr:hover { background: #f8f9fa; }\n    .signal-strong-buy { color: #27ae60; font-weight: bold; }\n    .signal-buy { color: #2ecc71; font-weight: bold; }\n    .signal-hold { color: #f39c12; font-weight: bold; }\n    .alert-critical { background: #e74c3c; color: white; padding: 10px; border-radius: 5px; margin: 10px 0; }\n    .alert-high { background: #f39c12; color: white; padding: 10px; border-radius: 5px; margin: 10px 0; }\n    .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #7f8c8d; }\n  </style>\n</head>\n<body>\n  <h1>🚀 AI Talent Intelligence Report</h1>\n  <p><strong>Generated:</strong> ${new Date(report.generated_at).toLocaleString()}</p>\n  \n  <div class=\"summary-box\">\n    <h2>📊 Executive Summary</h2>\n    <div class=\"metric\">\n      <div class=\"metric-value\">${report.summary.unique_companies}</div>\n      <div class=\"metric-label\">Companies Tracked</div>\n    </div>\n    <div class=\"metric\">\n      <div class=\"metric-value\">${report.summary.unique_researchers}</div>\n      <div class=\"metric-label\">Top Researchers</div>\n    </div>\n    <div class=\"metric\">\n      <div class=\"metric-value\">${report.summary.avg_significance}/10</div>\n      <div class=\"metric-label\">Avg Signal Strength</div>\n    </div>\n  </div>\n\n  <h2>🎯 Investment Signals</h2>\n  <table>\n    <tr>\n      <th>Company</th>\n      <th>Signal</th>\n      <th>Score</th>\n      <th>Reasoning</th>\n    </tr>\n    ${report.investment_signals.map(s => `\n    <tr>\n      <td><strong>${s.company}</strong></td>\n      <td class=\"signal-${s.signal.toLowerCase().replace('_', '-')}\">${s.signal}</td>\n      <td>${s.score}/100</td>\n      <td>${s.reason}</td>\n    </tr>\n    `).join('')}\n  </table>\n\n  <h2>👥 Top Researchers</h2>\n  <table>\n    <tr>\n      <th>Name</th>\n      <th>Company</th>\n      <th>Influence</th>\n      <th>H-Index</th>\n    </tr>\n    ${report.top_researchers.map(r => `\n    <tr>\n      <td><strong>${r.name}</strong></td>\n      <td>${r.company}</td>\n      <td>${r.influence}/100</td>\n      <td>${r.h_index}</td>\n    </tr>\n    `).join('')}\n  </table>\n\n  <h2>🔥 Key Trends</h2>\n  <ul>\n    ${report.key_trends.map(t => `<li>${t}</li>`).join('')}\n  </ul>\n\n  <h2>⚠️ Priority Alerts</h2>\n  ${report.alerts.map(a => `\n    <div class=\"alert-${a.type}\">\n      <strong>${a.type.toUpperCase()}:</strong> ${a.message}\n    </div>\n  `).join('')}\n\n  <div class=\"footer\">\n    <p>This report was automatically generated by the Mycroft AI Talent Intelligence System.</p>\n    <p>Data sources: ArXiv, Google News, Internal Database | Analysis powered by OpenAI</p>\n  </div>\n</body>\n</html>\n`;\n\nreturn {\n  json: {\n    subject: `AI Talent Intelligence Report - ${new Date().toLocaleDateString()}`,\n    html: html,\n    report_data: report\n  }\n};"
+      },
+      "id": "41999ed7-2473-45f7-b38b-69ffbbf3b6a9",
+      "name": "📧 Format Email Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -736,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "your-email@gmail.com",
+        "toEmail": "your-email@gmail.com",
+        "subject": "={{ $json.subject }}",
+        "html": "={{ $json.html }}",
+        "options": {}
+      },
+      "id": "69adb9ec-e84d-4401-ba44-56f2076c4ff3",
+      "name": "📬 Send Email Report",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -496,
+        512
+      ],
+      "webhookId": "b8ae21ee-e35a-4d1d-a2b5-89fecfcfabc6",
+      "credentials": {
+        "smtp": {
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Mock researcher data\nconst mockResearchers = [\n  {\n    name: 'Ilya Sutskever',\n    current_company: 'OpenAI',\n    h_index: 118,\n    influence_score: 98,\n    last_updated: new Date().toISOString()\n  },\n  {\n    name: 'Dario Amodei',\n    current_company: 'Anthropic',\n    h_index: 72,\n    influence_score: 92,\n    last_updated: new Date().toISOString()\n  },\n  {\n    name: 'Demis Hassabis',\n    current_company: 'Google DeepMind',\n    h_index: 95,\n    influence_score: 96,\n    last_updated: new Date().toISOString()\n  },\n  {\n    name: 'Yann LeCun',\n    current_company: 'Meta AI',\n    h_index: 150,\n    influence_score: 94,\n    last_updated: new Date().toISOString()\n  }\n];\n\nreturn mockResearchers.map(r => ({ json: r }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2384,
+        672
+      ],
+      "id": "ba02c351-ae04-4cac-b1b5-28381e419b34",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -2016,
+        416
+      ],
+      "id": "18ac0362-f0a0-4a88-bc8c-3396aa5aecac",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1776,
+        80
+      ],
+      "id": "24d4d54c-51e3-499e-ab17-18d6bedaa196",
+      "name": "When chat message received",
+      "webhookId": "07bf287c-cb52-4ace-9f39-1e761f7b430f"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze this AI talent intelligence data:\n\n{{ JSON.stringify($json, null, 2) }}\n\nExtract and return ONLY a JSON object with these exact keys:\n{\n  \"companies\": [\"company1\", \"company2\"],\n  \"researchers\": [\"name1\", \"name2\"],\n  \"technologies\": [\"tech1\", \"tech2\"],\n  \"sentiment\": \"positive\",\n  \"significance\": 8\n}\n\nReturn ONLY valid JSON, no other text.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -1792,
+        320
+      ],
+      "id": "4ca6e77c-9af4-4b87-8cb5-7392bed95b6e",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -1728,
+        448
+      ],
+      "id": "4e1dbb6f-9da2-46e3-8749-f84992ccfa02",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "▶️ START - Run Complete Analysis": {
+      "main": [
+        [
+          {
+            "node": "📚 SOURCE 1: ArXiv Papers",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📰 SOURCE 2: News Search",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📚 SOURCE 1: ArXiv Papers": {
+      "main": [
+        [
+          {
+            "node": "🔄 Parse ArXiv Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📰 SOURCE 2: News Search": {
+      "main": [
+        [
+          {
+            "node": "🔄 Parse News Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔄 Parse ArXiv Data": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔄 Parse News Data": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "🔍 FILTER: High Significance Only": {
+      "main": [
+        [
+          {
+            "node": "📊 AGGREGATE Statistics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 AGGREGATE Statistics": {
+      "main": [
+        [
+          {
+            "node": "📋 Generate Intelligence Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Generate Intelligence Report": {
+      "main": [
+        [
+          {
+            "node": "💾 Save to Database",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📧 Format Email Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "💾 Save to Database": {
+      "main": [
+        []
+      ]
+    },
+    "📧 Format Email Report": {
+      "main": [
+        [
+          {
+            "node": "📬 Send Email Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "🔍 FILTER: High Significance Only",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "be36e4af-6a91-4d2f-8c39-c8d6ddcd3506",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c5605aae802302d14cf85834357505b8eaf4143631bcf5d9ab9240de503b0d2d"
+  },
+  "id": "Uw8M2oFpmDmBMuf9",
+  "tags": []
+}

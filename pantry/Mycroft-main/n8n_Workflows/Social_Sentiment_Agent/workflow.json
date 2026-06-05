@@ -1,0 +1,574 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "functionCode": "if (!$json.items || !Array.isArray($json.items)) {\n  return [];\n}\n\nconst questions = $json.items.slice(0, 5).map(q => ({\n  timestamp: new Date(q.creation_date * 1000).toISOString(),\n  platform: 'stackoverflow',\n  author: q.owner ? q.owner.display_name : 'unknown',\n  content: q.title,\n  url: q.link,\n  score: q.score || 0\n}));\n\nreturn questions.map(q => ({json: q}));"
+      },
+      "id": "0d63d94a-1479-464d-8e06-291a7dba08ba",
+      "name": "Process StackOverflow",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [208, 48]
+    },
+    {
+      "parameters": {
+        "url": "https://api.stackexchange.com/2.3/questions?order=desc&sort=creation&tagged=artificial-intelligence&site=stackoverflow&pagesize=10",
+        "options": {}
+      },
+      "id": "e202f38a-c8cb-4444-aab0-c727d6bd1c73",
+      "name": "Get StackOverflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [-16, 48]
+    },
+    {
+      "parameters": {},
+      "id": "520abc3b-556f-4f76-8345-d061ee8526a8",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [-240, 240]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Combine all platform data from 3 sources\nconst allData = [];\n\nfor (const inputData of $input.all()) {\n  if (inputData.json && inputData.json.timestamp) {\n    allData.push(inputData.json);\n  }\n}\n\nconsole.log(`Combined ${allData.length} items from 3 platforms: StackOverflow, GitHub, Reddit ML`);\nreturn allData.map(item => ({json: item}));"
+      },
+      "id": "fd3e970b-5599-466c-839e-3769dc79719b",
+      "name": "Combine All Data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [528, 240]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Process Reddit ML JSON\nif (!$json.data || !$json.data.children) {\n  return [];\n}\n\nconst posts = $json.data.children.slice(0, 3).map(child => ({\n  timestamp: new Date(child.data.created_utc * 1000).toISOString(),\n  platform: 'reddit_ml',\n  author: child.data.author,\n  content: child.data.title,\n  url: 'https://reddit.com' + child.data.permalink,\n  score: child.data.score || 0\n}));\n\nreturn posts.map(p => ({json: p}));"
+      },
+      "id": "decf7a1e-cf6e-48d9-8582-c72fbd049f39",
+      "name": "Process Reddit ML",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [208, 288]
+    },
+    {
+      "parameters": {
+        "url": "https://www.reddit.com/r/MachineLearning/.json",
+        "options": {}
+      },
+      "id": "235ba23e-5ed9-4d22-bd60-de2b23c6e6ee",
+      "name": "Get Reddit ML",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [-16, 288]
+    },
+    {
+      "parameters": {
+        "functionCode": "if (!$json.items || !Array.isArray($json.items)) {\n  return [];\n}\n\nconst repos = $json.items.slice(0, 3).map(repo => ({\n  timestamp: new Date(repo.updated_at).toISOString(),\n  platform: 'github',\n  author: repo.owner ? repo.owner.login : 'unknown',\n  content: repo.name + ' - ' + (repo.description || 'No description'),\n  url: repo.html_url,\n  score: repo.stargazers_count || 0\n}));\n\nreturn repos.map(r => ({json: r}));"
+      },
+      "id": "99e7d249-c8d8-4d88-80e5-5370ee35a549",
+      "name": "Process GitHub",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [208, 160]
+    },
+    {
+      "parameters": {
+        "url": "https://api.github.com/search/repositories?q=artificial+intelligence&sort=updated&per_page=5",
+        "options": {}
+      },
+      "id": "8f093f54-c5c1-4a33-ad8d-de2e14679660",
+      "name": "Get GitHub",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [-16, 160]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama3-8b-8192\",\n  \"messages\": [\n    {\n      \"role\": \"user\", \n      \"content\": \"Analyze the sentiment of this text and respond with only: positive, negative, or neutral. Text: {{$json.content}}\"\n    }\n  ],\n  \"max_tokens\": 10\n}",
+        "options": {}
+      },
+      "id": "ed94ea81-0575-48d8-9b5e-4156c3a4e818",
+      "name": "Groq LLM Sentiment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [752, 240],
+      "credentials": {
+        "groqApi": {
+          "id": "YOUR_GROQ_CREDENTIAL_ID",
+          "name": "Groq API Credentials"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "// Process Groq LLM sentiment response\nconst originalData = $('Combine All Data').all();\nconst sentimentResults = $input.all();\n\nconst processedItems = originalData.map((item, index) => {\n  const sentimentResult = sentimentResults[index]?.json;\n  \n  let sentiment_score = 0;\n  let sentiment_label = 'neutral';\n  let confidence = 0.8;\n  \n  if (sentimentResult && sentimentResult.choices && sentimentResult.choices[0]) {\n    const llmResponse = sentimentResult.choices[0].message.content.toLowerCase().trim();\n    \n    if (llmResponse.includes('positive')) {\n      sentiment_label = 'positive';\n      sentiment_score = 0.7;\n    } else if (llmResponse.includes('negative')) {\n      sentiment_label = 'negative';\n      sentiment_score = -0.7;\n    } else {\n      sentiment_label = 'neutral';\n      sentiment_score = 0;\n    }\n  } else {\n    // Fallback if API fails\n    const words = item.json.content.toLowerCase().split(/\\W+/);\n    const pos = words.filter(w => ['good', 'great', 'excellent', 'solved'].includes(w)).length;\n    const neg = words.filter(w => ['error', 'problem', 'issue', 'bad'].includes(w)).length;\n    sentiment_score = (pos - neg) / Math.max(words.length, 1);\n    sentiment_label = sentiment_score > 0.01 ? 'positive' : sentiment_score < -0.01 ? 'negative' : 'neutral';\n    confidence = 0.3;\n  }\n  \n  return {\n    timestamp: item.json.timestamp,\n    platform: item.json.platform,\n    author: item.json.author,\n    content: item.json.content.substring(0, 200),\n    url: item.json.url,\n    score: item.json.score,\n    sentiment_score: Math.round(sentiment_score * 1000) / 1000,\n    sentiment_label: sentiment_label,\n    llm_confidence: confidence,\n    processed_at: new Date().toISOString()\n  };\n});\n\nconsole.log('Processed', processedItems.length, 'items with sentiment analysis');\n\nreturn processedItems.map(item => ({json: item}));"
+      },
+      "id": "2034b92a-14dd-4794-a14c-64fc7fd0d5dc",
+      "name": "Process Groq Sentiment",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [976, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama3-8b-8192\",\n  \"messages\": [\n    {\n      \"role\": \"user\", \n      \"content\": \"You are a Social Sentiment Agent for the Mycroft AI investment framework. Classify this content into ONE category and assess its discussion type. Respond with format: CATEGORY|TYPE where CATEGORY is one of: LLM_DEVELOPMENT, AI_HARDWARE, INVESTMENT_DISCUSSION, TECHNICAL_ISSUES, RESEARCH, BUSINESS_STRATEGY and TYPE is either TECHNICAL or GENERAL. Content: {{$json.content}}\"\n    }\n  ],\n  \"max_tokens\": 15\n}",
+        "options": {}
+      },
+      "id": "a23bcf2a-c3d6-43a9-a86a-5adfa1c80cea",
+      "name": "Groq Topic Classification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1200, 240],
+      "credentials": {
+        "groqApi": {
+          "id": "YOUR_GROQ_CREDENTIAL_ID",
+          "name": "Groq API Credentials"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "// Advanced Social Sentiment Agent - Topic Clustering & Technical Discussion Interpretation\nconst sentimentData = $('Process Groq Sentiment').all();\nconst topicResults = $input.all();\n\nconst enhancedItems = sentimentData.map((item, index) => {\n  const topicResult = topicResults[index]?.json;\n  \n  // Parse LLM response for category and technical classification\n  let topic_category = 'GENERAL';\n  let discussion_type = 'GENERAL';\n  \n  if (topicResult && topicResult.choices && topicResult.choices[0]) {\n    const llmResponse = topicResult.choices[0].message.content.toUpperCase().trim();\n    const parts = llmResponse.split('|');\n    \n    // Extract category\n    const validTopics = ['LLM_DEVELOPMENT', 'AI_HARDWARE', 'INVESTMENT_DISCUSSION', 'TECHNICAL_ISSUES', 'RESEARCH', 'BUSINESS_STRATEGY'];\n    topic_category = validTopics.find(t => llmResponse.includes(t)) || 'GENERAL';\n    \n    // Extract discussion type\n    discussion_type = llmResponse.includes('TECHNICAL') ? 'TECHNICAL' : 'GENERAL';\n  }\n  \n  // Enhanced technical discussion interpretation\n  const content = item.json.content.toLowerCase();\n  const technicalKeywords = {\n    development: ['api', 'sdk', 'framework', 'library', 'code', 'programming', 'development'],\n    models: ['model', 'training', 'fine-tuning', 'inference', 'embedding', 'transformer', 'neural'],\n    infrastructure: ['gpu', 'cuda', 'cloud', 'scaling', 'deployment', 'kubernetes', 'docker'],\n    research: ['paper', 'research', 'arxiv', 'algorithm', 'methodology', 'experiment'],\n    business: ['funding', 'valuation', 'ipo', 'revenue', 'market', 'competition', 'strategy']\n  };\n  \n  // Calculate technical depth across categories\n  let technical_categories = {};\n  let total_technical_score = 0;\n  \n  Object.keys(technicalKeywords).forEach(category => {\n    const score = technicalKeywords[category].filter(keyword => content.includes(keyword)).length;\n    technical_categories[category] = score;\n    total_technical_score += score;\n  });\n  \n  const is_technical = total_technical_score >= 2 || discussion_type === 'TECHNICAL';\n  \n  // Developer community sentiment tracking\n  const community_indicators = {\n    developer_engagement: content.match(/(github|stackoverflow|developer|coding|programming)/g)?.length || 0,\n    problem_solving: content.match(/(error|bug|issue|problem|fix|solve)/g)?.length || 0,\n    innovation_excitement: content.match(/(new|breakthrough|amazing|revolutionary|game-changing)/g)?.length || 0,\n    skepticism: content.match(/(overhype|bubble|concern|risk|limitation)/g)?.length || 0\n  };\n  \n  // Enhanced engagement calculation by platform\n  let engagement_score = item.json.score || 0;\n  let platform_weight = 1;\n  \n  switch(item.json.platform) {\n    case 'stackoverflow': \n      platform_weight = 1.5; // High-quality technical discussions\n      engagement_score = Math.max(engagement_score, 1);\n      break;\n    case 'github': \n      platform_weight = 1.3; // Developer-focused\n      engagement_score = engagement_score / 100; // Scale down star count\n      break;\n    case 'reddit_ml': \n      platform_weight = 1.2; // ML community expertise\n      break;\n  }\n  \n  const weighted_engagement = engagement_score * platform_weight;\n  \n  return {\n    ...item.json,\n    // Topic clustering\n    topic_category: topic_category,\n    discussion_type: discussion_type,\n    \n    // Technical discussion interpretation\n    is_technical: is_technical,\n    technical_score: total_technical_score,\n    technical_categories: technical_categories,\n    \n    // Developer community sentiment tracking\n    community_indicators: community_indicators,\n    developer_sentiment: community_indicators.developer_engagement > 0 ? 'engaged' : 'neutral',\n    \n    // Enhanced engagement metrics\n    engagement_score: Math.round(weighted_engagement * 100) / 100,\n    platform_weight: platform_weight\n  };\n});\n\nconsole.log('Enhanced', enhancedItems.length, 'items with Social Sentiment Agent capabilities');\nreturn enhancedItems.map(item => ({json: item}));"
+      },
+      "id": "600a2548-0298-44b9-9f8a-cd9bf5130ed3",
+      "name": "Topic Clustering Engine",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1424, 240]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Advanced Signal-to-Noise Filtering for Social Sentiment Analysis (3-Source Version)\nconst allItems = $input.all().map(item => item.json);\n\n// Multi-dimensional quality scoring for social sentiment\nconst scoredItems = allItems.map(item => {\n  let signal_score = 0;\n  let noise_factors = [];\n  \n  // Content substance scoring\n  const contentLength = item.content.length;\n  if (contentLength > 150) {\n    signal_score += 3;\n  } else if (contentLength > 75) {\n    signal_score += 2;\n  } else if (contentLength < 30) {\n    noise_factors.push('too_short');\n    signal_score -= 1;\n  }\n  \n  // Platform credibility and community value (Updated for 3 sources)\n  switch(item.platform) {\n    case 'stackoverflow': \n      signal_score += 4; // High-quality technical Q&A\n      break;\n    case 'github': \n      signal_score += 3; // Developer activity\n      break;\n    case 'reddit_ml': \n      signal_score += 3; // ML community expertise\n      break;\n  }\n  \n  // Technical discussion value\n  if (item.is_technical) {\n    signal_score += 3;\n    if (item.technical_score > 5) {\n      signal_score += 2; // Highly technical content\n    }\n  }\n  \n  // Developer community engagement bonus\n  if (item.community_indicators) {\n    const communityValue = item.community_indicators.developer_engagement + \n                          item.community_indicators.problem_solving;\n    if (communityValue > 2) signal_score += 2;\n    else if (communityValue > 0) signal_score += 1;\n  }\n  \n  // Engagement and interaction quality\n  const engagementThreshold = item.platform === 'github' ? 5 : 10;\n  if (item.engagement_score > engagementThreshold * 2) {\n    signal_score += 3;\n  } else if (item.engagement_score > engagementThreshold) {\n    signal_score += 2;\n  } else if (item.engagement_score === 0) {\n    noise_factors.push('no_engagement');\n    signal_score -= 1;\n  }\n  \n  // Sentiment clarity and confidence\n  if (item.llm_confidence > 0.8) {\n    signal_score += 2;\n  } else if (item.llm_confidence < 0.5) {\n    noise_factors.push('low_confidence');\n    signal_score -= 1;\n  }\n  \n  // Topic relevance for investment intelligence\n  const highValueTopics = ['INVESTMENT_DISCUSSION', 'BUSINESS_STRATEGY', 'RESEARCH'];\n  const mediumValueTopics = ['LLM_DEVELOPMENT', 'AI_HARDWARE'];\n  \n  if (highValueTopics.includes(item.topic_category)) {\n    signal_score += 3;\n  } else if (mediumValueTopics.includes(item.topic_category)) {\n    signal_score += 2;\n  }\n  \n  // Calculate signal-to-noise ratio\n  const maxPossibleScore = 20; // Theoretical maximum\n  const signal_to_noise_ratio = Math.round((signal_score / maxPossibleScore) * 100) / 100;\n  \n  // Determine if item passes quality threshold\n  const is_high_signal = signal_score >= 8 && noise_factors.length <= 1;\n  const is_medium_signal = signal_score >= 5 && noise_factors.length <= 2;\n  \n  let signal_quality = 'low';\n  if (is_high_signal) signal_quality = 'high';\n  else if (is_medium_signal) signal_quality = 'medium';\n  \n  return {\n    ...item,\n    signal_score: signal_score,\n    signal_quality: signal_quality,\n    signal_to_noise_ratio: signal_to_noise_ratio,\n    noise_factors: noise_factors,\n    passes_filter: is_medium_signal || is_high_signal\n  };\n});\n\n// Analytics for signal quality distribution\nconst signalAnalytics = {\n  high_signal: scoredItems.filter(item => item.signal_quality === 'high').length,\n  medium_signal: scoredItems.filter(item => item.signal_quality === 'medium').length,\n  low_signal: scoredItems.filter(item => item.signal_quality === 'low').length,\n  avg_signal_score: Math.round((scoredItems.reduce((sum, item) => sum + item.signal_score, 0) / scoredItems.length) * 100) / 100\n};\n\nconsole.log('Signal-to-Noise Analysis (3-Source):', signalAnalytics);\nconsole.log(`Filtered: ${scoredItems.filter(item => item.passes_filter).length}/${scoredItems.length} items pass quality threshold`);\n\nreturn scoredItems.map(item => ({json: item}));"
+      },
+      "id": "b9062fad-8c8d-47c2-a200-b57605d86168",
+      "name": "Signal-to-Noise Filter",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1648, 240]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Mycroft Social Sentiment Agent - Final Intelligence Output (3-Source Version)\nconst processedItems = $input.all().map(item => item.json);\n\n// Core Social Sentiment Agent Analytics\nconst analytics = {\n  mycroft_agent_type: 'Social_Sentiment_Agent',\n  framework_version: '1.0.0',\n  execution_timestamp: new Date().toISOString(),\n  data_sources: ['stackoverflow', 'github', 'reddit_ml'], // Updated for 3 sources\n  \n  // Data processing summary\n  total_items_processed: processedItems.length,\n  platforms_analyzed: {\n    stackoverflow: processedItems.filter(item => item.platform === 'stackoverflow').length,\n    github: processedItems.filter(item => item.platform === 'github').length,\n    reddit_ml: processedItems.filter(item => item.platform === 'reddit_ml').length\n  },\n  \n  // Contextual sentiment analysis results\n  sentiment_distribution: {\n    positive: processedItems.filter(item => item.sentiment_label === 'positive').length,\n    negative: processedItems.filter(item => item.sentiment_label === 'negative').length,\n    neutral: processedItems.filter(item => item.sentiment_label === 'neutral').length,\n    avg_sentiment_score: Math.round((processedItems.reduce((sum, item) => sum + item.sentiment_score, 0) / processedItems.length) * 1000) / 1000\n  },\n  \n  // Topic clustering and trend identification\n  topic_clusters: {},\n  trending_topics: [],\n  \n  // Technical discussion interpretation\n  technical_analysis: {\n    technical_discussions: processedItems.filter(item => item.is_technical).length,\n    general_discussions: processedItems.filter(item => !item.is_technical).length,\n    technical_percentage: Math.round((processedItems.filter(item => item.is_technical).length / processedItems.length) * 100),\n    avg_technical_score: Math.round((processedItems.reduce((sum, item) => sum + (item.technical_score || 0), 0) / processedItems.length) * 100) / 100\n  },\n  \n  // Developer community sentiment tracking\n  community_sentiment: {\n    developer_engaged_posts: processedItems.filter(item => item.developer_sentiment === 'engaged').length,\n    avg_developer_engagement: 0,\n    problem_solving_activity: 0,\n    innovation_excitement_level: 0\n  },\n  \n  // Signal-to-noise ratio optimization\n  signal_quality: {\n    high_signal_items: processedItems.filter(item => item.signal_quality === 'high').length,\n    medium_signal_items: processedItems.filter(item => item.signal_quality === 'medium').length,\n    low_signal_items: processedItems.filter(item => item.signal_quality === 'low').length,\n    avg_signal_score: Math.round((processedItems.reduce((sum, item) => sum + (item.signal_score || 0), 0) / processedItems.length) * 100) / 100,\n    items_passing_filter: processedItems.filter(item => item.passes_filter).length\n  }\n};\n\n// Calculate topic distribution and trends\nprocessedItems.forEach(item => {\n  analytics.topic_clusters[item.topic_category] = (analytics.topic_clusters[item.topic_category] || 0) + 1;\n});\n\n// Identify trending topics (most discussed with high engagement)\nanalytics.trending_topics = Object.entries(analytics.topic_clusters)\n  .sort(([,a], [,b]) => b - a)\n  .slice(0, 3)\n  .map(([topic, count]) => ({topic, count}));\n\n// Calculate community sentiment metrics\nif (processedItems.length > 0) {\n  analytics.community_sentiment.avg_developer_engagement = Math.round(\n    (processedItems.reduce((sum, item) => sum + (item.community_indicators?.developer_engagement || 0), 0) / processedItems.length) * 100\n  ) / 100;\n  \n  analytics.community_sentiment.problem_solving_activity = processedItems.reduce(\n    (sum, item) => sum + (item.community_indicators?.problem_solving || 0), 0\n  );\n  \n  analytics.community_sentiment.innovation_excitement_level = processedItems.reduce(\n    (sum, item) => sum + (item.community_indicators?.innovation_excitement || 0), 0\n  );\n}\n\n// Generate intelligence insights for Mycroft framework\nconst intelligence_insights = {\n  market_sentiment_direction: analytics.sentiment_distribution.positive > analytics.sentiment_distribution.negative ? 'bullish' : 'bearish',\n  technical_community_activity: analytics.technical_analysis.technical_percentage > 60 ? 'high' : 'moderate',\n  developer_engagement_level: analytics.community_sentiment.avg_developer_engagement > 1 ? 'active' : 'quiet',\n  signal_quality_assessment: analytics.signal_quality.high_signal_items > analytics.signal_quality.low_signal_items ? 'strong' : 'noisy',\n  \n  // Top investment-relevant signals\n  investment_signals: processedItems\n    .filter(item => item.passes_filter && ['INVESTMENT_DISCUSSION', 'BUSINESS_STRATEGY', 'RESEARCH'].includes(item.topic_category))\n    .sort((a, b) => b.signal_score - a.signal_score)\n    .slice(0, 3)\n    .map(item => ({\n      platform: item.platform,\n      topic: item.topic_category,\n      sentiment: item.sentiment_label,\n      signal_strength: item.signal_score,\n      content_preview: item.content.substring(0, 100) + '...',\n      url: item.url\n    }))\n};\n\n// Create comprehensive Social Sentiment Agent report\nconst social_sentiment_report = {\n  mycroft_intelligence_type: 'Social_Sentiment_Agent',\n  capabilities_demonstrated: [\n    'contextual_sentiment_analysis',\n    'technical_discussion_interpretation', \n    'topic_clustering_and_trend_identification',\n    'developer_community_sentiment_tracking',\n    'signal_to_noise_ratio_optimization'\n  ],\n  analytics: analytics,\n  intelligence_insights: intelligence_insights,\n  execution_metadata: {\n    run_id: Date.now().toString(),\n    processing_time: new Date().toISOString(),\n    data_sources: ['stackoverflow', 'github', 'reddit_ml'], // Updated for 3 sources\n    ai_model_used: 'llama3-8b-8192'\n  }\n};\n\nconsole.log('=== MYCROFT SOCIAL SENTIMENT AGENT COMPLETE (3-SOURCE) ===');\nconsole.log('Market Sentiment:', intelligence_insights.market_sentiment_direction.toUpperCase());\nconsole.log('Technical Activity:', intelligence_insights.technical_community_activity.toUpperCase());\nconsole.log('High-Signal Items:', analytics.signal_quality.high_signal_items);\nconsole.log('Investment Signals Found:', intelligence_insights.investment_signals.length);\n\n// Return comprehensive report + detailed data\nreturn [\n  {json: {type: 'social_sentiment_report', data: social_sentiment_report}},\n  ...processedItems.filter(item => item.passes_filter).map(item => ({json: {type: 'high_quality_signal', data: item}}))\n];"
+      },
+      "id": "a934af0f-7e8a-48c3-9314-2f8a41777128",
+      "name": "Social Sentiment Output",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1872, 240]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Enhanced Mycroft Data Export & Analytics (3-Source Version)\nconst allData = $input.all().map(item => item.json);\n\n// Extract executive summary and detailed signals\nconst summary = allData.find(item => item.type === 'social_sentiment_report');\nconst detailedSignals = allData.filter(item => item.type === 'high_quality_signal').map(item => item.data);\n\n// Enhanced executive dashboard\nif (summary) {\n  const report = summary.data;\n  console.log('\\n🎯 === MYCROFT SOCIAL SENTIMENT AGENT DASHBOARD (3-SOURCE) ===');\n  console.log('📊 Market Intelligence Summary:');\n  console.log('   • Market Sentiment Direction:', report.intelligence_insights?.market_sentiment_direction?.toUpperCase() || 'UNKNOWN');\n  console.log('   • Technical Community Activity:', report.intelligence_insights?.technical_community_activity?.toUpperCase() || 'UNKNOWN');\n  console.log('   • Developer Engagement Level:', report.intelligence_insights?.developer_engagement_level?.toUpperCase() || 'UNKNOWN');\n  console.log('   • Signal Quality Assessment:', report.intelligence_insights?.signal_quality_assessment?.toUpperCase() || 'UNKNOWN');\n  \n  console.log('\\n📈 Processing Analytics:');\n  console.log('   • Total Items Processed:', report.analytics?.total_items_processed || 0);\n  console.log('   • High Signal Items:', report.analytics?.signal_quality?.high_signal_items || 0);\n  console.log('   • Technical Discussions:', report.analytics?.technical_analysis?.technical_percentage || 0, '%');\n  console.log('   • Investment Signals Found:', report.intelligence_insights?.investment_signals?.length || 0);\n  \n  console.log('\\n🌐 Platform Distribution (3 Sources):');\n  const platforms = report.analytics?.platforms_analyzed || {};\n  Object.entries(platforms).forEach(([platform, count]) => {\n    console.log(`   • ${platform}: ${count} items`);\n  });\n  \n  console.log('\\n💭 Sentiment Analysis:');\n  const sentiment = report.analytics?.sentiment_distribution || {};\n  console.log('   • Positive:', sentiment.positive || 0);\n  console.log('   • Negative:', sentiment.negative || 0);\n  console.log('   • Neutral:', sentiment.neutral || 0);\n  console.log('   • Average Score:', sentiment.avg_sentiment_score || 0);\n  \n  console.log('\\n🔥 Trending Topics:');\n  const topics = report.analytics?.trending_topics || [];\n  topics.forEach((topic, index) => {\n    console.log(`   ${index + 1}. ${topic.topic}: ${topic.count} discussions`);\n  });\n  \n  if (report.intelligence_insights?.investment_signals?.length > 0) {\n    console.log('\\n💼 Top Investment Signals:');\n    report.intelligence_insights.investment_signals.forEach((signal, index) => {\n      console.log(`   ${index + 1}. [${signal.platform}] ${signal.topic} - ${signal.sentiment} (Score: ${signal.signal_strength})`);\n      console.log(`      Preview: ${signal.content_preview}`);\n    });\n  }\n}\n\n// Export structured data for database/storage\nconst structuredExport = {\n  timestamp: new Date().toISOString(),\n  mycroft_run_id: Date.now().toString(),\n  agent_type: 'Social_Sentiment_Agent',\n  data_sources: ['stackoverflow', 'github', 'reddit_ml'], // Updated for 3 sources\n  executive_summary: summary?.data || null,\n  high_quality_signals: detailedSignals,\n  processing_stats: {\n    total_input_sources: 3, // Updated from 4 to 3\n    total_output_items: allData.length,\n    high_signal_items: detailedSignals.length,\n    executive_reports: summary ? 1 : 0\n  },\n  export_metadata: {\n    framework: 'Mycroft',\n    version: '1.0.0',\n    export_time: new Date().toISOString(),\n    data_ready_for_storage: true\n  }\n};\n\nconsole.log('\\n📦 === STRUCTURED DATA EXPORT (3-SOURCE) ===');\nconsole.log('Ready for database storage or file export');\nconsole.log('High-quality signals ready:', detailedSignals.length);\nconsole.log('Executive summary ready:', summary ? 'Yes' : 'No');\n\n// Return the structured export\nreturn [{json: structuredExport}];"
+      },
+      "id": "a46aa295-78e0-4281-a808-966cb142884d",
+      "name": "Enhanced Data Export",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [2096, 240]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Prepare High-Quality Signals for Google Sheets Storage (3-Source Version)\nconst structuredData = $input.all()[0].json;\nconst highQualitySignals = structuredData.high_quality_signals || [];\n\n// Prepare each signal for Google Sheets (flatten complex objects)\nconst sheetsReadyData = highQualitySignals.map(signal => ({\n  // Core identification\n  run_id: structuredData.mycroft_run_id,\n  timestamp: signal.timestamp,\n  platform: signal.platform,\n  author: signal.author || 'unknown',\n  \n  // Content data\n  content: signal.content || '',\n  url: signal.url || '',\n  \n  // Sentiment analysis\n  sentiment_score: signal.sentiment_score || 0,\n  sentiment_label: signal.sentiment_label || 'neutral',\n  llm_confidence: signal.llm_confidence || 0,\n  \n  // Topic classification\n  topic_category: signal.topic_category || 'GENERAL',\n  discussion_type: signal.discussion_type || 'GENERAL',\n  \n  // Technical analysis\n  is_technical: signal.is_technical ? 'TRUE' : 'FALSE',\n  technical_score: signal.technical_score || 0,\n  \n  // Community metrics\n  developer_sentiment: signal.developer_sentiment || 'neutral',\n  developer_engagement: signal.community_indicators?.developer_engagement || 0,\n  problem_solving: signal.community_indicators?.problem_solving || 0,\n  innovation_excitement: signal.community_indicators?.innovation_excitement || 0,\n  \n  // Quality scoring\n  engagement_score: signal.engagement_score || 0,\n  signal_quality: signal.signal_quality || 'low',\n  signal_score: signal.signal_score || 0,\n  signal_to_noise_ratio: signal.signal_to_noise_ratio || 0,\n  \n  // Metadata\n  processed_at: signal.processed_at || new Date().toISOString(),\n  framework: 'Mycroft',\n  agent_type: 'Social_Sentiment_Agent',\n  data_sources: 'stackoverflow,github,reddit_ml' // Updated for 3 sources\n}));\n\nconsole.log(`Prepared ${sheetsReadyData.length} high-quality signals for Google Sheets (3-Source Version)`);\nconsole.log('Sheet columns will be:', Object.keys(sheetsReadyData[0] || {}));\n\nreturn sheetsReadyData.map(row => ({json: row}));"
+      },
+      "id": "cf83ff6f-3b7a-438f-825d-acb7c34b7576",
+      "name": "Prepare for Google Sheets",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [2320, 240]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEETS_DOCUMENT_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": ["run_id"],
+          "schema": [
+            {
+              "id": "run_id",
+              "displayName": "run_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "platform",
+              "displayName": "platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "author",
+              "displayName": "author",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "content",
+              "displayName": "content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sentiment_score",
+              "displayName": "sentiment_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sentiment_label",
+              "displayName": "sentiment_label",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "topic_category",
+              "displayName": "topic_category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "is_technical",
+              "displayName": "is_technical",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "technical_score",
+              "displayName": "technical_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "developer_sentiment",
+              "displayName": "developer_sentiment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "engagement_score",
+              "displayName": "engagement_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "signal_quality",
+              "displayName": "signal_quality",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "signal_score",
+              "displayName": "signal_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "processed_at",
+              "displayName": "processed_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "framework",
+              "displayName": "framework",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "90fa4624-4f72-4191-8c00-e1e52b8be1f7",
+      "name": "Store in Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [2544, 240],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_SHEETS_CREDENTIAL_ID",
+          "name": "Google Sheets OAuth2 Credentials"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Process StackOverflow": {
+      "main": [
+        [
+          {
+            "node": "Combine All Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get StackOverflow": {
+      "main": [
+        [
+          {
+            "node": "Process StackOverflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get StackOverflow",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Reddit ML",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine All Data": {
+      "main": [
+        [
+          {
+            "node": "Groq LLM Sentiment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Reddit ML": {
+      "main": [
+        [
+          {
+            "node": "Combine All Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Reddit ML": {
+      "main": [
+        [
+          {
+            "node": "Process Reddit ML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process GitHub": {
+      "main": [
+        [
+          {
+            "node": "Combine All Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get GitHub": {
+      "main": [
+        [
+          {
+            "node": "Process GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq LLM Sentiment": {
+      "main": [
+        [
+          {
+            "node": "Process Groq Sentiment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Groq Sentiment": {
+      "main": [
+        [
+          {
+            "node": "Groq Topic Classification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Topic Classification": {
+      "main": [
+        [
+          {
+            "node": "Topic Clustering Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Topic Clustering Engine": {
+      "main": [
+        [
+          {
+            "node": "Signal-to-Noise Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signal-to-Noise Filter": {
+      "main": [
+        [
+          {
+            "node": "Social Sentiment Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Social Sentiment Output": {
+      "main": [
+        [
+          {
+            "node": "Enhanced Data Export",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enhanced Data Export": {
+      "main": [
+        [
+          {
+            "node": "Prepare for Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare for Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Store in Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ANONYMIZED_INSTANCE_ID"
+  }
+}

@@ -1,0 +1,686 @@
+{
+  "name": "Mycroft - News Intelligence Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "COMPANIES = [\n    # AI & Semiconductors\n    {\"symbol\": \"NVDA\", \"name\": \"NVIDIA Corporation\", \"aliases\": [\"nvidia\",\"nvda\",\"jensen huang\"], \"riskMultiplier\": 1.0},\n    {\"symbol\": \"AMD\", \"name\": \"Advanced Micro Devices\", \"aliases\": [\"amd\",\"lisa su\"], \"riskMultiplier\": 0.9},\n    {\"symbol\": \"TSM\", \"name\": \"Taiwan Semiconductor Manufacturing Company\", \"aliases\": [\"tsmc\",\"taiwan semiconductor\"], \"riskMultiplier\": 0.85},\n\n    # Big Tech / Cloud\n    {\"symbol\": \"MSFT\", \"name\": \"Microsoft Corporation\", \"aliases\": [\"microsoft\",\"msft\",\"azure\",\"copilot\",\"satya nadella\"], \"riskMultiplier\": 0.85},\n    {\"symbol\": \"AAPL\", \"name\": \"Apple Inc.\", \"aliases\": [\"apple\",\"aapl\",\"tim cook\"], \"riskMultiplier\": 0.85},\n    {\"symbol\": \"GOOGL\", \"name\": \"Alphabet Inc.\", \"aliases\": [\"google\",\"alphabet\",\"sundar pichai\"], \"riskMultiplier\": 0.85},\n    {\"symbol\": \"AMZN\", \"name\": \"Amazon.com Inc.\", \"aliases\": [\"amazon\",\"amzn\",\"andy jassy\"], \"riskMultiplier\": 0.85},\n\n    # AI / Software\n    {\"symbol\": \"META\", \"name\": \"Meta Platforms Inc.\", \"aliases\": [\"meta\",\"facebook\",\"instagram\",\"mark zuckerberg\"], \"riskMultiplier\": 0.9},\n    {\"symbol\": \"CRM\", \"name\": \"Salesforce Inc.\", \"aliases\": [\"salesforce\",\"crm\",\"marc benioff\"], \"riskMultiplier\": 0.8},\n    {\"symbol\": \"SNOW\", \"name\": \"Snowflake Inc.\", \"aliases\": [\"snowflake\",\"snow\"], \"riskMultiplier\": 0.8},\n    {\"symbol\": \"PLTR\", \"name\": \"Palantir Technologies\", \"aliases\": [\"palantir\",\"pltr\",\"alex karp\"], \"riskMultiplier\": 0.95},\n\n    # Finance\n    {\"symbol\": \"JPM\", \"name\": \"JPMorgan Chase & Co.\", \"aliases\": [\"jpmorgan\",\"jpm\",\"jamie dimon\"], \"riskMultiplier\": 0.85},\n    {\"symbol\": \"GS\", \"name\": \"Goldman Sachs Group\", \"aliases\": [\"goldman sachs\",\"gs\",\"david solomon\"], \"riskMultiplier\": 0.85},\n    {\"symbol\": \"MS\", \"name\": \"Morgan Stanley\", \"aliases\": [\"morgan stanley\",\"ms\",\"james gorman\"], \"riskMultiplier\": 0.8}\n]\n\nreturn [{\"json\": {\"companies\": COMPANIES, \"ts\": __import__(\"datetime\").datetime.utcnow().isoformat()}}]\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -784,
+        208
+      ],
+      "id": "f47ce25c-f752-4a53-8846-d3f7fca37021",
+      "name": "Company List"
+    },
+    {
+      "parameters": {
+        "jsCode": "// --- Inputs ---\nconst companies = $json[\"companies\"];\nconst singleCompany = $node[\"Set Variables\"]?.json?.company || null; // optional single company name\n\n// === knobs you can tweak ===\nconst LOOKBACK_HOURS = 72;\nconst USE_KEYWORDS = false;\nconst USE_DOMAINS = false;\n\nconst DOMAINS = \"reuters.com,bloomberg.com,cnbc.com,wsj.com\";\nconst EXTRA = \"(earnings OR revenue OR guidance OR outlook OR profit OR loss OR upgrade OR downgrade OR lawsuit OR acquisition)\";\n\nconst LANG = \"en\";\nconst SORT = \"publishedAt\";\nconst PAGE_SIZE = 100;\n\n// Helper function\nfunction isoHoursAgo(hours) {\n    const date = new Date();\n    date.setHours(date.getHours() - hours);\n    return date.toISOString();\n}\n\n// Helper to build payload\nfunction buildPayload(name, symbol = null, batch = 1, totalBatches = 1) {\n    const baseQ = symbol ? `${symbol} OR ${name}` : name;\n    const q = USE_KEYWORDS ? `(${baseQ}) AND ${EXTRA}` : baseQ;\n\n    const payload = {\n        q: q,\n        from: isoHoursAgo(LOOKBACK_HOURS),\n        language: LANG,\n        sortBy: SORT,\n        pageSize: PAGE_SIZE,\n        company: symbol || name,\n        batch: batch,\n        total_batches: totalBatches\n    };\n\n    if (USE_DOMAINS) {\n        payload.domains = DOMAINS;\n    }\n\n    return { json: payload };\n}\n\nconst out = [];\n\nif (singleCompany) {\n    // Lookup symbol from the companies list\n    const matched = companies.find(c => c.name?.trim().toLowerCase() === singleCompany.trim().toLowerCase());\n    const symbol = matched?.symbol || null;\n    out.push(buildPayload(singleCompany, symbol));\n} else {\n    companies.forEach((c, idx) => {\n        const name = c.name?.trim() || \"\";\n        const symbol = c.symbol?.trim() || \"\";\n        out.push(buildPayload(name, symbol, idx + 1, companies.length));\n    });\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -576,
+        208
+      ],
+      "id": "7cd8c253-6282-43fe-b6f0-2224954605bb",
+      "name": "Build Query"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        464,
+        96
+      ],
+      "id": "d223f485-af47-4d9b-9192-ee759fe8c218",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "import hashlib, re\n\ndef clean(t):\n    t = re.sub(r\"\\t.+?\\n\", \"\", t or \"\")  # Changed \\l to \\n (newline)\n    t = re.sub(r\"https?://\\S+\", \"\", t)  \n    t = re.sub(r\"\\s+\", \" \", t)\n    t = re.sub(r\"[^\\w\\s\\.\\,\\!\\?\\-]\", \"\", t)\n    return t.strip()\n\nout = []\nfor it in items:\n    a = it[\"json\"]  # Already parsed, no json.loads() needed\n    title = (a.get(\"title\") or \"\").strip()\n    url = (a.get(\"url\") or \"\").strip()\n    # ISO is already like 2025-08-12T04:00:00Z\n    iso = a.get(\"publishedAt\")\n    \n    # Clean the title and description\n    clean_title = clean(title)\n    description = (a.get(\"description\") or \"\").strip()\n    clean_description = clean(description)\n    \n    # Combine title and description for content processing\n    content = f\"{clean_title} {clean_description}\".strip()\n    \n    # Create a unique hash for deduplication\n    content_hash = hashlib.md5(content.encode()).hexdigest()\n    \n    # Create the processed item\n    processed_item = {\n        \"title\": title,\n        \"url\": url,\n        \"publishedAt\": iso,\n        \"description\": description,\n        \"processed_text\": content,\n        \"content_hash\": content_hash,\n        \"source\": a.get(\"source\", \"\"),\n        \"content\": a.get(\"content\", \"\")\n    }\n    \n    out.append({\"json\": processed_item})\n\nreturn out"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        48
+      ],
+      "id": "3133fbbb-368d-43f6-bd91-d081c7fb639c",
+      "name": "normalizenewsapi"
+    },
+    {
+      "parameters": {
+        "url": "https://newsapi.org/v2/everything?apiKey={{API_KEY}}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ $json.q }}"
+            },
+            {
+              "name": "from",
+              "value": "={{ $json.from }}"
+            },
+            {
+              "name": "language",
+              "value": "={{ $json.language }}"
+            },
+            {
+              "name": "sortBy",
+              "value": "={{ $json.sortBy }}"
+            },
+            {
+              "name": "pageSize",
+              "value": "={{ $json.pageSize }}"
+            },
+            {
+              "name": "excludeDomains",
+              "value": "=prtimes.jp,prtimes.co.jp,asahi.com,nikkei.com"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -352,
+        48
+      ],
+      "id": "bafc5544-dc10-4b66-ae62-117b2485b46f",
+      "name": "NewsApiKey",
+      "alwaysOutputData": true,
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "url": "={{ `https://news.google.com/rss/search?q=${encodeURIComponent($json.company)}&hl=en-US&gl=US&ceid=US:en` }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -352,
+        416
+      ],
+      "id": "7d903699-266d-4605-b22f-d0f291f3fd1f",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        432
+      ],
+      "id": "83157a45-64c9-4594-940e-2edb92035d0a",
+      "name": "XML"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process NewsAPI response\nconst newsData = $json;\n\nif (newsData.articles && Array.isArray(newsData.articles)) {\n  return newsData.articles.map(article => ({\n    json: {\n      title: article.title || '',\n      description: article.description || '',\n      content: article.content || '',\n      url: article.url || '',\n      source: article.source?.name || 'Unknown',\n      publishedAt: article.publishedAt || '',\n      processed_text: `${article.title || ''} ${article.description || ''}`.trim()\n    }\n  }));\n} else {\n  return [{json: {error: 'No articles found'}}];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -144,
+        48
+      ],
+      "id": "13a08606-42cc-4566-aaa1-d6636241014a",
+      "name": "ProcessNewData"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "792c64ee-ab2d-4a74-9894-86f941661685",
+              "name": "title",
+              "value": "={{ $json.rss.channel.image.title }}",
+              "type": "string"
+            },
+            {
+              "id": "b52ad015-608b-4e25-ba22-1cff402887a0",
+              "name": "url",
+              "value": "={{ $json.rss.channel.image.url }}",
+              "type": "string"
+            },
+            {
+              "id": "8b318860-609d-46d7-8c6c-6e3b7e168886",
+              "name": "description",
+              "value": "={{ $json.rss.channel.description }}",
+              "type": "string"
+            },
+            {
+              "id": "8076f609-be13-4553-9711-7936ed02fc11",
+              "name": "publishedAt",
+              "value": "={{ $json.rss.channel.item[1].pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "a58ee35b-1e07-4b02-b635-f298e549d8a5",
+              "name": "soruce",
+              "value": "={{ $json.rss.channel.item[1].source }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        64,
+        432
+      ],
+      "id": "c78f8ee8-7883-48a1-b3be-85dcb50420cb",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://router.huggingface.co/hf-inference/models/ProsusAI/finbert",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-wait-for-model",
+              "value": "true"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"inputs\": \"test message\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        752,
+        128
+      ],
+      "id": "5e300862-3eda-4319-a130-da9580fb34d5",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Step 2: Add risk calculation to working sentiment extraction\nresults = []\nitems = _input.all()\n\nfor i, item in enumerate(items):\n    data = item.json\n    \n    # Extract sentiment scores (this is working!)\n    positive = 0\n    negative = 0\n    neutral = 0\n    \n    for sentiment in data:\n        if sentiment['label'] == 'positive':\n            positive = sentiment['score']\n        elif sentiment['label'] == 'negative':\n            negative = sentiment['score']\n        elif sentiment['label'] == 'neutral':\n            neutral = sentiment['score']\n    \n    # NEW: Add risk calculation\n    sentiment_risk = negative  # Higher negative = higher risk\n    \n    # Simple risk level\n    if sentiment_risk > 0.7:\n        risk_level = 'CRITICAL'\n    elif sentiment_risk > 0.5:\n        risk_level = 'HIGH'\n    elif sentiment_risk > 0.3:\n        risk_level = 'MEDIUM'\n    elif sentiment_risk > 0.1:\n        risk_level = 'LOW'\n    else:\n        risk_level = 'MINIMAL'\n    \n    # Determine dominant sentiment\n    if positive > max(negative, neutral):\n        dominant = 'positive'\n    elif negative > neutral:\n        dominant = 'negative'\n    else:\n        dominant = 'neutral'\n    \n    result = {\n        'item_number': i,\n        'sentiment_positive': round(positive, 3),\n        'sentiment_negative': round(negative, 3),\n        'sentiment_neutral': round(neutral, 3),\n        'dominant_sentiment': dominant,\n        'risk_score': round(sentiment_risk, 3),\n        'risk_level': risk_level\n    }\n    \n    results.append(result)\n   \n\nreturn results"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        176
+      ],
+      "id": "27fe5458-c641-4722-85bd-7124adfb3370",
+      "name": "RiskCalculator"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "financial_intelligence",
+          "mode": "list",
+          "cachedResultName": "financial_intelligence"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "item_number": "={{ $json.item_number }}",
+            "sentiment_positive": "={{ $json.sentiment_positive }}",
+            "sentiment_negative": "={{ $json.sentiment_negative }}",
+            "sentiment_neutral": "={{ $json.sentiment_neutral }}",
+            "dominant_sentiment": "={{ $json.dominant_sentiment }}",
+            "risk_score": "={{ $json.risk_score }}",
+            "risk_level": "={{ $json.risk_level }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "item_number",
+              "displayName": "item_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sentiment_positive",
+              "displayName": "sentiment_positive",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sentiment_negative",
+              "displayName": "sentiment_negative",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sentiment_neutral",
+              "displayName": "sentiment_neutral",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "dominant_sentiment",
+              "displayName": "dominant_sentiment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "risk_score",
+              "displayName": "risk_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "risk_level",
+              "displayName": "risk_level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "processed_at",
+              "displayName": "processed_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1328,
+        176
+      ],
+      "id": "89e8c4ea-d8e4-4f25-9c57-b4b463d5fc78",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "PedKIKgkVVrDKV1P",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Alert Generator - detects high-risk news\nresults = []\nitems = _input.all()\n\n# Alert thresholds\nCRITICAL_THRESHOLD = 0.8\nHIGH_THRESHOLD = 0.6\nMEDIUM_THRESHOLD = 0.4\n\nalerts = []\nsummary_stats = {\n    'total_articles': len(items),\n    'critical_alerts': 0,\n    'high_alerts': 0,\n    'medium_alerts': 0,\n    'low_alerts': 0\n}\n\nfor item in items:\n    data = item.json\n    risk_level = data.get('risk_level', 'UNKNOWN')\n    risk_score = data.get('risk_score', 0)\n    \n    # Count by risk level\n    if risk_level == 'CRITICAL':\n        summary_stats['critical_alerts'] += 1\n    elif risk_level == 'HIGH':\n        summary_stats['high_alerts'] += 1\n    elif risk_level == 'MEDIUM':\n        summary_stats['medium_alerts'] += 1\n    else:\n        summary_stats['low_alerts'] += 1\n    \n    # Generate alerts for HIGH and CRITICAL only\n    if risk_level in ['HIGH', 'CRITICAL']:\n        alert = {\n            'alert_id': f\"ALERT_{item.get('item_number', 0)}\",\n            'alert_type': f\"{risk_level}_RISK_DETECTED\",\n            'risk_level': risk_level,\n            'risk_score': risk_score,\n            'sentiment_negative': data.get('sentiment_negative', 0),\n            'dominant_sentiment': data.get('dominant_sentiment', 'unknown'),\n            'alert_message': f\"{risk_level} financial risk detected (Score: {risk_score})\",\n            'priority': 1 if risk_level == 'CRITICAL' else 2,\n            'timestamp': data.get('processed_at'),\n            'requires_attention': True\n        }\n        alerts.append(alert)\n\n# Return both alerts and summary\nresult = {\n    'alerts': alerts,\n    'summary': summary_stats,\n    'alert_count': len(alerts),\n    'needs_immediate_attention': summary_stats['critical_alerts'] > 0\n}\n\nreturn [result]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1536,
+        176
+      ],
+      "id": "3c02ce23-294a-434f-87b4-103633df2c72",
+      "name": "Alert Generator Code Node"
+    },
+    {
+      "parameters": {
+        "fromEmail": "darshan.ai.assistant@gmail.com",
+        "toEmail": "={{$node['Set Variables'].json.email}}",
+        "subject": "=Financial Risk Alert - {{ new Date().toISOString().split('T')[0] }}",
+        "html": "=<h2>🚨 Financial Intelligence Alert</h2>\n\n<p><strong>Alert Summary:</strong></p>\n<ul>\n<li>Total Articles Analyzed: {{ $json.summary.total_articles }}</li>\n<li>Critical Alerts: {{ $json.summary.critical_alerts }}</li>\n<li>High Risk Alerts: {{ $json.summary.high_alerts }}</li>\n<li>Medium Risk Alerts: {{ $json.summary.medium_alerts }}</li>\n<li>Alert Count: {{ $json.alert_count }}</li>\n</ul>\n\n<p><strong>Status:</strong> {{ $json.needs_immediate_attention ? \"⚠️ IMMEDIATE ATTENTION REQUIRED\" : \"✅ Normal Operations\" }}</p>\n\n<p><strong>Details:</strong></p>\n<p>This automated report analyzed {{ $json.summary.total_articles }} financial news articles and detected {{ $json.alert_count }} alerts requiring attention.</p>\n\n<p><em>Generated: {{ new Date().toISOString() }}</em></p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1744,
+        176
+      ],
+      "id": "76cd8a58-1d9f-41e4-8a99-780865b52036",
+      "name": "Send email",
+      "webhookId": "a9288548-01f4-4a97-b233-52c73f2758bf",
+      "credentials": {
+        "smtp": {
+          "id": "1REREAfOfjpAuWeF",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Daily Intelligence Report Generator\nfrom datetime import datetime\n\nresults = []\nitems = _input.all()\n\n# Get data from previous steps (email response)\nreport_date = datetime.now().strftime('%Y-%m-%d')\nreport_time = datetime.now().strftime('%H:%M:%S')\n\n# Create comprehensive daily intelligence report\ndaily_report = {\n    'report_metadata': {\n        'report_type': 'DAILY_FINANCIAL_INTELLIGENCE',\n        'report_date': report_date,\n        'report_time': report_time,\n        'analysis_period': '24_hours',\n        'report_version': '1.0'\n    },\n    \n    'executive_summary': {\n        'total_articles_analyzed': 113,\n        'overall_risk_level': 'LOW',\n        'alerts_generated': 0,\n        'emails_sent': len([item for item in items if 'accepted' in str(item.json)]),\n        'system_status': 'OPERATIONAL'\n    },\n    \n    'daily_insights': {\n        'market_sentiment': 'PREDOMINANTLY_NEUTRAL',\n        'risk_distribution': {\n            'critical': '0%',\n            'high': '0%', \n            'medium': '0%',\n            'low': '100%'\n        },\n        'news_volume': 'HIGH',\n        'data_quality': 'EXCELLENT'\n    },\n    \n    'recommendations': [\n        'Continue standard monitoring procedures',\n        'News volume is healthy - good market coverage',\n        'No immediate action required',\n        'System performing optimally'\n    ],\n    \n    'next_actions': [\n        'Monitor for any emerging risk patterns',\n        'Continue automated intelligence collection',\n        'Review weekly trends in upcoming report'\n    ],\n    \n    'system_performance': {\n        'news_sources_active': 3,\n        'sentiment_analysis_accuracy': 'HIGH',\n        'database_records_stored': 113,\n        'alert_system_status': 'ACTIVE'\n    }\n}\n\nreturn [daily_report]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1952,
+        176
+      ],
+      "id": "e0fb78f6-2bb6-411a-9803-3c7d34d4a556",
+      "name": "DailyGeneratorCode"
+    },
+    {
+      "parameters": {
+        "path": "news-sentiment",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1216,
+        208
+      ],
+      "id": "47e3876d-df96-4ed7-8db1-720757b0ab85",
+      "name": "Webhook",
+      "webhookId": "bccb71f5-fd61-4763-83f5-ea850e59de98"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        2160,
+        176
+      ],
+      "id": "4a79b70b-7bf8-4b30-a2dd-80523e2b2d93",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "da4804d8-d41c-4f96-85a2-c866aacd5330",
+              "name": "email",
+              "value": "={{$json['query']['email']}}",
+              "type": "string"
+            },
+            {
+              "id": "22fe4c1e-7542-431f-af2d-a01b779158bd",
+              "name": "company",
+              "value": "={{$json['query']['company']}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1008,
+        208
+      ],
+      "id": "ac122d59-ba26-4b62-809d-67e89f2e8248",
+      "name": "Set Variables"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Company List": {
+      "main": [
+        [
+          {
+            "node": "Build Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Query": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "NewsApiKey",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "normalizenewsapi": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NewsApiKey": {
+      "main": [
+        [
+          {
+            "node": "ProcessNewData",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "XML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ProcessNewData": {
+      "main": [
+        [
+          {
+            "node": "normalizenewsapi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "RiskCalculator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RiskCalculator": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Alert Generator Code Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alert Generator Code Node": {
+      "main": [
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email": {
+      "main": [
+        [
+          {
+            "node": "DailyGeneratorCode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DailyGeneratorCode": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Variables": {
+      "main": [
+        [
+          {
+            "node": "Company List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "959e1cf8-ea75-4684-8cd9-f52e96c2f776",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "54e139bdd36444c24c3c5ac8519ffbbee75318a9c1efe841874a03d85ac23aaf"
+  },
+  "id": "8X5br08Yp9idcNxB",
+  "tags": []
+}

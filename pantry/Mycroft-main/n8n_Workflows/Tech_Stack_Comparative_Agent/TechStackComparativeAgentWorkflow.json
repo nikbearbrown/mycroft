@@ -1,0 +1,669 @@
+{
+  "name": "TechStackComparativeAgentWorkflow",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.company_name }}\n",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "78d608bc-71bc-4718-91eb-b3082419996d",
+      "name": "Validate Input",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        656,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "company_name",
+              "value": "={{ $json.company_name }}"
+            },
+            {
+              "name": "analysis_id",
+              "value": "={{ $now.format('yyyyMMdd_HHmmss') + '_' + $json.company_name }}\n"
+            },
+            {
+              "name": "github_org",
+              "value": "={{ $json.github_org || $json.company_name.toLowerCase() }}\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7902f078-30ad-4173-b3a2-90667b173bb0",
+      "name": "Prepare Variables",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        864,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ \"https://api.github.com/orgs/\" + ($json.github_org || $json.company_name.toLowerCase()) + \"/repos\" }}\n",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "per_page",
+              "value": "25"
+            },
+            {
+              "name": "page",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batch": {}
+          }
+        }
+      },
+      "id": "00c5d224-ad9d-4ee6-9acb-db014b14d8c7",
+      "name": "GitHub: Get Repos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1056,
+        -176
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 25,
+        "options": {}
+      },
+      "id": "f1438a85-4228-4789-b5e9-8ecf042ca27c",
+      "name": "Batch Repos (Top 5)",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        -336
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ \"https://api.github.com/repos/\" + $json.full_name + \"/languages\" }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "9107f839-98de-42cb-9b57-c99cedfed64b",
+      "name": "GitHub: Get Languages",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1696,
+        -496
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "8e696853-935a-462d-92d6-115c1f6427d8",
+      "name": "Aggregate Repo Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        1936,
+        -384
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://export.arxiv.org/api/query",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "search_query",
+              "value": "={{ \"all:\" + $json.company_name }}"
+            },
+            {
+              "name": "max_results",
+              "value": "10"
+            },
+            {
+              "name": "sortBy",
+              "value": "submittedDate"
+            },
+            {
+              "name": "sortOrder",
+              "value": "descending"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8d11dc2e-52e6-439c-88f8-ab7210423d57",
+      "name": "arXiv: Search Papers",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1104,
+        0
+      ],
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "error",
+              "value": "Missing required parameter: company_name"
+            },
+            {
+              "name": "status",
+              "value": "error"
+            }
+          ],
+          "number": [
+            {
+              "name": "status_code",
+              "value": 400
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2ffd7a41-6f48-4803-99ac-5dd9ab45ce08",
+      "name": "Error: Invalid Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        864,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the XML response\nconst xmlString = $input.item.json.data || $input.item.binary.data.toString('utf-8');\n\n// Simple regex parser for arXiv XML (faster than xml2js)\nconst entries = xmlString.match(/<entry>[\\s\\S]*?<\\/entry>/g) || [];\n\nconst papers = entries.slice(0, 5).map(entry => {\n  // Extract fields using regex\n  const titleMatch = entry.match(/<title>(.*?)<\\/title>/s);\n  const summaryMatch = entry.match(/<summary>(.*?)<\\/summary>/s);\n  const publishedMatch = entry.match(/<published>(.*?)<\\/published>/);\n  const idMatch = entry.match(/<id>(.*?)<\\/id>/);\n  \n  return {\n    title: titleMatch ? titleMatch[1].trim().replace(/\\s+/g, ' ') : 'Unknown',\n    summary: summaryMatch ? summaryMatch[1].trim().replace(/\\s+/g, ' ').substring(0, 200) + '...' : 'No summary',\n    published: publishedMatch ? publishedMatch[1].split('T')[0] : 'Unknown',\n    pdf_url: idMatch ? idMatch[1] : 'Unknown'\n  };\n});\n\nreturn {\n  research_papers: JSON.stringify(papers)\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1424,
+        0
+      ],
+      "id": "b2f0518a-13bd-44ee-8169-d93485a2dafb",
+      "name": "Parse arXiv XML"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        32
+      ],
+      "id": "6cf5af9f-48c4-47bc-af06-7ae703bf3884",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "companies",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        480,
+        32
+      ],
+      "id": "812c98cf-7fa1-40e9-a45b-64ada5926385",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b65bf9f0-fef1-46f7-a69e-0fbd99b5acb4",
+              "name": "companies",
+              "value": "[   { \"company_name\": \"OpenAI\", \"github_org\": \"openai\" },   { \"company_name\": \"Google\", \"github_org\": \"google\" },   { \"company_name\": \"Microsoft\", \"github_org\": \"microsoft\" },   { \"company_name\": \"Meta\", \"github_org\": \"facebook\" } ]",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        272,
+        32
+      ],
+      "id": "f0d69a46-42c1-4abb-8042-0795b988b9c6",
+      "name": "set"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "da9457d1-ed5f-45ab-85fc-9b8374f97b5c",
+              "name": "company_name",
+              "value": "openai",
+              "type": "string"
+            },
+            {
+              "id": "789930cf-6d98-4c89-a0ef-71933576e46c",
+              "name": "github_org",
+              "value": "openai",
+              "type": "string"
+            },
+            {
+              "id": "fc7e590a-7435-45d5-88ce-fc4822ae2a23",
+              "name": "mode",
+              "value": "manaul",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        64,
+        32
+      ],
+      "id": "1e788243-b06f-4529-9bb4-b4a42e0fa5e4",
+      "name": "set1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        2240,
+        0
+      ],
+      "id": "dd442090-2a36-4c63-9d58-e22ad865e8f9",
+      "name": "Convert to File",
+      "alwaysOutputData": false,
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "46177380-22fd-4e37-a50d-0f9c0c2c260e",
+              "name": "source",
+              "value": "github",
+              "type": "string"
+            },
+            {
+              "id": "767c42a5-5bba-4400-b311-c0567ec584e3",
+              "name": "company_name",
+              "value": "={{ $('Prepare Variables').item.json.company_name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2240,
+        -320
+      ],
+      "id": "08247624-af9c-4f64-a8de-f6e2cdaea22c",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4152d277-0b85-49f9-af89-289e607fab62",
+              "name": "source",
+              "value": "arxiv",
+              "type": "string"
+            },
+            {
+              "id": "6202e870-8751-4ca7-a3d3-bca8ca9da988",
+              "name": "company_name",
+              "value": "={{ $('Prepare Variables').first().json.company_name }}\n",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1696,
+        0
+      ],
+      "id": "30da4e16-260f-4e74-ac63-0f9d7fd6c9f8",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Run mode: Run Once for All Items\n\n// Pull items directly from the two Set/Edit nodes (so we don't depend on `source`)\nconst githubItems = $items(\"Edit Fields\");   // <-- your GitHub Set node name\nconst arxivItems  = $items(\"Edit Fields1\");  // <-- your arXiv Set node name\n\n// Normalize company names (removes \\n and extra spaces)\nconst normCompany = (s) => (s || '').replace(/\\s+/g, ' ').trim() || 'unknown';\n\n// Build arXiv lookup by company_name -> paper count\nconst arxivByCompany = {};\nfor (const it of arxivItems) {\n  const company = normCompany(it.json.company_name);\n  const papers = it.json.research_papers || it.json.arxiv_papers || [];\n  arxivByCompany[company] = Array.isArray(papers) ? papers.length : 0;\n}\n\n// Build CSV-ready rows\nconst out = [];\n\nfor (const it of githubItems) {\n  const company = normCompany(it.json.company_name);\n\n  // repo identifiers (if present)\n  const repoName =\n    it.json.full_name ||\n    it.json.repo_full_name ||\n    it.json.name ||\n    'unknown';\n\n  const description = it.json.description || '';\n  const stars = it.json.stargazers_count ?? it.json.stars ?? '';\n  const forks = it.json.forks_count ?? it.json.forks ?? '';\n  const watchers = it.json.watchers_count ?? it.json.watchers ?? '';\n  const openIssues = it.json.open_issues_count ?? it.json.open_issues ?? '';\n\n  // Your GitHub \"Aggregate Repo Data\" output has languages as top-level numeric fields,\n  // not a `languages` object. So we extract all numeric language columns.\n  const skipKeys = new Set([\n    'id','node_id','name','full_name','private','owner',\n    'source','company_name',\n    'description','stargazers_count','stars',\n    'forks_count','forks',\n    'watchers_count','watchers',\n    'open_issues_count','open_issues'\n  ]);\n\n  // Find language columns = numeric values that are not in skipKeys\n  const langEntries = Object.entries(it.json)\n    .filter(([k, v]) => !skipKeys.has(k) && typeof v === 'number' && !Number.isNaN(v));\n\n  if (langEntries.length) {\n    // One row per language\n    for (const [language, bytes] of langEntries) {\n      out.push({\n        json: {\n          company_name: company,\n          repo_name: repoName,\n          description,\n          stars,\n          forks,\n          watchers,\n          open_issues: openIssues,\n          language,\n          bytes,\n          arxiv_papers_count: arxivByCompany[company] ?? 0,\n        }\n      });\n    }\n  } else {\n    // Fallback: one row per repo (if no language cols exist)\n    out.push({\n      json: {\n        company_name: company,\n        repo_name: repoName,\n        description,\n        stars,\n        forks,\n        watchers,\n        open_issues: openIssues,\n        arxiv_papers_count: arxivByCompany[company] ?? 0,\n      }\n    });\n  }\n}\n\nreturn out;\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1968,
+        0
+      ],
+      "id": "783afda4-83f1-4499-9985-82d489864e34",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "59c1a23b-b02c-41a9-b6b4-717be7957b72",
+              "name": "company_name",
+              "value": "={{ $('Prepare Variables').first().json.company_name }}",
+              "type": "string"
+            },
+            {
+              "id": "515a4f95-b3cc-468e-af39-8cd08dc2a518",
+              "name": "repo_name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "68edf295-4584-43cd-9716-3cd55aa793a0",
+              "name": "full_name",
+              "value": "={{ $json.full_name }}",
+              "type": "string"
+            },
+            {
+              "id": "f3764b19-ebbf-4447-b50f-2ca1eb4d2cd5",
+              "name": "description",
+              "value": "={{ $json.description }}",
+              "type": "string"
+            },
+            {
+              "id": "a2bf96d9-ab43-4cde-bc8e-57a42083a2fd",
+              "name": "stars",
+              "value": "{{ $json.stargazers_count }",
+              "type": "string"
+            },
+            {
+              "id": "94152b03-24f4-4a99-bef5-c22ccb20c13a",
+              "name": "forks",
+              "value": "={{ $json.forks_count }}",
+              "type": "string"
+            },
+            {
+              "id": "214070f8-c5bd-4ce7-a72e-946f890c36b0",
+              "name": "watchers",
+              "value": "={{ $json.watchers_count }}",
+              "type": "string"
+            },
+            {
+              "id": "8839c47d-b7a9-4339-bc43-a064fd2aeab9",
+              "name": "open_issues",
+              "value": "={{ $json.open_issues_count }}",
+              "type": "string"
+            },
+            {
+              "id": "eb64f69d-0432-47da-ba5b-52ae75a75323",
+              "name": "source",
+              "value": "github",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1264,
+        -176
+      ],
+      "id": "e7d12c4a-b436-401b-8e2a-ffc90754643d",
+      "name": "Edit Fields2"
+    }
+  ],
+  "connections": {
+    "Validate Input": {
+      "main": [
+        [
+          {
+            "node": "Prepare Variables",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error: Invalid Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Variables": {
+      "main": [
+        [
+          {
+            "node": "GitHub: Get Repos",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "arXiv: Search Papers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub: Get Repos": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Batch Repos (Top 5)": {
+      "main": [
+        [
+          {
+            "node": "GitHub: Get Languages",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Aggregate Repo Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub: Get Languages": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Repo Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Repo Data": {
+      "main": [
+        [
+          {
+            "node": "Batch Repos (Top 5)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "arXiv: Search Papers": {
+      "main": [
+        [
+          {
+            "node": "Parse arXiv XML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error: Invalid Input": {
+      "main": [
+        []
+      ]
+    },
+    "Parse arXiv XML": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "set1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set1": {
+      "main": [
+        [
+          {
+            "node": "set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Batch Repos (Top 5)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e50fec43-bb02-4e58-a8f8-7a77b64df1f2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c5605aae802302d14cf85834357505b8eaf4143631bcf5d9ab9240de503b0d2d"
+  },
+  "id": "R4ospQG3p2XGdYFb",
+  "tags": []
+}

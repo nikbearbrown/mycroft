@@ -1,0 +1,539 @@
+{
+  "name": "Mycroft - SEC Filings Analysis Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ad7edb79-74c7-4b79-96a9-2108c3256e60",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        544,
+        112
+      ],
+      "id": "40e0f42f-2af4-4859-9f25-9fe500c94764",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "78db0104-55a2-4142-bb82-370d63d9bdf5",
+              "name": "ticker",
+              "value": "={{$json['query']['ticker']}}",
+              "type": "string"
+            },
+            {
+              "id": "985331f1-aa8c-4888-aae7-d29cbde21a6c",
+              "name": "=user_agent",
+              "value": "Humanitarians AI hr@humanitariansai.com",
+              "type": "string"
+            },
+            {
+              "id": "4731832b-6c7e-4517-8d89-6add5414aebd",
+              "name": "github_repo_url",
+              "value": "https://github.com/Humanitariansai/Mycroft",
+              "type": "string"
+            },
+            {
+              "id": "c2ff31ae-dd77-4d02-b3b0-a26898280d06",
+              "name": "scripts_path",
+              "value": "Core_Components/SEC_Filings_Analysis_Agent/",
+              "type": "string"
+            },
+            {
+              "id": "a8f92e1b-3c4d-4f2a-9b8e-7d5f6e8a9c2b",
+              "name": "temp_dir",
+              "value": "/tmp",
+              "type": "string"
+            },
+            {
+              "id": "2a88e05a-a66a-424b-8dee-354afc2324c6",
+              "name": "parse_narrative",
+              "value": "={{$json['query']['narrative'] ?? true }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -576,
+        16
+      ],
+      "id": "37a5e7d0-c2ba-47ce-9a87-1631e3f160ca",
+      "name": "Set Variables"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $json.temp_dir }} && rm -rf sec_analysis && rm -rf sec_output && git clone {{ $json.github_repo_url }} sec_analysis"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        16
+      ],
+      "id": "a6f38cec-bce0-4db0-9464-176c15d4c426",
+      "name": "Setup Github Repo"
+    },
+    {
+      "parameters": {
+        "jsCode": "const config = $node['Set Variables'].json;\n\nconst repoDir = `${config.temp_dir}/sec_analysis`;\nconst scriptsDir = `${config.temp_dir}/sec_analysis/${config.scripts_path}`;\nconst outputDir = `${config.temp_dir}/sec_output`;\n\nreturn [{\n  json: {\n    ...config,\n    repo_dir: repoDir,\n    scripts_dir: scriptsDir,\n    output_dir: outputDir,\n    clone_success: true\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -128,
+        16
+      ],
+      "id": "33233b64-1ab9-46b3-9e58-2baa4832a7f7",
+      "name": "Set Path Variables"
+    },
+    {
+      "parameters": {
+        "command": "=rm -rf {{ $json.temp_dir }}/sec_output && mkdir -p {{ $json.temp_dir }}/sec_output/data && cd {{ $json.temp_dir }}/sec_analysis/{{ $json.scripts_path}} && python3 -m pip install -r requirements.txt --user --quiet"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        96,
+        -80
+      ],
+      "id": "b8365d04-bb65-4914-a236-559b13f57d31",
+      "name": "Setup Python Enviornment and Output Directories"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $json.temp_dir }}/sec_analysis/{{ $json.scripts_path }} && python3 edgar_fetcher.py --ticker {{ $json.ticker }} --output-dir {{ $json.temp_dir }}/sec_output/data --user-agent \"{{ $json.user_agent }}\" --forms 10-K,10-Q --max-per-type 1"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        96,
+        112
+      ],
+      "id": "42a79012-4bcb-4271-9b03-91942791f1a3",
+      "name": "Edgar_Fetcher"
+    },
+    {
+      "parameters": {
+        "jsCode": "const stdout = $input.first().json.stdout;\nconst stderr = $input.first().json.stderr;\nconst exitCode = $input.first().json.exitCode;\n\nconsole.log('EDGAR stdout:', stdout);\nconsole.log('EDGAR stderr:', stderr);\n\nif (exitCode !== 0) {\n  return [{\n    json: {\n      success: false,\n      error: `EDGAR failed: ${stderr}`,\n      ticker: $node['Set Path Variables'].json.ticker\n    }\n  }];\n}\n\nlet result = {};\ntry {\n  const jsonMatch = stdout.match(/\\{[\\s\\S]*\\}/);\n  if (jsonMatch) {\n    result = JSON.parse(jsonMatch[0]);\n  } else {\n    throw new Error('No JSON output found');\n  }\n} catch (e) {\n  return [{\n    json: {\n      success: false,\n      error: `Parse error: ${e.message}`,\n      raw_output: stdout\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    ...result,\n    ticker: $node['Set Path Variables'].json.ticker,\n    user_agent: $node['Set Path Variables'].json.user_agent,\n    scripts_path: $node['Set Path Variables'].json.scripts_path,\n    temp_dir: $node['Set Path Variables'].json.temp_dir\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        112
+      ],
+      "id": "4dbeb147-4487-402b-8caa-09479421c2c1",
+      "name": "Validate Fetcher"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $json.temp_dir }}/sec_analysis/{{ $json.scripts_path }} && python3 financial_analyzer.py --ticker {{ $json.ticker }} --user-agent \"{{ $json.user_agent }}\" --output-dir {{ $json.temp_dir }}/sec_output/data"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        768,
+        16
+      ],
+      "id": "62422953-22fd-4562-8682-8b680db9aff5",
+      "name": "Financial Analyzer"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $node['Set Path Variables'].json.temp_dir }}/sec_analysis/{{ $node['Set Path Variables'].json.scripts_path }} && python3 narrative_parser.py --input-dir {{ $node['Validate Fetcher'].json.output_directory }} --output-dir {{ $node['Set Path Variables'].json.temp_dir }}/sec_output/data --ticker {{ $node['Set Variables'].json.ticker }}"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1216,
+        -80
+      ],
+      "id": "4f70d605-19df-4f88-b238-3d61d41fdff0",
+      "name": "Narrative Parser"
+    },
+    {
+      "parameters": {
+        "jsCode": "const errorData = $node['Validate Fetcher'].json;\n\nconst report = `❌ Analysis failed: ${errorData.error}\n\n🧹 Cleanup completed`;\n\nreturn [{\n  json: {\n    success: false,\n    error: errorData.error,\n    report: report,\n    cleanup_status: $input.first().json.stdout || 'completed'\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        768,
+        208
+      ],
+      "id": "c996c3d8-9829-4b21-a039-1c8e0803fd61",
+      "name": "Error Handling"
+    },
+    {
+      "parameters": {
+        "command": "=rm -rf {{ $json.temp_dir }}/sec_analysis && rm -rf {{ $json.temp_dir }}/sec_output && echo \"Error cleanup completed\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        992,
+        208
+      ],
+      "id": "6d4f2962-68ef-46cf-90cf-8aba8b58f0c0",
+      "name": "Cleanup "
+    },
+    {
+      "parameters": {
+        "path": "sec-metrics",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -800,
+        16
+      ],
+      "id": "e2b41778-8b72-4bd0-91cc-4afe2cd5d6ea",
+      "name": "Webhook",
+      "webhookId": "7da59b25-868b-4d85-8372-293cf30dfb1e"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1888,
+        -80
+      ],
+      "id": "1d4fc556-3191-459d-8243-db1c78c22308",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7358dda5-0af3-4ee4-9673-65b3e517456d",
+              "leftValue": "={{$node['Set Path Variables'].json.parse_narrative}}",
+              "rightValue": "True",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        992,
+        16
+      ],
+      "id": "37500d20-4e54-48d5-a50b-f35b36ebd092",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1664,
+        112
+      ],
+      "id": "eba38c49-b0e6-4fd0-bec3-8f1a41b8400a",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $node['Set Path Variables'].json.temp_dir }}/sec_output/data/{{ $node['Set Path Variables'].json.ticker }}_financial_analysis.json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1216,
+        112
+      ],
+      "id": "50cab0de-0b58-435b-882b-c64cb45e88e0",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $node['Set Path Variables'].json.temp_dir }}/sec_output/data/*_analysis.json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        -80
+      ],
+      "id": "ddd81cdc-92da-4138-a777-a8b58d1a0fd6",
+      "name": "Read/Write Files from Disk1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const fileData = $input.first().binary.data.data;\nconst ticker = $node['Set Path Variables'].json.ticker;\n\n// Convert binary to string\nconst fileContent = Buffer.from(fileData, 'base64').toString('utf8');\n\nlet result = {};\ntry {\n  result = JSON.parse(fileContent);\n} catch (e) {\n  return [{\n    json: {\n      success: false,\n      error: `Parse error: ${e.message}`,\n      raw_content: fileContent.substring(0, 500)\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    success: true,\n    financial_data: result,\n    ticker: result.ticker || ticker,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        112
+      ],
+      "id": "8b7d999d-c0e6-4815-9a4b-a15873ed900a",
+      "name": "Parse Results"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst ticker = $node['Set Path Variables'].json.ticker;\n\nlet financialData = null;\nlet narrativeData = null;\n\nfor (const item of items) {\n  const filePath = item.json.filePath || item.json.fileName || '';\n  \n  let content = item.json;\n  if (item.binary && item.binary.data.data) {\n    const fileContent = Buffer.from(item.binary.data.data, 'base64').toString('utf8');\n    content = JSON.parse(fileContent);\n  }\n  \n  if (filePath.includes('financial_analysis')) {\n    financialData = content;\n  } else if (filePath.includes('narrative')) {\n    narrativeData = content;\n  }\n}\n\nreturn [{\n  json: {\n    success: true,\n    ticker: ticker,\n    financial_metrics: financialData,\n    narrative_analysis: narrativeData,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1664,
+        -80
+      ],
+      "id": "23db65d0-1491-4131-b5d2-bb7f6520b22c",
+      "name": "Parse Both Results"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Financial Analyzer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Handling",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Variables": {
+      "main": [
+        [
+          {
+            "node": "Setup Github Repo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setup Github Repo": {
+      "main": [
+        [
+          {
+            "node": "Set Path Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Path Variables": {
+      "main": [
+        [
+          {
+            "node": "Setup Python Enviornment and Output Directories",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edgar_Fetcher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edgar_Fetcher": {
+      "main": [
+        [
+          {
+            "node": "Validate Fetcher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Fetcher": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Financial Analyzer": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Narrative Parser": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Handling": {
+      "main": [
+        [
+          {
+            "node": "Cleanup ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Narrative Parser",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Parse Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "Parse Both Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Results": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Both Results": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7fbcb44e-ea48-4ab4-a7b3-3465eb4fd493",
+  "meta": {
+    "instanceId": "54e139bdd36444c24c3c5ac8519ffbbee75318a9c1efe841874a03d85ac23aaf"
+  },
+  "id": "bZAFRXuAm8KGywd8",
+  "tags": []
+}

@@ -1,0 +1,18 @@
+id,date,category,content,relevance_score
+1,2024-12-15,pattern,"When NVDA drops more than 3%, portfolio typically recovers within 5 trading days based on historical patterns",high
+2,2024-12-15,risk_tolerance,"User is comfortable with 10-15% drawdowns, becomes concerned above 15% threshold",high
+3,2024-12-15,sector_insight,"Semiconductor sector (NVDA + AMD) represents 43% of portfolio, showing 2x volatility versus total market",high
+4,2024-12-16,observation,"Microsoft weight has been drifting upward consistently, user considering rebalancing at 40% threshold",high
+5,2024-12-16,user_preference,"User prefers educational insights focused on risk management and learning opportunities",high
+6,2024-12-17,market_pattern,"AI stocks demonstrate high correlation - diversification within AI sector provides limited risk reduction",high
+7,2024-12-18,recovery_pattern,"Historical analysis shows V-shaped recoveries occur 70% of time, U-shaped recoveries 30%",medium
+8,2024-12-19,concentration_risk,"Single position exceeding 35% triggers rebalancing consideration according to user guidelines",high
+9,2024-12-20,volatility_insight,"Daily volatility averaging 1.8% for this AI-heavy portfolio versus 1.1% for broader market indices",medium
+10,2024-12-21,sector_correlation,"Cloud infrastructure and semiconductor sectors move together during Fed policy announcements",medium
+11,2024-12-15,pattern,"Small daily gains of 0.5-1% typically compound to meaningful returns when sustained over multiple weeks",medium
+12,2024-12-16,observation,"When semiconductor stocks rise together, it usually indicates positive sentiment about AI chip demand",medium
+13,2024-12-17,risk_insight,"Low volatility days often precede larger moves as the market consolidates before the next directional shift",medium
+14,2024-12-18,pattern,"When all five positions gain simultaneously, sector-wide optimism is driving returns rather than stock-specific news",medium
+15,2024-12-19,observation,"Extended rallies lasting 3-4 days often lead to profit-taking as short-term traders lock in gains",medium
+16,2024-12-20,recovery_pattern,"Pullbacks of 1-2% after strong runs are healthy consolidations, not concerning reversals",high
+17,2024-12-21,pattern,"Quick recoveries (within 1-2 days) from pullbacks indicate strong underlying demand and buyer support",high

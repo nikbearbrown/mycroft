@@ -1,0 +1,479 @@
+{
+  "name": "Patent Filing Velocity Tracker",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "run-patent-pipeline",
+        "httpMethod": "GET",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Manual Run Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-4400, 0],
+      "webhookId": "run-patent-pipeline"
+    },
+    {
+      "parameters": {
+        "path": "patent-dashboard",
+        "httpMethod": "GET",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "dashboard-webhook",
+      "name": "Dashboard Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-4400, 240],
+      "webhookId": "patent-dashboard"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Fetch Patents — AI Chips Category\n// USPTO PatentsView API — free, no auth required\n// Companies: NVIDIA, AMD, Intel, Google, Apple\n// CPC codes for AI chips: G06N (ML/AI) + H01L (semiconductor devices)\n\nconst companies = [\n  { name: 'NVIDIA', aliases: ['NVIDIA Corporation', 'NVIDIA Corp', 'Nvidia'] },\n  { name: 'AMD', aliases: ['Advanced Micro Devices', 'Advanced Micro Devices Inc', 'AMD'] },\n  { name: 'Intel', aliases: ['Intel Corporation', 'Intel Corp', 'Intel'] },\n  { name: 'Google', aliases: ['Google LLC', 'Google Inc', 'Alphabet', 'DeepMind'] },\n  { name: 'Apple', aliases: ['Apple Inc', 'Apple Computer', 'Apple'] }\n];\n\nconst CPC_CODES = ['G06N', 'H01L'];\n\n// Calculate date range — last 8 quarters\nconst now = new Date();\nconst eightQuartersAgo = new Date(now);\neightQuartersAgo.setFullYear(eightQuartersAgo.getFullYear() - 2);\nconst dateFrom = eightQuartersAgo.toISOString().split('T')[0];\nconst dateTo = now.toISOString().split('T')[0];\n\nconst results = [];\n\nfor (const company of companies) {\n  for (const alias of company.aliases) {\n    try {\n      const query = {\n        _and: [\n          { _or: CPC_CODES.map(code => ({ cpc_section_id: { _text_phrase: code } })) },\n          { assignee_organization: { _text_phrase: alias } },\n          { patent_date: { _gte: dateFrom, _lte: dateTo } }\n        ]\n      };\n\n      const url = 'https://api.patentsview.org/patents/query';\n      const body = {\n        q: query,\n        f: ['patent_id', 'patent_title', 'patent_abstract', 'patent_date', \n            'assignee_organization', 'inventor_last_name', 'inventor_first_name',\n            'cpc_section_id', 'cpc_subgroup_id'],\n        o: { per_page: 100, page: 1 }\n      };\n\n      const response = await $helpers.httpRequest({\n        method: 'POST',\n        url,\n        headers: { 'Content-Type': 'application/json' },\n        body: JSON.stringify(body)\n      });\n\n      const data = JSON.parse(response);\n      const patents = data.patents || [];\n\n      if (patents.length > 0) {\n        results.push({\n          company: company.name,\n          alias,\n          patents,\n          fetchedAt: new Date().toISOString()\n        });\n      }\n    } catch (e) {\n      results.push({\n        company: company.name,\n        alias,\n        patents: [],\n        error: e.message\n      });\n    }\n  }\n}\n\nreturn [{ json: { rawResults: results, fetchedAt: new Date().toISOString() } }];\n"
+      },
+      "id": "fetch-patents",
+      "name": "Fetch Patent Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-4160, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Node 1A — Structural Clean\n// Normalize company names, deduplicate by patent ID\n// Extract core fields\n\nconst raw = $input.first().json.rawResults || [];\n\nconst seen = new Set();\nconst cleaned = [];\n\nfor (const result of raw) {\n  for (const patent of (result.patents || [])) {\n    const id = patent.patent_id;\n    if (!id || seen.has(id)) continue;\n    seen.add(id);\n\n    const title = (patent.patent_title || '').trim();\n    if (!title) continue;\n\n    // Parse filing date into quarter\n    const date = new Date(patent.patent_date || '');\n    const year = date.getFullYear();\n    const quarter = Math.ceil((date.getMonth() + 1) / 3);\n    const quarterLabel = `${year}-Q${quarter}`;\n\n    // Extract inventors\n    const inventors = (patent.inventors || []).map(inv => \n      `${inv.inventor_first_name || ''} ${inv.inventor_last_name || ''}`.trim()\n    ).filter(Boolean);\n\n    // Extract CPC codes\n    const cpcCodes = (patent.cpcs || []).map(c => c.cpc_subgroup_id).filter(Boolean);\n\n    cleaned.push({\n      patentId: id,\n      company: result.company,\n      title,\n      abstract: (patent.patent_abstract || '').slice(0, 500),\n      filingDate: patent.patent_date,\n      quarterLabel,\n      year,\n      quarter,\n      inventors,\n      inventorCount: inventors.length,\n      cpcCodes,\n      assignee: patent.assignee_organization || result.alias\n    });\n  }\n}\n\nreturn [{ json: { patents: cleaned, totalCount: cleaned.length, fetchedAt: $input.first().json.fetchedAt } }];\n"
+      },
+      "id": "node-1a",
+      "name": "1A: Structural Clean",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-3920, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Node 1B — Category Classifier + Velocity Pre-Scorer\n// Map CPC codes to readable categories\n// Calculate quarterly filing counts per company\n// Tag velocity zones\n\nconst { patents } = $input.first().json;\n\n// CPC to category mapping\nconst CPC_CATEGORIES = {\n  'G06N': 'AI/ML Algorithms',\n  'G06N3': 'Neural Networks',\n  'G06N3/063': 'AI Hardware',\n  'G06N20': 'Machine Learning',\n  'H01L': 'Semiconductor Devices',\n  'H01L29': 'Transistors',\n  'H01L21': 'Semiconductor Manufacturing',\n};\n\nconst categorized = patents.map(p => {\n  const primaryCategory = p.cpcCodes.reduce((best, code) => {\n    const match = Object.keys(CPC_CATEGORIES).find(k => code.startsWith(k));\n    return match ? CPC_CATEGORIES[match] : best;\n  }, 'General Technology');\n\n  return { ...p, primaryCategory };\n});\n\n// Build quarterly filing counts per company\nconst quarterlyMap = {};\nfor (const patent of categorized) {\n  const key = `${patent.company}::${patent.quarterLabel}`;\n  if (!quarterlyMap[key]) {\n    quarterlyMap[key] = {\n      company: patent.company,\n      quarter: patent.quarterLabel,\n      year: patent.year,\n      quarterNum: patent.quarter,\n      count: 0,\n      patents: [],\n      inventors: new Set()\n    };\n  }\n  quarterlyMap[key].count++;\n  quarterlyMap[key].patents.push({ title: patent.title, abstract: patent.abstract });\n  patent.inventors.forEach(inv => quarterlyMap[key].inventors.add(inv));\n}\n\n// Convert to array and calculate velocity\nconst companies = ['NVIDIA', 'AMD', 'Intel', 'Google', 'Apple'];\nconst quarterlyStats = [];\n\nfor (const company of companies) {\n  const companyQuarters = Object.values(quarterlyMap)\n    .filter(q => q.company === company)\n    .sort((a, b) => a.year !== b.year ? a.year - b.year : a.quarterNum - b.quarterNum);\n\n  for (let i = 0; i < companyQuarters.length; i++) {\n    const current = companyQuarters[i];\n    const prior = companyQuarters[i - 1];\n    const priorYear = companyQuarters.find(\n      q => q.year === current.year - 1 && q.quarterNum === current.quarterNum\n    );\n\n    const qoqChange = prior \n      ? ((current.count - prior.count) / Math.max(prior.count, 1)) * 100 \n      : 0;\n    const yoyChange = priorYear \n      ? ((current.count - priorYear.count) / Math.max(priorYear.count, 1)) * 100 \n      : 0;\n\n    // Velocity score 0-100 based on QoQ acceleration\n    const velocityScore = Math.min(100, Math.max(0, Math.round(50 + qoqChange * 0.5)));\n\n    // Zone classification\n    const zone = qoqChange > 50 ? 'ACCELERATING' \n                : qoqChange < -20 ? 'DECELERATING' \n                : 'STEADY';\n\n    quarterlyStats.push({\n      company,\n      quarter: current.quarter,\n      year: current.year,\n      quarterNum: current.quarterNum,\n      filingCount: current.count,\n      qoqChange: Math.round(qoqChange),\n      yoyChange: Math.round(yoyChange),\n      velocityScore,\n      zone,\n      uniqueInventors: current.inventors.size,\n      patents: current.patents\n    });\n  }\n}\n\n// Get latest quarter stats per company for Claude analysis\nconst latestPerCompany = companies.map(company => {\n  const quarters = quarterlyStats.filter(q => q.company === company);\n  return quarters[quarters.length - 1] || null;\n}).filter(Boolean);\n\nreturn [{ \n  json: { \n    quarterlyStats, \n    latestPerCompany,\n    allPatents: categorized,\n    timestamp: new Date().toISOString(),\n    date: new Date().toISOString().split('T')[0]\n  } \n}];\n"
+      },
+      "id": "node-1b",
+      "name": "1B: Category Classifier + Velocity Pre-Scorer",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-3680, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Aggregate for Claude\n// Prepare structured inputs for 5 parallel Claude calls\n// Load previous quarter data from Supabase static data\n\nconst data = $input.first().json;\nconst { quarterlyStats, latestPerCompany, allPatents } = data;\n\n// Load previous concepts from static data\nconst staticData = $getWorkflowStaticData('global');\nconst previousConcepts = staticData.previousConcepts || {};\nconst previousInventors = staticData.previousInventors || {};\n\n// Prepare abstracts per company for Claude\nconst abstractsByCompany = {};\nfor (const company of ['NVIDIA', 'AMD', 'Intel', 'Google', 'Apple']) {\n  const companyPatents = allPatents\n    .filter(p => p.company === company)\n    .slice(-20) // Last 20 patents\n    .map(p => ({ title: p.title, abstract: p.abstract, quarter: p.quarterLabel }));\n  abstractsByCompany[company] = companyPatents;\n}\n\n// Inventor lists per company\nconst inventorsByCompany = {};\nfor (const company of ['NVIDIA', 'AMD', 'Intel', 'Google', 'Apple']) {\n  const inventors = [...new Set(\n    allPatents\n      .filter(p => p.company === company)\n      .flatMap(p => p.inventors)\n  )];\n  inventorsByCompany[company] = inventors;\n}\n\nreturn [{\n  json: {\n    ...data,\n    abstractsByCompany,\n    inventorsByCompany,\n    previousConcepts,\n    previousInventors,\n    acceleratingCompanies: latestPerCompany.filter(c => c.zone === 'ACCELERATING')\n  }\n}];\n"
+      },
+      "id": "aggregate-for-claude",
+      "name": "Aggregate for Claude",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-3440, 0]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a patent analytics expert specializing in semiconductor and AI hardware technology.\n\nAnalyze the patent filing velocity for these AI chip companies and score each one on acceleration.\n\nFor each company provide:\n- velocityScore (0-100): how aggressively are they filing?\n  0-30 = slowing down or dormant\n  31-60 = steady state\n  61-80 = notable acceleration\n  81-100 = aggressive expansion\n- trend: ACCELERATING / STEADY / DECELERATING\n- insight: one sentence on what the velocity pattern suggests\n\nReturn ONLY valid JSON array:\n[{ \"company\": string, \"velocityScore\": number, \"trend\": string, \"insight\": string }]\n\nData: {{ JSON.stringify($json.latestPerCompany.map(c => ({ company: c.company, currentQuarter: c.filingCount, qoqChange: c.qoqChange + '%', yoyChange: c.yoyChange + '%', zone: c.zone }))) }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a patent analytics expert. Always respond with valid JSON only. No markdown, no explanation."
+            }
+          ]
+        }
+      },
+      "id": "claude-1-velocity",
+      "name": "Claude 1: Velocity Score",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [-3200, -480]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a technology intelligence analyst specializing in AI hardware patents.\n\nAnalyze these patent abstracts and identify NEW technical concepts that have NOT appeared in previous quarters.\n\nPrevious known concepts: {{ JSON.stringify($json.previousConcepts) }}\n\nFor each company, identify:\n- newConcepts: technical terms or approaches appearing for the first time\n- emergingThemes: 2-3 word themes that cluster multiple new concepts\n- noveltyScore (0-100): how novel is this quarter's technical vocabulary?\n\nReturn ONLY valid JSON:\n[{ \"company\": string, \"newConcepts\": string[], \"emergingThemes\": string[], \"noveltyScore\": number }]\n\nPatent abstracts by company: {{ JSON.stringify($json.abstractsByCompany) }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a technology intelligence analyst. Always respond with valid JSON only. No markdown, no explanation."
+            }
+          ]
+        }
+      },
+      "id": "claude-2-concepts",
+      "name": "Claude 2: Concept Novelty",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [-3200, -240]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a talent intelligence analyst specializing in AI hardware research teams.\n\nAnalyze inventor lists for these companies and identify significant changes.\n\nPrevious known inventors: {{ JSON.stringify($json.previousInventors) }}\nCurrent inventors: {{ JSON.stringify($json.inventorsByCompany) }}\n\nFor each company identify:\n- newInventors: names appearing for first time\n- inventorGrowthRate: percentage change in unique inventors\n- teamExpansionSignal: EXPANDING / STABLE / CONTRACTING\n- insight: one sentence on what inventor changes suggest\n\nReturn ONLY valid JSON:\n[{ \"company\": string, \"newInventorCount\": number, \"teamExpansionSignal\": string, \"insight\": string }]\n",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a talent intelligence analyst. Always respond with valid JSON only. No markdown, no explanation."
+            }
+          ]
+        }
+      },
+      "id": "claude-3-inventors",
+      "name": "Claude 3: Inventor Network",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [-3200, 0]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a competitive intelligence analyst specializing in semiconductor strategy.\n\nAnalyze cross-company patent patterns to detect convergence and divergence.\n\nIdentify:\n- convergenceTopics: technical areas where 3+ companies are filing simultaneously\n- divergenceTopics: areas where only 1 company is filing (potential differentiation)\n- leaderByCategory: which company leads in each technical sub-area\n- strategicInsight: 2 sentences on what the cross-company pattern suggests about the competitive landscape\n\nReturn ONLY valid JSON:\n{\n  \"convergenceTopics\": string[],\n  \"divergenceTopics\": [{ \"topic\": string, \"company\": string }],\n  \"leaderByCategory\": [{ \"category\": string, \"leader\": string }],\n  \"strategicInsight\": string\n}\n\nPatent data: {{ JSON.stringify($json.abstractsByCompany) }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a competitive intelligence analyst. Always respond with valid JSON only. No markdown, no explanation."
+            }
+          ]
+        }
+      },
+      "id": "claude-4-convergence",
+      "name": "Claude 4: Cross-Company Convergence",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [-3200, 240]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a technology strategy analyst reading patent abstracts.\n\nClassify the strategic intent behind each company's current patent batch.\n\nChoose exactly one classification per company:\n- DEFENSIVE: protecting existing products, blocking competitors\n- EXPANSIVE: entering new adjacent markets\n- FOUNDATIONAL: platform-level bets, infrastructure patents\n- INCREMENTAL: improvements to existing products\n- EXPLORATORY: early-stage research, no clear commercial path yet\n\nReturn ONLY valid JSON:\n[{\n  \"company\": string,\n  \"intent\": string,\n  \"confidence\": number,\n  \"reasoning\": string,\n  \"keyTechnicalThemes\": string[]\n}]\n\nPatent abstracts: {{ JSON.stringify($json.abstractsByCompany) }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a technology strategy analyst. Always respond with valid JSON only. No markdown, no explanation."
+            }
+          ]
+        }
+      },
+      "id": "claude-5-intent",
+      "name": "Claude 5: Strategic Intent",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [-3200, 480]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-20250514",
+          "mode": "list"
+        },
+        "options": { "maxTokensToSample": 1500 }
+      },
+      "id": "anthropic-model-1",
+      "name": "Anthropic Model 1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [-3200, -640],
+      "credentials": {
+        "anthropicApi": {
+          "id": "YOUR_ANTHROPIC_CREDENTIAL_ID",
+          "name": "YOUR_ANTHROPIC_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-20250514",
+          "mode": "list"
+        },
+        "options": { "maxTokensToSample": 1500 }
+      },
+      "id": "anthropic-model-2",
+      "name": "Anthropic Model 2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [-3200, -400],
+      "credentials": {
+        "anthropicApi": {
+          "id": "YOUR_ANTHROPIC_CREDENTIAL_ID",
+          "name": "YOUR_ANTHROPIC_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-20250514",
+          "mode": "list"
+        },
+        "options": { "maxTokensToSample": 1500 }
+      },
+      "id": "anthropic-model-3",
+      "name": "Anthropic Model 3",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [-3200, -160],
+      "credentials": {
+        "anthropicApi": {
+          "id": "YOUR_ANTHROPIC_CREDENTIAL_ID",
+          "name": "YOUR_ANTHROPIC_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-20250514",
+          "mode": "list"
+        },
+        "options": { "maxTokensToSample": 1500 }
+      },
+      "id": "anthropic-model-4",
+      "name": "Anthropic Model 4",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [-3200, 80],
+      "credentials": {
+        "anthropicApi": {
+          "id": "YOUR_ANTHROPIC_CREDENTIAL_ID",
+          "name": "YOUR_ANTHROPIC_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-20250514",
+          "mode": "list"
+        },
+        "options": { "maxTokensToSample": 1500 }
+      },
+      "id": "anthropic-model-5",
+      "name": "Anthropic Model 5",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [-3200, 320],
+      "credentials": {
+        "anthropicApi": {
+          "id": "YOUR_ANTHROPIC_CREDENTIAL_ID",
+          "name": "YOUR_ANTHROPIC_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "waitForAll",
+        "numberInputs": 5
+      },
+      "id": "merge-claude-outputs",
+      "name": "Merge Claude Outputs",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [-2960, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Signal Aggregator\n// Parse all 5 Claude outputs and merge into single object\n\nfunction parseLlmOutput(text) {\n  if (!text) return null;\n  try {\n    const clean = (text + '')\n      .replace(/^```[\\w]*\\n?/m, '')\n      .replace(/\\n?```$/m, '')\n      .trim();\n    return JSON.parse(clean);\n  } catch (e) {\n    return null;\n  }\n}\n\nconst items = $input.all();\n\nlet velocityScores   = null;\nlet conceptNovelty   = null;\nlet inventorNetwork  = null;\nlet convergence      = null;\nlet strategicIntent  = null;\n\nfor (const item of items) {\n  const parsed = parseLlmOutput(item.json.text);\n  if (!parsed) continue;\n\n  if (Array.isArray(parsed) && parsed.length > 0) {\n    const first = parsed[0];\n    if ('velocityScore' in first && 'trend' in first) velocityScores = parsed;\n    else if ('noveltyScore' in first) conceptNovelty = parsed;\n    else if ('teamExpansionSignal' in first) inventorNetwork = parsed;\n    else if ('intent' in first && 'keyTechnicalThemes' in first) strategicIntent = parsed;\n  } else if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n    if ('convergenceTopics' in parsed) convergence = parsed;\n  }\n}\n\nvelocityScores  = velocityScores  || [];\nconceptNovelty  = conceptNovelty  || [];\ninventorNetwork = inventorNetwork || [];\nconvergence     = convergence     || {};\nstrategicIntent = strategicIntent || [];\n\n// Get pipeline data from Aggregate for Claude node\nconst pipelineData = $('Aggregate for Claude').first().json;\n\n// Save current concepts and inventors to static data for next run comparison\nconst staticData = $getWorkflowStaticData('global');\nstaticData.previousConcepts = conceptNovelty.reduce((acc, c) => {\n  acc[c.company] = c.newConcepts || [];\n  return acc;\n}, {});\nstaticData.previousInventors = pipelineData.inventorsByCompany || {};\n\n// Build leaderboard\nconst leaderboard = (velocityScores || []).map(v => {\n  const concept = (conceptNovelty || []).find(c => c.company === v.company) || {};\n  const inventor = (inventorNetwork || []).find(i => i.company === v.company) || {};\n  const intent = (strategicIntent || []).find(s => s.company === v.company) || {};\n  const quarterly = (pipelineData.latestPerCompany || []).find(q => q.company === v.company) || {};\n\n  return {\n    company: v.company,\n    velocityScore: v.velocityScore,\n    trend: v.trend,\n    velocityInsight: v.insight,\n    filingCount: quarterly.filingCount || 0,\n    qoqChange: quarterly.qoqChange || 0,\n    yoyChange: quarterly.yoyChange || 0,\n    noveltyScore: concept.noveltyScore || 0,\n    newConcepts: concept.newConcepts || [],\n    emergingThemes: concept.emergingThemes || [],\n    teamExpansionSignal: inventor.teamExpansionSignal || 'UNKNOWN',\n    newInventorCount: inventor.newInventorCount || 0,\n    inventorInsight: inventor.insight || '',\n    strategicIntent: intent.intent || 'UNKNOWN',\n    intentConfidence: intent.confidence || 0,\n    intentReasoning: intent.reasoning || '',\n    keyTechnicalThemes: intent.keyTechnicalThemes || []\n  };\n}).sort((a, b) => b.velocityScore - a.velocityScore);\n\nreturn [{\n  json: {\n    leaderboard,\n    convergence,\n    quarterlyStats: pipelineData.quarterlyStats,\n    timestamp: pipelineData.timestamp,\n    date: pipelineData.date,\n    totalPatentsAnalyzed: (pipelineData.allPatents || []).length\n  }\n}];\n"
+      },
+      "id": "signal-aggregator",
+      "name": "Signal Aggregator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-2720, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "YOUR_SUPABASE_URL/rest/v1/patent_runs",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "YOUR_SUPABASE_ANON_KEY" },
+            { "name": "Authorization", "value": "Bearer YOUR_SUPABASE_ANON_KEY" },
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "return=minimal" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "date", "value": "={{ $json.date }}" },
+            { "name": "timestamp", "value": "={{ $json.timestamp }}" },
+            { "name": "leaderboard", "value": "={{ $json.leaderboard }}" },
+            { "name": "convergence", "value": "={{ $json.convergence }}" },
+            { "name": "quarterly_stats", "value": "={{ $json.quarterlyStats }}" },
+            { "name": "total_patents_analyzed", "value": "={{ $json.totalPatentsAnalyzed }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "insert-to-supabase",
+      "name": "Insert to Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-2480, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Check if triggered by webhook or schedule\n// Only respond if webhook-triggered\nconst mode = $execution.mode;\nreturn [{ json: { ...$input.first().json, triggeredByWebhook: mode === 'webhook' } }];\n"
+      },
+      "id": "check-trigger",
+      "name": "Check Trigger Type",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-2240, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true },
+          "conditions": [
+            {
+              "id": "webhook-check",
+              "leftValue": "={{ $json.triggeredByWebhook }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "true" }
+            }
+          ]
+        }
+      },
+      "id": "if-webhook",
+      "name": "If Webhook",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [-2000, 0]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'success', message: 'Pipeline completed', date: $json.date, totalPatents: $json.totalPatentsAnalyzed, topCompany: $json.leaderboard[0]?.company, topVelocityScore: $json.leaderboard[0]?.velocityScore }) }}",
+        "options": {
+          "responseHeaders": {
+            "values": [
+              { "name": "Content-Type", "value": "application/json" },
+              { "name": "Access-Control-Allow-Origin", "value": "*" }
+            ]
+          }
+        }
+      },
+      "id": "pipeline-response",
+      "name": "Pipeline Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [-1760, -160]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build Dashboard HTML\n// Embed full dashboard as string — no fs required\nconst html = `<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Patent Filing Velocity Tracker</title>\n  <script src=\"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js\"></script>\n  <style>\n    :root {\n      --bg: #F5F6FA; --surface: #FFFFFF; --surface-2: #F0F2F8;\n      --border: #E2E6F0; --border-strong: #C8D0E0;\n      --text-primary: #1A1D2E; --text-secondary: #5A6080; --text-muted: #8A90A8;\n      --blue: #2563EB; --blue-light: #EFF6FF;\n      --green: #16A34A; --green-light: #F0FDF4;\n      --orange: #D97706; --orange-light: #FFFBEB;\n      --red: #D63B3B; --red-light: #FEF0F0;\n      --shadow: 0 1px 3px rgba(0,0,0,0.08);\n      --shadow-md: 0 4px 6px rgba(0,0,0,0.07);\n      --radius: 12px; --radius-sm: 8px;\n    }\n    * { box-sizing: border-box; margin: 0; padding: 0; }\n    body { background: var(--bg); font-family: system-ui, -apple-system, sans-serif; color: var(--text-primary); }\n    header { background: white; border-bottom: 1px solid var(--border); padding: 1.25rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }\n    header h1 { font-size: 18px; font-weight: 700; }\n    header p { font-size: 12px; color: var(--text-muted); margin-top: 3px; }\n    .header-right { display: flex; gap: 12px; align-items: center; }\n    .refresh-btn { background: var(--blue); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }\n    .refresh-btn:hover { background: #1d4ed8; }\n    .last-updated { font-size: 12px; color: var(--text-muted); background: var(--surface-2); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); }\n    main { padding: 2rem; max-width: 1400px; margin: 0 auto; }\n    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; }\n    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }\n    .panel { background: white; border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; box-shadow: var(--shadow); animation: fadeInUp 0.4s ease forwards; opacity: 0; }\n    .panel:nth-child(1){animation-delay:.05s}.panel:nth-child(2){animation-delay:.10s}.panel:nth-child(3){animation-delay:.15s}.panel:nth-child(4){animation-delay:.20s}.panel:nth-child(5){animation-delay:.25s}.panel:nth-child(6){animation-delay:.30s}\n    @keyframes fadeInUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }\n    .panel-title { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }\n    .company-card { background: var(--surface-2); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }\n    .company-name { font-size: 15px; font-weight: 700; color: var(--text-primary); }\n    .company-insight { font-size: 12px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4; }\n    .velocity-badge { font-size: 22px; font-weight: 800; flex-shrink: 0; }\n    .trend-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-top: 4px; display: inline-block; }\n    .ACCELERATING { background: var(--green-light); color: var(--green); }\n    .STEADY { background: var(--orange-light); color: var(--orange); }\n    .DECELERATING { background: var(--red-light); color: var(--red); }\n    .chart-container { position: relative; height: 240px; }\n    .tag { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; background: var(--blue-light); color: var(--blue); display: inline-block; margin: 2px; }\n    .intent-card { border-left: 3px solid var(--blue); padding-left: 12px; margin-bottom: 0.75rem; }\n    .intent-card .company { font-size: 13px; font-weight: 700; }\n    .intent-card .intent { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin: 2px 0; }\n    .intent-card .reasoning { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }\n    .convergence-item { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }\n    .convergence-item::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); flex-shrink: 0; }\n    #loading { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; gap: 1rem; background: var(--bg); }\n    .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; }\n    @keyframes spin { to { transform: rotate(360deg); } }\n    #loading p { font-size: 14px; color: var(--text-muted); }\n    #error { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100vh; gap: 1rem; text-align: center; }\n    #app { display: none; }\n  </style>\n</head>\n<body>\n  <div id=\"loading\"><div class=\"spinner\"></div><p>Loading patent data...</p></div>\n  <div id=\"error\"><p style=\"font-size:18px;font-weight:600\">Unable to load data</p><p id=\"error-msg\" style=\"font-size:14px;color:var(--text-muted)\"></p><button onclick=\"fetchData()\" style=\"background:var(--blue);color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer\">Retry</button></div>\n  <div id=\"app\">\n    <header>\n      <div><h1>Patent Filing Velocity Tracker</h1><p id=\"subtitle\">AI Chips · NVIDIA · AMD · Intel · Google · Apple</p></div>\n      <div class=\"header-right\">\n        <span class=\"last-updated\" id=\"last-updated\">Loading...</span>\n        <button class=\"refresh-btn\" onclick=\"fetchData()\">Refresh Now</button>\n      </div>\n    </header>\n    <main>\n      <div class=\"grid-3\">\n        <div class=\"panel\" id=\"panel-leaderboard\"><div class=\"panel-title\">Velocity Leaderboard</div><div id=\"leaderboard-content\"></div></div>\n        <div class=\"panel\" id=\"panel-intent\"><div class=\"panel-title\">Strategic Intent</div><div id=\"intent-content\"></div></div>\n        <div class=\"panel\" id=\"panel-convergence\"><div class=\"panel-title\">Cross-Company Convergence</div><div id=\"convergence-content\"></div></div>\n      </div>\n      <div class=\"grid-2\">\n        <div class=\"panel\"><div class=\"panel-title\">Filing Velocity Over Time</div><div class=\"chart-container\"><canvas id=\"velocity-chart\"></canvas></div></div>\n        <div class=\"panel\"><div class=\"panel-title\">Emerging Concepts by Company</div><div id=\"concepts-content\"></div></div>\n      </div>\n    </main>\n  </div>\n  <script>\n    const SUPABASE_URL = 'YOUR_SUPABASE_URL';\n    const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';\n    const ENDPOINT = SUPABASE_URL + '/rest/v1/patent_runs?order=created_at.desc&limit=8';\n    const charts = {};\n\n    async function fetchData() {\n      try {\n        document.getElementById('loading').style.display = 'flex';\n        document.getElementById('app').style.display = 'none';\n        const res = await fetch(ENDPOINT, {\n          headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY }\n        });\n        if (!res.ok) throw new Error('HTTP ' + res.status);\n        const rows = await res.json();\n        if (!rows.length) throw new Error('No data yet — run the pipeline first');\n        render(rows);\n        document.getElementById('loading').style.display = 'none';\n        document.getElementById('app').style.display = 'block';\n        document.getElementById('last-updated').textContent = 'Last updated: ' + rows[0].date;\n      } catch(e) {\n        document.getElementById('loading').style.display = 'none';\n        document.getElementById('error').style.display = 'flex';\n        document.getElementById('error-msg').textContent = e.message;\n      }\n    }\n\n    function safe(f) {\n      if (!f) return null;\n      if (typeof f === 'object') return f;\n      try { const p = JSON.parse(f); return typeof p === 'string' ? JSON.parse(p) : p; } catch(e) { return null; }\n    }\n\n    function render(rows) {\n      const latest = rows[0];\n      const history = [...rows].reverse();\n      const leaderboard = safe(latest.leaderboard) || [];\n      const convergence = safe(latest.convergence) || {};\n      const quarterly = safe(latest.quarterly_stats) || [];\n\n      // Leaderboard panel\n      const lb = document.getElementById('leaderboard-content');\n      lb.innerHTML = leaderboard.map(c => {\n        const color = c.velocityScore > 70 ? 'var(--green)' : c.velocityScore > 40 ? 'var(--orange)' : 'var(--red)';\n        return '<div class=\"company-card\">' +\n          '<div><div class=\"company-name\">' + c.company + '</div>' +\n          '<div class=\"company-insight\">' + (c.velocityInsight || '') + '</div>' +\n          '<span class=\"trend-badge ' + c.trend + '\">' + c.trend + '</span></div>' +\n          '<div style=\"text-align:right\"><div class=\"velocity-score\" style=\"font-size:28px;font-weight:800;color:' + color + '\">' + c.velocityScore + '</div>' +\n          '<div style=\"font-size:11px;color:var(--text-muted)\">' + (c.qoqChange >= 0 ? '+' : '') + c.qoqChange + '% QoQ</div></div></div>';\n      }).join('');\n\n      // Strategic intent panel\n      const ic = document.getElementById('intent-content');\n      ic.innerHTML = leaderboard.map(c =>\n        '<div class=\"intent-card\">' +\n        '<div class=\"company\">' + c.company + '</div>' +\n        '<div class=\"intent\">' + (c.strategicIntent || 'UNKNOWN') + ' · ' + Math.round((c.intentConfidence || 0) * 100) + '% confidence</div>' +\n        '<div class=\"reasoning\">' + (c.intentReasoning || '') + '</div>' +\n        '<div style=\"margin-top:6px\">' + (c.keyTechnicalThemes || []).map(t => '<span class=\"tag\">' + t + '</span>').join('') + '</div></div>'\n      ).join('');\n\n      // Convergence panel\n      const cc = document.getElementById('convergence-content');\n      const conv = convergence.convergenceTopics || [];\n      const diverg = convergence.divergenceTopics || [];\n      cc.innerHTML = '<p style=\"font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:8px\">Shared Focus Areas</p>' +\n        conv.map(t => '<div class=\"convergence-item\">' + t + '</div>').join('') +\n        '<p style=\"font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin:16px 0 8px\">Differentiation Areas</p>' +\n        diverg.map(d => '<div class=\"convergence-item\"><strong>' + d.company + '</strong>: ' + d.topic + '</div>').join('') +\n        (convergence.strategicInsight ? '<p style=\"margin-top:16px;font-size:13px;color:var(--text-secondary);border-left:3px solid var(--blue);padding-left:12px;line-height:1.6\">' + convergence.strategicInsight + '</p>' : '');\n\n      // Velocity chart\n      const companies = ['NVIDIA', 'AMD', 'Intel', 'Google', 'Apple'];\n      const colors = ['#2563EB', '#D97706', '#16A34A', '#D63B3B', '#7C3AED'];\n      const labels = [...new Set(quarterly.map(q => q.quarter))].sort();\n      if (charts['velocity-chart']) charts['velocity-chart'].destroy();\n      const ctx = document.getElementById('velocity-chart').getContext('2d');\n      charts['velocity-chart'] = new Chart(ctx, {\n        type: 'line',\n        data: {\n          labels,\n          datasets: companies.map((co, i) => ({\n            label: co,\n            data: labels.map(q => { const found = quarterly.find(r => r.company === co && r.quarter === q); return found ? found.filingCount : 0; }),\n            borderColor: colors[i],\n            backgroundColor: 'transparent',\n            tension: 0.3,\n            pointRadius: 4\n          }))\n        },\n        options: {\n          responsive: true, maintainAspectRatio: false,\n          plugins: { legend: { labels: { font: { size: 11 }, color: '#5A6080', boxWidth: 12 } } },\n          scales: {\n            x: { grid: { color: '#F0F2F8' }, ticks: { font: { size: 10 }, color: '#8A90A8' } },\n            y: { grid: { color: '#F0F2F8' }, ticks: { font: { size: 10 }, color: '#8A90A8' } }\n          }\n        }\n      });\n\n      // Emerging concepts\n      const ec = document.getElementById('concepts-content');\n      ec.innerHTML = leaderboard.map(c =>\n        '<div style=\"margin-bottom:1rem\"><div style=\"font-size:13px;font-weight:700;margin-bottom:6px\">' + c.company + \n        ' <span style=\"font-size:11px;color:var(--text-muted);font-weight:400\">' + (c.newConcepts || []).length + ' new concepts</span></div>' +\n        (c.emergingThemes || []).map(t => '<span class=\"tag\">' + t + '</span>').join('') + '</div>'\n      ).join('');\n    }\n\n    fetchData();\n    document.addEventListener('visibilitychange', () => { if (!document.hidden) fetchData(); });\n  </script>\n</body>\n</html>`;\n\nreturn [{ json: { html } }];\n"
+      },
+      "id": "build-dashboard",
+      "name": "Build Dashboard HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-2480, 240]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.html }}",
+        "options": {
+          "responseHeaders": {
+            "values": [
+              { "name": "Content-Type", "value": "text/html; charset=utf-8" }
+            ]
+          }
+        }
+      },
+      "id": "serve-dashboard",
+      "name": "Serve Dashboard HTML",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [-2240, 240]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Run Trigger": {
+      "main": [[{ "node": "Fetch Patent Data", "type": "main", "index": 0 }]]
+    },
+    "Dashboard Webhook": {
+      "main": [[{ "node": "Build Dashboard HTML", "type": "main", "index": 0 }]]
+    },
+    "Fetch Patent Data": {
+      "main": [[{ "node": "1A: Structural Clean", "type": "main", "index": 0 }]]
+    },
+    "1A: Structural Clean": {
+      "main": [[{ "node": "1B: Category Classifier + Velocity Pre-Scorer", "type": "main", "index": 0 }]]
+    },
+    "1B: Category Classifier + Velocity Pre-Scorer": {
+      "main": [[{ "node": "Aggregate for Claude", "type": "main", "index": 0 }]]
+    },
+    "Aggregate for Claude": {
+      "main": [[
+        { "node": "Claude 1: Velocity Score", "type": "main", "index": 0 },
+        { "node": "Claude 2: Concept Novelty", "type": "main", "index": 0 },
+        { "node": "Claude 3: Inventor Network", "type": "main", "index": 0 },
+        { "node": "Claude 4: Cross-Company Convergence", "type": "main", "index": 0 },
+        { "node": "Claude 5: Strategic Intent", "type": "main", "index": 0 }
+      ]]
+    },
+    "Claude 1: Velocity Score": {
+      "main": [[{ "node": "Merge Claude Outputs", "type": "main", "index": 0 }]]
+    },
+    "Claude 2: Concept Novelty": {
+      "main": [[{ "node": "Merge Claude Outputs", "type": "main", "index": 1 }]]
+    },
+    "Claude 3: Inventor Network": {
+      "main": [[{ "node": "Merge Claude Outputs", "type": "main", "index": 2 }]]
+    },
+    "Claude 4: Cross-Company Convergence": {
+      "main": [[{ "node": "Merge Claude Outputs", "type": "main", "index": 3 }]]
+    },
+    "Claude 5: Strategic Intent": {
+      "main": [[{ "node": "Merge Claude Outputs", "type": "main", "index": 4 }]]
+    },
+    "Merge Claude Outputs": {
+      "main": [[{ "node": "Signal Aggregator", "type": "main", "index": 0 }]]
+    },
+    "Signal Aggregator": {
+      "main": [[{ "node": "Insert to Supabase", "type": "main", "index": 0 }]]
+    },
+    "Insert to Supabase": {
+      "main": [[{ "node": "Check Trigger Type", "type": "main", "index": 0 }]]
+    },
+    "Check Trigger Type": {
+      "main": [[{ "node": "If Webhook", "type": "main", "index": 0 }]]
+    },
+    "If Webhook": {
+      "main": [
+        [{ "node": "Pipeline Response", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Build Dashboard HTML": {
+      "main": [[{ "node": "Serve Dashboard HTML", "type": "main", "index": 0 }]]
+    },
+    "Anthropic Model 1": {
+      "ai_languageModel": [[{ "node": "Claude 1: Velocity Score", "type": "ai_languageModel", "index": 0 }]]
+    },
+    "Anthropic Model 2": {
+      "ai_languageModel": [[{ "node": "Claude 2: Concept Novelty", "type": "ai_languageModel", "index": 0 }]]
+    },
+    "Anthropic Model 3": {
+      "ai_languageModel": [[{ "node": "Claude 3: Inventor Network", "type": "ai_languageModel", "index": 0 }]]
+    },
+    "Anthropic Model 4": {
+      "ai_languageModel": [[{ "node": "Claude 4: Cross-Company Convergence", "type": "ai_languageModel", "index": 0 }]]
+    },
+    "Anthropic Model 5": {
+      "ai_languageModel": [[{ "node": "Claude 5: Strategic Intent", "type": "ai_languageModel", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "tags": []
+}

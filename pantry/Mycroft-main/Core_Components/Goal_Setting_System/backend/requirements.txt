@@ -1,0 +1,23 @@
+# Core API
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+python-multipart
+python-dotenv
+
+# HTTP Client
+httpx
+
+# Data & Computation
+numpy
+pandas
+scipy
+
+# Market Data
+yfinance
+pandas-datareader
+
+# Utilities
+python-jose[cryptography]
+passlib[bcrypt]

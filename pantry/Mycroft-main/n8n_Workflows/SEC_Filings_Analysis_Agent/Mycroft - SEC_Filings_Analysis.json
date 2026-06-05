@@ -1,0 +1,410 @@
+{
+  "name": "Mycroft - SEC_Filings_Analysis",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -80
+      ],
+      "id": "bc8d6172-6682-46b5-8ec9-d138615fdd8e",
+      "name": "When clicking 'Execute workflow'"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ad7edb79-74c7-4b79-96a9-2108c3256e60",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1344,
+        -80
+      ],
+      "id": "f1669312-7c58-4af5-b1c2-f269d8a9bb0a",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "78db0104-55a2-4142-bb82-370d63d9bdf5",
+              "name": "ticker",
+              "value": "AAPL",
+              "type": "string"
+            },
+            {
+              "id": "985331f1-aa8c-4888-aae7-d29cbde21a6c",
+              "name": "user_agent",
+              "value": "Humanitarians AI hr@humanitariansai.com",
+              "type": "string"
+            },
+            {
+              "id": "4731832b-6c7e-4517-8d89-6add5414aebd",
+              "name": "github_repo_url",
+              "value": "https://github.com/Humanitariansai/Mycroft",
+              "type": "string"
+            },
+            {
+              "id": "c2ff31ae-dd77-4d02-b3b0-a26898280d06",
+              "name": "scripts_path",
+              "value": "Core_Components/SEC_Filings_Analysis_Agent/",
+              "type": "string"
+            },
+            {
+              "id": "a8f92e1b-3c4d-4f2a-9b8e-7d5f6e8a9c2b",
+              "name": "temp_dir",
+              "value": "/tmp",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        -80
+      ],
+      "id": "89dc76ce-eba4-4523-ab7c-68ceeb53058e",
+      "name": "Set Variables"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $json.temp_dir }} && rm -rf sec_analysis && git clone {{ $json.github_repo_url }} sec_analysis"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        448,
+        -80
+      ],
+      "id": "9a9b65a6-6af7-41c9-bb85-eaff07ebd33f",
+      "name": "Setup Github Repo"
+    },
+    {
+      "parameters": {
+        "jsCode": "const config = $node['Set Variables'].json;\n\nconst repoDir = `${config.temp_dir}/sec_analysis`;\nconst scriptsDir = `${config.temp_dir}/sec_analysis/${config.scripts_path}`;\nconst outputDir = `${config.temp_dir}/sec_output`;\n\nreturn [{\n  json: {\n    ...config,\n    repo_dir: repoDir,\n    scripts_dir: scriptsDir,\n    output_dir: outputDir,\n    clone_success: true\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -80
+      ],
+      "id": "c6eade05-4d0e-4603-a6f1-eb29cffa47b5",
+      "name": "Set Path Variables"
+    },
+    {
+      "parameters": {
+        "command": "=rm -rf {{ $json.temp_dir }}/sec_output && mkdir -p {{ $json.temp_dir }}/sec_output/data && cd {{ $json.temp_dir }}/sec_analysis/{{ $json.scripts_path}} && python3 -m pip install -r requirements.txt --user --quiet"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        896,
+        -272
+      ],
+      "id": "fed8ddb5-7567-4c6f-90ac-b5a3e37a6964",
+      "name": "Setup Python Enviornment and Output Directories"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $json.temp_dir }}/sec_analysis/{{ $json.scripts_path }} && python3 edgar_fetcher.py --ticker {{ $json.ticker }} --output-dir {{ $json.temp_dir }}/sec_output/data --user-agent \"{{ $json.user_agent }}\" --forms 10-K,10-Q --max-per-type 1"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        896,
+        -80
+      ],
+      "id": "477e6a47-ee07-4835-9656-75a992bfcce9",
+      "name": "Edgar_Fetcher"
+    },
+    {
+      "parameters": {
+        "jsCode": "const stdout = $input.first().json.stdout;\nconst stderr = $input.first().json.stderr;\nconst exitCode = $input.first().json.exitCode;\n\nconsole.log('EDGAR stdout:', stdout);\nconsole.log('EDGAR stderr:', stderr);\n\nif (exitCode !== 0) {\n  return [{\n    json: {\n      success: false,\n      error: `EDGAR failed: ${stderr}`,\n      ticker: $node['Set Path Variables'].json.ticker\n    }\n  }];\n}\n\nlet result = {};\ntry {\n  const jsonMatch = stdout.match(/\\{[\\s\\S]*\\}/);\n  if (jsonMatch) {\n    result = JSON.parse(jsonMatch[0]);\n  } else {\n    throw new Error('No JSON output found');\n  }\n} catch (e) {\n  return [{\n    json: {\n      success: false,\n      error: `Parse error: ${e.message}`,\n      raw_output: stdout\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    ...result,\n    ticker: $node['Set Path Variables'].json.ticker,\n    user_agent: $node['Set Path Variables'].json.user_agent,\n    scripts_path: $node['Set Path Variables'].json.scripts_path,\n    temp_dir: $node['Set Path Variables'].json.temp_dir\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        -80
+      ],
+      "id": "6972340b-1218-4d7e-9d57-dd230d587019",
+      "name": "Validate Fetcher"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $json.temp_dir }}/sec_analysis/{{ $json.scripts_path }} && python3 financial_analyzer.py --ticker {{ $json.ticker }} --user-agent \"{{ $json.user_agent }}\" --output-dir {{ $json.temp_dir }}/sec_output/data"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1568,
+        -272
+      ],
+      "id": "39117ff7-7b87-4708-957d-b42159d09bf6",
+      "name": "Financial Analyzer"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $json.temp_dir }}/sec_analysis/{{ $json.scripts_path }} && python3 narrative_parser.py --input-dir {{ $json.output_directory }} --output-dir {{ $json.temp_dir }}/sec_output/data/narratives --ticker {{ $json.ticker }}"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1568,
+        -80
+      ],
+      "id": "3d0db01b-1f0c-435e-8fcb-cb3e487a2512",
+      "name": "Narrative Parser"
+    },
+    {
+      "parameters": {
+        "jsCode": "const stdout = $input.first().json.stdout;\nconst exitCode = $input.first().json.exitCode;\n\nif (exitCode !== 0) {\n  return [{\n    json: {\n      success: false,\n      error: 'Financial analysis failed'\n    }\n  }];\n}\n\nlet result = {};\ntry {\n  const jsonMatch = stdout.match(/\\{[\\s\\S]*\\}/);\n  if (jsonMatch) {\n    result = JSON.parse(jsonMatch[0]);\n  }\n} catch (e) {\n  result = { raw_output: stdout };\n}\n\nreturn [{\n  json: {\n    success: true,\n    financial_data: result,\n    ticker: $node['Set Path Variables'].json.ticker,\n    scripts_path: $node['Set Path Variables'].json.scripts_path\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1792,
+        -272
+      ],
+      "id": "0745a875-8ee8-4d2f-8464-f8eee2f4fa96",
+      "name": "Validate Financial Metrics"
+    },
+    {
+      "parameters": {
+        "jsCode": "const stdout = $input.first().json.stdout;\nconst exitCode = $input.first().json.exitCode;\n\nif (exitCode !== 0) {\n  return [{\n    json: {\n      success: false,\n      error: 'Narrative analysis failed'\n    }\n  }];\n}\n\nlet result = {};\ntry {\n  const jsonMatch = stdout.match(/\\{[\\s\\S]*\\}/);\n  if (jsonMatch) {\n    result = JSON.parse(jsonMatch[0]);\n  }\n} catch (e) {\n  result = { raw_output: stdout };\n}\n\nreturn [{\n  json: {\n    success: true,\n    narrative_data: result,\n    ticker: $node['Set Path Variables'].json.ticker\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1792,
+        -80
+      ],
+      "id": "fd33149d-fd3c-4def-85fc-193d4b80aeb3",
+      "name": "Validate Narrative Content"
+    },
+    {
+      "parameters": {
+        "command": "=rm -rf {{ $json.temp_dir }}/sec_analysis && rm -rf {{ $json.temp_dir }}/sec_output && \\\necho \"🧹 Cleanup completed\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2016,
+        -80
+      ],
+      "id": "edb686cb-1513-4fef-8de4-e037d9364f56",
+      "name": "Cleanup Temp Directories"
+    },
+    {
+      "parameters": {
+        "jsCode": "const errorData = $node['Validate Fetcher'].json;\n\nconst report = `❌ Analysis failed: ${errorData.error}\n\n🧹 Cleanup completed`;\n\nreturn [{\n  json: {\n    success: false,\n    error: errorData.error,\n    report: report,\n    cleanup_status: $input.first().json.stdout || 'completed'\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1568,
+        112
+      ],
+      "id": "f9c34360-c137-4096-b68b-bc224c0f05db",
+      "name": "Error Handling"
+    },
+    {
+      "parameters": {
+        "command": "=rm -rf {{ $json.temp_dir }}/sec_analysis && rm -rf {{ $json.temp_dir }}/sec_output && echo \"Error cleanup completed\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1792,
+        112
+      ],
+      "id": "8272faa7-a1de-4cd4-b6e5-efbc1b319e23",
+      "name": "Cleanup "
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking 'Execute workflow'": {
+      "main": [
+        [
+          {
+            "node": "Set Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Financial Analyzer",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Narrative Parser",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Handling",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Variables": {
+      "main": [
+        [
+          {
+            "node": "Setup Github Repo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setup Github Repo": {
+      "main": [
+        [
+          {
+            "node": "Set Path Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Path Variables": {
+      "main": [
+        [
+          {
+            "node": "Setup Python Enviornment and Output Directories",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edgar_Fetcher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edgar_Fetcher": {
+      "main": [
+        [
+          {
+            "node": "Validate Fetcher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Fetcher": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Financial Analyzer": {
+      "main": [
+        [
+          {
+            "node": "Validate Financial Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Narrative Parser": {
+      "main": [
+        [
+          {
+            "node": "Validate Narrative Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Financial Metrics": {
+      "main": [
+        []
+      ]
+    },
+    "Validate Narrative Content": {
+      "main": [
+        [
+          {
+            "node": "Cleanup Temp Directories",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Handling": {
+      "main": [
+        [
+          {
+            "node": "Cleanup ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d8cb6582-1458-4a0d-9229-a3df6488e84a",
+  "meta": {
+    "instanceId": "54e139bdd36444c24c3c5ac8519ffbbee75318a9c1efe841874a03d85ac23aaf"
+  },
+  "id": "lSgwca5ZzjpQda3r",
+  "tags": []
+}

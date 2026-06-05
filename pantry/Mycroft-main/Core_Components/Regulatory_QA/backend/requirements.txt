@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+SQLAlchemy
+python-multipart
+python-dotenv
+httpx
+psycopg2-binary
+
+
+langchain 
+langchain-community 
+sentence-transformers 
+chromadb
+llama-cpp-python

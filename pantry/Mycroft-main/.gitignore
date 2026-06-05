@@ -1,0 +1,35 @@
+# generated files
+target/
+generated/
+
+# dependencies
+Dependencies.toml
+
+# config files
+Config.toml
+# the config files used for testing, Uncomment the following line if you want to commit the test config files
+#!**/tests/Config.toml
+
+__pycache__/
+Core_Components/Portfolio_Stress_Test_System/backend/app/data
+*.db
+*.tsv
+
+Core_Components/SEC_Filings_Analysis_Agent/AAPL_SEC_filings/
+Core_Components/Patents_Analysis_Agent/patent_data/
+
+#macOS files
+.DS_Store
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.pytest_cache/
+
+# Virtual environments
+.venv
+
+.env

@@ -1,0 +1,139 @@
+{
+  "name": "Portfolio Dashboard",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "Portfolio",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [240, 300],
+      "webhookId": "portfolio-dashboard-webhook"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "YOUR_WORKFLOW_1_ID",
+          "mode": "list",
+          "cachedResultName": "Portfolio Price Fetcher"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "name": "Call Portfolio Price Fetcher",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nlet portfolioData = null;\n\nif (items && items.length > 0 && items[0].json) {\n  portfolioData = items[0].json;\n}\n\nif (!portfolioData || !portfolioData.stocks || portfolioData.stocks.length === 0) {\n  return [{\n    json: {\n      html: '<!DOCTYPE html><html><head><title>Error</title></head><body style=\"font-family:Arial;padding:40px;text-align:center;\"><h1>No Data</h1><p>Run Portfolio Price Fetcher workflow first.</p></body></html>'\n    }\n  }];\n}\n\nconst stocks = portfolioData.stocks;\nconst summary = portfolioData.summary;\nconst totalValue = parseFloat(summary.totalCurrentValue);\nconst totalCost = parseFloat(summary.totalCostBasis);\nconst totalGain = parseFloat(summary.totalGainLoss);\nconst totalReturn = parseFloat(summary.totalReturn);\n\nlet tableRows = '';\nstocks.forEach(stock => {\n  const gain = parseFloat(stock.gainLoss);\n  const pct = parseFloat(stock.gainLossPct);\n  const color = gain >= 0 ? '#10b981' : '#ef4444';\n  const arrow = gain >= 0 ? '↑' : '↓';\n  tableRows += '<tr><td><strong>' + stock.ticker + '</strong></td><td>' + stock.shares + '</td><td>$' + stock.buyPrice + '</td><td>$' + stock.currentPrice + '</td><td><strong>$' + parseFloat(stock.currentValue).toLocaleString('en-US', {minimumFractionDigits: 2}) + '</strong></td><td style=\"color:' + color + ';font-weight:bold;\">' + arrow + ' $' + Math.abs(gain).toLocaleString('en-US', {minimumFractionDigits: 2}) + '</td><td style=\"color:' + color + ';font-weight:bold;font-size:15px;\">' + (pct >= 0 ? '+' : '') + pct + '%</td></tr>';\n});\n\nconst chartLabels = stocks.map(s => \"'\" + s.ticker + \"'\").join(',');\nconst chartValues = stocks.map(s => parseFloat(s.currentValue)).join(',');\n\nconst html = `<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">\n  <title>AI Portfolio Tracker</title>\n  <style>\n    *{margin:0;padding:0;box-sizing:border-box}\n    body{font-family:-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,Arial,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px}\n    .container{max-width:1400px;margin:0 auto;background:white;border-radius:20px;padding:40px;box-shadow:0 20px 60px rgba(0,0,0,0.3)}\n    h1{color:#1f2937;margin-bottom:10px;font-size:2.5em}\n    .subtitle{color:#6b7280;margin-bottom:30px;font-size:1.1em}\n    .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-bottom:40px}\n    .card{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:30px;border-radius:15px;color:white;box-shadow:0 4px 15px rgba(102,126,234,0.4)}\n    .card-label{font-size:0.9em;opacity:0.95;margin-bottom:10px;font-weight:500}\n    .card-value{font-size:2.2em;font-weight:bold;margin-bottom:5px}\n    .card-change{font-size:1.1em;opacity:0.95}\n    .status-badge{display:inline-block;padding:10px 20px;border-radius:25px;font-weight:600;font-size:1em;margin-bottom:30px}\n    .status-positive{background:#d1fae5;color:#065f46}\n    .status-negative{background:#fee2e2;color:#991b1b}\n    .content-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-bottom:30px}\n    @media(max-width:968px){.content-grid{grid-template-columns:1fr}}\n    .section{background:#f9fafb;padding:30px;border-radius:15px;box-shadow:0 2px 10px rgba(0,0,0,0.05)}\n    h2{color:#1f2937;margin-bottom:20px;font-size:1.5em}\n    table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.08)}\n    th{background:#1f2937;color:white;padding:15px 12px;text-align:left;font-weight:600;font-size:0.9em}\n    td{padding:12px;border-bottom:1px solid #e5e7eb}\n    tr:last-child td{border-bottom:none}\n    tr:hover{background:#f3f4f6}\n    #pieChart{max-width:100%;max-height:400px}\n    .footer{margin-top:30px;text-align:center;color:#6b7280;padding:20px}\n    .refresh-btn{display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;text-decoration:none;border-radius:10px;margin:20px 0;font-weight:600;box-shadow:0 4px 15px rgba(102,126,234,0.4);transition:all 0.3s}\n    .refresh-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(102,126,234,0.5)}\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <h1>🤖 AI Investment Portfolio</h1>\n    <p class=\"subtitle\">Real-time tracking of your AI stock investments • Powered by n8n</p>\n    \n    <div class=\"summary\">\n      <div class=\"card\">\n        <div class=\"card-label\">Portfolio Value</div>\n        <div class=\"card-value\">$${totalValue.toLocaleString('en-US', {minimumFractionDigits: 2})}</div>\n      </div>\n      <div class=\"card\">\n        <div class=\"card-label\">Total Cost</div>\n        <div class=\"card-value\">$${totalCost.toLocaleString('en-US', {minimumFractionDigits: 2})}</div>\n      </div>\n      <div class=\"card\">\n        <div class=\"card-label\">Total Gain/Loss</div>\n        <div class=\"card-value\">${totalGain >= 0 ? '+' : ''}$${Math.abs(totalGain).toLocaleString('en-US', {minimumFractionDigits: 2})}</div>\n        <div class=\"card-change\">${totalReturn >= 0 ? '+' : ''}${totalReturn}%</div>\n      </div>\n      <div class=\"card\">\n        <div class=\"card-label\">Holdings</div>\n        <div class=\"card-value\">${stocks.length}</div>\n        <div class=\"card-change\">AI Stocks</div>\n      </div>\n    </div>\n    \n    <div class=\"${totalGain >= 0 ? 'status-badge status-positive' : 'status-badge status-negative'}\">\n      ${totalGain >= 0 ? '📈' : '📉'} Portfolio is ${totalGain >= 0 ? 'UP' : 'DOWN'} $${Math.abs(totalGain).toLocaleString('en-US', {minimumFractionDigits: 2})} (${totalReturn >= 0 ? '+' : ''}${totalReturn}%)\n    </div>\n    \n    <div class=\"content-grid\">\n      <div class=\"section\">\n        <h2>🥧 Portfolio Allocation</h2>\n        <canvas id=\"pieChart\"></canvas>\n      </div>\n      <div class=\"section\">\n        <h2>📊 Holdings Details</h2>\n        <table>\n          <thead>\n            <tr>\n              <th>Ticker</th>\n              <th>Shares</th>\n              <th>Buy Price</th>\n              <th>Current</th>\n              <th>Value</th>\n              <th>Gain/Loss</th>\n              <th>Return</th>\n            </tr>\n          </thead>\n          <tbody>\n            ${tableRows}\n          </tbody>\n        </table>\n      </div>\n    </div>\n    \n    <div class=\"footer\">\n      <a href=\"?\" class=\"refresh-btn\">🔄 Refresh Portfolio</a>\n      <p>Last updated: ${summary.lastUpdatedFormatted}</p>\n      <p style=\"margin-top:10px;font-size:0.9em;\">Data from Yahoo Finance • Built with n8n</p>\n    </div>\n  </div>\n\n  <script src=\"https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js\"></script>\n  <script>\n    const ctx = document.getElementById('pieChart').getContext('2d');\n    new Chart(ctx, {\n      type: 'pie',\n      data: {\n        labels: [${chartLabels}],\n        datasets: [{\n          data: [${chartValues}],\n          backgroundColor: ['#667eea','#764ba2','#f093fb','#4facfe','#43e97b','#fa709a','#fee140','#30cfd0'],\n          borderWidth: 3,\n          borderColor: 'white'\n        }]\n      },\n      options: {\n        responsive: true,\n        maintainAspectRatio: true,\n        plugins: {\n          legend: {\n            position: 'bottom',\n            labels: {\n              padding: 20,\n              font: {size: 14, weight: '500'},\n              usePointStyle: true\n            }\n          },\n          tooltip: {\n            callbacks: {\n              label: function(context) {\n                const label = context.label || '';\n                const value = context.parsed || 0;\n                const total = context.dataset.data.reduce((a,b) => a+b, 0);\n                const percentage = ((value/total)*100).toFixed(1);\n                return label + ': $' + value.toLocaleString('en-US', {minimumFractionDigits:2}) + ' (' + percentage + '%)';\n              }\n            }\n          }\n        }\n      }\n    });\n  </script>\n</body>\n</html>`;\n\nreturn [{ json: { html: html } }];"
+      },
+      "name": "Generate HTML Dashboard",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{$json.html}}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html"
+              }
+            ]
+          }
+        }
+      },
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [900, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Call Portfolio Price Fetcher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Portfolio Price Fetcher": {
+      "main": [
+        [
+          {
+            "node": "Generate HTML Dashboard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate HTML Dashboard": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {}
+}
+```
+
+---
+
+## **Import Instructions:**
+
+### **Method 1: Direct Import in n8n**
+1. Copy the entire JSON above
+2. In n8n, click menu (3 dots) → **"Import from Clipboard"**
+3. Paste JSON
+4. Click Import
+5. **Important**: After import, click on "Call Portfolio Price Fetcher" node and select your actual Workflow 1 from the dropdown
+
+### **Method 2: Save as File**
+1. Copy JSON above
+2. Save as `workflow_2_dashboard.json`
+3. In n8n, click menu → **"Import from File"**
+4. Select the file
+5. Import
+
+---
+
+## **After Import:**
+
+1. **Activate the workflow** (toggle at top right)
+2. **Copy webhook URL** from the Webhook node
+3. **Open URL in browser**
+4. **See your dashboard!**
+
+---
+
+## **Webhook URL Format:**
+```
+http://localhost:5678/webhook/Portfolio
+
+or
+
+https://your-n8n-instance.com/webhook/Portfolio

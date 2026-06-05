@@ -1,0 +1,264 @@
+{
+  "name": "Market Sentiment Analysis - Part 1",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "market-sentiment",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "market-sentiment-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract user question and identify ticker symbols\nconst userQuestion = $input.item.json.body.question || $input.item.json.query || '';\n\n// Simple ticker extraction (matches $TICKER or standalone tickers)\nconst tickerRegex = /\\$?([A-Z]{1,5})(?![a-z])/g;\nconst matches = userQuestion.match(tickerRegex) || [];\nconst tickers = [...new Set(matches.map(t => t.replace('$', '')))];\n\n// Detect question type\nlet questionType = 'general';\nif (userQuestion.toLowerCase().includes('sentiment')) questionType = 'sentiment';\nif (userQuestion.toLowerCase().includes('why') || userQuestion.toLowerCase().includes('crash') || userQuestion.toLowerCase().includes('drop')) questionType = 'explanation';\nif (userQuestion.toLowerCase().includes('buy') || userQuestion.toLowerCase().includes('should i')) questionType = 'advice';\n\n// Clean and prepare\nconst cleanQuestion = userQuestion.trim();\nconst primaryTicker = tickers[0] || 'SPY'; // Default to SPY if no ticker found\n\nreturn {\n  json: {\n    original_question: cleanQuestion,\n    tickers: tickers,\n    primary_ticker: primaryTicker,\n    question_type: questionType,\n    timestamp: new Date().toISOString()\n  }\n};"
+      },
+      "id": "parse-question",
+      "name": "Parse Question & Extract Tickers",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={{ $json.primary_ticker }}&apikey=YOUR_ALPHA_VANTAGE_KEY",
+        "options": {}
+      },
+      "id": "fetch-price-data",
+      "name": "Fetch Price Data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [650, 200]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://finnhub.io/api/v1/company-news?symbol={{ $json.primary_ticker }}&from={{ $now.minus({days: 2}).toFormat('yyyy-MM-dd') }}&to={{ $now.toFormat('yyyy-MM-dd') }}&token=YOUR_FINNHUB_KEY",
+        "options": {}
+      },
+      "id": "fetch-news",
+      "name": "Fetch News Headlines",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.reddit.com/r/wallstreetbets/search.json?q={{ $json.primary_ticker }}&sort=new&limit=50&t=day",
+        "options": {
+          "headers": {
+            "User-Agent": "n8n-market-sentiment-bot/1.0"
+          }
+        }
+      },
+      "id": "fetch-reddit",
+      "name": "Fetch Reddit Mentions",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [650, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Aggregate all data sources\nconst items = $input.all();\n\n// Find each data source\nconst priceData = items.find(item => item.json['Global Quote'])?.json['Global Quote'] || {};\nconst newsData = items.find(item => Array.isArray(item.json))?.json || [];\nconst redditData = items.find(item => item.json.data?.children)?.json.data?.children || [];\n\n// Parse price information\nconst currentPrice = parseFloat(priceData['05. price']) || 0;\nconst changePercent = parseFloat(priceData['10. change percent']?.replace('%', '')) || 0;\nconst volume = parseInt(priceData['06. volume']) || 0;\nconst previousClose = parseFloat(priceData['08. previous close']) || 0;\n\n// Analyze news sentiment (simple keyword-based)\nlet newsPositive = 0, newsNegative = 0, newsNeutral = 0;\nnewsData.slice(0, 20).forEach(article => {\n  const text = (article.headline + ' ' + article.summary).toLowerCase();\n  \n  const positiveWords = ['surge', 'gain', 'bull', 'upgrade', 'beat', 'strong', 'growth', 'profit', 'rise'];\n  const negativeWords = ['drop', 'fall', 'bear', 'downgrade', 'miss', 'weak', 'loss', 'decline', 'crash'];\n  \n  const posCount = positiveWords.filter(w => text.includes(w)).length;\n  const negCount = negativeWords.filter(w => text.includes(w)).length;\n  \n  if (posCount > negCount) newsPositive++;\n  else if (negCount > posCount) newsNegative++;\n  else newsNeutral++;\n});\n\n// Analyze Reddit sentiment\nlet redditPositive = 0, redditNegative = 0, redditNeutral = 0;\nlet redditMentions = redditData.length;\n\nredditData.forEach(post => {\n  const text = (post.data.title + ' ' + (post.data.selftext || '')).toLowerCase();\n  \n  const bullishTerms = ['calls', 'moon', 'rocket', 'bullish', 'buy', 'long', '🚀', 'to the moon'];\n  const bearishTerms = ['puts', 'crash', 'bearish', 'sell', 'short', 'dump'];\n  \n  const bullCount = bullishTerms.filter(w => text.includes(w)).length;\n  const bearCount = bearishTerms.filter(w => text.includes(w)).length;\n  \n  if (bullCount > bearCount) redditPositive++;\n  else if (bearCount > bullCount) redditNegative++;\n  else redditNeutral++;\n});\n\n// Calculate overall sentiment scores\nconst newsSentimentScore = newsData.length > 0 \n  ? ((newsPositive - newsNegative) / newsData.length * 50 + 50) \n  : 50;\n\nconst redditSentimentScore = redditMentions > 0\n  ? ((redditPositive - redditNegative) / redditMentions * 50 + 50)\n  : 50;\n\nconst priceSentimentScore = changePercent > 0 ? (changePercent > 3 ? 75 : 60) : (changePercent < -3 ? 25 : 40);\n\n// Weighted average (price 40%, news 30%, social 30%)\nconst overallSentiment = Math.round(\n  priceSentimentScore * 0.4 + \n  newsSentimentScore * 0.3 + \n  redditSentimentScore * 0.3\n);\n\n// Determine sentiment label\nlet sentimentLabel = 'NEUTRAL';\nlet sentimentEmoji = '➡️';\nif (overallSentiment >= 65) { sentimentLabel = 'BULLISH'; sentimentEmoji = '⬆️'; }\nelse if (overallSentiment >= 55) { sentimentLabel = 'SLIGHTLY BULLISH'; sentimentEmoji = '↗️'; }\nelse if (overallSentiment <= 35) { sentimentLabel = 'BEARISH'; sentimentEmoji = '⬇️'; }\nelse if (overallSentiment <= 45) { sentimentLabel = 'SLIGHTLY BEARISH'; sentimentEmoji = '↘️'; }\n\n// Compile key findings\nconst keyFindings = [];\n\nif (Math.abs(changePercent) > 3) {\n  keyFindings.push(`Strong ${changePercent > 0 ? 'upward' : 'downward'} price movement (${changePercent.toFixed(2)}%)`);\n}\n\nif (newsPositive > newsNegative * 1.5) {\n  keyFindings.push(`Predominantly positive news coverage (${newsPositive} positive vs ${newsNegative} negative)`);\n} else if (newsNegative > newsPositive * 1.5) {\n  keyFindings.push(`Predominantly negative news coverage (${newsNegative} negative vs ${newsPositive} positive)`);\n}\n\nif (redditMentions > 20) {\n  keyFindings.push(`High social media activity (${redditMentions} Reddit mentions)`);\n  if (redditPositive > redditNegative * 1.3) {\n    keyFindings.push(`Strong bullish sentiment in retail communities`);\n  } else if (redditNegative > redditPositive * 1.3) {\n    keyFindings.push(`Strong bearish sentiment in retail communities`);\n  }\n}\n\n// Get top headlines\nconst topHeadlines = newsData.slice(0, 3).map(article => article.headline);\n\nreturn {\n  json: {\n    ticker: items[0].json.primary_ticker,\n    original_question: items[0].json.original_question,\n    timestamp: new Date().toISOString(),\n    \n    price_data: {\n      current_price: currentPrice,\n      change_percent: changePercent,\n      volume: volume,\n      previous_close: previousClose\n    },\n    \n    sentiment_analysis: {\n      overall_score: overallSentiment,\n      sentiment_label: sentimentLabel,\n      sentiment_emoji: sentimentEmoji,\n      \n      news_sentiment: {\n        score: Math.round(newsSentimentScore),\n        positive: newsPositive,\n        negative: newsNegative,\n        neutral: newsNeutral,\n        total_articles: newsData.length\n      },\n      \n      social_sentiment: {\n        score: Math.round(redditSentimentScore),\n        positive: redditPositive,\n        negative: redditNegative,\n        neutral: redditNeutral,\n        total_mentions: redditMentions\n      },\n      \n      price_sentiment: {\n        score: Math.round(priceSentimentScore)\n      }\n    },\n    \n    key_findings: keyFindings,\n    top_headlines: topHeadlines,\n    \n    raw_data: {\n      news_count: newsData.length,\n      reddit_mentions: redditMentions\n    }\n  }\n};"
+      },
+      "id": "aggregate-sentiment",
+      "name": "Aggregate & Calculate Sentiment",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-20250514",
+        "text": "=You are a financial market analyst providing sentiment analysis.\n\nUser Question: {{ $json.original_question }}\n\nMarket Data for {{ $json.ticker }}:\n- Current Price: ${{ $json.price_data.current_price }}\n- Change: {{ $json.price_data.change_percent }}%\n- Volume: {{ $json.price_data.volume }}\n\nSentiment Analysis:\n- Overall Sentiment: {{ $json.sentiment_analysis.sentiment_label }} ({{ $json.sentiment_analysis.overall_score }}/100)\n- News Sentiment: {{ $json.sentiment_analysis.news_sentiment.positive }} positive, {{ $json.sentiment_analysis.news_sentiment.negative }} negative out of {{ $json.sentiment_analysis.news_sentiment.total_articles }} articles\n- Social Media: {{ $json.sentiment_analysis.social_sentiment.positive }} bullish, {{ $json.sentiment_analysis.social_sentiment.negative }} bearish out of {{ $json.sentiment_analysis.social_sentiment.total_mentions }} mentions\n\nTop Headlines:\n{{ $json.top_headlines.join('\\n') }}\n\nKey Findings:\n{{ $json.key_findings.join('\\n') }}\n\nProvide a clear, concise analysis (150-200 words) that:\n1. Directly answers the user's question\n2. Explains what's driving the current sentiment\n3. Highlights any risks or opportunities\n4. Mentions key catalysts from news or social media\n5. Ends with a brief \"Bottom Line\" summary\n\nKeep the tone professional but conversational. Focus on actionable insights.",
+        "options": {}
+      },
+      "id": "ai-analysis",
+      "name": "AI Analysis & Synthesis",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format the final response for delivery\nconst data = $input.first().json;\nconst aiResponse = $('AI Analysis & Synthesis').first().json.response || $('AI Analysis & Synthesis').first().json.text || 'Analysis unavailable';\n\nconst ticker = data.ticker;\nconst sentiment = data.sentiment_analysis;\nconst price = data.price_data;\n\n// Create formatted message\nconst message = `\n📊 **${ticker} Market Sentiment Analysis**\n_Updated: ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })} EST_\n\n**OVERALL SENTIMENT: ${sentiment.sentiment_emoji} ${sentiment.sentiment_label} (${sentiment.overall_score}/100)**\n\n**Current Price:** $${price.current_price.toFixed(2)} (${price.change_percent > 0 ? '+' : ''}${price.change_percent.toFixed(2)}%)\n\n---\n\n${aiResponse}\n\n---\n\n📈 **Sentiment Breakdown:**\n• News: ${sentiment.news_sentiment.score}/100 (${sentiment.news_sentiment.positive} pos, ${sentiment.news_sentiment.negative} neg)\n• Social: ${sentiment.social_sentiment.score}/100 (${sentiment.social_sentiment.positive} bullish, ${sentiment.social_sentiment.negative} bearish)\n• Price Action: ${sentiment.price_sentiment.score}/100\n\n⚠️ **Disclaimer:** This analysis is for informational purposes only and not financial advice. Always do your own research before making investment decisions.\n\n_Sources: Alpha Vantage, Finnhub News, Reddit_\n`;\n\nreturn {\n  json: {\n    formatted_message: message,\n    ticker: ticker,\n    sentiment_score: sentiment.overall_score,\n    sentiment_label: sentiment.sentiment_label,\n    price: price.current_price,\n    change_percent: price.change_percent,\n    timestamp: new Date().toISOString(),\n    raw_data: data\n  }\n};"
+      },
+      "id": "format-response",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "channel": "#market-alerts",
+        "text": "={{ $json.formatted_message }}",
+        "otherOptions": {}
+      },
+      "id": "send-to-slack",
+      "name": "Send to Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [1450, 200],
+      "credentials": {
+        "slackApi": {
+          "id": "1",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "alerts@yourdomain.com",
+        "toEmail": "={{ $('Webhook Trigger').item.json.body.email || 'user@example.com' }}",
+        "subject": "=Market Sentiment: {{ $json.ticker }} - {{ $json.sentiment_label }}",
+        "emailType": "text",
+        "message": "={{ $json.formatted_message }}"
+      },
+      "id": "send-email",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1450, 300],
+      "credentials": {
+        "smtp": {
+          "id": "2",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "webhook-response",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1450, 400]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Parse Question & Extract Tickers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Question & Extract Tickers": {
+      "main": [
+        [
+          {
+            "node": "Fetch Price Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch News Headlines",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Reddit Mentions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Price Data": {
+      "main": [
+        [
+          {
+            "node": "Aggregate & Calculate Sentiment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch News Headlines": {
+      "main": [
+        [
+          {
+            "node": "Aggregate & Calculate Sentiment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Reddit Mentions": {
+      "main": [
+        [
+          {
+            "node": "Aggregate & Calculate Sentiment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate & Calculate Sentiment": {
+      "main": [
+        [
+          {
+            "node": "AI Analysis & Synthesis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Analysis & Synthesis": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Send to Slack",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

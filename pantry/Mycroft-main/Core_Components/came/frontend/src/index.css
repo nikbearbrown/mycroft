@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0a0a0f;
+  --color-surface: #111118;
+  --color-border: #1e1e2e;
+  --color-accent: #3b82f6;
+  --color-accent-dim: #1d4ed8;
+  --color-muted: #6b7280;
+  --color-text: #e2e8f0;
+  --color-text-dim: #94a3b8;
+  --color-green: #22c55e;
+  --color-red: #ef4444;
+  --color-amber: #f59e0b;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  margin: 0;
+}
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--color-surface); }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
+
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+}
+
+.btn {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-family: var(--font-mono);
+  border: 1px solid;
+  transition: colors 0.15s;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: white;
+}
+.btn-primary:hover { background-color: var(--color-accent-dim); }
+
+.btn-ghost {
+  background-color: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text-dim);
+}
+.btn-ghost:hover { border-color: var(--color-accent); color: var(--color-text); }
+
+.metric-value { font-size: 1.5rem; font-family: var(--font-mono); font-weight: 600; color: var(--color-text); }
+.metric-label { font-size: 0.7rem; color: var(--color-muted); text-transform: uppercase; letter-spacing: 0.1em; }

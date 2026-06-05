@@ -1,0 +1,455 @@
+{
+  "name": "Mycroft - Patent Intelligence Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "78db0104-55a2-4142-bb82-370d63d9bdf5",
+              "name": "github_repo_url",
+              "value": "https://github.com/Humanitariansai/Mycroft",
+              "type": "string"
+            },
+            {
+              "id": "985331f1-aa8c-4888-aae7-d29cbde21a6c",
+              "name": "scripts_path",
+              "value": "Core_Components/Patents_Analysis_Agent",
+              "type": "string"
+            },
+            {
+              "id": "4731832b-6c7e-4517-8d89-6add5414aebd",
+              "name": "temp_dir",
+              "value": "/tmp",
+              "type": "string"
+            },
+            {
+              "id": "c2ff31ae-dd77-4d02-b3b0-a26898280d06",
+              "name": "days_back",
+              "value": "{{$json['query']['days_back']}}",
+              "type": "string"
+            },
+            {
+              "id": "a8f92e1b-3c4d-4f2a-9b8e-7d5f6e8a9c2b",
+              "name": "api_key",
+              "value": "=xM1ScdAa.06Lz8WKH2U5FLdiqXbRtPIygexgeNP3L",
+              "type": "string"
+            },
+            {
+              "id": "b9c83f2c-4d5e-5f3a-0c9f-8e6g7f9a0d3c",
+              "name": "notify_email",
+              "value": "={{$json['query']['email']}}",
+              "type": "string"
+            },
+            {
+              "id": "g4h38k7h-9i0j-0k8f-5h4k-3j1l2k4f5i8h",
+              "name": "from_email",
+              "value": "darshan.ai.assistant@gmail.com",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ded40753-116e-4cc7-94ad-8451afc63484",
+      "name": "Set Variables",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1344,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $json.temp_dir }} && rm -rf patent_intelligence && git clone {{ $json.github_repo_url }} patent_intelligence"
+      },
+      "id": "16496c92-2de3-4900-a4e6-b7d240335b28",
+      "name": "Setup Github Repo",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const config = $node['Set Variables'].json;\n\nconst repoDir = `${config.temp_dir}/patent_intelligence`;\nconst scriptsDir = `${config.temp_dir}/patent_intelligence/${config.scripts_path}`;\nconst outputDir = `${config.temp_dir}/patent_output`;\n\nreturn [{\n  json: {\n    ...config,\n    repo_dir: repoDir,\n    scripts_dir: scriptsDir,\n    output_dir: outputDir,\n    clone_success: true\n  }\n}];"
+      },
+      "id": "27472f91-3d56-4a41-9b6a-e642a2ae1ee9",
+      "name": "Set Path Variables",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -896,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=rm -rf {{ $json.output_dir }} && mkdir -p {{ $json.output_dir }}/data && cd {{ $json.scripts_dir }} && python3 -m pip install -r requirements.txt --user --quiet"
+      },
+      "id": "52b75152-06f0-4a72-ab4e-35b53164d83d",
+      "name": "Setup Environment and Output Directories",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $json.scripts_dir }} && python3 patent_fetcher.py --days_back {{ $json.days_back }} --output {{ $json.output_dir }}/data/patents_recent.csv --api_key {{ $json.api_key }}"
+      },
+      "id": "137011b3-aee7-4825-a52a-51e77755c274",
+      "name": "Extract Patents",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "e5f6g7h8-i9j0-1234-efgh-567890123457",
+              "leftValue": "={{ $node['Extract Patents'].json.exitCode }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5956aefb-7891-4678-ad58-d284826abc82",
+      "name": "Check Extraction Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $node['Set Path Variables'].json.scripts_dir }} && python3 patent_processor.py {{ $node['Set Path Variables'].json.output_dir }}/data/patents_recent.csv --output {{ $node['Set Path Variables'].json.output_dir }}/data/processed_patents_recent.csv"
+      },
+      "id": "68016dbb-9d98-4631-871c-cf26e59b8caa",
+      "name": "Process Patents",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $node['Set Path Variables'].json.output_dir }}/data/processed_patents_recent.csv"
+      },
+      "id": "39237638-f0b0-4c39-bbce-3eb5e677667a",
+      "name": "Read Processed Data",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        0,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $node['Set Path Variables'].json.output_dir }}/data/processed_patents_recent_metrics.json",
+        "dataPropertyName": "metrics"
+      },
+      "id": "e292c94e-cc60-4efa-8f6f-03ed6014e174",
+      "name": "Read Metrics",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $node['Set Path Variables'].json.from_email }}",
+        "toEmail": "={{ $node['Set Path Variables'].json.notify_email }}",
+        "subject": "=Patent Intelligence Report - {{ $now.toFormat('yyyy-MM-dd') }}",
+        "text": "=Worflow executed succesfully.",
+        "options": {
+          "attachments": "data, metrics",
+          "allowUnauthorizedCerts": false
+        }
+      },
+      "id": "a6b82eb4-db86-4f73-9274-0b828195606a",
+      "name": "Send Report Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        256,
+        128
+      ],
+      "webhookId": "d0b886bb-ba85-4ddf-a2e5-6be800b1db01",
+      "credentials": {
+        "smtp": {
+          "id": "1REREAfOfjpAuWeF",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $json.from_email }}",
+        "toEmail": "={{ $json.notify_email }}",
+        "subject": "Patent Intelligence Error - {{ $json.patent_year }}",
+        "text": "The workflow has failed.",
+        "options": {
+          "allowUnauthorizedCerts": false
+        }
+      },
+      "id": "c1912e26-9bda-42d4-a9c7-dabd5df053e2",
+      "name": "Error Notification",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        -224,
+        336
+      ],
+      "webhookId": "0e30da4e-e599-454c-a66a-977b5309e2a8",
+      "credentials": {
+        "smtp": {
+          "id": "1REREAfOfjpAuWeF",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "=rm -rf {{ $node['Set Path Variables'].json.repo_dir }} && echo \"🧹 Repository cleanup completed\""
+      },
+      "id": "4560bda5-e0e2-48ec-bf30-5168c771ea4b",
+      "name": "Cleanup Repository",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        480,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=rm -rf {{ $json.repo_dir }} && echo \"Error cleanup completed\""
+      },
+      "id": "46f5253f-7d3b-4e32-a775-a42614dfc9bc",
+      "name": "Cleanup Repository Error",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        0,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "path": "patent-monitor",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1568,
+        -64
+      ],
+      "id": "c6848b70-4848-475f-ae54-f7621762cce8",
+      "name": "Webhook",
+      "webhookId": "d31f407a-8f6d-473f-8025-89caaded1b46"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        688,
+        128
+      ],
+      "id": "3062cd38-8ba0-4890-8ddd-d769c34369e6",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Set Variables": {
+      "main": [
+        [
+          {
+            "node": "Setup Github Repo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setup Github Repo": {
+      "main": [
+        [
+          {
+            "node": "Set Path Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Path Variables": {
+      "main": [
+        [
+          {
+            "node": "Setup Environment and Output Directories",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Extract Patents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Patents": {
+      "main": [
+        [
+          {
+            "node": "Check Extraction Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Extraction Success": {
+      "main": [
+        [
+          {
+            "node": "Process Patents",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Patents": {
+      "main": [
+        [
+          {
+            "node": "Read Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Processed Data": {
+      "main": [
+        [
+          {
+            "node": "Send Report Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Metrics": {
+      "main": [
+        [
+          {
+            "node": "Read Processed Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Report Email": {
+      "main": [
+        [
+          {
+            "node": "Cleanup Repository",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Notification": {
+      "main": [
+        [
+          {
+            "node": "Cleanup Repository Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cleanup Repository": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f945babb-a600-47fe-ae6f-9e22088d613f",
+  "meta": {
+    "instanceId": "54e139bdd36444c24c3c5ac8519ffbbee75318a9c1efe841874a03d85ac23aaf"
+  },
+  "id": "mfR2C3kdrOhuOReJ",
+  "tags": []
+}

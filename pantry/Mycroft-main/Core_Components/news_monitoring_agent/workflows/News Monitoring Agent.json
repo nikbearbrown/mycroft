@@ -1,0 +1,2504 @@
+{
+  "name": "News Monitoring Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://newshelper:8000/fetch",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"lib\": \"feedparser\",\n  \"feed_url\": \"{{ $json.url }}\"\n  {{ $json.feed_last_updated? `,\"last_updated\":\"${$json.feed_last_updated}\"`:\"\" }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        384,
+        1952
+      ],
+      "id": "a69325df-dc47-4c2b-ad7c-94c660a3ffd3",
+      "name": "feedparser fetch"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -288,
+        2032
+      ],
+      "id": "baded65f-cfc1-4ec7-98c8-2793955bb394",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "http://newshelper:8000/health",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -64,
+        1952
+      ],
+      "id": "85f5779f-7e4b-46e7-be69-d6c35fe10817",
+      "name": "Healthcheck",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1728,
+        1712
+      ],
+      "id": "40b7a73f-ff61-4eca-8c64-f3c0aaa49059",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "modelName": "FinLang/finance-embeddings-investopedia",
+        "options": {
+          "provider": "hf-inference"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsHuggingFaceInference",
+      "typeVersion": 1,
+      "position": [
+        1952,
+        1680
+      ],
+      "id": "2f32b976-7eba-460f-9249-7bc369413ba2",
+      "name": "Embeddings HuggingFace Inference",
+      "credentials": {
+        "huggingFaceApi": {
+          "id": "Vg4t8fl2eTXyxSbr",
+          "name": "HuggingFaceApi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        960,
+        3808
+      ],
+      "id": "8a30bb51-4f18-43b7-b2c7-4150fa13a275",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "hnhtDKJTLrEX5f0q",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -304,
+        3552
+      ],
+      "id": "a7615c18-3de2-40b9-8734-27a9de7a6ec6",
+      "name": "When chat message received",
+      "webhookId": "022ec8b8-c15d-4a3e-9041-99fe1c227010"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://newshelper:8000/parse",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.toJsonString() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1056,
+        1712
+      ],
+      "id": "41b09f15-370e-43db-9df9-e64f14e92054",
+      "name": "Parse"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4b8933c2-fc02-4e30-8718-1542d6fef542",
+              "leftValue": "={{ $json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "544bf72a-dc7c-428e-b3f0-2cfc8181663f",
+              "leftValue": "={{ $json.content }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "023ca7b1-0127-4d65-bae4-015f6099d812",
+              "leftValue": "={{ $json.content }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1280,
+        1712
+      ],
+      "id": "81c344a5-92c6-4a1d-b8a5-4496fa62683f",
+      "name": "not null"
+    },
+    {
+      "parameters": {
+        "operation": "removeItemsSeenInPreviousExecutions",
+        "dedupeValue": "={{ $json.url }}, {{ $json.title }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        800,
+        1776
+      ],
+      "id": "cd9f8a95-d9c0-4090-b712-b2848757500f",
+      "name": "Remove Duplicates"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "numberInputs": 4,
+        "output": "empty"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2096,
+        2112
+      ],
+      "id": "b5cbe079-2f73-4df4-9cf9-3692e8abe781",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://newshelper:8000/finbert",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "article",
+              "value": "={{ $json.content.toJsonString() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1504,
+        1648
+      ],
+      "id": "2cb640f4-2413-4962-bc31-e1be5940f0eb",
+      "name": "FinBert"
+    },
+    {
+      "parameters": {
+        "modelName": "FinLang/finance-embeddings-investopedia",
+        "options": {
+          "provider": "hf-inference"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsHuggingFaceInference",
+      "typeVersion": 1,
+      "position": [
+        1232,
+        4000
+      ],
+      "id": "33780b6e-4ede-44b9-9852-6dd4e962c1c7",
+      "name": "Embeddings HuggingFace Inference4",
+      "credentials": {
+        "huggingFaceApi": {
+          "id": "Vg4t8fl2eTXyxSbr",
+          "name": "HuggingFaceApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## News Monitoring Workflow: runs every 20 min\n",
+        "height": 1200,
+        "width": 3216,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        1264
+      ],
+      "id": "d43ec788-b235-4e34-b376-b7ec03ee8f7e",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Utils\n",
+        "height": 656,
+        "width": 544
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        48
+      ],
+      "id": "e8d2ad6a-6878-4025-b365-2d949eb4ae44",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## News Agent",
+        "height": 1376,
+        "width": 1824,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        3072
+      ],
+      "id": "1f88b1ac-7d03-43e7-8255-41762f0bd213",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select\n  start_time::DATE as \"date\",\n  sum(ingested) as ingested_total,\n  sum(deduplicated) as unique_items,\n  sum(processed) as processed_total,\n  round((sum(deduplicated) - sum(processed)::decimal) * 100 / sum(deduplicated), 2) as loss_percentage,\n  round(sum(processed)::decimal * 100 / sum(ingested), 2) as signal_percentage\nfrom\n  metrics\ngroup by\n  start_time::DATE\norder by\n  \"date\";",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -48,
+        96
+      ],
+      "id": "87a7fbe9-ef7e-4a15-932c-6500654b4ed0",
+      "name": "View daily KPIs",
+      "credentials": {
+        "postgres": {
+          "id": "hnhtDKJTLrEX5f0q",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "http://qdrant:6333/collections/test_news_articles_b",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "qdrantApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n    \"vectors\": {\n      \"size\": 768,\n      \"distance\": \"Cosine\"\n    }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -48,
+        544
+      ],
+      "id": "0e9f3b52-e161-4094-b3ee-f85df6c14b3a",
+      "name": "Create Qdrant Collection",
+      "credentials": {
+        "qdrantApi": {
+          "id": "DZQsZiJFFGZiUscS",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "metrics",
+          "mode": "list",
+          "cachedResultName": "metrics"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "start_time": "={{ $('Schedule Trigger').first().json.timestamp }}",
+            "end_time": "={{ $now.toISO() }}",
+            "ingested": "={{ $('Split Out').all().length }}",
+            "deduplicated": "={{ $('Remove Duplicates').all().length }}",
+            "processed": "={{ $('Merge1').all().length }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "start_time",
+              "displayName": "start_time",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "end_time",
+              "displayName": "end_time",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ingested",
+              "displayName": "ingested",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "deduplicated",
+              "displayName": "deduplicated",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "processed",
+              "displayName": "processed",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2448,
+        2144
+      ],
+      "id": "c0e3af56-4532-403d-864d-9363b60095a7",
+      "name": "Write metrics",
+      "credentials": {
+        "postgres": {
+          "id": "hnhtDKJTLrEX5f0q",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "create table metrics(\n  id BIGSERIAL primary key,\n  ingested integer,\n  processed integer,\n  deduplicated integer,\n  start_time TIMESTAMPTZ,\n  end_time TIMESTAMPTZ\n);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -48,
+        320
+      ],
+      "id": "b3c5a9c5-c0d9-435c-994e-5d4defb042a9",
+      "name": "Create METRICS table",
+      "credentials": {
+        "postgres": {
+          "id": "hnhtDKJTLrEX5f0q",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "HbOQRkA5iRD6GbBT",
+          "mode": "list",
+          "cachedResultName": "sources",
+          "cachedResultUrl": "/projects/r1VacCybmAXjrdEP/datatables/HbOQRkA5iRD6GbBT"
+        },
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        160,
+        1952
+      ],
+      "id": "6fec8f2a-c219-4f91-b96d-3e1ef726bb09",
+      "name": "Get row(s)"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "HbOQRkA5iRD6GbBT",
+          "mode": "list",
+          "cachedResultName": "sources",
+          "cachedResultUrl": "/projects/r1VacCybmAXjrdEP/datatables/HbOQRkA5iRD6GbBT"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "url",
+              "keyValue": "={{ $json.feed_url }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "feed_last_updated": "={{ $json.last_updated }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "feed_last_updated",
+              "displayName": "feed_last_updated",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        608,
+        2192
+      ],
+      "id": "1bbfb48b-1b23-479f-99b1-93f95ee501cd",
+      "name": "Upsert row(s)"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "articles",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        608,
+        1856
+      ],
+      "id": "6f1ae8bb-c547-45d7-bddd-3cb9b7f88923",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.title }}{{\"\\n\"}}{{ $json.content }}",
+        "textSplittingMode": "custom",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "id",
+                "value": "={{ $json.id }}"
+              },
+              {
+                "name": "content",
+                "value": "={{ $json.content }}"
+              },
+              {
+                "name": "url",
+                "value": "={{ $json.url }}"
+              },
+              {
+                "name": "published_date",
+                "value": "={{ $json.published_date }}"
+              },
+              {
+                "name": "source_name",
+                "value": "={{ $json.source_name }}"
+              },
+              {
+                "name": "site_name",
+                "value": "={{ $json.site_name }}"
+              },
+              {
+                "name": "sentiment",
+                "value": "={{ {label:$json.label, score: $json.score}.toJsonString() }}"
+              },
+              {
+                "name": "fetch_lib",
+                "value": "={{ $json.fetch_lib }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        2080,
+        1680
+      ],
+      "id": "4c8edd6d-08eb-488c-a3c5-be7312963744",
+      "name": "Default Data Loader2"
+    },
+    {
+      "parameters": {
+        "options": {
+          "splitCode": "markdown"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        2160,
+        1888
+      ],
+      "id": "2e3105e5-ba55-4b11-9d8e-4b3fea375f97",
+      "name": "Recursive Character Text Splitter2"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        416,
+        3536
+      ],
+      "id": "59792f40-52c0-46dc-b6d6-5b1183b7c5ef",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        720,
+        3808
+      ],
+      "id": "6330b08d-e779-49ec-a066-7a297e14e669",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "uOkBZiTUs5E7ABBb",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        48,
+        3984
+      ],
+      "id": "a4b6ce4a-d173-476d-8c72-4b87cce31d86",
+      "name": "Google Gemini Chat Model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "uOkBZiTUs5E7ABBb",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        3888
+      ],
+      "id": "431100b4-d64a-4cf9-bad7-55b3b6bb1a9d",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "uOkBZiTUs5E7ABBb",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        3904
+      ],
+      "id": "f87a9ee3-4d54-4f05-876f-f5c98c16ad5b",
+      "name": "Google Gemini Chat Model5",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "uOkBZiTUs5E7ABBb",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        272,
+        3952
+      ],
+      "id": "28d32cfe-1b90-4544-acb4-5f10002b31c1",
+      "name": "Google Gemini Chat Model6",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "uOkBZiTUs5E7ABBb",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "## 1. Role and Objective\n\nYou are a **Query Refinement Specialist** assisting a financial analyst. Your sole purpose is to transform a client's natural language request (the original query) into a list of concise, focused, and high-impact search phrases.\n\nThese refined queries will be used for a Vector Database search, aiming to retrieve the most semantically relevant documents.\n\n**Crucial Constraint:** You must **never** answer the user's query, provide context, or use conversational language. Your entire output must be the raw JSON object conforming to the schema.\n\n## 2. Methodology and Handling Simple Queries (Crucial Fix)\n\nWhen refining the query, adhere to the following principles:\n\n1.  **Extract Core Concepts:** Identify the main companies, economic concepts, specific products, or sectors mentioned.\n2.  **Ignore Filters:** Eliminate any conversational language, greetings, or phrases relating to *time* (\"today,\" \"last week\") or *sentiment* (\"bullish,\" \"negative outlook\"). These are handled by a separate metadata agent.\n3.  **Guarantee Output:** **If a recognizable topic or entity is present (e.g., \"Palantir,\" \"Q3 earnings,\" \"oil prices\"), you must return at least one refined query.**\n4.  **Synthesize Search Phrases:** Create 1 to 3 distinct, high-density phrases that accurately capture the topic the user is searching for. These phrases should be suitable for semantic embedding. *If the original query is already simple (e.g., \"Palantir\"), expand it slightly to ensure semantic richness (e.g., \"Palantir news and updates\").*\n\n## 3. Output Schema\n\nYour entire output **MUST** be a JSON object conforming to the following schema:\n\n```json\n{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"RefinedQueryList\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"refined_queries\": {\n      \"type\": \"array\",\n      \"description\": \"1 to 3 concise, high-impact search phrases optimized for vector retrieval.\",\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"minItems\": 1,\n      \"maxItems\": 3\n    }\n  },\n  \"required\": [\"refined_queries\"]\n}\n```\n\n## 4. Output Rules\n\n1.  **Strict JSON Schema Compliance:** The final output must be a single JSON object that perfectly validates against the schema above.\n2.  **No Markdown/Explanation:** Do not include markdown formatting (e.g., ```json) or any surrounding text.\n3.  **Mandatory Content:** The `refined_queries` array must contain between 1 and 3 items if a topic was present in the user query.\n\n---\n**Test Case Check (Input: \"what is the news on palantir today\"?):**\n\n**Expected Output:**\n\n```json\n{\n  \"refined_queries\": [\n    \"Palantir recent news and developments\",\n    \"Palantir stock updates\"\n  ]\n}\n```"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -16,
+        3472
+      ],
+      "id": "cea32fd1-1307-4972-9b0a-306468925588",
+      "name": "Metaprompt Agentv2",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=## 1. Role and Objective\n\nYou are a highly efficient assistant specializing in generating optimized search filters for a Qdrant Vector Database. Your task is to translate the user's query regarding time frame and sentiment into a valid, standard Qdrant API `filter` object.\n\n**Crucial Constraint:** You must **never** answer the user's query or provide any commentary. Your entire output must be the raw JSON object that conforms to the schema defined below.\n\n## 2. Qdrant Payload Mapping & Filtering Constraint\n\nThe following operational constraints are confirmed for the payload keys:\n\n| Payload Key | Data Type | Filter Type Required | Filter Value Type |\n| :--- | :--- | :--- | :--- |\n| `published_date` | ISO String | `range` | ISO 8601 String |\n| `sentiment.label` | String (`positive`, `neutral`, `negative`) | `match` | String |\n| `sentiment.score` | Float (0.0 to 1.0) | `range` | Float |\n\n**Current Time Reference (for calculating relative date strings):** `{{ $now.toISO() }}`\n\n## 3. Output Schema (Qdrant Standard API Payload)\n\nYour entire output **MUST** be a JSON object conforming to this schema, which includes the mandatory top-level `filter` key.\n\n```json\n{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"QdrantStandardFilterPayload\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"filter\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"must\": {\n          \"type\": \"array\",\n          \"description\": \"An array of Qdrant filter conditions that MUST all be met (AND logic).\",\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"key\": { \"type\": \"string\" },\n              \"match\": {\n                \"type\": \"object\",\n                \"properties\": { \"value\": { \"type\": \"string\", \"enum\": [\"positive\", \"neutral\", \"negative\"] } },\n                \"required\": [\"value\"]\n              },\n              \"range\": {\n                \"type\": \"object\",\n                \"description\": \"Used for numerical ('sentiment.score') and string/date ('published_date') comparisons.\",\n                \"properties\": {\n                  \"gte\": { \"type\": [\"number\", \"string\"] },\n                  \"lte\": { \"type\": [\"number\", \"string\"] }\n                }\n              }\n            },\n            \"required\": [\"key\"]\n          }\n        },\n        \"should\": { \"type\": \"array\" },\n        \"must_not\": { \"type\": \"array\" }\n      }\n    }\n  },\n  \"required\": [\"filter\"]\n}\n```\n\n## 4. Output Rules\n\n1.  **Strict JSON Schema Compliance:** The final output must be a single JSON object that perfectly validates against the schema above, including the top-level `filter` key.\n2.  **No Markdown/Explanation:** Do not include markdown formatting.\n3.  **ISO String Requirement:** When deriving a date filter, you must calculate the exact ISO 8601 string and place it as the string value within the `range` filter.\n\n---\n**Example of desired output format:**\n\n```json\n{\n  \"filter\": {\n    \"must\": [\n      {\n        \"key\": \"published_date\",\n        \"range\": {\n          \"gte\": \"2023-12-01T00:00:00.000Z\"\n        }\n      },\n      {\n        \"key\": \"sentiment.label\",\n        \"match\": {\n          \"value\": \"positive\"\n        }\n      },\n      {\n        \"key\": \"sentiment.score\",\n        \"range\": {\n          \"gte\": 0.75\n        }\n      }\n    ]\n  }\n}\n```"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -16,
+        3616
+      ],
+      "id": "8a202d1f-d132-42b5-b6f9-75181724a3b2",
+      "name": "Metadata Agentv2",
+      "alwaysOutputData": false,
+      "retryOnFail": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.title }}{{\"\\n\"}}{{ $json.content }}",
+        "textSplittingMode": "custom",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "id",
+                "value": "={{ $json.id }}"
+              },
+              {
+                "name": "content",
+                "value": "={{ $json.content }}"
+              },
+              {
+                "name": "url",
+                "value": "={{ $json.url }}"
+              },
+              {
+                "name": "published_date",
+                "value": "={{ $json.published_date }}"
+              },
+              {
+                "name": "source_name",
+                "value": "={{ $json.source_name }}"
+              },
+              {
+                "name": "site_name",
+                "value": "={{ $json.site_name }}"
+              },
+              {
+                "name": "sentiment",
+                "value": "={{ {label:$json.label, score: $json.score}.toJsonString() }}"
+              },
+              {
+                "name": "fetch_lib",
+                "value": "={{ $json.fetch_lib }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        2528,
+        1664
+      ],
+      "id": "d05c005e-37ba-42d6-8ba0-ed4fa1bc0c61",
+      "name": "Default Data Loader3"
+    },
+    {
+      "parameters": {
+        "options": {
+          "splitCode": "markdown"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        2608,
+        1872
+      ],
+      "id": "bba84f4b-f1fe-4b31-9f71-243e5b64eff0",
+      "name": "Recursive Character Text Splitter3"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2384,
+        1664
+      ],
+      "id": "297a0f12-10fa-4e39-a338-56d949d6b001",
+      "name": "Embeddings Google Gemini1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "uOkBZiTUs5E7ABBb",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        912,
+        3936
+      ],
+      "id": "f17414c8-692d-45c7-9811-42aa3a4981c5",
+      "name": "Postgres Chat Memory1",
+      "credentials": {
+        "postgres": {
+          "id": "hnhtDKJTLrEX5f0q",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        816,
+        3792
+      ],
+      "id": "dbb80586-22e4-4987-8184-bb21295bfa76",
+      "name": "Google Gemini Chat Model7",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "uOkBZiTUs5E7ABBb",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "news_articles_a",
+          "mode": "list",
+          "cachedResultName": "news_articles_a"
+        },
+        "embeddingBatchSize": 30,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        1984,
+        1456
+      ],
+      "id": "0b189bb9-57ef-42a3-8470-f7957f0eb925",
+      "name": "Qdrant Vector Store A",
+      "credentials": {
+        "qdrantApi": {
+          "id": "DZQsZiJFFGZiUscS",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "news_articles_b",
+          "mode": "list",
+          "cachedResultName": "news_articles_b"
+        },
+        "embeddingBatchSize": 30,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        2432,
+        1440
+      ],
+      "id": "3816af2e-fcde-4b08-b1a0-70125c893ba1",
+      "name": "Qdrant Vector Store B",
+      "credentials": {
+        "qdrantApi": {
+          "id": "DZQsZiJFFGZiUscS",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "news articles with the following metadata:\nurl: url of the news article\ntitle: title of the news article\ncontent: content of the news article\npublished_date: the news article was first published on this date\nupdated_date: the news article was updated on this date\nsentiment:{label: financial sentiment of this news article possible values are [positive, neutral, negative],\nscore: floating point value indicating the scale of financial sentiment. The range is 0 to 1 where 0 means lower impact and 1 is }",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "news_articles_a",
+          "mode": "list",
+          "cachedResultName": "news_articles_a"
+        },
+        "options": {
+          "searchFilterJson": "={{ $('Metadata Agentv2').item.json.output.filter.toJsonString() }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        1184,
+        3760
+      ],
+      "id": "a5bb5ea5-23c2-4049-bf4d-655f78e956c0",
+      "name": "News Articles RAG A",
+      "credentials": {
+        "qdrantApi": {
+          "id": "DZQsZiJFFGZiUscS",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "news articles with the following metadata:\nurl: url of the news article\ntitle: title of the news article\ncontent: content of the news article\npublished_date: the news article was first published on this date\nupdated_date: the news article was updated on this date\nsentiment:{label: financial sentiment of this news article possible values are [positive, neutral, negative],\nscore: floating point value indicating the scale of financial sentiment. The range is 0 to 1 where 0 means lower impact and 1 is }",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "news_articles_b",
+          "mode": "list",
+          "cachedResultName": "news_articles_b"
+        },
+        "options": {
+          "searchFilterJson": "={{ $('Metadata Agentv2').item.json.output.filter.toJsonString() }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        1072,
+        3856
+      ],
+      "id": "1659e8c5-ba2a-4d54-b1ba-a9556f56a65a",
+      "name": "News Articles RAG B",
+      "credentials": {
+        "qdrantApi": {
+          "id": "DZQsZiJFFGZiUscS",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1056,
+        4016
+      ],
+      "id": "18129c02-b687-4933-9921-b017e4e43c89",
+      "name": "Embeddings Google Gemini2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "uOkBZiTUs5E7ABBb",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3264,
+        3344
+      ],
+      "id": "c7024985-5690-4f5d-a9bb-59e8fd4121d9",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"filter\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"must\": {\n          \"type\": \"array\",\n          \"description\": \"An array of Qdrant filter conditions that MUST all be met (AND logic).\",\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"key\": { \n                \"type\": \"string\",\n                \"description\": \"The payload key to filter on (e.g., 'metadata.published_date', 'metadata.sentiment.label'). MUST include the 'metadata.' prefix.\"\n              },\n              \"match\": {\n                \"type\": \"object\",\n                \"description\": \"Used for exact string matching on 'metadata.sentiment.label'.\",\n                \"properties\": { \n                  \"value\": { \n                    \"type\": \"string\", \n                    \"enum\": [\"positive\", \"neutral\", \"negative\"] \n                  } \n                },\n                \"required\": [\"value\"]\n              },\n              \"range\": {\n                \"type\": \"object\",\n                \"description\": \"Used for numerical ('metadata.sentiment.score') and ISO string ('metadata.published_date') comparisons.\",\n                \"properties\": {\n                  \"gte\": { \n                    \"type\": [\"number\", \"string\"], \n                    \"description\": \"Greater than or equal to (min value/date string).\" \n                  },\n                  \"lte\": { \n                    \"type\": [\"number\", \"string\"], \n                    \"description\": \"Less than or equal to (max value/date string).\" \n                  }\n                }\n              }\n            },\n            \"required\": [\"key\"]\n          }\n        },\n        \"should\": { \n          \"type\": \"array\", \n          \"description\": \"Optional OR logic array. Items follow the same structure as 'must'.\" \n        },\n        \"must_not\": { \n          \"type\": \"array\", \n          \"description\": \"Optional NOT logic array. Items follow the same structure as 'must'.\" \n        }\n      }\n    }\n  },\n  \"required\": [\"filter\"]\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        3056,
+        4112
+      ],
+      "id": "80c779bc-08d3-4ead-914d-c8a731d1fe89",
+      "name": "Structured Output Parser test1"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"RefinedQueryList\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"refined_queries\": {\n      \"type\": \"array\",\n      \"description\": \"1 to 3 concise, high-impact search phrases optimized for vector retrieval.\",\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"minItems\": 1,\n      \"maxItems\": 3\n    }\n  },\n  \"required\": [\"refined_queries\"]\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        3056,
+        3920
+      ],
+      "id": "0d80ebf4-5c30-4c93-bb10-e5a589dd7076",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.question }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "## 1. Role and Objective\n\nYou are a **Query Refinement Specialist** assisting a financial analyst. Your sole purpose is to transform a client's natural language request (the original query) into a list of concise, focused, and high-impact search phrases.\n\nThese refined queries will be used for a Vector Database search, aiming to retrieve the most semantically relevant documents.\n\n**Crucial Constraint:** You must **never** answer the user's query, provide context, or use conversational language. Your entire output must be the raw JSON object conforming to the schema.\n\n## 2. Methodology and Handling Simple Queries (Crucial Fix)\n\nWhen refining the query, adhere to the following principles:\n\n1.  **Extract Core Concepts:** Identify the main companies, economic concepts, specific products, or sectors mentioned.\n2.  **Ignore Filters:** Eliminate any conversational language, greetings, or phrases relating to *time* (\"today,\" \"last week\") or *sentiment* (\"bullish,\" \"negative outlook\"). These are handled by a separate metadata agent.\n3.  **Guarantee Output:** **If a recognizable topic or entity is present (e.g., \"Palantir,\" \"Q3 earnings,\" \"oil prices\"), you must return at least one refined query.**\n4.  **Synthesize Search Phrases:** Create 1 to 3 distinct, high-density phrases that accurately capture the topic the user is searching for. These phrases should be suitable for semantic embedding. *If the original query is already simple (e.g., \"Palantir\"), expand it slightly to ensure semantic richness (e.g., \"Palantir news and updates\").*\n\n## 3. Output Schema\n\nYour entire output **MUST** be a JSON object conforming to the following schema:\n\n```json\n{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"RefinedQueryList\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"refined_queries\": {\n      \"type\": \"array\",\n      \"description\": \"1 to 3 concise, high-impact search phrases optimized for vector retrieval.\",\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"minItems\": 1,\n      \"maxItems\": 3\n    }\n  },\n  \"required\": [\"refined_queries\"]\n}\n```\n\n## 4. Output Rules\n\n1.  **Strict JSON Schema Compliance:** The final output must be a single JSON object that perfectly validates against the schema above.\n2.  **No Markdown/Explanation:** Do not include markdown formatting (e.g., ```json) or any surrounding text.\n3.  **Mandatory Content:** The `refined_queries` array must contain between 1 and 3 items if a topic was present in the user query.\n\n---\n**Test Case Check (Input: \"what is the news on palantir today\"?):**\n\n**Expected Output:**\n\n```json\n{\n  \"refined_queries\": [\n    \"Palantir recent news and developments\",\n    \"Palantir stock updates\"\n  ]\n}\n```"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        2928,
+        3296
+      ],
+      "id": "faebf135-2bad-4b78-95d4-6dca37a50e80",
+      "name": "Metaprompt Agentv",
+      "retryOnFail": true,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.question }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=## 1. Role and Objective\n\nYou are a highly efficient assistant specializing in generating optimized search filters for a Qdrant Vector Database. Your task is to translate the user's query regarding time frame and sentiment into a valid, standard Qdrant API `filter` object.\n\n**Crucial Constraint:** You must **never** answer the user's query or provide any commentary. Your entire output must be the raw JSON object that conforms to the schema defined below.\n\n## 2. Qdrant Payload Mapping & Filtering Constraint\n\nThe following operational constraints are confirmed for the payload keys:\n\n| Payload Key | Data Type | Filter Type Required | Filter Value Type |\n| :--- | :--- | :--- | :--- |\n| `published_date` | ISO String | `range` | ISO 8601 String |\n| `sentiment.label` | String (`positive`, `neutral`, `negative`) | `match` | String |\n| `sentiment.score` | Float (0.0 to 1.0) | `range` | Float |\n\n**Current Time Reference (for calculating relative date strings):** `{{ $now.toISO() }}`\n\n## 3. Output Schema (Qdrant Standard API Payload)\n\nYour entire output **MUST** be a JSON object conforming to this schema, which includes the mandatory top-level `filter` key.\n\n```json\n{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"QdrantStandardFilterPayload\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"filter\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"must\": {\n          \"type\": \"array\",\n          \"description\": \"An array of Qdrant filter conditions that MUST all be met (AND logic).\",\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"key\": { \"type\": \"string\" },\n              \"match\": {\n                \"type\": \"object\",\n                \"properties\": { \"value\": { \"type\": \"string\", \"enum\": [\"positive\", \"neutral\", \"negative\"] } },\n                \"required\": [\"value\"]\n              },\n              \"range\": {\n                \"type\": \"object\",\n                \"description\": \"Used for numerical ('sentiment.score') and string/date ('published_date') comparisons.\",\n                \"properties\": {\n                  \"gte\": { \"type\": [\"number\", \"string\"] },\n                  \"lte\": { \"type\": [\"number\", \"string\"] }\n                }\n              }\n            },\n            \"required\": [\"key\"]\n          }\n        },\n        \"should\": { \"type\": \"array\" },\n        \"must_not\": { \"type\": \"array\" }\n      }\n    }\n  },\n  \"required\": [\"filter\"]\n}\n```\n\n## 4. Output Rules\n\n1.  **Strict JSON Schema Compliance:** The final output must be a single JSON object that perfectly validates against the schema above, including the top-level `filter` key.\n2.  **No Markdown/Explanation:** Do not include markdown formatting.\n3.  **ISO String Requirement:** When deriving a date filter, you must calculate the exact ISO 8601 string and place it as the string value within the `range` filter.\n\n---\n**Example of desired output format:**\n\n```json\n{\n  \"filter\": {\n    \"must\": [\n      {\n        \"key\": \"published_date\",\n        \"range\": {\n          \"gte\": \"2023-12-01T00:00:00.000Z\"\n        }\n      },\n      {\n        \"key\": \"sentiment.label\",\n        \"match\": {\n          \"value\": \"positive\"\n        }\n      },\n      {\n        \"key\": \"sentiment.score\",\n        \"range\": {\n          \"gte\": 0.75\n        }\n      }\n    ]\n  }\n}\n```"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        2928,
+        3424
+      ],
+      "id": "610fb17c-68eb-4446-920e-8c3195216fba",
+      "name": "Metadata Agentv",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "options": {
+          "headerRow": true,
+          "maxRowCount": 2
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        2976,
+        3632
+      ],
+      "id": "ffbd6f54-1f3d-451d-b9f2-6dd750a17d2a",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4000,
+        3408
+      ],
+      "id": "ddfdbbc2-d589-4858-bdfe-ad06500840ad",
+      "name": "Merge5"
+    },
+    {
+      "parameters": {
+        "options": {
+          "fileName": "results_test_rag_a"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        5088,
+        3536
+      ],
+      "id": "d0be469d-c0fa-4e9e-9e9b-51d129de9b05",
+      "name": "Convert to File1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://qdrant:6333/collections/news_articles_a/points/scroll",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n    \"with_payload\": true,\n    \"with_vector\": false\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5120,
+        3856
+      ],
+      "id": "cd0ef0b4-844d-448c-be65-1bd93b557be0",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/shared-files/questions.csv",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        2656,
+        3840
+      ],
+      "id": "d4ff8212-ae14-4917-9845-c482ebbde35a",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        2368,
+        3840
+      ],
+      "id": "dd1cb128-f12d-47fa-b435-8f016318a807",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "model": "x-ai/grok-4.1-fast:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        3296,
+        4016
+      ],
+      "id": "89fecaf3-0121-4504-a691-f3907809e60b",
+      "name": "OpenRouter Chat Model3",
+      "credentials": {
+        "openRouterApi": {
+          "id": "fMqYjvUcz8YIeGFP",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "x-ai/grok-4.1-fast:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        2944,
+        4032
+      ],
+      "id": "7062ea87-c5f0-412c-89c2-c7cac5559166",
+      "name": "OpenRouter Chat Model4",
+      "credentials": {
+        "openRouterApi": {
+          "id": "fMqYjvUcz8YIeGFP",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "x-ai/grok-4.1-fast:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        2832,
+        4016
+      ],
+      "id": "36924782-a7d5-462f-8f81-64c8e1f85276",
+      "name": "OpenRouter Chat Model5",
+      "credentials": {
+        "openRouterApi": {
+          "id": "fMqYjvUcz8YIeGFP",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "x-ai/grok-4.1-fast:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        2992,
+        4160
+      ],
+      "id": "1a5ae97b-2797-45c2-874b-246f3970552f",
+      "name": "OpenRouter Chat Model6",
+      "credentials": {
+        "openRouterApi": {
+          "id": "fMqYjvUcz8YIeGFP",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.question }}",
+        "options": {
+          "systemMessage": "=# Role and Task\nYou are a trustworthy investment analyst, up-to-date with the current news. Your job is to answer client questions by breaking down the question and consulting your tools. You are expected to iteratively find the most conclusive answer to client's questiion.\n\n# Context\n- Today is {{ $now }}\n\n- Your tools: \n  1. News Articles RAG2: query and pull news similar to your query\n\n# Rules:\n- Always ground yourself with the data provided to you by your tools.\n- Always assume the question is in the context of AI and tech domain\n- You are skilled in drawing conclusions and patterns from the the responses from your tools. You are expected to ask questions in various aspects to draw out hidden patterns to your tools.\n- Use all the information as context o tanswer the client question.",
+          "maxIterations": 10,
+          "returnIntermediateSteps": true,
+          "enableStreaming": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        3504,
+        3696
+      ],
+      "id": "e3408dcf-0994-427a-8845-09e925be3b84",
+      "name": "RAG Agent3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        3440,
+        3904
+      ],
+      "id": "84e4fda1-1828-42fe-b546-91f570d2edf0",
+      "name": "Google Gemini Chat Model8",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "uOkBZiTUs5E7ABBb",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "news articles with the following metadata:\nurl: url of the news article\ntitle: title of the news article\ncontent: content of the news article\npublished_date: the news article was first published on this date\nupdated_date: the news article was updated on this date\nsentiment:{label: financial sentiment of this news article possible values are [positive, neutral, negative],\nscore: floating point value indicating the scale of financial sentiment. The range is 0 to 1 where 0 means lower impact and 1 is }",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "news_articles_a",
+          "mode": "list",
+          "cachedResultName": "news_articles_a"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        3568,
+        3904
+      ],
+      "id": "3550f40c-1d66-455f-9222-c521b34e384c",
+      "name": "News Articles RAG A2",
+      "credentials": {
+        "qdrantApi": {
+          "id": "DZQsZiJFFGZiUscS",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "FinLang/finance-embeddings-investopedia",
+        "options": {
+          "provider": "hf-inference"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsHuggingFaceInference",
+      "typeVersion": 1,
+      "position": [
+        3584,
+        4064
+      ],
+      "id": "26e2d564-9c9e-490e-a8e9-9b3d39e1f361",
+      "name": "Embeddings HuggingFace Inference6",
+      "credentials": {
+        "huggingFaceApi": {
+          "id": "Vg4t8fl2eTXyxSbr",
+          "name": "HuggingFaceApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "news articles with the following metadata:\nurl: url of the news article\ntitle: title of the news article\ncontent: content of the news article\npublished_date: the news article was first published on this date\nupdated_date: the news article was updated on this date\nsentiment:{label: financial sentiment of this news article possible values are [positive, neutral, negative],\nscore: floating point value indicating the scale of financial sentiment. The range is 0 to 1 where 0 means lower impact and 1 is }",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "news_articles_a",
+          "mode": "list",
+          "cachedResultName": "news_articles_a"
+        },
+        "options": {
+          "searchFilterJson": "={{ $json.output.filter.toJsonString() }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        3776,
+        3984
+      ],
+      "id": "bed446e5-7e2c-4ccc-9f85-377bd18a51db",
+      "name": "News Articles RAG A3",
+      "credentials": {
+        "qdrantApi": {
+          "id": "DZQsZiJFFGZiUscS",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "FinLang/finance-embeddings-investopedia",
+        "options": {
+          "provider": "hf-inference"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsHuggingFaceInference",
+      "typeVersion": 1,
+      "position": [
+        3600,
+        4176
+      ],
+      "id": "bbe01e17-851a-4aa3-99ee-2b42c66e8f95",
+      "name": "Embeddings HuggingFace Inference7",
+      "credentials": {
+        "huggingFaceApi": {
+          "id": "Vg4t8fl2eTXyxSbr",
+          "name": "HuggingFaceApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "bdG1Zbr7FX4rdLSC",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/bdG1Zbr7FX4rdLSC",
+          "cachedResultName": "rag grader"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        4288,
+        3424
+      ],
+      "name": "Call rag grader",
+      "id": "fa129532-c387-47b6-911b-ea77a1ed3a71"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4000,
+        3616
+      ],
+      "id": "cbdce946-d92b-4e0e-a423-b4f95ec40edf",
+      "name": "Merge6"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "bdG1Zbr7FX4rdLSC",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/bdG1Zbr7FX4rdLSC",
+          "cachedResultName": "rag grader"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        4272,
+        3616
+      ],
+      "name": "Call rag grader1",
+      "id": "6ef8109a-3ca1-41cd-9975-75b271452e51"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "clashHandling": {
+            "values": {
+              "resolveClash": "addSuffix"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4688,
+        3536
+      ],
+      "id": "1c875757-da45-472b-8f86-638d408d489b",
+      "name": "Merge4"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "news articles with the following metadata:\nurl: url of the news article\ntitle: title of the news article\ncontent: content of the news article\npublished_date: the news article was first published on this date\nupdated_date: the news article was updated on this date\nsentiment:{label: financial sentiment of this news article possible values are [positive, neutral, negative],\nscore: floating point value indicating the scale of financial sentiment. The range is 0 to 1 where 0 means lower impact and 1 is }",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "news_articles_a",
+          "mode": "list",
+          "cachedResultName": "news_articles_a"
+        },
+        "options": {
+          "searchFilterJson": "={{ $('Merge3').item.json.output.filter }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        3472,
+        3424
+      ],
+      "id": "b9864425-4108-47da-9a47-1945eb40a375",
+      "name": "Qdrant Vector Store",
+      "credentials": {
+        "qdrantApi": {
+          "id": "DZQsZiJFFGZiUscS",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "FinLang/finance-embeddings-investopedia",
+        "options": {
+          "provider": "hf-inference"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsHuggingFaceInference",
+      "typeVersion": 1,
+      "position": [
+        3472,
+        3536
+      ],
+      "id": "9aa23bf7-b323-4674-b609-da933cb643ae",
+      "name": "Embeddings HuggingFace Inference8",
+      "credentials": {
+        "huggingFaceApi": {
+          "id": "Vg4t8fl2eTXyxSbr",
+          "name": "HuggingFaceApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output.refined_queries }}",
+        "options": {
+          "systemMessage": "# Role and Task\nYou are a trustworthy investment analyst, up-to-date with the current news. Your job is to answer client questions by breaking down the question and consulting your tools.\n\n# Context\n- Today is {{ $now }}\n\n# Rules:\n- Always ground yourself with the data provided to you by your tools.\n- Always assume the question is in the context of AI and tech domain\n- Mention sources and publication date in DD-MM-YYYY format\n- Do not preamble or postamble"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        3408,
+        3312
+      ],
+      "id": "7c726d1c-4903-47f4-937d-f86488682f8c",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "x-ai/grok-4.1-fast:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        3376,
+        3488
+      ],
+      "id": "c5078e3f-4baa-4a8e-8477-9fec6d57d456",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "fMqYjvUcz8YIeGFP",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## RAG EVALUATION\n\n# Comparative analysis of n8n inbuilt RAG node and RAG with specialized agents",
+        "height": 1328,
+        "width": 3120,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2256,
+        3104
+      ],
+      "typeVersion": 1,
+      "id": "d76ef482-de1d-4068-a107-2c0928038cb4",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"filter\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"must\": {\n          \"type\": \"array\",\n          \"description\": \"An array of Qdrant filter conditions that MUST all be met (AND logic).\",\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"key\": { \n                \"type\": \"string\",\n                \"description\": \"The payload key to filter on (e.g., 'metadata.published_date', 'metadata.sentiment.label'). MUST include the 'metadata.' prefix.\"\n              },\n              \"match\": {\n                \"type\": \"object\",\n                \"description\": \"Used for exact string matching on 'metadata.sentiment.label'.\",\n                \"properties\": { \n                  \"value\": { \n                    \"type\": \"string\", \n                    \"enum\": [\"positive\", \"neutral\", \"negative\"] \n                  } \n                },\n                \"required\": [\"value\"]\n              },\n              \"range\": {\n                \"type\": \"object\",\n                \"description\": \"Used for numerical ('metadata.sentiment.score') and ISO string ('metadata.published_date') comparisons.\",\n                \"properties\": {\n                  \"gte\": { \n                    \"type\": [\"number\", \"string\"], \n                    \"description\": \"Greater than or equal to (min value/date string).\" \n                  },\n                  \"lte\": { \n                    \"type\": [\"number\", \"string\"], \n                    \"description\": \"Less than or equal to (max value/date string).\" \n                  }\n                }\n              }\n            },\n            \"required\": [\"key\"]\n          }\n        },\n        \"should\": { \n          \"type\": \"array\", \n          \"description\": \"Optional OR logic array. Items follow the same structure as 'must'.\" \n        },\n        \"must_not\": { \n          \"type\": \"array\", \n          \"description\": \"Optional NOT logic array. Items follow the same structure as 'must'.\" \n        }\n      }\n    }\n  },\n  \"required\": [\"filter\"]\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        48,
+        3840
+      ],
+      "id": "093c876b-ec1d-4d8b-ba0b-95a90023c4d2",
+      "name": "Metadata structured output"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"RefinedQueryList\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"refined_queries\": {\n      \"type\": \"array\",\n      \"description\": \"1 to 3 concise, high-impact search phrases optimized for vector retrieval.\",\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"minItems\": 1,\n      \"maxItems\": 3\n    }\n  },\n  \"required\": [\"refined_queries\"]\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        256,
+        3760
+      ],
+      "id": "c20c920e-5ff5-4288-9c3a-b10b4cc97cb1",
+      "name": "Metaprompt structured output"
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 2,
+        "output": "={{ Math.floor(Math.random() * 2) }}"
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        624,
+        3536
+      ],
+      "id": "32b6e771-15c3-4236-8d50-b36e6d2bd387",
+      "name": "Switch - A/B testing"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output.refined_queries.toJsonString() }}",
+        "options": {
+          "systemMessage": "=# Role and Task\nYou are a trustworthy investment analyst, up-to-date with the current news. Your job is to answer client questions by breaking down the question and consulting your tools.\n\n# Context\n- Today is {{ $now }}\n\n# Rules:\n- Always ground yourself with the data provided to you by your tools.\n- Always assume the question is in the context of AI and tech domain\n- Mention sources and publication date in DD-MM-YYYY format\n- Do not preamble or postamble",
+          "maxIterations": 10,
+          "returnIntermediateSteps": true,
+          "enableStreaming": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        864,
+        3472
+      ],
+      "id": "3deb179f-bb93-4558-abbb-cd7948dd512d",
+      "name": "RAG Agent A"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output.refined_queries.toJsonString() }}",
+        "options": {
+          "systemMessage": "=# Role and Task\nYou are a trustworthy investment analyst, up-to-date with the current news. Your job is to answer client questions by breaking down the question and consulting your tools.\n\n# Context\n- Today is {{ $now }}\n\n# Rules:\n- Always ground yourself with the data provided to you by your tools.\n- Always assume the question is in the context of AI and tech domain\n- Mention sources and publication date in DD-MM-YYYY format\n- Do not preamble or postamble",
+          "maxIterations": 10,
+          "returnIntermediateSteps": true,
+          "enableStreaming": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        864,
+        3600
+      ],
+      "id": "2ae380c5-2bba-40a4-a0a7-5d349cef6788",
+      "name": "RAG Agent B"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "feedparser fetch": {
+      "main": [
+        [
+          {
+            "node": "Upsert row(s)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Healthcheck",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Healthcheck": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Qdrant Vector Store A",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Qdrant Vector Store B",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings HuggingFace Inference": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store A",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "RAG Agent A",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Metadata Agentv2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Metaprompt Agentv2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse": {
+      "main": [
+        [
+          {
+            "node": "not null",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "not null": {
+      "main": [
+        [
+          {
+            "node": "FinBert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Parse",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Write metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FinBert": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings HuggingFace Inference4": {
+      "ai_embedding": [
+        [
+          {
+            "node": "News Articles RAG A",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "feedparser fetch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter2": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader2",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader2": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store A",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Switch - A/B testing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "RAG Agent A",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Metadata structured output",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Metadata Agentv2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Metaprompt Agentv2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Metaprompt structured output",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Metaprompt Agentv2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Metadata Agentv2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Default Data Loader3": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store B",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter3": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader3",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store B",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "RAG Agent B",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model7": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "RAG Agent B",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "News Articles RAG A": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG Agent A",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "News Articles RAG B": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG Agent B",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini2": {
+      "ai_embedding": [
+        [
+          {
+            "node": "News Articles RAG B",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser test1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Metadata Agentv",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Metaprompt Agentv",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Metaprompt Agentv": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Metadata Agentv": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "RAG Agent3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Metaprompt Agentv",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Metadata Agentv",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge5": {
+      "main": [
+        [
+          {
+            "node": "Call rag grader",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model3": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "OpenRouter Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Metaprompt Agentv",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Structured Output Parser2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Metadata Agentv",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser test1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model8": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "RAG Agent3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RAG Agent3": {
+      "main": [
+        [
+          {
+            "node": "Merge6",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "News Articles RAG A2": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG Agent3",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings HuggingFace Inference6": {
+      "ai_embedding": [
+        [
+          {
+            "node": "News Articles RAG A2",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings HuggingFace Inference7": {
+      "ai_embedding": [
+        [
+          {
+            "node": "News Articles RAG A3",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "News Articles RAG A3": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "Call rag grader": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge6": {
+      "main": [
+        [
+          {
+            "node": "Call rag grader1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call rag grader1": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "Convert to File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store": {
+      "ai_vectorStore": [
+        []
+      ],
+      "main": [
+        []
+      ],
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings HuggingFace Inference8": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Metadata structured output": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Metadata Agentv2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Metaprompt structured output": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Metaprompt Agentv2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch - A/B testing": {
+      "main": [
+        [
+          {
+            "node": "RAG Agent A",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RAG Agent B",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f373598e-2621-4dba-9c3c-ab4236f1278d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4df59e55eb4c9d02a5d795fa6cc746458af443d709994c50e77097449a89a302"
+  },
+  "id": "tuCPIlXrxilZoFOD",
+  "tags": []
+}

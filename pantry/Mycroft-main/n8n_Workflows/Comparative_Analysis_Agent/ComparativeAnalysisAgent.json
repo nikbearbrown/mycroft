@@ -1,0 +1,422 @@
+{
+  "name": "ComparativeAnalysisAgent",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1408,
+        -96
+      ],
+      "id": "ec6646c7-6d97-4576-a26d-3d05fceb8169",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "const subsector = $input.first().json.subsector;\n\n// Peer groups database\nconst peerGroups = {\n  \"Cloud Infrastructure\": [\n    { rank: 1, ticker: \"MSFT\", company_name: \"Microsoft\" },\n    { rank: 2, ticker: \"AMZN\", company_name: \"Amazon\" },\n    { rank: 3, ticker: \"GOOGL\", company_name: \"Google\" },\n    { rank: 4, ticker: \"ORCL\", company_name: \"Oracle\" }\n  ],\n  \"Semiconductors\": [\n    { rank: 1, ticker: \"NVDA\", company_name: \"NVIDIA\" },\n    { rank: 2, ticker: \"AMD\", company_name: \"AMD\" },\n    { rank: 3, ticker: \"INTC\", company_name: \"Intel\" },\n    { rank: 4, ticker: \"AVGO\", company_name: \"Broadcom\" }\n  ],\n  \"LLM Developers\": [\n    { rank: 1, ticker: \"MSFT\", company_name: \"Microsoft (OpenAI)\" },\n    { rank: 2, ticker: \"GOOGL\", company_name: \"Google (Gemini)\" },\n    { rank: 3, ticker: \"META\", company_name: \"Meta (Llama)\" },\n    { rank: 4, ticker: \"AMZN\", company_name: \"Amazon (Claude/Bedrock)\" }\n  ],\n  \"Enterprise AI\": [\n    { rank: 1, ticker: \"CRM\", company_name: \"Salesforce\" },\n    { rank: 2, ticker: \"NOW\", company_name: \"ServiceNow\" },\n    { rank: 3, ticker: \"PLTR\", company_name: \"Palantir\" },\n    { rank: 4, ticker: \"SNOW\", company_name: \"Snowflake\" }\n  ],\n  \"AI APIs/Infrastructure\": [\n    { rank: 1, ticker: \"MSFT\", company_name: \"Microsoft (Azure AI)\" },\n    { rank: 2, ticker: \"GOOGL\", company_name: \"Google (Vertex AI)\" },\n    { rank: 3, ticker: \"AMZN\", company_name: \"Amazon (Bedrock)\" },\n    { rank: 4, ticker: \"META\", company_name: \"Meta (Llama API)\" }\n  ]\n};\n\n// Get companies for selected subsector\nconst companies = peerGroups[subsector];\n\nif (!companies) {\n  throw new Error(`Unknown subsector: ${subsector}. Available: ${Object.keys(peerGroups).join(', ')}`);\n}\n\n// Return each company as separate item\nreturn companies.map(company => ({\n  json: {\n    ticker: company.ticker,\n    company_name: company.company_name,\n    subsector: subsector,\n    rank: company.rank\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -992,
+        -96
+      ],
+      "id": "5f0c3581-76d4-4fdf-8775-34e7963563c9",
+      "name": "Peer Company List"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6e74de00-d9d4-4bfe-9750-f8d240ff7253",
+              "name": "subsector",
+              "value": "Cloud Infrastructure",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1200,
+        -96
+      ],
+      "id": "69f8fb4c-25b7-44f6-a533-2abebf95971c",
+      "name": "Subsector"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all 4 companies from previous node\nconst companies = $input.all().map(item => item.json);\n\n// Get subsector from first company\nconst subsector = companies[0].subsector;\n\n// Store configuration - REPLACE WITH YOUR ACTUAL API KEYS\nconst config = {\n  // Current analysis info\n  subsector: subsector,\n  analysis_start_time: new Date().toISOString(),\n  \n  // API Keys - IMPORTANT: Replace these with your actual keys\n  alpha_vantage_key: '',\n  newsapi_key: '',\n  groq_api_key: '',\n  serp_api_key: '',\n  \n  // Rate limiting settings\n  alpha_vantage_wait_seconds: 13,  // Wait 13 seconds between Alpha Vantage calls\n  api_call_count: 0,\n  \n  // Analysis metadata\n  total_companies: companies.length\n};\n\n// Add config to each company and return as separate items\nreturn companies.map(company => ({\n  json: {\n    // Company info\n    ticker: company.ticker,\n    company_name: company.company_name,\n    subsector: company.subsector,\n    rank: company.rank,\n    \n    // Add all config to each company\n    ...config\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -800,
+        -96
+      ],
+      "id": "3f92ff52-dd76-493a-865f-cce4d76c126f",
+      "name": "Store Variables & Keys"
+    },
+    {
+      "parameters": {
+        "url": "=https://www.alphavantage.co/query?function=OVERVIEW&symbol={{ $json.ticker }}&apikey={{ $json.alpha_vantage_key }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -304,
+        -96
+      ],
+      "id": "2f6a8f16-287e-4d72-9525-b547bb0f6c9b",
+      "name": "Fetch Financial Overview"
+    },
+    {
+      "parameters": {
+        "url": "=https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={{ $json.ticker }}&apikey={{ $json.alpha_vantage_key }}&outputsize=compact",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -304,
+        96
+      ],
+      "id": "f8e2a86f-5edf-4ae3-9c1d-c31832c76909",
+      "name": "Fetch Financial Time Series"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -48,
+        -16
+      ],
+      "id": "ef75d323-c3c7-4ce6-bceb-4c6941607e0c",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract and calculate financial metrics\nconst items = $input.all();\n\nconst results = items.map(item => {\n  const data = item.json;\n  \n  // Helper function to parse numbers safely\n  function parseNum(value) {\n    if (!value || value === 'None' || value === '-') return null;\n    const num = parseFloat(value);\n    return isNaN(num) ? null : num;\n  }\n  \n  // Extract ticker (should be in data already)\n  const ticker = data.ticker || data.Symbol;\n  const companyName = data.company_name || data.Name;\n  \n  // Extract financial metrics from Overview\n  const marketCap = parseNum(data.MarketCapitalization);\n  const peRatio = parseNum(data.PERatio);\n  const profitMargin = parseNum(data.ProfitMargin);\n  const operatingMargin = parseNum(data.OperatingMarginTTM);\n  const revenueGrowth = parseNum(data.QuarterlyRevenueGrowthYOY);\n  const roe = parseNum(data.ReturnOnEquityTTM);\n  const roa = parseNum(data.ReturnOnAssetsTTM);\n  const beta = parseNum(data.Beta);\n  \n  // Calculate price momentum from Daily Prices\n  const timeSeries = data['Time Series (Daily)'];\n  let priceMomentum30d = null;\n  let priceCurrent = null;\n  \n  if (timeSeries) {\n    const dates = Object.keys(timeSeries).sort().reverse();\n    priceCurrent = dates[0] ? parseFloat(timeSeries[dates[0]]['4. close']) : null;\n    const price30dAgo = dates[29] ? parseFloat(timeSeries[dates[29]]['4. close']) : priceCurrent;\n    \n    if (priceCurrent && price30dAgo) {\n      priceMomentum30d = (priceCurrent - price30dAgo) / price30dAgo;\n    }\n  }\n  \n  // Calculate financial health score (0-100)\n  // Based on: margins (40%), returns (40%), growth (20%)\n  let financialScore = 50; // default\n  \n  if (profitMargin !== null && roe !== null && revenueGrowth !== null) {\n    const marginScore = Math.min(profitMargin * 100, 100) * 0.4;\n    const returnScore = Math.min(roe * 100, 100) * 0.4;\n    const growthScore = Math.min(Math.max(revenueGrowth * 100, 0), 100) * 0.2;\n    \n    financialScore = marginScore + returnScore + growthScore;\n  }\n  \n  return {\n    json: {\n      ticker: ticker,\n      company_name: companyName,\n      category: 'financial',\n      \n      // Raw metrics\n      market_cap: marketCap,\n      pe_ratio: peRatio,\n      profit_margin: profitMargin,\n      operating_margin: operatingMargin,\n      revenue_growth: revenueGrowth,\n      roe: roe,\n      roa: roa,\n      beta: beta,\n      \n      // Price data\n      price_current: priceCurrent,\n      price_momentum_30d: priceMomentum30d,\n      \n      // Calculated score\n      financial_score: parseFloat(financialScore.toFixed(1))\n    }\n  };\n});\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        -16
+      ],
+      "id": "7d243a4a-61cb-4fef-9f8b-60b28b7f6faa",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -368,
+        672
+      ],
+      "id": "f801b2e2-df7f-4a8c-b94f-c2feb9121309",
+      "name": "Loop - News"
+    },
+    {
+      "parameters": {
+        "url": "=https://newsapi.org/v2/everything?q=\"{{ $json.company_name }}\"&from={{ $now.minus({days: 28}).toFormat('yyyy-MM-dd') }}&sortBy=relevancy&pageSize=30&language=en&apiKey={{ $json.newsapi_key }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -112,
+        912
+      ],
+      "id": "b336fdad-314a-4656-8fb5-19c30f943015",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Calculate sentiment and extract company name from query\nitem = _input.first()\ndata = item.json\n\n# Try to get ticker from input\nticker = data.get('ticker', 'UNKNOWN')\n\n# Extract company name from the NewsAPI search metadata\ncompany_name = 'UNKNOWN'\n\n# Method 1: Get from search_parameters if available\nif 'search_parameters' in data:\n    query = data['search_parameters'].get('q', '')\n    company_name = query.replace('\"', '').strip()\n\n# Method 2: Pattern match from articles if Method 1 fails\nif company_name == 'UNKNOWN' or not company_name:\n    # Company name patterns\n    company_patterns = {\n        'MSFT': 'Microsoft',\n        'AMZN': 'Amazon',\n        'GOOGL': 'Google',\n        'ORCL': 'Oracle',\n        'NVDA': 'NVIDIA',\n        'AMD': 'AMD',\n        'INTC': 'Intel',\n        'AVGO': 'Broadcom',\n        'META': 'Meta',\n        'CRM': 'Salesforce',\n        'NOW': 'ServiceNow',\n        'PLTR': 'Palantir',\n        'SNOW': 'Snowflake'\n    }\n    \n    # Check first article for company mention\n    articles = data.get('articles', [])\n    if len(articles) > 0:\n        first_article = (articles[0].get('title') or '').lower()\n        \n        for tick, name in company_patterns.items():\n            if name.lower() in first_article:\n                ticker = tick\n                company_name = name\n                break\n\n# Get articles\narticles = data.get('articles', [])\n\n# Sentiment analysis\npositive_words = [\n    'growth', 'beat', 'strong', 'record', 'high', 'gain',\n    'surge', 'innovation', 'profit', 'success', 'breakthrough',\n    'expansion', 'partnership', 'achievement', 'outperform',\n    'upgrade', 'bullish', 'rally', 'soar', 'exceed'\n]\n\nnegative_words = [\n    'decline', 'miss', 'weak', 'fall', 'low', 'risk',\n    'loss', 'concern', 'warning', 'drop', 'lawsuit',\n    'investigation', 'delay', 'problem', 'struggle',\n    'downgrade', 'bearish', 'plunge', 'crash', 'fail'\n]\n\npositive_count = 0\nnegative_count = 0\nneutral_count = 0\nsentiment_sum = 0\n\nfor article in articles:\n    title = (article.get('title') or '').lower()\n    description = (article.get('description') or '').lower()\n    text = title + ' ' + description\n    \n    pos_score = sum(1 for word in positive_words if word in text)\n    neg_score = sum(1 for word in negative_words if word in text)\n    \n    if pos_score > neg_score:\n        positive_count += 1\n        sentiment_sum += 1\n    elif neg_score > pos_score:\n        negative_count += 1\n        sentiment_sum -= 1\n    else:\n        neutral_count += 1\n\n# Calculate scores\navg_sentiment = sentiment_sum / len(articles) if len(articles) > 0 else 0\nsentiment_score = ((avg_sentiment + 1) / 2) * 100\npositive_ratio = positive_count / len(articles) if len(articles) > 0 else 0\n\nreturn [{\n    'json': {\n        'ticker': ticker,\n        'company_name': company_name,\n        'category': 'sentiment',\n        \n        'news_articles_30d': len(articles),\n        'positive_articles': positive_count,\n        'negative_articles': negative_count,\n        'neutral_articles': neutral_count,\n        'positive_ratio': round(positive_ratio, 2),\n        \n        'sentiment_score': round(sentiment_score, 1),\n        'data_source': 'newsapi'\n    }\n}]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        112,
+        912
+      ],
+      "id": "4b0a7914-6976-4388-9c8a-bc31e53daf8f",
+      "name": "Code in Python (Beta)1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -272,
+        384
+      ],
+      "id": "bf5e3742-103a-4da7-8e8b-362215a87596",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "url": "=https://serpapi.com/search.json?engine=google_patents&q={{ $json.company_name }}+artificial+intelligence&num=50&api_key={{ $json.serp_api_key }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -32,
+        448
+      ],
+      "id": "bd6da91b-8e6a-41a5-ac90-241592cd96f6",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Process patent data and extract company name from results\nitem = _input.first()\ndata = item.json\n\n# Try to get ticker from input (may or may not exist)\nticker = data.get('ticker', 'UNKNOWN')\n\n# Extract company name from patent assignees\ncompany_name = 'UNKNOWN'\npatents = data.get('organic_results', [])\n\n# Look through patents to find the assignee (company name)\nif len(patents) > 0:\n    # Check first few patents for assignee field\n    for patent in patents[:5]:\n        assignee = patent.get('assignee') or patent.get('assignee_name')\n        if assignee:\n            company_name = assignee\n            break\n    \n    # If no assignee field, try to extract from snippet/title\n    if company_name == 'UNKNOWN':\n        # Common company names to look for\n        company_patterns = {\n            'MSFT': ['Microsoft', 'Microsoft Corporation'],\n            'AMZN': ['Amazon', 'Amazon.com', 'Amazon Technologies'],\n            'GOOGL': ['Google', 'Google LLC', 'Alphabet'],\n            'ORCL': ['Oracle', 'Oracle Corporation'],\n            'NVDA': ['NVIDIA', 'NVIDIA Corporation'],\n            'AMD': ['Advanced Micro Devices', 'AMD'],\n            'INTC': ['Intel', 'Intel Corporation'],\n            'AVGO': ['Broadcom', 'Broadcom Inc'],\n            'META': ['Meta', 'Facebook', 'Meta Platforms'],\n            'CRM': ['Salesforce', 'Salesforce.com'],\n            'NOW': ['ServiceNow', 'ServiceNow Inc'],\n            'PLTR': ['Palantir', 'Palantir Technologies'],\n            'SNOW': ['Snowflake', 'Snowflake Inc']\n        }\n        \n        # Check first patent's snippet for company name\n        first_patent_text = (patents[0].get('snippet') or '').lower()\n        \n        for tick, names in company_patterns.items():\n            if any(name.lower() in first_patent_text for name in names):\n                ticker = tick\n                company_name = names[0]\n                break\n\n# Count total patents\ntotal_patents = len(patents)\n\n# Count recent patents (last 12 months)\nfrom datetime import datetime, timedelta\ntwelve_months_ago = datetime.now() - timedelta(days=365)\nrecent_patents = 0\n\nfor patent in patents:\n    date_str = patent.get('filing_date') or patent.get('publication_date')\n    if date_str:\n        try:\n            patent_date = datetime.strptime(date_str.split('T')[0], '%Y-%m-%d')\n            if patent_date > twelve_months_ago:\n                recent_patents += 1\n        except:\n            pass\n\ninnovation_velocity = round(recent_patents / 12, 2) if recent_patents > 0 else 0\n\n# Categorize patents\ncategories = {\n    'machine_learning': 0,\n    'computer_vision': 0,\n    'nlp': 0,\n    'robotics': 0,\n    'generative_ai': 0\n}\n\nkeywords = {\n    'machine_learning': ['machine learning', 'neural network', 'deep learning', 'training'],\n    'computer_vision': ['computer vision', 'image', 'visual', 'object detection'],\n    'nlp': ['natural language', 'nlp', 'text', 'language model'],\n    'robotics': ['robot', 'autonomous', 'control'],\n    'generative_ai': ['generative', 'gan', 'diffusion', 'synthesis']\n}\n\nfor patent in patents:\n    title = (patent.get('title') or '').lower()\n    snippet = (patent.get('snippet') or '').lower()\n    text = title + ' ' + snippet\n    \n    for category, kw_list in keywords.items():\n        if any(kw in text for kw in kw_list):\n            categories[category] += 1\n\ncategory_diversity = sum(1 for v in categories.values() if v > 0)\n\n# Calculate innovation score (0-100)\nvelocity_score = min((innovation_velocity / 10) * 100, 100) if innovation_velocity > 0 else 0\nvolume_score = min((total_patents / 50) * 100, 100)\ndiversity_score = (category_diversity / 5) * 100\n\ninnovation_score = (\n    velocity_score * 0.5 +\n    volume_score * 0.3 +\n    diversity_score * 0.2\n)\n\nreturn [{\n    'json': {\n        'ticker': ticker,\n        'company_name': company_name,\n        'category': 'patents',\n        \n        'total_ai_patents': total_patents,\n        'recent_patents_12m': recent_patents,\n        'innovation_velocity': innovation_velocity,\n        'category_diversity': category_diversity,\n        \n        'patents_ml': categories['machine_learning'],\n        'patents_cv': categories['computer_vision'],\n        'patents_nlp': categories['nlp'],\n        'patents_robotics': categories['robotics'],\n        'patents_gen_ai': categories['generative_ai'],\n        \n        'innovation_score': round(innovation_score, 1),\n        'data_source': 'google_patents_serpapi'\n    }\n}]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        192,
+        448
+      ],
+      "id": "827be15e-0eeb-48e0-a44b-c51973e30feb",
+      "name": "Code in Python (Beta)"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        192,
+        256
+      ],
+      "id": "84691848-a1d2-4bbd-b40d-cae558b808db",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        704
+      ],
+      "id": "0dffa3cf-928b-47d5-bb89-55ea69dd76d7",
+      "name": "Aggregate1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Subsector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Subsector": {
+      "main": [
+        [
+          {
+            "node": "Peer Company List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Peer Company List": {
+      "main": [
+        [
+          {
+            "node": "Store Variables & Keys",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Variables & Keys": {
+      "main": [
+        [
+          {
+            "node": "Fetch Financial Overview",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Financial Time Series",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop - News",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Financial Overview": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Financial Time Series": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop - News": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in Python (Beta)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python (Beta)1": {
+      "main": [
+        [
+          {
+            "node": "Loop - News",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Code in Python (Beta)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python (Beta)": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "243addb7-30f5-44f1-8d76-aa41413bcc95",
+  "meta": {
+    "instanceId": "f92ba833cfc01dd064a94201fa4bb20b3305c9c67348abfd124c90886d0575b8"
+  },
+  "id": "4ujKjFzq3OlkT378",
+  "tags": []
+}

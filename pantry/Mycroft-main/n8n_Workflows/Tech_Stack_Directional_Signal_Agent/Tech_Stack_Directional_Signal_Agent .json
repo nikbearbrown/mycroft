@@ -1,0 +1,355 @@
+{
+  "name": "Tech_Stack_Directional_Signal_Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Tech Stack Directional Signal Agent",
+        "formDescription": "Enter a company's GitHub details to generate an engineering direction intelligence report.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Company Name",
+              "placeholder": "e.g. OpenAI",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "GitHub Org Slug",
+              "placeholder": "e.g. openai  (the part after github.com/)",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Sector",
+              "placeholder": "e.g. Foundation Models, Fintech, DevTools"
+            },
+            {
+              "fieldLabel": "Stock Ticker",
+              "placeholder": "e.g. MSFT  (leave blank if private)"
+            }
+          ]
+        },
+        "responseMode": "lastNode",
+        "options": {
+          "respondWithOptions": {
+            "values": {
+              "formSubmittedText": "✅ Report generated!"
+            }
+          }
+        }
+      },
+      "id": "6f71ff09-fad4-4a1c-8f2e-785b33307144",
+      "name": "Form Trigger",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -528,
+        -96
+      ],
+      "webhookId": "your_webhook_Id"
+    },
+    {
+      "parameters": {
+        "jsCode": "const form = $input.first().json;\n\nconst config = {\n  recent_months:     6,\n  lookback_months:  18,\n  lang_delta_pct:   15,\n  burst_multiplier:  2.0,\n  min_stars:        10,\n  velocity_repos:    5,\n  velocity_z_thresh: 2.0,\n};\n\nconst org = (form['GitHub Org Slug'] || '').trim().toLowerCase();\nconst name = (form['Company Name'] || '').trim();\n\nif (!org || !name) {\n  throw new Error('Company Name and GitHub Org Slug are required.');\n}\n\nconst graphql_query =\n  '{ organization(login: \"' + org + '\") {' +\n  '  repositories(first: 100, orderBy: {field: PUSHED_AT, direction: DESC}, privacy: PUBLIC) {' +\n  '    nodes {' +\n  '      name nameWithOwner stargazerCount forkCount isFork' +\n  '      createdAt pushedAt' +\n  '      primaryLanguage { name }' +\n  '      languages(first: 15, orderBy: {field: SIZE, direction: DESC}) {' +\n  '        edges { size node { name } } totalSize' +\n  '      }' +\n  '      repositoryTopics(first: 10) { nodes { topic { name } } }' +\n  '    }' +\n  '  }' +\n  '} }';\n\nreturn [{\n  json: {\n    name,\n    org,\n    sector:       (form['Sector'] || 'Technology').trim(),\n    ticker:       (form['Stock Ticker'] || '').trim(),\n    github_token: (form['GitHub Token'] || '').trim(),\n    groq_api_key: (form['Groq API Key'] || '').trim(),\n    config,\n    graphql_query,\n    run_ts:    new Date().toISOString(),\n    run_ts_ms: Date.now(),\n  }\n}];"
+      },
+      "id": "cb5417fd-2d1e-4546-bd4f-5c669b8c6d5e",
+      "name": "Company Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -272,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.github.com/graphql",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubApi",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ query: $json.graphql_query }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "04abae46-3c72-4222-b948-508ac05c6c53",
+      "name": "GitHub GraphQL",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        32,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;              // GraphQL response\nconst ctx  = $('Company Input').first().json;  // original context\nconst cfg  = ctx.config;\n\n// ── Extract repos from GraphQL response ───────────────────────────\nconst gql = item.data && item.data.organization;\nif (!gql || !gql.repositories) {\n  return [{ json: {\n    ...item,\n    pipeline_status: 'GQL_ERROR',\n    error: JSON.stringify(item.errors || item).slice(0, 400),\n  }}];\n}\n\nconst raw      = gql.repositories.nodes || [];\nconst now      = Date.now();\nconst DAY      = 86400000;\nconst recCut   = now - cfg.recent_months   * 30 * DAY;\nconst baseCut  = now - cfg.lookback_months * 30 * DAY;\nconst basePeriod = cfg.lookback_months - cfg.recent_months;\n\n// ── Normalise every repo ──────────────────────────────────────────\nconst repos = raw.map(r => {\n  const topics     = (r.repositoryTopics?.nodes || []).map(n => n.topic?.name || '');\n  const langEdges  = r.languages?.edges || [];\n  const totalBytes = r.languages?.totalSize || 1;\n  const langDist   = {};\n  for (const e of langEdges) {\n    langDist[e.node.name] = Math.round(e.size / totalBytes * 1000) / 10; // % of bytes\n  }\n  return {\n    name:         r.name,\n    full_name:    r.nameWithOwner,\n    stars:        r.stargazerCount || 0,\n    forks:        r.forkCount      || 0,\n    is_fork:      r.isFork,\n    created_ms:   r.createdAt ? new Date(r.createdAt).getTime() : 0,\n    pushed_ms:    r.pushedAt  ? new Date(r.pushedAt ).getTime() : 0,\n    primary_lang: r.primaryLanguage?.name || null,\n    lang_dist:    langDist,\n    topics,\n    days_since_push: r.pushedAt ? Math.round((now - new Date(r.pushedAt).getTime()) / DAY) : 9999,\n  };\n});\n\nconst nonFork    = repos.filter(r => !r.is_fork);\nconst totalStars = nonFork.reduce((s, r) => s + r.stars, 0);\nconst active90   = nonFork.filter(r => r.days_since_push <= 90 ).length;\nconst stale365   = nonFork.filter(r => r.days_since_push > 365).length;\n\n// ── Time cohorts ──────────────────────────────────────────────────\nconst recNF = nonFork.filter(r => r.created_ms >= recCut);\nconst oldNF = nonFork.filter(r => r.created_ms >= baseCut && r.created_ms < recCut);\n\nconst mRate    = recNF.length / cfg.recent_months;\nconst mBase    = oldNF.length / basePeriod || 0;\nconst bRatio   = mBase > 0 ? mRate / mBase : 0;\nconst hasBurst = bRatio >= cfg.burst_multiplier;\n\n// ── Star-weighted language distribution per cohort ────────────────\nfunction weightedLangDist(cohort) {\n  const agg = {};\n  let totalW = 0;\n  for (const r of cohort) {\n    if (r.stars < cfg.min_stars) continue;\n    const w = Math.max(1, r.stars);\n    totalW += w;\n    for (const [lang, pct] of Object.entries(r.lang_dist)) {\n      agg[lang] = (agg[lang] || 0) + pct * w;\n    }\n  }\n  if (!totalW) return {};\n  return Object.fromEntries(\n    Object.entries(agg).map(([k, v]) => [k, Math.round(v / totalW * 10) / 10])\n  );\n}\n\nconst recDist  = weightedLangDist(recNF);\nconst oldDist  = weightedLangDist(oldNF);\nconst allLangs = new Set([...Object.keys(recDist), ...Object.keys(oldDist)]);\n\n// ── Language deltas ───────────────────────────────────────────────\nconst deltas = [];\nfor (const lang of allLangs) {\n  const rec  = recDist[lang] || 0;\n  const old  = oldDist[lang] || 0;\n  const diff = rec - old;\n  const rel  = old > 0 ? Math.abs(diff) / old * 100 : (rec > 0.5 ? 100 : 0);\n  const isNew     = old < 0.1 && rec > 0.5;\n  const isDropped = rec < 0.1 && old > 0.5;\n  if (rel >= cfg.lang_delta_pct || isNew || isDropped) {\n    deltas.push({\n      language:   lang,\n      recent_pct: Math.round(rec * 10) / 10,\n      older_pct:  Math.round(old * 10) / 10,\n      delta_pp:   Math.round(diff * 10) / 10,\n      rel_chg:    Math.round(rel),\n      direction:  isNew ? 'EMERGING' : isDropped ? 'ABANDONED' : diff > 0 ? 'RISING' : 'DECLINING',\n      is_new:     isNew,\n      is_dropped: isDropped,\n    });\n  }\n}\ndeltas.sort((a, b) => Math.abs(b.delta_pp) - Math.abs(a.delta_pp));\n\n// ── AI/ML topic focus ratio ───────────────────────────────────────\nconst AI_TAGS = new Set(['machine-learning','deep-learning','llm','large-language-model',\n  'neural-network','nlp','computer-vision','reinforcement-learning','generative-ai',\n  'transformer','diffusion','multimodal','ai','pytorch','tensorflow','cuda','inference','fine-tuning']);\nconst aiRatio = (cohort) =>\n  cohort.filter(r => r.topics.some(t => AI_TAGS.has(t))).length / Math.max(1, cohort.length);\nconst aiRec = aiRatio(recNF);\nconst aiOld = aiRatio(oldNF);\n\n// ── Top repos for velocity analysis ──────────────────────────────\nconst topRepos = nonFork\n  .filter(r => r.stars >= cfg.min_stars)\n  .sort((a, b) => b.stars - a.stars)\n  .slice(0, cfg.velocity_repos)\n  .map(r => ({\n    name:           r.name,\n    full_name:      r.full_name,\n    stars:          r.stars,\n    primary_lang:   r.primary_lang,\n    days_since_push:r.days_since_push,\n    commit_url:     `https://api.github.com/repos/${r.full_name}/stats/commit_activity`,\n  }));\n\nreturn [{\n  json: {\n    // carry forward\n    name:         item.name,\n    org:          item.org,\n    sector:       item.sector,\n    ticker:       item.ticker,\n     config:       item.config,\n    run_ts:       item.run_ts,\n    pipeline_status: 'OK',\n\n    repo_stats: {\n      total_fetched: raw.length,\n      non_fork:      nonFork.length,\n      total_stars:   totalStars,\n      avg_stars:     nonFork.length ? Math.round(totalStars / nonFork.length) : 0,\n      active_90d:    active90,\n      stale_365d:    stale365,\n      rec_cohort_size: recNF.length,\n      old_cohort_size: oldNF.length,\n    },\n    burst: {\n      has_burst:    hasBurst,\n      ratio:        Math.round(bRatio * 100) / 100,\n      monthly_rec:  Math.round(mRate * 10) / 10,\n      monthly_base: Math.round(mBase * 10) / 10,\n      rec_count:    recNF.length,\n      signal:       hasBurst\n        ? `BURST DETECTED: ${recNF.length} new repos in ${cfg.recent_months}m vs ${Math.round(mBase*10)/10}/m historical baseline (${Math.round(bRatio*10)/10}x)`\n        : 'NORMAL — repo creation rate within historical baseline',\n    },\n    language: {\n      recent_dist:    recDist,\n      older_dist:     oldDist,\n      deltas,\n      shift_detected: deltas.length > 0,\n      rising:    deltas.filter(d => d.direction === 'RISING'    || d.direction === 'EMERGING'),\n      declining: deltas.filter(d => d.direction === 'DECLINING' || d.direction === 'ABANDONED'),\n      new_langs: deltas.filter(d => d.is_new),\n      dropped:   deltas.filter(d => d.is_dropped),\n    },\n    ai_focus: {\n      recent_ratio: Math.round(aiRec * 100),\n      older_ratio:  Math.round(aiOld * 100),\n      delta_pp:     Math.round((aiRec - aiOld) * 100),\n      increasing:   (aiRec - aiOld) > 0.1,\n    },\n    top_repos: topRepos,\n  }\n}];\n"
+      },
+      "id": "7859312f-ecd0-4e49-8d97-fa8b03bcb4a9",
+      "name": "Process Repos + Language Analysis",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        336,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d     = $input.first().json;\nconst token = d.github_token;\n\nconst HEADERS = {\n  'Authorization':        `Bearer ${token}`,\n  'Accept':               'application/vnd.github+json',\n  'X-GitHub-Api-Version': '2022-11-28',\n  'User-Agent':           'TSDSA-v2/1.0',\n};\n\nasync function fetchRepoCommits(repo) {\n  const since = new Date(Date.now() - 365 * 86400000).toISOString();\n  const url = `https://api.github.com/repos/${repo.full_name}/commits?per_page=100&since=${since}`;\n  try {\n    const resp = await $helpers.httpRequest({ method: 'GET', url, headers: HEADERS });\n    const commits = Array.isArray(resp) ? resp : [];\n    return {\n      repo:         repo.name,\n      full_name:    repo.full_name,\n      stars:        repo.stars,\n      language:     repo.primary_lang,\n      commits,\n      fetch_status: 'OK',\n    };\n  } catch (e) {\n    const status = e.message.includes('404') ? 'EMPTY_REPO'\n                 : e.message.includes('409') ? 'NO_COMMITS'\n                 : 'FAILED';\n    return {\n      repo:         repo.name,\n      full_name:    repo.full_name,\n      stars:        repo.stars,\n      language:     repo.primary_lang,\n      commits:      [],\n      fetch_status: status,\n      error:        e.message.slice(0, 120),\n    };\n  }\n}\n\nconst settled = await Promise.allSettled(\n  (d.top_repos || []).map(r => fetchRepoCommits(r))\n);\n\nconst commit_data = settled.map(s =>\n  s.status === 'fulfilled' ? s.value\n  : { repo: '?', commits: [], fetch_status: 'FAILED', error: String(s.reason) }\n);\n\nconst ok_count = commit_data.filter(r => r.fetch_status === 'OK').length;\nconst velocity_fetch_status =\n  ok_count === 0                  ? 'FAILED'\n  : ok_count < commit_data.length ? 'PARTIAL'\n  : 'OK';\n\nreturn [{ json: { ...d, commit_data, velocity_fetch_status } }];"
+      },
+      "id": "42b80e57-1115-457a-b3e8-48c5fc1d27d0",
+      "name": "Fetch Commit Activity",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "import json, math, time, datetime\n\ninp      = items[0]['json']\ncfg      = inp.get('config', {})\nZ_THRESH = cfg.get('velocity_z_thresh', 2.0)\nNOW_MS   = inp.get('run_ts_ms') or int(time.time() * 1000)\nDAY_MS   = 86400000\n\ndef commits_to_weekly_buckets(commits):\n    buckets = {}\n    cutoff  = NOW_MS - 365 * DAY_MS\n    for c in (commits or []):\n        try:\n            if not isinstance(c, dict):\n                continue\n            commit_obj = c.get('commit') or {}\n            author_obj = commit_obj.get('author') if isinstance(commit_obj, dict) else None\n            ts_str = (author_obj.get('date', '') if isinstance(author_obj, dict) else '') or ''\n            if not ts_str:\n                continue\n            dt  = datetime.datetime.fromisoformat(ts_str.replace('Z', '+00:00'))\n            ms  = dt.timestamp() * 1000\n            if ms < cutoff:\n                continue\n            wk  = dt.strftime('%Y-W%W')\n            buckets[wk] = buckets.get(wk, 0) + 1\n        except Exception:\n            continue\n    if not buckets:\n        return []\n    sorted_keys = sorted(buckets.keys())\n    return [buckets.get(w, 0) for w in sorted_keys]\n\ndef analyse_repo(repo):\n    if not isinstance(repo, dict):\n        return {\n            'repo': '?', 'language': None, 'stars': 0,\n            'fetch_status': 'UNKNOWN', 'commit_count': 0,\n            'status': 'UNAVAILABLE', 'signal': 'Invalid repo object',\n            'is_anomaly': False, 'direction': None, 'z_score': None,\n            'baseline_wkly': None, 'recent_wkly': None, 'std_dev': None,\n            'momentum_pct': None, 'pct_of_peak': None\n        }\n    commits = repo.get('commits') or []\n    totals  = commits_to_weekly_buckets(commits)\n    base = {\n        'repo':         repo.get('repo', '?'),\n        'language':     repo.get('language'),\n        'stars':        repo.get('stars', 0),\n        'fetch_status': repo.get('fetch_status', 'UNKNOWN'),\n        'commit_count': len(commits),\n    }\n    if len(totals) < 8:\n        return {**base,\n            'status':        'UNAVAILABLE',\n            'signal':        f\"Insufficient data ({len(commits)} commits sampled)\",\n            'is_anomaly':    False,\n            'direction':     None,\n            'z_score':       None,\n            'baseline_wkly': None,\n            'recent_wkly':   None,\n            'std_dev':       None,\n            'momentum_pct':  None,\n            'pct_of_peak':   None}\n    recent_w   = totals[-4:]\n    baseline_w = totals[:-4]\n    b_mean = sum(baseline_w) / len(baseline_w)\n    b_var  = sum((x - b_mean)**2 for x in baseline_w) / len(baseline_w)\n    b_std  = math.sqrt(b_var)\n    r_mean = sum(recent_w) / len(recent_w)\n    z      = (r_mean - b_mean) / b_std if b_std > 0 else 0.0\n    is_anomaly = abs(z) >= Z_THRESH\n    direction  = ('ACCELERATION' if r_mean > b_mean else 'DECELERATION') if is_anomaly else None\n    momentum = None\n    if len(totals) >= 8:\n        last2 = sum(totals[-2:]) / 2\n        prev2 = sum(totals[-4:-2]) / 2\n        momentum = round((last2 - prev2) / prev2 * 100) if prev2 > 0 else None\n    windows    = [sum(totals[i:i+4]) for i in range(len(totals) - 3)]\n    peak_win   = max(windows) if windows else 0\n    recent_sum = sum(recent_w)\n    pct_peak   = round(recent_sum / peak_win * 100) if peak_win > 0 else 0\n    lang = repo.get('language') or '?'\n    return {**base,\n        'status':        'OK',\n        'is_anomaly':    is_anomaly,\n        'direction':     direction,\n        'z_score':       round(z, 2),\n        'baseline_wkly': round(b_mean, 1),\n        'recent_wkly':   round(r_mean, 1),\n        'std_dev':       round(b_std, 1),\n        'momentum_pct':  momentum,\n        'pct_of_peak':   pct_peak,\n        'signal': (f\"VELOCITY {direction}: z={round(z,2)} in {repo.get('repo','?')} ({lang})\"\n                   if is_anomaly else\n                   f\"NORMAL — {repo.get('repo','?')} within baseline (z={round(z,2)})\")}\n\nsignals   = [analyse_repo(r) for r in (inp.get('commit_data') or [])]\nanomalies = [s for s in signals if s.get('is_anomaly')]\naccel     = [s for s in signals if s.get('direction') == 'ACCELERATION']\ndecel     = [s for s in signals if s.get('direction') == 'DECELERATION']\nok_sigs   = [s for s in signals if s.get('status') == 'OK']\n\nif not signals or len(ok_sigs) == 0:\n    vel_status = 'UNAVAILABLE'\nelif len(ok_sigs) < len(signals):\n    vel_status = 'PARTIAL'\nelse:\n    vel_status = 'OK'\n\ntrend = ('ACCELERATING' if len(accel) > len(decel)\n         else 'DECELERATING' if len(decel) > len(accel)\n         else 'STABLE')\n\nreturn [{\n    'json': {\n        **inp,\n        'velocity': {\n            'status':            vel_status,\n            'signals':           signals,\n            'anomaly_count':     len(anomalies),\n            'acceleration_count':len(accel),\n            'deceleration_count':len(decel),\n            'top_anomaly':       anomalies[0] if anomalies else None,\n            'overall_trend':     trend,\n        }\n    }\n}]"
+      },
+      "id": "7e06e112-953f-47e7-bdab-b5a46f4720a3",
+      "name": "Velocity Analysis",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const ctx = $('Company Input').first().json;\nconst d = { ...$input.first().json, config: ctx.config, name: ctx.name, org: ctx.org };\n\n// ── Compose data summary for the model ────────────────────────────\nconst topLangsStr = Object.entries(d.language.recent_dist || {})\n  .sort(([,a],[,b]) => b - a).slice(0, 6)\n  .map(([l, p]) => `${l}:${p}%`).join(', ') || 'n/a';\n\nconst deltaStr = (d.language.deltas || []).slice(0, 6)\n  .map(x => `${x.language} ${x.direction} (${x.rel_chg}% relative, ${x.delta_pp}pp)`)\n  .join('; ') || 'none detected';\n\nconst velStr = (d.velocity.signals || [])\n  .filter(s => s.status === 'analysed')\n  .map(s => `${s.repo}[${s.language||'?'},${s.stars}★]: z=${s.z_score}, ${s.baseline_wkly}→${s.recent_wkly} commits/wk, momentum=${s.momentum_pct !== null ? s.momentum_pct+'%' : 'n/a'}`)\n  .join(' | ') || 'no velocity data';\n\nconst topReposStr = (d.top_repos || [])\n  .map(r => `${r.name}(${r.stars}★,${r.primary_lang||'?'},${r.days_since_push}d)`)\n  .join(', ');\n\nconst systemPrompt =\n  'You are a senior investment analyst specialising in AI/technology companies. ' +\n  'You analyse engineering signals from GitHub to identify technology strategy direction. ' +\n  'Respond ONLY with valid JSON — no markdown, no explanation, no code fences.';\n\nconst userPrompt =\n  `Analyse the following GitHub engineering signals for ${d.name} (${d.sector}):\n\nCOMPANY: ${d.name} | ORG: ${d.org} | SECTOR: ${d.sector}\nREPO HEALTH: ${d.repo_stats.non_fork} public repos | ${d.repo_stats.total_stars.toLocaleString()} total stars | ${d.repo_stats.active_90d} active (90d) | ${d.repo_stats.stale_365d} stale (365d+)\nRECENT COHORT: ${d.repo_stats.rec_cohort_size} repos created in last ${d.config.recent_months} months\nOLDER COHORT:  ${d.repo_stats.old_cohort_size} repos created in prior ${d.config.lookback_months - d.config.recent_months} months\n\nREPO CREATION BURST: ${d.burst.signal}\nAI/ML TOPIC FOCUS: recent=${d.ai_focus.recent_ratio}% repos | older=${d.ai_focus.older_ratio}% repos | delta=${d.ai_focus.delta_pp}pp\n\nTOP LANGUAGES (recent, star-weighted): ${topLangsStr}\nLANGUAGE SHIFTS (≥${d.config.lang_delta_pct}% relative change): ${deltaStr}\n\nCOMMIT VELOCITY (top repos by stars):\n${velStr}\n\nTOP REPOS: ${topReposStr}\n\nReturn ONLY this JSON:\n{\n  \"signal_summary\": \"3-4 sentence investment-grade assessment of engineering direction\",\n  \"velocity_assessment\": \"1-2 sentences on commit momentum and what it implies\",\n  \"technology_direction\": \"Where is engineering effort moving? What does the language/repo data suggest about strategy?\",\n  \"key_risks\": [\"risk 1\", \"risk 2\", \"risk 3\"],\n  \"key_opportunities\": [\"opportunity 1\", \"opportunity 2\", \"opportunity 3\"],\n  \"comparable_moves\": \"Has any comparable company made a similar engineering shift? Brief 1-sentence context.\",\n  \"flags\": [\"FLAG1\", \"FLAG2\"],\n  \"intensity\": \"NONE or LOW or MEDIUM or HIGH or CRITICAL\",\n  \"confidence_score\": 0-100,\n  \"composite_signal_score\": 0-100,\n  \"investment_implication\": \"BULLISH or BEARISH or NEUTRAL or WATCH\"\n}`;\n\nreturn [{\n  json: {\n    ...d,\n    groq_payload: JSON.stringify({\n      model: 'llama-3.1-8b-instant',\n      messages: [\n        { role: 'system', content: systemPrompt },\n        { role: 'user',   content: userPrompt   },\n      ],\n      temperature: 0.2,\n      max_tokens:  900,\n      response_format: { type: 'json_object' },\n    }),\n  }\n}];\n"
+      },
+      "id": "aba79be3-5e28-466f-9db0-58cba81c15a6",
+      "name": "Build Groq Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1168,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.groq_payload }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "b87cfba3-0f7f-42ec-b6fa-d75c2cd741f9",
+      "name": "Groq AI Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1456,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const groqResponse = $input.first().json;                  // Groq output — choices only\nconst cleanPipe    = $('Build Groq Prompt').first().json;  // full pipeline data\n\n// ── Safe deep getter ──────────────────────────────────────────────────────────\nconst g = (obj, ...path) => {\n  let cur = obj;\n  for (const k of path) {\n    if (cur == null) return undefined;\n    cur = Array.isArray(cur) && typeof k === 'number' ? cur[k] : (cur[k] ?? undefined);\n  }\n  return cur;\n};\nconst gd = (obj, ...args) => {\n  const def  = args[args.length - 1];\n  const path = args.slice(0, -1);\n  const val  = g(obj, ...path);\n  return val != null ? val : def;\n};\n\nconst cfg = cleanPipe.config || {};\nconst BURST_THRESHOLD = cfg.burst_multiplier ?? 2.0;\nconst LANG_DELTA_PCT  = cfg.lang_delta_pct   ?? 15;\nconst VEL_Z_THRESH    = cfg.velocity_z_thresh ?? 2.0;\n\n// ── Parse Groq response ───────────────────────────────────────────────────────\nlet ai = {};\ntry {\n  const choices = groqResponse.choices || [];\n  const content = choices[0]?.message?.content || '{}';\n  ai = JSON.parse(content);\n} catch(e) { ai = {}; }\n\nconst AI_DEFAULTS = {\n  signal_summary:        'AI analysis unavailable — check Groq API key',\n  velocity_assessment:   'Velocity data could not be retrieved.',\n  technology_direction:  'Insufficient data for direction signal.',\n  key_risks:             ['Data quality risk: velocity endpoint unavailable'],\n  key_opportunities:     [],\n  comparable_moves:      '',\n  flags:                 [],\n  intensity:             'NONE',\n  confidence_score:      0,\n  composite_signal_score:0,\n  investment_implication:'NEUTRAL',\n};\nfor (const [k, v] of Object.entries(AI_DEFAULTS)) {\n  if (ai[k] == null) ai[k] = v;\n}\n\n// ── Rule flags ────────────────────────────────────────────────────────────────\nconst burstRatio = gd(cleanPipe, 'burst', 'ratio', 0);\nconst burstBase  = gd(cleanPipe, 'burst', 'monthly_base', 0);\nconst hasBurst   = burstBase > 0 && burstRatio >= BURST_THRESHOLD;\n\nconst ruleFlags = [];\nif (hasBurst)                                                 ruleFlags.push('REPO_BURST');\nif (gd(cleanPipe,'language','shift_detected',false))          ruleFlags.push('LANGUAGE_SHIFT');\nif (gd(cleanPipe,'ai_focus','increasing',false))              ruleFlags.push('AI_FOCUS_INCREASING');\nif (gd(cleanPipe,'velocity','acceleration_count',0) > 0)      ruleFlags.push('VELOCITY_ACCELERATION');\nif (gd(cleanPipe,'velocity','deceleration_count',0) > 0)      ruleFlags.push('VELOCITY_DECELERATION');\nif ((gd(cleanPipe,'language','new_langs',[]) || []).length > 0) ruleFlags.push('NEW_LANGUAGE_ADOPTION');\n\nconst allFlags = [...new Set([...ruleFlags, ...(ai.flags || [])])];\n\n// ── Composite score ───────────────────────────────────────────────────────────\nlet ruleScore = 0;\nif (hasBurst) ruleScore += Math.min(30, burstRatio * 10);\nconst deltas = gd(cleanPipe, 'language', 'deltas', []) || [];\nif (deltas.length) ruleScore += Math.min(25, deltas.length * 5);\nif (gd(cleanPipe,'ai_focus','increasing',false)) ruleScore += 10;\nconst anomalyCount = gd(cleanPipe,'velocity','anomaly_count',0);\nif (anomalyCount > 0) ruleScore += Math.min(20, anomalyCount * 10);\n\nconst composite = Math.min(100, Math.round(ai.composite_signal_score * 0.6 + ruleScore * 0.4));\n\n// ── Intensity ─────────────────────────────────────────────────────────────────\nconst ORD   = ['NONE','LOW','MEDIUM','HIGH','CRITICAL'];\nconst ruleI = composite >= 85 ? 'CRITICAL' : composite >= 65 ? 'HIGH' :\n              composite >= 45 ? 'MEDIUM'   : composite >= 25 ? 'LOW'  : 'NONE';\nconst groqI = ORD.includes(ai.intensity) ? ai.intensity : 'NONE';\nconst finalI = ORD.indexOf(groqI) >= ORD.indexOf(ruleI) ? groqI : ruleI;\n\nconst IC = {CRITICAL:'#dc2626',HIGH:'#ef4444',MEDIUM:'#f59e0b',LOW:'#3b82f6',NONE:'#4b5563'};\n\n// ── Evidence trail ────────────────────────────────────────────────────────────\nconst langEvidence = {\n  category:      'language_shift',\n  status:        deltas.length ? 'DETECTED' : 'NONE',\n  threshold_pct: LANG_DELTA_PCT,\n  items: deltas.slice(0,5).map(d => ({\n    language: d.language, from_pct: d.older_pct,\n    to_pct: d.recent_pct, rel_change_pct: d.rel_chg, direction: d.direction,\n  })),\n  summary: deltas.length\n    ? `${deltas.length} language(s) shifted >${LANG_DELTA_PCT}% relative`\n    : `No language shifts detected at >${LANG_DELTA_PCT}% threshold`,\n};\n\nconst rs    = cleanPipe.repo_stats || {};\nconst burst = cleanPipe.burst      || {};\nconst repoEvidence = {\n  category:         'repo_growth',\n  status:           hasBurst ? 'BURST' : 'NORMAL',\n  burst_ratio:      Math.round(burstRatio * 100) / 100,\n  burst_threshold:  BURST_THRESHOLD,\n  monthly_recent:   burst.monthly_rec  ?? 0,\n  monthly_baseline: burst.monthly_base ?? 0,\n  total_repos:      rs.non_fork   || 0,\n  active_90d:       rs.active_90d || 0,\n  stale_365d:       rs.stale_365d || 0,\n  summary:          burst.signal  || 'Repo growth data unavailable',\n};\n\nconst vel       = cleanPipe.velocity || {};\nconst velStatus = vel.status || 'UNAVAILABLE';\nconst velSigs   = (vel.signals || []).filter(s => s.status === 'OK');\nconst velEvidence = {\n  category:           'velocity_signal',\n  status:             velStatus,\n  overall_trend:      vel.overall_trend || 'UNKNOWN',\n  repos_analysed:     velSigs.length,\n  repos_total:        (vel.signals || []).length,\n  anomalies_detected: vel.anomaly_count || 0,\n  top_anomaly:        vel.top_anomaly || null,\n  items: velSigs.slice(0,3).map(s => ({\n    repo: s.repo, z_score: s.z_score,\n    baseline_wkly: s.baseline_wkly, recent_wkly: s.recent_wkly,\n    direction: s.direction, momentum_pct: s.momentum_pct,\n  })),\n  summary: velStatus !== 'UNAVAILABLE'\n    ? `Velocity ${velStatus}: ${vel.overall_trend || '?'}, ${vel.anomaly_count || 0} anomalies across ${velSigs.length} repos analysed`\n    : 'Commit velocity data unavailable — endpoint did not return sufficient data',\n};\n\nconst anomalyEvidence = {\n  category:           'anomaly_detection',\n  status:             (vel.anomaly_count || 0) > 0 ? 'DETECTED' : 'NONE',\n  acceleration_count: vel.acceleration_count || 0,\n  deceleration_count: vel.deceleration_count || 0,\n  items: (vel.signals || []).filter(s => s.is_anomaly).map(s => ({\n    repo: s.repo, direction: s.direction, z_score: s.z_score, signal: s.signal,\n  })),\n  summary: (vel.anomaly_count || 0) > 0\n    ? `${vel.anomaly_count} velocity anomaly(ies) detected`\n    : 'No velocity anomalies at current z-score threshold',\n};\n\n// ── Claims schema v2.0 ────────────────────────────────────────────────────────\nconst name = cleanPipe.name   || 'UNKNOWN';\nconst org  = cleanPipe.org    || '?';\nconst ts   = cleanPipe.run_ts || '';\n\nconst claim = {\n  claim_id:       `TSDSA-${name.replace(/\\s+/g,'_').toUpperCase()}-${ts.slice(0,10)}`,\n  agent:          'TechStackDirectionalSignalAgent',\n  schema_version: '2.0',\n  timestamp:      ts,\n  subject:        name,\n  github_org:     org,\n  sector:         cleanPipe.sector || '',\n  claim_type:     'ENGINEERING_DIRECTION_DELTA',\n  intensity:      finalI,\n  intensity_color:IC[finalI] || '#4b5563',\n  composite_score:composite,\n  confidence:     ai.confidence_score,\n  confidence_degraded: velStatus === 'UNAVAILABLE',\n  investment_implication: ai.investment_implication,\n  flags: allFlags,\n  signals: {\n    velocity_status: velStatus,\n    language_shift:  deltas.length > 0,\n    burst_detected:  hasBurst,\n    ai_focus:        gd(cleanPipe,'ai_focus','increasing',false),\n  },\n  ai_analysis: {\n    signal_summary:       ai.signal_summary,\n    velocity_assessment:  ai.velocity_assessment,\n    technology_direction: ai.technology_direction,\n    comparable_moves:     ai.comparable_moves,\n    key_risks:            ai.key_risks,\n    key_opportunities:    ai.key_opportunities,\n  },\n  engineering_direction_delta: {\n    rising_languages:    (gd(cleanPipe,'language','rising',   []) || []).map(x => x.language),\n    declining_languages: (gd(cleanPipe,'language','declining',[]) || []).map(x => x.language),\n    new_languages:       (gd(cleanPipe,'language','new_langs',[]) || []).map(x => x.language),\n    abandoned_languages: (gd(cleanPipe,'language','dropped',  []) || []).map(x => x.language),\n    repo_trend:          hasBurst ? 'ACCELERATING' : 'NORMAL',\n    commit_trend:        vel.overall_trend || 'STABLE',\n    velocity_status:     velStatus,\n  },\n  evidence: {\n    language_shift:    langEvidence,\n    repo_growth:       repoEvidence,\n    velocity_signal:   velEvidence,\n    anomaly_detection: anomalyEvidence,\n  },\n  risk_flags:        ai.key_risks,\n  opportunity_flags: ai.key_opportunities,\n  resolver_ready: true,\n  human_review:   ['HIGH','CRITICAL'].includes(finalI),\n};\n\nreturn [{ json: { ...cleanPipe, claim } }];"
+      },
+      "id": "8443750b-e60a-417e-8bbc-ffa07aaed0fe",
+      "name": "Score + Claims Schema",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1728,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const velData = $('Velocity Analysis').first().json;\nconst d = { ...velData, ...$input.first().json };\nconst cl    = d.claim;\nconst ai    = cl.ai_analysis;\nconst edd   = cl.engineering_direction_delta;\nconst la    = d.language;\nconst bd    = d.burst;\nconst va    = d.velocity;\nconst rs    = d.repo_stats;\nconst genAt = new Date(d.run_ts).toLocaleString('en-US',{dateStyle:'medium',timeStyle:'short'});\n\nconst IC = {CRITICAL:'#dc2626',HIGH:'#ef4444',MEDIUM:'#f59e0b',LOW:'#3b82f6',NONE:'#4b5563'};\nconst IB = {CRITICAL:'#2d0a0a',HIGH:'#1f0a0a',MEDIUM:'#1f1500',LOW:'#0a1020',NONE:'#111827'};\nconst FC = {\n  REPO_BURST:'#8b5cf6', LANGUAGE_SHIFT:'#06b6d4', AI_FOCUS_INCREASING:'#10b981',\n  VELOCITY_ACCELERATION:'#22c55e', VELOCITY_DECELERATION:'#f97316',\n  NEW_LANGUAGE_ADOPTION:'#f59e0b',\n};\nconst IMPL_C = {BULLISH:'#10b981',BEARISH:'#ef4444',WATCH:'#f59e0b',NEUTRAL:'#6b7280'};\n\nconst ic  = k => IC[k]  || '#4b5563';\nconst ibc = k => IB[k]  || '#111827';\nconst fc  = k => FC[k]  || '#6b7280';\nconst col = ic(cl.intensity);\nconst bg  = ibc(cl.intensity);\n\nconst pill = (text, c) =>\n  `<span style=\"background:${c}18;color:${c};border:1px solid ${c}33;` +\n  `padding:3px 10px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.5px;` +\n  `white-space:nowrap;display:inline-block\">${text.replace(/_/g,' ')}</span>`;\n\nconst implColor = IMPL_C[cl.investment_implication] || '#6b7280';\nconst implPill  = `<span style=\"background:${implColor}22;color:${implColor};border:1px solid ${implColor}44;` +\n  `padding:4px 14px;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:1px\">` +\n  `${cl.investment_implication}</span>`;\n\n// ── Language delta rows ────────────────────────────────────────────\nconst langRows = (la.deltas || []).slice(0, 8).map(d => {\n  const c    = d.direction === 'RISING' || d.direction === 'EMERGING' ? '#10b981' : '#ef4444';\n  const icon = d.is_new ? '✦ NEW' : d.is_dropped ? '✕ GONE' :\n               d.direction === 'RISING' ? '▲' : '▼';\n  const c2   = d.is_new ? '#8b5cf6' : d.is_dropped ? '#4b5563' : c;\n  return `<tr style=\"border-bottom:1px solid #1a2235\">\n    <td style=\"padding:6px 10px 6px 0;font-size:11px;color:#e2e8f0;font-weight:500\">${d.language}</td>\n    <td style=\"padding:6px 10px;font-size:11px;color:#4b5563;text-align:right\">${d.older_pct}%</td>\n    <td style=\"padding:6px 10px;font-size:11px;color:${c2};text-align:right;font-weight:700\">${d.recent_pct}%</td>\n    <td style=\"padding:6px 0 6px 10px;font-size:10px;color:${c2};white-space:nowrap\">\n      ${icon} ${d.rel_chg}% rel.</td>\n  </tr>`;\n}).join('') || `<tr><td colspan=\"4\" style=\"padding:10px 0;font-size:10px;color:#374151\">\n  No shifts detected at ≥${d.config?.lang_delta_pct || 15}% relative threshold</td></tr>`;\n\n// ── Velocity rows ──────────────────────────────────────────────────\nconst velRows = (va.signals || []).filter(s => s.status === 'analysed').map(s => {\n  const c    = s.direction === 'ACCELERATION' ? '#10b981' : s.direction === 'DECELERATION' ? '#ef4444' : '#4b5563';\n  const icon = s.is_anomaly ? (s.direction === 'ACCELERATION' ? '▲' : '▼') : '○';\n  const mPill = s.momentum_pct !== null\n    ? `<span style=\"color:${s.momentum_pct>0?'#10b981':'#ef4444'};font-size:9px\">${s.momentum_pct>0?'+':''}${s.momentum_pct}% momentum</span>`\n    : '';\n  return `<div style=\"padding:9px 0;border-bottom:1px solid #1a2235\">\n    <div style=\"display:flex;justify-content:space-between;align-items:flex-start\">\n      <span style=\"font-size:11px;color:#e2e8f0;font-weight:500\">${s.repo}</span>\n      <span style=\"font-size:10px;color:${c};font-weight:700\">${icon} ${s.direction || 'NORMAL'}</span>\n    </div>\n    <div style=\"font-size:9px;color:#4b5563;margin-top:3px;display:flex;gap:12px;flex-wrap:wrap\">\n      <span>${s.language || '?'} · ${(s.stars||0).toLocaleString()}★</span>\n      <span>z = ${s.z_score}</span>\n      <span>${s.baseline_wkly} → ${s.recent_wkly} commits/wk</span>\n      ${mPill}\n      <span style=\"color:#374151\">${s.pct_of_peak}% of peak</span>\n    </div>\n  </div>`;\n}).join('') || '<div style=\"color:#374151;font-size:10px;padding:8px 0\">No commit data available</div>';\n\n// ── Evidence pills ────────────────────────────────────────────────\nconst EV_STATUS_COLOR = {DETECTED:'#10b981',BURST:'#8b5cf6',OK:'#10b981',PARTIAL:'#f59e0b',NONE:'#4b5563',UNAVAILABLE:'#6b7280',NORMAL:'#3b82f6'};\nconst evidenceHtml = ['language_shift','repo_growth','velocity_signal','anomaly_detection'].map(key => {\n  const e  = (cl.evidence || {})[key] || {};\n  const sc = EV_STATUS_COLOR[e.status] || '#4b5563';\n  return `<div style=\"padding:7px 0;border-bottom:1px solid #1a2235\">\n    <div style=\"font-size:9px;color:#374151;letter-spacing:.5px;margin-bottom:2px;text-transform:uppercase\">${key.replace(/_/g,' ')} · <span style=\"color:${sc}\">${e.status || 'NO DATA'}</span></div>\n    <div style=\"font-size:10px;color:#94a3b8\">${e.summary || 'No summary available'}</div>\n  </div>`;\n}).join('');\n\n// ── Top repos ─────────────────────────────────────────────────────\nconst topRepoRows = (d.top_repos || []).slice(0, 6).map(r =>\n  `<div style=\"display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #1a2235\">\n    <span style=\"font-size:11px;color:#94a3b8\">${r.name}</span>\n    <div style=\"font-size:9px;color:#4b5563;text-align:right\">\n      <span style=\"color:#e2e8f0;margin-right:8px\">${(r.stars||0).toLocaleString()}★</span>\n      <span style=\"margin-right:8px\">${r.primary_lang || '?'}</span>\n      <span>${r.days_since_push}d ago</span>\n    </div>\n  </div>`\n).join('');\n\nconst flagsHtml = (cl.flags || []).length\n  ? (cl.flags || []).map(f => pill(f, fc(f))).join(' ')\n  : `<span style=\"color:#1e293b;font-size:9px\">no flags raised</span>`;\n\nconst riskHtml = (ai.key_risks || []).map(r =>\n  `<div style=\"padding:5px 0;border-bottom:1px solid #1a2235;font-size:10px;color:#ef4444\">⚠ ${r}</div>`\n).join('') || '<div style=\"font-size:10px;color:#1e293b;padding:5px 0\">No risks flagged by AI</div>';\n\nconst oppHtml = (ai.key_opportunities || []).map(o =>\n  `<div style=\"padding:5px 0;border-bottom:1px solid #1a2235;font-size:10px;color:#10b981\">✓ ${o}</div>`\n).join('') || '<div style=\"font-size:10px;color:#1e293b;padding:5px 0\">No opportunities flagged</div>';\n\nconst dirParts = [];\nif (edd.what_increased?.length)    dirParts.push(`<span style=\"color:#10b981\">▲ RISING: ${edd.what_increased.join(', ')}</span>`);\nif (edd.what_decreased?.length)    dirParts.push(`<span style=\"color:#ef4444\">▼ DECLINING: ${edd.what_decreased.join(', ')}</span>`);\nif (edd.newly_appeared?.length)    dirParts.push(`<span style=\"color:#8b5cf6\">✦ NEW: ${edd.newly_appeared.join(', ')}</span>`);\nif (edd.stalled_or_dropped?.length)dirParts.push(`<span style=\"color:#4b5563\">✕ DROPPED: ${edd.stalled_or_dropped.join(', ')}</span>`);\nconst dirHtml = dirParts.join('<br>') || '<span style=\"color:#1e293b\">No directional shift detected</span>';\n\nconst html = `<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>${d.name} — Engineering Direction Delta · Mycroft</title>\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link href=\"https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap\" rel=\"stylesheet\">\n<style>\n  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}\n  html,body{background:#060a12;color:#e2e8f0;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;min-height:100vh}\n  .pg{max-width:1300px;margin:0 auto;padding:0 32px 80px}\n  a{color:inherit;text-decoration:none}\n</style>\n</head>\n<body>\n<div class=\"pg\">\n\n  <!-- ── MASTHEAD ── -->\n  <div style=\"border-bottom:1px solid #1a2235;padding:32px 0 24px;margin-bottom:36px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:24px\">\n    <div>\n      <div style=\"font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:#374151;margin-bottom:8px\">\n        Mycroft Framework · Intelligence Layer · Tech Stack Directional Signal Agent\n      </div>\n      <div style=\"font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:#f8fafc;line-height:1;letter-spacing:-.5px\">\n        Engineering Direction Delta\n      </div>\n      <div style=\"font-family:'Playfair Display',serif;font-size:24px;font-weight:400;font-style:italic;color:${col};margin-top:8px\">\n        ${d.name}${d.ticker ? ' (' + d.ticker + ')' : ''}\n      </div>\n      <div style=\"font-size:10px;color:#374151;margin-top:6px\">\n        github.com/${d.org} · ${d.sector} · Run: ${genAt}\n      </div>\n    </div>\n    <div style=\"text-align:right\">\n      <div style=\"font-family:'Playfair Display',serif;font-size:64px;font-weight:900;color:${col};line-height:1\">${cl.composite_score}</div>\n      <div style=\"font-size:9px;color:#374151;letter-spacing:.8px;margin-top:4px\">COMPOSITE SIGNAL SCORE</div>\n      <div style=\"font-size:14px;font-weight:700;color:${col};margin-top:4px;letter-spacing:1px\">${cl.intensity}</div>\n      <div style=\"margin-top:8px\">${implPill}</div>\n    </div>\n  </div>\n\n  <!-- ── SCORE BAR ── -->\n  <div style=\"height:4px;background:#0d1117;border-radius:2px;margin-bottom:32px\">\n    <div style=\"height:4px;width:${cl.composite_score}%;background:${col};border-radius:2px;\n                box-shadow:0 0 12px ${col}66;transition:width .4s ease\"></div>\n  </div>\n\n  <!-- ── FLAGS ROW ── -->\n  <div style=\"display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:32px;\n              padding:14px 18px;background:#0d1117;border:1px solid #1a2235\">\n    <span style=\"font-size:9px;color:#374151;letter-spacing:.8px;text-transform:uppercase;margin-right:4px\">SIGNAL FLAGS</span>\n    ${flagsHtml}\n    <span style=\"margin-left:auto;font-size:9px;color:#374151\">\n      Confidence: <span style=\"color:#94a3b8\">${cl.confidence}%</span> ·\n      Human review: <span style=\"color:${cl.human_review?'#f59e0b':'#10b981'}\">${cl.human_review?'REQUIRED':'not required'}</span> ·\n      Resolver: <span style=\"color:#10b981\">READY</span>\n    </span>\n  </div>\n\n  <!-- ── AI SIGNAL ASSESSMENT ── -->\n  <div style=\"background:${bg};border:1px solid ${col}33;border-left:3px solid ${col};padding:20px 24px;margin-bottom:28px\">\n    <div style=\"font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:${col};margin-bottom:10px;opacity:.8\">\n      AI SIGNAL ASSESSMENT · Groq llama-3.1-8b-instant\n    </div>\n    <div style=\"font-family:'Playfair Display',serif;font-size:15px;color:#e2e8f0;line-height:1.7;margin-bottom:12px\">\n      ${ai.signal_summary || '—'}\n    </div>\n    <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px\">\n      <div>\n        <div style=\"font-size:9px;color:#374151;letter-spacing:.8px;text-transform:uppercase;margin-bottom:5px\">TECHNOLOGY DIRECTION</div>\n        <div style=\"font-size:11px;color:#94a3b8;line-height:1.6\">${ai.technology_direction || '—'}</div>\n      </div>\n      <div>\n        <div style=\"font-size:9px;color:#374151;letter-spacing:.8px;text-transform:uppercase;margin-bottom:5px\">VELOCITY ASSESSMENT</div>\n        <div style=\"font-size:11px;color:#94a3b8;line-height:1.6\">${ai.velocity_assessment || '—'}</div>\n      </div>\n    </div>\n    ${ai.comparable_moves ? `\n    <div style=\"margin-top:14px;padding-top:12px;border-top:1px solid #1a2235\">\n      <div style=\"font-size:9px;color:#374151;letter-spacing:.8px;text-transform:uppercase;margin-bottom:5px\">COMPARABLE MARKET MOVES</div>\n      <div style=\"font-size:11px;color:#64748b;font-style:italic\">${ai.comparable_moves}</div>\n    </div>` : ''}\n  </div>\n\n  <!-- ── 4-COLUMN DETAIL GRID ── -->\n  <div style=\"display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:2px;margin-bottom:28px\">\n\n    <!-- Language Shifts -->\n    <div style=\"background:#0d1117;border:1px solid #1a2235;padding:18px\">\n      <div style=\"font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:#374151;margin-bottom:12px\">\n        LANGUAGE SHIFTS (≥${d.config?.lang_delta_pct || 15}% REL.)\n      </div>\n      <table style=\"width:100%;border-collapse:collapse\">\n        <thead><tr style=\"border-bottom:1px solid #1a2235\">\n          <th style=\"padding:3px 10px 6px 0;font-size:8px;color:#374151;text-align:left;font-weight:400\">LANG</th>\n          <th style=\"padding:3px 10px 6px;font-size:8px;color:#374151;text-align:right;font-weight:400\">OLDER</th>\n          <th style=\"padding:3px 10px 6px;font-size:8px;color:#374151;text-align:right;font-weight:400\">RECENT</th>\n          <th style=\"padding:3px 0 6px 10px;font-size:8px;color:#374151;text-align:left;font-weight:400\">SHIFT</th>\n        </tr></thead>\n        <tbody>${langRows}</tbody>\n      </table>\n      <div style=\"margin-top:14px;padding-top:12px;border-top:1px solid #1a2235\">\n        <div style=\"font-size:9px;color:#374151;letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px\">DIRECTION SUMMARY</div>\n        <div style=\"font-size:10px;line-height:2\">${dirHtml}</div>\n      </div>\n    </div>\n\n    <!-- Commit Velocity -->\n    <div style=\"background:#0d1117;border:1px solid #1a2235;padding:18px\">\n      <div style=\"font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:#374151;margin-bottom:12px\">\n        COMMIT VELOCITY (z ≥ ${d.config?.velocity_z_thresh || 2}σ)\n      </div>\n      ${velRows}\n      <div style=\"margin-top:14px;padding-top:12px;border-top:1px solid #1a2235\">\n        <div style=\"font-size:9px;color:#374151;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px\">OVERALL TREND</div>\n        <div style=\"font-size:13px;font-weight:700;color:${va.overall_trend==='ACCELERATING'?'#10b981':va.overall_trend==='DECELERATING'?'#ef4444':'#4b5563'}\">\n          ${va.overall_trend || 'STABLE'}\n        </div>\n        <div style=\"font-size:9px;color:#374151;margin-top:4px\">\n          ${va.acceleration_count} accelerating · ${va.deceleration_count} decelerating · ${va.anomaly_count} anomalies\n        </div>\n      </div>\n    </div>\n\n    <!-- Risks & Opportunities -->\n    <div style=\"background:#0d1117;border:1px solid #1a2235;padding:18px\">\n      <div style=\"font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:#374151;margin-bottom:12px\">KEY RISKS</div>\n      ${riskHtml}\n      <div style=\"margin-top:14px;padding-top:12px;border-top:1px solid #1a2235\">\n        <div style=\"font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:#374151;margin-bottom:8px\">OPPORTUNITIES</div>\n        ${oppHtml}\n      </div>\n    </div>\n\n    <!-- Repo Health + Evidence -->\n    <div style=\"background:#0d1117;border:1px solid #1a2235;padding:18px\">\n      <div style=\"font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:#374151;margin-bottom:12px\">REPO HEALTH</div>\n      ${[\n        ['Non-fork repos',     rs.non_fork,            '#e2e8f0'],\n        ['Total stars',        (rs.total_stars||0).toLocaleString(), '#f59e0b'],\n        ['Active (90d)',       rs.active_90d,           '#10b981'],\n        ['Stale (365d+)',      rs.stale_365d,           '#ef4444'],\n        ['Recent cohort',      rs.rec_cohort_size + ' repos / ' + d.config?.recent_months + 'm', '#94a3b8'],\n        ['Older cohort',       rs.old_cohort_size + ' repos / ' + (d.config?.lookback_months - d.config?.recent_months) + 'm', '#94a3b8'],\n        ['Burst ratio',        bd.ratio + 'x baseline', bd.has_burst ? '#f59e0b' : '#4b5563'],\n        ['AI topic focus',     d.ai_focus?.recent_ratio + '% recent vs ' + d.ai_focus?.older_ratio + '% older', '#06b6d4'],\n      ].map(([label, val, vc]) =>\n        `<div style=\"display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #1a2235\">\n          <span style=\"font-size:9px;color:#374151\">${label}</span>\n          <span style=\"font-size:10px;color:${vc};font-weight:500\">${val}</span>\n        </div>`\n      ).join('')}\n\n      <div style=\"margin-top:14px;padding-top:12px;border-top:1px solid #1a2235\">\n        <div style=\"font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:#374151;margin-bottom:8px\">TOP REPOS</div>\n        ${topRepoRows}\n      </div>\n    </div>\n\n  </div>\n\n  <!-- ── EVIDENCE TRAIL ── -->\n  <div style=\"background:#0d1117;border:1px solid #1a2235;padding:18px 22px;margin-bottom:28px\">\n    <div style=\"font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:#374151;margin-bottom:12px\">\n      EVIDENCE TRAIL — Contradiction Resolver Input\n    </div>\n    <div style=\"display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:0\">\n      ${evidenceHtml}\n    </div>\n  </div>\n\n  <!-- ── CLAIMS SCHEMA JSON ── -->\n  <div style=\"background:#0d1117;border:1px solid #1a2235;padding:18px 22px;margin-bottom:28px\">\n    <div style=\"font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:#374151;margin-bottom:12px\">\n      MYCROFT CLAIMS SCHEMA OUTPUT — claim_id: ${cl.claim_id}\n    </div>\n    <pre style=\"font-size:10px;color:#475569;line-height:1.6;overflow-x:auto;white-space:pre-wrap\">${JSON.stringify({\n      claim_id:        cl.claim_id,\n      agent:           cl.agent,\n      schema_version:  cl.schema_version,\n      subject:         cl.subject,\n      claim_type:      cl.claim_type,\n      intensity:       cl.intensity,\n      composite_score: cl.composite_score,\n      investment_implication: cl.investment_implication,\n      flags:           cl.flags,\n      engineering_direction_delta: cl.engineering_direction_delta,\n      resolver_ready:  cl.resolver_ready,\n      human_review:    cl.human_review,\n    }, null, 2)}</pre>\n  </div>\n\n  <!-- ── FOOTER ── -->\n  <div style=\"border-top:1px solid #1a2235;padding-top:20px;display:flex;justify-content:space-between;font-size:9px;color:#1e293b;flex-wrap:wrap;gap:8px\">\n    <span>Mycroft Framework · Tech Stack Directional Signal Agent v3 · ${genAt}</span>\n    <span>Schema v1.0 · GitHub GraphQL + Groq llama-3.1-8b-instant · Resolver-Ready</span>\n  </div>\n\n</div>\n</body>\n</html>`;\n\nreturn [{ json: { html } }];\n"
+      },
+      "id": "724fa27a-5188-4711-ad23-5d1fbc4a173f",
+      "name": "Generate Dashboard",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2016,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const html  = $input.first().json.html;\nconst buf   = Buffer.from(html, 'utf8');\nconst bin   = await this.helpers.prepareBinaryData(buf, 'engineering_direction_delta.html', 'text/html');\nreturn [{\n  json:   { filename: 'engineering_direction_delta.html', size_kb: Math.round(buf.length / 1024) },\n  binary: { data: bin },\n}];"
+      },
+      "id": "e32978f2-aa4c-4ca6-995c-15d65fa34411",
+      "name": "Export HTML File",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2288,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n    message: '✅ Report generated! Go to n8n → Export HTML File → Output → Binary → Download'\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2496,
+        -96
+      ],
+      "id": "1c3908a7-acf0-47b6-8007-5fe397ed7550",
+      "name": "Code"
+    }
+  ],
+  "connections": {
+    "Company Input": {
+      "main": [
+        [
+          {
+            "node": "GitHub GraphQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub GraphQL": {
+      "main": [
+        [
+          {
+            "node": "Process Repos + Language Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Repos + Language Analysis": {
+      "main": [
+        [
+          {
+            "node": "Fetch Commit Activity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Commit Activity": {
+      "main": [
+        [
+          {
+            "node": "Velocity Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Velocity Analysis": {
+      "main": [
+        [
+          {
+            "node": "Build Groq Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Groq Prompt": {
+      "main": [
+        [
+          {
+            "node": "Groq AI Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq AI Analysis": {
+      "main": [
+        [
+          {
+            "node": "Score + Claims Schema",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Score + Claims Schema": {
+      "main": [
+        [
+          {
+            "node": "Generate Dashboard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Dashboard": {
+      "main": [
+        [
+          {
+            "node": "Export HTML File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Form Trigger": {
+      "main": [
+        [
+          {
+            "node": "Company Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Export HTML File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "79535917-dd4e-4d44-b6a6-aceff56f9b3f",
+  "meta": {
+    "instanceId": "c5605aae802302d14cf85834357505b8eaf4143631bcf5d9ab9240de503b0d2d"
+  },
+  "id": "your_workflow_id",
+  "tags": []
+}

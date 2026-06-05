@@ -1,0 +1,824 @@
+{
+  "name": "Contradiction_detection_agent",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "ecbef84d-9766-4795-a002-ae4a73dec262",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -4672,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "s1",
+              "name": "ticker",
+              "value": "MSFT",
+              "type": "string"
+            },
+            {
+              "id": "s2",
+              "name": "company_name",
+              "value": "Microsoft",
+              "type": "string"
+            },
+            {
+              "id": "s3",
+              "name": "lookback_days",
+              "value": 365,
+              "type": "number"
+            },
+            {
+              "id": "s4",
+              "name": "fiscal_quarter",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "s5",
+              "name": "active_patterns",
+              "value": "=[1, 2, 3, 4, 5, 6]",
+              "type": "array"
+            },
+            {
+              "id": "s6",
+              "name": "resolve_id",
+              "value": "=CONTRA-MSFT-{{ $now.toFormat('yyyyMMdd') }}-001",
+              "type": "string"
+            },
+            {
+              "id": "s7",
+              "name": "requested_at",
+              "value": "={{ new Date().toISOString() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "66032366-3c36-4dec-b28c-523200fe4def",
+      "name": "Set Company Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -4448,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  gs.id,\n  gs.claim_id,\n  gs.earnings_call_id,\n  ec.ticker,\n  ec.company_name,\n  ec.call_date,\n  ec.fiscal_quarter,\n  gs.claim_type AS guidance_topic,\n  gs.direction,\n  gs.direction_confidence,\n  gs.claim_text,\n  gs.claim_summary,\n  gs.transcript_citation,\n  gs.change_description,\n  gs.metric_name AS metric_type,\n  gs.metric_value_current AS quantified_value,\n  gs.metric_value_prior,\n  gs.falsification_flag,\n  gs.schema_valid\nFROM guidance_signals gs\nJOIN earnings_calls ec ON ec.id = gs.earnings_call_id\nWHERE ec.ticker = '{{ $('Set Company Input').first().json.ticker }}'\n  AND gs.schema_valid = true\nORDER BY ec.call_date DESC, gs.direction_confidence DESC\nLIMIT 50;",
+        "options": {}
+      },
+      "id": "754ffa3c-de8a-4582-8f93-d80f44b93456",
+      "name": "DB: Fetch Earnings Guidance Signals",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -3888,
+        80
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  ra.id,\n  ra.claim_id,\n  ra.earnings_call_id,\n  ec.ticker,\n  ec.call_date,\n  ec.fiscal_quarter,\n  ra.risk_category,\n  ra.severity,\n  ra.risk_text AS risk_description,\n  ra.risk_summary,\n  ra.uncertainty_language,\n  ra.transcript_citation,\n  ra.prior_disclosure_call,\n  ra.schema_valid\nFROM risk_admissions ra\nJOIN earnings_calls ec ON ec.id = ra.earnings_call_id\nWHERE ec.ticker = '{{ $('Set Company Input').first().json.ticker }}'\n  AND ra.schema_valid = true\nORDER BY ec.call_date DESC, ra.severity DESC\nLIMIT 30;",
+        "options": {}
+      },
+      "id": "abf60595-15d2-4c92-a7f1-8e6f13c69a4b",
+      "name": "DB: Fetch Risk Admissions",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -3872,
+        544
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  qa.id,\n  qa.earnings_call_id,\n  ec.ticker,\n  ec.call_date,\n  ec.fiscal_quarter,\n  qa.question_topic,\n  qa.question_text,\n  qa.response_type,\n  qa.response_summary,\n  qa.pressure_score,\n  qa.asked_by_firms AS analyst_firm,\n  qa.is_repeated_topic AS evasion_flag,\n  qa.times_asked,\n  qa.schema_valid\nFROM qa_pressure_map qa\nJOIN earnings_calls ec ON ec.id = qa.earnings_call_id\nWHERE ec.ticker = '{{ $('Set Company Input').first().json.ticker }}'\n  AND qa.schema_valid = true\nORDER BY ec.call_date DESC, qa.pressure_score DESC\nLIMIT 30;",
+        "options": {}
+      },
+      "id": "5333b556-64a6-4914-8fdf-c46e6ca80820",
+      "name": "DB: Fetch QA Pressure Map",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -3904,
+        -128
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  ns.id,\n  ns.claim_id,\n  ns.ticker,\n  ns.published_at,\n  ns.source_name,\n  ns.headline,\n  ns.sentiment_label,\n  ns.sentiment_score,\n  ns.topic_tags,\n  ns.schema_valid\nFROM news_signals ns\nWHERE ns.ticker = '{{ $('Set Company Input').first().json.ticker }}'\n  AND ns.schema_valid = true\nORDER BY ns.published_at DESC\nLIMIT 50;",
+        "options": {}
+      },
+      "id": "94a1b236-3f97-4778-ad30-24b1e2ca70d8",
+      "name": "DB: Fetch News Signals",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -3872,
+        400
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  tss.id,\n  tss.claim_id,\n  tss.ticker,\n  tss.snapshot_date,\n  tss.burst_detected,\n  tss.burst_ratio,\n  tss.velocity_anomaly,\n  tss.velocity_z_score,\n  tss.ai_focus_increasing,\n  tss.rising_languages,\n  tss.declining_languages,\n  tss.emerging_languages,\n  tss.stale_repo_count,\n  tss.schema_valid\nFROM tech_stack_signals tss\nWHERE tss.ticker = '{{ $('Set Company Input').first().json.ticker }}'\n  AND tss.schema_valid = true\nORDER BY tss.snapshot_date DESC\nLIMIT 10;",
+        "options": {}
+      },
+      "id": "e55c9080-c722-4f2f-88d0-1759b587e7a2",
+      "name": "DB: Fetch Tech Stack Signals",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -3888,
+        224
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const ctx = $('Set Company Input').first().json;\n\nfunction collectRows(nodeName) {\n  try {\n    return $(nodeName).all().map(i => i.json).filter(r => r && Object.keys(r).length > 0);\n  } catch(e) { return []; }\n}\n\nconst guidance_signals   = collectRows('DB: Fetch Earnings Guidance Signals').filter(r => r.claim_id);\nconst risk_admissions    = collectRows('DB: Fetch Risk Admissions').filter(r => r.risk_category);\nconst qa_pressure        = collectRows('DB: Fetch QA Pressure Map').filter(r => r.question_topic);\nconst news_signals       = collectRows('DB: Fetch News Signals').filter(r => r.headline);\nconst tech_stack_signals = collectRows('DB: Fetch Tech Stack Signals').filter(r => r.ticker);\n\nconst news_count = news_signals.length;\nconst pos_news   = news_signals.filter(n => n.sentiment_label === 'positive').length;\nconst neg_news   = news_signals.filter(n => n.sentiment_label === 'negative').length;\nconst avg_news_score = news_count > 0\n  ? news_signals.reduce((s, n) => s + (n.sentiment_score || 0), 0) / news_count\n  : null;\nconst news_sentiment_direction = avg_news_score === null ? 'UNAVAILABLE'\n  : avg_news_score > 0.2  ? 'POSITIVE'\n  : avg_news_score < -0.2 ? 'NEGATIVE'\n  : 'NEUTRAL';\n\nconst strengthened_guidance = guidance_signals.filter(g => g.direction === 'strengthened');\nconst weakened_guidance     = guidance_signals.filter(g => g.direction === 'weakened');\nconst has_tech_stack = tech_stack_signals.length > 0;\nconst latest_tech    = has_tech_stack ? tech_stack_signals[0] : null;\n\nreturn [{\n  json: {\n    ...ctx,\n    signals: { guidance_signals, risk_admissions, qa_pressure, news_signals, tech_stack_signals },\n    signal_counts: {\n      guidance:   guidance_signals.length,\n      risks:      risk_admissions.length,\n      qa_items:   qa_pressure.length,\n      news:       news_count,\n      tech_stack: tech_stack_signals.length\n    },\n    summaries: {\n      news_sentiment_direction,\n      avg_news_score,\n      pos_news,\n      neg_news,\n      strengthened_guidance_count: strengthened_guidance.length,\n      weakened_guidance_count:     weakened_guidance.length,\n      unchanged_guidance_count:    guidance_signals.filter(g => g.direction === 'unchanged').length,\n      has_tech_stack,\n      latest_tech\n    }\n  }\n}];"
+      },
+      "id": "e1054950-8629-44ee-b485-946bf91db128",
+      "name": "Aggregate All Signals",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3440,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const ctx      = $input.first().json;\nconst sigs     = ctx.signals;\nconst summ     = ctx.summaries;\nconst active   = ctx.active_patterns || [1, 2, 3, 4, 5, 6];\nconst ticker   = ctx.ticker;\nconst resolve_id = ctx.resolve_id;\n\nconst flags = [];\nconst skipped_patterns = [];\nconst pattern_results  = {};\n\nlet flag_seq = 0;\nfunction makeFlag(pattern_id, pattern_name, severity, claim_a, claim_b, conflict_description, evidence_for_a, evidence_for_b) {\n  flag_seq++;\n  return {\n    flag_id:             `${resolve_id}-P${pattern_id}-F${String(flag_seq).padStart(3,'0')}`,\n    resolve_id,\n    ticker,\n    pattern_id,\n    pattern_name,\n    severity,\n    conflict_description,\n    claim_a_id:          claim_a?.claim_id || null,\n    claim_a_source:      claim_a?._source || null,\n    claim_a_text:        claim_a?.claim_text || claim_a?.headline || claim_a?.risk_description || null,\n    claim_a_direction:   claim_a?.direction || claim_a?.sentiment_label || null,\n    claim_b_id:          claim_b?.claim_id || null,\n    claim_b_source:      claim_b?._source || null,\n    claim_b_text:        claim_b?.claim_text || claim_b?.headline || null,\n    claim_b_direction:   claim_b?.direction || claim_b?.sentiment_label || null,\n    evidence_for_a,\n    evidence_for_b,\n    resolution_status:   'UNRESOLVED',\n    requires_human_review: true,\n    schema_valid:        true,\n    flagged_at:          new Date().toISOString()\n  };\n}\n\n// PATTERN 1 — Sentiment vs Guidance Direction\nif (active.includes(1)) {\n  const weakened  = sigs.guidance_signals.filter(g => g.direction === 'weakened' && (g.direction_confidence || 0) >= 0.6);\n  const news_pos  = summ.news_sentiment_direction === 'POSITIVE';\n  const news_neg  = summ.news_sentiment_direction === 'NEGATIVE';\n  const p1_flags  = [];\n  if (weakened.length > 0 && news_pos && (sigs.news_signals || []).length > 0) {\n    for (const g of weakened.slice(0, 3)) {\n      const best_pos = (sigs.news_signals || []).find(n => n.sentiment_label === 'positive');\n      if (best_pos) {\n        p1_flags.push(makeFlag(1, 'Sentiment vs Guidance Direction', 'HIGH',\n          { ...g, _source: 'earnings_agent' },\n          { ...best_pos, _source: 'news_agent' },\n          `Guidance for \"${g.guidance_topic || g.claim_type || 'topic'}\" marked WEAKENED but news sentiment is POSITIVE`,\n          `Earnings: direction=${g.direction}, confidence=${g.direction_confidence}`,\n          `News: ${summ.pos_news} positive articles, avg score ${(summ.avg_news_score||0).toFixed(2)}`\n        ));\n      }\n    }\n  }\n  if (summ.strengthened_guidance_count > 0 && news_neg && (sigs.news_signals||[]).length > 0) {\n    const best_str = sigs.guidance_signals.find(g => g.direction === 'strengthened');\n    const worst_neg = (sigs.news_signals||[]).find(n => n.sentiment_label === 'negative');\n    if (best_str && worst_neg) {\n      p1_flags.push(makeFlag(1, 'Sentiment vs Guidance Direction', 'HIGH',\n        { ...best_str, _source: 'earnings_agent' },\n        { ...worst_neg, _source: 'news_agent' },\n        `Guidance STRENGTHENED on call but news sentiment is NEGATIVE`,\n        `Earnings: ${summ.strengthened_guidance_count} strengthened signals`,\n        `News: ${summ.neg_news} negative articles, avg score ${(summ.avg_news_score||0).toFixed(2)}`\n      ));\n    }\n  }\n  pattern_results[1] = { active: true, flags_raised: p1_flags.length };\n  flags.push(...p1_flags);\n} else { skipped_patterns.push({ pattern_id: 1, reason: 'excluded_by_caller' }); }\n\n// PATTERN 2 — Risk Admission vs News Coverage\nif (active.includes(2)) {\n  const high_risks = sigs.risk_admissions.filter(r => r.severity === 'high' || r.severity === 'critical');\n  const p2_flags = [];\n  for (const risk of high_risks.slice(0, 3)) {\n    const matching_news = (sigs.news_signals||[]).filter(n =>\n      (n.topic_tags||[]).some(t => risk.risk_category && t.toLowerCase().includes(risk.risk_category.toLowerCase()))\n    );\n    const positive_matching = matching_news.filter(n => n.sentiment_label === 'positive');\n    if ((sigs.news_signals||[]).length > 0 && matching_news.length === 0) {\n      p2_flags.push(makeFlag(2, 'Risk Admission vs News Coverage Gap', 'MEDIUM',\n        { ...risk, _source: 'earnings_agent' }, null,\n        `High-severity risk \"${risk.risk_category}\" admitted on call but absent from news coverage`,\n        `Earnings: severity=${risk.severity}`,\n        `News: ${(sigs.news_signals||[]).length} articles scanned, zero match topic`\n      ));\n    } else if (positive_matching.length > 0) {\n      p2_flags.push(makeFlag(2, 'Risk Admission vs Coverage Tone', 'HIGH',\n        { ...risk, _source: 'earnings_agent' },\n        { ...positive_matching[0], _source: 'news_agent' },\n        `High-severity risk \"${risk.risk_category}\" admitted on call; matching news has POSITIVE sentiment`,\n        `Earnings: severity=${risk.severity}`,\n        `News: sentiment=positive, headline=\"${(positive_matching[0].headline||'').slice(0,80)}\"`\n      ));\n    }\n  }\n  pattern_results[2] = { active: true, flags_raised: p2_flags.length };\n  flags.push(...p2_flags);\n} else { skipped_patterns.push({ pattern_id: 2, reason: 'excluded_by_caller' }); }\n\n// PATTERN 3 — QA Evasion vs Analyst Coverage\nif (active.includes(3)) {\n  const evaded = sigs.qa_pressure.filter(q => q.evasion_flag === true || q.evasion_flag === 'true' || q.pressure_score >= 7);\n  const analyst_news = (sigs.news_signals||[]).filter(n =>\n    (n.topic_tags||[]).some(t => ['analyst','rating','upgrade','target','price'].includes(t.toLowerCase()))\n  );\n  const pos_analyst = analyst_news.filter(n => n.sentiment_label === 'positive');\n  const p3_flags = [];\n  if (evaded.length >= 2 && pos_analyst.length > 0) {\n    const top_evade = evaded.sort((a,b) => b.pressure_score - a.pressure_score)[0];\n    const top_anews = pos_analyst[0];\n    p3_flags.push(makeFlag(3, 'QA Evasion vs Analyst Confidence', 'MEDIUM',\n      { ...top_evade, _source: 'earnings_agent', claim_id: `QA-${top_evade.earnings_call_id}-${top_evade.question_topic}`, claim_text: `Topic: ${top_evade.question_topic}, pressure_score: ${top_evade.pressure_score}` },\n      { ...top_anews, _source: 'news_agent' },\n      `Management evaded ${evaded.length} high-pressure Q&A topics but analyst coverage is positive`,\n      `Q&A: ${evaded.length} evaded topics, top=\"${top_evade.question_topic}\"`,\n      `Analyst news: sentiment=positive`\n    ));\n  }\n  pattern_results[3] = { active: true, flags_raised: p3_flags.length };\n  flags.push(...p3_flags);\n} else { skipped_patterns.push({ pattern_id: 3, reason: 'excluded_by_caller' }); }\n\n// PATTERN 4 — Tech Stack Decline vs Positive Guidance\nif (active.includes(4)) {\n  if (!summ.has_tech_stack) {\n    skipped_patterns.push({ pattern_id: 4, reason: 'tech_stack_data_unavailable' });\n    pattern_results[4] = { active: false, flags_raised: 0, data_available: false };\n  } else {\n    const tech = summ.latest_tech;\n    const declining = Array.isArray(tech.declining_languages) ? tech.declining_languages : [];\n    const stale = tech.stale_repo_count || 0;\n    const has_decline = declining.length >= 2 || stale >= 5;\n    const pos_guidance = sigs.guidance_signals.filter(g => g.direction === 'strengthened' && (g.direction_confidence||0) >= 0.6);\n    const p4_flags = [];\n    if (has_decline && pos_guidance.length > 0) {\n      const top_g = pos_guidance[0];\n      p4_flags.push(makeFlag(4, 'Tech Stack Decline vs Positive Guidance', 'HIGH',\n        { ...top_g, _source: 'earnings_agent' },\n        { claim_id: `TS-${tech.ticker}-${tech.snapshot_date}`, _source: 'tech_stack_agent', claim_text: `Declining: ${declining.slice(0,3).join(', ')}; stale repos: ${stale}`, direction: 'declining' },\n        `Management projects strengthened guidance but engineering footprint shows decline`,\n        `Earnings: ${pos_guidance.length} strengthened signals, top=${top_g.guidance_topic}`,\n        `Tech stack: ${declining.length} declining languages, ${stale} stale repos`\n      ));\n    }\n    pattern_results[4] = { active: true, flags_raised: p4_flags.length, data_available: true };\n    flags.push(...p4_flags);\n  }\n} else { skipped_patterns.push({ pattern_id: 4, reason: 'excluded_by_caller' }); }\n\n// PATTERN 5 — Engineering Burst vs No Management Disclosure\nif (active.includes(5)) {\n  if (!summ.has_tech_stack) {\n    skipped_patterns.push({ pattern_id: 5, reason: 'tech_stack_data_unavailable' });\n    pattern_results[5] = { active: false, flags_raised: 0, data_available: false };\n  } else {\n    const tech = summ.latest_tech;\n    const has_burst    = tech.burst_detected === true || tech.burst_detected === 'true';\n    const has_velocity = tech.velocity_anomaly === true || tech.velocity_anomaly === 'true' || (tech.velocity_z_score || 0) >= 2.0;\n    const emerging     = Array.isArray(tech.emerging_languages) ? tech.emerging_languages : [];\n    const pivot_signals = sigs.guidance_signals.filter(g =>\n      g.direction === 'strengthened' ||\n      (g.guidance_topic && ['strategy','pivot','expansion','new','direction'].some(kw =>\n        (g.guidance_topic || '').toLowerCase().includes(kw)\n      ))\n    );\n    const p5_flags = [];\n    if ((has_burst || has_velocity) && pivot_signals.length === 0) {\n      p5_flags.push(makeFlag(5, 'Engineering Burst vs Undisclosed Pivot', 'HIGH',\n        null,\n        { claim_id: `TS-${tech.ticker}-${tech.snapshot_date}`, _source: 'tech_stack_agent', claim_text: `Burst ratio=${tech.burst_ratio}, velocity z-score=${tech.velocity_z_score}, emerging: ${emerging.slice(0,3).join(', ')}`, direction: 'burst' },\n        `Significant engineering burst detected but no corresponding management disclosure on earnings call`,\n        `No earnings guidance matches the engineering direction change`,\n        `Tech stack: burst=${has_burst}, velocity_anomaly=${has_velocity}, emerging=${emerging.join(', ')||'none'}`\n      ));\n    }\n    pattern_results[5] = { active: true, flags_raised: p5_flags.length, data_available: true };\n    flags.push(...p5_flags);\n  }\n} else { skipped_patterns.push({ pattern_id: 5, reason: 'excluded_by_caller' }); }\n\n// PATTERN 6 — Guidance Optimism vs Negative News Momentum\nif (active.includes(6)) {\n  const str_guidance = sigs.guidance_signals.filter(g => g.direction === 'strengthened' && (g.direction_confidence||0) >= 0.7);\n  const news_neg_momentum = summ.news_sentiment_direction === 'NEGATIVE' && summ.neg_news > summ.pos_news && (sigs.news_signals||[]).length >= 5;\n  const p6_flags = [];\n  if (str_guidance.length > 0 && news_neg_momentum) {\n    const top_str = str_guidance.sort((a,b) => (b.direction_confidence||0) - (a.direction_confidence||0))[0];\n    const worst_n = (sigs.news_signals||[]).filter(n => n.sentiment_label === 'negative')[0];\n    p6_flags.push(makeFlag(6, 'Guidance Optimism vs Negative News Momentum', 'HIGH',\n      { ...top_str, _source: 'earnings_agent' },\n      { ...worst_n, _source: 'news_agent' },\n      `Management projects high-confidence strengthened guidance against sustained negative news momentum`,\n      `Earnings: ${str_guidance.length} strengthened signals, confidence=${top_str.direction_confidence}`,\n      `News: ${summ.neg_news} negative vs ${summ.pos_news} positive, avg=${(summ.avg_news_score||0).toFixed(2)}`\n    ));\n  }\n  pattern_results[6] = { active: true, flags_raised: p6_flags.length };\n  flags.push(...p6_flags);\n} else { skipped_patterns.push({ pattern_id: 6, reason: 'excluded_by_caller' }); }\n\nconst has_contradictions    = flags.length > 0;\nconst high_severity_count   = flags.filter(f => f.severity === 'HIGH').length;\nconst medium_severity_count = flags.filter(f => f.severity === 'MEDIUM').length;\nconst overall_confidence_level =\n  high_severity_count >= 2     ? 'CRITICALLY_COMPROMISED'\n  : high_severity_count >= 1   ? 'CONFIDENCE_REDUCED'\n  : medium_severity_count >= 2 ? 'REVIEW_WARRANTED'\n  : !has_contradictions        ? 'NO_CONTRADICTIONS_DETECTED'\n  : 'LOW_CONCERN';\n\nreturn [{\n  json: {\n    ...ctx,\n    contradiction_flags: flags,\n    pattern_results,\n    skipped_patterns,\n    detection_summary: {\n      total_flags:             flags.length,\n      high_severity:           high_severity_count,\n      medium_severity:         medium_severity_count,\n      low_severity:            flags.filter(f => f.severity === 'LOW').length,\n      patterns_active:         Object.keys(pattern_results).filter(k => pattern_results[k].active).length,\n      patterns_skipped:        skipped_patterns.length,\n      has_contradictions,\n      overall_confidence_level,\n      requires_human_review:   has_contradictions\n    }\n  }\n}];"
+      },
+      "id": "cab09bc8-9ae5-4388-93f9-a905486c0ddd",
+      "name": "Run Pattern Detection Engine",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3264,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const ctx   = $input.first().json;\nconst flags = ctx.contradiction_flags || [];\nconst summ  = ctx.summaries;\nconst sigCounts = ctx.signal_counts;\nconst detSumm   = ctx.detection_summary;\n\nif (!detSumm.has_contradictions) {\n  return [{ json: { ...ctx, llm_needed: false } }];\n}\n\nconst flagSummary = flags.map((f, i) =>\n  `[Flag ${i+1}] Pattern ${f.pattern_id} — ${f.pattern_name} | Severity: ${f.severity}\\n` +\n  `Conflict: ${f.conflict_description}\\n` +\n  `Evidence A (${f.claim_a_source||'N/A'}): ${(f.evidence_for_a||'').slice(0,200)}\\n` +\n  `Evidence B (${f.claim_b_source||'N/A'}): ${(f.evidence_for_b||'').slice(0,200)}`\n).join('\\n\\n');\n\nconst system_prompt = `You are a senior investment intelligence analyst for the Mycroft platform. You receive structured contradiction flags produced by automated detection logic. Your job is to: 1. Assess the plausibility of each contradiction. 2. Assign an investment relevance score (1-10) to each flag. 3. Identify which contradictions are self-resolving vs genuinely irreconcilable. 4. Produce a concise analyst memo (3-5 sentences) per flag. 5. Produce a single overall portfolio-level assessment paragraph. Rules: Never recommend buy/sell/hold. Surface conflict, do not resolve it. Flag INSUFFICIENT_EVIDENCE when data is thin. Cite only evidence provided. Return ONLY valid JSON. No markdown, no preamble.`;\n\nconst user_prompt = `TICKER: ${ctx.ticker} | COMPANY: ${ctx.company_name} | RESOLVE_ID: ${ctx.resolve_id}\\n\\nSIGNAL INVENTORY:\\n- Guidance signals: ${sigCounts.guidance}\\n- Risk admissions: ${sigCounts.risks}\\n- QA pressure items: ${sigCounts.qa_items}\\n- News articles: ${sigCounts.news}\\n- Tech stack snapshots: ${sigCounts.tech_stack}\\n\\nNEWS SENTIMENT: ${summ.news_sentiment_direction}\\n\\nDETECTED CONTRADICTION FLAGS (${flags.length} total):\\n\\n${flagSummary}\\n\\nReturn JSON:\\n{\\n  \"overall_assessment\": \"<paragraph>\",\\n  \"overall_investment_relevance\": <1-10>,\\n  \"flags\": [\\n    {\\n      \"flag_id\": \"<same as input>\",\\n      \"plausibility\": \"REAL_CONFLICT | TIMING_ARTEFACT | FRAMING_DIFFERENCE | INSUFFICIENT_EVIDENCE\",\\n      \"investment_relevance_score\": <1-10>,\\n      \"self_resolving\": <true|false>,\\n      \"analyst_memo\": \"<3-5 sentences>\",\\n      \"recommended_action\": \"ESCALATE_TO_HUMAN | MONITOR | DISMISS\"\\n    }\\n  ]\\n}`;\n\nreturn [{\n  json: {\n    ...ctx,\n    llm_needed: true,\n    groq_payload: {\n      model: 'llama-3.3-70b-versatile',\n      max_tokens: 2000,\n      temperature: 0.1,\n      messages: [\n        { role: 'system', content: system_prompt },\n        { role: 'user',   content: user_prompt }\n      ]\n    }\n  }\n}];"
+      },
+      "id": "a74eaeef-e39b-47a5-9468-7ccf43f3da0f",
+      "name": "Build Groq Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3056,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "cond-llm",
+              "leftValue": "={{ $json.llm_needed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "cafae45c-034a-4c5b-aeb7-cb0ccc5e1093",
+      "name": "LLM Needed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -2896,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "d9d5878a-5b33-4994-9955-8f00069ff9e9",
+      "name": "Groq: Analyse Contradictions",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2592,
+        128
+      ],
+      "credentials": {
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const groqResp = $input.first().json;\nconst ctx      = $('Build Groq Prompt').first().json;\n\nconst rawText = groqResp.choices?.[0]?.message?.content || '{}';\nlet llm_analysis;\ntry {\n  const clean = rawText.replace(/```json|```/g, '').trim();\n  llm_analysis = JSON.parse(clean);\n} catch(e) {\n  llm_analysis = { overall_assessment: 'LLM_PARSE_FAILED: ' + e.message, overall_investment_relevance: null, flags: [], parse_error: true };\n}\n\nconst enriched_flags = (ctx.contradiction_flags || []).map(flag => {\n  const llm_flag = (llm_analysis.flags || []).find(lf => lf.flag_id === flag.flag_id) || {};\n  return {\n    ...flag,\n    plausibility:               llm_flag.plausibility || 'INSUFFICIENT_EVIDENCE',\n    investment_relevance_score: llm_flag.investment_relevance_score || null,\n    self_resolving:             llm_flag.self_resolving ?? null,\n    analyst_memo:               llm_flag.analyst_memo || null,\n    recommended_action:         llm_flag.recommended_action || 'ESCALATE_TO_HUMAN'\n  };\n});\n\nconst run_log = {\n  resolve_id:        ctx.resolve_id,\n  run_type:          'contradiction_llm_analysis',\n  model_used:        'llama-3.3-70b-versatile',\n  prompt_tokens:     groqResp.usage?.prompt_tokens || 0,\n  completion_tokens: groqResp.usage?.completion_tokens || 0,\n  success:           !llm_analysis.parse_error\n};\n\nreturn [{\n  json: {\n    ...ctx,\n    contradiction_flags: enriched_flags,\n    llm_analysis: {\n      overall_assessment:           llm_analysis.overall_assessment,\n      overall_investment_relevance: llm_analysis.overall_investment_relevance\n    },\n    run_log\n  }\n}];"
+      },
+      "id": "0b7be9a9-6b8d-417e-ae6b-a09dde49e7c3",
+      "name": "Process Groq Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2400,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const ctx = $input.first().json;\nreturn [{\n  json: {\n    ...ctx,\n    llm_analysis: {\n      overall_assessment:           'No contradictions detected. All signals are consistent within defined patterns.',\n      overall_investment_relevance: 0\n    },\n    run_log: {\n      resolve_id: ctx.resolve_id,\n      run_type:   'contradiction_no_flags',\n      model_used: 'none',\n      prompt_tokens: 0,\n      completion_tokens: 0,\n      success: true\n    }\n  }\n}];"
+      },
+      "id": "9aa0d618-18b2-4b72-bd93-38bceccb58d2",
+      "name": "No-Flag Passthrough",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2592,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO contradiction_reports (\n  resolve_id, ticker, company_name, fiscal_quarter,\n  lookback_days, total_flags, high_severity_count,\n  medium_severity_count, overall_confidence_level,\n  overall_assessment, overall_investment_relevance,\n  patterns_active, patterns_skipped, signal_counts,\n  requires_human_review, created_at\n) VALUES (\n  '{{ $json.resolve_id }}',\n  '{{ $json.ticker }}',\n  '{{ $json.company_name }}',\n  {{ $json.fiscal_quarter ? \"'\" + $json.fiscal_quarter + \"'\" : 'NULL' }},\n  {{ $json.lookback_days }},\n  {{ $json.detection_summary.total_flags }},\n  {{ $json.detection_summary.high_severity }},\n  {{ $json.detection_summary.medium_severity }},\n  '{{ $json.detection_summary.overall_confidence_level }}',\n  '{{ ($json.llm_analysis && $json.llm_analysis.overall_assessment) ? $json.llm_analysis.overall_assessment.replace(/'/g, \"''\").slice(0,1000) : \"\" }}',\n  {{ ($json.llm_analysis && $json.llm_analysis.overall_investment_relevance != null && $json.llm_analysis.overall_investment_relevance !== undefined) ? $json.llm_analysis.overall_investment_relevance : 'NULL' }},\n  {{ $json.detection_summary.patterns_active }},\n  {{ $json.detection_summary.patterns_skipped }},\n  '{{ JSON.stringify($json.signal_counts) }}'::jsonb,\n  {{ $json.detection_summary.requires_human_review ? 'true' : 'false' }},\n  NOW()\n)\nON CONFLICT (resolve_id) DO UPDATE SET\n  total_flags = EXCLUDED.total_flags,\n  overall_confidence_level = EXCLUDED.overall_confidence_level\nRETURNING id, resolve_id, overall_confidence_level;",
+        "options": {}
+      },
+      "id": "b5a94d34-7511-4ebe-93de-b4e8a620f5b1",
+      "name": "DB: Insert Contradiction Report",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -2368,
+        272
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Fan out each flag for individual DB insertion\nlet flags = [];\ntry { flags = $('Process Groq Response').first().json.contradiction_flags || []; } catch(e) {}\nif (!flags.length) {\n  try { flags = $('No-Flag Passthrough').first().json.contradiction_flags || []; } catch(e) {}\n}\nif (flags.length === 0) {\n  return [{ json: { no_flags: true } }];\n}\nreturn flags.map(f => ({ json: f }));"
+      },
+      "id": "8519f7cd-1a7a-4f0e-8bc5-618839ccdf5f",
+      "name": "Fan Out Flags",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2112,
+        256
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO contradiction_flags (\n  flag_id, resolve_id, ticker, pattern_id, pattern_name,\n  severity, conflict_description,\n  claim_a_id, claim_a_source, claim_a_text, claim_a_direction,\n  claim_b_id, claim_b_source, claim_b_text, claim_b_direction,\n  evidence_for_a, evidence_for_b,\n  plausibility, investment_relevance_score, self_resolving,\n  analyst_memo, recommended_action,\n  resolution_status, requires_human_review, flagged_at\n) VALUES (\n  '{{ $json.flag_id }}',\n  '{{ $json.resolve_id }}',\n  '{{ $json.ticker }}',\n  {{ $json.pattern_id }},\n  '{{ $json.pattern_name }}',\n  '{{ $json.severity }}',\n  '{{ ($json.conflict_description||'').replace(/'/g,\"''\").slice(0,500) }}',\n  {{ $json.claim_a_id ? \"'\" + $json.claim_a_id + \"'\" : 'NULL' }},\n  {{ $json.claim_a_source ? \"'\" + $json.claim_a_source + \"'\" : 'NULL' }},\n  {{ $json.claim_a_text ? \"'\" + ($json.claim_a_text||'').replace(/'/g,\"''\").slice(0,500) + \"'\" : 'NULL' }},\n  {{ $json.claim_a_direction ? \"'\" + $json.claim_a_direction + \"'\" : 'NULL' }},\n  {{ $json.claim_b_id ? \"'\" + $json.claim_b_id + \"'\" : 'NULL' }},\n  {{ $json.claim_b_source ? \"'\" + $json.claim_b_source + \"'\" : 'NULL' }},\n  {{ $json.claim_b_text ? \"'\" + ($json.claim_b_text||'').replace(/'/g,\"''\").slice(0,500) + \"'\" : 'NULL' }},\n  {{ $json.claim_b_direction ? \"'\" + $json.claim_b_direction + \"'\" : 'NULL' }},\n  '{{ ($json.evidence_for_a||'').replace(/'/g,\"''\").slice(0,600) }}',\n  '{{ ($json.evidence_for_b||'').replace(/'/g,\"''\").slice(0,600) }}',\n  '{{ $json.plausibility || 'INSUFFICIENT_EVIDENCE' }}',\n  {{ $json.investment_relevance_score !== null && $json.investment_relevance_score !== undefined ? $json.investment_relevance_score : 'NULL' }},\n  {{ $json.self_resolving !== null && $json.self_resolving !== undefined ? $json.self_resolving : 'NULL' }},\n  {{ $json.analyst_memo ? \"'\" + ($json.analyst_memo||'').replace(/'/g,\"''\").slice(0,1000) + \"'\" : 'NULL' }},\n  '{{ $json.recommended_action || 'ESCALATE_TO_HUMAN' }}',\n  '{{ $json.resolution_status || 'UNRESOLVED' }}',\n  {{ $json.requires_human_review ? 'true' : 'false' }},\n  '{{ $json.flagged_at }}'\n)\nON CONFLICT (flag_id) DO NOTHING\nRETURNING id, flag_id, severity;",
+        "options": {}
+      },
+      "id": "86d3bcb6-a793-41fe-9645-2ac3b76a639e",
+      "name": "DB: Insert Contradiction Flag",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -1888,
+        240
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build clean final report visible in n8n output panel\nlet ctx;\ntry { ctx = $('Process Groq Response').first().json; } catch(e) {}\nif (!ctx) { ctx = $('No-Flag Passthrough').first().json; }\n\nconst detS  = ctx.detection_summary;\nconst sigC  = ctx.signal_counts;\nconst flags = ctx.contradiction_flags || [];\nconst llmA  = ctx.llm_analysis || {};\n\nconst report = {\n  resolve_id:   ctx.resolve_id,\n  ticker:       ctx.ticker,\n  company_name: ctx.company_name,\n  generated_at: new Date().toISOString(),\n\n  detection_summary: {\n    total_flags:              detS.total_flags,\n    high_severity:            detS.high_severity,\n    medium_severity:          detS.medium_severity,\n    overall_confidence_level: detS.overall_confidence_level,\n    patterns_active:          detS.patterns_active,\n    patterns_skipped:         detS.patterns_skipped,\n    requires_human_review:    detS.requires_human_review\n  },\n\n  signal_inventory: {\n    guidance_signals:     sigC.guidance,\n    risk_admissions:      sigC.risks,\n    qa_pressure_items:    sigC.qa_items,\n    news_articles:        sigC.news,\n    tech_stack_snapshots: sigC.tech_stack\n  },\n\n  overall_assessment:           llmA.overall_assessment,\n  overall_investment_relevance: llmA.overall_investment_relevance,\n\n  contradiction_flags: flags.map(f => ({\n    flag_id:                    f.flag_id,\n    pattern_id:                 f.pattern_id,\n    pattern_name:               f.pattern_name,\n    severity:                   f.severity,\n    conflict_description:       f.conflict_description,\n    plausibility:               f.plausibility,\n    investment_relevance_score: f.investment_relevance_score,\n    recommended_action:         f.recommended_action,\n    analyst_memo:               f.analyst_memo,\n    requires_human_review:      f.requires_human_review\n  })),\n\n  deferred_patterns: (ctx.skipped_patterns || []).map(p => ({\n    pattern_id: p.pattern_id,\n    reason:     p.reason\n  }))\n};\n\nreturn [{ json: report }];"
+      },
+      "id": "d34eff1d-fbf8-4a9b-9b11-defe19ef85e5",
+      "name": "Build Final Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1648,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE IF NOT EXISTS contradiction_reports (\n  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,\n  resolve_id TEXT UNIQUE NOT NULL,\n  ticker TEXT,\n  company_name TEXT,\n  fiscal_quarter TEXT,\n  lookback_days INT,\n  total_flags INT DEFAULT 0,\n  high_severity_count INT DEFAULT 0,\n  medium_severity_count INT DEFAULT 0,\n  overall_confidence_level TEXT,\n  overall_assessment TEXT,\n  overall_investment_relevance INT,\n  patterns_active INT,\n  patterns_skipped INT,\n  signal_counts JSONB,\n  requires_human_review BOOLEAN DEFAULT TRUE,\n  created_at TIMESTAMPTZ DEFAULT NOW()\n);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -3888,
+        848
+      ],
+      "id": "6dbdc1f0-eb42-4c68-9f4a-8978eb41678d",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE IF NOT EXISTS contradiction_flags (\n  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,\n  flag_id TEXT UNIQUE NOT NULL,\n  resolve_id TEXT,\n  ticker TEXT,\n  pattern_id INT,\n  pattern_name TEXT,\n  severity TEXT,\n  conflict_description TEXT,\n  claim_a_id TEXT,\n  claim_a_source TEXT,\n  claim_a_text TEXT,\n  claim_a_direction TEXT,\n  claim_b_id TEXT,\n  claim_b_source TEXT,\n  claim_b_text TEXT,\n  claim_b_direction TEXT,\n  evidence_for_a TEXT,\n  evidence_for_b TEXT,\n  plausibility TEXT,\n  investment_relevance_score INT,\n  self_resolving BOOLEAN,\n  analyst_memo TEXT,\n  recommended_action TEXT,\n  resolution_status TEXT DEFAULT 'UNRESOLVED',\n  requires_human_review BOOLEAN DEFAULT TRUE,\n  flagged_at TIMESTAMPTZ\n);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -3712,
+        880
+      ],
+      "id": "9ca58f8f-035c-4ccc-aeee-f129204a3207",
+      "name": "Execute a SQL query1",
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT ticker, burst_detected, \n       burst_ratio, velocity_anomaly,\n       declining_languages\nFROM tech_stack_signals\nWHERE ticker = 'MSFT';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -3216,
+        880
+      ],
+      "id": "a31e1d6f-f9b6-4291-adb5-b05edf50fab3",
+      "name": "Execute a SQL query2",
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE IF NOT EXISTS news_signals (\n  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,\n  claim_id TEXT,\n  ticker TEXT,\n  published_at TIMESTAMPTZ,\n  source_name TEXT,\n  headline TEXT,\n  sentiment_label TEXT,\n  sentiment_score NUMERIC,\n  topic_tags TEXT[],\n  schema_valid BOOLEAN DEFAULT TRUE\n);\nALTER TABLE news_signals \nADD CONSTRAINT news_signals_claim_id_unique \nUNIQUE (claim_id);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -3504,
+        880
+      ],
+      "id": "9ed47953-8b26-4575-a28c-277ce2583072",
+      "name": "Execute a SQL query3",
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "https://www.alphavantage.co/query",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "function",
+              "value": "NEWS_SENTIMENT"
+            },
+            {
+              "name": "tickers ",
+              "value": "={{ $('Set Company Input').first().json.ticker }}"
+            },
+            {
+              "name": "limit",
+              "value": "50"
+            },
+            {
+              "name": "sort",
+              "value": "LATEST"
+            },
+            {
+              "name": "apikey",
+              "value": "your_alpha_vintage_api_key"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4400,
+        272
+      ],
+      "id": "17604ba3-410c-4e21-81a9-7b77a38e41d0",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst ticker = $('Set Company Input').first().json.ticker;\n\nconst feed = response.feed || [];\n\nif (feed.length === 0) {\n  return [{ json: { news_empty: true, ticker } }];\n}\n\nconst processed = feed.map((article, idx) => {\n  // Find sentiment for our specific ticker\n  const tickerSentiment = (article.ticker_sentiment || []).find(\n    t => t.ticker === ticker\n  );\n\n  const sentimentScore = tickerSentiment\n    ? parseFloat(tickerSentiment.ticker_sentiment_score || 0)\n    : parseFloat(article.overall_sentiment_score || 0);\n\n  const sentimentLabel = sentimentScore > 0.15 ? 'positive'\n    : sentimentScore < -0.15 ? 'negative'\n    : 'neutral';\n\n  // Extract topics\n  const topic_tags = (article.topics || []).map(t => t.topic.toLowerCase());\n\n  return {\n    claim_id:        `NEWS-${ticker}-${idx + 1}`,\n    ticker,\n    published_at:    article.time_published\n      ? new Date(\n          article.time_published.replace(\n            /(\\d{4})(\\d{2})(\\d{2})T(\\d{2})(\\d{2})(\\d{2})/,\n            '$1-$2-$3T$4:$5:$6'\n          )\n        ).toISOString()\n      : new Date().toISOString(),\n    source_name:     article.source || 'unknown',\n    headline:        (article.title || '').replace(/'/g, \"''\").slice(0, 300),\n    sentiment_label: sentimentLabel,\n    sentiment_score: sentimentScore,\n    topic_tags,\n    schema_valid:    true\n  };\n});\n\nreturn processed.map(n => ({ json: n }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -4240,
+        272
+      ],
+      "id": "691e8e71-2a21-49ed-bd7d-4a3d598731bd",
+      "name": "Process News Response"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO news_signals(\n  claim_id, ticker, published_at, source_name,\n  headline, sentiment_label, sentiment_score,\n  topic_tags, schema_valid\n)\nVALUES (\n  '{{ $json.claim_id }}',\n  '{{ $json.ticker }}',\n  '{{ $json.published_at }}'::TIMESTAMPTZ,\n  '{{ ($json.source_name || \"\").replace(/'/g, \" \").replace(/'/g, \" \").replace(/'/g, \" \") }}',\n  '{{ ($json.headline || \"\").replace(/'/g, \" \").replace(/'/g, \" \").replace(/'/g, \" \") }}',\n  '{{ $json.sentiment_label }}',\n  {{ $json.sentiment_score }},\n  ARRAY[{{ ($json.topic_tags || []).map(t => \"'\" + t.replace(/'/g, \" \") + \"'\").join(',') || \"'general'\" }}],\n  true\n)\nON CONFLICT (claim_id) DO UPDATE SET\n  sentiment_label = EXCLUDED.sentiment_label,\n  sentiment_score = EXCLUDED.sentiment_score;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -4064,
+        288
+      ],
+      "id": "3ca2bddd-f0e8-4695-bea3-c56892addc38",
+      "name": "DB: Save News Signals",
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 5
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -3584,
+        144
+      ],
+      "id": "dc819982-436b-4db5-941a-262891e19e77",
+      "name": "Merge"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Company Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Company Input": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "DB: Fetch Earnings Guidance Signals",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "DB: Fetch Tech Stack Signals",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "DB: Fetch Risk Admissions",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "DB: Fetch QA Pressure Map",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DB: Fetch Earnings Guidance Signals": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "DB: Fetch Risk Admissions": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "DB: Fetch QA Pressure Map": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DB: Fetch News Signals": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "DB: Fetch Tech Stack Signals": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Aggregate All Signals": {
+      "main": [
+        [
+          {
+            "node": "Run Pattern Detection Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Pattern Detection Engine": {
+      "main": [
+        [
+          {
+            "node": "Build Groq Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Groq Prompt": {
+      "main": [
+        [
+          {
+            "node": "LLM Needed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM Needed?": {
+      "main": [
+        [
+          {
+            "node": "Groq: Analyse Contradictions",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No-Flag Passthrough",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq: Analyse Contradictions": {
+      "main": [
+        [
+          {
+            "node": "Process Groq Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Groq Response": {
+      "main": [
+        [
+          {
+            "node": "DB: Insert Contradiction Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No-Flag Passthrough": {
+      "main": [
+        [
+          {
+            "node": "DB: Insert Contradiction Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DB: Insert Contradiction Report": {
+      "main": [
+        [
+          {
+            "node": "Fan Out Flags",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fan Out Flags": {
+      "main": [
+        [
+          {
+            "node": "DB: Insert Contradiction Flag",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DB: Insert Contradiction Flag": {
+      "main": [
+        [
+          {
+            "node": "Build Final Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Process News Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process News Response": {
+      "main": [
+        [
+          {
+            "node": "DB: Save News Signals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DB: Save News Signals": {
+      "main": [
+        [
+          {
+            "node": "DB: Fetch News Signals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate All Signals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a1a09497-cf63-4ba6-b551-daba006e214f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "your_instance_id"
+  },
+  "id": "",
+  "tags": []
+}
