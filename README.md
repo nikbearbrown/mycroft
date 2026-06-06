@@ -15,7 +15,7 @@ the ideas. The repo gives agents and humans a verified way to operate them.
 - `docs/` - human-readable system documentation.
 - `data/` - verified local data, exports, metadata, and audits.
 - `scripts/` - tested, vetted, reusable automation.
-- `skills/` - agent-readable recipes with human-readable summaries.
+- `recipes/` - agent-readable recipes with human-readable summaries.
 - `chapters/` - book manuscript.
 - `slides/` - optional decks and teaching material.
 - `pantry/` - research notes and source material.
@@ -30,9 +30,15 @@ exist, say so before inventing one.
 
 ## Human Docs
 
+- `docs/README.md`
 - `docs/repo-structure.md`
-- `docs/skills.md`
+- `docs/recipes.md`
 - `docs/phase-gates.md`
+- `docs/operations.md`
+- `docs/data-and-provenance.md`
+- `docs/workflows.md`
+- `docs/manuscript.md`
+- `docs/contributing.md`
 
 ## Book Map
 

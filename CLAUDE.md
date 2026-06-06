@@ -8,9 +8,9 @@ This repo is both a book and an agentic Cowork system.
 2. Check verified local data before external lookup.
 3. Check vetted stored scripts before creating ad hoc scripts.
 4. Use lowercase `scripts/` only. Never create `SCRIPTS/`.
-5. Treat skills as agent-facing recipes with human-readable summaries.
+5. Treat recipes as agent-facing recipes with human-readable summaries.
 6. Do not run a fully automated pipeline until phase gates pass.
-7. Log meaningful runs in `skills/RUN_LOG.md`.
+7. Log meaningful runs in `logs/RUN_LOG.md`.
 
 ## Completion Report
 
