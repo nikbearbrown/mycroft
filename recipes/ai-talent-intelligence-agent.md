@@ -4,49 +4,116 @@
 
 The AI Talent Intelligence Agent tracks research papers, hiring or appointment news, and known researcher records to surface AI talent movement signals that may matter for competitive intelligence, while clearly separating real source data from prototype/mock records.
 
+## Source Inventory
+
+| Source Node | Node Type | Source URL or Path | Human Check |
+|---|---|---|---|
+| ArXiv AI/ML/NLP papers | XML/API response | ArXiv API or `data/raw/ai-talent-intelligence-agent/` | Confirm source is allowed, current, and rate-safe before live fetch. |
+| AI researcher news | JSON | Serper News API or local export | Confirm source is allowed, current, and rate-safe before live fetch. |
+| Researcher database rows | JSON/table | Local mock rows or approved database export | Confirm source is allowed, current, and rate-safe before live fetch. |
+| Significance threshold | Integer | Recipe default, `5` | Confirm source is allowed, current, and rate-safe before live fetch. |
+
+## Node Classification
+
+| Node Name | Node Type | Classification |
+|---|---|---|
+| Original workflow node map | [TODO: DEV] Parse original workflow JSON. | [TODO: DEFINE] Classify parsed nodes as ingest, gigo, tool, conductor, or report. |
+
 ## Inputs
 
 | Input | Type | Source | Required? |
 |---|---|---|---|
+| Original n8n workflow JSON | JSON | `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/AI Talent Intelligence Agent/AI Talent Intelligence Agent.json` | Yes |
 | ArXiv AI/ML/NLP papers | XML/API response | ArXiv API or `data/raw/ai-talent-intelligence-agent/` | Yes |
 | AI researcher news | JSON | Serper News API or local export | Yes |
 | Researcher database rows | JSON/table | Local mock rows or approved database export | No |
 | Significance threshold | Integer | Recipe default, `5` | Yes |
-| Groq credential | Environment variable | `GROQ_API_KEY` for future live LLM adapter | No for local dialogic mode |
-| Serper credential | Environment variable | `SERPER_API_KEY` for live news search | No if local export exists |
-| SMTP credentials | Environment variables | `SMTP_HOST`, `SMTP_USER`, `SMTP_PASSWORD` | No; email requires approval |
+| Groq credential | Environment variable | `GROQ_API_KEY` for future live LLM adapter | No |
+| Serper credential | Environment variable | `SERPER_API_KEY` for live news search | No |
+| SMTP credentials | Environment variables | `SMTP_HOST`, `SMTP_USER`, `SMTP_PASSWORD` | No |
 
 ## Phase Gates
 
-1. Source gate: identify which inputs are real, stale, missing, or mock. Verification: run `python3 scripts/ingest/load_mock_researchers.py` and mark mock records as prototype-only. Human capacity: [PF], [PA].
-2. Ingest gate: ArXiv and news payloads must be saved or skipped with credential/error notes. Verification: run `python3 scripts/ingest/fetch_ai_talent_news.py` and confirm it returns a no-live-call spec if `SERPER_API_KEY` is absent. Human capacity: [TO], [PA].
-3. Parse gate: parsed records must expose companies, researchers, technologies, sentiment, significance, source, URL, and date where available. Verification: run `python3 scripts/gigo/parse_ai_talent_arxiv.py` and `python3 scripts/gigo/parse_ai_talent_news.py`. Human capacity: [PA].
-4. Significance gate: only records with significance greater than 5 proceed to aggregate analysis. Verification: run `python3 scripts/gigo/filter_high_significance.py`. Human capacity: [IJ], [PA].
-5. Output gate: database and email outputs must be payloads until the human approves live side effects. Verification: run `python3 scripts/gigo/prepare_ai_talent_database_payload.py` and `python3 scripts/tools/send_ai_talent_email_handoff.py` and confirm no write/send occurs. Human capacity: [EI], [TO].
+1. Source identity gate: Original workflow JSON exists and is the intended source. Test: `test -f "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/AI Talent Intelligence Agent/AI Talent Intelligence Agent.json"`.
+   Human capacity: [PF].
+2. Input readiness gate: Every required input in this recipe exists or is marked with a typed TODO. Test: `rg -n "TODO:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/ai-talent-intelligence-agent.md`.
+   Human capacity: [PA].
+3. Sample run gate: Ingest and tool steps run without live side effects before live mode. Test: `snickerdoodle run ai-talent-intelligence-agent --mode dialogic --sample`.
+   Human capacity: [TO].
+4. Data-shape gate: Raw and verified outputs parse as JSON where applicable. Test: `find data/raw/ai-talent-intelligence-agent data/verified/ai-talent-intelligence-agent -name "*.json" -print -exec python3 -m json.tool {} \;`.
+   Human capacity: [IJ].
+5. Report contract gate: Human report defines reader, decision enabled, and sections. Test: `rg -n "Reader:|Decision enabled:|Sections:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/ai-talent-intelligence-agent.md`.
+   Human capacity: [EI].
 
 ## Steps
 
-1. Trigger analysis. Labor: AI. Script called: none; conductor trigger. Input: manual trigger or chat request. Output: run ID. Where output goes: `logs/`.
-2. Fetch ArXiv papers. Labor: AI. Script called: `scripts/ingest/fetch_ai_talent_arxiv.py`. Input: ArXiv query. Output: raw ArXiv response. Where output goes: `data/raw/`.
-3. Fetch news search. Labor: AI. Script called: `scripts/ingest/fetch_ai_talent_news.py`. Input: Serper query or local export. Output: raw news response or live-call-required spec. Where output goes: `data/raw/`.
-4. Load prototype researcher rows. Labor: AI. Script called: `scripts/ingest/load_mock_researchers.py`. Input: optional local override. Output: mock researcher records. Where output goes: `data/raw/`.
-5. Parse source data. Labor: AI. Script called: `scripts/gigo/parse_ai_talent_arxiv.py` and `scripts/gigo/parse_ai_talent_news.py`. Input: raw payloads. Output: normalized signal records. Where output goes: `data/verified/`.
-6. Analyze signals. Labor: AI. Script called: `scripts/tools/analyze_ai_talent_signal.py` and `scripts/tools/groq_ai_talent_invocation.py`. Input: normalized signals. Output: local analysis records and optional LLM invocation specs. Where output goes: `logs/`.
-7. Filter high significance. Labor: AI. Script called: `scripts/gigo/filter_high_significance.py`. Input: analyzed signals. Output: high-significance signals. Where output goes: `data/verified/`.
-8. Aggregate statistics. Labor: AI. Script called: `scripts/tools/aggregate_ai_talent_statistics.py`. Input: high-significance signals. Output: aggregate statistics. Where output goes: `logs/`.
-9. Generate report. Labor: AI. Script called: `scripts/tools/generate_ai_talent_report.py`. Input: aggregate statistics. Output: report JSON. Where output goes: `reports/generated/`.
-10. Prepare database and email payloads. Labor: AI. Script called: `scripts/gigo/prepare_ai_talent_database_payload.py`, `scripts/tools/format_ai_talent_email_report.py`, and `scripts/tools/send_ai_talent_email_handoff.py`. Input: report JSON. Output: database and email handoff payloads. Where output goes: `logs/`.
-11. Human review. Labor: Human. Human action required: distinguish real from mock evidence, approve or reject report conclusions, and decide whether to permit database/email side effects. Output: decision log. Where output goes: `reports/generated/`.
+1. Step name: Verify provenance and source intent. Labor: Human.
+   Human action: Record approval, rejection, or requested changes with supervisory capacity label [PF].
+   Input: data/mycroft-main/n8n-workflows/originals/n8n_Workflows/AI Talent Intelligence Agent/AI Talent Intelligence Agent.json.
+   Output: provenance fields: workflow_path, exists, parsed_ok, title_matches_pipeline, source_inventory_checked.
+   Where output goes: logs/gate-decisions/.
+2. Step name: fetch_ai_talent_arxiv. Labor: AI with Human gate.
+   Script called: `scripts/ingest/fetch_ai_talent_arxiv.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/ai-talent-intelligence-agent/.
+3. Step name: fetch_ai_talent_news. Labor: AI with Human gate.
+   Script called: `scripts/ingest/fetch_ai_talent_news.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/ai-talent-intelligence-agent/.
+4. Step name: load_mock_researchers. Labor: AI with Human gate.
+   Script called: `scripts/ingest/load_mock_researchers.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/ai-talent-intelligence-agent/.
+5. Step name: parse_ai_talent_arxiv. Labor: AI with Human gate.
+   Script called: `scripts/gigo/parse_ai_talent_arxiv.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/ai-talent-intelligence-agent/.
+6. Step name: analyze_ai_talent_signal. Labor: AI with Human gate.
+   Script called: `scripts/tools/analyze_ai_talent_signal.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+7. Step name: filter_high_significance. Labor: AI with Human gate.
+   Script called: `scripts/gigo/filter_high_significance.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/ai-talent-intelligence-agent/.
+8. Step name: aggregate_ai_talent_statistics. Labor: AI with Human gate.
+   Script called: `scripts/tools/aggregate_ai_talent_statistics.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+9. Step name: generate_ai_talent_report. Labor: AI with Human gate.
+   Script called: `scripts/tools/generate_ai_talent_report.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+10. Step name: prepare_ai_talent_database_payload. Labor: AI with Human gate.
+   Script called: `scripts/gigo/prepare_ai_talent_database_payload.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/ai-talent-intelligence-agent/.
+11. Step name: Produce human report. Labor: AI with Human review.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/ai-talent-intelligence-agent__produce-human-report.py`
+   Input: agent log plus raw and verified outputs.
+   Output: markdown report sections: run summary, source inventory, inputs used, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
 
 ## Output Contract
 
 ### Agent output
-
-Agent output goes to `logs/ai-talent-intelligence-agent/<run-id>.json`. It must include source status, credential status, mock-data flags, parsed counts, filtered counts, significance threshold, aggregate statistics, report path, database payload path, email handoff path, scripts used, and stop conditions.
+File: `logs/ai-talent-intelligence-agent-[DATE].json`
+Fields: `workflow`, `run_id`, `mode`, `steps_completed`, `records_seen`, `rejects`, `duplicates`, `flags`, `stop_conditions`, `todo_items`, `source_files`, `gate_decisions`, `live_call_performed`, `generated_at`.
 
 ### Human report
-
-The human report goes to `reports/generated/ai-talent-intelligence-agent-<date>.md`. It surfaces talent-movement signals, companies and researchers mentioned, confidence limits, mock-data caveats, and decisions required before the output is used externally.
+File: `reports/generated/ai-talent-intelligence-agent-[DATE].md`
+Reader: domain lead or human boss responsible for accepting the `AI Talent Intelligence Agent` run.
+Decision enabled: approve the run for the next phase, request source/schema fixes, or block live execution.
+Sections: Run summary, source inventory, inputs used, steps completed, records seen, rejects, duplicates, flags, typed TODOs, gate decisions, evidence-backed findings, decision recommendation.
 
 ## Stop Conditions
 
@@ -57,6 +124,63 @@ The human report goes to `reports/generated/ai-talent-intelligence-agent-<date>.
 - Stop before saving to a live database or sending email.
 - Stop if the report implies investment advice without human interpretation and source review.
 
+## Snickerdoodle
+
+### Run Commands
+Full dialogic run:
+`snickerdoodle run ai-talent-intelligence-agent --mode dialogic`
+
+Sample mode (no live network calls, no writes):
+`snickerdoodle run ai-talent-intelligence-agent --mode dialogic --sample`
+
+### Step Commands
+
+| Step | CLI Command | Flags |
+|---|---|---|
+| fetch_ai_talent_arxiv | `snickerdoodle run ai-talent-intelligence-agent --step fetch-ai-talent-arxiv` | `--sample` |
+| fetch_ai_talent_news | `snickerdoodle run ai-talent-intelligence-agent --step fetch-ai-talent-news` | `--sample` |
+| load_mock_researchers | `snickerdoodle run ai-talent-intelligence-agent --step load-mock-researchers` | `--sample` |
+| parse_ai_talent_arxiv | `snickerdoodle run ai-talent-intelligence-agent --step parse-ai-talent-arxiv` |  |
+| analyze_ai_talent_signal | `snickerdoodle run ai-talent-intelligence-agent --step analyze-ai-talent-signal` | `--no-write` |
+| filter_high_significance | `snickerdoodle run ai-talent-intelligence-agent --step filter-high-significance` |  |
+| aggregate_ai_talent_statistics | `snickerdoodle run ai-talent-intelligence-agent --step aggregate-ai-talent-statistics` | `--no-write` |
+| generate_ai_talent_report | `snickerdoodle run ai-talent-intelligence-agent --step generate-ai-talent-report` | `--no-write` |
+| prepare_ai_talent_database_payload | `snickerdoodle run ai-talent-intelligence-agent --step prepare-ai-talent-database-payload` |  |
+| Produce human report | `snickerdoodle run ai-talent-intelligence-agent --step produce-human-report` | `--no-write` |
+
+### Gate Commands
+
+| Gate | CLI Command |
+|---|---|
+| Gate 1 - source/input readiness | `snickerdoodle gate ai-talent-intelligence-agent --gate 1 --decision approve --note "..."` |
+| Gate 2 - sample run | `snickerdoodle gate ai-talent-intelligence-agent --gate 2 --decision approve --note "..."` |
+| Gate 3 - report contract | `snickerdoodle gate ai-talent-intelligence-agent --gate 3 --decision approve --note "..."` |
+
+### Script Locations
+
+| Step | Script Path | Layer |
+|---|---|---|
+| fetch_ai_talent_arxiv | `scripts/ingest/fetch_ai_talent_arxiv.py` | ingest |
+| fetch_ai_talent_news | `scripts/ingest/fetch_ai_talent_news.py` | ingest |
+| load_mock_researchers | `scripts/ingest/load_mock_researchers.py` | ingest |
+| parse_ai_talent_arxiv | `scripts/gigo/parse_ai_talent_arxiv.py` | gigo |
+| analyze_ai_talent_signal | `scripts/tools/analyze_ai_talent_signal.py` | tool |
+| filter_high_significance | `scripts/gigo/filter_high_significance.py` | gigo |
+| aggregate_ai_talent_statistics | `scripts/tools/aggregate_ai_talent_statistics.py` | tool |
+| generate_ai_talent_report | `scripts/tools/generate_ai_talent_report.py` | tool |
+| prepare_ai_talent_database_payload | `scripts/gigo/prepare_ai_talent_database_payload.py` | gigo |
+| Produce human report | `[TODO: DEV] Create or map script path: scripts/tools/ai-talent-intelligence-agent__produce-human-report.py` | tool |
+
+### Output Locations
+
+| Output | Path | Format |
+|---|---|---|
+| Raw ingest | `data/raw/ai-talent-intelligence-agent/` | JSON |
+| Verified data | `data/verified/ai-talent-intelligence-agent/` | JSON |
+| Agent log | `logs/ai-talent-intelligence-agent-[DATE].json` | JSON |
+| Human report | `reports/generated/ai-talent-intelligence-agent-[DATE].md` | Markdown |
+| Gate decisions | `logs/gate-decisions/` | JSON |
+
 ## Provenance
 
-Original n8n JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/AI Talent Intelligence Agent/AI Talent Intelligence Agent.json`
+Original workflow JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/AI Talent Intelligence Agent/AI Talent Intelligence Agent.json`

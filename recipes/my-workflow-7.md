@@ -2,7 +2,45 @@
 
 ## Purpose
 
-This recipe converts the original n8n workflow into a repeatable Mycroft workflow that can be run in dialogic mode with local data first, credential-gated live calls second, and human review before any external side effect or analytical conclusion is trusted.
+My workflow 7 defines a Mycroft pipeline for collecting, transforming, or reviewing finance and intelligence signals related to my workflow 7. It answers whether the available local evidence and approved live sources are sufficient for a human decision without relying on unapproved external writes or unsupported analytical claims.
+
+## Source Inventory
+
+| Source Node | Node Type | Source URL or Path | Human Check |
+|---|---|---|---|
+| Ingest node outputs | JSON | Converted ingest steps (1 nodes) | Confirm source is allowed, current, and rate-safe before live fetch. |
+| Report node outputs | JSON | Converted report steps (1 nodes) | Confirm source is allowed, current, and rate-safe before live fetch. |
+
+## Node Classification
+
+| Node Name | Node Type | Classification |
+|---|---|---|
+| Webhook: Receive Transcript | `webhook` | tool |
+| Validate Input | `code` | conductor |
+| DB: Insert earnings_call | `postgres` | gigo |
+| Set Call Context | `set` | conductor |
+| Process Section Response | `code` | gigo |
+| DB: Insert transcript_section | `postgres` | gigo |
+| Route by Section Type | `switch` | conductor |
+| Process Guidance Response | `code` | gigo |
+| Process Risk Response | `code` | tool |
+| Process QA Response | `code` | gigo |
+| DB: Insert guidance_signal | `postgres` | gigo |
+| DB: Insert risk_admission | `postgres` | gigo |
+| DB: Insert qa_pressure | `postgres` | gigo |
+| DB: Log Agent Run | `postgres` | gigo |
+| Fetch All Signals for Summary | `postgres` | ingest |
+| Process Summary Response | `code` | gigo |
+| DB: Insert call_summary | `postgres` | gigo |
+| DB: Mark Call Complete | `postgres` | gigo |
+| Final Response | `code` | conductor |
+| Webhook Response | `respondToWebhook` | report |
+| Groq: Generate Call Summary | `httpRequest` | tool |
+| Groq: Parse Transcript Sections | `httpRequest` | tool |
+| Groq: Extract Guidance Signals | `httpRequest` | tool |
+| Groq: Extract Risk Admissions | `httpRequest` | tool |
+| Groq: Map QA Pressure | `httpRequest` | tool |
+| Execute a SQL query | `postgres` | gigo |
 
 ## Inputs
 
@@ -14,49 +52,155 @@ This recipe converts the original n8n workflow into a repeatable Mycroft workflo
 | Report node outputs | JSON | Converted report steps (1 nodes) | No |
 | Conductor node outputs | JSON | Converted conductor steps (4 nodes) | No |
 | Original workflow JSON | JSON | `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Earnings Call Intelligence Agent/Earnings_Call_Intelligence_Agent.json` | Yes |
-| Credentials for live services | Environment variables | Named by script handoff payloads | No for local mode |
+| Credentials for live services | Environment variables | Named by script handoff payloads | No |
 
 ## Phase Gates
 
-1. Source gate: all required local exports or live-call handoff specs must be present. Verification: run the generated ingest scripts for this workflow and confirm each returns JSON with a status field. Human capacity required: [PA], [TO].
-2. GIGO gate: normalized records must preserve missing fields rather than inventing values. Verification: run generated GIGO scripts and inspect `record_count` and `records`. Human capacity required: [PA].
-3. Tool gate: model/API/tool nodes must return local deterministic outputs or approval-required handoff specs. Verification: run generated tool scripts and confirm `live_call_performed` is false unless explicitly approved. Human capacity required: [TO], [IJ].
-4. Report gate: final report must separate source facts, transformations, and interpretation. Verification: fill `reports/templates/my-workflow-7.md` and link the run log. Human capacity required: [EI].
+1. Source identity gate: Original workflow JSON exists and is the intended source. Test: `test -f "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Earnings Call Intelligence Agent/Earnings_Call_Intelligence_Agent.json"`.
+   Human capacity: [PF].
+2. Input readiness gate: Every required input in this recipe exists or is marked with a typed TODO. Test: `rg -n "TODO:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/my-workflow-7.md`.
+   Human capacity: [PA].
+3. Sample run gate: Ingest and tool steps run without live side effects before live mode. Test: `snickerdoodle run my-workflow-7 --mode dialogic --sample`.
+   Human capacity: [TO].
+4. Data-shape gate: Raw and verified outputs parse as JSON where applicable. Test: `find data/raw/my-workflow-7 data/verified/my-workflow-7 -name "*.json" -print -exec python3 -m json.tool {} \;`.
+   Human capacity: [IJ].
+5. Report contract gate: Human report defines reader, decision enabled, and sections. Test: `rg -n "Reader:|Decision enabled:|Sections:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/my-workflow-7.md`.
+   Human capacity: [EI].
 
 ## Steps
 
-1. Step name: `my-workflow-7__fetch-all-signals-for-summary`. Labor: AI. Script called: `scripts/ingest/my-workflow-7__fetch-all-signals-for-summary.py`. Input: prior verified payloads or local export. Output: ingest result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-2. Step name: `my-workflow-7__db-insert-earnings-call`. Labor: AI. Script called: `scripts/gigo/my-workflow-7__db-insert-earnings-call.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-3. Step name: `my-workflow-7__process-section-response`. Labor: AI. Script called: `scripts/gigo/my-workflow-7__process-section-response.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-4. Step name: `my-workflow-7__db-insert-transcript-section`. Labor: AI. Script called: `scripts/gigo/my-workflow-7__db-insert-transcript-section.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-5. Step name: `my-workflow-7__process-guidance-response`. Labor: AI. Script called: `scripts/gigo/my-workflow-7__process-guidance-response.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-6. Step name: `my-workflow-7__process-qa-response`. Labor: AI. Script called: `scripts/gigo/my-workflow-7__process-qa-response.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-7. Step name: `my-workflow-7__db-insert-guidance-signal`. Labor: AI. Script called: `scripts/gigo/my-workflow-7__db-insert-guidance-signal.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-8. Step name: `my-workflow-7__db-insert-risk-admission`. Labor: AI. Script called: `scripts/gigo/my-workflow-7__db-insert-risk-admission.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-9. Step name: `my-workflow-7__db-insert-qa-pressure`. Labor: AI. Script called: `scripts/gigo/my-workflow-7__db-insert-qa-pressure.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-10. Step name: `my-workflow-7__db-log-agent-run`. Labor: AI. Script called: `scripts/gigo/my-workflow-7__db-log-agent-run.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-11. Step name: `my-workflow-7__process-summary-response`. Labor: AI. Script called: `scripts/gigo/my-workflow-7__process-summary-response.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-12. Step name: `my-workflow-7__db-insert-call-summary`. Labor: AI. Script called: `scripts/gigo/my-workflow-7__db-insert-call-summary.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-13. Step name: `my-workflow-7__db-mark-call-complete`. Labor: AI. Script called: `scripts/gigo/my-workflow-7__db-mark-call-complete.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-14. Step name: `my-workflow-7__execute-a-sql-query`. Labor: AI. Script called: `scripts/gigo/my-workflow-7__execute-a-sql-query.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-15. Step name: `my-workflow-7__webhook-receive-transcript`. Labor: AI. Script called: `scripts/tools/my-workflow-7__webhook-receive-transcript.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-16. Step name: `my-workflow-7__process-risk-response`. Labor: AI. Script called: `scripts/tools/my-workflow-7__process-risk-response.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-17. Step name: `my-workflow-7__groq-generate-call-summary`. Labor: AI. Script called: `scripts/tools/my-workflow-7__groq-generate-call-summary.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-18. Step name: `my-workflow-7__groq-parse-transcript-sections`. Labor: AI. Script called: `scripts/tools/my-workflow-7__groq-parse-transcript-sections.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-19. Step name: `my-workflow-7__groq-extract-guidance-signals`. Labor: AI. Script called: `scripts/tools/my-workflow-7__groq-extract-guidance-signals.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-20. Step name: `my-workflow-7__groq-extract-risk-admissions`. Labor: AI. Script called: `scripts/tools/my-workflow-7__groq-extract-risk-admissions.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-21. Step name: `my-workflow-7__groq-map-qa-pressure`. Labor: AI. Script called: `scripts/tools/my-workflow-7__groq-map-qa-pressure.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-22. Step name: Human review. Labor: Human. Human action required: review source coverage, missing credentials, model/database/email handoffs, and interpretation limits. Input: generated logs and reports. Output: accept, reject, or rerun decision. Where output goes: `reports/generated/`.
+1. Step name: Verify provenance and source intent. Labor: Human.
+   Human action: Record approval, rejection, or requested changes with supervisory capacity label [PF].
+   Input: data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Earnings Call Intelligence Agent/Earnings_Call_Intelligence_Agent.json.
+   Output: provenance fields: workflow_path, exists, parsed_ok, title_matches_pipeline, source_inventory_checked.
+   Where output goes: logs/gate-decisions/.
+2. Step name: Webhook: Receive Transcript. Labor: AI with Human gate.
+   Script called: `scripts/tools/my-workflow-7__webhook-receive-transcript.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+3. Step name: DB: Insert earnings_call. Labor: AI with Human gate.
+   Script called: `scripts/gigo/my-workflow-7__db-insert-earnings-call.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/my-workflow-7/.
+4. Step name: Process Section Response. Labor: AI with Human gate.
+   Script called: `scripts/gigo/my-workflow-7__process-section-response.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/my-workflow-7/.
+5. Step name: DB: Insert transcript_section. Labor: AI with Human gate.
+   Script called: `scripts/gigo/my-workflow-7__db-insert-transcript-section.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/my-workflow-7/.
+6. Step name: Process Guidance Response. Labor: AI with Human gate.
+   Script called: `scripts/gigo/my-workflow-7__process-guidance-response.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/my-workflow-7/.
+7. Step name: Process Risk Response. Labor: AI with Human gate.
+   Script called: `scripts/tools/my-workflow-7__process-risk-response.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+8. Step name: Process QA Response. Labor: AI with Human gate.
+   Script called: `scripts/gigo/my-workflow-7__process-qa-response.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/my-workflow-7/.
+9. Step name: DB: Insert guidance_signal. Labor: AI with Human gate.
+   Script called: `scripts/gigo/my-workflow-7__db-insert-guidance-signal.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/my-workflow-7/.
+10. Step name: DB: Insert risk_admission. Labor: AI with Human gate.
+   Script called: `scripts/gigo/my-workflow-7__db-insert-risk-admission.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/my-workflow-7/.
+11. Step name: DB: Insert qa_pressure. Labor: AI with Human gate.
+   Script called: `scripts/gigo/my-workflow-7__db-insert-qa-pressure.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/my-workflow-7/.
+12. Step name: DB: Log Agent Run. Labor: AI with Human gate.
+   Script called: `scripts/gigo/my-workflow-7__db-log-agent-run.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/my-workflow-7/.
+13. Step name: Fetch All Signals for Summary. Labor: AI with Human gate.
+   Script called: `scripts/ingest/my-workflow-7__fetch-all-signals-for-summary.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/my-workflow-7/.
+14. Step name: Process Summary Response. Labor: AI with Human gate.
+   Script called: `scripts/gigo/my-workflow-7__process-summary-response.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/my-workflow-7/.
+15. Step name: DB: Insert call_summary. Labor: AI with Human gate.
+   Script called: `scripts/gigo/my-workflow-7__db-insert-call-summary.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/my-workflow-7/.
+16. Step name: DB: Mark Call Complete. Labor: AI with Human gate.
+   Script called: `scripts/gigo/my-workflow-7__db-mark-call-complete.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/my-workflow-7/.
+17. Step name: Webhook Response. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/my-workflow-7__webhook-response.py`
+   Input: approved upstream output or sample fixture.
+   Output: markdown report sections: run summary, source status, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
+18. Step name: Groq: Generate Call Summary. Labor: AI with Human gate.
+   Script called: `scripts/tools/my-workflow-7__groq-generate-call-summary.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+19. Step name: Groq: Parse Transcript Sections. Labor: AI with Human gate.
+   Script called: `scripts/tools/my-workflow-7__groq-parse-transcript-sections.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+20. Step name: Groq: Extract Guidance Signals. Labor: AI with Human gate.
+   Script called: `scripts/tools/my-workflow-7__groq-extract-guidance-signals.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+21. Step name: Groq: Extract Risk Admissions. Labor: AI with Human gate.
+   Script called: `scripts/tools/my-workflow-7__groq-extract-risk-admissions.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+22. Step name: Groq: Map QA Pressure. Labor: AI with Human gate.
+   Script called: `scripts/tools/my-workflow-7__groq-map-qa-pressure.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+23. Step name: Execute a SQL query. Labor: AI with Human gate.
+   Script called: `scripts/gigo/my-workflow-7__execute-a-sql-query.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/my-workflow-7/.
+24. Step name: Produce human report. Labor: AI with Human review.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/my-workflow-7__produce-human-report.py`
+   Input: agent log plus raw and verified outputs.
+   Output: markdown report sections: run summary, source inventory, inputs used, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
 
 ## Output Contract
 
 ### Agent output
-
-Agent output goes to `logs/my-workflow-7/<run-id>.json`. It must include source workflow path, scripts used, node classifications, credential status, live-call status, validation results, output paths, stop conditions, and human decisions.
+File: `logs/my-workflow-7-[DATE].json`
+Fields: `workflow`, `run_id`, `mode`, `steps_completed`, `records_seen`, `rejects`, `duplicates`, `flags`, `stop_conditions`, `todo_items`, `source_files`, `gate_decisions`, `live_call_performed`, `generated_at`.
 
 ### Human report
-
-The human report goes to `reports/generated/my-workflow-7-<date>.md`. It surfaces the workflow result, source coverage, missing data, anomalies, and decisions required before downstream use.
+File: `reports/generated/my-workflow-7-[DATE].md`
+Reader: domain lead or human boss responsible for accepting the `My workflow 7` run.
+Decision enabled: approve the run for the next phase, request source/schema fixes, or block live execution.
+Sections: Run summary, source inventory, inputs used, steps completed, records seen, rejects, duplicates, flags, typed TODOs, gate decisions, evidence-backed findings, decision recommendation.
 
 ## Stop Conditions
 
@@ -65,61 +209,89 @@ The human report goes to `reports/generated/my-workflow-7-<date>.md`. It surface
 - Stop if required local source data is missing and no approved live-call path is available.
 - Stop if generated outputs omit provenance or make unsupported analytical claims.
 
+## Snickerdoodle
+
+### Run Commands
+Full dialogic run:
+`snickerdoodle run my-workflow-7 --mode dialogic`
+
+Sample mode (no live network calls, no writes):
+`snickerdoodle run my-workflow-7 --mode dialogic --sample`
+
+### Step Commands
+
+| Step | CLI Command | Flags |
+|---|---|---|
+| Webhook: Receive Transcript | `snickerdoodle run my-workflow-7 --step webhook-receive-transcript` | `--no-write` |
+| DB: Insert earnings_call | `snickerdoodle run my-workflow-7 --step db-insert-earnings-call` |  |
+| Process Section Response | `snickerdoodle run my-workflow-7 --step process-section-response` |  |
+| DB: Insert transcript_section | `snickerdoodle run my-workflow-7 --step db-insert-transcript-section` |  |
+| Process Guidance Response | `snickerdoodle run my-workflow-7 --step process-guidance-response` |  |
+| Process Risk Response | `snickerdoodle run my-workflow-7 --step process-risk-response` | `--no-write` |
+| Process QA Response | `snickerdoodle run my-workflow-7 --step process-qa-response` |  |
+| DB: Insert guidance_signal | `snickerdoodle run my-workflow-7 --step db-insert-guidance-signal` |  |
+| DB: Insert risk_admission | `snickerdoodle run my-workflow-7 --step db-insert-risk-admission` |  |
+| DB: Insert qa_pressure | `snickerdoodle run my-workflow-7 --step db-insert-qa-pressure` |  |
+| DB: Log Agent Run | `snickerdoodle run my-workflow-7 --step db-log-agent-run` |  |
+| Fetch All Signals for Summary | `snickerdoodle run my-workflow-7 --step fetch-all-signals-for-summary` | `--sample` |
+| Process Summary Response | `snickerdoodle run my-workflow-7 --step process-summary-response` |  |
+| DB: Insert call_summary | `snickerdoodle run my-workflow-7 --step db-insert-call-summary` |  |
+| DB: Mark Call Complete | `snickerdoodle run my-workflow-7 --step db-mark-call-complete` |  |
+| Webhook Response | `snickerdoodle run my-workflow-7 --step webhook-response` | `--no-write` |
+| Groq: Generate Call Summary | `snickerdoodle run my-workflow-7 --step groq-generate-call-summary` | `--no-write` |
+| Groq: Parse Transcript Sections | `snickerdoodle run my-workflow-7 --step groq-parse-transcript-sections` | `--no-write` |
+| Groq: Extract Guidance Signals | `snickerdoodle run my-workflow-7 --step groq-extract-guidance-signals` | `--no-write` |
+| Groq: Extract Risk Admissions | `snickerdoodle run my-workflow-7 --step groq-extract-risk-admissions` | `--no-write` |
+| Groq: Map QA Pressure | `snickerdoodle run my-workflow-7 --step groq-map-qa-pressure` | `--no-write` |
+| Execute a SQL query | `snickerdoodle run my-workflow-7 --step execute-a-sql-query` |  |
+| Produce human report | `snickerdoodle run my-workflow-7 --step produce-human-report` | `--no-write` |
+
+### Gate Commands
+
+| Gate | CLI Command |
+|---|---|
+| Gate 1 - source/input readiness | `snickerdoodle gate my-workflow-7 --gate 1 --decision approve --note "..."` |
+| Gate 2 - sample run | `snickerdoodle gate my-workflow-7 --gate 2 --decision approve --note "..."` |
+| Gate 3 - report contract | `snickerdoodle gate my-workflow-7 --gate 3 --decision approve --note "..."` |
+
+### Script Locations
+
+| Step | Script Path | Layer |
+|---|---|---|
+| Webhook: Receive Transcript | `scripts/tools/my-workflow-7__webhook-receive-transcript.py` | tool |
+| DB: Insert earnings_call | `scripts/gigo/my-workflow-7__db-insert-earnings-call.py` | gigo |
+| Process Section Response | `scripts/gigo/my-workflow-7__process-section-response.py` | gigo |
+| DB: Insert transcript_section | `scripts/gigo/my-workflow-7__db-insert-transcript-section.py` | gigo |
+| Process Guidance Response | `scripts/gigo/my-workflow-7__process-guidance-response.py` | gigo |
+| Process Risk Response | `scripts/tools/my-workflow-7__process-risk-response.py` | tool |
+| Process QA Response | `scripts/gigo/my-workflow-7__process-qa-response.py` | gigo |
+| DB: Insert guidance_signal | `scripts/gigo/my-workflow-7__db-insert-guidance-signal.py` | gigo |
+| DB: Insert risk_admission | `scripts/gigo/my-workflow-7__db-insert-risk-admission.py` | gigo |
+| DB: Insert qa_pressure | `scripts/gigo/my-workflow-7__db-insert-qa-pressure.py` | gigo |
+| DB: Log Agent Run | `scripts/gigo/my-workflow-7__db-log-agent-run.py` | gigo |
+| Fetch All Signals for Summary | `scripts/ingest/my-workflow-7__fetch-all-signals-for-summary.py` | ingest |
+| Process Summary Response | `scripts/gigo/my-workflow-7__process-summary-response.py` | gigo |
+| DB: Insert call_summary | `scripts/gigo/my-workflow-7__db-insert-call-summary.py` | gigo |
+| DB: Mark Call Complete | `scripts/gigo/my-workflow-7__db-mark-call-complete.py` | gigo |
+| Webhook Response | `[TODO: DEV] Create or map script path: scripts/tools/my-workflow-7__webhook-response.py` | tool |
+| Groq: Generate Call Summary | `scripts/tools/my-workflow-7__groq-generate-call-summary.py` | tool |
+| Groq: Parse Transcript Sections | `scripts/tools/my-workflow-7__groq-parse-transcript-sections.py` | tool |
+| Groq: Extract Guidance Signals | `scripts/tools/my-workflow-7__groq-extract-guidance-signals.py` | tool |
+| Groq: Extract Risk Admissions | `scripts/tools/my-workflow-7__groq-extract-risk-admissions.py` | tool |
+| Groq: Map QA Pressure | `scripts/tools/my-workflow-7__groq-map-qa-pressure.py` | tool |
+| Execute a SQL query | `scripts/gigo/my-workflow-7__execute-a-sql-query.py` | gigo |
+| Produce human report | `[TODO: DEV] Create or map script path: scripts/tools/my-workflow-7__produce-human-report.py` | tool |
+
+### Output Locations
+
+| Output | Path | Format |
+|---|---|---|
+| Raw ingest | `data/raw/my-workflow-7/` | JSON |
+| Verified data | `data/verified/my-workflow-7/` | JSON |
+| Agent log | `logs/my-workflow-7-[DATE].json` | JSON |
+| Human report | `reports/generated/my-workflow-7-[DATE].md` | Markdown |
+| Gate decisions | `logs/gate-decisions/` | JSON |
+
 ## Provenance
 
-Original n8n JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Earnings Call Intelligence Agent/Earnings_Call_Intelligence_Agent.json`
-
-## Node Classification
-
-| Order | Node Name | Node Type | Classification |
-|---|---|---|---|
-| 1 | Webhook: Receive Transcript | `webhook` | tool |
-| 2 | Validate Input | `code` | conductor |
-| 3 | DB: Insert earnings_call | `postgres` | gigo |
-| 4 | Set Call Context | `set` | conductor |
-| 5 | Process Section Response | `code` | gigo |
-| 6 | DB: Insert transcript_section | `postgres` | gigo |
-| 7 | Route by Section Type | `switch` | conductor |
-| 8 | Process Guidance Response | `code` | gigo |
-| 9 | Process Risk Response | `code` | tool |
-| 10 | Process QA Response | `code` | gigo |
-| 11 | DB: Insert guidance_signal | `postgres` | gigo |
-| 12 | DB: Insert risk_admission | `postgres` | gigo |
-| 13 | DB: Insert qa_pressure | `postgres` | gigo |
-| 14 | DB: Log Agent Run | `postgres` | gigo |
-| 15 | Fetch All Signals for Summary | `postgres` | ingest |
-| 16 | Process Summary Response | `code` | gigo |
-| 17 | DB: Insert call_summary | `postgres` | gigo |
-| 18 | DB: Mark Call Complete | `postgres` | gigo |
-| 19 | Final Response | `code` | conductor |
-| 20 | Webhook Response | `respondToWebhook` | report |
-| 21 | Groq: Generate Call Summary | `httpRequest` | tool |
-| 22 | Groq: Parse Transcript Sections | `httpRequest` | tool |
-| 23 | Groq: Extract Guidance Signals | `httpRequest` | tool |
-| 24 | Groq: Extract Risk Admissions | `httpRequest` | tool |
-| 25 | Groq: Map QA Pressure | `httpRequest` | tool |
-| 26 | Execute a SQL query | `postgres` | gigo |
-
-## Script Index
-
-- `scripts/ingest/my-workflow-7__fetch-all-signals-for-summary.py`
-- `scripts/gigo/my-workflow-7__db-insert-earnings-call.py`
-- `scripts/gigo/my-workflow-7__process-section-response.py`
-- `scripts/gigo/my-workflow-7__db-insert-transcript-section.py`
-- `scripts/gigo/my-workflow-7__process-guidance-response.py`
-- `scripts/gigo/my-workflow-7__process-qa-response.py`
-- `scripts/gigo/my-workflow-7__db-insert-guidance-signal.py`
-- `scripts/gigo/my-workflow-7__db-insert-risk-admission.py`
-- `scripts/gigo/my-workflow-7__db-insert-qa-pressure.py`
-- `scripts/gigo/my-workflow-7__db-log-agent-run.py`
-- `scripts/gigo/my-workflow-7__process-summary-response.py`
-- `scripts/gigo/my-workflow-7__db-insert-call-summary.py`
-- `scripts/gigo/my-workflow-7__db-mark-call-complete.py`
-- `scripts/gigo/my-workflow-7__execute-a-sql-query.py`
-- `scripts/tools/my-workflow-7__webhook-receive-transcript.py`
-- `scripts/tools/my-workflow-7__process-risk-response.py`
-- `scripts/tools/my-workflow-7__groq-generate-call-summary.py`
-- `scripts/tools/my-workflow-7__groq-parse-transcript-sections.py`
-- `scripts/tools/my-workflow-7__groq-extract-guidance-signals.py`
-- `scripts/tools/my-workflow-7__groq-extract-risk-admissions.py`
-- `scripts/tools/my-workflow-7__groq-map-qa-pressure.py`
+Original workflow JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Earnings Call Intelligence Agent/Earnings_Call_Intelligence_Agent.json`

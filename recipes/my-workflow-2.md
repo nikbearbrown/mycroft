@@ -2,7 +2,31 @@
 
 ## Purpose
 
-This recipe converts the original n8n workflow into a repeatable Mycroft workflow that can be run in dialogic mode with local data first, credential-gated live calls second, and human review before any external side effect or analytical conclusion is trusted.
+My workflow defines a Mycroft pipeline for collecting, transforming, or reviewing finance and intelligence signals related to my workflow. It answers whether the available local evidence and approved live sources are sufficient for a human decision without relying on unapproved external writes or unsupported analytical claims.
+
+## Source Inventory
+
+| Source Node | Node Type | Source URL or Path | Human Check |
+|---|---|---|---|
+| Ingest node outputs | JSON | Converted ingest steps (3 nodes) | Confirm source is allowed, current, and rate-safe before live fetch. |
+| Report node outputs | JSON | Converted report steps (1 nodes) | Confirm source is allowed, current, and rate-safe before live fetch. |
+
+## Node Classification
+
+| Node Name | Node Type | Classification |
+|---|---|---|
+| When clicking ‘Execute workflow’ | `manualTrigger` | conductor |
+| Code in Python (Beta) | `code` | conductor |
+| Company Input | `set` | conductor |
+| Get Financial Overview1 | `httpRequest` | ingest |
+| Get Income Statement1 | `httpRequest` | ingest |
+| Process Company Data1 | `code` | gigo |
+| Google Search Patent | `httpRequest` | ingest |
+| Process Patent Data1 | `code` | gigo |
+| Process Financial Data1 | `code` | gigo |
+| Generate Analysis1 | `code` | tool |
+| Generate Final Report1 | `code` | report |
+| Merge | `merge` | conductor |
 
 ## Inputs
 
@@ -14,35 +38,85 @@ This recipe converts the original n8n workflow into a repeatable Mycroft workflo
 | Report node outputs | JSON | Converted report steps (1 nodes) | No |
 | Conductor node outputs | JSON | Converted conductor steps (4 nodes) | No |
 | Original workflow JSON | JSON | `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Research_Analytics_Agent/Mycroft_Research_Agent.json` | Yes |
-| Credentials for live services | Environment variables | Named by script handoff payloads | No for local mode |
+| Credentials for live services | Environment variables | Named by script handoff payloads | No |
 
 ## Phase Gates
 
-1. Source gate: all required local exports or live-call handoff specs must be present. Verification: run the generated ingest scripts for this workflow and confirm each returns JSON with a status field. Human capacity required: [PA], [TO].
-2. GIGO gate: normalized records must preserve missing fields rather than inventing values. Verification: run generated GIGO scripts and inspect `record_count` and `records`. Human capacity required: [PA].
-3. Tool gate: model/API/tool nodes must return local deterministic outputs or approval-required handoff specs. Verification: run generated tool scripts and confirm `live_call_performed` is false unless explicitly approved. Human capacity required: [TO], [IJ].
-4. Report gate: final report must separate source facts, transformations, and interpretation. Verification: fill `reports/templates/my-workflow-2.md` and link the run log. Human capacity required: [EI].
+1. Source identity gate: Original workflow JSON exists and is the intended source. Test: `test -f "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Research_Analytics_Agent/Mycroft_Research_Agent.json"`.
+   Human capacity: [PF].
+2. Input readiness gate: Every required input in this recipe exists or is marked with a typed TODO. Test: `rg -n "TODO:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/my-workflow-2.md`.
+   Human capacity: [PA].
+3. Sample run gate: Ingest and tool steps run without live side effects before live mode. Test: `snickerdoodle run my-workflow-2 --mode dialogic --sample`.
+   Human capacity: [TO].
+4. Data-shape gate: Raw and verified outputs parse as JSON where applicable. Test: `find data/raw/my-workflow-2 data/verified/my-workflow-2 -name "*.json" -print -exec python3 -m json.tool {} \;`.
+   Human capacity: [IJ].
+5. Report contract gate: Human report defines reader, decision enabled, and sections. Test: `rg -n "Reader:|Decision enabled:|Sections:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/my-workflow-2.md`.
+   Human capacity: [EI].
 
 ## Steps
 
-1. Step name: `my-workflow-2__get-financial-overview1`. Labor: AI. Script called: `scripts/ingest/my-workflow-2__get-financial-overview1.py`. Input: prior verified payloads or local export. Output: ingest result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-2. Step name: `my-workflow-2__get-income-statement1`. Labor: AI. Script called: `scripts/ingest/my-workflow-2__get-income-statement1.py`. Input: prior verified payloads or local export. Output: ingest result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-3. Step name: `my-workflow-2__google-search-patent`. Labor: AI. Script called: `scripts/ingest/my-workflow-2__google-search-patent.py`. Input: prior verified payloads or local export. Output: ingest result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-4. Step name: `my-workflow-2__process-company-data1`. Labor: AI. Script called: `scripts/gigo/my-workflow-2__process-company-data1.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-5. Step name: `my-workflow-2__process-patent-data1`. Labor: AI. Script called: `scripts/gigo/my-workflow-2__process-patent-data1.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-6. Step name: `my-workflow-2__process-financial-data1`. Labor: AI. Script called: `scripts/gigo/my-workflow-2__process-financial-data1.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-7. Step name: `my-workflow-2__generate-analysis1`. Labor: AI. Script called: `scripts/tools/my-workflow-2__generate-analysis1.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-8. Step name: Human review. Labor: Human. Human action required: review source coverage, missing credentials, model/database/email handoffs, and interpretation limits. Input: generated logs and reports. Output: accept, reject, or rerun decision. Where output goes: `reports/generated/`.
+1. Step name: Verify provenance and source intent. Labor: Human.
+   Human action: Record approval, rejection, or requested changes with supervisory capacity label [PF].
+   Input: data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Research_Analytics_Agent/Mycroft_Research_Agent.json.
+   Output: provenance fields: workflow_path, exists, parsed_ok, title_matches_pipeline, source_inventory_checked.
+   Where output goes: logs/gate-decisions/.
+2. Step name: Get Financial Overview1. Labor: AI with Human gate.
+   Script called: `scripts/ingest/my-workflow-2__get-financial-overview1.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/my-workflow-2/.
+3. Step name: Get Income Statement1. Labor: AI with Human gate.
+   Script called: `scripts/ingest/my-workflow-2__get-income-statement1.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/my-workflow-2/.
+4. Step name: Process Company Data1. Labor: AI with Human gate.
+   Script called: `scripts/gigo/my-workflow-2__process-company-data1.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/my-workflow-2/.
+5. Step name: Google Search Patent. Labor: AI with Human gate.
+   Script called: `scripts/ingest/my-workflow-2__google-search-patent.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/my-workflow-2/.
+6. Step name: Process Patent Data1. Labor: AI with Human gate.
+   Script called: `scripts/gigo/my-workflow-2__process-patent-data1.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/my-workflow-2/.
+7. Step name: Process Financial Data1. Labor: AI with Human gate.
+   Script called: `scripts/gigo/my-workflow-2__process-financial-data1.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/my-workflow-2/.
+8. Step name: Generate Analysis1. Labor: AI with Human gate.
+   Script called: `scripts/tools/my-workflow-2__generate-analysis1.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+9. Step name: Generate Final Report1. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/my-workflow-2__generate-final-report1.py`
+   Input: approved upstream output or sample fixture.
+   Output: markdown report sections: run summary, source status, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
+10. Step name: Produce human report. Labor: AI with Human review.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/my-workflow-2__produce-human-report.py`
+   Input: agent log plus raw and verified outputs.
+   Output: markdown report sections: run summary, source inventory, inputs used, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
 
 ## Output Contract
 
 ### Agent output
-
-Agent output goes to `logs/my-workflow-2/<run-id>.json`. It must include source workflow path, scripts used, node classifications, credential status, live-call status, validation results, output paths, stop conditions, and human decisions.
+File: `logs/my-workflow-2-[DATE].json`
+Fields: `workflow`, `run_id`, `mode`, `steps_completed`, `records_seen`, `rejects`, `duplicates`, `flags`, `stop_conditions`, `todo_items`, `source_files`, `gate_decisions`, `live_call_performed`, `generated_at`.
 
 ### Human report
-
-The human report goes to `reports/generated/my-workflow-2-<date>.md`. It surfaces the workflow result, source coverage, missing data, anomalies, and decisions required before downstream use.
+File: `reports/generated/my-workflow-2-[DATE].md`
+Reader: domain lead or human boss responsible for accepting the `My workflow` run.
+Decision enabled: approve the run for the next phase, request source/schema fixes, or block live execution.
+Sections: Run summary, source inventory, inputs used, steps completed, records seen, rejects, duplicates, flags, typed TODOs, gate decisions, evidence-backed findings, decision recommendation.
 
 ## Stop Conditions
 
@@ -51,33 +125,61 @@ The human report goes to `reports/generated/my-workflow-2-<date>.md`. It surface
 - Stop if required local source data is missing and no approved live-call path is available.
 - Stop if generated outputs omit provenance or make unsupported analytical claims.
 
+## Snickerdoodle
+
+### Run Commands
+Full dialogic run:
+`snickerdoodle run my-workflow-2 --mode dialogic`
+
+Sample mode (no live network calls, no writes):
+`snickerdoodle run my-workflow-2 --mode dialogic --sample`
+
+### Step Commands
+
+| Step | CLI Command | Flags |
+|---|---|---|
+| Get Financial Overview1 | `snickerdoodle run my-workflow-2 --step get-financial-overview1` | `--sample` |
+| Get Income Statement1 | `snickerdoodle run my-workflow-2 --step get-income-statement1` | `--sample` |
+| Process Company Data1 | `snickerdoodle run my-workflow-2 --step process-company-data1` |  |
+| Google Search Patent | `snickerdoodle run my-workflow-2 --step google-search-patent` | `--sample` |
+| Process Patent Data1 | `snickerdoodle run my-workflow-2 --step process-patent-data1` |  |
+| Process Financial Data1 | `snickerdoodle run my-workflow-2 --step process-financial-data1` |  |
+| Generate Analysis1 | `snickerdoodle run my-workflow-2 --step generate-analysis1` | `--no-write` |
+| Generate Final Report1 | `snickerdoodle run my-workflow-2 --step generate-final-report1` | `--no-write` |
+| Produce human report | `snickerdoodle run my-workflow-2 --step produce-human-report` | `--no-write` |
+
+### Gate Commands
+
+| Gate | CLI Command |
+|---|---|
+| Gate 1 - source/input readiness | `snickerdoodle gate my-workflow-2 --gate 1 --decision approve --note "..."` |
+| Gate 2 - sample run | `snickerdoodle gate my-workflow-2 --gate 2 --decision approve --note "..."` |
+| Gate 3 - report contract | `snickerdoodle gate my-workflow-2 --gate 3 --decision approve --note "..."` |
+
+### Script Locations
+
+| Step | Script Path | Layer |
+|---|---|---|
+| Get Financial Overview1 | `scripts/ingest/my-workflow-2__get-financial-overview1.py` | ingest |
+| Get Income Statement1 | `scripts/ingest/my-workflow-2__get-income-statement1.py` | ingest |
+| Process Company Data1 | `scripts/gigo/my-workflow-2__process-company-data1.py` | gigo |
+| Google Search Patent | `scripts/ingest/my-workflow-2__google-search-patent.py` | ingest |
+| Process Patent Data1 | `scripts/gigo/my-workflow-2__process-patent-data1.py` | gigo |
+| Process Financial Data1 | `scripts/gigo/my-workflow-2__process-financial-data1.py` | gigo |
+| Generate Analysis1 | `scripts/tools/my-workflow-2__generate-analysis1.py` | tool |
+| Generate Final Report1 | `[TODO: DEV] Create or map script path: scripts/tools/my-workflow-2__generate-final-report1.py` | tool |
+| Produce human report | `[TODO: DEV] Create or map script path: scripts/tools/my-workflow-2__produce-human-report.py` | tool |
+
+### Output Locations
+
+| Output | Path | Format |
+|---|---|---|
+| Raw ingest | `data/raw/my-workflow-2/` | JSON |
+| Verified data | `data/verified/my-workflow-2/` | JSON |
+| Agent log | `logs/my-workflow-2-[DATE].json` | JSON |
+| Human report | `reports/generated/my-workflow-2-[DATE].md` | Markdown |
+| Gate decisions | `logs/gate-decisions/` | JSON |
+
 ## Provenance
 
-Original n8n JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Research_Analytics_Agent/Mycroft_Research_Agent.json`
-
-## Node Classification
-
-| Order | Node Name | Node Type | Classification |
-|---|---|---|---|
-| 1 | When clicking ‘Execute workflow’ | `manualTrigger` | conductor |
-| 2 | Code in Python (Beta) | `code` | conductor |
-| 3 | Company Input | `set` | conductor |
-| 4 | Get Financial Overview1 | `httpRequest` | ingest |
-| 5 | Get Income Statement1 | `httpRequest` | ingest |
-| 6 | Process Company Data1 | `code` | gigo |
-| 7 | Google Search Patent | `httpRequest` | ingest |
-| 8 | Process Patent Data1 | `code` | gigo |
-| 9 | Process Financial Data1 | `code` | gigo |
-| 10 | Generate Analysis1 | `code` | tool |
-| 11 | Generate Final Report1 | `code` | report |
-| 12 | Merge | `merge` | conductor |
-
-## Script Index
-
-- `scripts/ingest/my-workflow-2__get-financial-overview1.py`
-- `scripts/ingest/my-workflow-2__get-income-statement1.py`
-- `scripts/ingest/my-workflow-2__google-search-patent.py`
-- `scripts/gigo/my-workflow-2__process-company-data1.py`
-- `scripts/gigo/my-workflow-2__process-patent-data1.py`
-- `scripts/gigo/my-workflow-2__process-financial-data1.py`
-- `scripts/tools/my-workflow-2__generate-analysis1.py`
+Original workflow JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Research_Analytics_Agent/Mycroft_Research_Agent.json`

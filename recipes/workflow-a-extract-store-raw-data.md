@@ -4,10 +4,28 @@
 
 Workflow A collects raw AI-market intelligence from news, research, and community sources so later AEO FAQ workflows can synthesize emerging topics from traceable source records rather than from unsourced impressions.
 
+## Source Inventory
+
+| Source Node | Node Type | Source URL or Path | Human Check |
+|---|---|---|---|
+| TechCrunch AI feed | RSS text | `https://techcrunch.com/category/artificial-intelligence/feed/` | Confirm source is allowed, current, and rate-safe before live fetch. |
+| VentureBeat feed | RSS text | `https://venturebeat.com/feed/` | Confirm source is allowed, current, and rate-safe before live fetch. |
+| Hacker News AI query | RSS text | `https://hnrss.org/frontpage?q=AI+LLM+machine+learning&count=20` | Confirm source is allowed, current, and rate-safe before live fetch. |
+| ArXiv cs.AI feed | RSS/Atom text | `https://export.arxiv.org/rss/cs.AI` | Confirm source is allowed, current, and rate-safe before live fetch. |
+| Reddit AI listing | JSON | `https://www.reddit.com/r/artificial+MachineLearning+OpenAI.json?limit=25&sort=hot` | Confirm source is allowed, current, and rate-safe before live fetch. |
+| Existing raw_intelligence rows | Table/JSON | `data/verified/aeo-workflow-a/` or approved database export | Confirm source is allowed, current, and rate-safe before live fetch. |
+
+## Node Classification
+
+| Node Name | Node Type | Classification |
+|---|---|---|
+| Original workflow node map | [TODO: DEV] Parse original workflow JSON. | [TODO: DEFINE] Classify parsed nodes as ingest, gigo, tool, conductor, or report. |
+
 ## Inputs
 
 | Input | Type | Source | Required? |
 |---|---|---|---|
+| Original n8n workflow JSON | JSON | `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/AEO_FAQ_Pipeline_Phase2/data_extraction.json` | Yes |
 | TechCrunch AI feed | RSS text | `https://techcrunch.com/category/artificial-intelligence/feed/` | Yes |
 | VentureBeat feed | RSS text | `https://venturebeat.com/feed/` | Yes |
 | Hacker News AI query | RSS text | `https://hnrss.org/frontpage?q=AI+LLM+machine+learning&count=20` | Yes |
@@ -17,34 +35,76 @@ Workflow A collects raw AI-market intelligence from news, research, and communit
 
 ## Phase Gates
 
-1. Source gate: each configured source must be public, URL-shaped, and appropriate for AI-market monitoring. Verification: inspect the five feed URLs in the recipe and run one ingest script in sample/error-safe mode, for example `python3 scripts/ingest/fetch_hackernews.py`. Human capacity: [PF], [PA].
-2. Ingest gate: raw payloads must be saved or fetch failures logged per source. Verification: each fetch output must contain `source_name` plus either `raw` or `error`. Human capacity: [TO], [PA].
-3. Parse gate: each parser must produce records with `title`, `source_name`, `source_type`, `url`, `raw_content`, `published_date`, `pulled_date`, `topic_tag`, and `processed`. Verification: run `python3 scripts/gigo/parse_techcrunch.py`, `python3 scripts/gigo/parse_arxiv.py`, and `python3 scripts/gigo/parse_reddit.py` on sample inputs. Human capacity: [PA].
-4. Storage gate: rows must be deduplicated by URL and truncated to the raw_intelligence contract before any database write. Verification: run one `scripts/gigo/store_*.py` script and confirm `conflict_key` is `url`. Human capacity: [PA], [TO].
-5. Continuation gate: Workflow B may start only if `new_items` is greater than zero. Verification: count prepared storage rows and log `new_items` and `this_cycle`. Human capacity: [EI].
+1. Source identity gate: Original workflow JSON exists and is the intended source. Test: `test -f "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/AEO_FAQ_Pipeline_Phase2/data_extraction.json"`.
+   Human capacity: [PF].
+2. Input readiness gate: Every required input in this recipe exists or is marked with a typed TODO. Test: `rg -n "TODO:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/workflow-a-extract-store-raw-data.md`.
+   Human capacity: [PA].
+3. Sample run gate: Ingest and tool steps run without live side effects before live mode. Test: `snickerdoodle run workflow-a-extract-store-raw-data --mode dialogic --sample`.
+   Human capacity: [TO].
+4. Data-shape gate: Raw and verified outputs parse as JSON where applicable. Test: `find data/raw/workflow-a-extract-store-raw-data data/verified/workflow-a-extract-store-raw-data -name "*.json" -print -exec python3 -m json.tool {} \;`.
+   Human capacity: [IJ].
+5. Report contract gate: Human report defines reader, decision enabled, and sections. Test: `rg -n "Reader:|Decision enabled:|Sections:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/workflow-a-extract-store-raw-data.md`.
+   Human capacity: [EI].
 
 ## Steps
 
-1. Trigger scheduled collection. Labor: AI. Script called: none; conductor schedule. Input: four-hour interval. Output: run ID. Where output goes: `logs/`.
-2. Fetch TechCrunch. Labor: AI. Script called: `scripts/ingest/fetch_techcrunch.py`. Input: TechCrunch feed URL. Output: raw feed payload. Where output goes: `data/raw/`.
-3. Fetch VentureBeat. Labor: AI. Script called: `scripts/ingest/fetch_venturebeat.py`. Input: VentureBeat feed URL. Output: raw feed payload. Where output goes: `data/raw/`.
-4. Fetch Hacker News. Labor: AI. Script called: `scripts/ingest/fetch_hackernews.py`. Input: HNRSS query URL. Output: raw feed payload. Where output goes: `data/raw/`.
-5. Fetch ArXiv. Labor: AI. Script called: `scripts/ingest/fetch_arxiv.py`. Input: ArXiv feed URL. Output: raw feed payload. Where output goes: `data/raw/`.
-6. Fetch Reddit. Labor: AI. Script called: `scripts/ingest/fetch_reddit.py`. Input: Reddit listing URL. Output: raw JSON payload. Where output goes: `data/raw/`.
-7. Parse source payloads. Labor: AI. Script called: `scripts/gigo/parse_techcrunch.py`, `scripts/gigo/parse_venturebeat.py`, `scripts/gigo/parse_hackernews.py`, `scripts/gigo/parse_arxiv.py`, and `scripts/gigo/parse_reddit.py`. Input: raw source payloads. Output: normalized raw_intelligence records. Where output goes: `data/verified/`.
-8. Prepare storage rows. Labor: AI. Script called: `scripts/gigo/store_techcrunch.py`, `scripts/gigo/store_venturebeat.py`, `scripts/gigo/store_hackernews.py`, `scripts/gigo/store_arxiv.py`, and `scripts/gigo/store_reddit.py`. Input: parsed records. Output: idempotent row payloads keyed by URL. Where output goes: `data/verified/`.
-9. Verify item counts. Labor: AI. Script called: shared count helper in `scripts/gigo/aeo_raw_intelligence_shared.py` or conductor count. Input: prepared rows. Output: `new_items` and `this_cycle` metrics. Where output goes: `logs/`.
-10. Decide whether to trigger Workflow B. Labor: Human and AI. Human action required: approve continuation when new items exist and the parse/storage gates pass. Input: count metrics and anomaly log. Output: continue or skip decision. Where output goes: `logs/` and `reports/generated/`.
+1. Step name: Verify provenance and source intent. Labor: Human.
+   Human action: Record approval, rejection, or requested changes with supervisory capacity label [PF].
+   Input: data/mycroft-main/n8n-workflows/originals/n8n_Workflows/AEO_FAQ_Pipeline_Phase2/data_extraction.json.
+   Output: provenance fields: workflow_path, exists, parsed_ok, title_matches_pipeline, source_inventory_checked.
+   Where output goes: logs/gate-decisions/.
+2. Step name: fetch_techcrunch. Labor: AI with Human gate.
+   Script called: `scripts/ingest/fetch_techcrunch.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/workflow-a-extract-store-raw-data/.
+3. Step name: fetch_venturebeat. Labor: AI with Human gate.
+   Script called: `scripts/ingest/fetch_venturebeat.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/workflow-a-extract-store-raw-data/.
+4. Step name: fetch_hackernews. Labor: AI with Human gate.
+   Script called: `scripts/ingest/fetch_hackernews.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/workflow-a-extract-store-raw-data/.
+5. Step name: fetch_arxiv. Labor: AI with Human gate.
+   Script called: `scripts/ingest/fetch_arxiv.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/workflow-a-extract-store-raw-data/.
+6. Step name: fetch_reddit. Labor: AI with Human gate.
+   Script called: `scripts/ingest/fetch_reddit.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/workflow-a-extract-store-raw-data/.
+7. Step name: parse_techcrunch. Labor: AI with Human gate.
+   Script called: `scripts/gigo/parse_techcrunch.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/workflow-a-extract-store-raw-data/.
+8. Step name: store_techcrunch. Labor: AI with Human gate.
+   Script called: `scripts/gigo/store_techcrunch.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/workflow-a-extract-store-raw-data/.
+9. Step name: Produce human report. Labor: AI with Human review.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/workflow-a-extract-store-raw-data__produce-human-report.py`
+   Input: agent log plus raw and verified outputs.
+   Output: markdown report sections: run summary, source inventory, inputs used, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
 
 ## Output Contract
 
 ### Agent output
-
-Agent output goes to `logs/aeo-workflow-a/<run-id>.json`. It must include source URLs, fetch status by source, raw payload locations, parsed counts by source, prepared row counts by source, deduplication counts, `new_items`, `this_cycle`, scripts used, and whether Workflow B was triggered or skipped.
+File: `logs/workflow-a-extract-store-raw-data-[DATE].json`
+Fields: `workflow`, `run_id`, `mode`, `steps_completed`, `records_seen`, `rejects`, `duplicates`, `flags`, `stop_conditions`, `todo_items`, `source_files`, `gate_decisions`, `live_call_performed`, `generated_at`.
 
 ### Human report
-
-The human report goes to `reports/generated/workflow-a-extract-store-raw-data-<date>.md`. It surfaces source coverage, which feeds failed or changed structure, whether enough new source material exists for synthesis, and whether Workflow B should run.
+File: `reports/generated/workflow-a-extract-store-raw-data-[DATE].md`
+Reader: domain lead or human boss responsible for accepting the `Workflow A — Extract & Store Raw Data` run.
+Decision enabled: approve the run for the next phase, request source/schema fixes, or block live execution.
+Sections: Run summary, source inventory, inputs used, steps completed, records seen, rejects, duplicates, flags, typed TODOs, gate decisions, evidence-backed findings, decision recommendation.
 
 ## Stop Conditions
 
@@ -55,6 +115,59 @@ The human report goes to `reports/generated/workflow-a-extract-store-raw-data-<d
 - Stop before writing to a live database without explicit human approval and a verified database destination.
 - Stop before triggering Workflow B if `new_items` is zero.
 
+## Snickerdoodle
+
+### Run Commands
+Full dialogic run:
+`snickerdoodle run workflow-a-extract-store-raw-data --mode dialogic`
+
+Sample mode (no live network calls, no writes):
+`snickerdoodle run workflow-a-extract-store-raw-data --mode dialogic --sample`
+
+### Step Commands
+
+| Step | CLI Command | Flags |
+|---|---|---|
+| fetch_techcrunch | `snickerdoodle run workflow-a-extract-store-raw-data --step fetch-techcrunch` | `--sample` |
+| fetch_venturebeat | `snickerdoodle run workflow-a-extract-store-raw-data --step fetch-venturebeat` | `--sample` |
+| fetch_hackernews | `snickerdoodle run workflow-a-extract-store-raw-data --step fetch-hackernews` | `--sample` |
+| fetch_arxiv | `snickerdoodle run workflow-a-extract-store-raw-data --step fetch-arxiv` | `--sample` |
+| fetch_reddit | `snickerdoodle run workflow-a-extract-store-raw-data --step fetch-reddit` | `--sample` |
+| parse_techcrunch | `snickerdoodle run workflow-a-extract-store-raw-data --step parse-techcrunch` |  |
+| store_techcrunch | `snickerdoodle run workflow-a-extract-store-raw-data --step store-techcrunch` |  |
+| Produce human report | `snickerdoodle run workflow-a-extract-store-raw-data --step produce-human-report` | `--no-write` |
+
+### Gate Commands
+
+| Gate | CLI Command |
+|---|---|
+| Gate 1 - source/input readiness | `snickerdoodle gate workflow-a-extract-store-raw-data --gate 1 --decision approve --note "..."` |
+| Gate 2 - sample run | `snickerdoodle gate workflow-a-extract-store-raw-data --gate 2 --decision approve --note "..."` |
+| Gate 3 - report contract | `snickerdoodle gate workflow-a-extract-store-raw-data --gate 3 --decision approve --note "..."` |
+
+### Script Locations
+
+| Step | Script Path | Layer |
+|---|---|---|
+| fetch_techcrunch | `scripts/ingest/fetch_techcrunch.py` | ingest |
+| fetch_venturebeat | `scripts/ingest/fetch_venturebeat.py` | ingest |
+| fetch_hackernews | `scripts/ingest/fetch_hackernews.py` | ingest |
+| fetch_arxiv | `scripts/ingest/fetch_arxiv.py` | ingest |
+| fetch_reddit | `scripts/ingest/fetch_reddit.py` | ingest |
+| parse_techcrunch | `scripts/gigo/parse_techcrunch.py` | gigo |
+| store_techcrunch | `scripts/gigo/store_techcrunch.py` | gigo |
+| Produce human report | `[TODO: DEV] Create or map script path: scripts/tools/workflow-a-extract-store-raw-data__produce-human-report.py` | tool |
+
+### Output Locations
+
+| Output | Path | Format |
+|---|---|---|
+| Raw ingest | `data/raw/workflow-a-extract-store-raw-data/` | JSON |
+| Verified data | `data/verified/workflow-a-extract-store-raw-data/` | JSON |
+| Agent log | `logs/workflow-a-extract-store-raw-data-[DATE].json` | JSON |
+| Human report | `reports/generated/workflow-a-extract-store-raw-data-[DATE].md` | Markdown |
+| Gate decisions | `logs/gate-decisions/` | JSON |
+
 ## Provenance
 
-Original n8n JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/AEO_FAQ_Pipeline_Phase2/data_extraction.json`
+Original workflow JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/AEO_FAQ_Pipeline_Phase2/data_extraction.json`

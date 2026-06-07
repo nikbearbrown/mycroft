@@ -1,80 +1,216 @@
-# Recipe: Mycroft - SEC_Filings_Analysis
+# Mycroft - SEC_Filings_Analysis
 
-## Executive Summary
+## Purpose
 
-This recipe converts the original n8n workflow into an agent-readable recipe for Mycroft. It is primarily for agents to execute or adapt, while giving humans a compact summary of what the workflow does, what evidence it should prefer, and what checks must pass before automation continues.
+Mycroft - SEC_Filings_Analysis defines a Mycroft pipeline for collecting, transforming, or reviewing finance and intelligence signals related to mycroft - sec_filings_analysis. It answers whether the available local evidence and approved live sources are sufficient for a human decision without relying on unapproved external writes or unsupported analytical claims.
 
-## Original Workflow
+## Source Inventory
 
-- Source: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/SEC_Filings_Analysis_Agent/Mycroft - SEC_Filings_Analysis.json`
-- Imported from pantry path: `n8n_Workflows/SEC_Filings_Analysis_Agent/Mycroft - SEC_Filings_Analysis.json`
-- Node count: 15
+| Source Node | Node Type | Source URL or Path | Human Check |
+|---|---|---|---|
+| Edgar_Fetcher | executeCommand | [TODO: DATA SOURCE] Extract exact URL/path/source contract from original workflow JSON. | Confirm source is allowed, current, and rate-safe before live fetch. |
+| Validate Fetcher | code | [TODO: DATA SOURCE] Extract exact URL/path/source contract from original workflow JSON. | Confirm source is allowed, current, and rate-safe before live fetch. |
 
-## Required Reads
+## Node Classification
 
-1. Check `data/mycroft-main/` for verified local or database data that satisfies the request.
-2. Check `scripts/mycroft-main/` for vetted scripts that already perform the needed extraction, transformation, or validation.
-3. Read this workflow's original JSON before changing behavior.
-4. Only use live web/API lookup when verified local data does not exist or is explicitly stale.
+| Node Name | Node Type | Classification |
+|---|---|---|
+| When clicking 'Execute workflow' | manualTrigger | conductor |
+| If | if | conductor |
+| Set Variables | set | gigo |
+| Setup Github Repo | executeCommand | gigo |
+| Set Path Variables | code | gigo |
+| Setup Python Enviornment and Output Directories | executeCommand | gigo |
+| Edgar_Fetcher | executeCommand | ingest |
+| Validate Fetcher | code | ingest |
+| Financial Analyzer | executeCommand | gigo |
+| Narrative Parser | executeCommand | gigo |
+| Validate Financial Metrics | code | gigo |
+| Validate Narrative Content | code | gigo |
+| Cleanup Temp Directories | executeCommand | gigo |
+| Error Handling | code | gigo |
+| Cleanup | executeCommand | gigo |
+
+## Inputs
+
+| Input | Type | Source | Required? |
+|---|---|---|---|
+| Original n8n workflow JSON | JSON | `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/SEC_Filings_Analysis_Agent/Mycroft - SEC_Filings_Analysis.json` | Yes |
 
 ## Phase Gates
 
-1. Data gate: identify the trusted data source, freshness, provenance, and missing fields.
-2. Script gate: prefer an existing vetted script; if a new script is needed, write a narrow test before using it in a pipeline.
-3. Dry-run gate: execute the smallest non-destructive sample and save logs or outputs.
-4. Validation gate: compare outputs against expected schema, row counts, citations, or workflow invariants.
-5. Automation gate: only run a full automated pipeline after the previous gates pass.
+1. Source identity gate: Original workflow JSON exists and is the intended source. Test: `test -f "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/SEC_Filings_Analysis_Agent/Mycroft - SEC_Filings_Analysis.json"`.
+   Human capacity: [PF].
+2. Input readiness gate: Every required input in this recipe exists or is marked with a typed TODO. Test: `rg -n "TODO:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/n8n-mycroft-sec-filings-analysis.md`.
+   Human capacity: [PA].
+3. Sample run gate: Ingest and tool steps run without live side effects before live mode. Test: `snickerdoodle run n8n-mycroft-sec-filings-analysis --mode dialogic --sample`.
+   Human capacity: [TO].
+4. Data-shape gate: Raw and verified outputs parse as JSON where applicable. Test: `find data/raw/n8n-mycroft-sec-filings-analysis data/verified/n8n-mycroft-sec-filings-analysis -name "*.json" -print -exec python3 -m json.tool {} \;`.
+   Human capacity: [IJ].
+5. Report contract gate: Human report defines reader, decision enabled, and sections. Test: `rg -n "Reader:|Decision enabled:|Sections:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/n8n-mycroft-sec-filings-analysis.md`.
+   Human capacity: [EI].
 
-## Trigger Surface
+## Steps
 
-When clicking 'Execute workflow'
-
-## Agent/AI Nodes
-
-No explicit AI-agent node detected by type/name. Treat transformation and decision nodes as candidates for agentic conversion.
-
-## External Writes or Side Effects
-
-No obvious external write or notification node detected. Verify manually before running.
-
-## Node Type Summary
-
-| Node Type | Count |
-| --- | --- |
-| code | 5 |
-| executeCommand | 7 |
-| if | 1 |
-| manualTrigger | 1 |
-| set | 1 |
-
-## Workflow Nodes
-
-| Order | Node | Type |
-| --- | --- | --- |
-| 1 | When clicking 'Execute workflow' | manualTrigger |
-| 2 | If | if |
-| 3 | Set Variables | set |
-| 4 | Setup Github Repo | executeCommand |
-| 5 | Set Path Variables | code |
-| 6 | Setup Python Enviornment and Output Directories | executeCommand |
-| 7 | Edgar_Fetcher | executeCommand |
-| 8 | Validate Fetcher | code |
-| 9 | Financial Analyzer | executeCommand |
-| 10 | Narrative Parser | executeCommand |
-| 11 | Validate Financial Metrics | code |
-| 12 | Validate Narrative Content | code |
-| 13 | Cleanup Temp Directories | executeCommand |
-| 14 | Error Handling | code |
-| 15 | Cleanup  | executeCommand |
+1. Step name: Verify provenance and source intent. Labor: Human.
+   Human action: Record approval, rejection, or requested changes with supervisory capacity label [PF].
+   Input: data/mycroft-main/n8n-workflows/originals/n8n_Workflows/SEC_Filings_Analysis_Agent/Mycroft - SEC_Filings_Analysis.json.
+   Output: provenance fields: workflow_path, exists, parsed_ok, title_matches_pipeline, source_inventory_checked.
+   Where output goes: logs/gate-decisions/.
+2. Step name: Set Variables. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__set-variables.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-mycroft-sec-filings-analysis/.
+3. Step name: Setup Github Repo. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__setup-github-repo.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-mycroft-sec-filings-analysis/.
+4. Step name: Set Path Variables. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__set-path-variables.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-mycroft-sec-filings-analysis/.
+5. Step name: Setup Python Enviornment and Output Directories. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__setup-python-enviornment-and-output-directories.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-mycroft-sec-filings-analysis/.
+6. Step name: Edgar_Fetcher. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/ingest/n8n-mycroft-sec-filings-analysis__edgar-fetcher.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/n8n-mycroft-sec-filings-analysis/.
+7. Step name: Validate Fetcher. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/ingest/n8n-mycroft-sec-filings-analysis__validate-fetcher.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/n8n-mycroft-sec-filings-analysis/.
+8. Step name: Financial Analyzer. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__financial-analyzer.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-mycroft-sec-filings-analysis/.
+9. Step name: Narrative Parser. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__narrative-parser.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-mycroft-sec-filings-analysis/.
+10. Step name: Validate Financial Metrics. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__validate-financial-metrics.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-mycroft-sec-filings-analysis/.
+11. Step name: Validate Narrative Content. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__validate-narrative-content.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-mycroft-sec-filings-analysis/.
+12. Step name: Cleanup Temp Directories. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__cleanup-temp-directories.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-mycroft-sec-filings-analysis/.
+13. Step name: Error Handling. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__error-handling.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-mycroft-sec-filings-analysis/.
+14. Step name: Cleanup. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__cleanup.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-mycroft-sec-filings-analysis/.
+15. Step name: Produce human report. Labor: AI with Human review.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/n8n-mycroft-sec-filings-analysis__produce-human-report.py`
+   Input: agent log plus raw and verified outputs.
+   Output: markdown report sections: run summary, source inventory, inputs used, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
 
 ## Output Contract
 
-- Produce a short run report with inputs, source provenance, scripts used, validations performed, and generated artifacts.
-- Store durable outputs under `data/mycroft-main/` when they are data-like and `docs/mycroft-main/` when they are explanatory.
-- Note any unverified assumptions, missing credentials, external services, or failed gates.
+### Agent output
+File: `logs/n8n-mycroft-sec-filings-analysis-[DATE].json`
+Fields: `workflow`, `run_id`, `mode`, `steps_completed`, `records_seen`, `rejects`, `duplicates`, `flags`, `stop_conditions`, `todo_items`, `source_files`, `gate_decisions`, `live_call_performed`, `generated_at`.
+
+### Human report
+File: `reports/generated/n8n-mycroft-sec-filings-analysis-[DATE].md`
+Reader: domain lead or human boss responsible for accepting the `Mycroft - SEC_Filings_Analysis` run.
+Decision enabled: approve the run for the next phase, request source/schema fixes, or block live execution.
+Sections: Run summary, source inventory, inputs used, steps completed, records seen, rejects, duplicates, flags, typed TODOs, gate decisions, evidence-backed findings, decision recommendation.
 
 ## Stop Conditions
 
 - Stop if verified local data contradicts live/API data until provenance is resolved.
 - Stop if a required credential, endpoint, database, or workflow invariant is missing.
 - Stop before bulk external writes, notifications, or trades unless the human explicitly approves that run.
+
+## Snickerdoodle
+
+### Run Commands
+Full dialogic run:
+`snickerdoodle run n8n-mycroft-sec-filings-analysis --mode dialogic`
+
+Sample mode (no live network calls, no writes):
+`snickerdoodle run n8n-mycroft-sec-filings-analysis --mode dialogic --sample`
+
+### Step Commands
+
+| Step | CLI Command | Flags |
+|---|---|---|
+| Set Variables | `snickerdoodle run n8n-mycroft-sec-filings-analysis --step set-variables` |  |
+| Setup Github Repo | `snickerdoodle run n8n-mycroft-sec-filings-analysis --step setup-github-repo` |  |
+| Set Path Variables | `snickerdoodle run n8n-mycroft-sec-filings-analysis --step set-path-variables` |  |
+| Setup Python Enviornment and Output Directories | `snickerdoodle run n8n-mycroft-sec-filings-analysis --step setup-python-enviornment-and-output-directories` |  |
+| Edgar_Fetcher | `snickerdoodle run n8n-mycroft-sec-filings-analysis --step edgar-fetcher` | `--sample` |
+| Validate Fetcher | `snickerdoodle run n8n-mycroft-sec-filings-analysis --step validate-fetcher` | `--sample` |
+| Financial Analyzer | `snickerdoodle run n8n-mycroft-sec-filings-analysis --step financial-analyzer` |  |
+| Narrative Parser | `snickerdoodle run n8n-mycroft-sec-filings-analysis --step narrative-parser` |  |
+| Validate Financial Metrics | `snickerdoodle run n8n-mycroft-sec-filings-analysis --step validate-financial-metrics` |  |
+| Validate Narrative Content | `snickerdoodle run n8n-mycroft-sec-filings-analysis --step validate-narrative-content` |  |
+| Cleanup Temp Directories | `snickerdoodle run n8n-mycroft-sec-filings-analysis --step cleanup-temp-directories` |  |
+| Error Handling | `snickerdoodle run n8n-mycroft-sec-filings-analysis --step error-handling` |  |
+| Cleanup | `snickerdoodle run n8n-mycroft-sec-filings-analysis --step cleanup` |  |
+| Produce human report | `snickerdoodle run n8n-mycroft-sec-filings-analysis --step produce-human-report` | `--no-write` |
+
+### Gate Commands
+
+| Gate | CLI Command |
+|---|---|
+| Gate 1 - source/input readiness | `snickerdoodle gate n8n-mycroft-sec-filings-analysis --gate 1 --decision approve --note "..."` |
+| Gate 2 - sample run | `snickerdoodle gate n8n-mycroft-sec-filings-analysis --gate 2 --decision approve --note "..."` |
+| Gate 3 - report contract | `snickerdoodle gate n8n-mycroft-sec-filings-analysis --gate 3 --decision approve --note "..."` |
+
+### Script Locations
+
+| Step | Script Path | Layer |
+|---|---|---|
+| Set Variables | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__set-variables.py` | gigo |
+| Setup Github Repo | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__setup-github-repo.py` | gigo |
+| Set Path Variables | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__set-path-variables.py` | gigo |
+| Setup Python Enviornment and Output Directories | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__setup-python-enviornment-and-output-directories.py` | gigo |
+| Edgar_Fetcher | `[TODO: DEV] Create or map script path: scripts/ingest/n8n-mycroft-sec-filings-analysis__edgar-fetcher.py` | ingest |
+| Validate Fetcher | `[TODO: DEV] Create or map script path: scripts/ingest/n8n-mycroft-sec-filings-analysis__validate-fetcher.py` | ingest |
+| Financial Analyzer | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__financial-analyzer.py` | gigo |
+| Narrative Parser | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__narrative-parser.py` | gigo |
+| Validate Financial Metrics | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__validate-financial-metrics.py` | gigo |
+| Validate Narrative Content | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__validate-narrative-content.py` | gigo |
+| Cleanup Temp Directories | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__cleanup-temp-directories.py` | gigo |
+| Error Handling | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__error-handling.py` | gigo |
+| Cleanup | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-mycroft-sec-filings-analysis__cleanup.py` | gigo |
+| Produce human report | `[TODO: DEV] Create or map script path: scripts/tools/n8n-mycroft-sec-filings-analysis__produce-human-report.py` | tool |
+
+### Output Locations
+
+| Output | Path | Format |
+|---|---|---|
+| Raw ingest | `data/raw/n8n-mycroft-sec-filings-analysis/` | JSON |
+| Verified data | `data/verified/n8n-mycroft-sec-filings-analysis/` | JSON |
+| Agent log | `logs/n8n-mycroft-sec-filings-analysis-[DATE].json` | JSON |
+| Human report | `reports/generated/n8n-mycroft-sec-filings-analysis-[DATE].md` | Markdown |
+| Gate decisions | `logs/gate-decisions/` | JSON |
+
+## Provenance
+
+Original workflow JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/SEC_Filings_Analysis_Agent/Mycroft - SEC_Filings_Analysis.json`

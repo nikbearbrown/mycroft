@@ -2,7 +2,33 @@
 
 ## Purpose
 
-This recipe converts the original n8n workflow into a repeatable Mycroft workflow that can be run in dialogic mode with local data first, credential-gated live calls second, and human review before any external side effect or analytical conclusion is trusted.
+Mycroft - Forecasting Agent defines a Mycroft pipeline for collecting, transforming, or reviewing finance and intelligence signals related to mycroft - forecasting agent. It answers whether the available local evidence and approved live sources are sufficient for a human decision without relying on unapproved external writes or unsupported analytical claims.
+
+## Source Inventory
+
+| Source Node | Node Type | Source URL or Path | Human Check |
+|---|---|---|---|
+| Ingest node outputs | JSON | Converted ingest steps (1 nodes) | Confirm source is allowed, current, and rate-safe before live fetch. |
+| Report node outputs | JSON | Converted report steps (4 nodes) | Confirm source is allowed, current, and rate-safe before live fetch. |
+
+## Node Classification
+
+| Node Name | Node Type | Classification |
+|---|---|---|
+| Alpha Vantage Market Data | `httpRequest` | ingest |
+| Configuration | `set` | conductor |
+| FinBert | `httpRequest` | tool |
+| Merge | `merge` | conductor |
+| Code1 | `code` | conductor |
+| If | `if` | conductor |
+| Code2 | `code` | conductor |
+| Edit Fields | `set` | conductor |
+| Send email | `emailSend` | report |
+| Historical data | `code` | conductor |
+| Send email1 | `emailSend` | report |
+| Respond to Webhook | `respondToWebhook` | report |
+| Webhook | `webhook` | tool |
+| Respond to Webhook1 | `respondToWebhook` | report |
 
 ## Inputs
 
@@ -13,31 +39,80 @@ This recipe converts the original n8n workflow into a repeatable Mycroft workflo
 | Report node outputs | JSON | Converted report steps (4 nodes) | No |
 | Conductor node outputs | JSON | Converted conductor steps (7 nodes) | No |
 | Original workflow JSON | JSON | `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Orchestrator/v1/Mycroft - Forecasting Agent.json` | Yes |
-| Credentials for live services | Environment variables | Named by script handoff payloads | No for local mode |
+| Credentials for live services | Environment variables | Named by script handoff payloads | No |
 
 ## Phase Gates
 
-1. Source gate: all required local exports or live-call handoff specs must be present. Verification: run the generated ingest scripts for this workflow and confirm each returns JSON with a status field. Human capacity required: [PA], [TO].
-2. GIGO gate: normalized records must preserve missing fields rather than inventing values. Verification: run generated GIGO scripts and inspect `record_count` and `records`. Human capacity required: [PA].
-3. Tool gate: model/API/tool nodes must return local deterministic outputs or approval-required handoff specs. Verification: run generated tool scripts and confirm `live_call_performed` is false unless explicitly approved. Human capacity required: [TO], [IJ].
-4. Report gate: final report must separate source facts, transformations, and interpretation. Verification: fill `reports/templates/mycroft-forecasting-agent.md` and link the run log. Human capacity required: [EI].
+1. Source identity gate: Original workflow JSON exists and is the intended source. Test: `test -f "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Orchestrator/v1/Mycroft - Forecasting Agent.json"`.
+   Human capacity: [PF].
+2. Input readiness gate: Every required input in this recipe exists or is marked with a typed TODO. Test: `rg -n "TODO:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/mycroft-forecasting-agent.md`.
+   Human capacity: [PA].
+3. Sample run gate: Ingest and tool steps run without live side effects before live mode. Test: `snickerdoodle run mycroft-forecasting-agent --mode dialogic --sample`.
+   Human capacity: [TO].
+4. Data-shape gate: Raw and verified outputs parse as JSON where applicable. Test: `find data/raw/mycroft-forecasting-agent data/verified/mycroft-forecasting-agent -name "*.json" -print -exec python3 -m json.tool {} \;`.
+   Human capacity: [IJ].
+5. Report contract gate: Human report defines reader, decision enabled, and sections. Test: `rg -n "Reader:|Decision enabled:|Sections:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/mycroft-forecasting-agent.md`.
+   Human capacity: [EI].
 
 ## Steps
 
-1. Step name: `mycroft-forecasting-agent__alpha-vantage-market-data`. Labor: AI. Script called: `scripts/ingest/mycroft-forecasting-agent__alpha-vantage-market-data.py`. Input: prior verified payloads or local export. Output: ingest result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-2. Step name: `mycroft-forecasting-agent__finbert`. Labor: AI. Script called: `scripts/tools/mycroft-forecasting-agent__finbert.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-3. Step name: `mycroft-forecasting-agent__webhook`. Labor: AI. Script called: `scripts/tools/mycroft-forecasting-agent__webhook.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-4. Step name: Human review. Labor: Human. Human action required: review source coverage, missing credentials, model/database/email handoffs, and interpretation limits. Input: generated logs and reports. Output: accept, reject, or rerun decision. Where output goes: `reports/generated/`.
+1. Step name: Verify provenance and source intent. Labor: Human.
+   Human action: Record approval, rejection, or requested changes with supervisory capacity label [PF].
+   Input: data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Orchestrator/v1/Mycroft - Forecasting Agent.json.
+   Output: provenance fields: workflow_path, exists, parsed_ok, title_matches_pipeline, source_inventory_checked.
+   Where output goes: logs/gate-decisions/.
+2. Step name: Alpha Vantage Market Data. Labor: AI with Human gate.
+   Script called: `scripts/ingest/mycroft-forecasting-agent__alpha-vantage-market-data.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/mycroft-forecasting-agent/.
+3. Step name: FinBert. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-forecasting-agent__finbert.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+4. Step name: Send email. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/mycroft-forecasting-agent__send-email.py`
+   Input: approved upstream output or sample fixture.
+   Output: markdown report sections: run summary, source status, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
+5. Step name: Send email1. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/mycroft-forecasting-agent__send-email1.py`
+   Input: approved upstream output or sample fixture.
+   Output: markdown report sections: run summary, source status, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
+6. Step name: Respond to Webhook. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/mycroft-forecasting-agent__respond-to-webhook.py`
+   Input: approved upstream output or sample fixture.
+   Output: markdown report sections: run summary, source status, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
+7. Step name: Webhook. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-forecasting-agent__webhook.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+8. Step name: Respond to Webhook1. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/mycroft-forecasting-agent__respond-to-webhook1.py`
+   Input: approved upstream output or sample fixture.
+   Output: markdown report sections: run summary, source status, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
+9. Step name: Produce human report. Labor: AI with Human review.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/mycroft-forecasting-agent__produce-human-report.py`
+   Input: agent log plus raw and verified outputs.
+   Output: markdown report sections: run summary, source inventory, inputs used, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
 
 ## Output Contract
 
 ### Agent output
-
-Agent output goes to `logs/mycroft-forecasting-agent/<run-id>.json`. It must include source workflow path, scripts used, node classifications, credential status, live-call status, validation results, output paths, stop conditions, and human decisions.
+File: `logs/mycroft-forecasting-agent-[DATE].json`
+Fields: `workflow`, `run_id`, `mode`, `steps_completed`, `records_seen`, `rejects`, `duplicates`, `flags`, `stop_conditions`, `todo_items`, `source_files`, `gate_decisions`, `live_call_performed`, `generated_at`.
 
 ### Human report
-
-The human report goes to `reports/generated/mycroft-forecasting-agent-<date>.md`. It surfaces the workflow result, source coverage, missing data, anomalies, and decisions required before downstream use.
+File: `reports/generated/mycroft-forecasting-agent-[DATE].md`
+Reader: domain lead or human boss responsible for accepting the `Mycroft - Forecasting Agent` run.
+Decision enabled: approve the run for the next phase, request source/schema fixes, or block live execution.
+Sections: Run summary, source inventory, inputs used, steps completed, records seen, rejects, duplicates, flags, typed TODOs, gate decisions, evidence-backed findings, decision recommendation.
 
 ## Stop Conditions
 
@@ -46,31 +121,59 @@ The human report goes to `reports/generated/mycroft-forecasting-agent-<date>.md`
 - Stop if required local source data is missing and no approved live-call path is available.
 - Stop if generated outputs omit provenance or make unsupported analytical claims.
 
+## Snickerdoodle
+
+### Run Commands
+Full dialogic run:
+`snickerdoodle run mycroft-forecasting-agent --mode dialogic`
+
+Sample mode (no live network calls, no writes):
+`snickerdoodle run mycroft-forecasting-agent --mode dialogic --sample`
+
+### Step Commands
+
+| Step | CLI Command | Flags |
+|---|---|---|
+| Alpha Vantage Market Data | `snickerdoodle run mycroft-forecasting-agent --step alpha-vantage-market-data` | `--sample` |
+| FinBert | `snickerdoodle run mycroft-forecasting-agent --step finbert` | `--no-write` |
+| Send email | `snickerdoodle run mycroft-forecasting-agent --step send-email` | `--no-write` |
+| Send email1 | `snickerdoodle run mycroft-forecasting-agent --step send-email1` | `--no-write` |
+| Respond to Webhook | `snickerdoodle run mycroft-forecasting-agent --step respond-to-webhook` | `--no-write` |
+| Webhook | `snickerdoodle run mycroft-forecasting-agent --step webhook` | `--no-write` |
+| Respond to Webhook1 | `snickerdoodle run mycroft-forecasting-agent --step respond-to-webhook1` | `--no-write` |
+| Produce human report | `snickerdoodle run mycroft-forecasting-agent --step produce-human-report` | `--no-write` |
+
+### Gate Commands
+
+| Gate | CLI Command |
+|---|---|
+| Gate 1 - source/input readiness | `snickerdoodle gate mycroft-forecasting-agent --gate 1 --decision approve --note "..."` |
+| Gate 2 - sample run | `snickerdoodle gate mycroft-forecasting-agent --gate 2 --decision approve --note "..."` |
+| Gate 3 - report contract | `snickerdoodle gate mycroft-forecasting-agent --gate 3 --decision approve --note "..."` |
+
+### Script Locations
+
+| Step | Script Path | Layer |
+|---|---|---|
+| Alpha Vantage Market Data | `scripts/ingest/mycroft-forecasting-agent__alpha-vantage-market-data.py` | ingest |
+| FinBert | `scripts/tools/mycroft-forecasting-agent__finbert.py` | tool |
+| Send email | `[TODO: DEV] Create or map script path: scripts/tools/mycroft-forecasting-agent__send-email.py` | tool |
+| Send email1 | `[TODO: DEV] Create or map script path: scripts/tools/mycroft-forecasting-agent__send-email1.py` | tool |
+| Respond to Webhook | `[TODO: DEV] Create or map script path: scripts/tools/mycroft-forecasting-agent__respond-to-webhook.py` | tool |
+| Webhook | `scripts/tools/mycroft-forecasting-agent__webhook.py` | tool |
+| Respond to Webhook1 | `[TODO: DEV] Create or map script path: scripts/tools/mycroft-forecasting-agent__respond-to-webhook1.py` | tool |
+| Produce human report | `[TODO: DEV] Create or map script path: scripts/tools/mycroft-forecasting-agent__produce-human-report.py` | tool |
+
+### Output Locations
+
+| Output | Path | Format |
+|---|---|---|
+| Raw ingest | `data/raw/mycroft-forecasting-agent/` | JSON |
+| Verified data | `data/verified/mycroft-forecasting-agent/` | JSON |
+| Agent log | `logs/mycroft-forecasting-agent-[DATE].json` | JSON |
+| Human report | `reports/generated/mycroft-forecasting-agent-[DATE].md` | Markdown |
+| Gate decisions | `logs/gate-decisions/` | JSON |
+
 ## Provenance
 
-Original n8n JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Orchestrator/v1/Mycroft - Forecasting Agent.json`
-
-## Node Classification
-
-| Order | Node Name | Node Type | Classification |
-|---|---|---|---|
-| 1 | Alpha Vantage Market Data | `httpRequest` | ingest |
-| 2 | Configuration | `set` | conductor |
-| 3 | FinBert | `httpRequest` | tool |
-| 4 | Merge | `merge` | conductor |
-| 5 | Code1 | `code` | conductor |
-| 6 | If | `if` | conductor |
-| 7 | Code2 | `code` | conductor |
-| 8 | Edit Fields | `set` | conductor |
-| 9 | Send email | `emailSend` | report |
-| 10 | Historical data | `code` | conductor |
-| 11 | Send email1 | `emailSend` | report |
-| 12 | Respond to Webhook | `respondToWebhook` | report |
-| 13 | Webhook | `webhook` | tool |
-| 14 | Respond to Webhook1 | `respondToWebhook` | report |
-
-## Script Index
-
-- `scripts/ingest/mycroft-forecasting-agent__alpha-vantage-market-data.py`
-- `scripts/tools/mycroft-forecasting-agent__finbert.py`
-- `scripts/tools/mycroft-forecasting-agent__webhook.py`
+Original workflow JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Orchestrator/v1/Mycroft - Forecasting Agent.json`

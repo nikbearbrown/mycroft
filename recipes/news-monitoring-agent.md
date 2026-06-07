@@ -4,52 +4,123 @@
 
 The News Monitoring Agent answers whether recent AI and technology news contains decision-relevant signals for financial research by collecting feed articles, cleaning and deduplicating them, attaching sentiment and retrieval metadata, indexing them into auditable local stores, and answering analyst questions only from the resulting source-grounded corpus.
 
+## Source Inventory
+
+| Source Node | Node Type | Source URL or Path | Human Check |
+|---|---|---|---|
+| Feed source list | Table/JSON | n8n sources data table or `data/verified/news-monitoring-agent/sources.json` | Confirm source is allowed, current, and rate-safe before live fetch. |
+| Feed URL | URL string | Each source row | Confirm source is allowed, current, and rate-safe before live fetch. |
+| Previous feed timestamp | ISO datetime/string | Source-state table or verified source metadata | Confirm source is allowed, current, and rate-safe before live fetch. |
+| Article payload | JSON | `data/raw/news-monitoring-agent/` | Confirm source is allowed, current, and rate-safe before live fetch. |
+| Analyst question | String | Chat/manual trigger | Confirm source is allowed, current, and rate-safe before live fetch. |
+| RAG evaluation questions | CSV | `data/verified/news-monitoring-agent/questions.csv` | Confirm source is allowed, current, and rate-safe before live fetch. |
+
+## Node Classification
+
+| Node Name | Node Type | Classification |
+|---|---|---|
+| Original workflow node map | [TODO: DEV] Parse original workflow JSON. | [TODO: DEFINE] Classify parsed nodes as ingest, gigo, tool, conductor, or report. |
+
 ## Inputs
 
 | Input | Type | Source | Required? |
 |---|---|---|---|
+| Original n8n workflow JSON | JSON | `data/mycroft-main/n8n-workflows/originals/Core_Components/news_monitoring_agent/workflows/News Monitoring Agent.json` | Yes |
 | Feed source list | Table/JSON | n8n sources data table or `data/verified/news-monitoring-agent/sources.json` | Yes |
 | Feed URL | URL string | Each source row | Yes |
 | Previous feed timestamp | ISO datetime/string | Source-state table or verified source metadata | No |
-| Article payload | JSON | `data/raw/news-monitoring-agent/` | Yes after ingest |
-| Analyst question | String | Chat/manual trigger | Yes for RAG answering |
+| Article payload | JSON | `data/raw/news-monitoring-agent/` | Yes |
+| Analyst question | String | Chat/manual trigger | Yes |
 | RAG evaluation questions | CSV | `data/verified/news-monitoring-agent/questions.csv` | No |
-| Model credentials | Environment variables | `GOOGLE_API_KEY`, `OPENROUTER_API_KEY`, `HUGGINGFACE_API_KEY`, `QDRANT_API_KEY` for future live adapters | No for local dialogic mode |
+| Model credentials | Environment variables | `GOOGLE_API_KEY`, `OPENROUTER_API_KEY`, `HUGGINGFACE_API_KEY`, `QDRANT_API_KEY` for future live adapters | No |
 
 ## Phase Gates
 
-1. Source gate: the source list must contain URL-like feed entries and no secrets. Verification: run `python3 scripts/gigo/upsert_source_state.py --input '{"feed_url":"https://example.com/feed.xml","last_updated":"2026-06-06T00:00:00Z"}'` and confirm the URL and freshness fields are preserved. Human capacity: [PF], [PA].
-2. Ingest gate: at least one feed fetch must produce raw JSON or explicitly report a fetch error. Verification: run `python3 scripts/ingest/feedparser_fetch.py --input '{"feed_url":"https://example.com/feed.xml"}'` as a dry-run pattern; for real feeds save to `data/raw/news-monitoring-agent/<run-id>.json`. Human capacity: [TO], [PA].
-3. GIGO gate: parsed records must have stable IDs, URL/title/content fields, and empty-content records removed. Verification: run `python3 scripts/gigo/parse_article.py`, `python3 scripts/gigo/filter_not_null.py`, and `python3 scripts/gigo/remove_duplicates.py` on a small sample and inspect counts. Human capacity: [PA].
-4. Sentiment gate: sentiment labels must be present and identified as local or model-derived. Verification: run `python3 scripts/tools/finbert_sentiment.py` and confirm `sentiment.method` is present before interpretation. Human capacity: [PA], [IJ].
-5. Retrieval gate: document chunks and retrieval matches must reference source URLs and dates. Verification: run `python3 scripts/gigo/load_documents_a.py` followed by `python3 scripts/tools/rag_answer_agent.py` on a sample question and confirm sources are included. Human capacity: [PA], [IJ].
-6. Report gate: the generated human report must separate findings from pipeline details and list anomalies. Verification: create a report from `reports/templates/news-monitoring-agent.md` and link the corresponding log entry. Human capacity: [EI], [IJ].
+1. Source identity gate: Original workflow JSON exists and is the intended source. Test: `test -f "data/mycroft-main/n8n-workflows/originals/Core_Components/news_monitoring_agent/workflows/News Monitoring Agent.json"`.
+   Human capacity: [PF].
+2. Input readiness gate: Every required input in this recipe exists or is marked with a typed TODO. Test: `rg -n "TODO:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/news-monitoring-agent.md`.
+   Human capacity: [PA].
+3. Sample run gate: Ingest and tool steps run without live side effects before live mode. Test: `snickerdoodle run news-monitoring-agent --mode dialogic --sample`.
+   Human capacity: [TO].
+4. Data-shape gate: Raw and verified outputs parse as JSON where applicable. Test: `find data/raw/news-monitoring-agent data/verified/news-monitoring-agent -name "*.json" -print -exec python3 -m json.tool {} \;`.
+   Human capacity: [IJ].
+5. Report contract gate: Human report defines reader, decision enabled, and sections. Test: `rg -n "Reader:|Decision enabled:|Sections:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/news-monitoring-agent.md`.
+   Human capacity: [EI].
 
 ## Steps
 
-1. Trigger workflow. Labor: AI. Script called: none; conductor action. Input: schedule, chat trigger, or manual trigger. Output: run ID and mode. Where output goes: `logs/`.
-2. Load source rows. Labor: AI. Script called: existing local source table or `scripts/gigo/upsert_source_state.py` for state records. Input: source list. Output: verified source records. Where output goes: `data/verified/`.
-3. Fetch feed articles. Labor: AI. Script called: `scripts/ingest/feedparser_fetch.py`. Input: source records. Output: raw feed payloads. Where output goes: `data/raw/`.
-4. Split and parse articles. Labor: AI. Script called: `scripts/gigo/split_articles.py` and `scripts/gigo/parse_article.py`. Input: raw feed payloads. Output: normalized article records. Where output goes: `data/verified/`.
-5. Filter and deduplicate. Labor: AI. Script called: `scripts/gigo/filter_not_null.py` and `scripts/gigo/remove_duplicates.py`. Input: normalized article records. Output: complete unique records. Where output goes: `data/verified/`.
-6. Update source freshness. Labor: AI. Script called: `scripts/gigo/upsert_source_state.py`. Input: feed metadata. Output: source-state upsert records. Where output goes: `data/verified/`.
-7. Score financial sentiment. Labor: AI. Script called: `scripts/tools/finbert_sentiment.py`. Input: verified unique articles. Output: sentiment-labeled articles. Where output goes: `data/verified/`.
-8. Build retrieval documents. Labor: AI. Script called: `scripts/gigo/load_documents_a.py`, `scripts/gigo/load_documents_b.py`, `scripts/gigo/split_documents_a.py`, and `scripts/gigo/split_documents_b.py`. Input: sentiment-labeled articles. Output: chunked document records. Where output goes: `data/verified/`.
-9. Prepare vector-store upserts. Labor: AI. Script called: `scripts/tools/qdrant_insert_collection.py`, `scripts/tools/embedding_finance.py`, and `scripts/tools/embedding_gemini.py`. Input: chunked document records. Output: local point payloads or live-run invocation specs. Where output goes: `data/verified/` and `logs/`.
-10. Refine analyst question. Labor: AI. Script called: `scripts/tools/query_refinement_agent.py`, `scripts/tools/metadata_filter_agent.py`, `scripts/gigo/parse_refined_queries.py`, and `scripts/gigo/parse_metadata_filter.py`. Input: analyst question. Output: refined queries and filter JSON. Where output goes: `logs/`.
-11. Retrieve and answer. Labor: AI. Script called: `scripts/tools/qdrant_retrieve.py` and `scripts/tools/rag_answer_agent.py`. Input: refined question and local documents. Output: source-grounded answer with matched documents. Where output goes: `logs/`.
-12. Evaluate RAG variants. Labor: AI and Human. Script called: `scripts/gigo/extract_questions_from_file.py`, `scripts/tools/rag_grader_call.py`, and `scripts/tools/qdrant_scroll.py`. Input: evaluation questions and answer records. Output: handoff records for the dependent rag grader. Where output goes: `logs/`.
-13. Review metrics and report. Labor: Human. Human action required: inspect counts, source coverage, lost-record percentage, sentiment caveats, and sourced answer quality. Output: approved findings and decisions. Where output goes: `reports/generated/`.
+1. Step name: Verify provenance and source intent. Labor: Human.
+   Human action: Record approval, rejection, or requested changes with supervisory capacity label [PF].
+   Input: data/mycroft-main/n8n-workflows/originals/Core_Components/news_monitoring_agent/workflows/News Monitoring Agent.json.
+   Output: provenance fields: workflow_path, exists, parsed_ok, title_matches_pipeline, source_inventory_checked.
+   Where output goes: logs/gate-decisions/.
+2. Step name: feedparser_fetch. Labor: AI with Human gate.
+   Script called: `scripts/ingest/feedparser_fetch.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/news-monitoring-agent/.
+3. Step name: split_articles. Labor: AI with Human gate.
+   Script called: `scripts/gigo/split_articles.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/news-monitoring-agent/.
+4. Step name: filter_not_null. Labor: AI with Human gate.
+   Script called: `scripts/gigo/filter_not_null.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/news-monitoring-agent/.
+5. Step name: upsert_source_state. Labor: AI with Human gate.
+   Script called: `scripts/gigo/upsert_source_state.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/news-monitoring-agent/.
+6. Step name: finbert_sentiment. Labor: AI with Human gate.
+   Script called: `scripts/tools/finbert_sentiment.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+7. Step name: load_documents_a. Labor: AI with Human gate.
+   Script called: `scripts/gigo/load_documents_a.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/news-monitoring-agent/.
+8. Step name: qdrant_insert_collection. Labor: AI with Human gate.
+   Script called: `scripts/tools/qdrant_insert_collection.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+9. Step name: query_refinement_agent. Labor: AI with Human gate.
+   Script called: `scripts/tools/query_refinement_agent.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+10. Step name: qdrant_retrieve. Labor: AI with Human gate.
+   Script called: `scripts/tools/qdrant_retrieve.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+11. Step name: extract_questions_from_file. Labor: AI with Human gate.
+   Script called: `scripts/gigo/extract_questions_from_file.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/news-monitoring-agent/.
+12. Step name: Produce human report. Labor: AI with Human review.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/news-monitoring-agent__produce-human-report.py`
+   Input: agent log plus raw and verified outputs.
+   Output: markdown report sections: run summary, source inventory, inputs used, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
 
 ## Output Contract
 
 ### Agent output
-
-Agent logs go to `logs/news-monitoring-agent/<run-id>.json` or an equivalent run log entry. Each log must include `run_id`, `mode`, `source_count`, `raw_article_count`, `unique_article_count`, `processed_article_count`, `scripts_used`, `validation_results`, `answer_records`, `source_urls`, `external_services_requested`, `external_services_called`, and `stop_conditions`.
+File: `logs/news-monitoring-agent-[DATE].json`
+Fields: `workflow`, `run_id`, `mode`, `steps_completed`, `records_seen`, `rejects`, `duplicates`, `flags`, `stop_conditions`, `todo_items`, `source_files`, `gate_decisions`, `live_call_performed`, `generated_at`.
 
 ### Human report
-
-The human report goes to `reports/generated/news-monitoring-agent-<date>.md`. It surfaces the most important source-grounded news findings, anomalies that require review, source coverage, and decisions the analyst or instructor must make before using the output in a financial argument.
+File: `reports/generated/news-monitoring-agent-[DATE].md`
+Reader: domain lead or human boss responsible for accepting the `News Monitoring Agent` run.
+Decision enabled: approve the run for the next phase, request source/schema fixes, or block live execution.
+Sections: Run summary, source inventory, inputs used, steps completed, records seen, rejects, duplicates, flags, typed TODOs, gate decisions, evidence-backed findings, decision recommendation.
 
 ## Stop Conditions
 
@@ -62,6 +133,65 @@ The human report goes to `reports/generated/news-monitoring-agent-<date>.md`. It
 - Stop if live Gemini, OpenRouter, Hugging Face, Postgres, or Qdrant calls are required but credentials and human approval are absent.
 - Stop before publishing, emailing, trading, or alerting based on the output.
 
+## Snickerdoodle
+
+### Run Commands
+Full dialogic run:
+`snickerdoodle run news-monitoring-agent --mode dialogic`
+
+Sample mode (no live network calls, no writes):
+`snickerdoodle run news-monitoring-agent --mode dialogic --sample`
+
+### Step Commands
+
+| Step | CLI Command | Flags |
+|---|---|---|
+| feedparser_fetch | `snickerdoodle run news-monitoring-agent --step feedparser-fetch` | `--sample` |
+| split_articles | `snickerdoodle run news-monitoring-agent --step split-articles` |  |
+| filter_not_null | `snickerdoodle run news-monitoring-agent --step filter-not-null` |  |
+| upsert_source_state | `snickerdoodle run news-monitoring-agent --step upsert-source-state` |  |
+| finbert_sentiment | `snickerdoodle run news-monitoring-agent --step finbert-sentiment` | `--no-write` |
+| load_documents_a | `snickerdoodle run news-monitoring-agent --step load-documents-a` |  |
+| qdrant_insert_collection | `snickerdoodle run news-monitoring-agent --step qdrant-insert-collection` | `--no-write` |
+| query_refinement_agent | `snickerdoodle run news-monitoring-agent --step query-refinement-agent` | `--no-write` |
+| qdrant_retrieve | `snickerdoodle run news-monitoring-agent --step qdrant-retrieve` | `--no-write` |
+| extract_questions_from_file | `snickerdoodle run news-monitoring-agent --step extract-questions-from-file` |  |
+| Produce human report | `snickerdoodle run news-monitoring-agent --step produce-human-report` | `--no-write` |
+
+### Gate Commands
+
+| Gate | CLI Command |
+|---|---|
+| Gate 1 - source/input readiness | `snickerdoodle gate news-monitoring-agent --gate 1 --decision approve --note "..."` |
+| Gate 2 - sample run | `snickerdoodle gate news-monitoring-agent --gate 2 --decision approve --note "..."` |
+| Gate 3 - report contract | `snickerdoodle gate news-monitoring-agent --gate 3 --decision approve --note "..."` |
+
+### Script Locations
+
+| Step | Script Path | Layer |
+|---|---|---|
+| feedparser_fetch | `scripts/ingest/feedparser_fetch.py` | ingest |
+| split_articles | `scripts/gigo/split_articles.py` | gigo |
+| filter_not_null | `scripts/gigo/filter_not_null.py` | gigo |
+| upsert_source_state | `scripts/gigo/upsert_source_state.py` | gigo |
+| finbert_sentiment | `scripts/tools/finbert_sentiment.py` | tool |
+| load_documents_a | `scripts/gigo/load_documents_a.py` | gigo |
+| qdrant_insert_collection | `scripts/tools/qdrant_insert_collection.py` | tool |
+| query_refinement_agent | `scripts/tools/query_refinement_agent.py` | tool |
+| qdrant_retrieve | `scripts/tools/qdrant_retrieve.py` | tool |
+| extract_questions_from_file | `scripts/gigo/extract_questions_from_file.py` | gigo |
+| Produce human report | `[TODO: DEV] Create or map script path: scripts/tools/news-monitoring-agent__produce-human-report.py` | tool |
+
+### Output Locations
+
+| Output | Path | Format |
+|---|---|---|
+| Raw ingest | `data/raw/news-monitoring-agent/` | JSON |
+| Verified data | `data/verified/news-monitoring-agent/` | JSON |
+| Agent log | `logs/news-monitoring-agent-[DATE].json` | JSON |
+| Human report | `reports/generated/news-monitoring-agent-[DATE].md` | Markdown |
+| Gate decisions | `logs/gate-decisions/` | JSON |
+
 ## Provenance
 
-Original n8n JSON: `data/mycroft-main/n8n-workflows/originals/Core_Components/news_monitoring_agent/workflows/News Monitoring Agent.json`
+Original workflow JSON: `data/mycroft-main/n8n-workflows/originals/Core_Components/news_monitoring_agent/workflows/News Monitoring Agent.json`

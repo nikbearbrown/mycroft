@@ -2,7 +2,35 @@
 
 ## Purpose
 
-This recipe converts the original n8n workflow into a repeatable Mycroft workflow that can be run in dialogic mode with local data first, credential-gated live calls second, and human review before any external side effect or analytical conclusion is trusted.
+ScenarioStressTestingAgent defines a Mycroft pipeline for collecting, transforming, or reviewing finance and intelligence signals related to scenariostresstestingagent. It answers whether the available local evidence and approved live sources are sufficient for a human decision without relying on unapproved external writes or unsupported analytical claims.
+
+## Source Inventory
+
+| Source Node | Node Type | Source URL or Path | Human Check |
+|---|---|---|---|
+| Ingest node outputs | JSON | Converted ingest steps (1 nodes) | Confirm source is allowed, current, and rate-safe before live fetch. |
+| Report node outputs | JSON | Converted report steps (1 nodes) | Confirm source is allowed, current, and rate-safe before live fetch. |
+
+## Node Classification
+
+| Node Name | Node Type | Classification |
+|---|---|---|
+| Webhook Trigger | `webhook` | tool |
+| Parse Input | `set` | gigo |
+| Edit Fields | `set` | conductor |
+| Validate Portfolio | `code` | conductor |
+| Custom Scenario? | `if` | conductor |
+| Load_Template_Scenario | `code` | conductor |
+| When chat message received | `chatTrigger` | conductor |
+| Basic LLM Chain | `chainLlm` | tool |
+| Groq Chat Model | `lmChatGroq` | tool |
+| Parse_LLM_Response | `code` | tool |
+| Stress_Test_Engine | `code` | tool |
+| Respond to Webhook | `respondToWebhook` | report |
+| Fetch_Data | `httpRequest` | ingest |
+| Merge | `merge` | conductor |
+| Merge1 | `merge` | conductor |
+| Save_Portfolio_Before_LLM | `code` | tool |
 
 ## Inputs
 
@@ -14,36 +42,90 @@ This recipe converts the original n8n workflow into a repeatable Mycroft workflo
 | Report node outputs | JSON | Converted report steps (1 nodes) | No |
 | Conductor node outputs | JSON | Converted conductor steps (7 nodes) | No |
 | Original workflow JSON | JSON | `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Scenario_Stress_Testing_Agent/ScenarioStressTestingAgent.json` | Yes |
-| Credentials for live services | Environment variables | Named by script handoff payloads | No for local mode |
+| Credentials for live services | Environment variables | Named by script handoff payloads | No |
 
 ## Phase Gates
 
-1. Source gate: all required local exports or live-call handoff specs must be present. Verification: run the generated ingest scripts for this workflow and confirm each returns JSON with a status field. Human capacity required: [PA], [TO].
-2. GIGO gate: normalized records must preserve missing fields rather than inventing values. Verification: run generated GIGO scripts and inspect `record_count` and `records`. Human capacity required: [PA].
-3. Tool gate: model/API/tool nodes must return local deterministic outputs or approval-required handoff specs. Verification: run generated tool scripts and confirm `live_call_performed` is false unless explicitly approved. Human capacity required: [TO], [IJ].
-4. Report gate: final report must separate source facts, transformations, and interpretation. Verification: fill `reports/templates/scenariostresstestingagent.md` and link the run log. Human capacity required: [EI].
+1. Source identity gate: Original workflow JSON exists and is the intended source. Test: `test -f "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Scenario_Stress_Testing_Agent/ScenarioStressTestingAgent.json"`.
+   Human capacity: [PF].
+2. Input readiness gate: Every required input in this recipe exists or is marked with a typed TODO. Test: `rg -n "TODO:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/scenariostresstestingagent.md`.
+   Human capacity: [PA].
+3. Sample run gate: Ingest and tool steps run without live side effects before live mode. Test: `snickerdoodle run scenariostresstestingagent --mode dialogic --sample`.
+   Human capacity: [TO].
+4. Data-shape gate: Raw and verified outputs parse as JSON where applicable. Test: `find data/raw/scenariostresstestingagent data/verified/scenariostresstestingagent -name "*.json" -print -exec python3 -m json.tool {} \;`.
+   Human capacity: [IJ].
+5. Report contract gate: Human report defines reader, decision enabled, and sections. Test: `rg -n "Reader:|Decision enabled:|Sections:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/scenariostresstestingagent.md`.
+   Human capacity: [EI].
 
 ## Steps
 
-1. Step name: `scenariostresstestingagent__fetch-data`. Labor: AI. Script called: `scripts/ingest/scenariostresstestingagent__fetch-data.py`. Input: prior verified payloads or local export. Output: ingest result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-2. Step name: `scenariostresstestingagent__parse-input`. Labor: AI. Script called: `scripts/gigo/scenariostresstestingagent__parse-input.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-3. Step name: `scenariostresstestingagent__webhook-trigger`. Labor: AI. Script called: `scripts/tools/scenariostresstestingagent__webhook-trigger.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-4. Step name: `scenariostresstestingagent__basic-llm-chain`. Labor: AI. Script called: `scripts/tools/scenariostresstestingagent__basic-llm-chain.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-5. Step name: `scenariostresstestingagent__groq-chat-model`. Labor: AI. Script called: `scripts/tools/scenariostresstestingagent__groq-chat-model.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-6. Step name: `scenariostresstestingagent__parse-llm-response`. Labor: AI. Script called: `scripts/tools/scenariostresstestingagent__parse-llm-response.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-7. Step name: `scenariostresstestingagent__stress-test-engine`. Labor: AI. Script called: `scripts/tools/scenariostresstestingagent__stress-test-engine.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-8. Step name: `scenariostresstestingagent__save-portfolio-before-llm`. Labor: AI. Script called: `scripts/tools/scenariostresstestingagent__save-portfolio-before-llm.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-9. Step name: Human review. Labor: Human. Human action required: review source coverage, missing credentials, model/database/email handoffs, and interpretation limits. Input: generated logs and reports. Output: accept, reject, or rerun decision. Where output goes: `reports/generated/`.
+1. Step name: Verify provenance and source intent. Labor: Human.
+   Human action: Record approval, rejection, or requested changes with supervisory capacity label [PF].
+   Input: data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Scenario_Stress_Testing_Agent/ScenarioStressTestingAgent.json.
+   Output: provenance fields: workflow_path, exists, parsed_ok, title_matches_pipeline, source_inventory_checked.
+   Where output goes: logs/gate-decisions/.
+2. Step name: Webhook Trigger. Labor: AI with Human gate.
+   Script called: `scripts/tools/scenariostresstestingagent__webhook-trigger.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+3. Step name: Parse Input. Labor: AI with Human gate.
+   Script called: `scripts/gigo/scenariostresstestingagent__parse-input.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/scenariostresstestingagent/.
+4. Step name: Basic LLM Chain. Labor: AI with Human gate.
+   Script called: `scripts/tools/scenariostresstestingagent__basic-llm-chain.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+5. Step name: Groq Chat Model. Labor: AI with Human gate.
+   Script called: `scripts/tools/scenariostresstestingagent__groq-chat-model.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+6. Step name: Parse_LLM_Response. Labor: AI with Human gate.
+   Script called: `scripts/tools/scenariostresstestingagent__parse-llm-response.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+7. Step name: Stress_Test_Engine. Labor: AI with Human gate.
+   Script called: `scripts/tools/scenariostresstestingagent__stress-test-engine.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+8. Step name: Respond to Webhook. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/scenariostresstestingagent__respond-to-webhook.py`
+   Input: approved upstream output or sample fixture.
+   Output: markdown report sections: run summary, source status, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
+9. Step name: Fetch_Data. Labor: AI with Human gate.
+   Script called: `scripts/ingest/scenariostresstestingagent__fetch-data.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/scenariostresstestingagent/.
+10. Step name: Save_Portfolio_Before_LLM. Labor: AI with Human gate.
+   Script called: `scripts/tools/scenariostresstestingagent__save-portfolio-before-llm.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+11. Step name: Produce human report. Labor: AI with Human review.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/scenariostresstestingagent__produce-human-report.py`
+   Input: agent log plus raw and verified outputs.
+   Output: markdown report sections: run summary, source inventory, inputs used, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
 
 ## Output Contract
 
 ### Agent output
-
-Agent output goes to `logs/scenariostresstestingagent/<run-id>.json`. It must include source workflow path, scripts used, node classifications, credential status, live-call status, validation results, output paths, stop conditions, and human decisions.
+File: `logs/scenariostresstestingagent-[DATE].json`
+Fields: `workflow`, `run_id`, `mode`, `steps_completed`, `records_seen`, `rejects`, `duplicates`, `flags`, `stop_conditions`, `todo_items`, `source_files`, `gate_decisions`, `live_call_performed`, `generated_at`.
 
 ### Human report
-
-The human report goes to `reports/generated/scenariostresstestingagent-<date>.md`. It surfaces the workflow result, source coverage, missing data, anomalies, and decisions required before downstream use.
+File: `reports/generated/scenariostresstestingagent-[DATE].md`
+Reader: domain lead or human boss responsible for accepting the `ScenarioStressTestingAgent` run.
+Decision enabled: approve the run for the next phase, request source/schema fixes, or block live execution.
+Sections: Run summary, source inventory, inputs used, steps completed, records seen, rejects, duplicates, flags, typed TODOs, gate decisions, evidence-backed findings, decision recommendation.
 
 ## Stop Conditions
 
@@ -52,38 +134,63 @@ The human report goes to `reports/generated/scenariostresstestingagent-<date>.md
 - Stop if required local source data is missing and no approved live-call path is available.
 - Stop if generated outputs omit provenance or make unsupported analytical claims.
 
+## Snickerdoodle
+
+### Run Commands
+Full dialogic run:
+`snickerdoodle run scenariostresstestingagent --mode dialogic`
+
+Sample mode (no live network calls, no writes):
+`snickerdoodle run scenariostresstestingagent --mode dialogic --sample`
+
+### Step Commands
+
+| Step | CLI Command | Flags |
+|---|---|---|
+| Webhook Trigger | `snickerdoodle run scenariostresstestingagent --step webhook-trigger` | `--no-write` |
+| Parse Input | `snickerdoodle run scenariostresstestingagent --step parse-input` |  |
+| Basic LLM Chain | `snickerdoodle run scenariostresstestingagent --step basic-llm-chain` | `--no-write` |
+| Groq Chat Model | `snickerdoodle run scenariostresstestingagent --step groq-chat-model` | `--no-write` |
+| Parse_LLM_Response | `snickerdoodle run scenariostresstestingagent --step parse-llm-response` | `--no-write` |
+| Stress_Test_Engine | `snickerdoodle run scenariostresstestingagent --step stress-test-engine` | `--no-write` |
+| Respond to Webhook | `snickerdoodle run scenariostresstestingagent --step respond-to-webhook` | `--no-write` |
+| Fetch_Data | `snickerdoodle run scenariostresstestingagent --step fetch-data` | `--sample` |
+| Save_Portfolio_Before_LLM | `snickerdoodle run scenariostresstestingagent --step save-portfolio-before-llm` | `--no-write` |
+| Produce human report | `snickerdoodle run scenariostresstestingagent --step produce-human-report` | `--no-write` |
+
+### Gate Commands
+
+| Gate | CLI Command |
+|---|---|
+| Gate 1 - source/input readiness | `snickerdoodle gate scenariostresstestingagent --gate 1 --decision approve --note "..."` |
+| Gate 2 - sample run | `snickerdoodle gate scenariostresstestingagent --gate 2 --decision approve --note "..."` |
+| Gate 3 - report contract | `snickerdoodle gate scenariostresstestingagent --gate 3 --decision approve --note "..."` |
+
+### Script Locations
+
+| Step | Script Path | Layer |
+|---|---|---|
+| Webhook Trigger | `scripts/tools/scenariostresstestingagent__webhook-trigger.py` | tool |
+| Parse Input | `scripts/gigo/scenariostresstestingagent__parse-input.py` | gigo |
+| Basic LLM Chain | `scripts/tools/scenariostresstestingagent__basic-llm-chain.py` | tool |
+| Groq Chat Model | `scripts/tools/scenariostresstestingagent__groq-chat-model.py` | tool |
+| Parse_LLM_Response | `scripts/tools/scenariostresstestingagent__parse-llm-response.py` | tool |
+| Stress_Test_Engine | `scripts/tools/scenariostresstestingagent__stress-test-engine.py` | tool |
+| Respond to Webhook | `[TODO: DEV] Create or map script path: scripts/tools/scenariostresstestingagent__respond-to-webhook.py` | tool |
+| Fetch_Data | `scripts/ingest/scenariostresstestingagent__fetch-data.py` | ingest |
+| Save_Portfolio_Before_LLM | `scripts/tools/scenariostresstestingagent__save-portfolio-before-llm.py` | tool |
+| Produce human report | `[TODO: DEV] Create or map script path: scripts/tools/scenariostresstestingagent__produce-human-report.py` | tool |
+
+### Output Locations
+
+| Output | Path | Format |
+|---|---|---|
+| Raw ingest | `data/raw/scenariostresstestingagent/` | JSON |
+| Verified data | `data/verified/scenariostresstestingagent/` | JSON |
+| Agent log | `logs/scenariostresstestingagent-[DATE].json` | JSON |
+| Human report | `reports/generated/scenariostresstestingagent-[DATE].md` | Markdown |
+| Gate decisions | `logs/gate-decisions/` | JSON |
+
 ## Provenance
 
-Original n8n JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Scenario_Stress_Testing_Agent/ScenarioStressTestingAgent.json`
-
-## Node Classification
-
-| Order | Node Name | Node Type | Classification |
-|---|---|---|---|
-| 1 | Webhook Trigger | `webhook` | tool |
-| 2 | Parse Input | `set` | gigo |
-| 3 | Edit Fields | `set` | conductor |
-| 4 | Validate Portfolio | `code` | conductor |
-| 5 | Custom Scenario? | `if` | conductor |
-| 6 | Load_Template_Scenario | `code` | conductor |
-| 7 | When chat message received | `chatTrigger` | conductor |
-| 8 | Basic LLM Chain | `chainLlm` | tool |
-| 9 | Groq Chat Model | `lmChatGroq` | tool |
-| 10 | Parse_LLM_Response | `code` | tool |
-| 11 | Stress_Test_Engine | `code` | tool |
-| 12 | Respond to Webhook | `respondToWebhook` | report |
-| 13 | Fetch_Data | `httpRequest` | ingest |
-| 14 | Merge | `merge` | conductor |
-| 15 | Merge1 | `merge` | conductor |
-| 16 | Save_Portfolio_Before_LLM | `code` | tool |
-
-## Script Index
-
-- `scripts/ingest/scenariostresstestingagent__fetch-data.py`
-- `scripts/gigo/scenariostresstestingagent__parse-input.py`
-- `scripts/tools/scenariostresstestingagent__webhook-trigger.py`
-- `scripts/tools/scenariostresstestingagent__basic-llm-chain.py`
-- `scripts/tools/scenariostresstestingagent__groq-chat-model.py`
-- `scripts/tools/scenariostresstestingagent__parse-llm-response.py`
-- `scripts/tools/scenariostresstestingagent__stress-test-engine.py`
-- `scripts/tools/scenariostresstestingagent__save-portfolio-before-llm.py`
+Original workflow JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Scenario_Stress_Testing_Agent/ScenarioStressTestingAgent.json`

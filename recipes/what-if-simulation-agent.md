@@ -2,7 +2,31 @@
 
 ## Purpose
 
-This recipe converts the original n8n workflow into a repeatable Mycroft workflow that can be run in dialogic mode with local data first, credential-gated live calls second, and human review before any external side effect or analytical conclusion is trusted.
+What-If Simulation Agent defines a Mycroft pipeline for collecting, transforming, or reviewing finance and intelligence signals related to what-if simulation agent. It answers whether the available local evidence and approved live sources are sufficient for a human decision without relying on unapproved external writes or unsupported analytical claims.
+
+## Source Inventory
+
+| Source Node | Node Type | Source URL or Path | Human Check |
+|---|---|---|---|
+| Report node outputs | JSON | Converted report steps (1 nodes) | Confirm source is allowed, current, and rate-safe before live fetch. |
+
+## Node Classification
+
+| Node Name | Node Type | Classification |
+|---|---|---|
+| 🎯 Webhook — Receive Simulation Request | `webhook` | tool |
+| 🔍 Parse & Validate Input | `code` | gigo |
+| 📈 Sim 1 — Growth vs Sentiment Tradeoff | `code` | conductor |
+| ⚖️ Sim 2 — Risk Appetite Simulator | `code` | tool |
+| 🎯 Sim 3 — Threshold Break Simulator | `code` | conductor |
+| 🧠 Aggregate & Score All Simulations | `code` | tool |
+| 🤖 Groq — Generate Investment Insights | `httpRequest` | tool |
+| 🔄 Parse Groq Response | `code` | gigo |
+| 🗄️ Prepare DB Record | `code` | conductor |
+| 💾 Save to PostgreSQL | `postgres` | gigo |
+| 📊 Build Final Response | `code` | conductor |
+| ✅ Respond to Webhook | `respondToWebhook` | report |
+| 📝 Build AI Prompt | `code` | tool |
 
 ## Inputs
 
@@ -13,36 +37,90 @@ This recipe converts the original n8n workflow into a repeatable Mycroft workflo
 | Report node outputs | JSON | Converted report steps (1 nodes) | No |
 | Conductor node outputs | JSON | Converted conductor steps (4 nodes) | No |
 | Original workflow JSON | JSON | `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/What-If_Simulation_Agent/What-If Simulation Agent.json` | Yes |
-| Credentials for live services | Environment variables | Named by script handoff payloads | No for local mode |
+| Credentials for live services | Environment variables | Named by script handoff payloads | No |
 
 ## Phase Gates
 
-1. Source gate: all required local exports or live-call handoff specs must be present. Verification: run the generated ingest scripts for this workflow and confirm each returns JSON with a status field. Human capacity required: [PA], [TO].
-2. GIGO gate: normalized records must preserve missing fields rather than inventing values. Verification: run generated GIGO scripts and inspect `record_count` and `records`. Human capacity required: [PA].
-3. Tool gate: model/API/tool nodes must return local deterministic outputs or approval-required handoff specs. Verification: run generated tool scripts and confirm `live_call_performed` is false unless explicitly approved. Human capacity required: [TO], [IJ].
-4. Report gate: final report must separate source facts, transformations, and interpretation. Verification: fill `reports/templates/what-if-simulation-agent.md` and link the run log. Human capacity required: [EI].
+1. Source identity gate: Original workflow JSON exists and is the intended source. Test: `test -f "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/What-If_Simulation_Agent/What-If Simulation Agent.json"`.
+   Human capacity: [PF].
+2. Input readiness gate: Every required input in this recipe exists or is marked with a typed TODO. Test: `rg -n "TODO:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/what-if-simulation-agent.md`.
+   Human capacity: [PA].
+3. Sample run gate: Ingest and tool steps run without live side effects before live mode. Test: `snickerdoodle run what-if-simulation-agent --mode dialogic --sample`.
+   Human capacity: [TO].
+4. Data-shape gate: Raw and verified outputs parse as JSON where applicable. Test: `find data/raw/what-if-simulation-agent data/verified/what-if-simulation-agent -name "*.json" -print -exec python3 -m json.tool {} \;`.
+   Human capacity: [IJ].
+5. Report contract gate: Human report defines reader, decision enabled, and sections. Test: `rg -n "Reader:|Decision enabled:|Sections:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/what-if-simulation-agent.md`.
+   Human capacity: [EI].
 
 ## Steps
 
-1. Step name: `what-if-simulation-agent__parse-validate-input`. Labor: AI. Script called: `scripts/gigo/what-if-simulation-agent__parse-validate-input.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-2. Step name: `what-if-simulation-agent__parse-groq-response`. Labor: AI. Script called: `scripts/gigo/what-if-simulation-agent__parse-groq-response.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-3. Step name: `what-if-simulation-agent__save-to-postgresql`. Labor: AI. Script called: `scripts/gigo/what-if-simulation-agent__save-to-postgresql.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-4. Step name: `what-if-simulation-agent__webhook-receive-simulation-request`. Labor: AI. Script called: `scripts/tools/what-if-simulation-agent__webhook-receive-simulation-request.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-5. Step name: `what-if-simulation-agent__sim-2-risk-appetite-simulator`. Labor: AI. Script called: `scripts/tools/what-if-simulation-agent__sim-2-risk-appetite-simulator.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-6. Step name: `what-if-simulation-agent__aggregate-score-all-simulations`. Labor: AI. Script called: `scripts/tools/what-if-simulation-agent__aggregate-score-all-simulations.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-7. Step name: `what-if-simulation-agent__groq-generate-investment-insights`. Labor: AI. Script called: `scripts/tools/what-if-simulation-agent__groq-generate-investment-insights.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-8. Step name: `what-if-simulation-agent__build-ai-prompt`. Labor: AI. Script called: `scripts/tools/what-if-simulation-agent__build-ai-prompt.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-9. Step name: Human review. Labor: Human. Human action required: review source coverage, missing credentials, model/database/email handoffs, and interpretation limits. Input: generated logs and reports. Output: accept, reject, or rerun decision. Where output goes: `reports/generated/`.
+1. Step name: Verify provenance and source intent. Labor: Human.
+   Human action: Record approval, rejection, or requested changes with supervisory capacity label [PF].
+   Input: data/mycroft-main/n8n-workflows/originals/n8n_Workflows/What-If_Simulation_Agent/What-If Simulation Agent.json.
+   Output: provenance fields: workflow_path, exists, parsed_ok, title_matches_pipeline, source_inventory_checked.
+   Where output goes: logs/gate-decisions/.
+2. Step name: 🎯 Webhook — Receive Simulation Request. Labor: AI with Human gate.
+   Script called: `scripts/tools/what-if-simulation-agent__webhook-receive-simulation-request.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+3. Step name: 🔍 Parse & Validate Input. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/what-if-simulation-agent__parse-and-validate-input.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/what-if-simulation-agent/.
+4. Step name: ⚖️ Sim 2 — Risk Appetite Simulator. Labor: AI with Human gate.
+   Script called: `scripts/tools/what-if-simulation-agent__sim-2-risk-appetite-simulator.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+5. Step name: 🧠 Aggregate & Score All Simulations. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/what-if-simulation-agent__aggregate-and-score-all-simulations.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+6. Step name: 🤖 Groq — Generate Investment Insights. Labor: AI with Human gate.
+   Script called: `scripts/tools/what-if-simulation-agent__groq-generate-investment-insights.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+7. Step name: 🔄 Parse Groq Response. Labor: AI with Human gate.
+   Script called: `scripts/gigo/what-if-simulation-agent__parse-groq-response.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/what-if-simulation-agent/.
+8. Step name: 💾 Save to PostgreSQL. Labor: AI with Human gate.
+   Script called: `scripts/gigo/what-if-simulation-agent__save-to-postgresql.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/what-if-simulation-agent/.
+9. Step name: ✅ Respond to Webhook. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/what-if-simulation-agent__respond-to-webhook.py`
+   Input: approved upstream output or sample fixture.
+   Output: markdown report sections: run summary, source status, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
+10. Step name: 📝 Build AI Prompt. Labor: AI with Human gate.
+   Script called: `scripts/tools/what-if-simulation-agent__build-ai-prompt.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+11. Step name: Produce human report. Labor: AI with Human review.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/what-if-simulation-agent__produce-human-report.py`
+   Input: agent log plus raw and verified outputs.
+   Output: markdown report sections: run summary, source inventory, inputs used, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
 
 ## Output Contract
 
 ### Agent output
-
-Agent output goes to `logs/what-if-simulation-agent/<run-id>.json`. It must include source workflow path, scripts used, node classifications, credential status, live-call status, validation results, output paths, stop conditions, and human decisions.
+File: `logs/what-if-simulation-agent-[DATE].json`
+Fields: `workflow`, `run_id`, `mode`, `steps_completed`, `records_seen`, `rejects`, `duplicates`, `flags`, `stop_conditions`, `todo_items`, `source_files`, `gate_decisions`, `live_call_performed`, `generated_at`.
 
 ### Human report
-
-The human report goes to `reports/generated/what-if-simulation-agent-<date>.md`. It surfaces the workflow result, source coverage, missing data, anomalies, and decisions required before downstream use.
+File: `reports/generated/what-if-simulation-agent-[DATE].md`
+Reader: domain lead or human boss responsible for accepting the `What-If Simulation Agent` run.
+Decision enabled: approve the run for the next phase, request source/schema fixes, or block live execution.
+Sections: Run summary, source inventory, inputs used, steps completed, records seen, rejects, duplicates, flags, typed TODOs, gate decisions, evidence-backed findings, decision recommendation.
 
 ## Stop Conditions
 
@@ -51,35 +129,63 @@ The human report goes to `reports/generated/what-if-simulation-agent-<date>.md`.
 - Stop if required local source data is missing and no approved live-call path is available.
 - Stop if generated outputs omit provenance or make unsupported analytical claims.
 
+## Snickerdoodle
+
+### Run Commands
+Full dialogic run:
+`snickerdoodle run what-if-simulation-agent --mode dialogic`
+
+Sample mode (no live network calls, no writes):
+`snickerdoodle run what-if-simulation-agent --mode dialogic --sample`
+
+### Step Commands
+
+| Step | CLI Command | Flags |
+|---|---|---|
+| 🎯 Webhook — Receive Simulation Request | `snickerdoodle run what-if-simulation-agent --step webhook-receive-simulation-request` | `--no-write` |
+| 🔍 Parse & Validate Input | `snickerdoodle run what-if-simulation-agent --step parse-and-validate-input` |  |
+| ⚖️ Sim 2 — Risk Appetite Simulator | `snickerdoodle run what-if-simulation-agent --step sim-2-risk-appetite-simulator` | `--no-write` |
+| 🧠 Aggregate & Score All Simulations | `snickerdoodle run what-if-simulation-agent --step aggregate-and-score-all-simulations` | `--no-write` |
+| 🤖 Groq — Generate Investment Insights | `snickerdoodle run what-if-simulation-agent --step groq-generate-investment-insights` | `--no-write` |
+| 🔄 Parse Groq Response | `snickerdoodle run what-if-simulation-agent --step parse-groq-response` |  |
+| 💾 Save to PostgreSQL | `snickerdoodle run what-if-simulation-agent --step save-to-postgresql` |  |
+| ✅ Respond to Webhook | `snickerdoodle run what-if-simulation-agent --step respond-to-webhook` | `--no-write` |
+| 📝 Build AI Prompt | `snickerdoodle run what-if-simulation-agent --step build-ai-prompt` | `--no-write` |
+| Produce human report | `snickerdoodle run what-if-simulation-agent --step produce-human-report` | `--no-write` |
+
+### Gate Commands
+
+| Gate | CLI Command |
+|---|---|
+| Gate 1 - source/input readiness | `snickerdoodle gate what-if-simulation-agent --gate 1 --decision approve --note "..."` |
+| Gate 2 - sample run | `snickerdoodle gate what-if-simulation-agent --gate 2 --decision approve --note "..."` |
+| Gate 3 - report contract | `snickerdoodle gate what-if-simulation-agent --gate 3 --decision approve --note "..."` |
+
+### Script Locations
+
+| Step | Script Path | Layer |
+|---|---|---|
+| 🎯 Webhook — Receive Simulation Request | `scripts/tools/what-if-simulation-agent__webhook-receive-simulation-request.py` | tool |
+| 🔍 Parse & Validate Input | `[TODO: DEV] Create or map script path: scripts/gigo/what-if-simulation-agent__parse-and-validate-input.py` | gigo |
+| ⚖️ Sim 2 — Risk Appetite Simulator | `scripts/tools/what-if-simulation-agent__sim-2-risk-appetite-simulator.py` | tool |
+| 🧠 Aggregate & Score All Simulations | `[TODO: DEV] Create or map script path: scripts/tools/what-if-simulation-agent__aggregate-and-score-all-simulations.py` | tool |
+| 🤖 Groq — Generate Investment Insights | `scripts/tools/what-if-simulation-agent__groq-generate-investment-insights.py` | tool |
+| 🔄 Parse Groq Response | `scripts/gigo/what-if-simulation-agent__parse-groq-response.py` | gigo |
+| 💾 Save to PostgreSQL | `scripts/gigo/what-if-simulation-agent__save-to-postgresql.py` | gigo |
+| ✅ Respond to Webhook | `[TODO: DEV] Create or map script path: scripts/tools/what-if-simulation-agent__respond-to-webhook.py` | tool |
+| 📝 Build AI Prompt | `scripts/tools/what-if-simulation-agent__build-ai-prompt.py` | tool |
+| Produce human report | `[TODO: DEV] Create or map script path: scripts/tools/what-if-simulation-agent__produce-human-report.py` | tool |
+
+### Output Locations
+
+| Output | Path | Format |
+|---|---|---|
+| Raw ingest | `data/raw/what-if-simulation-agent/` | JSON |
+| Verified data | `data/verified/what-if-simulation-agent/` | JSON |
+| Agent log | `logs/what-if-simulation-agent-[DATE].json` | JSON |
+| Human report | `reports/generated/what-if-simulation-agent-[DATE].md` | Markdown |
+| Gate decisions | `logs/gate-decisions/` | JSON |
+
 ## Provenance
 
-Original n8n JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/What-If_Simulation_Agent/What-If Simulation Agent.json`
-
-## Node Classification
-
-| Order | Node Name | Node Type | Classification |
-|---|---|---|---|
-| 1 | 🎯 Webhook — Receive Simulation Request | `webhook` | tool |
-| 2 | 🔍 Parse & Validate Input | `code` | gigo |
-| 3 | 📈 Sim 1 — Growth vs Sentiment Tradeoff | `code` | conductor |
-| 4 | ⚖️ Sim 2 — Risk Appetite Simulator | `code` | tool |
-| 5 | 🎯 Sim 3 — Threshold Break Simulator | `code` | conductor |
-| 6 | 🧠 Aggregate & Score All Simulations | `code` | tool |
-| 7 | 🤖 Groq — Generate Investment Insights | `httpRequest` | tool |
-| 8 | 🔄 Parse Groq Response | `code` | gigo |
-| 9 | 🗄️ Prepare DB Record | `code` | conductor |
-| 10 | 💾 Save to PostgreSQL | `postgres` | gigo |
-| 11 | 📊 Build Final Response | `code` | conductor |
-| 12 | ✅ Respond to Webhook | `respondToWebhook` | report |
-| 13 | 📝 Build AI Prompt | `code` | tool |
-
-## Script Index
-
-- `scripts/gigo/what-if-simulation-agent__parse-validate-input.py`
-- `scripts/gigo/what-if-simulation-agent__parse-groq-response.py`
-- `scripts/gigo/what-if-simulation-agent__save-to-postgresql.py`
-- `scripts/tools/what-if-simulation-agent__webhook-receive-simulation-request.py`
-- `scripts/tools/what-if-simulation-agent__sim-2-risk-appetite-simulator.py`
-- `scripts/tools/what-if-simulation-agent__aggregate-score-all-simulations.py`
-- `scripts/tools/what-if-simulation-agent__groq-generate-investment-insights.py`
-- `scripts/tools/what-if-simulation-agent__build-ai-prompt.py`
+Original workflow JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/What-If_Simulation_Agent/What-If Simulation Agent.json`

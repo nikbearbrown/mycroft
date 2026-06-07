@@ -2,7 +2,47 @@
 
 ## Purpose
 
-This recipe converts the original n8n workflow into a repeatable Mycroft workflow that can be run in dialogic mode with local data first, credential-gated live calls second, and human review before any external side effect or analytical conclusion is trusted.
+Mycroft - SEC_Filings_Analysis_Enhanced defines a Mycroft pipeline for collecting, transforming, or reviewing finance and intelligence signals related to mycroft - sec_filings_analysis_enhanced. It answers whether the available local evidence and approved live sources are sufficient for a human decision without relying on unapproved external writes or unsupported analytical claims.
+
+## Source Inventory
+
+| Source Node | Node Type | Source URL or Path | Human Check |
+|---|---|---|---|
+| Report node outputs | JSON | Converted report steps (1 nodes) | Confirm source is allowed, current, and rate-safe before live fetch. |
+
+## Node Classification
+
+| Node Name | Node Type | Classification |
+|---|---|---|
+| Set Variables | `set` | conductor |
+| Initialize Logging | `executeCommand` | tool |
+| Setup Github Repo | `executeCommand` | tool |
+| Log: Repo Cloned | `executeCommand` | tool |
+| Set Path Variables | `code` | conductor |
+| Setup Python Enviornment and Output Directories | `executeCommand` | tool |
+| Log: Python Setup | `executeCommand` | tool |
+| Edgar_Fetcher | `executeCommand` | tool |
+| Validate Fetcher | `code` | conductor |
+| Log: Fetcher Complete | `executeCommand` | tool |
+| If | `if` | conductor |
+| Financial Analyzer | `executeCommand` | tool |
+| Narrative Parser | `executeCommand` | tool |
+| Validate Financial Metrics | `code` | tool |
+| Validate Narrative Content | `code` | conductor |
+| Log: Financial Complete | `executeCommand` | tool |
+| Log: Narrative Complete | `executeCommand` | tool |
+| Merge Results | `code` | conductor |
+| Log: Merge Complete | `executeCommand` | tool |
+| Save to Database | `executeCommand` | tool |
+| Log: Saved | `executeCommand` | tool |
+| Cleanup Temp Directories | `executeCommand` | tool |
+| Log Completion | `executeCommand` | tool |
+| Error Handling | `code` | conductor |
+| Log Error | `executeCommand` | tool |
+| Cleanup On Error | `executeCommand` | tool |
+| Webhook | `webhook` | tool |
+| Respond to Webhook | `respondToWebhook` | report |
+| Code in JavaScript | `code` | conductor |
 
 ## Inputs
 
@@ -12,48 +52,150 @@ This recipe converts the original n8n workflow into a repeatable Mycroft workflo
 | Report node outputs | JSON | Converted report steps (1 nodes) | No |
 | Conductor node outputs | JSON | Converted conductor steps (8 nodes) | No |
 | Original workflow JSON | JSON | `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Financial_Intelligence_Hub/Mycroft - SEC_Filings_Analysis_Enhanced.json` | Yes |
-| Credentials for live services | Environment variables | Named by script handoff payloads | No for local mode |
+| Credentials for live services | Environment variables | Named by script handoff payloads | No |
 
 ## Phase Gates
 
-1. Source gate: all required local exports or live-call handoff specs must be present. Verification: run the generated ingest scripts for this workflow and confirm each returns JSON with a status field. Human capacity required: [PA], [TO].
-2. GIGO gate: normalized records must preserve missing fields rather than inventing values. Verification: run generated GIGO scripts and inspect `record_count` and `records`. Human capacity required: [PA].
-3. Tool gate: model/API/tool nodes must return local deterministic outputs or approval-required handoff specs. Verification: run generated tool scripts and confirm `live_call_performed` is false unless explicitly approved. Human capacity required: [TO], [IJ].
-4. Report gate: final report must separate source facts, transformations, and interpretation. Verification: fill `reports/templates/mycroft-sec-filings-analysis-enhanced.md` and link the run log. Human capacity required: [EI].
+1. Source identity gate: Original workflow JSON exists and is the intended source. Test: `test -f "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Financial_Intelligence_Hub/Mycroft - SEC_Filings_Analysis_Enhanced.json"`.
+   Human capacity: [PF].
+2. Input readiness gate: Every required input in this recipe exists or is marked with a typed TODO. Test: `rg -n "TODO:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/mycroft-sec-filings-analysis-enhanced.md`.
+   Human capacity: [PA].
+3. Sample run gate: Ingest and tool steps run without live side effects before live mode. Test: `snickerdoodle run mycroft-sec-filings-analysis-enhanced --mode dialogic --sample`.
+   Human capacity: [TO].
+4. Data-shape gate: Raw and verified outputs parse as JSON where applicable. Test: `find data/raw/mycroft-sec-filings-analysis-enhanced data/verified/mycroft-sec-filings-analysis-enhanced -name "*.json" -print -exec python3 -m json.tool {} \;`.
+   Human capacity: [IJ].
+5. Report contract gate: Human report defines reader, decision enabled, and sections. Test: `rg -n "Reader:|Decision enabled:|Sections:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/mycroft-sec-filings-analysis-enhanced.md`.
+   Human capacity: [EI].
 
 ## Steps
 
-1. Step name: `mycroft-sec-filings-analysis-enhanced__initialize-logging`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__initialize-logging.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-2. Step name: `mycroft-sec-filings-analysis-enhanced__setup-github-repo`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__setup-github-repo.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-3. Step name: `mycroft-sec-filings-analysis-enhanced__log-repo-cloned`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-repo-cloned.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-4. Step name: `mycroft-sec-filings-analysis-enhanced__setup-python-enviornment-and-output-directories`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__setup-python-enviornment-and-output-directories.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-5. Step name: `mycroft-sec-filings-analysis-enhanced__log-python-setup`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-python-setup.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-6. Step name: `mycroft-sec-filings-analysis-enhanced__edgar-fetcher`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__edgar-fetcher.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-7. Step name: `mycroft-sec-filings-analysis-enhanced__log-fetcher-complete`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-fetcher-complete.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-8. Step name: `mycroft-sec-filings-analysis-enhanced__financial-analyzer`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__financial-analyzer.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-9. Step name: `mycroft-sec-filings-analysis-enhanced__narrative-parser`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__narrative-parser.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-10. Step name: `mycroft-sec-filings-analysis-enhanced__validate-financial-metrics`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__validate-financial-metrics.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-11. Step name: `mycroft-sec-filings-analysis-enhanced__log-financial-complete`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-financial-complete.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-12. Step name: `mycroft-sec-filings-analysis-enhanced__log-narrative-complete`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-narrative-complete.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-13. Step name: `mycroft-sec-filings-analysis-enhanced__log-merge-complete`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-merge-complete.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-14. Step name: `mycroft-sec-filings-analysis-enhanced__save-to-database`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__save-to-database.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-15. Step name: `mycroft-sec-filings-analysis-enhanced__log-saved`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-saved.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-16. Step name: `mycroft-sec-filings-analysis-enhanced__cleanup-temp-directories`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__cleanup-temp-directories.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-17. Step name: `mycroft-sec-filings-analysis-enhanced__log-completion`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-completion.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-18. Step name: `mycroft-sec-filings-analysis-enhanced__log-error`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-error.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-19. Step name: `mycroft-sec-filings-analysis-enhanced__cleanup-on-error`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__cleanup-on-error.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-20. Step name: `mycroft-sec-filings-analysis-enhanced__webhook`. Labor: AI. Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__webhook.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-21. Step name: Human review. Labor: Human. Human action required: review source coverage, missing credentials, model/database/email handoffs, and interpretation limits. Input: generated logs and reports. Output: accept, reject, or rerun decision. Where output goes: `reports/generated/`.
+1. Step name: Verify provenance and source intent. Labor: Human.
+   Human action: Record approval, rejection, or requested changes with supervisory capacity label [PF].
+   Input: data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Financial_Intelligence_Hub/Mycroft - SEC_Filings_Analysis_Enhanced.json.
+   Output: provenance fields: workflow_path, exists, parsed_ok, title_matches_pipeline, source_inventory_checked.
+   Where output goes: logs/gate-decisions/.
+2. Step name: Initialize Logging. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__initialize-logging.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+3. Step name: Setup Github Repo. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__setup-github-repo.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+4. Step name: Log: Repo Cloned. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-repo-cloned.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+5. Step name: Setup Python Enviornment and Output Directories. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__setup-python-enviornment-and-output-directories.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+6. Step name: Log: Python Setup. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-python-setup.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+7. Step name: Edgar_Fetcher. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__edgar-fetcher.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+8. Step name: Log: Fetcher Complete. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-fetcher-complete.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+9. Step name: Financial Analyzer. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__financial-analyzer.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+10. Step name: Narrative Parser. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__narrative-parser.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+11. Step name: Validate Financial Metrics. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__validate-financial-metrics.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+12. Step name: Log: Financial Complete. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-financial-complete.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+13. Step name: Log: Narrative Complete. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-narrative-complete.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+14. Step name: Log: Merge Complete. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-merge-complete.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+15. Step name: Save to Database. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__save-to-database.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+16. Step name: Log: Saved. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-saved.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+17. Step name: Cleanup Temp Directories. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__cleanup-temp-directories.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+18. Step name: Log Completion. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-completion.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+19. Step name: Log Error. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-error.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+20. Step name: Cleanup On Error. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__cleanup-on-error.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+21. Step name: Webhook. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-sec-filings-analysis-enhanced__webhook.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+22. Step name: Respond to Webhook. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/mycroft-sec-filings-analysis-enhanced__respond-to-webhook.py`
+   Input: approved upstream output or sample fixture.
+   Output: markdown report sections: run summary, source status, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
+23. Step name: Produce human report. Labor: AI with Human review.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/mycroft-sec-filings-analysis-enhanced__produce-human-report.py`
+   Input: agent log plus raw and verified outputs.
+   Output: markdown report sections: run summary, source inventory, inputs used, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
 
 ## Output Contract
 
 ### Agent output
-
-Agent output goes to `logs/mycroft-sec-filings-analysis-enhanced/<run-id>.json`. It must include source workflow path, scripts used, node classifications, credential status, live-call status, validation results, output paths, stop conditions, and human decisions.
+File: `logs/mycroft-sec-filings-analysis-enhanced-[DATE].json`
+Fields: `workflow`, `run_id`, `mode`, `steps_completed`, `records_seen`, `rejects`, `duplicates`, `flags`, `stop_conditions`, `todo_items`, `source_files`, `gate_decisions`, `live_call_performed`, `generated_at`.
 
 ### Human report
-
-The human report goes to `reports/generated/mycroft-sec-filings-analysis-enhanced-<date>.md`. It surfaces the workflow result, source coverage, missing data, anomalies, and decisions required before downstream use.
+File: `reports/generated/mycroft-sec-filings-analysis-enhanced-[DATE].md`
+Reader: domain lead or human boss responsible for accepting the `Mycroft - SEC_Filings_Analysis_Enhanced` run.
+Decision enabled: approve the run for the next phase, request source/schema fixes, or block live execution.
+Sections: Run summary, source inventory, inputs used, steps completed, records seen, rejects, duplicates, flags, typed TODOs, gate decisions, evidence-backed findings, decision recommendation.
 
 ## Stop Conditions
 
@@ -62,63 +204,87 @@ The human report goes to `reports/generated/mycroft-sec-filings-analysis-enhance
 - Stop if required local source data is missing and no approved live-call path is available.
 - Stop if generated outputs omit provenance or make unsupported analytical claims.
 
+## Snickerdoodle
+
+### Run Commands
+Full dialogic run:
+`snickerdoodle run mycroft-sec-filings-analysis-enhanced --mode dialogic`
+
+Sample mode (no live network calls, no writes):
+`snickerdoodle run mycroft-sec-filings-analysis-enhanced --mode dialogic --sample`
+
+### Step Commands
+
+| Step | CLI Command | Flags |
+|---|---|---|
+| Initialize Logging | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step initialize-logging` | `--no-write` |
+| Setup Github Repo | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step setup-github-repo` | `--no-write` |
+| Log: Repo Cloned | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step log-repo-cloned` | `--no-write` |
+| Setup Python Enviornment and Output Directories | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step setup-python-enviornment-and-output-directories` | `--no-write` |
+| Log: Python Setup | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step log-python-setup` | `--no-write` |
+| Edgar_Fetcher | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step edgar-fetcher` | `--no-write` |
+| Log: Fetcher Complete | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step log-fetcher-complete` | `--no-write` |
+| Financial Analyzer | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step financial-analyzer` | `--no-write` |
+| Narrative Parser | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step narrative-parser` | `--no-write` |
+| Validate Financial Metrics | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step validate-financial-metrics` | `--no-write` |
+| Log: Financial Complete | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step log-financial-complete` | `--no-write` |
+| Log: Narrative Complete | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step log-narrative-complete` | `--no-write` |
+| Log: Merge Complete | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step log-merge-complete` | `--no-write` |
+| Save to Database | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step save-to-database` | `--no-write` |
+| Log: Saved | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step log-saved` | `--no-write` |
+| Cleanup Temp Directories | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step cleanup-temp-directories` | `--no-write` |
+| Log Completion | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step log-completion` | `--no-write` |
+| Log Error | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step log-error` | `--no-write` |
+| Cleanup On Error | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step cleanup-on-error` | `--no-write` |
+| Webhook | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step webhook` | `--no-write` |
+| Respond to Webhook | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step respond-to-webhook` | `--no-write` |
+| Produce human report | `snickerdoodle run mycroft-sec-filings-analysis-enhanced --step produce-human-report` | `--no-write` |
+
+### Gate Commands
+
+| Gate | CLI Command |
+|---|---|
+| Gate 1 - source/input readiness | `snickerdoodle gate mycroft-sec-filings-analysis-enhanced --gate 1 --decision approve --note "..."` |
+| Gate 2 - sample run | `snickerdoodle gate mycroft-sec-filings-analysis-enhanced --gate 2 --decision approve --note "..."` |
+| Gate 3 - report contract | `snickerdoodle gate mycroft-sec-filings-analysis-enhanced --gate 3 --decision approve --note "..."` |
+
+### Script Locations
+
+| Step | Script Path | Layer |
+|---|---|---|
+| Initialize Logging | `scripts/tools/mycroft-sec-filings-analysis-enhanced__initialize-logging.py` | tool |
+| Setup Github Repo | `scripts/tools/mycroft-sec-filings-analysis-enhanced__setup-github-repo.py` | tool |
+| Log: Repo Cloned | `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-repo-cloned.py` | tool |
+| Setup Python Enviornment and Output Directories | `scripts/tools/mycroft-sec-filings-analysis-enhanced__setup-python-enviornment-and-output-directories.py` | tool |
+| Log: Python Setup | `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-python-setup.py` | tool |
+| Edgar_Fetcher | `scripts/tools/mycroft-sec-filings-analysis-enhanced__edgar-fetcher.py` | tool |
+| Log: Fetcher Complete | `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-fetcher-complete.py` | tool |
+| Financial Analyzer | `scripts/tools/mycroft-sec-filings-analysis-enhanced__financial-analyzer.py` | tool |
+| Narrative Parser | `scripts/tools/mycroft-sec-filings-analysis-enhanced__narrative-parser.py` | tool |
+| Validate Financial Metrics | `scripts/tools/mycroft-sec-filings-analysis-enhanced__validate-financial-metrics.py` | tool |
+| Log: Financial Complete | `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-financial-complete.py` | tool |
+| Log: Narrative Complete | `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-narrative-complete.py` | tool |
+| Log: Merge Complete | `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-merge-complete.py` | tool |
+| Save to Database | `scripts/tools/mycroft-sec-filings-analysis-enhanced__save-to-database.py` | tool |
+| Log: Saved | `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-saved.py` | tool |
+| Cleanup Temp Directories | `scripts/tools/mycroft-sec-filings-analysis-enhanced__cleanup-temp-directories.py` | tool |
+| Log Completion | `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-completion.py` | tool |
+| Log Error | `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-error.py` | tool |
+| Cleanup On Error | `scripts/tools/mycroft-sec-filings-analysis-enhanced__cleanup-on-error.py` | tool |
+| Webhook | `scripts/tools/mycroft-sec-filings-analysis-enhanced__webhook.py` | tool |
+| Respond to Webhook | `[TODO: DEV] Create or map script path: scripts/tools/mycroft-sec-filings-analysis-enhanced__respond-to-webhook.py` | tool |
+| Produce human report | `[TODO: DEV] Create or map script path: scripts/tools/mycroft-sec-filings-analysis-enhanced__produce-human-report.py` | tool |
+
+### Output Locations
+
+| Output | Path | Format |
+|---|---|---|
+| Raw ingest | `data/raw/mycroft-sec-filings-analysis-enhanced/` | JSON |
+| Verified data | `data/verified/mycroft-sec-filings-analysis-enhanced/` | JSON |
+| Agent log | `logs/mycroft-sec-filings-analysis-enhanced-[DATE].json` | JSON |
+| Human report | `reports/generated/mycroft-sec-filings-analysis-enhanced-[DATE].md` | Markdown |
+| Gate decisions | `logs/gate-decisions/` | JSON |
+
 ## Provenance
 
-Original n8n JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Financial_Intelligence_Hub/Mycroft - SEC_Filings_Analysis_Enhanced.json`
-
-## Node Classification
-
-| Order | Node Name | Node Type | Classification |
-|---|---|---|---|
-| 1 | Set Variables | `set` | conductor |
-| 2 | Initialize Logging | `executeCommand` | tool |
-| 3 | Setup Github Repo | `executeCommand` | tool |
-| 4 | Log: Repo Cloned | `executeCommand` | tool |
-| 5 | Set Path Variables | `code` | conductor |
-| 6 | Setup Python Enviornment and Output Directories | `executeCommand` | tool |
-| 7 | Log: Python Setup | `executeCommand` | tool |
-| 8 | Edgar_Fetcher | `executeCommand` | tool |
-| 9 | Validate Fetcher | `code` | conductor |
-| 10 | Log: Fetcher Complete | `executeCommand` | tool |
-| 11 | If | `if` | conductor |
-| 12 | Financial Analyzer | `executeCommand` | tool |
-| 13 | Narrative Parser | `executeCommand` | tool |
-| 14 | Validate Financial Metrics | `code` | tool |
-| 15 | Validate Narrative Content | `code` | conductor |
-| 16 | Log: Financial Complete | `executeCommand` | tool |
-| 17 | Log: Narrative Complete | `executeCommand` | tool |
-| 18 | Merge Results | `code` | conductor |
-| 19 | Log: Merge Complete | `executeCommand` | tool |
-| 20 | Save to Database | `executeCommand` | tool |
-| 21 | Log: Saved | `executeCommand` | tool |
-| 22 | Cleanup Temp Directories | `executeCommand` | tool |
-| 23 | Log Completion | `executeCommand` | tool |
-| 24 | Error Handling | `code` | conductor |
-| 25 | Log Error | `executeCommand` | tool |
-| 26 | Cleanup On Error | `executeCommand` | tool |
-| 27 | Webhook | `webhook` | tool |
-| 28 | Respond to Webhook | `respondToWebhook` | report |
-| 29 | Code in JavaScript | `code` | conductor |
-
-## Script Index
-
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__initialize-logging.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__setup-github-repo.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-repo-cloned.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__setup-python-enviornment-and-output-directories.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-python-setup.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__edgar-fetcher.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-fetcher-complete.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__financial-analyzer.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__narrative-parser.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__validate-financial-metrics.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-financial-complete.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-narrative-complete.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-merge-complete.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__save-to-database.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-saved.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__cleanup-temp-directories.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-completion.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__log-error.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__cleanup-on-error.py`
-- `scripts/tools/mycroft-sec-filings-analysis-enhanced__webhook.py`
+Original workflow JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Financial_Intelligence_Hub/Mycroft - SEC_Filings_Analysis_Enhanced.json`

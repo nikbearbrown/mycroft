@@ -2,7 +2,40 @@
 
 ## Purpose
 
-This recipe converts the original n8n workflow into a repeatable Mycroft workflow that can be run in dialogic mode with local data first, credential-gated live calls second, and human review before any external side effect or analytical conclusion is trusted.
+Mycroft - Financial Regulatory Intelligence System - Enhanced defines a Mycroft pipeline for collecting, transforming, or reviewing finance and intelligence signals related to mycroft - financial regulatory intelligence system - enhanced. It answers whether the available local evidence and approved live sources are sufficient for a human decision without relying on unapproved external writes or unsupported analytical claims.
+
+## Source Inventory
+
+| Source Node | Node Type | Source URL or Path | Human Check |
+|---|---|---|---|
+| Report node outputs | JSON | Converted report steps (4 nodes) | Confirm source is allowed, current, and rate-safe before live fetch. |
+
+## Node Classification
+
+| Node Name | Node Type | Classification |
+|---|---|---|
+| Federal Register - Securities | `rssFeedRead` | tool |
+| SEC Press Releases | `rssFeedRead` | tool |
+| FINRA Enforcement News | `rssFeedRead` | tool |
+| CFTC Regulations | `rssFeedRead` | tool |
+| Investment Advisor Rules | `rssFeedRead` | tool |
+| Merge All Sources | `merge` | conductor |
+| Normalize Data | `code` | gigo |
+| Filter Valid Content | `if` | conductor |
+| Generate HTML Report | `code` | report |
+| High Priority Filter | `if` | conductor |
+| Send Email Alert | `emailSend` | report |
+| Read/Write Files from Disk | `readWriteFile` | tool |
+| If | `if` | conductor |
+| Send email | `emailSend` | report |
+| Schedule Every Day | `scheduleTrigger` | conductor |
+| Generate Email | `code` | report |
+| Mark email sent | `postgres` | gigo |
+| Keyword Analysis & Urgency Scoring | `code` | tool |
+| Insert data into DB | `postgres` | gigo |
+| Prepare Data | `code` | conductor |
+| Code in JavaScript | `code` | conductor |
+| If2 | `if` | conductor |
 
 ## Inputs
 
@@ -13,38 +46,115 @@ This recipe converts the original n8n workflow into a repeatable Mycroft workflo
 | Report node outputs | JSON | Converted report steps (4 nodes) | No |
 | Conductor node outputs | JSON | Converted conductor steps (8 nodes) | No |
 | Original workflow JSON | JSON | `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Regulatory_Scanning_Agent/Mycroft - Financial Regulatory Intelligence System.json` | Yes |
-| Credentials for live services | Environment variables | Named by script handoff payloads | No for local mode |
+| Credentials for live services | Environment variables | Named by script handoff payloads | No |
 
 ## Phase Gates
 
-1. Source gate: all required local exports or live-call handoff specs must be present. Verification: run the generated ingest scripts for this workflow and confirm each returns JSON with a status field. Human capacity required: [PA], [TO].
-2. GIGO gate: normalized records must preserve missing fields rather than inventing values. Verification: run generated GIGO scripts and inspect `record_count` and `records`. Human capacity required: [PA].
-3. Tool gate: model/API/tool nodes must return local deterministic outputs or approval-required handoff specs. Verification: run generated tool scripts and confirm `live_call_performed` is false unless explicitly approved. Human capacity required: [TO], [IJ].
-4. Report gate: final report must separate source facts, transformations, and interpretation. Verification: fill `reports/templates/mycroft-financial-regulatory-intelligence-system-enhanced.md` and link the run log. Human capacity required: [EI].
+1. Source identity gate: Original workflow JSON exists and is the intended source. Test: `test -f "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Regulatory_Scanning_Agent/Mycroft - Financial Regulatory Intelligence System.json"`.
+   Human capacity: [PF].
+2. Input readiness gate: Every required input in this recipe exists or is marked with a typed TODO. Test: `rg -n "TODO:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/mycroft-financial-regulatory-intelligence-system-enhanced.md`.
+   Human capacity: [PA].
+3. Sample run gate: Ingest and tool steps run without live side effects before live mode. Test: `snickerdoodle run mycroft-financial-regulatory-intelligence-system-enhanced --mode dialogic --sample`.
+   Human capacity: [TO].
+4. Data-shape gate: Raw and verified outputs parse as JSON where applicable. Test: `find data/raw/mycroft-financial-regulatory-intelligence-system-enhanced data/verified/mycroft-financial-regulatory-intelligence-system-enhanced -name "*.json" -print -exec python3 -m json.tool {} \;`.
+   Human capacity: [IJ].
+5. Report contract gate: Human report defines reader, decision enabled, and sections. Test: `rg -n "Reader:|Decision enabled:|Sections:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/mycroft-financial-regulatory-intelligence-system-enhanced.md`.
+   Human capacity: [EI].
 
 ## Steps
 
-1. Step name: `mycroft-financial-regulatory-intelligence-system-enhanced__normalize-data`. Labor: AI. Script called: `scripts/gigo/mycroft-financial-regulatory-intelligence-system-enhanced__normalize-data.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-2. Step name: `mycroft-financial-regulatory-intelligence-system-enhanced__mark-email-sent`. Labor: AI. Script called: `scripts/gigo/mycroft-financial-regulatory-intelligence-system-enhanced__mark-email-sent.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-3. Step name: `mycroft-financial-regulatory-intelligence-system-enhanced__insert-data-into-db`. Labor: AI. Script called: `scripts/gigo/mycroft-financial-regulatory-intelligence-system-enhanced__insert-data-into-db.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-4. Step name: `mycroft-financial-regulatory-intelligence-system-enhanced__federal-register-securities`. Labor: AI. Script called: `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__federal-register-securities.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-5. Step name: `mycroft-financial-regulatory-intelligence-system-enhanced__sec-press-releases`. Labor: AI. Script called: `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__sec-press-releases.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-6. Step name: `mycroft-financial-regulatory-intelligence-system-enhanced__finra-enforcement-news`. Labor: AI. Script called: `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__finra-enforcement-news.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-7. Step name: `mycroft-financial-regulatory-intelligence-system-enhanced__cftc-regulations`. Labor: AI. Script called: `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__cftc-regulations.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-8. Step name: `mycroft-financial-regulatory-intelligence-system-enhanced__investment-advisor-rules`. Labor: AI. Script called: `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__investment-advisor-rules.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-9. Step name: `mycroft-financial-regulatory-intelligence-system-enhanced__read-write-files-from-disk`. Labor: AI. Script called: `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__read-write-files-from-disk.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-10. Step name: `mycroft-financial-regulatory-intelligence-system-enhanced__keyword-analysis-urgency-scoring`. Labor: AI. Script called: `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__keyword-analysis-urgency-scoring.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-11. Step name: Human review. Labor: Human. Human action required: review source coverage, missing credentials, model/database/email handoffs, and interpretation limits. Input: generated logs and reports. Output: accept, reject, or rerun decision. Where output goes: `reports/generated/`.
+1. Step name: Verify provenance and source intent. Labor: Human.
+   Human action: Record approval, rejection, or requested changes with supervisory capacity label [PF].
+   Input: data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Regulatory_Scanning_Agent/Mycroft - Financial Regulatory Intelligence System.json.
+   Output: provenance fields: workflow_path, exists, parsed_ok, title_matches_pipeline, source_inventory_checked.
+   Where output goes: logs/gate-decisions/.
+2. Step name: Federal Register - Securities. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__federal-register-securities.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+3. Step name: SEC Press Releases. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__sec-press-releases.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+4. Step name: FINRA Enforcement News. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__finra-enforcement-news.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+5. Step name: CFTC Regulations. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__cftc-regulations.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+6. Step name: Investment Advisor Rules. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__investment-advisor-rules.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+7. Step name: Normalize Data. Labor: AI with Human gate.
+   Script called: `scripts/gigo/mycroft-financial-regulatory-intelligence-system-enhanced__normalize-data.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/mycroft-financial-regulatory-intelligence-system-enhanced/.
+8. Step name: Generate HTML Report. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__generate-html-report.py`
+   Input: approved upstream output or sample fixture.
+   Output: markdown report sections: run summary, source status, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
+9. Step name: Send Email Alert. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__send-email-alert.py`
+   Input: approved upstream output or sample fixture.
+   Output: markdown report sections: run summary, source status, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
+10. Step name: Read/Write Files from Disk. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__read-write-files-from-disk.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+11. Step name: Send email. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__send-email.py`
+   Input: approved upstream output or sample fixture.
+   Output: markdown report sections: run summary, source status, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
+12. Step name: Generate Email. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__generate-email.py`
+   Input: approved upstream output or sample fixture.
+   Output: markdown report sections: run summary, source status, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
+13. Step name: Mark email sent. Labor: AI with Human gate.
+   Script called: `scripts/gigo/mycroft-financial-regulatory-intelligence-system-enhanced__mark-email-sent.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/mycroft-financial-regulatory-intelligence-system-enhanced/.
+14. Step name: Keyword Analysis & Urgency Scoring. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__keyword-analysis-and-urgency-scoring.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+15. Step name: Insert data into DB. Labor: AI with Human gate.
+   Script called: `scripts/gigo/mycroft-financial-regulatory-intelligence-system-enhanced__insert-data-into-db.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/mycroft-financial-regulatory-intelligence-system-enhanced/.
+16. Step name: Produce human report. Labor: AI with Human review.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__produce-human-report.py`
+   Input: agent log plus raw and verified outputs.
+   Output: markdown report sections: run summary, source inventory, inputs used, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
 
 ## Output Contract
 
 ### Agent output
-
-Agent output goes to `logs/mycroft-financial-regulatory-intelligence-system-enhanced/<run-id>.json`. It must include source workflow path, scripts used, node classifications, credential status, live-call status, validation results, output paths, stop conditions, and human decisions.
+File: `logs/mycroft-financial-regulatory-intelligence-system-enhanced-[DATE].json`
+Fields: `workflow`, `run_id`, `mode`, `steps_completed`, `records_seen`, `rejects`, `duplicates`, `flags`, `stop_conditions`, `todo_items`, `source_files`, `gate_decisions`, `live_call_performed`, `generated_at`.
 
 ### Human report
-
-The human report goes to `reports/generated/mycroft-financial-regulatory-intelligence-system-enhanced-<date>.md`. It surfaces the workflow result, source coverage, missing data, anomalies, and decisions required before downstream use.
+File: `reports/generated/mycroft-financial-regulatory-intelligence-system-enhanced-[DATE].md`
+Reader: domain lead or human boss responsible for accepting the `Mycroft - Financial Regulatory Intelligence System - Enhanced` run.
+Decision enabled: approve the run for the next phase, request source/schema fixes, or block live execution.
+Sections: Run summary, source inventory, inputs used, steps completed, records seen, rejects, duplicates, flags, typed TODOs, gate decisions, evidence-backed findings, decision recommendation.
 
 ## Stop Conditions
 
@@ -53,46 +163,73 @@ The human report goes to `reports/generated/mycroft-financial-regulatory-intelli
 - Stop if required local source data is missing and no approved live-call path is available.
 - Stop if generated outputs omit provenance or make unsupported analytical claims.
 
+## Snickerdoodle
+
+### Run Commands
+Full dialogic run:
+`snickerdoodle run mycroft-financial-regulatory-intelligence-system-enhanced --mode dialogic`
+
+Sample mode (no live network calls, no writes):
+`snickerdoodle run mycroft-financial-regulatory-intelligence-system-enhanced --mode dialogic --sample`
+
+### Step Commands
+
+| Step | CLI Command | Flags |
+|---|---|---|
+| Federal Register - Securities | `snickerdoodle run mycroft-financial-regulatory-intelligence-system-enhanced --step federal-register-securities` | `--no-write` |
+| SEC Press Releases | `snickerdoodle run mycroft-financial-regulatory-intelligence-system-enhanced --step sec-press-releases` | `--no-write` |
+| FINRA Enforcement News | `snickerdoodle run mycroft-financial-regulatory-intelligence-system-enhanced --step finra-enforcement-news` | `--no-write` |
+| CFTC Regulations | `snickerdoodle run mycroft-financial-regulatory-intelligence-system-enhanced --step cftc-regulations` | `--no-write` |
+| Investment Advisor Rules | `snickerdoodle run mycroft-financial-regulatory-intelligence-system-enhanced --step investment-advisor-rules` | `--no-write` |
+| Normalize Data | `snickerdoodle run mycroft-financial-regulatory-intelligence-system-enhanced --step normalize-data` |  |
+| Generate HTML Report | `snickerdoodle run mycroft-financial-regulatory-intelligence-system-enhanced --step generate-html-report` | `--no-write` |
+| Send Email Alert | `snickerdoodle run mycroft-financial-regulatory-intelligence-system-enhanced --step send-email-alert` | `--no-write` |
+| Read/Write Files from Disk | `snickerdoodle run mycroft-financial-regulatory-intelligence-system-enhanced --step read-write-files-from-disk` | `--no-write` |
+| Send email | `snickerdoodle run mycroft-financial-regulatory-intelligence-system-enhanced --step send-email` | `--no-write` |
+| Generate Email | `snickerdoodle run mycroft-financial-regulatory-intelligence-system-enhanced --step generate-email` | `--no-write` |
+| Mark email sent | `snickerdoodle run mycroft-financial-regulatory-intelligence-system-enhanced --step mark-email-sent` |  |
+| Keyword Analysis & Urgency Scoring | `snickerdoodle run mycroft-financial-regulatory-intelligence-system-enhanced --step keyword-analysis-and-urgency-scoring` | `--no-write` |
+| Insert data into DB | `snickerdoodle run mycroft-financial-regulatory-intelligence-system-enhanced --step insert-data-into-db` |  |
+| Produce human report | `snickerdoodle run mycroft-financial-regulatory-intelligence-system-enhanced --step produce-human-report` | `--no-write` |
+
+### Gate Commands
+
+| Gate | CLI Command |
+|---|---|
+| Gate 1 - source/input readiness | `snickerdoodle gate mycroft-financial-regulatory-intelligence-system-enhanced --gate 1 --decision approve --note "..."` |
+| Gate 2 - sample run | `snickerdoodle gate mycroft-financial-regulatory-intelligence-system-enhanced --gate 2 --decision approve --note "..."` |
+| Gate 3 - report contract | `snickerdoodle gate mycroft-financial-regulatory-intelligence-system-enhanced --gate 3 --decision approve --note "..."` |
+
+### Script Locations
+
+| Step | Script Path | Layer |
+|---|---|---|
+| Federal Register - Securities | `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__federal-register-securities.py` | tool |
+| SEC Press Releases | `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__sec-press-releases.py` | tool |
+| FINRA Enforcement News | `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__finra-enforcement-news.py` | tool |
+| CFTC Regulations | `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__cftc-regulations.py` | tool |
+| Investment Advisor Rules | `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__investment-advisor-rules.py` | tool |
+| Normalize Data | `scripts/gigo/mycroft-financial-regulatory-intelligence-system-enhanced__normalize-data.py` | gigo |
+| Generate HTML Report | `[TODO: DEV] Create or map script path: scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__generate-html-report.py` | tool |
+| Send Email Alert | `[TODO: DEV] Create or map script path: scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__send-email-alert.py` | tool |
+| Read/Write Files from Disk | `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__read-write-files-from-disk.py` | tool |
+| Send email | `[TODO: DEV] Create or map script path: scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__send-email.py` | tool |
+| Generate Email | `[TODO: DEV] Create or map script path: scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__generate-email.py` | tool |
+| Mark email sent | `scripts/gigo/mycroft-financial-regulatory-intelligence-system-enhanced__mark-email-sent.py` | gigo |
+| Keyword Analysis & Urgency Scoring | `[TODO: DEV] Create or map script path: scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__keyword-analysis-and-urgency-scoring.py` | tool |
+| Insert data into DB | `scripts/gigo/mycroft-financial-regulatory-intelligence-system-enhanced__insert-data-into-db.py` | gigo |
+| Produce human report | `[TODO: DEV] Create or map script path: scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__produce-human-report.py` | tool |
+
+### Output Locations
+
+| Output | Path | Format |
+|---|---|---|
+| Raw ingest | `data/raw/mycroft-financial-regulatory-intelligence-system-enhanced/` | JSON |
+| Verified data | `data/verified/mycroft-financial-regulatory-intelligence-system-enhanced/` | JSON |
+| Agent log | `logs/mycroft-financial-regulatory-intelligence-system-enhanced-[DATE].json` | JSON |
+| Human report | `reports/generated/mycroft-financial-regulatory-intelligence-system-enhanced-[DATE].md` | Markdown |
+| Gate decisions | `logs/gate-decisions/` | JSON |
+
 ## Provenance
 
-Original n8n JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Regulatory_Scanning_Agent/Mycroft - Financial Regulatory Intelligence System.json`
-
-## Node Classification
-
-| Order | Node Name | Node Type | Classification |
-|---|---|---|---|
-| 1 | Federal Register - Securities | `rssFeedRead` | tool |
-| 2 | SEC Press Releases | `rssFeedRead` | tool |
-| 3 | FINRA Enforcement News | `rssFeedRead` | tool |
-| 4 | CFTC Regulations | `rssFeedRead` | tool |
-| 5 | Investment Advisor Rules | `rssFeedRead` | tool |
-| 6 | Merge All Sources | `merge` | conductor |
-| 7 | Normalize Data | `code` | gigo |
-| 8 | Filter Valid Content | `if` | conductor |
-| 9 | Generate HTML Report | `code` | report |
-| 10 | High Priority Filter | `if` | conductor |
-| 11 | Send Email Alert | `emailSend` | report |
-| 12 | Read/Write Files from Disk | `readWriteFile` | tool |
-| 13 | If | `if` | conductor |
-| 14 | Send email | `emailSend` | report |
-| 15 | Schedule Every Day | `scheduleTrigger` | conductor |
-| 16 | Generate Email | `code` | report |
-| 17 | Mark email sent | `postgres` | gigo |
-| 18 | Keyword Analysis & Urgency Scoring | `code` | tool |
-| 19 | Insert data into DB | `postgres` | gigo |
-| 20 | Prepare Data | `code` | conductor |
-| 21 | Code in JavaScript | `code` | conductor |
-| 22 | If2 | `if` | conductor |
-
-## Script Index
-
-- `scripts/gigo/mycroft-financial-regulatory-intelligence-system-enhanced__normalize-data.py`
-- `scripts/gigo/mycroft-financial-regulatory-intelligence-system-enhanced__mark-email-sent.py`
-- `scripts/gigo/mycroft-financial-regulatory-intelligence-system-enhanced__insert-data-into-db.py`
-- `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__federal-register-securities.py`
-- `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__sec-press-releases.py`
-- `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__finra-enforcement-news.py`
-- `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__cftc-regulations.py`
-- `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__investment-advisor-rules.py`
-- `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__read-write-files-from-disk.py`
-- `scripts/tools/mycroft-financial-regulatory-intelligence-system-enhanced__keyword-analysis-urgency-scoring.py`
+Original workflow JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Regulatory_Scanning_Agent/Mycroft - Financial Regulatory Intelligence System.json`

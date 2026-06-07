@@ -2,7 +2,26 @@
 
 ## Purpose
 
-This recipe converts the original n8n workflow into a repeatable Mycroft workflow that can be run in dialogic mode with local data first, credential-gated live calls second, and human review before any external side effect or analytical conclusion is trusted.
+My workflow defines a Mycroft pipeline for collecting, transforming, or reviewing finance and intelligence signals related to my workflow. It answers whether the available local evidence and approved live sources are sufficient for a human decision without relying on unapproved external writes or unsupported analytical claims.
+
+## Source Inventory
+
+| Source Node | Node Type | Source URL or Path | Human Check |
+|---|---|---|---|
+| Ingest node outputs | JSON | Converted ingest steps (1 nodes) | Confirm source is allowed, current, and rate-safe before live fetch. |
+
+## Node Classification
+
+| Node Name | Node Type | Classification |
+|---|---|---|
+| Manual Trigger | `manualTrigger` | conductor |
+| Set (Targets) | `set` | conductor |
+| Code (Split into items) | `code` | gigo |
+| Code (Parse owner/repo) | `code` | gigo |
+| HTTP Request (Repo Metadata) | `httpRequest` | ingest |
+| Code (Build profile JSON) | `code` | conductor |
+| Code (JSON → Binary) | `code` | conductor |
+| Read/Write Files from Disk | `readWriteFile` | tool |
 
 ## Inputs
 
@@ -13,32 +32,65 @@ This recipe converts the original n8n workflow into a repeatable Mycroft workflo
 | Tool node outputs | JSON | Converted tool steps (1 nodes) | Yes |
 | Conductor node outputs | JSON | Converted conductor steps (4 nodes) | No |
 | Original workflow JSON | JSON | `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/OpenSource_Engineering_Health/n8n/oss_signals_workflow.json` | Yes |
-| Credentials for live services | Environment variables | Named by script handoff payloads | No for local mode |
+| Credentials for live services | Environment variables | Named by script handoff payloads | No |
 
 ## Phase Gates
 
-1. Source gate: all required local exports or live-call handoff specs must be present. Verification: run the generated ingest scripts for this workflow and confirm each returns JSON with a status field. Human capacity required: [PA], [TO].
-2. GIGO gate: normalized records must preserve missing fields rather than inventing values. Verification: run generated GIGO scripts and inspect `record_count` and `records`. Human capacity required: [PA].
-3. Tool gate: model/API/tool nodes must return local deterministic outputs or approval-required handoff specs. Verification: run generated tool scripts and confirm `live_call_performed` is false unless explicitly approved. Human capacity required: [TO], [IJ].
-4. Report gate: final report must separate source facts, transformations, and interpretation. Verification: fill `reports/templates/my-workflow.md` and link the run log. Human capacity required: [EI].
+1. Source identity gate: Original workflow JSON exists and is the intended source. Test: `test -f "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/OpenSource_Engineering_Health/n8n/oss_signals_workflow.json"`.
+   Human capacity: [PF].
+2. Input readiness gate: Every required input in this recipe exists or is marked with a typed TODO. Test: `rg -n "TODO:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/my-workflow.md`.
+   Human capacity: [PA].
+3. Sample run gate: Ingest and tool steps run without live side effects before live mode. Test: `snickerdoodle run my-workflow --mode dialogic --sample`.
+   Human capacity: [TO].
+4. Data-shape gate: Raw and verified outputs parse as JSON where applicable. Test: `find data/raw/my-workflow data/verified/my-workflow -name "*.json" -print -exec python3 -m json.tool {} \;`.
+   Human capacity: [IJ].
+5. Report contract gate: Human report defines reader, decision enabled, and sections. Test: `rg -n "Reader:|Decision enabled:|Sections:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/my-workflow.md`.
+   Human capacity: [EI].
 
 ## Steps
 
-1. Step name: `my-workflow__http-request-repo-metadata`. Labor: AI. Script called: `scripts/ingest/my-workflow__http-request-repo-metadata.py`. Input: prior verified payloads or local export. Output: ingest result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-2. Step name: `my-workflow__code-split-into-items`. Labor: AI. Script called: `scripts/gigo/my-workflow__code-split-into-items.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-3. Step name: `my-workflow__code-parse-owner-repo`. Labor: AI. Script called: `scripts/gigo/my-workflow__code-parse-owner-repo.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-4. Step name: `my-workflow__read-write-files-from-disk`. Labor: AI. Script called: `scripts/tools/my-workflow__read-write-files-from-disk.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-5. Step name: Human review. Labor: Human. Human action required: review source coverage, missing credentials, model/database/email handoffs, and interpretation limits. Input: generated logs and reports. Output: accept, reject, or rerun decision. Where output goes: `reports/generated/`.
+1. Step name: Verify provenance and source intent. Labor: Human.
+   Human action: Record approval, rejection, or requested changes with supervisory capacity label [PF].
+   Input: data/mycroft-main/n8n-workflows/originals/n8n_Workflows/OpenSource_Engineering_Health/n8n/oss_signals_workflow.json.
+   Output: provenance fields: workflow_path, exists, parsed_ok, title_matches_pipeline, source_inventory_checked.
+   Where output goes: logs/gate-decisions/.
+2. Step name: Code (Split into items). Labor: AI with Human gate.
+   Script called: `scripts/gigo/my-workflow__code-split-into-items.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/my-workflow/.
+3. Step name: Code (Parse owner/repo). Labor: AI with Human gate.
+   Script called: `scripts/gigo/my-workflow__code-parse-owner-repo.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/my-workflow/.
+4. Step name: HTTP Request (Repo Metadata). Labor: AI with Human gate.
+   Script called: `scripts/ingest/my-workflow__http-request-repo-metadata.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/my-workflow/.
+5. Step name: Read/Write Files from Disk. Labor: AI with Human gate.
+   Script called: `scripts/tools/my-workflow__read-write-files-from-disk.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+6. Step name: Produce human report. Labor: AI with Human review.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/my-workflow__produce-human-report.py`
+   Input: agent log plus raw and verified outputs.
+   Output: markdown report sections: run summary, source inventory, inputs used, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
 
 ## Output Contract
 
 ### Agent output
-
-Agent output goes to `logs/my-workflow/<run-id>.json`. It must include source workflow path, scripts used, node classifications, credential status, live-call status, validation results, output paths, stop conditions, and human decisions.
+File: `logs/my-workflow-[DATE].json`
+Fields: `workflow`, `run_id`, `mode`, `steps_completed`, `records_seen`, `rejects`, `duplicates`, `flags`, `stop_conditions`, `todo_items`, `source_files`, `gate_decisions`, `live_call_performed`, `generated_at`.
 
 ### Human report
-
-The human report goes to `reports/generated/my-workflow-<date>.md`. It surfaces the workflow result, source coverage, missing data, anomalies, and decisions required before downstream use.
+File: `reports/generated/my-workflow-[DATE].md`
+Reader: domain lead or human boss responsible for accepting the `My workflow` run.
+Decision enabled: approve the run for the next phase, request source/schema fixes, or block live execution.
+Sections: Run summary, source inventory, inputs used, steps completed, records seen, rejects, duplicates, flags, typed TODOs, gate decisions, evidence-backed findings, decision recommendation.
 
 ## Stop Conditions
 
@@ -47,26 +99,53 @@ The human report goes to `reports/generated/my-workflow-<date>.md`. It surfaces 
 - Stop if required local source data is missing and no approved live-call path is available.
 - Stop if generated outputs omit provenance or make unsupported analytical claims.
 
+## Snickerdoodle
+
+### Run Commands
+Full dialogic run:
+`snickerdoodle run my-workflow --mode dialogic`
+
+Sample mode (no live network calls, no writes):
+`snickerdoodle run my-workflow --mode dialogic --sample`
+
+### Step Commands
+
+| Step | CLI Command | Flags |
+|---|---|---|
+| Code (Split into items) | `snickerdoodle run my-workflow --step code-split-into-items` |  |
+| Code (Parse owner/repo) | `snickerdoodle run my-workflow --step code-parse-owner-repo` |  |
+| HTTP Request (Repo Metadata) | `snickerdoodle run my-workflow --step http-request-repo-metadata` | `--sample` |
+| Read/Write Files from Disk | `snickerdoodle run my-workflow --step read-write-files-from-disk` | `--no-write` |
+| Produce human report | `snickerdoodle run my-workflow --step produce-human-report` | `--no-write` |
+
+### Gate Commands
+
+| Gate | CLI Command |
+|---|---|
+| Gate 1 - source/input readiness | `snickerdoodle gate my-workflow --gate 1 --decision approve --note "..."` |
+| Gate 2 - sample run | `snickerdoodle gate my-workflow --gate 2 --decision approve --note "..."` |
+| Gate 3 - report contract | `snickerdoodle gate my-workflow --gate 3 --decision approve --note "..."` |
+
+### Script Locations
+
+| Step | Script Path | Layer |
+|---|---|---|
+| Code (Split into items) | `scripts/gigo/my-workflow__code-split-into-items.py` | gigo |
+| Code (Parse owner/repo) | `scripts/gigo/my-workflow__code-parse-owner-repo.py` | gigo |
+| HTTP Request (Repo Metadata) | `scripts/ingest/my-workflow__http-request-repo-metadata.py` | ingest |
+| Read/Write Files from Disk | `scripts/tools/my-workflow__read-write-files-from-disk.py` | tool |
+| Produce human report | `[TODO: DEV] Create or map script path: scripts/tools/my-workflow__produce-human-report.py` | tool |
+
+### Output Locations
+
+| Output | Path | Format |
+|---|---|---|
+| Raw ingest | `data/raw/my-workflow/` | JSON |
+| Verified data | `data/verified/my-workflow/` | JSON |
+| Agent log | `logs/my-workflow-[DATE].json` | JSON |
+| Human report | `reports/generated/my-workflow-[DATE].md` | Markdown |
+| Gate decisions | `logs/gate-decisions/` | JSON |
+
 ## Provenance
 
-Original n8n JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/OpenSource_Engineering_Health/n8n/oss_signals_workflow.json`
-
-## Node Classification
-
-| Order | Node Name | Node Type | Classification |
-|---|---|---|---|
-| 1 | Manual Trigger | `manualTrigger` | conductor |
-| 2 | Set (Targets) | `set` | conductor |
-| 3 | Code (Split into items) | `code` | gigo |
-| 4 | Code (Parse owner/repo) | `code` | gigo |
-| 5 | HTTP Request (Repo Metadata) | `httpRequest` | ingest |
-| 6 | Code (Build profile JSON) | `code` | conductor |
-| 7 | Code (JSON → Binary) | `code` | conductor |
-| 8 | Read/Write Files from Disk | `readWriteFile` | tool |
-
-## Script Index
-
-- `scripts/ingest/my-workflow__http-request-repo-metadata.py`
-- `scripts/gigo/my-workflow__code-split-into-items.py`
-- `scripts/gigo/my-workflow__code-parse-owner-repo.py`
-- `scripts/tools/my-workflow__read-write-files-from-disk.py`
+Original workflow JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/OpenSource_Engineering_Health/n8n/oss_signals_workflow.json`

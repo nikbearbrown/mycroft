@@ -2,7 +2,37 @@
 
 ## Purpose
 
-This recipe converts the original n8n workflow into a repeatable Mycroft workflow that can be run in dialogic mode with local data first, credential-gated live calls second, and human review before any external side effect or analytical conclusion is trusted.
+Mycroft - News Intelligence Agent defines a Mycroft pipeline for collecting, transforming, or reviewing finance and intelligence signals related to mycroft - news intelligence agent. It answers whether the available local evidence and approved live sources are sufficient for a human decision without relying on unapproved external writes or unsupported analytical claims.
+
+## Source Inventory
+
+| Source Node | Node Type | Source URL or Path | Human Check |
+|---|---|---|---|
+| Ingest node outputs | JSON | Converted ingest steps (3 nodes) | Confirm source is allowed, current, and rate-safe before live fetch. |
+| Report node outputs | JSON | Converted report steps (4 nodes) | Confirm source is allowed, current, and rate-safe before live fetch. |
+
+## Node Classification
+
+| Node Name | Node Type | Classification |
+|---|---|---|
+| Company List | `code` | conductor |
+| Build Query | `code` | conductor |
+| Merge | `merge` | conductor |
+| normalizenewsapi | `code` | gigo |
+| NewsApiKey | `httpRequest` | ingest |
+| HTTP Request | `httpRequest` | ingest |
+| XML | `xml` | gigo |
+| ProcessNewData | `code` | gigo |
+| Edit Fields | `set` | conductor |
+| HTTP Request1 | `httpRequest` | ingest |
+| RiskCalculator | `code` | tool |
+| Insert rows in a table | `postgres` | gigo |
+| Alert Generator Code Node | `code` | report |
+| Send email | `emailSend` | report |
+| DailyGeneratorCode | `code` | report |
+| Webhook | `webhook` | tool |
+| Respond to Webhook | `respondToWebhook` | report |
+| Set Variables | `set` | conductor |
 
 ## Inputs
 
@@ -14,37 +44,110 @@ This recipe converts the original n8n workflow into a repeatable Mycroft workflo
 | Report node outputs | JSON | Converted report steps (4 nodes) | No |
 | Conductor node outputs | JSON | Converted conductor steps (5 nodes) | No |
 | Original workflow JSON | JSON | `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Orchestrator/v1/Mycroft - News Intelligence Agent.json` | Yes |
-| Credentials for live services | Environment variables | Named by script handoff payloads | No for local mode |
+| Credentials for live services | Environment variables | Named by script handoff payloads | No |
 
 ## Phase Gates
 
-1. Source gate: all required local exports or live-call handoff specs must be present. Verification: run the generated ingest scripts for this workflow and confirm each returns JSON with a status field. Human capacity required: [PA], [TO].
-2. GIGO gate: normalized records must preserve missing fields rather than inventing values. Verification: run generated GIGO scripts and inspect `record_count` and `records`. Human capacity required: [PA].
-3. Tool gate: model/API/tool nodes must return local deterministic outputs or approval-required handoff specs. Verification: run generated tool scripts and confirm `live_call_performed` is false unless explicitly approved. Human capacity required: [TO], [IJ].
-4. Report gate: final report must separate source facts, transformations, and interpretation. Verification: fill `reports/templates/mycroft-news-intelligence-agent-2.md` and link the run log. Human capacity required: [EI].
+1. Source identity gate: Original workflow JSON exists and is the intended source. Test: `test -f "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Orchestrator/v1/Mycroft - News Intelligence Agent.json"`.
+   Human capacity: [PF].
+2. Input readiness gate: Every required input in this recipe exists or is marked with a typed TODO. Test: `rg -n "TODO:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/mycroft-news-intelligence-agent-2.md`.
+   Human capacity: [PA].
+3. Sample run gate: Ingest and tool steps run without live side effects before live mode. Test: `snickerdoodle run mycroft-news-intelligence-agent-2 --mode dialogic --sample`.
+   Human capacity: [TO].
+4. Data-shape gate: Raw and verified outputs parse as JSON where applicable. Test: `find data/raw/mycroft-news-intelligence-agent-2 data/verified/mycroft-news-intelligence-agent-2 -name "*.json" -print -exec python3 -m json.tool {} \;`.
+   Human capacity: [IJ].
+5. Report contract gate: Human report defines reader, decision enabled, and sections. Test: `rg -n "Reader:|Decision enabled:|Sections:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/mycroft-news-intelligence-agent-2.md`.
+   Human capacity: [EI].
 
 ## Steps
 
-1. Step name: `mycroft-news-intelligence-agent-2__newsapikey`. Labor: AI. Script called: `scripts/ingest/mycroft-news-intelligence-agent-2__newsapikey.py`. Input: prior verified payloads or local export. Output: ingest result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-2. Step name: `mycroft-news-intelligence-agent-2__http-request`. Labor: AI. Script called: `scripts/ingest/mycroft-news-intelligence-agent-2__http-request.py`. Input: prior verified payloads or local export. Output: ingest result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-3. Step name: `mycroft-news-intelligence-agent-2__http-request1`. Labor: AI. Script called: `scripts/ingest/mycroft-news-intelligence-agent-2__http-request1.py`. Input: prior verified payloads or local export. Output: ingest result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-4. Step name: `mycroft-news-intelligence-agent-2__normalizenewsapi`. Labor: AI. Script called: `scripts/gigo/mycroft-news-intelligence-agent-2__normalizenewsapi.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-5. Step name: `mycroft-news-intelligence-agent-2__xml`. Labor: AI. Script called: `scripts/gigo/mycroft-news-intelligence-agent-2__xml.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-6. Step name: `mycroft-news-intelligence-agent-2__processnewdata`. Labor: AI. Script called: `scripts/gigo/mycroft-news-intelligence-agent-2__processnewdata.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-7. Step name: `mycroft-news-intelligence-agent-2__insert-rows-in-a-table`. Labor: AI. Script called: `scripts/gigo/mycroft-news-intelligence-agent-2__insert-rows-in-a-table.py`. Input: prior verified payloads or local export. Output: gigo result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-8. Step name: `mycroft-news-intelligence-agent-2__riskcalculator`. Labor: AI. Script called: `scripts/tools/mycroft-news-intelligence-agent-2__riskcalculator.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-9. Step name: `mycroft-news-intelligence-agent-2__webhook`. Labor: AI. Script called: `scripts/tools/mycroft-news-intelligence-agent-2__webhook.py`. Input: prior verified payloads or local export. Output: tool result payload. Where output goes: `data/raw/`, `data/verified/`, or `logs/` as appropriate.
-10. Step name: Human review. Labor: Human. Human action required: review source coverage, missing credentials, model/database/email handoffs, and interpretation limits. Input: generated logs and reports. Output: accept, reject, or rerun decision. Where output goes: `reports/generated/`.
+1. Step name: Verify provenance and source intent. Labor: Human.
+   Human action: Record approval, rejection, or requested changes with supervisory capacity label [PF].
+   Input: data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Orchestrator/v1/Mycroft - News Intelligence Agent.json.
+   Output: provenance fields: workflow_path, exists, parsed_ok, title_matches_pipeline, source_inventory_checked.
+   Where output goes: logs/gate-decisions/.
+2. Step name: normalizenewsapi. Labor: AI with Human gate.
+   Script called: `scripts/gigo/mycroft-news-intelligence-agent-2__normalizenewsapi.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/mycroft-news-intelligence-agent-2/.
+3. Step name: NewsApiKey. Labor: AI with Human gate.
+   Script called: `scripts/ingest/mycroft-news-intelligence-agent-2__newsapikey.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/mycroft-news-intelligence-agent-2/.
+4. Step name: HTTP Request. Labor: AI with Human gate.
+   Script called: `scripts/ingest/mycroft-news-intelligence-agent-2__http-request.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/mycroft-news-intelligence-agent-2/.
+5. Step name: XML. Labor: AI with Human gate.
+   Script called: `scripts/gigo/mycroft-news-intelligence-agent-2__xml.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/mycroft-news-intelligence-agent-2/.
+6. Step name: ProcessNewData. Labor: AI with Human gate.
+   Script called: `scripts/gigo/mycroft-news-intelligence-agent-2__processnewdata.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/mycroft-news-intelligence-agent-2/.
+7. Step name: HTTP Request1. Labor: AI with Human gate.
+   Script called: `scripts/ingest/mycroft-news-intelligence-agent-2__http-request1.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/mycroft-news-intelligence-agent-2/.
+8. Step name: RiskCalculator. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-news-intelligence-agent-2__riskcalculator.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+9. Step name: Insert rows in a table. Labor: AI with Human gate.
+   Script called: `scripts/gigo/mycroft-news-intelligence-agent-2__insert-rows-in-a-table.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/mycroft-news-intelligence-agent-2/.
+10. Step name: Alert Generator Code Node. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/mycroft-news-intelligence-agent-2__alert-generator-code-node.py`
+   Input: approved upstream output or sample fixture.
+   Output: markdown report sections: run summary, source status, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
+11. Step name: Send email. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/mycroft-news-intelligence-agent-2__send-email.py`
+   Input: approved upstream output or sample fixture.
+   Output: markdown report sections: run summary, source status, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
+12. Step name: DailyGeneratorCode. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/mycroft-news-intelligence-agent-2__dailygeneratorcode.py`
+   Input: approved upstream output or sample fixture.
+   Output: markdown report sections: run summary, source status, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
+13. Step name: Webhook. Labor: AI with Human gate.
+   Script called: `scripts/tools/mycroft-news-intelligence-agent-2__webhook.py`
+   Input: approved upstream output or sample fixture.
+   Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
+   Where output goes: logs/.
+14. Step name: Respond to Webhook. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/mycroft-news-intelligence-agent-2__respond-to-webhook.py`
+   Input: approved upstream output or sample fixture.
+   Output: markdown report sections: run summary, source status, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
+15. Step name: Produce human report. Labor: AI with Human review.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/mycroft-news-intelligence-agent-2__produce-human-report.py`
+   Input: agent log plus raw and verified outputs.
+   Output: markdown report sections: run summary, source inventory, inputs used, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
 
 ## Output Contract
 
 ### Agent output
-
-Agent output goes to `logs/mycroft-news-intelligence-agent-2/<run-id>.json`. It must include source workflow path, scripts used, node classifications, credential status, live-call status, validation results, output paths, stop conditions, and human decisions.
+File: `logs/mycroft-news-intelligence-agent-2-[DATE].json`
+Fields: `workflow`, `run_id`, `mode`, `steps_completed`, `records_seen`, `rejects`, `duplicates`, `flags`, `stop_conditions`, `todo_items`, `source_files`, `gate_decisions`, `live_call_performed`, `generated_at`.
 
 ### Human report
-
-The human report goes to `reports/generated/mycroft-news-intelligence-agent-2-<date>.md`. It surfaces the workflow result, source coverage, missing data, anomalies, and decisions required before downstream use.
+File: `reports/generated/mycroft-news-intelligence-agent-2-[DATE].md`
+Reader: domain lead or human boss responsible for accepting the `Mycroft - News Intelligence Agent` run.
+Decision enabled: approve the run for the next phase, request source/schema fixes, or block live execution.
+Sections: Run summary, source inventory, inputs used, steps completed, records seen, rejects, duplicates, flags, typed TODOs, gate decisions, evidence-backed findings, decision recommendation.
 
 ## Stop Conditions
 
@@ -53,41 +156,71 @@ The human report goes to `reports/generated/mycroft-news-intelligence-agent-2-<d
 - Stop if required local source data is missing and no approved live-call path is available.
 - Stop if generated outputs omit provenance or make unsupported analytical claims.
 
+## Snickerdoodle
+
+### Run Commands
+Full dialogic run:
+`snickerdoodle run mycroft-news-intelligence-agent-2 --mode dialogic`
+
+Sample mode (no live network calls, no writes):
+`snickerdoodle run mycroft-news-intelligence-agent-2 --mode dialogic --sample`
+
+### Step Commands
+
+| Step | CLI Command | Flags |
+|---|---|---|
+| normalizenewsapi | `snickerdoodle run mycroft-news-intelligence-agent-2 --step normalizenewsapi` |  |
+| NewsApiKey | `snickerdoodle run mycroft-news-intelligence-agent-2 --step newsapikey` | `--sample` |
+| HTTP Request | `snickerdoodle run mycroft-news-intelligence-agent-2 --step http-request` | `--sample` |
+| XML | `snickerdoodle run mycroft-news-intelligence-agent-2 --step xml` |  |
+| ProcessNewData | `snickerdoodle run mycroft-news-intelligence-agent-2 --step processnewdata` |  |
+| HTTP Request1 | `snickerdoodle run mycroft-news-intelligence-agent-2 --step http-request1` | `--sample` |
+| RiskCalculator | `snickerdoodle run mycroft-news-intelligence-agent-2 --step riskcalculator` | `--no-write` |
+| Insert rows in a table | `snickerdoodle run mycroft-news-intelligence-agent-2 --step insert-rows-in-a-table` |  |
+| Alert Generator Code Node | `snickerdoodle run mycroft-news-intelligence-agent-2 --step alert-generator-code-node` | `--no-write` |
+| Send email | `snickerdoodle run mycroft-news-intelligence-agent-2 --step send-email` | `--no-write` |
+| DailyGeneratorCode | `snickerdoodle run mycroft-news-intelligence-agent-2 --step dailygeneratorcode` | `--no-write` |
+| Webhook | `snickerdoodle run mycroft-news-intelligence-agent-2 --step webhook` | `--no-write` |
+| Respond to Webhook | `snickerdoodle run mycroft-news-intelligence-agent-2 --step respond-to-webhook` | `--no-write` |
+| Produce human report | `snickerdoodle run mycroft-news-intelligence-agent-2 --step produce-human-report` | `--no-write` |
+
+### Gate Commands
+
+| Gate | CLI Command |
+|---|---|
+| Gate 1 - source/input readiness | `snickerdoodle gate mycroft-news-intelligence-agent-2 --gate 1 --decision approve --note "..."` |
+| Gate 2 - sample run | `snickerdoodle gate mycroft-news-intelligence-agent-2 --gate 2 --decision approve --note "..."` |
+| Gate 3 - report contract | `snickerdoodle gate mycroft-news-intelligence-agent-2 --gate 3 --decision approve --note "..."` |
+
+### Script Locations
+
+| Step | Script Path | Layer |
+|---|---|---|
+| normalizenewsapi | `scripts/gigo/mycroft-news-intelligence-agent-2__normalizenewsapi.py` | gigo |
+| NewsApiKey | `scripts/ingest/mycroft-news-intelligence-agent-2__newsapikey.py` | ingest |
+| HTTP Request | `scripts/ingest/mycroft-news-intelligence-agent-2__http-request.py` | ingest |
+| XML | `scripts/gigo/mycroft-news-intelligence-agent-2__xml.py` | gigo |
+| ProcessNewData | `scripts/gigo/mycroft-news-intelligence-agent-2__processnewdata.py` | gigo |
+| HTTP Request1 | `scripts/ingest/mycroft-news-intelligence-agent-2__http-request1.py` | ingest |
+| RiskCalculator | `scripts/tools/mycroft-news-intelligence-agent-2__riskcalculator.py` | tool |
+| Insert rows in a table | `scripts/gigo/mycroft-news-intelligence-agent-2__insert-rows-in-a-table.py` | gigo |
+| Alert Generator Code Node | `[TODO: DEV] Create or map script path: scripts/tools/mycroft-news-intelligence-agent-2__alert-generator-code-node.py` | tool |
+| Send email | `[TODO: DEV] Create or map script path: scripts/tools/mycroft-news-intelligence-agent-2__send-email.py` | tool |
+| DailyGeneratorCode | `[TODO: DEV] Create or map script path: scripts/tools/mycroft-news-intelligence-agent-2__dailygeneratorcode.py` | tool |
+| Webhook | `scripts/tools/mycroft-news-intelligence-agent-2__webhook.py` | tool |
+| Respond to Webhook | `[TODO: DEV] Create or map script path: scripts/tools/mycroft-news-intelligence-agent-2__respond-to-webhook.py` | tool |
+| Produce human report | `[TODO: DEV] Create or map script path: scripts/tools/mycroft-news-intelligence-agent-2__produce-human-report.py` | tool |
+
+### Output Locations
+
+| Output | Path | Format |
+|---|---|---|
+| Raw ingest | `data/raw/mycroft-news-intelligence-agent-2/` | JSON |
+| Verified data | `data/verified/mycroft-news-intelligence-agent-2/` | JSON |
+| Agent log | `logs/mycroft-news-intelligence-agent-2-[DATE].json` | JSON |
+| Human report | `reports/generated/mycroft-news-intelligence-agent-2-[DATE].md` | Markdown |
+| Gate decisions | `logs/gate-decisions/` | JSON |
+
 ## Provenance
 
-Original n8n JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Orchestrator/v1/Mycroft - News Intelligence Agent.json`
-
-## Node Classification
-
-| Order | Node Name | Node Type | Classification |
-|---|---|---|---|
-| 1 | Company List | `code` | conductor |
-| 2 | Build Query | `code` | conductor |
-| 3 | Merge | `merge` | conductor |
-| 4 | normalizenewsapi | `code` | gigo |
-| 5 | NewsApiKey | `httpRequest` | ingest |
-| 6 | HTTP Request | `httpRequest` | ingest |
-| 7 | XML | `xml` | gigo |
-| 8 | ProcessNewData | `code` | gigo |
-| 9 | Edit Fields | `set` | conductor |
-| 10 | HTTP Request1 | `httpRequest` | ingest |
-| 11 | RiskCalculator | `code` | tool |
-| 12 | Insert rows in a table | `postgres` | gigo |
-| 13 | Alert Generator Code Node | `code` | report |
-| 14 | Send email | `emailSend` | report |
-| 15 | DailyGeneratorCode | `code` | report |
-| 16 | Webhook | `webhook` | tool |
-| 17 | Respond to Webhook | `respondToWebhook` | report |
-| 18 | Set Variables | `set` | conductor |
-
-## Script Index
-
-- `scripts/ingest/mycroft-news-intelligence-agent-2__newsapikey.py`
-- `scripts/ingest/mycroft-news-intelligence-agent-2__http-request.py`
-- `scripts/ingest/mycroft-news-intelligence-agent-2__http-request1.py`
-- `scripts/gigo/mycroft-news-intelligence-agent-2__normalizenewsapi.py`
-- `scripts/gigo/mycroft-news-intelligence-agent-2__xml.py`
-- `scripts/gigo/mycroft-news-intelligence-agent-2__processnewdata.py`
-- `scripts/gigo/mycroft-news-intelligence-agent-2__insert-rows-in-a-table.py`
-- `scripts/tools/mycroft-news-intelligence-agent-2__riskcalculator.py`
-- `scripts/tools/mycroft-news-intelligence-agent-2__webhook.py`
+Original workflow JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Orchestrator/v1/Mycroft - News Intelligence Agent.json`

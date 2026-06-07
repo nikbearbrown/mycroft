@@ -1,93 +1,302 @@
-# Recipe: Contradiction_detection_agent
+# Contradiction_detection_agent
 
-## Executive Summary
+## Purpose
 
-This recipe converts the original n8n workflow into an agent-readable recipe for Mycroft. It is primarily for agents to execute or adapt, while giving humans a compact summary of what the workflow does, what evidence it should prefer, and what checks must pass before automation continues.
+Contradiction_detection_agent defines a Mycroft pipeline for collecting, transforming, or reviewing finance and intelligence signals related to contradiction_detection_agent. It answers whether the available local evidence and approved live sources are sufficient for a human decision without relying on unapproved external writes or unsupported analytical claims.
 
-## Original Workflow
+## Source Inventory
 
-- Source: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Contradiction_Detection_Agent/Contradiction_detection_agent.json`
-- Imported from pantry path: `n8n_Workflows/Contradiction_Detection_Agent/Contradiction_detection_agent.json`
-- Node count: 26
+| Source Node | Node Type | Source URL or Path | Human Check |
+|---|---|---|---|
+| DB: Fetch Earnings Guidance Signals | postgres | [TODO: DATA SOURCE] Extract exact URL/path/source contract from original workflow JSON. | Confirm source is allowed, current, and rate-safe before live fetch. |
+| DB: Fetch Risk Admissions | postgres | [TODO: DATA SOURCE] Extract exact URL/path/source contract from original workflow JSON. | Confirm source is allowed, current, and rate-safe before live fetch. |
+| DB: Fetch QA Pressure Map | postgres | [TODO: DATA SOURCE] Extract exact URL/path/source contract from original workflow JSON. | Confirm source is allowed, current, and rate-safe before live fetch. |
+| DB: Fetch News Signals | postgres | [TODO: DATA SOURCE] Extract exact URL/path/source contract from original workflow JSON. | Confirm source is allowed, current, and rate-safe before live fetch. |
+| DB: Fetch Tech Stack Signals | postgres | [TODO: DATA SOURCE] Extract exact URL/path/source contract from original workflow JSON. | Confirm source is allowed, current, and rate-safe before live fetch. |
+| Groq: Analyse Contradictions | httpRequest | [TODO: DATA SOURCE] Extract exact URL/path/source contract from original workflow JSON. | Confirm source is allowed, current, and rate-safe before live fetch. |
+| HTTP Request | httpRequest | [TODO: DATA SOURCE] Extract exact URL/path/source contract from original workflow JSON. | Confirm source is allowed, current, and rate-safe before live fetch. |
 
-## Required Reads
+## Node Classification
 
-1. Check `data/mycroft-main/` for verified local or database data that satisfies the request.
-2. Check `scripts/mycroft-main/` for vetted scripts that already perform the needed extraction, transformation, or validation.
-3. Read this workflow's original JSON before changing behavior.
-4. Only use live web/API lookup when verified local data does not exist or is explicitly stale.
+| Node Name | Node Type | Classification |
+|---|---|---|
+| Manual Trigger | manualTrigger | conductor |
+| Set Company Input | set | gigo |
+| DB: Fetch Earnings Guidance Signals | postgres | ingest |
+| DB: Fetch Risk Admissions | postgres | ingest |
+| DB: Fetch QA Pressure Map | postgres | ingest |
+| DB: Fetch News Signals | postgres | ingest |
+| DB: Fetch Tech Stack Signals | postgres | ingest |
+| Aggregate All Signals | code | gigo |
+| Run Pattern Detection Engine | code | gigo |
+| Build Groq Prompt | code | gigo |
+| LLM Needed? | if | conductor |
+| Groq: Analyse Contradictions | httpRequest | ingest |
+| Process Groq Response | code | gigo |
+| No-Flag Passthrough | code | gigo |
+| DB: Insert Contradiction Report | postgres | gigo |
+| Fan Out Flags | code | gigo |
+| DB: Insert Contradiction Flag | postgres | gigo |
+| Build Final Report | code | gigo |
+| Execute a SQL query | postgres | gigo |
+| Execute a SQL query1 | postgres | gigo |
+| Execute a SQL query2 | postgres | gigo |
+| Execute a SQL query3 | postgres | gigo |
+| HTTP Request | httpRequest | ingest |
+| Process News Response | code | gigo |
+| DB: Save News Signals | postgres | gigo |
+| Merge | merge | conductor |
+
+## Inputs
+
+| Input | Type | Source | Required? |
+|---|---|---|---|
+| Original n8n workflow JSON | JSON | `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Contradiction_Detection_Agent/Contradiction_detection_agent.json` | Yes |
 
 ## Phase Gates
 
-1. Data gate: identify the trusted data source, freshness, provenance, and missing fields.
-2. Script gate: prefer an existing vetted script; if a new script is needed, write a narrow test before using it in a pipeline.
-3. Dry-run gate: execute the smallest non-destructive sample and save logs or outputs.
-4. Validation gate: compare outputs against expected schema, row counts, citations, or workflow invariants.
-5. Automation gate: only run a full automated pipeline after the previous gates pass.
+1. Source identity gate: Original workflow JSON exists and is the intended source. Test: `test -f "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Contradiction_Detection_Agent/Contradiction_detection_agent.json"`.
+   Human capacity: [PF].
+2. Input readiness gate: Every required input in this recipe exists or is marked with a typed TODO. Test: `rg -n "TODO:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/n8n-contradiction-detection-agent.md`.
+   Human capacity: [PA].
+3. Sample run gate: Ingest and tool steps run without live side effects before live mode. Test: `snickerdoodle run n8n-contradiction-detection-agent --mode dialogic --sample`.
+   Human capacity: [TO].
+4. Data-shape gate: Raw and verified outputs parse as JSON where applicable. Test: `find data/raw/n8n-contradiction-detection-agent data/verified/n8n-contradiction-detection-agent -name "*.json" -print -exec python3 -m json.tool {} \;`.
+   Human capacity: [IJ].
+5. Report contract gate: Human report defines reader, decision enabled, and sections. Test: `rg -n "Reader:|Decision enabled:|Sections:" /Users/bear/Documents/CoWork/bear-textbooks/books/mycroft/recipes/n8n-contradiction-detection-agent.md`.
+   Human capacity: [EI].
 
-## Trigger Surface
+## Steps
 
-Manual Trigger
-
-## Agent/AI Nodes
-
-No explicit AI-agent node detected by type/name. Treat transformation and decision nodes as candidates for agentic conversion.
-
-## External Writes or Side Effects
-
-DB: Fetch Earnings Guidance Signals, DB: Fetch Risk Admissions, DB: Fetch QA Pressure Map, DB: Fetch News Signals, DB: Fetch Tech Stack Signals, Groq: Analyse Contradictions, DB: Insert Contradiction Report, DB: Insert Contradiction Flag, Execute a SQL query, Execute a SQL query1, Execute a SQL query2, Execute a SQL query3, HTTP Request, DB: Save News Signals
-
-## Node Type Summary
-
-| Node Type | Count |
-| --- | --- |
-| code | 8 |
-| httpRequest | 2 |
-| if | 1 |
-| manualTrigger | 1 |
-| merge | 1 |
-| postgres | 12 |
-| set | 1 |
-
-## Workflow Nodes
-
-| Order | Node | Type |
-| --- | --- | --- |
-| 1 | Manual Trigger | manualTrigger |
-| 2 | Set Company Input | set |
-| 3 | DB: Fetch Earnings Guidance Signals | postgres |
-| 4 | DB: Fetch Risk Admissions | postgres |
-| 5 | DB: Fetch QA Pressure Map | postgres |
-| 6 | DB: Fetch News Signals | postgres |
-| 7 | DB: Fetch Tech Stack Signals | postgres |
-| 8 | Aggregate All Signals | code |
-| 9 | Run Pattern Detection Engine | code |
-| 10 | Build Groq Prompt | code |
-| 11 | LLM Needed? | if |
-| 12 | Groq: Analyse Contradictions | httpRequest |
-| 13 | Process Groq Response | code |
-| 14 | No-Flag Passthrough | code |
-| 15 | DB: Insert Contradiction Report | postgres |
-| 16 | Fan Out Flags | code |
-| 17 | DB: Insert Contradiction Flag | postgres |
-| 18 | Build Final Report | code |
-| 19 | Execute a SQL query | postgres |
-| 20 | Execute a SQL query1 | postgres |
-| 21 | Execute a SQL query2 | postgres |
-| 22 | Execute a SQL query3 | postgres |
-| 23 | HTTP Request | httpRequest |
-| 24 | Process News Response | code |
-| 25 | DB: Save News Signals | postgres |
-| 26 | Merge | merge |
+1. Step name: Verify provenance and source intent. Labor: Human.
+   Human action: Record approval, rejection, or requested changes with supervisory capacity label [PF].
+   Input: data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Contradiction_Detection_Agent/Contradiction_detection_agent.json.
+   Output: provenance fields: workflow_path, exists, parsed_ok, title_matches_pipeline, source_inventory_checked.
+   Where output goes: logs/gate-decisions/.
+2. Step name: Set Company Input. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__set-company-input.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-contradiction-detection-agent/.
+3. Step name: DB: Fetch Earnings Guidance Signals. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/ingest/n8n-contradiction-detection-agent__db-fetch-earnings-guidance-signals.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/n8n-contradiction-detection-agent/.
+4. Step name: DB: Fetch Risk Admissions. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/ingest/n8n-contradiction-detection-agent__db-fetch-risk-admissions.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/n8n-contradiction-detection-agent/.
+5. Step name: DB: Fetch QA Pressure Map. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/ingest/n8n-contradiction-detection-agent__db-fetch-qa-pressure-map.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/n8n-contradiction-detection-agent/.
+6. Step name: DB: Fetch News Signals. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/ingest/n8n-contradiction-detection-agent__db-fetch-news-signals.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/n8n-contradiction-detection-agent/.
+7. Step name: DB: Fetch Tech Stack Signals. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/ingest/n8n-contradiction-detection-agent__db-fetch-tech-stack-signals.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/n8n-contradiction-detection-agent/.
+8. Step name: Aggregate All Signals. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__aggregate-all-signals.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-contradiction-detection-agent/.
+9. Step name: Run Pattern Detection Engine. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__run-pattern-detection-engine.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-contradiction-detection-agent/.
+10. Step name: Build Groq Prompt. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__build-groq-prompt.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-contradiction-detection-agent/.
+11. Step name: Groq: Analyse Contradictions. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/ingest/n8n-contradiction-detection-agent__groq-analyse-contradictions.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/n8n-contradiction-detection-agent/.
+12. Step name: Process Groq Response. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__process-groq-response.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-contradiction-detection-agent/.
+13. Step name: No-Flag Passthrough. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__no-flag-passthrough.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-contradiction-detection-agent/.
+14. Step name: DB: Insert Contradiction Report. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__db-insert-contradiction-report.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-contradiction-detection-agent/.
+15. Step name: Fan Out Flags. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__fan-out-flags.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-contradiction-detection-agent/.
+16. Step name: DB: Insert Contradiction Flag. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__db-insert-contradiction-flag.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-contradiction-detection-agent/.
+17. Step name: Build Final Report. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__build-final-report.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-contradiction-detection-agent/.
+18. Step name: Execute a SQL query. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__execute-a-sql-query.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-contradiction-detection-agent/.
+19. Step name: Execute a SQL query1. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__execute-a-sql-query1.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-contradiction-detection-agent/.
+20. Step name: Execute a SQL query2. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__execute-a-sql-query2.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-contradiction-detection-agent/.
+21. Step name: Execute a SQL query3. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__execute-a-sql-query3.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-contradiction-detection-agent/.
+22. Step name: HTTP Request. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/ingest/n8n-contradiction-detection-agent__http-request.py`
+   Input: approved upstream output or sample fixture.
+   Output: raw JSON fields: source_name, source_url_or_path, fetched_at, record_count, records, errors.
+   Where output goes: data/raw/n8n-contradiction-detection-agent/.
+23. Step name: Process News Response. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__process-news-response.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-contradiction-detection-agent/.
+24. Step name: DB: Save News Signals. Labor: AI with Human gate.
+   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__db-save-news-signals.py`
+   Input: approved upstream output or sample fixture.
+   Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
+   Where output goes: data/verified/n8n-contradiction-detection-agent/.
+25. Step name: Produce human report. Labor: AI with Human review.
+   Script called: `[TODO: DEV] Create or map script path: scripts/tools/n8n-contradiction-detection-agent__produce-human-report.py`
+   Input: agent log plus raw and verified outputs.
+   Output: markdown report sections: run summary, source inventory, inputs used, validation results, flags, typed TODOs, decision recommendation.
+   Where output goes: reports/generated/.
 
 ## Output Contract
 
-- Produce a short run report with inputs, source provenance, scripts used, validations performed, and generated artifacts.
-- Store durable outputs under `data/mycroft-main/` when they are data-like and `docs/mycroft-main/` when they are explanatory.
-- Note any unverified assumptions, missing credentials, external services, or failed gates.
+### Agent output
+File: `logs/n8n-contradiction-detection-agent-[DATE].json`
+Fields: `workflow`, `run_id`, `mode`, `steps_completed`, `records_seen`, `rejects`, `duplicates`, `flags`, `stop_conditions`, `todo_items`, `source_files`, `gate_decisions`, `live_call_performed`, `generated_at`.
+
+### Human report
+File: `reports/generated/n8n-contradiction-detection-agent-[DATE].md`
+Reader: domain lead or human boss responsible for accepting the `Contradiction_detection_agent` run.
+Decision enabled: approve the run for the next phase, request source/schema fixes, or block live execution.
+Sections: Run summary, source inventory, inputs used, steps completed, records seen, rejects, duplicates, flags, typed TODOs, gate decisions, evidence-backed findings, decision recommendation.
 
 ## Stop Conditions
 
 - Stop if verified local data contradicts live/API data until provenance is resolved.
 - Stop if a required credential, endpoint, database, or workflow invariant is missing.
 - Stop before bulk external writes, notifications, or trades unless the human explicitly approves that run.
+
+## Snickerdoodle
+
+### Run Commands
+Full dialogic run:
+`snickerdoodle run n8n-contradiction-detection-agent --mode dialogic`
+
+Sample mode (no live network calls, no writes):
+`snickerdoodle run n8n-contradiction-detection-agent --mode dialogic --sample`
+
+### Step Commands
+
+| Step | CLI Command | Flags |
+|---|---|---|
+| Set Company Input | `snickerdoodle run n8n-contradiction-detection-agent --step set-company-input` |  |
+| DB: Fetch Earnings Guidance Signals | `snickerdoodle run n8n-contradiction-detection-agent --step db-fetch-earnings-guidance-signals` | `--sample` |
+| DB: Fetch Risk Admissions | `snickerdoodle run n8n-contradiction-detection-agent --step db-fetch-risk-admissions` | `--sample` |
+| DB: Fetch QA Pressure Map | `snickerdoodle run n8n-contradiction-detection-agent --step db-fetch-qa-pressure-map` | `--sample` |
+| DB: Fetch News Signals | `snickerdoodle run n8n-contradiction-detection-agent --step db-fetch-news-signals` | `--sample` |
+| DB: Fetch Tech Stack Signals | `snickerdoodle run n8n-contradiction-detection-agent --step db-fetch-tech-stack-signals` | `--sample` |
+| Aggregate All Signals | `snickerdoodle run n8n-contradiction-detection-agent --step aggregate-all-signals` |  |
+| Run Pattern Detection Engine | `snickerdoodle run n8n-contradiction-detection-agent --step run-pattern-detection-engine` |  |
+| Build Groq Prompt | `snickerdoodle run n8n-contradiction-detection-agent --step build-groq-prompt` |  |
+| Groq: Analyse Contradictions | `snickerdoodle run n8n-contradiction-detection-agent --step groq-analyse-contradictions` | `--sample` |
+| Process Groq Response | `snickerdoodle run n8n-contradiction-detection-agent --step process-groq-response` |  |
+| No-Flag Passthrough | `snickerdoodle run n8n-contradiction-detection-agent --step no-flag-passthrough` |  |
+| DB: Insert Contradiction Report | `snickerdoodle run n8n-contradiction-detection-agent --step db-insert-contradiction-report` |  |
+| Fan Out Flags | `snickerdoodle run n8n-contradiction-detection-agent --step fan-out-flags` |  |
+| DB: Insert Contradiction Flag | `snickerdoodle run n8n-contradiction-detection-agent --step db-insert-contradiction-flag` |  |
+| Build Final Report | `snickerdoodle run n8n-contradiction-detection-agent --step build-final-report` |  |
+| Execute a SQL query | `snickerdoodle run n8n-contradiction-detection-agent --step execute-a-sql-query` |  |
+| Execute a SQL query1 | `snickerdoodle run n8n-contradiction-detection-agent --step execute-a-sql-query1` |  |
+| Execute a SQL query2 | `snickerdoodle run n8n-contradiction-detection-agent --step execute-a-sql-query2` |  |
+| Execute a SQL query3 | `snickerdoodle run n8n-contradiction-detection-agent --step execute-a-sql-query3` |  |
+| HTTP Request | `snickerdoodle run n8n-contradiction-detection-agent --step http-request` | `--sample` |
+| Process News Response | `snickerdoodle run n8n-contradiction-detection-agent --step process-news-response` |  |
+| DB: Save News Signals | `snickerdoodle run n8n-contradiction-detection-agent --step db-save-news-signals` |  |
+| Produce human report | `snickerdoodle run n8n-contradiction-detection-agent --step produce-human-report` | `--no-write` |
+
+### Gate Commands
+
+| Gate | CLI Command |
+|---|---|
+| Gate 1 - source/input readiness | `snickerdoodle gate n8n-contradiction-detection-agent --gate 1 --decision approve --note "..."` |
+| Gate 2 - sample run | `snickerdoodle gate n8n-contradiction-detection-agent --gate 2 --decision approve --note "..."` |
+| Gate 3 - report contract | `snickerdoodle gate n8n-contradiction-detection-agent --gate 3 --decision approve --note "..."` |
+
+### Script Locations
+
+| Step | Script Path | Layer |
+|---|---|---|
+| Set Company Input | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__set-company-input.py` | gigo |
+| DB: Fetch Earnings Guidance Signals | `[TODO: DEV] Create or map script path: scripts/ingest/n8n-contradiction-detection-agent__db-fetch-earnings-guidance-signals.py` | ingest |
+| DB: Fetch Risk Admissions | `[TODO: DEV] Create or map script path: scripts/ingest/n8n-contradiction-detection-agent__db-fetch-risk-admissions.py` | ingest |
+| DB: Fetch QA Pressure Map | `[TODO: DEV] Create or map script path: scripts/ingest/n8n-contradiction-detection-agent__db-fetch-qa-pressure-map.py` | ingest |
+| DB: Fetch News Signals | `[TODO: DEV] Create or map script path: scripts/ingest/n8n-contradiction-detection-agent__db-fetch-news-signals.py` | ingest |
+| DB: Fetch Tech Stack Signals | `[TODO: DEV] Create or map script path: scripts/ingest/n8n-contradiction-detection-agent__db-fetch-tech-stack-signals.py` | ingest |
+| Aggregate All Signals | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__aggregate-all-signals.py` | gigo |
+| Run Pattern Detection Engine | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__run-pattern-detection-engine.py` | gigo |
+| Build Groq Prompt | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__build-groq-prompt.py` | gigo |
+| Groq: Analyse Contradictions | `[TODO: DEV] Create or map script path: scripts/ingest/n8n-contradiction-detection-agent__groq-analyse-contradictions.py` | ingest |
+| Process Groq Response | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__process-groq-response.py` | gigo |
+| No-Flag Passthrough | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__no-flag-passthrough.py` | gigo |
+| DB: Insert Contradiction Report | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__db-insert-contradiction-report.py` | gigo |
+| Fan Out Flags | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__fan-out-flags.py` | gigo |
+| DB: Insert Contradiction Flag | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__db-insert-contradiction-flag.py` | gigo |
+| Build Final Report | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__build-final-report.py` | gigo |
+| Execute a SQL query | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__execute-a-sql-query.py` | gigo |
+| Execute a SQL query1 | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__execute-a-sql-query1.py` | gigo |
+| Execute a SQL query2 | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__execute-a-sql-query2.py` | gigo |
+| Execute a SQL query3 | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__execute-a-sql-query3.py` | gigo |
+| HTTP Request | `[TODO: DEV] Create or map script path: scripts/ingest/n8n-contradiction-detection-agent__http-request.py` | ingest |
+| Process News Response | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__process-news-response.py` | gigo |
+| DB: Save News Signals | `[TODO: DEV] Create or map script path: scripts/gigo/n8n-contradiction-detection-agent__db-save-news-signals.py` | gigo |
+| Produce human report | `[TODO: DEV] Create or map script path: scripts/tools/n8n-contradiction-detection-agent__produce-human-report.py` | tool |
+
+### Output Locations
+
+| Output | Path | Format |
+|---|---|---|
+| Raw ingest | `data/raw/n8n-contradiction-detection-agent/` | JSON |
+| Verified data | `data/verified/n8n-contradiction-detection-agent/` | JSON |
+| Agent log | `logs/n8n-contradiction-detection-agent-[DATE].json` | JSON |
+| Human report | `reports/generated/n8n-contradiction-detection-agent-[DATE].md` | Markdown |
+| Gate decisions | `logs/gate-decisions/` | JSON |
+
+## Provenance
+
+Original workflow JSON: `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Contradiction_Detection_Agent/Contradiction_detection_agent.json`
