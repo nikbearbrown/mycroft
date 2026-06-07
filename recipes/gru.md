@@ -801,7 +801,7 @@ NOT "generate a report" as a terminal purpose statement.
 ## Steps
 
 1. Step name: [name]. Labor: [AI / Human / AI with Human gate].
-   Script called: [scripts/ingest|gigo|tools/<workflow-name>__<step-slug>.py]
+   Script called: [scripts/ingest|gigo|tools/<workflow-name>-<step-slug>.py]
    OR Human action: [exact action + supervisory capacity label].
    Input: [what it reads — specific file path or data description].
    Output: [what it produces — specific fields or schema, not "cleaned data"].
@@ -853,9 +853,9 @@ Sample mode (no live network calls, no writes):
 
 | Step | Script Path | Layer |
 |---|---|---|
-| [step name] | `scripts/ingest/<workflow-name>__<step-slug>.py` | ingest |
-| [step name] | `scripts/gigo/<workflow-name>__<step-slug>.py` | gigo |
-| [step name] | `scripts/tools/<workflow-name>__<step-slug>.py` | tool |
+| [step name] | `scripts/ingest/workflow-name-step-slug.py` | ingest |
+| [step name] | `scripts/gigo/workflow-name-step-slug.py` | gigo |
+| [step name] | `scripts/tools/workflow-name-step-slug.py` | tool |
 
 ### Output Locations
 
