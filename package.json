@@ -4,7 +4,9 @@
   "type": "module",
   "description": "Cowork agentic book repository",
   "scripts": {
-    "verify": "echo \"Add repo-specific verification scripts under scripts/\"",
+    "verify": "node scripts/conformance.mjs",
+    "build-instructions": "node scripts/build-instructions.mjs",
+    "to-markdown": "node scripts/to-markdown.mjs",
     "svg-to-png": "node scripts/svg-to-png.mjs"
   },
   "dependencies": {

@@ -1,0 +1,35 @@
+name: verify
+
+# Machine half of P4 (MYCROFT.md): every push/PR must conform, and the generated
+# instruction files must match their source. Humans still verify adequacy.
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PyYAML (conformance parses YAML via python3)
+        run: pip install pyyaml
+
+      - name: Conformance — JSON/YAML/JS/MD well-formed
+        run: node scripts/conformance.mjs
+
+      - name: Drift guard — AGENTS.md / CLAUDE.md must match instructions/ source
+        run: |
+          node scripts/build-instructions.mjs
+          echo "--- diffing generated instruction files vs committed ---"
+          diff -u AGENTS.md  instructions/.build/AGENTS.md
+          diff -u CLAUDE.md  instructions/.build/CLAUDE.md
+          echo "✓ instruction files are in sync with source"

@@ -1,0 +1,28 @@
+name: mycroft-instructions
+title: "Mycroft agent instructions (source for AGENTS.md + CLAUDE.md)"
+
+# Shared rule modules — the portable ~95%, the SAME library Madison draws from
+# (vendored per-repo so the two can diverge without coupling). Mycroft selects
+# all six because it has the backing tools/files each one references
+# (MYCROFT.md, DOMAIN.md, conformance.mjs, to-markdown.mjs). Order = output order.
+shared:
+  - governance.md
+  - markdown-default.md
+  - "no-delete.md"
+  - conformance-gate.md
+  - subagent-scoping.md
+  - completion-report.md
+
+# Project-specific source (identity, layout rules, the help menu).
+project: mycroft.md
+
+# Appended ONLY to CLAUDE.md. Claude Code supports @import; other tools read
+# AGENTS.md directly and resolve MYCROFT.md / DOMAIN.md on demand per governance.md.
+claude_only:
+  - "## Claude Code"
+  - "@MYCROFT.md"
+  - "- Use plan mode before edits under recipes/ or data/verified/."
+
+targets:
+  - agents
+  - claude

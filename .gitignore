@@ -4,3 +4,14 @@ output/
 *.log
 .env
 data/private/
+
+# generated adapters + build scratch (regenerate from source)
+instructions/.build/
+__pycache__/
+*.pyc
+*.bak
+
+# vendored upstream import — quarantined Tier 3 (on disk, out of version control)
+scripts/mycroft-main/
+docs/mycroft-main/
+data/mycroft-main/
