@@ -1,728 +1,806 @@
-# Mycroft
+# Mycroft Finance Recipe Engine
 ## Tik TOC Architecture
 
-**Working title:** Mycroft: Agentic Investment Intelligence as Supervised Research  
+**Working title:** Mycroft Finance Recipe Engine: Verified Workflows for Entry- and Mid-Level Finance Practitioners  
 **Repository:** `books/mycroft`  
-**Source adaptation:** Mycroft agentic investment repository plus the generic Claude agentic coding/supervision model in `pantry/claude-agentic-ai.md`  
-**Document:** Tik TOC silent intake and chapter architecture  
-**Status:** Architecture draft for manuscript alignment, chapter repair, and production planning  
+**Source adaptation:** Mycroft operating system, existing Mycroft finance recipes, attached finance recipe research, and the full TIKTOC detail template from the Causal Reasoning book architecture.  
+**Document:** TIKTOC silent intake and chapter architecture  
+**Status:** Architecture draft for manuscript rewrite, chapter renaming, and practitioner-guide production planning  
 
 ---
 
-## 1. Book Concept and Thesis
+## Document Structure
 
-### Concept Summary
-
-This book teaches readers how to understand, design, and supervise an agentic
-investment intelligence system without mistaking automation for investment
-wisdom. It uses the Mycroft repository as the practical ground: imported n8n
-workflows, generated recipe cards, verified local data, script-first operating
-rules, and human review gates.
-
-Mycroft is an educational experiment in using AI to study AI. Its purpose is
-not to promise superior investment returns. Its purpose is to make investment
-research workflows inspectable: what data entered, what agent processed it,
-what assumptions were made, what output was produced, what was verified, and
-where a human must intervene.
-
-### One-Sentence Logline
-
-An investment agent is not a financial oracle; it is delegated research under
-scope, evidence, approval, and verification.
-
-### Central Thesis
-
-Mycroft argues that agentic AI can improve investment learning only when the
-system is designed as supervised research rather than autonomous advice. The
-reader learns to decompose investment intelligence into bounded agent roles:
-research, verification, comparison, news monitoring, SEC analysis, patent
-signals, sentiment, forecasting, portfolio intelligence, risk management,
-advisory interfaces, and orchestration. The value is not that the system thinks
-for the investor. The value is that the system makes the research process more
-structured, auditable, and educational.
-
-### Adaptation From Claude Agentic AI
-
-The generic Claude agentic AI book contributes the operating discipline:
-
-- agentic work is supervised delegation, not autonomous replacement;
-- every workflow needs scope, approval, and verification;
-- tools and permissions expand both capability and risk;
-- plans are proposals, not proof;
-- humans remain accountable for judgment and public-facing outputs.
-
-Mycroft adapts that discipline to investment intelligence:
-
-- **Scope** becomes ticker universe, data sources, workflow permissions,
-  output type, and advisory boundary.
-- **Approval** becomes human review before claims, portfolio conclusions,
-  public reports, recommendations, or any action that could be read as advice.
-- **Verification** becomes source checks, data-date checks, audit trails,
-  contradiction detection, provenance notes, and separation between observation
-  and recommendation.
-
-The result is a book about agentic financial research: not "let AI invest for
-you," but "build a transparent system that helps humans learn how investment
-signals are gathered, challenged, synthesized, and reviewed."
+1. Book Concept and Thesis
+2. Learner Profile
+3. Book Type and Deployment Specification
+4. Repository-Specific Grounding
+5. Field Positioning
+6. Three-Act Learning Arc
+7. Sequencing Model
+8. Prerequisite Map
+9. Chapter-by-Chapter TOC
+10. Learning Outcomes by Chapter
+11. Running Project Spine
+12. Chapter Anatomy Template
+13. Recipe and Case Strategy
+14. Hard Topics, Contested Claims, and Aging Risk
+15. Market Positioning
+16. Feature List
+17. Out of Scope
+18. Adoption Risk Register
+19. Open Questions
 
 ---
 
-## 2. Learner Profile
+# Part 1 - Book Concept and Thesis
 
-### Primary Reader
+## Book Concept Summary
 
-Technically curious students, early-career analysts, finance learners,
-builders, and AI practitioners who want to understand how agentic systems can
-support investment research while preserving human judgment and evidence
-discipline.
+This book teaches entry- and mid-level finance practitioners how to build, read, and supervise Mycroft recipes for repeated finance work: variance packs, reconciliations, close support, AP/AR exception queues, cash visibility, control evidence, audit binders, contract/billing exception triage, and executive packet source checks.
 
-### Prior Knowledge Assumed
+The book is not about replacing finance judgment with AI. It is about turning repeated preparation work into verified workflows so human reviewers can spend more time on materiality, interpretation, accounting treatment, release, and accountability.
 
-- Basic comfort with AI assistants.
-- Basic familiarity with financial news, public companies, and portfolios.
-- Basic digital literacy: files, dashboards, workflows, spreadsheets, and web
-  sources.
-- Willingness to read workflow documentation and audit notes.
+Mycroft is both the framework and the working repository. The manuscript teaches the method; the repo shows recipes, phase gates, logs, reports, and data contracts. The reader learns by building a bounded finance recipe system that produces both machine-readable logs and human-readable decision reports.
 
-### Prior Knowledge Not Assumed
+## One-Sentence Logline
 
-- Professional investment analysis.
-- SEC filing expertise.
-- Patent analytics.
+Mycroft helps finance practitioners automate the preparation layer while preserving the human judgment layer that makes finance work accountable.
+
+## Central Thesis
+
+AI made finance execution cheaper; it did not make finance judgment cheaper. The useful opportunity is not a finance oracle, CFO bot, or autonomous analyst. The useful opportunity is a verified recipe system that gathers data, checks shape, matches records, surfaces exceptions, drafts review packs, and stops at explicit human gates before materiality, interpretation, accounting treatment, payment, disclosure, investor communication, tax position, regulatory filing, or release.
+
+This book argues that entry- and mid-level finance people can create substantial value by turning their recurring work into inspectable Mycroft recipes. The recipe does the repetitive evidence assembly. The human does the work that cannot be delegated: deciding whether the evidence is sufficient, what the numbers mean, which explanation is warranted, which risk matters, and whether the output can move forward.
+
+## Thesis Test
+
+The proposed book structure mirrors `the-reallocation-engine/chapters/`:
+
+- Chapters 1-5 establish the framework: fluency trap, reallocation principle, verified data contract, two customers, and evidence verification.
+- Chapters 6-15 teach concrete finance recipes that entry- and mid-level practitioners actually run.
+- Chapter 16 integrates the system through one bounded, logged, honest run.
+- Appendices synthesize principles and operating best practices.
+
+**Thesis test:** PASS. Every chapter builds a usable artifact and names the judgment AI cannot perform.
+
+## The Irreducibly Human Layer
+
+The attached Causal Reasoning architecture names the irreducibly human layer: problem formulation, identification, trust assessment, causal defense, metacognitive calibration, institutional judgment, and accountability. This finance book translates that layer into workplace finance:
+
+- Materiality is human.
+- Accounting treatment is human.
+- Causal explanation of a variance is human.
+- Control effectiveness conclusion is human.
+- Revenue-recognition judgment is human.
+- Payment release is human.
+- Public disclosure is human.
+- Investor or lender communication is human.
+- Regulatory filing and suspicious-activity decisions are human.
+
+AI can prepare the work surface. It cannot become the accountable finance professional.
+
+---
+
+# Part 2 - Learner Profile
+
+## Primary Reader
+
+An entry- or mid-level finance practitioner who spends much of the week gathering data, normalizing spreadsheets, comparing actuals to budget, preparing close support, chasing explanations, building dashboards, answering audit requests, or assembling management packets.
+
+Specific roles:
+
+- FP&A analyst
+- Budget analyst
+- Staff accountant
+- Senior accountant
+- Treasury analyst
+- Revenue analyst
+- Finance operations specialist
+- Internal-audit associate
+- Financial risk or compliance analyst
+- Early-career financial analyst using public company data
+
+## Prior Knowledge Assumed
+
+- Basic spreadsheet fluency.
+- Basic understanding of budgets, actuals, accounts, invoices, reports, and approvals.
+- Comfort reading tables and following file paths.
+- Willingness to work with structured recipe cards, logs, and report templates.
+- Basic awareness that finance work is reviewed and controlled.
+
+## Prior Knowledge Not Assumed
+
+- Python programming.
+- Advanced accounting policy.
+- SEC reporting expertise.
+- Audit methodology expertise.
+- Treasury operations expertise.
 - n8n workflow design.
 - Multi-agent orchestration.
-- Portfolio optimization theory.
 - Formal AI governance.
 
-### Misconceptions the Book Must Correct
+## Misconceptions the Book Must Correct
 
-1. "AI can pick stocks." Mycroft is an educational research system, not an
-   oracle or trading engine.
-2. "More agents means better intelligence." More agents expand the failure
-   surface unless roles, inputs, outputs, and checks are explicit.
-3. "A clean dashboard means the analysis is true." Presentation quality is not
-   verification.
-4. "Forecasting is prediction." Forecasting in this book is scenario discipline
-   and uncertainty communication, not certainty.
-5. "The orchestrator decides." The orchestration layer coordinates evidence;
-   humans decide how much weight to give it.
+1. "AI can explain the numbers." AI can draft candidate explanations, but causal explanation and materiality require human review.
+2. "If the reconciliation ties, the account is fine." Control totals are necessary, not sufficient.
+3. "A dashboard is a decision." A dashboard is only useful if metrics have definitions, owners, sources, and decision use.
+4. "Automation should remove review." In finance, automation should make review more focused and more traceable.
+5. "Variance commentary is just writing." Variance commentary is evidence, interpretation, and accountability.
+6. "The recipe can approve the work." A recipe can prepare the work; humans clear gates.
 
----
+## Motivation Type
 
-## 3. Book Type and Deployment
+Professional and practical. The reader wants to be faster, more reliable, and more valuable at work. They do not primarily want theory. They want recipes that make repeated finance work cleaner, more inspectable, and easier to review.
 
-### Primary Book Type
-
-Practitioner handbook with course-textbook utility.
-
-### Primary Adoption Context
-
-Graduate or advanced undergraduate courses in AI for finance, computational
-finance, agentic AI systems, investment research methods, financial literacy,
-or AI product design.
-
-### Secondary Adoption Context
-
-Professional development workshops, finance clubs, AI labs, open-source
-learning groups, and self-guided builders studying how to make agentic systems
-auditable.
-
-### Terminal Capability
-
-By the end of the book, the reader can design and supervise a bounded Mycroft
-workflow that:
-
-- names its research question;
-- identifies local source data and workflow JSON;
-- selects the appropriate agent recipe;
-- defines inputs, outputs, and stop conditions;
-- runs only within documented phase gates;
-- verifies output against source evidence;
-- separates observations from recommendations;
-- writes a short audit note.
+The book should reward useful caution. The reader should finish with a portfolio of artifacts that show they can supervise AI-assisted finance work without surrendering judgment.
 
 ---
 
-## 4. Repository-Specific Grounding
+# Part 3 - Book Type and Deployment Specification
 
-This Tik TOC is grounded in the active Mycroft repo.
+## Book Type
 
-### Manuscript Layer
+**Primary type:** Practitioner guide with course-textbook utility.
 
-- `book.md`: high-level book positioning.
-- `outline.md`: current outline placeholder.
-- `chapters/00-introduction.md`: introduction.
-- `chapters/01-chapter-01.md` through `chapters/12-chapter-12.md`: main
-  chapter placeholders.
-- `chapters/98-appendix-best-practices.md`: operational appendix.
-- `chapters/99-back-matter.md`: back matter.
+**Not:** A finance theory textbook, a valuation textbook, an accounting standards manual, a tax guide, an audit methodology manual, or an investment advice book.
 
-### Agentic System Layer
+## Primary Deployment Context
 
-- `AGENTS.md`: cross-agent operating rules.
-- `CLAUDE.md`: Claude/Cowork rules.
-- `DATA_CONTRACT.md`: local data and evidence rules.
-- `docs/`: human-readable system documentation.
-- `recipes/`: agent-readable workflow recipes.
-- `logs/RUN_LOG.md`: durable run log.
-- `scripts/`: maintained scripts.
-- `data/mycroft-main/`: imported Mycroft source data and assets.
-- `docs/mycroft-main/`: import notes and source documentation.
-- `scripts/mycroft-main/`: imported code/configuration retained for review.
+Workshops, applied finance analytics courses, AI-for-finance courses, finance transformation labs, business analytics programs, and self-guided workplace learning.
 
-### Workflow Recipe Layer
+## Secondary Deployment Context
 
-The import record in `docs/mycroft-main/MOVED-FROM-PANTRY.md` records 48 n8n
-workflows and 48 generated recipes. These recipes are the teaching spine for the
-repo's agentic workflows.
+Professional development for analysts, finance operations teams, internal audit teams, and AI builders creating supervised workflows for finance teams.
 
-Major recipe families:
+## Terminal Capability
 
-- research and analytics;
-- news and sentiment monitoring;
-- SEC filing analysis;
-- patent intelligence;
-- portfolio intelligence;
-- risk management and stress testing;
-- forecasting;
-- financial literacy and advisory interfaces;
-- orchestration and cross-agent synthesis;
-- open-source engineering health signals;
-- retail investor anxiety and behavioral analysis.
+By the end of the book, the reader can design and supervise a bounded Mycroft finance recipe that:
 
-### Operating Rule
-
-The repo's short rule is load-bearing:
-
-**Run the script and read the audit before you prompt. If the script does not
-exist, say so before inventing one.**
-
-This is the Mycroft version of the Claude control triad. Scope comes first,
-approval protects judgment, and verification makes the output usable.
+- names the finance task and period;
+- identifies source data, owners, versions, and freshness;
+- validates shape and control totals;
+- transforms data into an exception or review surface;
+- separates verified findings from inferred or unexplained findings;
+- produces an agent log and human report;
+- stops at materiality, interpretation, approval, release, or sensitive-action gates;
+- records the run honestly.
 
 ---
 
-## 5. Field Positioning
+# Part 4 - Repository-Specific Grounding
 
-### Comparable Categories
+## Constitution and Domain Layer
 
-**Investment books** teach valuation, portfolio theory, market behavior, or
-financial statements, but rarely show how agentic AI workflows should be
-documented and supervised.
+- `MYCROFT.md`: governing constitution, labor separation, verification stack, recipe lifecycle, TODO closure, attestation, and logging.
+- `DOMAIN.md`: project index, runnable surfaces, quarantine rules, and relationship to Madison.
+- `DATA_CONTRACT.md`: evidence and data-layer rules.
+- `AGENTS.md` and `CLAUDE.md`: generated instruction adapters.
 
-**AI-for-finance books** often emphasize predictive modeling, automation, or
-tooling, but may understate the need for provenance, audit trails, and advisory
-boundaries.
+## Existing Chapter Layer
 
-**Agentic AI books** explain tool use, permissions, orchestration, and
-verification, but usually work through coding or knowledge-work examples rather
-than investment intelligence.
+The current top-level chapter files are generic placeholders:
 
-**Financial literacy materials** teach concepts for individual investors, but
-rarely expose how research workflows are assembled, checked, and challenged.
+- `chapters/01-chapter-01.md` through `chapters/12-chapter-12.md`
 
-### Positioning Statement
+This TIKTOC replaces that placeholder architecture with named finance-practitioner chapters. A later chapter-writing pass should rename or rewrite the current placeholders to the proposed chapter filenames.
 
-Mycroft is a course-ready practitioner handbook for readers who want to learn
-agentic investment research by building and auditing workflows, not by trusting
-black-box recommendations.
+## Recipe Layer
 
----
+Existing finance-adjacent recipe coverage includes:
 
-## 6. Three-Act Learning Arc
+- SEC filings analysis
+- Forecasting
+- Portfolio dashboards
+- Portfolio price fetching
+- Portfolio intelligence with RAG
+- Risk management
+- Financial regulatory intelligence
+- Financial intelligence hub
+- Finance literacy bots
 
-### Act One - Foundation: From Market Curiosity to Verified Research
+The coverage is strongest in external market/public-company intelligence and thinner in internal finance operations.
 
-The reader learns why investment intelligence requires evidence discipline,
-what makes an agentic research system different from a chatbot, and how Mycroft
-decomposes research into specialized roles.
+## Research Layer
 
-**Chapters:** 1-4  
-**Capability at end of act:** The reader can explain Mycroft's research
-architecture, identify the difference between observation and recommendation,
-and read a recipe card before running a workflow.
+Core research sources for this TIKTOC:
 
-### Act Two - Signal Workflows: Gathering and Challenging Evidence
+- `reports/generated/entry-mid-finance-recipes-research.md`
+- `reports/generated/mycroft-finance-recipe-opportunities-attached-research.md`
+- `reports/generated/entry-mid-finance-recipes-deep-research-prompt.md`
+- attached `Mycroft Finance Recipe Opportunities`
+- attached `Causal Reasoning: Irreducibly Human`
 
-The reader learns how Mycroft gathers signals from news, SEC filings, patents,
-social sentiment, market data, open-source activity, and company comparisons.
-The emphasis is not signal quantity. It is provenance, contradiction detection,
-and uncertainty.
+## Data and Evidence Layer
 
-**Chapters:** 5-9  
-**Capability at end of act:** The reader can run or specify a bounded signal
-workflow, trace its inputs and outputs, and challenge its claims.
+The finance book should teach these source classes:
 
-### Act Three - Portfolio Intelligence: Synthesis, Advisory Boundaries, and Audit
-
-The reader learns how signal outputs feed portfolio intelligence, risk
-management, forecasting, advisory interfaces, and orchestration. The act ends
-with an honest run: a bounded workflow, verified output, and audit note.
-
-**Chapters:** 10-12  
-**Capability at end of act:** The reader can supervise a Mycroft workflow from
-research question to reviewed output without presenting it as financial advice.
-
-### Arc Statement
-
-This book takes the reader from AI-investing curiosity to supervised investment
-research practice by first defining evidence and agent roles, then running
-bounded signal workflows, then synthesizing outputs through human-reviewed
-portfolio intelligence.
+- GL and trial balance exports
+- budget and forecast files
+- subledger exports
+- AP and AR aging
+- bank and cash data
+- contract and billing records
+- control evidence
+- audit PBC request lists
+- SEC EDGAR data
+- FRED or ALFRED macro data
+- metric dictionaries and approval matrices
 
 ---
 
-## 7. Sequencing Model
+# Part 5 - Field Positioning
 
-**Primary model:** Research question -> evidence pipeline -> signal family ->
-synthesis -> human review  
-**Secondary model:** Concrete -> abstract with spiral returns
+## Comparable Categories
 
-The book opens with a concrete problem: AI can produce fluent investment
-analysis faster than humans can verify it. It then builds an operating method:
-define the question, constrain the data, run the workflow, inspect the result,
-verify the claim, and write the audit.
+**Finance transformation books** discuss operating-model change, but often do not show how an analyst builds auditable recipes.
 
-Spiral returns:
+**AI-for-finance books** emphasize prediction, automation, or modeling, but often understate evidence contracts, logs, phase gates, and human adequacy review.
 
-- **Scope** begins as a research boundary, then becomes tool boundary,
-  workflow boundary, advisory boundary, and portfolio boundary.
-- **Verification** begins as source checking, then becomes contradiction
-  detection, audit logging, signal triangulation, and human review.
-- **Orchestration** begins as workflow sequencing, then becomes cross-agent
-  synthesis and conflict resolution.
-- **Education** begins as financial literacy, then becomes self-supervision:
-  knowing what the system can and cannot warrant.
+**Accounting and FP&A guides** explain processes, but usually do not translate them into agent-ready recipes.
+
+**Agentic AI guides** explain tools, permissions, and orchestration, but usually work through coding or general productivity examples rather than finance operations.
+
+## Positioning Statement
+
+Mycroft Finance Recipe Engine is a practitioner guide for finance people who want to automate repeated preparation work without automating professional responsibility.
+
+## Competitive Difference
+
+The book's difference is the combination of:
+
+- finance work that entry and mid-level practitioners actually do;
+- Mycroft's two-customer recipe model;
+- hard phase gates;
+- machine-readable logs plus human-readable reports;
+- explicit judgment boundaries;
+- concrete recipe artifacts rather than general AI advice.
 
 ---
 
-## 8. Prerequisite Map
+# Part 6 - Three-Act Learning Arc
 
-| Prerequisite | Safe to Assume? | Where Introduced |
+## Act One - Judgment Before Finance Automation
+
+The reader learns why fluent finance output is dangerous without evidence, why automation should reallocate attention toward judgment, and how Mycroft treats data, recipes, logs, and reports.
+
+**Chapters:** 1-5  
+**Capability at end of act:** The reader can audit a finance artifact, trace its evidence, read a recipe, and state what the evidence can and cannot support.
+
+## Act Two - Build the Finance Recipe Components
+
+The reader builds core recipes for repeated finance workflows: variance packs, reconciliations, daily cash, close flux, budget requests, control evidence, AP/AR exceptions, cash forecast variance, audit binders, and revenue/billing triage.
+
+**Chapters:** 6-15  
+**Capability at end of act:** The reader can produce finance review surfaces that separate verified facts, inferred explanations, missing evidence, and human decisions.
+
+## Act Three - Operate the Engine
+
+The reader integrates multiple recipes into one bounded finance run and records what actually happened.
+
+**Chapter:** 16  
+**Capability at end of act:** The reader can complete a logged run with source evidence, machine conformance, human adequacy checks, gate decisions, and open risks.
+
+## Arc Statement
+
+The book moves from "AI can make finance artifacts look finished" to "I can build a finance workflow that makes evidence, gaps, and human judgment visible."
+
+---
+
+# Part 7 - Sequencing Model
+
+The sequence mirrors `the-reallocation-engine/chapters/`:
+
+1. Fluency trap: output can look finished before the work is done.
+2. Reallocation: AI should move human time toward judgment.
+3. Data contract: finance evidence needs source, version, period, owner, and freshness.
+4. Two customers: recipes serve both the agent and the finance reviewer.
+5. Verification: sourced data still has limits.
+6. First concrete recipe: monthly variance pack.
+7. Record-to-report recipe: reconciliation exception triage.
+8. Treasury visibility recipe: daily cash position.
+9. Close recipe: flux and balance-sheet review.
+10. Planning recipe: budget-request normalizer.
+11. Control recipe: evidence completeness checker.
+12. Operations recipe: AP/AR exception and aging workbench.
+13. Treasury analysis recipe: cash forecast variance.
+14. Audit recipe: PBC tracker and evidence binder.
+15. Higher-risk recipe: revenue contract and billing exception triage.
+16. Integrated run: build and honest run.
+
+---
+
+# Part 8 - Prerequisite Map
+
+| Prerequisite | Safe to assume? | Where addressed |
+|---|---:|---|
+| Basic finance vocabulary | Mostly | Introduction and chapter examples |
+| Budget vs actual | Mostly | Chapter 6 |
+| GL/subledger basics | Not always | Chapter 7 |
+| Cash and treasury basics | Not always | Chapters 8 and 13 |
+| Close and flux analysis | Not always | Chapter 9 |
+| Internal control evidence | No | Chapter 11 |
+| AP/AR aging | Mostly | Chapter 12 |
+| Audit PBC process | No | Chapter 14 |
+| Revenue contract risk | No | Chapter 15 |
+| Mycroft recipe format | No | Chapters 3 and 4 |
+| AI governance | No | Chapters 1, 2, 4, 5 |
+
+---
+
+# Part 9 - Chapter-by-Chapter TOC
+
+## Proposed Chapter Files
+
+This structure mirrors `the-reallocation-engine/chapters/`:
+
+```text
+chapters/
+  00-frontmatter.md
+  00-introduction.md
+  01-the-fluency-trap.md
+  02-the-reallocation-principle.md
+  03-the-verified-finance-data-contract.md
+  04-two-customers.md
+  05-verifying-finance-evidence.md
+  06-monthly-variance-pack.md
+  07-subledger-to-gl-reconciliation-triage.md
+  08-daily-cash-position-and-liquidity-watch.md
+  09-close-flux-analysis-and-balance-sheet-review.md
+  10-budget-request-normalizer-and-challenge-pack.md
+  11-control-evidence-completeness-checker.md
+  12-ap-ar-exception-and-aging-workbench.md
+  13-cash-forecast-variance-explainer.md
+  14-pbc-request-tracker-and-audit-evidence-binder.md
+  15-revenue-contract-and-billing-exception-triage.md
+  16-the-build-and-the-honest-run.md
+  97-fundamental-themes.md
+  98-appendix-best-practices.md
+  99-back-matter.md
+```
+
+## Introduction - Finance Work AI Did Not Make Cheap
+
+**Capability built:** Understand Mycroft as a book and recipe engine for finance work.
+
+The introduction frames the central shift: AI makes execution cheaper, but it does not make materiality, interpretation, accounting treatment, cash decisions, control conclusions, or release judgment cheap. It introduces `MYCROFT.md`, `DOMAIN.md`, `DATA_CONTRACT.md`, `recipes/`, `logs/`, and `reports/`.
+
+**Whole task:** Inventory one recurring finance workflow and label each step as preparation, evidence, transformation, judgment, approval, or release.  
+**Assessment:** Baseline finance-work allocation note.
+
+## Chapter 1 - The Fluency Trap
+
+**Capability built:** Detect the gap between fluent finance output and trustworthy finance work.
+
+The chapter opens with a clean AI-generated variance commentary, close summary, or board-packet note that sounds plausible but hides unsupported explanations, stale sources, missing period labels, and no approval gate.
+
+**Whole task:** Audit a fluent finance artifact.  
+**Assessment:** Claim, number, and assumption table labeled verified, inferred, unsupported, judgment, or approval-needed.
+
+## Chapter 2 - The Reallocation Principle
+
+**Capability built:** Reframe finance automation as scarce judgment allocation.
+
+The reader learns that the goal is not more dashboards, more commentary, or faster spreadsheet churn. The goal is to reallocate human effort toward materiality, explanation, review, risk, and release.
+
+**Whole task:** Build a one-week reallocation plan for a finance workflow.  
+**Assessment:** Time budget with preparation/judgment split and one reallocation hypothesis.
+
+## Chapter 3 - The Verified Finance Data Contract
+
+**Capability built:** State what counts as finance evidence in Mycroft.
+
+The chapter introduces source, period, entity, version, owner, freshness, schema, control total, transformation, log, report, and approval record. It teaches why a generated paragraph is never a source.
+
+**Whole task:** Trace one number from report to log to source file.  
+**Assessment:** Provenance note with missing links flagged.
+
+## Chapter 4 - Two Customers
+
+**Capability built:** Understand recipes as both agent contracts and finance reviewer cards.
+
+Every recipe has two customers: the agent that executes the workflow and the human who must judge the output. Logs are not reports; reports are not logs.
+
+**Whole task:** Read one finance recipe and identify what the agent does, what the human decides, and what evidence connects them.  
+**Assessment:** Two-customer recipe note.
+
+## Chapter 5 - Verifying Finance Evidence
+
+**Capability built:** Interrogate completeness, freshness, control totals, mapping, thresholds, and warranted verbs.
+
+The reader learns that a parsed spreadsheet can still be wrong, a tied control total can still hide a bad explanation, and a sourced number can still be irrelevant to the decision.
+
+**Whole task:** Review one evidence set and write what it can and cannot support.  
+**Assessment:** Warranted-verb list: can say, can suggest, cannot claim, needs human review.
+
+## Chapter 6 - Monthly Variance Pack
+
+**Capability built:** Build a variance pack that separates verified deltas from human explanations.
+
+The chapter teaches a monthly variance recipe: actuals, budget, forecast, mapping tables, thresholds, control totals, material variance flags, owner commentary, and open items.
+
+**Whole task:** Build a budget-vs-actual variance pack.  
+**Assessment:** Variance table, source log, commentary stub column, and owner-question list.
+
+## Chapter 7 - Subledger-to-GL Reconciliation Triage
+
+**Capability built:** Surface reconciliation exceptions without deciding accounting treatment.
+
+The chapter teaches source completeness, GL-to-subledger control totals, deterministic matching, exception categories, prior-period carry-forward, and reviewer sign-off.
+
+**Whole task:** Create a reconciliation exception queue for one account family.  
+**Assessment:** Reconciliation log and exception triage memo.
+
+## Chapter 8 - Daily Cash Position and Liquidity Watch
+
+**Capability built:** Produce a read-only cash view with hard treasury action boundaries.
+
+The reader learns to verify bank feed freshness, normalize balances, reconcile cash where possible, bucket availability, compare against thresholds, and escalate breaches without initiating transfers.
+
+**Whole task:** Build a daily cash position report.  
+**Assessment:** Liquidity watch table with threshold flags and human-action fields.
+
+## Chapter 9 - Close Flux Analysis and Balance-Sheet Review
+
+**Capability built:** Prepare close review surfaces without declaring the books ready.
+
+The chapter teaches trial balance comparison, account-level flux, support coverage, carry-forward items, known events, unresolved movements, and controller review.
+
+**Whole task:** Build a close flux review pack.  
+**Assessment:** Flux table, support gap list, and reviewer questions.
+
+## Chapter 10 - Budget-Request Normalizer and Challenge Pack
+
+**Capability built:** Normalize planning submissions and prepare challenge questions.
+
+The chapter teaches template validation, account/category normalization, headcount/rate checks, prior-year comparison, policy flags, and business-partner sign-off.
+
+**Whole task:** Build a budget request challenge pack.  
+**Assessment:** Submission registry, normalized request table, and challenge-question list.
+
+## Chapter 11 - Control-Evidence Completeness Checker
+
+**Capability built:** Check control evidence readiness without concluding on control effectiveness.
+
+The chapter teaches control objectives, attribute requirements, evidence artifacts, stale screenshots, approvals, sample coverage, prior exceptions, and remediation routing.
+
+**Whole task:** Build a control evidence readiness pack.  
+**Assessment:** Control-by-control evidence ledger with ready/blocked/follow-up status.
+
+## Chapter 12 - AP/AR Exception and Aging Workbench
+
+**Capability built:** Turn AP and AR aging into exception queues without external action.
+
+The chapter teaches aging buckets, duplicate invoice flags, missing support, dispute status, owner queues, and communication gates.
+
+**Whole task:** Build an AP/AR exception workbench.  
+**Assessment:** Aging table, duplicate candidates, owner queues, and stop-condition list.
+
+## Chapter 13 - Cash Forecast Variance Explainer
+
+**Capability built:** Compare forecast cash to realized cash without inventing causes.
+
+The chapter teaches forecast version control, realized cash, category variance, bridge structure, known drivers, unexplained variances, and reforecast gates.
+
+**Whole task:** Build a cash forecast variance bridge.  
+**Assessment:** Cash bridge, driver attachment table, and unresolved-variance list.
+
+## Chapter 14 - PBC Request Tracker and Audit-Evidence Binder
+
+**Capability built:** Assemble audit support while preserving privilege, adequacy, and reviewer gates.
+
+The reader learns to parse a PBC list, map requests to support, track status, flag missing reviewer sign-off, identify overdue items, and prepare a binder index.
+
+**Whole task:** Build an audit evidence binder for a small request list.  
+**Assessment:** PBC tracker, binder index, and gap list.
+
+## Chapter 15 - Revenue Contract and Billing Exception Triage
+
+**Capability built:** Separate factual billing mismatches from accounting-policy questions.
+
+The chapter teaches contract source-chain completeness, amendment order, billing setup comparison, pricing mismatches, milestone gaps, policy interpretation flags, and revenue-recognition stop conditions.
+
+**Whole task:** Build a revenue/billing exception review pack.  
+**Assessment:** Contract registry, mismatch taxonomy, missing-artifact list, and accounting-review queue.
+
+## Chapter 16 - The Build and the Honest Run
+
+**Capability built:** Integrate Mycroft finance recipes through a bounded, logged run.
+
+The reader chooses a finance scenario, runs or simulates selected recipes, inspects evidence, writes logs, produces a report, names gates, and records unresolved risks.
+
+**Whole task:** Complete one Mycroft finance recipe run from intake to report.  
+**Assessment:** Run log, human report, evidence appendix, gate decision record, and open-risk list.
+
+## Chapter 97 - Fundamental Themes
+
+**Capability built:** Synthesize the principles behind the system.
+
+The appendix gathers fluency vs evidence, friction, phase gates, two customers, provenance, human-only judgment, and AI+finance labor separation.
+
+**Whole task:** Write a personal doctrine for safe finance automation.  
+**Assessment:** Practitioner doctrine memo.
+
+## Chapter 98 - Appendix: Best Practices
+
+**Capability built:** Maintain a Mycroft finance recipe system.
+
+The appendix covers recipe lifecycle, logging, source contracts, no-delete/archive behavior, conformance, attestation, report templates, and stop conditions.
+
+**Whole task:** Audit a recipe for maintainability.  
+**Assessment:** Maintenance audit.
+
+## Chapter 99 - Back Matter
+
+Glossary, references, acknowledgments, and future recipe index.
+
+---
+
+# Part 10 - Learning Outcomes by Chapter
+
+| Chapter | Capability | Assessment Artifact |
 |---|---|---|
-| Basic AI assistant use | Yes | Introduction |
-| Difference between output and action | No | Chapter 1 |
-| Investment research vs. advice | No | Chapter 1 |
-| Mycroft repo structure | No | Chapter 2 |
-| Recipe cards and phase gates | No | Chapter 3 |
-| Local data and provenance | No | Chapter 4 |
-| News and sentiment signals | No | Chapter 5 |
-| SEC filing analysis | No | Chapter 6 |
-| Patent and technology signals | No | Chapter 7 |
-| Comparative analysis | No | Chapter 8 |
-| Forecasting and uncertainty | No | Chapter 9 |
-| Portfolio intelligence and risk | No | Chapter 10 |
-| Advisory boundaries | No | Chapter 11 |
-| Honest run and audit note | No | Chapter 12 |
+| Introduction | Orient to Mycroft as finance book and engine | Baseline allocation note |
+| 1 | Audit fluent finance output | Claim/number/assumption table |
+| 2 | Reallocate effort toward judgment | Weekly reallocation hypothesis |
+| 3 | Trace finance evidence | Provenance note |
+| 4 | Read recipes for two customers | Two-customer recipe note |
+| 5 | Interrogate evidence limits | Warranted-verb list |
+| 6 | Build variance review pack | Variance pack |
+| 7 | Triage reconciliations | Exception queue |
+| 8 | Build cash position view | Liquidity watch |
+| 9 | Review close flux | Close flux pack |
+| 10 | Normalize budget requests | Challenge pack |
+| 11 | Check control evidence | Evidence readiness ledger |
+| 12 | Build AP/AR workbench | Aging and exception queues |
+| 13 | Explain cash forecast variance | Cash bridge |
+| 14 | Assemble audit binder | PBC tracker and binder index |
+| 15 | Triage revenue/billing exceptions | Contract/billing review pack |
+| 16 | Operate a full run | Log, report, evidence, gates |
+| 97 | Synthesize doctrine | Practitioner doctrine memo |
+| 98 | Maintain the system | Maintenance audit |
 
 ---
 
-## 9. Chapter-by-Chapter TOC
+# Part 11 - Running Project Spine
 
-## Introduction - Using AI to Invest in AI, Carefully
+## Default Track
 
-**Capability built:** Understand Mycroft as an educational experiment, not an
-advice engine.
+Build and operate a Mycroft finance recipe system for a fictional or real-but-sanitized company, department, or project.
 
-The introduction frames Mycroft's purpose: learning how agentic systems gather,
-challenge, and synthesize investment intelligence about AI companies. It names
-the central boundary: the system can support research, but humans remain
-accountable for conclusions and actions.
+## Running Deliverables
 
-**Whole task:** Write a one-paragraph Mycroft research question and name what
-the system is not allowed to decide.  
-**Assessment:** Research question plus human-only boundary.
+1. Baseline finance-work allocation note.
+2. Fluent artifact audit.
+3. Weekly reallocation hypothesis.
+4. Finance data-provenance note.
+5. Two-customer recipe note.
+6. Warranted-verb evidence list.
+7. Monthly variance pack.
+8. Reconciliation exception queue.
+9. Daily cash position report.
+10. Close flux review pack.
+11. Budget challenge pack.
+12. Control evidence readiness ledger.
+13. AP/AR exception workbench.
+14. Cash forecast variance bridge.
+15. PBC tracker and audit binder index.
+16. Revenue/billing exception review pack.
+17. Honest-run log and report.
 
-## Chapter 1 - The Agentic Investor's Trap
+## Portfolio Outcome
 
-**Capability built:** Recognize why fluent investment analysis is not verified
-investment intelligence.
-
-The reader learns the difference between generated commentary, delegated
-research, and investment advice. The chapter adapts the Claude principle:
-agents act, and action expands responsibility.
-
-**Whole task:** Audit one AI-generated investment paragraph for unsupported
-claims.  
-**Assessment:** Claim list labeled as sourced, unsourced, stale, or advisory.
-
-## Chapter 2 - The Mycroft Architecture
-
-**Capability built:** Explain Mycroft's agent families and orchestration layer.
-
-The reader studies analytical agents, portfolio agents, advisory agents,
-intelligence agents, and the Mycroft orchestration layer. The chapter explains
-why specialized agents are easier to audit than a single black-box mega-agent.
-
-**Whole task:** Map one research question to the correct Mycroft agent family.  
-**Assessment:** Agent-family selection with input, output, and review point.
-
-## Chapter 3 - Recipes, Scripts, and Phase Gates
-
-**Capability built:** Read and use a Mycroft recipe card safely.
-
-The reader learns the repo's operating loop: read the docs, check local data,
-prefer stored scripts, run small, verify, review, and log. Recipes become
-operating cards for agents and audit cards for humans.
-
-**Whole task:** Select one `recipes/n8n-*.md` card and identify required reads,
-phase gates, output contract, and stop conditions.  
-**Assessment:** Recipe-readiness note.
-
-## Chapter 4 - The Data Contract
-
-**Capability built:** Distinguish source data, generated data, imported
-workflow material, and reviewed evidence.
-
-The reader learns why provenance is central in investment research. The chapter
-uses `DATA_CONTRACT.md`, `docs/data-and-provenance.md`, and the Mycroft-main
-import record to show how original workflow JSON becomes inspectable recipes.
-
-**Whole task:** Trace one generated recipe back to its original workflow source.  
-**Assessment:** Provenance chain with missing-data notes.
-
-## Chapter 5 - News, Sentiment, and Market Awareness
-
-**Capability built:** Use news and sentiment workflows without treating volume
-as truth.
-
-The reader studies news monitoring, AI news sentiment, social sentiment, and
-retail investor anxiety workflows. The chapter emphasizes timestamps, source
-quality, duplication, sentiment uncertainty, and narrative drift.
-
-**Whole task:** Design a bounded news/sentiment run for one AI company or
-subsector.  
-**Assessment:** Source list, time window, output contract, and verification
-sample.
-
-## Chapter 6 - SEC Filings and Regulatory Intelligence
-
-**Capability built:** Treat filings and regulatory sources as structured
-evidence with interpretation limits.
-
-The reader studies SEC filings analysis and financial regulatory intelligence
-workflows. The focus is not "what did the filing mean for the stock?" but
-"what can this filing support, what can it not support, and what needs human
-review?"
-
-**Whole task:** Write a filing-analysis output contract.  
-**Assessment:** Filing claim table separating direct facts, inferred
-interpretations, and prohibited recommendations.
-
-## Chapter 7 - Patent and Technology Signals
-
-**Capability built:** Use patent and technology workflows as weak signals, not
-proof of commercial success.
-
-The reader studies patent intelligence, patent velocity, tech-stack comparison,
-and open-source signals. The chapter teaches signal humility: patents,
-repositories, and stack choices suggest direction, but they do not prove market
-outcomes.
-
-**Whole task:** Compare two technology-signal workflows for the same company or
-sector.  
-**Assessment:** Signal-strength note with caveats and contradiction checks.
-
-## Chapter 8 - Comparative Analysis and Contradiction Detection
-
-**Capability built:** Compare companies without collapsing differences into a
-single false ranking.
-
-The reader studies comparative analysis, contradiction detection, research
-agent, and RAG grader workflows. The chapter emphasizes evidence conflicts,
-base-rate gaps, missing coverage, and how to preserve uncertainty in synthesis.
-
-**Whole task:** Build a comparison matrix for two or three AI companies.  
-**Assessment:** Matrix plus contradiction log and "what would change my mind"
-section.
-
-## Chapter 9 - Forecasting and Scenario Stress Testing
-
-**Capability built:** Treat forecasts as scenario discipline under uncertainty.
-
-The reader studies forecasting, what-if simulation, scenario stress testing,
-and funding intelligence workflows. The chapter separates forecast inputs,
-assumptions, scenario branches, and decision thresholds.
-
-**Whole task:** Design a three-scenario forecast for a company, sector, or
-portfolio theme.  
-**Assessment:** Scenario table with assumptions, triggers, and non-claims.
-
-## Chapter 10 - Portfolio Intelligence and Risk Management
-
-**Capability built:** Connect research signals to portfolio questions without
-turning the system into an advice engine.
-
-The reader studies portfolio dashboard, portfolio intelligence, price fetcher,
-risk management, market sentiment, and earnings-call workflows. The chapter
-teaches the difference between portfolio observation, risk framing, and
-personalized recommendation.
-
-**Whole task:** Specify a portfolio intelligence report that avoids advice.  
-**Assessment:** Report outline with observation/recommendation boundary.
-
-## Chapter 11 - Advisory Interfaces and Financial Literacy
-
-**Capability built:** Design investor-facing interactions that educate rather
-than overclaim.
-
-The reader studies financial literacy bots, chatbot memory, RAG chatbots,
-product recommendation agents, and advisory workflows. The chapter focuses on
-disclosure, user expertise, simplification risk, and human escalation.
-
-**Whole task:** Write an advisory-interface policy card.  
-**Assessment:** Capability statement, prohibited behaviors, escalation triggers,
-and user-facing limitation language.
-
-## Chapter 12 - The Honest Mycroft Run
-
-**Capability built:** Supervise a complete bounded workflow from question to
-audit note.
-
-The reader selects one Mycroft workflow family, defines scope, checks local
-data, reads the recipe, runs or simulates a small workflow, verifies output, and
-writes an audit note. The goal is honest operation: what happened, what was
-verified, what remains uncertain, and what must not be claimed.
-
-**Whole task:** Complete one honest Mycroft run.  
-**Assessment:** Run log entry plus audit note.
-
-## Chapter 98 - Appendix: Best Practices for Agentic Operation
-
-**Capability built:** Maintain the repo as both book and agentic system.
-
-The appendix documents repo structure, data contracts, recipes, scripts, phase
-gates, logging, and documentation expectations.
-
-**Whole task:** Audit the repo or a workflow family using the appendix
-checklist.  
-**Assessment:** Maintenance note with risks and next actions.
+The reader finishes with a coherent professional portfolio of finance artifacts. The portfolio demonstrates not merely that the reader can use AI, but that they can supervise AI-assisted finance work with evidence, gates, and accountability.
 
 ---
 
-## 10. Chapter Dependency Map
-
-| Chapter | Depends On | Feeds |
-|---|---|---|
-| Introduction | None | Research question and boundaries |
-| 1 | Introduction | Advice boundary and fluency skepticism |
-| 2 | 1 | Agent-family map |
-| 3 | 2 | Recipe execution discipline |
-| 4 | 3 | Data and provenance discipline |
-| 5 | 3-4 | News and sentiment workflows |
-| 6 | 3-4 | SEC and regulatory workflows |
-| 7 | 3-4 | Patent and technology signals |
-| 8 | 5-7 | Cross-signal comparison |
-| 9 | 8 | Forecast and scenario work |
-| 10 | 5-9 | Portfolio intelligence |
-| 11 | 10 | Advisory and financial literacy interfaces |
-| 12 | 3-11 | Honest run and audit |
-| 98 | Whole repo | Maintenance |
-
-**Load-bearing chapters:** 1, 2, 3, 4, 8, 10, 12.  
-**Most fragile transition:** Chapter 10 to Chapter 11, because the system moves
-from analysis about portfolios to user-facing advisory interaction.  
-**Highest adoption-risk chapter:** Chapter 9, if forecasting reads as prediction
-rather than scenario discipline.  
-
----
-
-## 11. Running Project Spine
-
-Every chapter should advance one running project.
-
-### Default Track: AI Sector Research Run
-
-The reader studies one AI company, subsector, or portfolio theme through
-Mycroft's evidence layers.
-
-### Alternative Track: Financial Literacy Interface
-
-The reader designs an educational investor-facing interface that explains
-signals, risk, and uncertainty without giving advice.
-
-### Running Deliverables
-
-1. Research question and human-only boundary.
-2. Fluency audit of an AI-generated investment claim.
-3. Agent-family map.
-4. Recipe-readiness note.
-5. Provenance chain.
-6. News/sentiment run design.
-7. Filing-analysis output contract.
-8. Technology-signal caveat note.
-9. Comparative matrix and contradiction log.
-10. Scenario forecast table.
-11. Portfolio intelligence report outline.
-12. Advisory policy card.
-13. Honest run audit note.
-
----
-
-## 12. Chapter Anatomy Template
+# Part 12 - Chapter Anatomy Template
 
 Each chapter should include:
 
-1. Concrete research scenario or failure mode.
-2. Capability statement.
-3. Why the capability matters for investment intelligence.
-4. Mycroft workflow or repo-grounded example.
-5. Claude-agentic supervision lens: scope, approval, verification.
-6. Evidence and provenance rule.
-7. Running project task.
-8. Verification checklist.
-9. Non-advice boundary.
-10. Bridge to the next chapter.
+1. **Concrete failure or work scenario.** Open with a real finance artifact: variance commentary, reconciliation, cash report, close pack, PBC tracker, or billing exception.
+2. **Capability statement.** State what the reader will be able to do.
+3. **Why this matters for the reader's role.** Tie to entry/mid-level finance work.
+4. **The recipe concept.** Name inputs, steps, outputs, gates, logs, and report.
+5. **Agentic supervision lens.** Scope, approval, verification.
+6. **Evidence boundary.** What can be verified, what is model judgment, what is human judgment, what is out of scope.
+7. **Running project task.** A concrete artifact the reader produces.
+8. **Verification checklist.** Machine conformance plus human adequacy checks.
+9. **Human-only judgment boundary.** The decision AI cannot make.
+10. **Bridge to next chapter.** Show how this artifact feeds the next recipe.
 
-Do not open chapters with abstract finance theory unless the reader has first
-seen the research problem the theory solves.
-
----
-
-## 13. Assessment Architecture
-
-### Formative Assessments
-
-- Claim classification tables.
-- Recipe-readiness notes.
-- Provenance chains.
-- Source-window definitions.
-- Filing claim tables.
-- Technology signal caveat notes.
-- Contradiction logs.
-- Scenario tables.
-- Portfolio observation outlines.
-- Advisory policy cards.
-
-### Summative Assessment
-
-The final assessment is an honest Mycroft run:
-
-- bounded research question;
-- selected workflow recipe;
-- named local data and source workflow;
-- small run or simulation;
-- output contract;
-- verification sample;
-- contradiction check;
-- non-advice statement;
-- run log entry;
-- audit note.
-
-### Final Exam Style Question
-
-Given a polished AI-generated investment report about an AI company, identify
-the unsupported claims, name the required Mycroft workflow families, define the
-scope and stop conditions, design a verification sample, and rewrite the
-conclusion so that observations, uncertainty, and prohibited recommendations
-are separated.
+Do not open chapters with abstract AI capability. Open with the finance artifact and what can go wrong when it is fluent, formatted, and unsupported.
 
 ---
 
-## 14. Case Strategy
+# Part 13 - Recipe and Case Strategy
 
-Cases should teach evidence discipline.
+## Recipe Strategy
 
-### Case Types
+The concrete recipes should be narrow enough to run in a sample setting:
 
-- AI market-hype cases where fluent narratives outran evidence;
-- filing-analysis cases where direct facts and interpretations must be
-  separated;
-- patent/technology cases where weak signals were overread;
-- sentiment cases where social volume did not equal truth;
-- forecasting cases where scenario planning was mistaken for prediction;
-- advisory-interface cases where simplification became overclaiming.
+- Monthly variance pack
+- Subledger-to-GL reconciliation triage
+- Daily cash position
+- Close flux review
+- Budget request challenge pack
+- Control evidence readiness
+- AP/AR exception workbench
+- Cash forecast variance bridge
+- PBC tracker and audit binder
+- Revenue/billing exception triage
 
-### Repo-Grounded Cases
+Each recipe should include:
 
-- Mycroft's 48 imported n8n workflows as a workflow taxonomy.
-- `recipes/n8n-orchestrator.md` and `recipes/n8n-orchestrator-v2-enhanced.md` as
-  orchestration examples.
-- SEC, patent, news, sentiment, forecasting, and portfolio recipes as separate
-  signal families.
-- `DATA_CONTRACT.md` as the claim-discipline standard.
-- `logs/RUN_LOG.md` as the durable audit trail.
+- source inventory;
+- input schema;
+- phase gates;
+- stop conditions;
+- agent log contract;
+- human report contract;
+- human-only judgment boundary.
 
----
+## Case Strategy
 
-## 15. Adoption Risk Register
+Cases should use realistic but sanitized finance scenarios:
 
-| Risk | Likelihood | Impact | Mitigation |
-|---|---:|---:|---|
-| Book reads like investment advice | High | High | Repeat education/research boundary; require non-advice language in every applied chapter. |
-| Workflow catalog overwhelms learners | High | Medium | Teach by families, not by all 48 recipes one by one. |
-| Agentic AI becomes tool taxonomy | Medium | High | Keep every chapter tied to a concrete research task and verification step. |
-| Forecasting chapter overclaims | High | High | Frame forecasting as scenario discipline and uncertainty communication. |
-| Portfolio chapter implies recommendation | High | High | Separate observation, risk framing, and recommendation; require human review. |
-| Imported workflows lack current execution environment | Medium | Medium | Treat recipes as inspectable workflow cards; run small tests only when environment is verified. |
-| Data provenance is incomplete | Medium | High | Require provenance chain and missing-data labels. |
-| Readers trust dashboards over audits | Medium | High | Make audit reading a chapter-level recurring exercise. |
+- a budget file with stale version ID;
+- an unmapped GL account;
+- a variance without owner explanation;
+- a duplicate invoice candidate;
+- a cash threshold breach;
+- a stale control screenshot;
+- an incomplete amendment chain;
+- a PBC request with missing reviewer sign-off.
 
----
+## What Makes a Case Mycroft-Specific
 
-## 16. Production Notes
+A case is Mycroft-specific when it has:
 
-### Primary Production Target
-
-Replace the placeholder chapter titles in `outline.md` and align
-`chapters/01-chapter-01.md` through `chapters/12-chapter-12.md` to this
-architecture.
-
-### Repo Docs to Keep in Sync
-
-- `docs/README.md`
-- `docs/manuscript.md`
-- `docs/workflows.md`
-- `docs/recipes.md`
-- `docs/data-and-provenance.md`
-- `DATA_CONTRACT.md`
-- `recipes/README.md`
-
-### Verification Commands
-
-Current command surface:
-
-```bash
-npm run verify
-npm run svg-to-png
-```
-
-`npm run verify` is currently a placeholder, so architecture verification still
-requires human readback, path checks, source inspection, and recipe review.
+- a recipe;
+- source files or declared source paths;
+- machine checks;
+- human report;
+- stop conditions;
+- logs;
+- gate decisions;
+- an explicit refusal to cross the human-only boundary.
 
 ---
 
-## 17. Open Questions
+# Part 14 - Hard Topics, Contested Claims, and Aging Risk
 
-These are not blockers for silent intake, but they should be resolved before a
-final proposal package:
+## Hard Topics
 
-- Should the public title be `Mycroft`, `Using AI to Invest in AI`, or
-  `Mycroft: Agentic Investment Intelligence`?
-- Is the primary adoption target a finance course, an AI systems course, or a
-  practitioner handbook?
-- Which workflow family should be the main worked example: SEC, news, patent,
-  portfolio, or orchestration?
-- Should the book teach one running company/subsector throughout, or allow
-  readers to choose their own target?
-- How much executable workflow material is expected versus workflow-card
-  inspection?
+- Finance data often contains sensitive company, employee, vendor, customer, and banking information.
+- Materiality is contextual and cannot be invented by the model.
+- A tied reconciliation does not prove account adequacy.
+- Revenue recognition, control effectiveness, tax positions, and regulatory filings are high-risk human judgment areas.
+- AI-generated explanations can sound plausible while being unsupported.
+- Silent scheduled automation is dangerous in finance unless every gate and revocation condition is explicit.
+
+## Contested Claims
+
+- How much finance work is automatable varies by organization, controls maturity, data quality, and regulation.
+- The right materiality threshold is not universal.
+- AI usefulness in finance depends less on model quality than on source contracts, gates, and reviewer behavior.
+- A recipe that saves time but weakens review is a failure.
+
+## Aging Risk
+
+The book will age in:
+
+- model capabilities;
+- finance software APIs;
+- SEC/FRED and other public data interfaces;
+- regulatory expectations;
+- accounting standards and audit guidance;
+- workplace adoption of AI controls.
+
+The book should reduce aging risk by teaching stable design principles: source contracts, phase gates, two customers, logs, reports, and human judgment boundaries.
 
 ---
 
-## 18. Compact TOC
+# Part 15 - Market Positioning
 
-1. The Agentic Investor's Trap
-2. The Mycroft Architecture
-3. Recipes, Scripts, and Phase Gates
-4. The Data Contract
-5. News, Sentiment, and Market Awareness
-6. SEC Filings and Regulatory Intelligence
-7. Patent and Technology Signals
-8. Comparative Analysis and Contradiction Detection
-9. Forecasting and Scenario Stress Testing
-10. Portfolio Intelligence and Risk Management
-11. Advisory Interfaces and Financial Literacy
-12. The Honest Mycroft Run
+## Primary Market
 
-Appendix: Best Practices for Agentic Operation
+- Applied finance analytics courses
+- AI in finance courses
+- Business analytics programs
+- Finance transformation workshops
+- Early-career finance teams
+- Internal audit and FP&A training
+
+## Secondary Market
+
+- AI builders creating finance workflows
+- Finance operations teams
+- Controllers and CFO staff groups
+- Risk and compliance analysts
+- Finance clubs and student consulting groups
+
+## Adoption Promise
+
+The reader will not merely learn about AI in finance. They will build usable, inspectable finance recipe artifacts that can survive review.
+
+---
+
+# Part 16 - Feature List
+
+## Core Features
+
+- Full Mycroft recipe anatomy.
+- Finance-specific data contract.
+- Phase gates and stop conditions for every recipe.
+- Agent log and human report distinction.
+- Warranted-verb evidence language.
+- Do-not-automate list.
+- Running project spine.
+- Build sequence from low-risk foundation recipes to advanced governed workflows.
+
+## Pedagogical Features
+
+- Concrete failure scenarios.
+- Whole-task assessments.
+- Tables and checklists.
+- Artifact-first chapters.
+- Human-only judgment boundaries.
+- Honest-run capstone.
+
+---
+
+# Part 17 - Out of Scope
+
+This book does not teach:
+
+- investment advice;
+- trading automation;
+- tax advice;
+- legal advice;
+- final accounting policy interpretation;
+- autonomous journal entry posting;
+- payment initiation;
+- public disclosure drafting without review;
+- regulatory filing submission;
+- suspicious-activity filing decisions;
+- full ERP implementation;
+- advanced valuation theory;
+- advanced audit methodology.
+
+When these appear, the book routes them to human review, professional standards, legal/compliance owners, auditors, controllers, CFOs, or domain-specific training.
+
+---
+
+# Part 18 - Adoption Risk Register
+
+| Risk | Severity | Why it matters | Mitigation |
+|---|---:|---|---|
+| Reader treats recipe output as approval | High | Finance outputs can affect reporting, cash, compliance, and external communication | Repeat human-only boundary and release gates in every chapter |
+| Examples feel too generic | Medium | Finance readers need recognizable artifacts | Use variance packs, recons, close flux, AP/AR, cash, PBC, and contract cases |
+| Data sensitivity blocks practice | High | Real finance data is sensitive | Use synthetic or sanitized sample data and teach source approval |
+| Book overlaps with accounting manuals | Medium | Standards manuals are not the goal | Keep focus on recipe supervision, not technical accounting instruction |
+| Too many recipes overwhelm reader | Medium | Practitioner guide must feel buildable | Use a running project and staged build sequence |
+| Existing chapters are placeholders | High | Current chapter files do not match the new architecture | Later rewrite/rename chapters according to proposed files |
+| Current Mycroft recipes lean public-market | Medium | Book promise is broader finance work | Use existing recipes as scaffolding and add internal finance recipe chapters |
+
+---
+
+# Part 19 - Open Questions
+
+1. Should the sample company be a single fictional business used across all recipes?
+2. Should the chapter-writing pass rename existing placeholder chapters or create new named files alongside them first?
+3. Which recipes should get sample CSV/JSON data before drafting chapters?
+4. Should the first edition include SEC/public-company recipes as full chapters, or keep them as adjacent examples in the appendix?
+5. How much accounting standards language should appear in Chapter 15 without becoming a technical accounting textbook?
+6. Should `reports/generated/entry-mid-finance-recipes-research.md` become a pantry source for chapter research notes?
+
+---
+
+# Summary
+
+Mycroft Finance Recipe Engine should be a practitioner guide that mirrors `the-reallocation-engine`: first teach the framework, then build concrete tools, then run the system honestly.
+
+The key architectural decision is to shift Mycroft from a primarily agentic investment-intelligence book into a broader finance recipe engine for entry- and mid-level practitioners. Investment and public-market research remain part of the repo, but the book's spine should be internal finance work: variance, reconciliation, close, cash, controls, AP/AR, audit support, and revenue/billing exceptions.
+
+The promise is practical: use AI to make preparation cheaper and review better, while keeping finance judgment where it belongs - with accountable humans.
