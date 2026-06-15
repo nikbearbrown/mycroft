@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The supervision loop</title>
+<style>
+  :root { --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E; --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E; --color-fill:#F5F5F5; }
+  @media (prefers-color-scheme: dark){ :root{ --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A; --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30; --color-fill:#1A1A1A; } }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--color-white);color:var(--color-ink);font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif;}
+  #chart{width:100%;}
+  .node{fill:var(--color-fill);stroke-width:1;stroke:var(--color-secondary);transition:opacity 120ms cubic-bezier(0.2,0.8,0.2,1);}
+  .node.approval{stroke:var(--color-red);stroke-width:2;}
+  .gate{fill:var(--color-red);}
+  .heading{font-family:'EB Garamond',Georgia,serif;fill:var(--color-ink);} .sub{fill:var(--color-secondary);}
+  .ntitle{font-weight:700;fill:var(--color-ink);font-size:14px;} .ndesc{fill:var(--color-secondary);font-size:10px;}
+  .loop{fill:none;stroke:var(--color-secondary);stroke-width:1.5;} .loopfill{fill:var(--color-secondary);}
+  .mono{font-family:'JetBrains Mono','Fira Code',monospace;font-size:11px;fill:var(--color-red);}
+  .tooltip{position:absolute;pointer-events:none;opacity:0;background:var(--color-white);color:var(--color-ink);border:1px solid var(--color-border);padding:6px 8px;font-size:13px;}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;}}
+</style></head>
+<body><div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const FALLBACK_DATA=[
+ {id:'scope',label:'Scope',sub:'what it may touch',note:'What period, entity, source system, and action space the recipe may touch.'},
+ {id:'approval',label:'Approval',sub:'who clears the gate',note:'A named person — not a role — who clears the gate before output moves.'},
+ {id:'verification',label:'Verification',sub:"what's defensible",note:'The source, control total, or owner confirmation that makes the finding defensible.'}
+];
+let tooltip;
+function draw(data){
+  d3.select('#chart').selectAll('*').remove();
+  if(tooltip)tooltip.remove(); tooltip=d3.select('body').append('div').attr('class','tooltip');
+  const w=document.getElementById('chart').clientWidth||700, h=Math.max(420,w*0.62);
+  const svg=d3.select('#chart').append('svg').attr('width',w).attr('height',h).attr('viewBox',`0 0 ${w} ${h}`).attr('role','img').attr('aria-labelledby','t d');
+  svg.append('title').attr('id','t').text('The supervision loop');
+  svg.append('desc').attr('id','d').text('Scope, Approval, and Verification arranged as a cycle, with Approval connected to a gate.');
+  svg.append('text').attr('class','heading').attr('x',24).attr('y',32).attr('font-size',20).text('The supervision loop');
+  svg.append('text').attr('class','sub').attr('x',24).attr('y',52).attr('font-size',13).text('Scope, approval, verification — approval governs the gate.');
+  const cx=w/2, cy=h*0.46, R=Math.min(w,h)*0.30, r=Math.min(58,R*0.55);
+  const ang=[-90,150,30]; // scope top, approval lower-left, verification lower-right
+  const pts=data.map((d,i)=>({...d,x:cx+R*Math.cos(ang[i]*Math.PI/180),y:cy+R*Math.sin(ang[i]*Math.PI/180)}));
+  // loop arrows clockwise scope->verification->approval->scope
+  function arc(a,b){ const mx=(a.x+b.x)/2,my=(a.y+b.y)/2; const dx=b.x-a.x,dy=b.y-a.y; const nx=-dy,ny=dx; const k=0.18;
+    const cxp=mx+nx*k, cyp=my+ny*k;
+    // trim endpoints to circle edge
+    const a1=Math.atan2(cyp-a.y,cxp-a.x), b1=Math.atan2(cyp-b.y,cxp-b.x);
+    const sa={x:a.x+r*Math.cos(a1),y:a.y+r*Math.sin(a1)}, sb={x:b.x+r*Math.cos(b1),y:b.y+r*Math.sin(b1)};
+    svg.append('path').attr('class','loop').attr('d',`M${sa.x},${sa.y} Q${cxp},${cyp} ${sb.x},${sb.y}`);
+    const ah=Math.atan2(sb.y-cyp,sb.x-cxp);
+    svg.append('polygon').attr('class','loopfill').attr('points',`${sb.x},${sb.y} ${sb.x-10*Math.cos(ah-0.4)},${sb.y-10*Math.sin(ah-0.4)} ${sb.x-10*Math.cos(ah+0.4)},${sb.y-10*Math.sin(ah+0.4)}`);
+  }
+  arc(pts[0],pts[2]); arc(pts[2],pts[1]); arc(pts[1],pts[0]);
+  const g=svg.selectAll('.g-node').data(pts).join('g').attr('tabindex',0).attr('role','listitem').attr('aria-label',p=>`${p.label}: ${p.note}`);
+  g.append('circle').attr('class',p=>p.id==='approval'?'node approval':'node').attr('cx',p=>p.x).attr('cy',p=>p.y).attr('r',r);
+  g.append('text').attr('class','ntitle').attr('x',p=>p.x).attr('y',p=>p.y-2).attr('text-anchor','middle').text(p=>p.label);
+  g.append('text').attr('class','ndesc').attr('x',p=>p.x).attr('y',p=>p.y+14).attr('text-anchor','middle').text(p=>p.sub);
+  g.on('mouseover',(event,p)=>tooltip.html('<strong>'+p.label+'</strong><br>'+p.note).style('opacity',1))
+   .on('mousemove',event=>tooltip.style('left',(event.pageX+12)+'px').style('top',(event.pageY-28)+'px'))
+   .on('mouseout',()=>tooltip.style('opacity',0))
+   .on('focus',function(event,p){const rc=this.getBoundingClientRect();tooltip.html('<strong>'+p.label+'</strong><br>'+p.note).style('opacity',1).style('left',(window.scrollX+rc.left)+'px').style('top',(window.scrollY+rc.bottom+4)+'px');})
+   .on('blur',()=>tooltip.style('opacity',0));
+  // connector from approval to gate
+  const ap=pts[1];
+  svg.append('line').attr('x1',ap.x).attr('y1',ap.y+r).attr('x2',ap.x).attr('y2',ap.y+r+34).attr('stroke','var(--color-red)').attr('stroke-width',2);
+  svg.append('rect').attr('class','gate').attr('x',ap.x-22).attr('y',ap.y+r+34).attr('width',44).attr('height',14);
+  svg.append('text').attr('class','mono').attr('x',ap.x).attr('y',ap.y+r+66).attr('text-anchor','middle').text('gate');
+}
+let current=FALLBACK_DATA;
+async function load(){try{current=await d3.json('./02-the-reallocation-principle-fig-02.json');}catch(e){current=FALLBACK_DATA;}draw(current);}
+load(); new ResizeObserver(()=>draw(current)).observe(document.getElementById('chart'));
+</script></body></html>

@@ -1,0 +1,12 @@
+diff --git a/scripts/wordcount.mjs b/scripts/wordcount.mjs
+new file mode 100644
+index 0000000..1111111
+--- /dev/null
++++ b/scripts/wordcount.mjs
+@@ -0,0 +1,6 @@
++#!/usr/bin/env node
++import fs from 'node:fs';
++const files = fs.readdirSync('chapters').filter(f => f.endsWith('.md'));
++let n = 0;
++for (const f of files) n += fs.readFileSync('chapters/' + f, 'utf8').split(/\s+/).filter(Boolean).length;
++console.log(n);

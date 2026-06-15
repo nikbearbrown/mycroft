@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How fluency defeats pushback</title>
+<style>
+  :root { --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E; --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E; --color-fill:#F5F5F5; }
+  @media (prefers-color-scheme: dark) { :root { --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A; --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30; --color-fill:#1A1A1A; } }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--color-white); color:var(--color-ink); font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif; }
+  #chart { width:100%; }
+  .node { fill:var(--color-fill); stroke:var(--color-secondary); stroke-width:1; transition:opacity 120ms cubic-bezier(0.2,0.8,0.2,1); }
+  .node.fail { fill:var(--color-red); stroke:var(--color-red); }
+  .heading { font-family:'EB Garamond',Georgia,serif; fill:var(--color-ink); }
+  .sub { fill:var(--color-secondary); }
+  .nlabel { fill:var(--color-ink); font-size:12px; }
+  .nlabel.fail { fill:var(--color-white); font-weight:700; }
+  .arrow { stroke:var(--color-ink); stroke-width:2; fill:var(--color-ink); }
+  .danger { fill:none; stroke:var(--color-red); stroke-width:2; stroke-dasharray:4 3; }
+  .mono { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; fill:var(--color-red); }
+  .tooltip { position:absolute; pointer-events:none; opacity:0; background:var(--color-white); color:var(--color-ink); border:1px solid var(--color-border); padding:6px 8px; font-size:13px; }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; animation:none !important; } }
+</style>
+</head>
+<body>
+<div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const FALLBACK_DATA = [
+  {id:0,l1:'Model generates',l2:'explanation',note:'Pattern-matched from the surface form of the input.'},
+  {id:1,l1:'Output arrives',l2:'polished',note:'Reads like competent analysis regardless of grounding.'},
+  {id:2,l1:'Reviewer reads',l2:'fluent language',note:'A clean draft invites approval, not interrogation.'},
+  {id:3,l1:'Reflex is',l2:'approval',note:'The organizational default when a deck looks ready.'},
+  {id:4,l1:'No one checks',l2:'source',note:'The source check that would catch the gap never happens.'},
+  {id:5,l1:'Enters record',l2:'unchecked',fail:true,note:'A confident, unsourced claim is now in the record.'}
+];
+let tooltip;
+function draw(data){
+  d3.select('#chart').selectAll('*').remove();
+  if(tooltip) tooltip.remove();
+  tooltip = d3.select('body').append('div').attr('class','tooltip');
+  const w = document.getElementById('chart').clientWidth || 700;
+  const h = Math.max(420, w*0.62);
+  const svg = d3.select('#chart').append('svg').attr('width',w).attr('height',h)
+    .attr('viewBox',`0 0 ${w} ${h}`).attr('role','img').attr('aria-labelledby','t d');
+  svg.append('title').attr('id','t').text('How fluency defeats pushback');
+  svg.append('desc').attr('id','d').text('A six-stage pipeline from model generation to an unchecked record entering the books, with the danger segment marked.');
+  svg.append('text').attr('class','heading').attr('x',24).attr('y',32).attr('font-size',20).text('How fluency defeats pushback');
+  svg.append('text').attr('class','sub').attr('x',24).attr('y',52).attr('font-size',13).text('Each polished step quietly lowers the odds of a source check.');
+
+  const top=80, nw=Math.min(220,(w-48)*0.42), nh=44, vgap=(h-top-40-nh)/5;
+  const pos = data.map((d,i)=>({x:24+(i%2)*(w-48-nw), y:top+i*vgap, d}));
+  // arrows
+  for(let i=0;i<pos.length-1;i++){
+    const a=pos[i], b=pos[i+1];
+    svg.append('line').attr('class','arrow').attr('x1',a.x+nw/2).attr('y1',a.y+nh).attr('x2',b.x+nw/2).attr('y2',b.y-6);
+    svg.append('polygon').attr('class','arrow').attr('points',`${b.x+nw/2},${b.y} ${b.x+nw/2-5},${b.y-10} ${b.x+nw/2+5},${b.y-10}`);
+  }
+  // danger bracket over nodes 1 and 4 region
+  svg.append('rect').attr('class','danger').attr('x',pos[1].x-6).attr('y',pos[1].y-6).attr('width',nw+12).attr('height',(pos[4].y-pos[1].y)+nh+12);
+  svg.append('text').attr('class','mono').attr('x',pos[1].x+nw+16).attr('y',(pos[1].y+pos[4].y)/2).text('pushback bar rises here');
+
+  const g = svg.selectAll('.g-node').data(pos).join('g').attr('class','g-node')
+    .attr('tabindex',0).attr('role','listitem')
+    .attr('aria-label',p=>`${p.d.l1} ${p.d.l2}. ${p.d.note}`);
+  g.append('rect').attr('class',p=>p.d.fail?'node fail':'node').attr('x',p=>p.x).attr('y',p=>p.y).attr('width',nw).attr('height',nh);
+  g.append('text').attr('class',p=>p.d.fail?'nlabel fail':'nlabel').attr('x',p=>p.x+14).attr('y',p=>p.y+20).text(p=>p.d.l1);
+  g.append('text').attr('class',p=>p.d.fail?'nlabel fail':'nlabel').attr('x',p=>p.x+14).attr('y',p=>p.y+36).text(p=>p.d.l2);
+  g.on('mouseover',(event,p)=>{ tooltip.html('<strong>'+p.d.l1+' '+p.d.l2+'</strong><br>'+p.d.note).style('opacity',1); })
+   .on('mousemove',event=>{ tooltip.style('left',(event.pageX+12)+'px').style('top',(event.pageY-28)+'px'); })
+   .on('mouseout',()=>tooltip.style('opacity',0))
+   .on('focus',function(event,p){ const r=this.getBoundingClientRect(); tooltip.html('<strong>'+p.d.l1+' '+p.d.l2+'</strong><br>'+p.d.note).style('opacity',1).style('left',(window.scrollX+r.left)+'px').style('top',(window.scrollY+r.bottom+4)+'px'); })
+   .on('blur',()=>tooltip.style('opacity',0));
+}
+let current=FALLBACK_DATA;
+async function load(){ try{ current=await d3.json('./01-the-fluency-trap-fig-03.json'); }catch(e){ current=FALLBACK_DATA; } draw(current); }
+load();
+new ResizeObserver(()=>draw(current)).observe(document.getElementById('chart'));
+</script>
+</body>
+</html>

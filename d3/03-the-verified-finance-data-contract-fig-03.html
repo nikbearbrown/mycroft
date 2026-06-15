@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The recipe boundary</title>
+<style>
+  :root { --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E; --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E; --color-fill:#F5F5F5; }
+  @media (prefers-color-scheme: dark){ :root{ --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A; --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30; --color-fill:#1A1A1A; } }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--color-white);color:var(--color-ink);font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif;}
+  #chart{width:100%;}
+  .zone{fill:var(--color-fill);stroke-width:1;} .zone.prep{stroke:var(--color-secondary);} .zone.acct{stroke:var(--color-ink);}
+  .task{fill:var(--color-white);stroke-width:1;} .task.prep{stroke:var(--color-secondary);} .task.acct{stroke:var(--color-ink);}
+  .gate{fill:var(--color-red);}
+  .heading{font-family:'EB Garamond',Georgia,serif;fill:var(--color-ink);} .sub{fill:var(--color-secondary);}
+  .ztitle{font-weight:700;fill:var(--color-ink);font-size:13px;} .tlabel{fill:var(--color-ink);font-size:12px;}
+  .mono{font-family:'JetBrains Mono','Fira Code',monospace;font-size:11px;fill:var(--color-red);}
+  .arrow{stroke:var(--color-ink);stroke-width:2;fill:var(--color-ink);}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;}}
+</style></head>
+<body><div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const FALLBACK_DATA={prep:['File tracing','Schema comparison','Control total check','Version logging','Report generation'],acct:['Materiality judgment','Adequacy assessment','Accounting treatment','Release decision']};
+function draw(data){
+  d3.select('#chart').selectAll('*').remove();
+  const w=document.getElementById('chart').clientWidth||700, h=Math.max(400,w*0.6);
+  const svg=d3.select('#chart').append('svg').attr('width',w).attr('height',h).attr('viewBox',`0 0 ${w} ${h}`).attr('role','img').attr('aria-labelledby','t d');
+  svg.append('title').attr('id','t').text('The recipe boundary');
+  svg.append('desc').attr('id','d').text('Preparation tasks on the left, a red gate, accountable tasks on the right.');
+  svg.append('text').attr('class','heading').attr('x',24).attr('y',32).attr('font-size',20).text('The recipe boundary');
+  svg.append('text').attr('class','sub').attr('x',24).attr('y',52).attr('font-size',13).text('The recipe stops at the gate; the finance professional crosses it.');
+  const top=78, gateW=24, zw=(w-48-gateW-24)/2, zh=h-top-30, lx=24, gx=lx+zw+12, rx=gx+gateW+12;
+  svg.append('rect').attr('class','zone prep').attr('x',lx).attr('y',top).attr('width',zw).attr('height',zh);
+  svg.append('text').attr('class','ztitle').attr('x',lx+14).attr('y',top+24).text('PREPARATION LAYER');
+  data.prep.forEach((t,i)=>{ const y=top+38+i*((zh-50)/data.prep.length); svg.append('rect').attr('class','task prep').attr('x',lx+14).attr('y',y).attr('width',zw-28).attr('height',(zh-50)/data.prep.length-8); svg.append('text').attr('class','tlabel').attr('x',lx+24).attr('y',y+((zh-50)/data.prep.length-8)/2+4).text(t); });
+  svg.append('rect').attr('class','gate').attr('x',gx).attr('y',top+12).attr('width',gateW).attr('height',zh-24);
+  svg.append('text').attr('class','mono').attr('x',gx+gateW/2).attr('y',top+zh+16).attr('text-anchor','middle').text('approval');
+  svg.append('rect').attr('class','zone acct').attr('x',rx).attr('y',top).attr('width',zw).attr('height',zh);
+  svg.append('text').attr('class','ztitle').attr('x',rx+14).attr('y',top+24).text('ACCOUNTABLE LAYER');
+  data.acct.forEach((t,i)=>{ const y=top+38+i*((zh-50)/data.acct.length); svg.append('rect').attr('class','task acct').attr('x',rx+14).attr('y',y).attr('width',zw-28).attr('height',(zh-50)/data.acct.length-8); svg.append('text').attr('class','tlabel').attr('x',rx+24).attr('y',y+((zh-50)/data.acct.length-8)/2+4).text(t); });
+  const my=top+zh/2;
+  svg.append('line').attr('class','arrow').attr('x1',gx-12).attr('y1',my).attr('x2',gx-2).attr('y2',my); svg.append('polygon').attr('class','arrow').attr('points',`${gx},${my} ${gx-7},${my-4} ${gx-7},${my+4}`);
+  svg.append('line').attr('class','arrow').attr('x1',gx+gateW+2).attr('y1',my).attr('x2',rx-2).attr('y2',my); svg.append('polygon').attr('class','arrow').attr('points',`${rx},${my} ${rx-7},${my-4} ${rx-7},${my+4}`);
+}
+let current=FALLBACK_DATA;
+async function load(){try{current=await d3.json('./03-the-verified-finance-data-contract-fig-03.json');}catch(e){current=FALLBACK_DATA;}draw(current);}
+load(); new ResizeObserver(()=>draw(current)).observe(document.getElementById('chart'));
+</script></body></html>

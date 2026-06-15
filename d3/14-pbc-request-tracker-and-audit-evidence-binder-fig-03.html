@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Three judgment boundaries: adequacy, privilege, scope</title>
+  <style>
+    :root {
+      --color-white:     #FFFFFF;
+      --color-ink:       #2a1a0e;
+      --color-red:       #C8102E;
+      --color-secondary: #545454;
+      --color-border:    #D4D4D4;
+      --color-ochre:     #C8860E;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-white:     #111111;
+        --color-ink:       #F0EBE3;
+        --color-red:       #E8243A;
+        --color-secondary: #A0978C;
+        --color-border:    #2E2E2E;
+        --color-ochre:     #D49A30;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--color-white); color: var(--color-ink); font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif; }
+    #chart { width: 100%; }
+    .chart-title { font-size: 16px; font-weight: 700; fill: var(--color-ink); }
+    .chart-subtitle { font-size: 13px; fill: var(--color-secondary); }
+    .col-head { font-size: 14px; font-weight: 700; fill: var(--color-ink); }
+    .zone-label { font-size: 11px; font-weight: 700; }
+    .zone-text { font-size: 11px; fill: var(--color-ink); }
+    .tooltip {
+      position: absolute; pointer-events: none; opacity: 0;
+      background: var(--color-white); color: var(--color-ink);
+      border: 1px solid var(--color-border); border-radius: 8px;
+      padding: 8px 10px; font-size: 13px; max-width: 230px;
+      box-shadow: 0 6px 20px -6px rgb(18 18 18 / 0.14);
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  </style>
+</head>
+<body>
+  <div id="chart" role="main"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script>
+    const FALLBACK_DATA = [
+      { head: 'Adequacy', recipe: 'Confirm period / entity match; flag mismatches', human: 'Evaluate whether the document supports the audited assertion' },
+      { head: 'Privilege', recipe: 'Flag by category; block delivery until cleared', human: 'Determine whether the document is privileged and whether privilege is waived' },
+      { head: 'Scope', recipe: 'Map files to request IDs; flag unmapped items', human: 'Negotiate what falls within and outside the auditors’ request' }
+    ];
+
+    const tooltip = d3.select('body').append('div').attr('class', 'tooltip');
+    function showTip(event, html) {
+      tooltip.html(html).style('left', (event.pageX + 12) + 'px').style('top', (event.pageY - 28) + 'px')
+        .transition().duration(150).style('opacity', 1);
+    }
+    function moveTip(event) { tooltip.style('left', (event.pageX + 12) + 'px').style('top', (event.pageY - 28) + 'px'); }
+    function hideTip() { tooltip.transition().duration(100).style('opacity', 0); }
+
+    function wrap(textSel, text, x, startY, lineH, maxChars) {
+      const words = text.split(' ');
+      let line = '', y = startY;
+      words.forEach(w => {
+        if ((line + ' ' + w).trim().length > maxChars) {
+          textSel.append('tspan').attr('x', x).attr('y', y).text(line.trim());
+          line = w; y += lineH;
+        } else { line = (line + ' ' + w).trim(); }
+      });
+      if (line) textSel.append('tspan').attr('x', x).attr('y', y).text(line);
+    }
+
+    async function loadData() {
+      try { return await d3.json('./14-pbc-request-tracker-and-audit-evidence-binder-fig-03/data.json'); }
+      catch { return FALLBACK_DATA; }
+    }
+
+    function draw(data) {
+      d3.select('#chart').selectAll('*').remove();
+      const totalWidth = document.getElementById('chart').clientWidth || 800;
+      const totalHeight = 440;
+
+      const svg = d3.select('#chart').append('svg')
+        .attr('width', totalWidth).attr('height', totalHeight)
+        .attr('role', 'img').attr('aria-labelledby', 'chart-title chart-desc');
+      svg.append('title').attr('id', 'chart-title').text('Three judgment boundaries: adequacy, privilege, scope');
+      svg.append('desc').attr('id', 'chart-desc')
+        .text('For adequacy, privilege, and scope, the recipe handles the logistics while the judgment belongs to a human.');
+
+      svg.append('text').attr('class', 'chart-title').attr('x', 16).attr('y', 26)
+        .text('Three judgment boundaries in PBC');
+      svg.append('text').attr('class', 'chart-subtitle').attr('x', 16).attr('y', 46)
+        .text('The recipe handles the logistics of all three; none of the three judgments belongs to it.');
+
+      const left = 16, gap = 18, top = 70;
+      const colW = (totalWidth - left * 2 - gap * 2) / 3;
+      const zoneH = 130;
+
+      data.forEach((d, i) => {
+        const x = left + i * (colW + gap);
+        const g = svg.append('g')
+          .attr('tabindex', 0).attr('aria-label', `${d.head}: recipe — ${d.recipe}; human — ${d.human}`)
+          .style('cursor', 'pointer');
+        g.append('text').attr('class', 'col-head').attr('x', x + colW / 2).attr('y', top)
+          .attr('text-anchor', 'middle').text(d.head);
+
+        // recipe zone
+        const ry = top + 14;
+        g.append('rect').attr('x', x).attr('y', ry).attr('width', colW).attr('height', zoneH)
+          .attr('rx', 6).attr('fill', 'var(--color-white)').attr('stroke', 'var(--color-secondary)').attr('stroke-width', 1.5)
+          .on('mouseover', function (event) { showTip(event, `<strong>${d.head} — recipe</strong><br>${d.recipe}`); })
+          .on('mousemove', moveTip).on('mouseout', hideTip);
+        g.append('text').attr('class', 'zone-label').attr('x', x + 12).attr('y', ry + 20)
+          .attr('fill', 'var(--color-secondary)').text('Recipe can do');
+        const rt = g.append('text').attr('class', 'zone-text');
+        wrap(rt, d.recipe, x + 12, ry + 40, 16, Math.floor(colW / 6.4));
+
+        // human zone
+        const hy = ry + zoneH + 16;
+        g.append('rect').attr('x', x).attr('y', hy).attr('width', colW).attr('height', zoneH)
+          .attr('rx', 6).attr('fill', 'var(--color-white)').attr('stroke', 'var(--color-red)').attr('stroke-width', 1.5)
+          .on('mouseover', function (event) { showTip(event, `<strong>${d.head} — human</strong><br>${d.human}`); })
+          .on('mousemove', moveTip).on('mouseout', hideTip);
+        g.append('rect').attr('x', x).attr('y', hy).attr('width', 4).attr('height', zoneH).attr('fill', 'var(--color-red)');
+        g.append('text').attr('class', 'zone-label').attr('x', x + 12).attr('y', hy + 20)
+          .attr('fill', 'var(--color-red)').text('Human judgment');
+        const ht = g.append('text').attr('class', 'zone-text');
+        wrap(ht, d.human, x + 12, hy + 40, 16, Math.floor(colW / 6.4));
+      });
+    }
+
+    loadData().then(data => {
+      draw(data);
+      const ro = new ResizeObserver(() => draw(data));
+      ro.observe(document.getElementById('chart'));
+    });
+  </script>
+</body>
+</html>

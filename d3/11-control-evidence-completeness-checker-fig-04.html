@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Readiness vs. reliability: the recipe boundary</title>
+  <style>
+    :root {
+      --color-white:     #FFFFFF;
+      --color-ink:       #2a1a0e;
+      --color-red:       #C8102E;
+      --color-secondary: #545454;
+      --color-border:    #D4D4D4;
+      --color-ochre:     #C8860E;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-white:     #111111;
+        --color-ink:       #F0EBE3;
+        --color-red:       #E8243A;
+        --color-secondary: #A0978C;
+        --color-border:    #2E2E2E;
+        --color-ochre:     #D49A30;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--color-white); color: var(--color-ink); font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif; }
+    #chart { width: 100%; }
+    .chart-title { font-size: 16px; font-weight: 700; fill: var(--color-ink); }
+    .chart-subtitle { font-size: 13px; fill: var(--color-secondary); }
+    .col-head { font-size: 13px; font-weight: 700; }
+    .item-label { font-size: 12px; fill: var(--color-ink); }
+    .gate-label { font-size: 11px; font-weight: 700; fill: var(--color-red); }
+    .tooltip {
+      position: absolute; pointer-events: none; opacity: 0;
+      background: var(--color-white); color: var(--color-ink);
+      border: 1px solid var(--color-border); border-radius: 8px;
+      padding: 8px 10px; font-size: 13px; max-width: 240px;
+      box-shadow: 0 6px 20px -6px rgb(18 18 18 / 0.14);
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  </style>
+</head>
+<body>
+  <div id="chart" role="main"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script>
+    const FALLBACK_DATA = {
+      readiness: [
+        { label: 'Present', desc: 'The required evidence item exists in the binder.' },
+        { label: 'Within period', desc: 'Timestamps fall inside the review window.' },
+        { label: 'Authorized signatures', desc: 'Preparer and reviewer resolve to authorized roles.' },
+        { label: 'Sufficient sample', desc: 'Sample meets the required count for the population.' },
+        { label: 'No stale artifacts', desc: 'No evidence carried forward unmarked from a prior cycle.' },
+        { label: 'Prior exceptions documented', desc: 'Any prior finding has remediation support attached.' }
+      ],
+      reliability: [
+        { label: 'Source is independent', desc: 'Evidence originates outside the process being tested.' },
+        { label: 'Direct, not inferred', desc: 'Evidence directly supports the assertion, not by inference.' },
+        { label: 'Systems are controlled', desc: 'The systems that produced the evidence are themselves controlled.' },
+        { label: 'Credible given the risk', desc: 'The evidence is appropriate to the level of risk.' },
+        { label: 'Design adequate for assertion', desc: 'The control design is capable of addressing the risk.' }
+      ]
+    };
+
+    const tooltip = d3.select('body').append('div').attr('class', 'tooltip');
+    function showTip(event, html) {
+      tooltip.html(html)
+        .style('left', (event.pageX + 12) + 'px')
+        .style('top', (event.pageY - 28) + 'px')
+        .transition().duration(150).style('opacity', 1);
+    }
+    function moveTip(event) { tooltip.style('left', (event.pageX + 12) + 'px').style('top', (event.pageY - 28) + 'px'); }
+    function hideTip() { tooltip.transition().duration(100).style('opacity', 0); }
+
+    async function loadData() {
+      try { return await d3.json('./11-control-evidence-completeness-checker-fig-04/data.json'); }
+      catch { return FALLBACK_DATA; }
+    }
+
+    function column(svg, items, x, w, headText, headSub, accent) {
+      const g = svg.append('g');
+      g.append('text').attr('class', 'col-head').attr('x', x + w / 2).attr('y', 78)
+        .attr('text-anchor', 'middle').attr('fill', accent).text(headText);
+      g.append('text').attr('x', x + w / 2).attr('y', 96).attr('text-anchor', 'middle')
+        .attr('font-size', 11).attr('fill', 'var(--color-secondary)').text(headSub);
+
+      const rowH = 44, top = 116;
+      const rows = g.selectAll('.row').data(items).join('g').attr('class', 'row')
+        .attr('tabindex', 0).attr('aria-label', d => d.label).style('cursor', 'pointer');
+      rows.append('rect')
+        .attr('x', x).attr('y', (d, i) => top + i * rowH).attr('width', w).attr('height', rowH - 8)
+        .attr('rx', 6).attr('fill', 'var(--color-white)')
+        .attr('stroke', accent).attr('stroke-width', 1.5)
+        .style('transition', 'opacity 120ms')
+        .on('mouseover', function (event, d) { d3.select(this).style('opacity', 0.85); showTip(event, `<strong>${d.label}</strong><br>${d.desc}`); })
+        .on('mousemove', moveTip)
+        .on('mouseout', function () { d3.select(this).style('opacity', 1); hideTip(); });
+      rows.append('text').attr('class', 'item-label')
+        .attr('x', x + 12).attr('y', (d, i) => top + i * rowH + (rowH - 8) / 2 + 4)
+        .text(d => d.label);
+    }
+
+    function draw(data) {
+      d3.select('#chart').selectAll('*').remove();
+      const totalWidth = document.getElementById('chart').clientWidth || 800;
+      const totalHeight = 420;
+
+      const svg = d3.select('#chart').append('svg')
+        .attr('width', totalWidth).attr('height', totalHeight)
+        .attr('role', 'img').attr('aria-labelledby', 'chart-title chart-desc');
+      svg.append('title').attr('id', 'chart-title').text('Readiness vs. reliability: the recipe boundary');
+      svg.append('desc').attr('id', 'chart-desc')
+        .text('Two columns separated by a gate. Left: structural readiness checks the recipe performs. Right: reliability judgments only a human makes.');
+
+      svg.append('text').attr('class', 'chart-title').attr('x', 16).attr('y', 26)
+        .text('The gate: the recipe stops here');
+      svg.append('text').attr('class', 'chart-subtitle').attr('x', 16).attr('y', 46)
+        .text('Readiness is a structural check. Reliability is a professional judgment.');
+
+      const gap = 80;
+      const colW = (totalWidth - gap - 32) / 2;
+      const leftX = 16;
+      const rightX = leftX + colW + gap;
+      const gateX = leftX + colW + gap / 2;
+
+      column(svg, data.readiness, leftX, colW, 'Evidence readiness', '(recipe)', 'var(--color-secondary)');
+      column(svg, data.reliability, rightX, colW, 'Evidence reliability', '(human)', 'var(--color-red)');
+
+      // gate line
+      svg.append('line').attr('aria-hidden', 'true')
+        .attr('x1', gateX).attr('y1', 66).attr('x2', gateX).attr('y2', totalHeight - 28)
+        .attr('stroke', 'var(--color-red)').attr('stroke-width', 3);
+      svg.append('text').attr('class', 'gate-label')
+        .attr('x', gateX).attr('y', totalHeight - 10).attr('text-anchor', 'middle')
+        .text('recipe stops · human decides');
+    }
+
+    loadData().then(data => {
+      draw(data);
+      const ro = new ResizeObserver(() => draw(data));
+      ro.observe(document.getElementById('chart'));
+    });
+  </script>
+</body>
+</html>

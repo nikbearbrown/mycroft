@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The two layers and the human gate</title>
+<style>
+  :root { --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E; --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E; --color-fill:#F5F5F5; }
+  @media (prefers-color-scheme: dark){ :root{ --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A; --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30; --color-fill:#1A1A1A; } }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--color-white);color:var(--color-ink);font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif;}
+  #chart{width:100%;}
+  .band{fill:var(--color-fill);stroke-width:1;} .band.prep{stroke:var(--color-secondary);} .band.judg{stroke:var(--color-ink);}
+  .node{fill:var(--color-white);stroke-width:1;} .node.prep{stroke:var(--color-secondary);} .node.judg{stroke:var(--color-ink);}
+  .gate{fill:var(--color-red);}
+  .heading{font-family:'EB Garamond',Georgia,serif;fill:var(--color-ink);} .sub{fill:var(--color-secondary);}
+  .btitle{font-weight:700;fill:var(--color-ink);font-size:13px;} .nlabel{fill:var(--color-ink);font-size:11px;}
+  .mono{font-family:'JetBrains Mono','Fira Code',monospace;font-size:11px;}
+  .arrow{stroke:var(--color-secondary);stroke-width:1.5;fill:var(--color-secondary);} .uparrow{stroke:var(--color-ink);stroke-width:2;}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;}}
+</style></head>
+<body><div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const FALLBACK_DATA={prep:['Data pull','Normalize','Compare','Format','Threshold flag'],judg:['Materiality','Causal explanation','Accounting treatment','Release decision']};
+function draw(data){
+  d3.select('#chart').selectAll('*').remove();
+  const w=document.getElementById('chart').clientWidth||700, h=Math.max(400,w*0.6);
+  const svg=d3.select('#chart').append('svg').attr('width',w).attr('height',h).attr('viewBox',`0 0 ${w} ${h}`).attr('role','img').attr('aria-labelledby','t d');
+  svg.append('title').attr('id','t').text('The two layers and the human gate');
+  svg.append('desc').attr('id','d').text('Preparation layer of nodes below a judgment layer, separated by a red human gate; AI stops at the gate.');
+  svg.append('text').attr('class','heading').attr('x',24).attr('y',32).attr('font-size',20).text('The two layers and the human gate');
+  svg.append('text').attr('class','sub').attr('x',24).attr('y',52).attr('font-size',13).text('AI operates freely below the gate and stops at it.');
+  const L=40,R=w-40,top=72, jh=100, gateH=14, gap=24, ph=120;
+  // judgment
+  svg.append('rect').attr('class','band judg').attr('x',L).attr('y',top).attr('width',R-L).attr('height',jh);
+  svg.append('text').attr('class','btitle').attr('x',L+16).attr('y',top+22).text('JUDGMENT LAYER');
+  const jn=data.judg, jw=(R-L-32)/jn.length;
+  jn.forEach((t,i)=>{ const x=L+16+i*jw; svg.append('rect').attr('class','node judg').attr('x',x).attr('y',top+34).attr('width',jw-12).attr('height',48);
+    svg.append('text').attr('class','nlabel').attr('x',x+8).attr('y',top+62).text(t.length>14?t.slice(0,13)+'…':t); });
+  // gate
+  const gy=top+jh+10;
+  svg.append('rect').attr('class','gate').attr('x',L).attr('y',gy).attr('width',R-L).attr('height',gateH);
+  svg.append('text').attr('class','mono').attr('fill','var(--color-red)').attr('x',L).attr('y',gy+gateH+16).text('human gate');
+  // prep
+  const py=gy+gateH+gap;
+  svg.append('rect').attr('class','band prep').attr('x',L).attr('y',py).attr('width',R-L).attr('height',ph);
+  svg.append('text').attr('class','btitle').attr('x',L+16).attr('y',py+22).text('PREPARATION LAYER');
+  const pn=data.prep, pw=(R-L-32)/pn.length;
+  pn.forEach((t,i)=>{ const x=L+16+i*pw; svg.append('rect').attr('class','node prep').attr('x',x).attr('y',py+38).attr('width',pw-12).attr('height',50);
+    svg.append('text').attr('class','nlabel').attr('x',x+8).attr('y',py+66).text(t); 
+    if(i<pn.length-1){ svg.append('line').attr('class','arrow').attr('x1',x+pw-12).attr('y1',py+63).attr('x2',x+pw).attr('y2',py+63); svg.append('polygon').attr('class','arrow').attr('points',`${x+pw},${py+63} ${x+pw-7},${py+60} ${x+pw-7},${py+66}`);} });
+  // up arrow stops at gate
+  const cx=(L+R)/2;
+  svg.append('line').attr('class','uparrow').attr('x1',cx).attr('y1',py+38).attr('x2',cx).attr('y2',gy+gateH+4);
+  svg.append('line').attr('class','uparrow').attr('x1',cx-20).attr('y1',gy+gateH+4).attr('x2',cx+20).attr('y2',gy+gateH+4).attr('stroke-width',3);
+  svg.append('text').attr('class','mono sub').attr('fill','var(--color-secondary)').attr('x',cx+6).attr('y',gy+gateH+20).text('stops here');
+}
+let current=FALLBACK_DATA;
+async function load(){try{current=await d3.json('./02-the-reallocation-principle-fig-01.json');}catch(e){current=FALLBACK_DATA;}draw(current);}
+load(); new ResizeObserver(()=>draw(current)).observe(document.getElementById('chart'));
+</script></body></html>

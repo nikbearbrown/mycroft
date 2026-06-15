@@ -31,7 +31,7 @@ const KIND = {
 
 const DEFAULT_PATHS = [
   'prompts', 'brand', 'recipes', 'scripts',
-  'DOMAIN.md', 'CLAUDE.md', 'AGENTS.md', 'MYCROFT.md', 'README.md',
+  'DOMAIN.md', 'CLAUDE.md', 'AGENTS.md', 'SNICKERDOODLE.md', 'README.md',
   'metadata.yaml', 'package.json',
 ];
 

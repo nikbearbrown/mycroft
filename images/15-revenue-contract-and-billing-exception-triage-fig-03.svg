@@ -1,0 +1,51 @@
+<!--
+  Two-Bucket Exception Triage Funnel
+  Book: Mycroft
+  Chapter: 15-revenue-contract-and-billing-exception-triage
+  Figure 03
+  Type: process flowchart
+  Generated 2026-06-15
+  Source: pantry/15-revenue-contract-and-billing-exception-triage-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-03">
+<title id="fig-title-03">Two-Bucket Exception Triage Funnel</title>
+<desc>All flagged exceptions pass through one triage decision — can billing ops resolve this without an accounting interpretation? Factual mismatches route left to billing operations; accounting-policy questions route right to the accounting team for a policy memo.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="15-revenue-contract-and-billing-exception-triage" figure-number="03" figure-title="Two-Bucket Exception Triage Funnel" figure-slug="two-bucket-triage-funnel" figure-type="process flowchart" priority="Critical" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/15-revenue-contract-and-billing-exception-triage-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">One triage rule sends each exception to one of two teams</text>
+
+<!-- funnel input -->
+<polygon points="200,56 500,56 410,108 290,108" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="350" y="86" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">All flagged exceptions</text>
+
+<line x1="350" y1="108" x2="350" y2="128" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- triage pivot -->
+<rect x="230" y="132" width="240" height="58" fill="#2a1a0e" stroke="#2a1a0e" stroke-width="1"/>
+<text x="350" y="156" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#FFFFFF" font-weight="bold">Triage decision</text>
+<text x="350" y="173" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF">can billing ops resolve without</text>
+<text x="350" y="185" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF">an accounting interpretation?</text>
+
+<!-- left path (yes) -->
+<line x1="280" y1="190" x2="180" y2="240" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="210" y="222" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">yes</text>
+<rect x="40" y="244" width="250" height="64" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="165" y="266" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Factual mismatches</text>
+<text x="165" y="284" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">wrong price, wrong date, renamed SKU,</text>
+<text x="165" y="297" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">missing amendment in billing</text>
+<line x1="165" y1="308" x2="165" y2="334" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="55" y="338" width="220" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="165" y="360" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">to billing ops for correction</text>
+
+<!-- right path (no) -->
+<line x1="420" y1="190" x2="520" y2="240" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="480" y="222" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">no</text>
+<rect x="410" y="244" width="250" height="64" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.25"/>
+<text x="535" y="266" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#C8102E" font-weight="bold">Accounting-policy questions</text>
+<text x="535" y="284" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">modification type, milestone timing,</text>
+<text x="535" y="297" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">variable consideration, principal vs agent</text>
+<line x1="535" y1="308" x2="535" y2="334" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="425" y="338" width="220" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="535" y="360" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">to accounting for a policy memo</text>
+</svg>

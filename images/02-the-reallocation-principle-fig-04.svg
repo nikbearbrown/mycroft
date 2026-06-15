@@ -1,0 +1,24 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d" font-family="'Inter', sans-serif">
+  <title id="t">Where the recovered time goes</title>
+  <desc id="d">Two equal-height stacked bars for the same four-hour total; the pre-automation bar is mostly preparation, the reallocated bar compresses preparation and expands judgment.</desc>
+  <rect width="700" height="420" fill="#FFFFFF"/>
+  <text x="40" y="40" font-size="20" font-family="'EB Garamond', Georgia, serif" fill="#2a1a0e">Where the recovered time goes</text>
+  <text x="40" y="60" font-size="13" fill="#545454">Same four-hour total; the mix shifts from preparation to judgment.</text>
+  <!-- axis -->
+  <line x1="120" y1="100" x2="120" y2="360" stroke="#545454" stroke-width="1"/>
+  <line x1="120" y1="360" x2="640" y2="360" stroke="#545454" stroke-width="1"/>
+  <text x="112" y="364" font-size="11" font-family="'JetBrains Mono', monospace" fill="#545454" text-anchor="end">0</text>
+  <text x="112" y="104" font-size="11" font-family="'JetBrains Mono', monospace" fill="#545454" text-anchor="end">4h</text>
+  <!-- left bar (pre-automation): prep large (3.5h), judgment small (0.5h) -->
+  <!-- total height 260, 4h => 65px/h. prep 3.5h=227.5, judgment 0.5h=32.5 -->
+  <rect x="200" y="132.5" width="140" height="227.5" fill="#545454"/>
+  <rect x="200" y="100"   width="140" height="32.5"  fill="#C8102E"/>
+  <text x="270" y="384" font-size="12" fill="#2a1a0e" text-anchor="middle">Pre-automation</text>
+  <!-- right bar (reallocated): prep small (1h=65), judgment large (3h=195) -->
+  <rect x="440" y="295" width="140" height="65"  fill="#545454"/>
+  <rect x="440" y="100" width="140" height="195" fill="#C8102E"/>
+  <text x="510" y="384" font-size="12" fill="#2a1a0e" text-anchor="middle">Reallocated</text>
+  <!-- legend -->
+  <rect x="200" y="396" width="12" height="12" fill="#545454"/><text x="218" y="406" font-size="11" fill="#545454">Preparation</text>
+  <rect x="330" y="396" width="12" height="12" fill="#C8102E"/><text x="348" y="406" font-size="11" fill="#545454">Judgment</text>
+</svg>

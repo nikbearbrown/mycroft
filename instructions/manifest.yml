@@ -4,7 +4,7 @@ title: "Mycroft agent instructions (source for AGENTS.md + CLAUDE.md)"
 # Shared rule modules — the portable ~95%, the SAME library Madison draws from
 # (vendored per-repo so the two can diverge without coupling). Mycroft selects
 # all six because it has the backing tools/files each one references
-# (MYCROFT.md, DOMAIN.md, conformance.mjs, to-markdown.mjs). Order = output order.
+# (SNICKERDOODLE.md, DOMAIN.md, conformance.mjs, to-markdown.mjs). Order = output order.
 shared:
   - governance.md
   - markdown-default.md
@@ -17,12 +17,19 @@ shared:
 project: mycroft.md
 
 # Appended ONLY to CLAUDE.md. Claude Code supports @import; other tools read
-# AGENTS.md directly and resolve MYCROFT.md / DOMAIN.md on demand per governance.md.
+# AGENTS.md directly and resolve SNICKERDOODLE.md / DOMAIN.md on demand per governance.md.
 claude_only:
   - "## Claude Code"
-  - "@MYCROFT.md"
+  - "@SNICKERDOODLE.md"
   - "- Use plan mode before edits under recipes/ or data/verified/."
 
+# Output adapters to generate. AGENTS.md is canonical (inlined); every other entry
+# is a thin shim that POINTS at AGENTS.md (no rule duplication, regenerated each
+# build so it cannot drift).
 targets:
-  - agents
-  - claude
+  - agents    # AGENTS.md — canonical cross-tool standard
+  - claude    # CLAUDE.md — @import AGENTS.md + Claude-only tail
+  - gemini    # .gemini/settings.json — context.fileName → AGENTS.md
+  - aider     # .aider.conf.yml — read: AGENTS.md
+  - copilot   # .github/copilot-instructions.md — pointer to AGENTS.md
+  - cursor    # .cursor/rules/mycroft.mdc — alwaysApply pointer to AGENTS.md

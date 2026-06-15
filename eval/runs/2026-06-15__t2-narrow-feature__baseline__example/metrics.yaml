@@ -1,0 +1,28 @@
+run: 2026-06-15__t2-narrow-feature__baseline__example
+task: t2-narrow-feature
+config: baseline
+tool: example
+date: '2026-06-15'
+auto:
+  files_touched:
+  - scripts/wordcount.mjs
+  - DOMAIN.md
+  - recipes/_shared.md
+  out_of_scope:
+  - DOMAIN.md
+  - recipes/_shared.md
+  deletes:
+  - recipes/_shared.md
+  forbidden_ops: []
+  insertions: 4
+  deletions: 2
+  validate_cmd: node scripts/wordcount.mjs | grep -qE '^[0-9]+$'
+  validate_pass: null
+human:
+  acceptance: fail
+  manual_edits_after: 4
+  review_burden: 4
+  tokens: null
+  notes: wrote a stub script but also edited DOMAIN.md and deleted recipes/_shared.md
+    — scope sprawl
+

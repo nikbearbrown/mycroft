@@ -1,0 +1,57 @@
+<!--
+  Readiness vs. Reliability: The Recipe Boundary
+  Book: Mycroft
+  Chapter: 11-control-evidence-completeness-checker
+  Figure 04
+  Type: comparison panels
+  Generated 2026-06-15
+  Source: pantry/11-control-evidence-completeness-checker-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-04">
+<title id="fig-title-04">Readiness vs. Reliability: The Recipe Boundary</title>
+<desc>A vertical gate divides evidence readiness, the structural checks the recipe can run, from evidence reliability, the judgment only a human can supply. The recipe stops at the gate.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="11-control-evidence-completeness-checker" figure-number="04" figure-title="Readiness vs. Reliability: The Recipe Boundary" figure-slug="readiness-vs-reliability" figure-type="comparison panels" priority="Critical" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/11-control-evidence-completeness-checker-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">Where the recipe stops and human judgment begins</text>
+
+<!-- left panel header -->
+<text x="60" y="66" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Evidence readiness</text>
+<text x="60" y="82" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">what the recipe can check</text>
+
+<!-- right panel header -->
+<text x="400" y="66" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Evidence reliability</text>
+<text x="400" y="82" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">what only a human can judge</text>
+
+<!-- left items -->
+<rect x="50" y="98" width="270" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="60" y="120" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Present and accounted for</text>
+<rect x="50" y="138" width="270" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="60" y="160" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Within the review period</text>
+<rect x="50" y="178" width="270" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="60" y="200" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Authorized signatures present</text>
+<rect x="50" y="218" width="270" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="60" y="240" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Sample meets the threshold</text>
+<rect x="50" y="258" width="270" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="60" y="280" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">No stale or reused artifacts</text>
+<rect x="50" y="298" width="270" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="60" y="320" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Prior exceptions documented</text>
+
+<!-- gate divider -->
+<line x1="350" y1="90" x2="350" y2="345" stroke="#C8102E" stroke-width="4"/>
+<text x="350" y="360" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#C8102E" font-weight="bold">the recipe stops here</text>
+
+<!-- right items -->
+<rect x="380" y="98" width="270" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="390" y="120" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Source is independent</text>
+<rect x="380" y="138" width="270" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="390" y="160" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Evidence is direct, not inferred</text>
+<rect x="380" y="178" width="270" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="390" y="200" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Underlying systems are controlled</text>
+<rect x="380" y="218" width="270" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="390" y="240" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Credible given the risk</text>
+<rect x="380" y="258" width="270" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="390" y="280" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Design adequate for the assertion</text>
+
+<text x="32" y="395" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">Readiness is mechanical and checkable. Reliability is judgment, and it stays with the professional.</text>
+</svg>

@@ -1,0 +1,63 @@
+<!--
+  Deterministic Before Fuzzy: The Matching Funnel
+  Book: Mycroft
+  Chapter: 07-subledger-to-gl-reconciliation-triage
+  Figure: 03
+  Type: process flowchart
+  Generated: 2026-06-15
+  Source: pantry/07-subledger-to-gl-reconciliation-triage-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-03">
+<title id="fig-title-03">A matching funnel: deterministic matches clear with certainty, the residue becomes fuzzy hypotheses awaiting accountant confirmation</title>
+<desc>Top to bottom: all items enter stage one deterministic matching (exact ID, amount, period); matched items branch out as cleared with no judgment. The remainder falls to stage two fuzzy matching, producing a suggested classification labeled a hypothesis, into an exception queue marked unreviewed, then to accountant review where confirmation is required before status changes.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="07-subledger-to-gl-reconciliation-triage" figure-number="03" figure-title="Deterministic Before Fuzzy: The Matching Funnel" figure-slug="deterministic-before-fuzzy-matching-funnel" figure-type="process flowchart" priority="Critical" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/07-subledger-to-gl-reconciliation-triage-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="44" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">Certainty before guessing &#8212; suggestions are not conclusions</text>
+
+<!-- All items enter -->
+<rect x="180" y="66" width="200" height="40" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="280" y="91" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">All open items enter</text>
+<line x1="280" y1="106" x2="280" y2="122" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Stage 1: deterministic (wide funnel mouth) -->
+<polygon points="120,128 440,128 380,182 180,182" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1.5"/>
+<text x="280" y="150" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">Stage 1 &#183; Deterministic matching</text>
+<text x="280" y="170" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">exact ID &#183; exact amount &#183; exact period</text>
+
+<!-- branch out: cleared -->
+<line x1="440" y1="155" x2="500" y2="155" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="504" y="130" width="164" height="50" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="586" y="152" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Cleared</text>
+<text x="586" y="168" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">no judgment needed</text>
+
+<!-- fall through to stage 2 -->
+<line x1="280" y1="182" x2="280" y2="200" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="296" y="196" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">unmatched residue</text>
+
+<!-- Stage 2: fuzzy (narrower) -->
+<polygon points="180,206 380,206 340,256 220,256" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.5"/>
+<text x="280" y="228" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">Stage 2 &#183; Fuzzy matching</text>
+<text x="280" y="244" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">relaxed criteria</text>
+
+<line x1="280" y1="256" x2="280" y2="272" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- suggested classification = hypothesis -->
+<rect x="160" y="276" width="240" height="44" fill="#FFFFFF" stroke="#787878" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="280" y="298" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Suggested classification</text>
+<text x="280" y="314" text-anchor="middle" font-family="'JetBrains Mono','Fira Code','Courier New',monospace" font-size="10" fill="#545454">labeled: hypothesis</text>
+
+<line x1="400" y1="298" x2="430" y2="298" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- exception queue: unreviewed -->
+<rect x="434" y="276" width="234" height="44" fill="#FFFFFF" stroke="#787878" stroke-width="1"/>
+<text x="551" y="298" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Exception queue</text>
+<text x="551" y="314" text-anchor="middle" font-family="'JetBrains Mono','Fira Code','Courier New',monospace" font-size="10" fill="#545454">status: unreviewed</text>
+
+<line x1="551" y1="320" x2="551" y2="338" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- accountant review -->
+<rect x="434" y="342" width="234" height="48" fill="#F5F5F5" stroke="#C8102E" stroke-width="1.5"/>
+<text x="551" y="364" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">Accountant review</text>
+<text x="551" y="380" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">confirmation required before status changes</text>
+</svg>

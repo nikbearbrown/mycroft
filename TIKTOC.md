@@ -41,7 +41,7 @@ This book teaches entry- and mid-level finance practitioners how to build, read,
 
 The book is not about replacing finance judgment with AI. It is about turning repeated preparation work into verified workflows so human reviewers can spend more time on materiality, interpretation, accounting treatment, release, and accountability.
 
-Mycroft is both the framework and the working repository. The manuscript teaches the method; the repo shows recipes, phase gates, logs, reports, and data contracts. The reader learns by building a bounded finance recipe system that produces both machine-readable logs and human-readable decision reports.
+Mycroft is the book and the working repository, built on the Snickerdoodle framework. The manuscript teaches the method; the repo shows recipes, phase gates, logs, reports, and data contracts. The reader learns by building a bounded finance recipe system that produces both machine-readable logs and human-readable decision reports.
 
 ## One-Sentence Logline
 
@@ -172,7 +172,7 @@ By the end of the book, the reader can design and supervise a bounded Mycroft fi
 
 ## Constitution and Domain Layer
 
-- `MYCROFT.md`: governing constitution, labor separation, verification stack, recipe lifecycle, TODO closure, attestation, and logging.
+- `SNICKERDOODLE.md`: governing constitution, labor separation, verification stack, recipe lifecycle, TODO closure, attestation, and logging.
 - `DOMAIN.md`: project index, runnable surfaces, quarantine rules, and relationship to Madison.
 - `DATA_CONTRACT.md`: evidence and data-layer rules.
 - `AGENTS.md` and `CLAUDE.md`: generated instruction adapters.
@@ -363,7 +363,7 @@ chapters/
 
 **Capability built:** Understand Mycroft as a book and recipe engine for finance work.
 
-The introduction frames the central shift: AI makes execution cheaper, but it does not make materiality, interpretation, accounting treatment, cash decisions, control conclusions, or release judgment cheap. It introduces `MYCROFT.md`, `DOMAIN.md`, `DATA_CONTRACT.md`, `recipes/`, `logs/`, and `reports/`.
+The introduction frames the central shift: AI makes execution cheaper, but it does not make materiality, interpretation, accounting treatment, cash decisions, control conclusions, or release judgment cheap. It introduces `SNICKERDOODLE.md`, `DOMAIN.md`, `DATA_CONTRACT.md`, `recipes/`, `logs/`, and `reports/`.
 
 **Whole task:** Inventory one recurring finance workflow and label each step as preparation, evidence, transformation, judgment, approval, or release.  
 **Assessment:** Baseline finance-work allocation note.

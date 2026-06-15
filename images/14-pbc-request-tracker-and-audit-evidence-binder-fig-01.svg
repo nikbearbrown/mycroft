@@ -1,0 +1,65 @@
+<!--
+  Two Parallel Tracks Converging at the Delivery Gate
+  Book: Mycroft
+  Chapter: 14-pbc-request-tracker-and-audit-evidence-binder
+  Figure 01
+  Type: process flowchart
+  Generated 2026-06-15
+  Source: pantry/14-pbc-request-tracker-and-audit-evidence-binder-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-01">
+<title id="fig-title-01">Two Parallel Tracks Converging at the Delivery Gate</title>
+<desc>A preparation track and a judgment track run in parallel and converge at a single delivery gate before any document moves to the auditors. The gate holds until both tracks complete.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="14-pbc-request-tracker-and-audit-evidence-binder" figure-number="01" figure-title="Two Parallel Tracks Converging at the Delivery Gate" figure-slug="two-tracks-delivery-gate" figure-type="process flowchart" priority="Critical" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/14-pbc-request-tracker-and-audit-evidence-binder-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">Preparation and judgment converge at one delivery gate</text>
+
+<!-- preparation track (upper) -->
+<text x="32" y="62" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">Preparation track</text>
+<rect x="32" y="70" width="80" height="40" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="72" y="94" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">ingest list</text>
+<line x1="112" y1="90" x2="128" y2="90" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="130" y="70" width="80" height="40" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="170" y="94" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">assign owners</text>
+<line x1="210" y1="90" x2="226" y2="90" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="228" y="70" width="80" height="40" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="268" y="94" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">map support</text>
+<line x1="308" y1="90" x2="324" y2="90" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="326" y="70" width="80" height="40" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="366" y="89" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">sign-off,</text>
+<text x="366" y="101" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">flag gaps</text>
+<line x1="406" y1="90" x2="422" y2="90" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="424" y="70" width="90" height="40" fill="#2a1a0e" stroke="#2a1a0e" stroke-width="1"/>
+<text x="469" y="89" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF">build index,</text>
+<text x="469" y="101" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF">work surface</text>
+
+<!-- judgment track (lower) -->
+<text x="32" y="252" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">Judgment track</text>
+<rect x="60" y="260" width="120" height="44" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="120" y="280" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e" font-weight="bold">Adequacy review</text>
+<text x="120" y="295" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="9" fill="#545454">answers the request?</text>
+<line x1="180" y1="282" x2="196" y2="282" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="198" y="260" width="120" height="44" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="258" y="280" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e" font-weight="bold">Privilege review</text>
+<text x="258" y="295" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="9" fill="#545454">can it be shared?</text>
+<line x1="318" y1="282" x2="334" y2="282" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="336" y="260" width="120" height="44" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="396" y="280" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e" font-weight="bold">Approval</text>
+<text x="396" y="295" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="9" fill="#545454">who authorized?</text>
+
+<!-- convergence gate -->
+<line x1="514" y1="90" x2="560" y2="170" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="456" y1="282" x2="560" y2="200" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="560" y="155" width="60" height="60" fill="#C8102E" stroke="#C8102E" stroke-width="1"/>
+<text x="590" y="180" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF" font-weight="bold">Delivery</text>
+<text x="590" y="195" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF">gate</text>
+
+<!-- delivery terminal -->
+<line x1="590" y1="215" x2="590" y2="255" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="540" y="260" width="100" height="44" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="590" y="280" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e" font-weight="bold">To auditors</text>
+<text x="590" y="295" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="9" fill="#545454">delivery</text>
+
+<text x="32" y="370" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">Preparation can be fast. Judgment takes as long as it needs, and the gate refuses delivery until it clears.</text>
+</svg>

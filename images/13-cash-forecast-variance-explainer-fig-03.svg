@@ -1,0 +1,53 @@
+<!--
+  Four-State Driver Classification
+  Book: Mycroft
+  Chapter: 13-cash-forecast-variance-explainer
+  Figure 03
+  Type: process flowchart
+  Generated 2026-06-15
+  Source: pantry/13-cash-forecast-variance-explainer-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-03">
+<title id="fig-title-03">Four-State Driver Classification</title>
+<desc>A single category variance branches into four mutually exclusive states — fully explained, partially explained, timing-verify, and unexplained. The timing-verify and unexplained states require human review before resolution.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="13-cash-forecast-variance-explainer" figure-number="03" figure-title="Four-State Driver Classification" figure-slug="four-state-driver-classification" figure-type="process flowchart" priority="Critical" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/13-cash-forecast-variance-explainer-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">Each category variance lands in one of four states</text>
+
+<!-- input -->
+<rect x="40" y="180" width="130" height="56" fill="#2a1a0e" stroke="#2a1a0e" stroke-width="1"/>
+<text x="105" y="204" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#FFFFFF" font-weight="bold">Category variance</text>
+<text x="105" y="220" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF">one input</text>
+
+<!-- branches -->
+<line x1="170" y1="208" x2="260" y2="80" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="170" y1="208" x2="260" y2="160" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="170" y1="208" x2="260" y2="248" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="170" y1="208" x2="260" y2="328" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- state 1 fully explained -->
+<rect x="265" y="56" width="230" height="50" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="275" y="78" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Fully explained</text>
+<text x="275" y="94" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">driver matches full amount, reference attached</text>
+<text x="510" y="86" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">closed</text>
+
+<!-- state 2 partial -->
+<rect x="265" y="136" width="230" height="50" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="275" y="158" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Partially explained</text>
+<text x="275" y="174" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">driver matches part, residual flagged</text>
+
+<!-- state 3 timing-verify (emphasized) -->
+<rect x="265" y="224" width="230" height="50" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.5"/>
+<text x="275" y="246" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#C8102E" font-weight="bold">Timing-verify</text>
+<text x="275" y="262" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">near period boundary, treasury confirmation</text>
+<text x="510" y="254" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#C8102E">human review</text>
+
+<!-- state 4 unexplained (emphasized) -->
+<rect x="265" y="304" width="230" height="50" fill="#C8102E" stroke="#C8102E" stroke-width="1"/>
+<text x="275" y="326" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#FFFFFF" font-weight="bold">Unexplained</text>
+<text x="275" y="342" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF">no driver found, escalation if material</text>
+<text x="510" y="334" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#C8102E">human review</text>
+
+<text x="32" y="400" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">Fully explained reads as closed. The lower two states wait for a human before they resolve.</text>
+</svg>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The normalization pipeline</title>
+<style>
+  :root {
+    --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E;
+    --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E; --color-fill:#F5F5F5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A;
+            --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30; --color-fill:#1A1A1A; }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--color-white); color:var(--color-ink);
+         font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif; }
+  #chart { width:100%; }
+  .chart-title { font-size:16px; font-weight:700; fill:var(--color-ink); }
+  .chart-sub { font-size:13px; fill:var(--color-secondary); }
+  .node-label { font-size:11px; fill:var(--color-ink); }
+  .stage-label { font-size:12px; font-weight:700; fill:var(--color-ink); }
+  .surface-label { font-size:12px; font-weight:700; fill:var(--color-ink); }
+  .tooltip { position:absolute; pointer-events:none; opacity:0; background:var(--color-ink);
+             color:var(--color-white); font-size:13px; padding:6px 10px; border-radius:4px; }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; animation:none !important; } }
+</style>
+</head>
+<body>
+<div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const FALLBACK_DATA = {
+  submissions: ["Engineering","Marketing","Operations","Sales","Product","Legal"],
+  stages: ["Period alignment","Account alignment","Currency alignment"],
+  surface: "Single normalized comparison surface"
+};
+const tooltip = d3.select('body').append('div').attr('class','tooltip');
+async function loadData() {
+  try { return await d3.json('./10-budget-request-normalizer-and-challenge-pack-fig-01/data.json'); }
+  catch { return FALLBACK_DATA; }
+}
+function draw(data) {
+  d3.select('#chart').selectAll('*').remove();
+  const totalWidth = document.getElementById('chart').clientWidth || 800;
+  const totalHeight = 420;
+  const margin = { top: 64, right: 24, bottom: 24, left: 24 };
+  const innerW = totalWidth - margin.left - margin.right;
+  const innerH = totalHeight - margin.top - margin.bottom;
+
+  const svg = d3.select('#chart').append('svg')
+    .attr('width',totalWidth).attr('height',totalHeight)
+    .attr('role','img').attr('aria-labelledby','t1 d1');
+  svg.append('title').attr('id','t1').text('The budget normalization pipeline');
+  svg.append('desc').attr('id','d1').text('Six heterogeneous department submissions converge through three alignment stages into one uniform comparison surface.');
+
+  svg.append('text').attr('class','chart-title').attr('x',16).attr('y',26).text('The normalization pipeline');
+  svg.append('text').attr('class','chart-sub').attr('x',16).attr('y',46).text('Heterogeneous inputs become a surface where numbers can be compared — not evaluated.');
+
+  const g = svg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
+  const defs = svg.append('defs');
+  defs.append('marker').attr('id','arr10').attr('markerWidth',8).attr('markerHeight',6)
+    .attr('refX',7).attr('refY',3).attr('orient','auto')
+    .append('polygon').attr('points','0 0, 8 3, 0 6').attr('fill','var(--color-secondary)');
+
+  const subX = 0, subW = innerW*0.22;
+  const subH = 40, subPad = (innerH - data.submissions.length*subH)/(data.submissions.length-1);
+  const pipeX = innerW*0.34, pipeW = innerW*0.28;
+  const stageH = 56;
+  const surfX = innerW*0.74, surfW = innerW*0.26;
+
+  // submissions
+  g.selectAll('.sub').data(data.submissions).join('rect')
+    .attr('class','sub').attr('x',subX).attr('y',(d,i)=>i*(subH+subPad))
+    .attr('width',subW).attr('height',subH)
+    .attr('fill','var(--color-fill)').attr('stroke','var(--color-border)').attr('stroke-width',1)
+    .attr('tabindex',0).attr('aria-label',d=>`Submission: ${d}`)
+    .on('mouseover',function(event,d){
+      d3.selectAll('.sub').attr('opacity',0.35); d3.select(this).attr('opacity',1);
+      tooltip.html(`<strong>${d}</strong><br>Heterogeneous submission`)
+        .style('left',(event.pageX+12)+'px').style('top',(event.pageY-28)+'px')
+        .transition().duration(150).style('opacity',1);
+    })
+    .on('mousemove',event=>tooltip.style('left',(event.pageX+12)+'px').style('top',(event.pageY-28)+'px'))
+    .on('mouseout',function(){ d3.selectAll('.sub').attr('opacity',1); tooltip.transition().duration(100).style('opacity',0); });
+  g.selectAll('.subl').data(data.submissions).join('text')
+    .attr('class','node-label').attr('x',subX+10).attr('y',(d,i)=>i*(subH+subPad)+subH/2+4).text(d=>d);
+
+  // pipeline stages stacked centered
+  const pipeTotalH = data.stages.length*stageH + (data.stages.length-1)*14;
+  const pipeY0 = (innerH - pipeTotalH)/2;
+  g.append('rect').attr('x',pipeX-8).attr('y',pipeY0-12).attr('width',pipeW+16).attr('height',pipeTotalH+24)
+   .attr('fill','none').attr('stroke','var(--color-red)').attr('stroke-width',1.5);
+  g.selectAll('.stage').data(data.stages).join('rect')
+    .attr('class','stage').attr('x',pipeX).attr('y',(d,i)=>pipeY0+i*(stageH+14))
+    .attr('width',pipeW).attr('height',stageH)
+    .attr('fill','var(--color-fill)').attr('stroke','var(--color-ink)').attr('stroke-width',1)
+    .attr('tabindex',0).attr('aria-label',d=>`Stage: ${d}`)
+    .on('mouseover',function(event,d){
+      d3.selectAll('.stage').attr('opacity',0.35); d3.select(this).attr('opacity',1);
+      tooltip.html(`<strong>${d}</strong><br>Mechanical alignment step`)
+        .style('left',(event.pageX+12)+'px').style('top',(event.pageY-28)+'px')
+        .transition().duration(150).style('opacity',1);
+    })
+    .on('mousemove',event=>tooltip.style('left',(event.pageX+12)+'px').style('top',(event.pageY-28)+'px'))
+    .on('mouseout',function(){ d3.selectAll('.stage').attr('opacity',1); tooltip.transition().duration(100).style('opacity',0); });
+  g.selectAll('.stagel').data(data.stages).join('text')
+    .attr('class','stage-label').attr('x',pipeX+pipeW/2).attr('text-anchor','middle')
+    .attr('y',(d,i)=>pipeY0+i*(stageH+14)+stageH/2+4).text(d=>d);
+
+  // arrows submissions -> pipeline
+  g.selectAll('.a1').data(data.submissions).join('line')
+    .attr('class','a1').attr('aria-hidden','true')
+    .attr('x1',subX+subW).attr('y1',(d,i)=>i*(subH+subPad)+subH/2)
+    .attr('x2',pipeX-10).attr('y2',innerH/2)
+    .attr('stroke','var(--color-secondary)').attr('stroke-width',1).attr('marker-end','url(#arr10)');
+
+  // surface node
+  g.append('rect').attr('x',surfX).attr('y',innerH/2-50).attr('width',surfW).attr('height',100)
+   .attr('fill','var(--color-white)').attr('stroke','var(--color-ink)').attr('stroke-width',1.5);
+  g.append('text').attr('class','surface-label').attr('x',surfX+surfW/2).attr('text-anchor','middle')
+   .attr('y',innerH/2-6).text('Normalized');
+  g.append('text').attr('class','surface-label').attr('x',surfX+surfW/2).attr('text-anchor','middle')
+   .attr('y',innerH/2+14).text('comparison surface');
+  g.append('line').attr('aria-hidden','true').attr('x1',pipeX+pipeW+8).attr('y1',innerH/2)
+   .attr('x2',surfX-2).attr('y2',innerH/2).attr('stroke','var(--color-secondary)').attr('stroke-width',1.5).attr('marker-end','url(#arr10)');
+}
+loadData().then(data => { draw(data); new ResizeObserver(()=>draw(data)).observe(document.getElementById('chart')); });
+</script>
+</body>
+</html>

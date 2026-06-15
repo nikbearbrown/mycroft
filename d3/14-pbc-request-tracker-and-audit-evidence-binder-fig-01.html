@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Two parallel tracks converging at the delivery gate</title>
+  <style>
+    :root {
+      --color-white:     #FFFFFF;
+      --color-ink:       #2a1a0e;
+      --color-red:       #C8102E;
+      --color-secondary: #545454;
+      --color-border:    #D4D4D4;
+      --color-ochre:     #C8860E;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-white:     #111111;
+        --color-ink:       #F0EBE3;
+        --color-red:       #E8243A;
+        --color-secondary: #A0978C;
+        --color-border:    #2E2E2E;
+        --color-ochre:     #D49A30;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--color-white); color: var(--color-ink); font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif; }
+    #chart { width: 100%; }
+    .chart-title { font-size: 16px; font-weight: 700; fill: var(--color-ink); }
+    .chart-subtitle { font-size: 13px; fill: var(--color-secondary); }
+    .track-label { font-size: 12px; font-weight: 700; fill: var(--color-secondary); }
+    .step-label { font-size: 11px; fill: var(--color-ink); }
+    .gate-label { font-size: 12px; font-weight: 700; fill: var(--color-white); }
+    .link { stroke: var(--color-secondary); stroke-width: 1.5; fill: none; }
+    .tooltip {
+      position: absolute; pointer-events: none; opacity: 0;
+      background: var(--color-white); color: var(--color-ink);
+      border: 1px solid var(--color-border); border-radius: 8px;
+      padding: 8px 10px; font-size: 13px; max-width: 220px;
+      box-shadow: 0 6px 20px -6px rgb(18 18 18 / 0.14);
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  </style>
+</head>
+<body>
+  <div id="chart" role="main"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script>
+    const FALLBACK_DATA = {
+      prep: ['Ingest PBC list', 'Assign owners', 'Map support files', 'Check sign-off', 'Flag gaps', 'Build index'],
+      judgment: ['Adequacy review', 'Privilege review', 'Delivery approval']
+    };
+
+    const tooltip = d3.select('body').append('div').attr('class', 'tooltip');
+    function showTip(event, html) {
+      tooltip.html(html).style('left', (event.pageX + 12) + 'px').style('top', (event.pageY - 28) + 'px')
+        .transition().duration(150).style('opacity', 1);
+    }
+    function moveTip(event) { tooltip.style('left', (event.pageX + 12) + 'px').style('top', (event.pageY - 28) + 'px'); }
+    function hideTip() { tooltip.transition().duration(100).style('opacity', 0); }
+
+    async function loadData() {
+      try { return await d3.json('./14-pbc-request-tracker-and-audit-evidence-binder-fig-01/data.json'); }
+      catch { return FALLBACK_DATA; }
+    }
+
+    function track(svg, items, y, x0, x1, accent, dashed) {
+      const n = items.length;
+      const span = x1 - x0;
+      const stepW = Math.min(110, span / n - 12);
+      const xs = items.map((d, i) => x0 + (span / n) * i + (span / n - stepW) / 2);
+      const stepH = 40;
+
+      // connectors
+      for (let i = 0; i < n - 1; i++) {
+        svg.append('line').attr('class', 'link').attr('aria-hidden', 'true')
+          .attr('x1', xs[i] + stepW).attr('y1', y + stepH / 2)
+          .attr('x2', xs[i + 1]).attr('y2', y + stepH / 2);
+      }
+      const g = svg.selectAll(null).data(items).join('g')
+        .attr('tabindex', 0).attr('aria-label', d => d).style('cursor', 'pointer');
+      g.append('rect')
+        .attr('x', (d, i) => xs[i]).attr('y', y).attr('width', stepW).attr('height', stepH).attr('rx', 6)
+        .attr('fill', 'var(--color-white)').attr('stroke', accent).attr('stroke-width', 1.5)
+        .attr('stroke-dasharray', dashed ? '4 3' : null)
+        .style('transition', 'opacity 120ms')
+        .on('mouseover', function (event, d) { d3.select(this).style('opacity', 0.85); showTip(event, `<strong>${d}</strong>`); })
+        .on('mousemove', moveTip)
+        .on('mouseout', function () { d3.select(this).style('opacity', 1); hideTip(); });
+      g.append('text').attr('class', 'step-label')
+        .attr('x', (d, i) => xs[i] + stepW / 2).attr('y', y + stepH / 2 + 4)
+        .attr('text-anchor', 'middle')
+        .each(function (d) {
+          const words = d.split(' ');
+          const t = d3.select(this);
+          if (words.length > 2) {
+            t.append('tspan').attr('x', +t.attr('x')).attr('dy', '-0.3em').text(words.slice(0, 2).join(' '));
+            t.append('tspan').attr('x', +t.attr('x')).attr('dy', '1.1em').text(words.slice(2).join(' '));
+          } else { t.text(d); }
+        });
+      return { xs, stepW, stepH };
+    }
+
+    function draw(data) {
+      d3.select('#chart').selectAll('*').remove();
+      const totalWidth = document.getElementById('chart').clientWidth || 800;
+      const totalHeight = 420;
+
+      const svg = d3.select('#chart').append('svg')
+        .attr('width', totalWidth).attr('height', totalHeight)
+        .attr('role', 'img').attr('aria-labelledby', 'chart-title chart-desc');
+      svg.append('title').attr('id', 'chart-title').text('Two parallel tracks converging at the delivery gate');
+      svg.append('desc').attr('id', 'chart-desc')
+        .text('A preparation track and a judgment track run in parallel and converge at one delivery gate before documents reach the auditors.');
+
+      svg.append('text').attr('class', 'chart-title').attr('x', 16).attr('y', 26)
+        .text('Preparation and judgment converge at the gate');
+      svg.append('text').attr('class', 'chart-subtitle').attr('x', 16).attr('y', 46)
+        .text('The binder organizes preparation; the gate is where judgment takes control.');
+
+      const gateW = 130, gateX = totalWidth - gateW - 20;
+      const trackX0 = 20, trackX1 = gateX - 30;
+
+      svg.append('text').attr('class', 'track-label').attr('x', 20).attr('y', 96).text('Preparation layer (recipe)');
+      const t1 = track(svg, data.prep, 110, trackX0, trackX1, 'var(--color-secondary)', false);
+
+      svg.append('text').attr('class', 'track-label').attr('x', 20).attr('y', 250).text('Judgment layer (human)');
+      const t2 = track(svg, data.judgment, 264, trackX0, trackX1, 'var(--color-red)', true);
+
+      // gate
+      const gateY = 130, gateH = 160;
+      svg.append('rect').attr('x', gateX).attr('y', gateY).attr('width', gateW).attr('height', gateH)
+        .attr('rx', 8).attr('fill', 'var(--color-red)');
+      svg.append('text').attr('class', 'gate-label').attr('x', gateX + gateW / 2).attr('y', gateY + 70)
+        .attr('text-anchor', 'middle').text('Delivery');
+      svg.append('text').attr('class', 'gate-label').attr('x', gateX + gateW / 2).attr('y', gateY + 90)
+        .attr('text-anchor', 'middle').text('gate');
+
+      // converging arrows
+      svg.append('path').attr('class', 'link').attr('aria-hidden', 'true')
+        .attr('d', `M${trackX1},130 C${gateX - 15},130 ${gateX - 15},${gateY + gateH / 2} ${gateX},${gateY + gateH / 2}`);
+      svg.append('path').attr('class', 'link').attr('aria-hidden', 'true')
+        .attr('d', `M${trackX1},284 C${gateX - 15},284 ${gateX - 15},${gateY + gateH / 2} ${gateX},${gateY + gateH / 2}`);
+
+      svg.append('text').attr('x', gateX + gateW / 2).attr('y', totalHeight - 16)
+        .attr('text-anchor', 'middle').attr('font-size', 11).attr('fill', 'var(--color-secondary)')
+        .text('to auditors');
+    }
+
+    loadData().then(data => {
+      draw(data);
+      const ro = new ResizeObserver(() => draw(data));
+      ro.observe(document.getElementById('chart'));
+    });
+  </script>
+</body>
+</html>

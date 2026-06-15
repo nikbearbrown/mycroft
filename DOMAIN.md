@@ -1,12 +1,12 @@
 # DOMAIN — Mycroft
 
-Mycroft is **both a book and an agentic Cowork system**: the manuscript explains the method; the repo gives agents and humans a verified way to operate it. This file is the index — what's here and what is runnable today. `MYCROFT.md` is the constitution (it governs); read it first.
+Mycroft is **both a book and an agentic Cowork system**: the manuscript explains the method; the repo gives agents and humans a verified way to operate it. This file is the index — what's here and what is runnable today. `SNICKERDOODLE.md` is the constitution (it governs); read it first.
 
 ## Layout
 
 | Path | What it is |
 |---|---|
-| `MYCROFT.md` | the constitution — principles, verification stack, recipe lifecycle, logging rules (governs) |
+| `SNICKERDOODLE.md` | the constitution — principles, verification stack, recipe lifecycle, logging rules (governs) |
 | `recipes/` | the operating surface: 99 recipes (monitor/pipeline + agent recipes), each with lifecycle frontmatter |
 | `conductor/` | per-recipe conductor step files (49) — the orchestration layer |
 | `reports/` | report templates the recipes emit |
@@ -31,4 +31,4 @@ Mycroft is **both a book and an agentic Cowork system**: the manuscript explains
 
 ## Relationship to Madison
 
-Mycroft is the **framework**; Madison (branding & marketing intelligence) is one **domain** built on it. They are sibling repos sharing the same governance (`MYCROFT.md`), the same gate stack, and the same `instructions/_shared/` rule-module library — each selecting the subset it needs via its own `instructions/manifest.yml`, so neither carries the other's bloat.
+**Snickerdoodle** (`SNICKERDOODLE.md`) is the **framework**; Mycroft and Madison (branding & marketing intelligence) are **domains** built on it. They are sibling repos sharing the same governance (`SNICKERDOODLE.md`), the same gate stack, and the same `instructions/_shared/` rule-module library — each selecting the subset it needs via its own `instructions/manifest.yml`, so neither carries the other's bloat.

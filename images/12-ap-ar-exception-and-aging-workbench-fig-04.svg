@@ -1,0 +1,52 @@
+<!--
+  The Action Boundary: Queue Prep vs. World Actions
+  Book: Mycroft
+  Chapter: 12-ap-ar-exception-and-aging-workbench
+  Figure 04
+  Type: comparison panels
+  Generated 2026-06-15
+  Source: pantry/12-ap-ar-exception-and-aging-workbench-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-04">
+<title id="fig-title-04">The Action Boundary: Queue Prep vs. World Actions</title>
+<desc>The queue is the action boundary. On the left, the recipe prepares: sort, age, flag, queue, confirm the as-of date, route exceptions. On the right, humans take the consequential world actions: communications, holds, releases, write-offs, record merges.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="12-ap-ar-exception-and-aging-workbench" figure-number="04" figure-title="The Action Boundary: Queue Prep vs. World Actions" figure-slug="action-boundary-queue-prep" figure-type="comparison panels" priority="Critical" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/12-ap-ar-exception-and-aging-workbench-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">The queue is where preparation ends and judgment begins</text>
+
+<text x="60" y="66" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Preparation (the recipe)</text>
+<text x="400" y="66" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">World actions (humans)</text>
+
+<!-- left items -->
+<rect x="50" y="80" width="270" height="32" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="60" y="100" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Sort</text>
+<rect x="50" y="118" width="270" height="32" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="60" y="138" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Age into buckets</text>
+<rect x="50" y="156" width="270" height="32" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="60" y="176" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Flag exceptions</text>
+<rect x="50" y="194" width="270" height="32" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="60" y="214" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Queue by condition</text>
+<rect x="50" y="232" width="270" height="32" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="60" y="252" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Confirm as-of date</text>
+<rect x="50" y="270" width="270" height="32" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="60" y="290" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Route exceptions</text>
+
+<!-- boundary -->
+<line x1="350" y1="74" x2="350" y2="318" stroke="#2a1a0e" stroke-width="4"/>
+<text x="350" y="334" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e" font-weight="bold">the queue</text>
+
+<!-- right items, blocking accent -->
+<rect x="380" y="80" width="270" height="32" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.25"/>
+<text x="390" y="100" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#C8102E">Send communications</text>
+<rect x="380" y="118" width="270" height="32" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.25"/>
+<text x="390" y="138" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#C8102E">Place payment holds</text>
+<rect x="380" y="156" width="270" height="32" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.25"/>
+<text x="390" y="176" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#C8102E">Release payments</text>
+<rect x="380" y="194" width="270" height="32" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.25"/>
+<text x="390" y="214" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#C8102E">Write off balances</text>
+<rect x="380" y="232" width="270" height="32" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.25"/>
+<text x="390" y="252" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#C8102E">Merge customer records</text>
+
+<text x="32" y="370" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">Everything on the left is reversible bookkeeping. Everything on the right touches the world and stays with a human.</text>
+</svg>

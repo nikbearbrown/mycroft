@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The data contract field inventory</title>
+<style>
+  :root { --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E; --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E; --color-fill:#F5F5F5; }
+  @media (prefers-color-scheme: dark){ :root{ --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A; --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30; --color-fill:#1A1A1A; } }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--color-white);color:var(--color-ink);font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif;}
+  #chart{width:100%;}
+  .cell{fill:var(--color-fill);stroke:var(--color-secondary);stroke-width:1;transition:opacity 120ms cubic-bezier(0.2,0.8,0.2,1);}
+  .cell.gate{fill:var(--color-white);stroke:var(--color-red);stroke-width:2;}
+  .heading{font-family:'EB Garamond',Georgia,serif;fill:var(--color-ink);} .sub{fill:var(--color-secondary);}
+  .fname{font-family:'JetBrains Mono','Fira Code',monospace;font-size:13px;fill:var(--color-ink);}
+  .mono{font-family:'JetBrains Mono','Fira Code',monospace;font-size:11px;fill:var(--color-red);}
+  .tooltip{position:absolute;pointer-events:none;opacity:0;background:var(--color-white);color:var(--color-ink);border:1px solid var(--color-border);padding:6px 8px;font-size:13px;max-width:240px;}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;}}
+</style></head>
+<body><div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const FALLBACK_DATA=[
+ {f:'source',d:'The specific file, system, or table the data came from.'},
+ {f:'period',d:'The exact date range the data covers.'},
+ {f:'entity',d:'Which legal or operating entity the data represents.'},
+ {f:'version',d:'Which instance of the export was used.'},
+ {f:'owner',d:'The human responsible for the source accuracy.'},
+ {f:'freshness',d:'When the source was last updated.'},
+ {f:'schema',d:'The structure, fields, meanings, and units.'},
+ {f:'control total',d:'The checksum confirming data arrived intact.'},
+ {f:'transformation',d:'A log of every operation applied to the data.'},
+ {f:'log',d:'Machine-readable record of what the agent did.'},
+ {f:'report',d:'Human-readable output for review, not evidence.'},
+ {f:'approval record',d:'Who reviewed, what they confirmed, and when.',gate:true}
+];
+let tooltip;
+function draw(data){
+  d3.select('#chart').selectAll('*').remove();
+  if(tooltip)tooltip.remove(); tooltip=d3.select('body').append('div').attr('class','tooltip');
+  const w=document.getElementById('chart').clientWidth||700, cols=w<520?2:4, rows=Math.ceil(data.length/cols);
+  const top=78, gap=12, gridH=Math.max(280,rows*86), h=top+gridH+40;
+  const svg=d3.select('#chart').append('svg').attr('width',w).attr('height',h).attr('viewBox',`0 0 ${w} ${h}`).attr('role','img').attr('aria-labelledby','t d');
+  svg.append('title').attr('id','t').text('The data contract field inventory');
+  svg.append('desc').attr('id','d').text('Twelve data contract fields as a grid; the approval record is highlighted as the gate field.');
+  svg.append('text').attr('class','heading').attr('x',24).attr('y',32).attr('font-size',20).text('The data contract field inventory');
+  svg.append('text').attr('class','sub').attr('x',24).attr('y',52).attr('font-size',13).text('Each field is a handle the next reviewer can grab.');
+  const cw=(w-48-(cols-1)*gap)/cols, chh=(gridH-(rows-1)*gap)/rows;
+  const g=svg.selectAll('.g-cell').data(data).join('g').attr('tabindex',0).attr('role','listitem').attr('aria-label',d=>`${d.f}: ${d.d}`);
+  g.append('rect').attr('class',d=>d.gate?'cell gate':'cell')
+    .attr('x',(d,i)=>24+(i%cols)*(cw+gap)).attr('y',(d,i)=>top+Math.floor(i/cols)*(chh+gap)).attr('width',cw).attr('height',chh);
+  g.append('text').attr('class','fname').attr('x',(d,i)=>24+(i%cols)*(cw+gap)+14).attr('y',(d,i)=>top+Math.floor(i/cols)*(chh+gap)+chh/2+4).text(d=>d.f);
+  g.on('mouseover',(event,d)=>tooltip.html('<strong>'+d.f+'</strong><br>'+d.d).style('opacity',1))
+   .on('mousemove',event=>tooltip.style('left',(event.pageX+12)+'px').style('top',(event.pageY-28)+'px'))
+   .on('mouseout',()=>tooltip.style('opacity',0))
+   .on('focus',function(event,d){const rc=this.getBoundingClientRect();tooltip.html('<strong>'+d.f+'</strong><br>'+d.d).style('opacity',1).style('left',(window.scrollX+rc.left)+'px').style('top',(window.scrollY+rc.bottom+4)+'px');})
+   .on('blur',()=>tooltip.style('opacity',0));
+  svg.append('text').attr('class','mono').attr('x',24).attr('y',h-14).text('the gate field — where the accountable layer takes ownership');
+}
+let current=FALLBACK_DATA;
+async function load(){try{current=await d3.json('./03-the-verified-finance-data-contract-fig-02.json');}catch(e){current=FALLBACK_DATA;}draw(current);}
+load(); new ResizeObserver(()=>draw(current)).observe(document.getElementById('chart'));
+</script></body></html>

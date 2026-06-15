@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reconciliation split — matched vs. exceptions</title>
+<style>
+  :root {
+    --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E;
+    --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E; --color-fill:#F5F5F5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A;
+            --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30; --color-fill:#1A1A1A; }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--color-white); color:var(--color-ink);
+         font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif; }
+  #chart { width:100%; }
+  .chart-title { font-size:16px; font-weight:700; fill:var(--color-ink); }
+  .chart-sub { font-size:13px; fill:var(--color-secondary); }
+  .axis text { font-family:'JetBrains Mono',monospace; font-size:11px; fill:var(--color-secondary); }
+  .axis path, .axis line { stroke:var(--color-border); }
+  .bar-label { font-size:12px; fill:var(--color-ink); }
+  .tooltip { position:absolute; pointer-events:none; opacity:0; background:var(--color-ink);
+             color:var(--color-white); font-size:13px; padding:6px 10px; border-radius:4px; }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; animation:none !important; } }
+</style>
+</head>
+<body>
+<div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const FALLBACK_DATA = [
+  { label:"Matched items (cleared)", value:1184, note:"Confirmed reconciled — no judgment required" },
+  { label:"Exception queue (needs judgment)", value:47, note:"Hypotheses awaiting accountant confirmation" }
+];
+
+const tooltip = d3.select('body').append('div').attr('class','tooltip');
+
+async function loadData() {
+  try { return await d3.json('./07-subledger-to-gl-reconciliation-triage-fig-01/data.json'); }
+  catch { return FALLBACK_DATA; }
+}
+
+function draw(data) {
+  d3.select('#chart').selectAll('*').remove();
+  const totalWidth = document.getElementById('chart').clientWidth || 800;
+  const totalHeight = 320;
+  const margin = { top: 64, right: 60, bottom: 40, left: 220 };
+  const chartWidth = totalWidth - margin.left - margin.right;
+  const chartHeight = totalHeight - margin.top - margin.bottom;
+
+  const svg = d3.select('#chart').append('svg')
+    .attr('width',totalWidth).attr('height',totalHeight)
+    .attr('role','img').attr('aria-labelledby','t1 d1');
+  svg.append('title').attr('id','t1').text('Reconciliation splits open items into matched and exception populations');
+  svg.append('desc').attr('id','d1').text('A horizontal bar chart comparing the count of cleared matched items to the much smaller exception queue requiring accountant judgment.');
+
+  svg.append('text').attr('class','chart-title').attr('x',16).attr('y',26)
+     .text('The reconciliation split');
+  svg.append('text').attr('class','chart-sub').attr('x',16).attr('y',46)
+     .text('Most items clear automatically; the exception queue is where judgment lives.');
+
+  const g = svg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
+
+  const xScaleLinear = d3.scaleLinear()
+    .domain([0, d3.max(data, d=>d.value)]).nice()
+    .range([0, chartWidth]);
+  const yScaleBand = d3.scaleBand()
+    .domain(data.map(d=>d.label)).range([0, chartHeight]).padding(0.3);
+
+  g.append('g').attr('class','axis')
+    .call(d3.axisLeft(yScaleBand).tickSize(0)).select('.domain').remove();
+  g.append('g').attr('class','axis')
+    .attr('transform',`translate(0,${chartHeight})`)
+    .call(d3.axisBottom(xScaleLinear).ticks(5));
+
+  g.selectAll('.bar-rect').data(data).join('rect')
+    .attr('class','bar-rect')
+    .attr('x',0).attr('y',d=>yScaleBand(d.label))
+    .attr('height',yScaleBand.bandwidth())
+    .attr('width',d=>xScaleLinear(d.value))
+    .attr('fill',(d,i)=> i===0 ? 'var(--color-ink)' : 'var(--color-red)')
+    .attr('tabindex',0).attr('aria-label',d=>`${d.label}: ${d.value}`)
+    .on('mouseover',function(event,d){
+      d3.selectAll('.bar-rect').attr('opacity',0.35); d3.select(this).attr('opacity',1);
+      tooltip.html(`<strong>${d.value}</strong> ${d.label}<br>${d.note}`)
+        .style('left',(event.pageX+12)+'px').style('top',(event.pageY-28)+'px')
+        .transition().duration(150).style('opacity',1);
+    })
+    .on('mousemove',event=>tooltip.style('left',(event.pageX+12)+'px').style('top',(event.pageY-28)+'px'))
+    .on('mouseout',function(){ d3.selectAll('.bar-rect').attr('opacity',1); tooltip.transition().duration(100).style('opacity',0); });
+
+  g.selectAll('.bar-value').data(data).join('text')
+    .attr('class','bar-label')
+    .attr('x',d=>xScaleLinear(d.value)+6)
+    .attr('y',d=>yScaleBand(d.label)+yScaleBand.bandwidth()/2+4)
+    .text(d=>d.value);
+}
+
+loadData().then(data => {
+  draw(data);
+  const ro = new ResizeObserver(() => draw(data));
+  ro.observe(document.getElementById('chart'));
+});
+</script>
+</body>
+</html>

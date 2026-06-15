@@ -1,0 +1,24 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d" font-family="'Inter', sans-serif">
+  <title id="t">Warranted verbs by evidence level</title>
+  <desc id="d">A four-rung ladder of evidence levels — can say, can suggest, cannot claim, needs review — each carrying its warranted verbs.</desc>
+  <rect width="700" height="420" fill="#FFFFFF"/>
+  <text x="40" y="40" font-size="20" font-family="'EB Garamond', Georgia, serif" fill="#2a1a0e">Warranted verbs by evidence level</text>
+  <text x="40" y="60" font-size="13" fill="#545454">Language calibrated to the evidence you actually have.</text>
+  <g font-size="12">
+    <rect x="60" y="92"  width="580" height="60" fill="#F5F5F5" stroke="#2a1a0e"/>
+    <text x="76" y="120" font-size="14" font-weight="700" fill="#2a1a0e">Can say</text>
+    <text x="240" y="120" fill="#545454" font-family="'JetBrains Mono', monospace">confirms · shows · establishes · documents</text>
+    <rect x="60" y="160" width="580" height="60" fill="#F5F5F5" stroke="#545454"/>
+    <text x="76" y="188" font-size="14" font-weight="700" fill="#2a1a0e">Can suggest</text>
+    <text x="240" y="188" fill="#545454" font-family="'JetBrains Mono', monospace">indicates · consistent with · appears to</text>
+    <rect x="60" y="228" width="580" height="60" fill="#F5F5F5" stroke="#545454"/>
+    <text x="76" y="256" font-size="14" font-weight="700" fill="#2a1a0e">Cannot claim</text>
+    <text x="240" y="256" fill="#545454" font-family="'JetBrains Mono', monospace">state what evidence does not support</text>
+    <rect x="60" y="296" width="580" height="60" fill="#FFFFFF" stroke="#C8102E" stroke-width="2"/>
+    <text x="76" y="324" font-size="14" font-weight="700" fill="#2a1a0e">Needs review</text>
+    <text x="240" y="324" fill="#C8102E" font-family="'JetBrains Mono', monospace">explicit flag · held at the gate</text>
+  </g>
+  <!-- ladder rail arrow strongest->weakest -->
+  <line x1="40" y1="120" x2="40" y2="326" stroke="#545454" stroke-width="2"/>
+  <text x="30" y="120" font-size="10" font-family="'JetBrains Mono', monospace" fill="#545454" text-anchor="end" transform="rotate(-90 30 230)">strongest support → flagged</text>
+</svg>

@@ -1,0 +1,54 @@
+<!--
+  Gate Record Structure with Three Decision States
+  Book: Mycroft
+  Chapter: 16-the-build-and-the-honest-run
+  Figure 03
+  Type: structural schematic
+  Generated 2026-06-15
+  Source: pantry/16-the-build-and-the-honest-run-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-03">
+<title id="fig-title-03">Gate Record Structure with Three Decision States</title>
+<desc>A gate record captures who cleared what, when, and on what evidence. The decision can be approved, approved conditionally, or not approved; only the conditional state activates the condition, owner, and resolution-date fields. No gate clears scope beyond the artifact it reviewed.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="16-the-build-and-the-honest-run" figure-number="03" figure-title="Gate Record Structure with Three Decision States" figure-slug="gate-record-three-states" figure-type="structural schematic" priority="Important" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/16-the-build-and-the-honest-run-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">A gate record with three decision states</text>
+
+<!-- field zones row -->
+<rect x="32" y="52" width="104" height="40" fill="#2a1a0e"/>
+<text x="84" y="76" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF">gate ID</text>
+<rect x="136" y="52" width="130" height="40" fill="#2a1a0e"/>
+<text x="201" y="71" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF">artifact cleared</text>
+<rect x="266" y="52" width="150" height="40" fill="#2a1a0e"/>
+<text x="341" y="71" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF">approver name + role</text>
+<rect x="416" y="52" width="110" height="40" fill="#2a1a0e"/>
+<text x="471" y="71" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF">date + time</text>
+<rect x="526" y="52" width="142" height="40" fill="#2a1a0e"/>
+<text x="597" y="68" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF">evidence surface</text>
+<text x="597" y="80" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF">reviewed</text>
+
+<!-- decision zone, three states -->
+<text x="32" y="120" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">Decision</text>
+<rect x="120" y="108" width="160" height="34" fill="#2a1a0e" stroke="#2a1a0e" stroke-width="1"/>
+<text x="200" y="129" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF">approved</text>
+<rect x="290" y="108" width="180" height="34" fill="#C8102E" stroke="#C8102E" stroke-width="1"/>
+<text x="380" y="129" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF">approved conditionally</text>
+<rect x="480" y="108" width="160" height="34" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.5"/>
+<text x="560" y="129" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#C8102E">not approved</text>
+
+<!-- conditional expansion -->
+<line x1="380" y1="142" x2="380" y2="166" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="392" y="160" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">activates only for the conditional state</text>
+<rect x="200" y="170" width="360" height="58" fill="#F5F5F5" stroke="#C8102E" stroke-width="1.25" stroke-dasharray="4 3"/>
+<rect x="212" y="182" width="100" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="262" y="203" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">condition</text>
+<rect x="324" y="182" width="110" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="379" y="203" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">condition owner</text>
+<rect x="446" y="182" width="102" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="497" y="203" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">resolution date</text>
+
+<!-- note band -->
+<rect x="32" y="256" width="636" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="350" y="277" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">No gate clears a scope beyond the artifact it was designed to review</text>
+</svg>

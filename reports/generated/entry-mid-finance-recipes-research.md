@@ -621,7 +621,7 @@ That is the Mycroft pattern. Finance people do not need a magical CFO bot. They 
 
 Local Mycroft sources used:
 
-- `MYCROFT.md`
+- `SNICKERDOODLE.md`
 - `DOMAIN.md`
 - `DATA_CONTRACT.md`
 - `docs/recipes.md`

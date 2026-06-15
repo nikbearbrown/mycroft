@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parsing versus proving</title>
+<style>
+  :root { --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E; --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E; --color-fill:#F5F5F5; }
+  @media (prefers-color-scheme: dark){ :root{ --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A; --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30; --color-fill:#1A1A1A; } }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--color-white);color:var(--color-ink);font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif;}
+  #chart{width:100%;}
+  .level{fill:var(--color-fill);stroke-width:1;} .level.top{stroke:var(--color-ink);} .level.bottom{stroke:var(--color-secondary);}
+  .heading{font-family:'EB Garamond',Georgia,serif;fill:var(--color-ink);} .sub{fill:var(--color-secondary);}
+  .ltitle{font-weight:700;fill:var(--color-ink);font-size:15px;} .litem{fill:var(--color-secondary);font-size:12px;}
+  .check{fill:var(--color-ink);font-size:22px;}
+  .arrow{stroke:var(--color-red);stroke-width:2;fill:var(--color-red);}
+  .mono{font-family:'JetBrains Mono','Fira Code',monospace;font-size:11px;}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;}}
+</style></head>
+<body><div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const FALLBACK_DATA={top:{title:'Evidentiary adequacy',items:['Complete · fresh · correctly mapped','Logically coherent','Conclusions warranted']},bottom:{title:'Structural integrity',items:['File parses · formulas return','No broken references']}};
+function draw(data){
+  d3.select('#chart').selectAll('*').remove();
+  const w=document.getElementById('chart').clientWidth||700, h=Math.max(400,w*0.6);
+  const svg=d3.select('#chart').append('svg').attr('width',w).attr('height',h).attr('viewBox',`0 0 ${w} ${h}`).attr('role','img').attr('aria-labelledby','t d');
+  svg.append('title').attr('id','t').text('Parsing versus proving');
+  svg.append('desc').attr('id','d').text('A structural integrity base whose checkmark does not propagate to evidentiary adequacy above.');
+  svg.append('text').attr('class','heading').attr('x',24).attr('y',32).attr('font-size',20).text('Parsing versus proving');
+  svg.append('text').attr('class','sub').attr('x',24).attr('y',52).attr('font-size',13).text('Structural integrity is necessary for evidence, not sufficient.');
+  const lx=110, lw=w-lx-30, top=80, lh=110, gap=84;
+  svg.append('rect').attr('class','level top').attr('x',lx).attr('y',top).attr('width',lw).attr('height',lh);
+  svg.append('text').attr('class','ltitle').attr('x',lx+20).attr('y',top+28).text(data.top.title);
+  data.top.items.forEach((t,i)=>svg.append('text').attr('class','litem').attr('x',lx+20).attr('y',top+52+i*20).text(t));
+  const by=top+lh+gap;
+  svg.append('rect').attr('class','level bottom').attr('x',lx).attr('y',by).attr('width',lw).attr('height',lh);
+  svg.append('text').attr('class','ltitle').attr('x',lx+20).attr('y',by+28).text(data.bottom.title);
+  data.bottom.items.forEach((t,i)=>svg.append('text').attr('class','litem').attr('x',lx+20).attr('y',by+52+i*20).text(t));
+  // arrow
+  const cx=w/2;
+  svg.append('line').attr('class','arrow').attr('x1',cx).attr('y1',by-6).attr('x2',cx).attr('y2',top+lh+8);
+  svg.append('polygon').attr('class','arrow').attr('points',`${cx},${top+lh+2} ${cx-5},${top+lh+14} ${cx+5},${top+lh+14}`);
+  svg.append('text').attr('class','mono').attr('fill','var(--color-red)').attr('x',cx+12).attr('y',by-(gap/2)+4).text('necessary but not sufficient');
+  // check that does not propagate
+  svg.append('text').attr('class','check').attr('x',lx+lw-40).attr('y',by+lh-26).text('✓');
+  svg.append('text').attr('class','mono').attr('fill','var(--color-secondary)').attr('x',lx+lw-66).attr('y',by+lh-8).text('stops here');
+}
+let current=FALLBACK_DATA;
+async function load(){try{current=await d3.json('./05-verifying-finance-evidence-fig-01.json');}catch(e){current=FALLBACK_DATA;}draw(current);}
+load(); new ResizeObserver(()=>draw(current)).observe(document.getElementById('chart'));
+</script></body></html>

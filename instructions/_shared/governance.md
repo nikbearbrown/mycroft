@@ -1,8 +1,8 @@
 ## Governance
 
-Read `MYCROFT.md` (the constitution — principles, the verification stack, the recipe lifecycle, the logging rules) and `DOMAIN.md` (this project's index — layout and what is runnable today) before acting. If any file conflicts with `MYCROFT.md`, `MYCROFT.md` governs and the conflict is a bug — log it in `logs/RUN_LOG.md`.
+Read `SNICKERDOODLE.md` (the constitution — principles, the verification stack, the recipe lifecycle, the logging rules) and `DOMAIN.md` (this project's index — layout and what is runnable today) before acting. If any file conflicts with `SNICKERDOODLE.md`, `SNICKERDOODLE.md` governs and the conflict is a bug — log it in `logs/RUN_LOG.md`.
 
-The contract in brief (MYCROFT.md governs in full):
+The contract in brief (SNICKERDOODLE.md governs in full):
 
 1. Verified local data before external lookup; stored scripts before ad-hoc code.
 2. Never invent a count, rate, or confidence; label model judgments as judgments.

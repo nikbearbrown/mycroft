@@ -29,6 +29,9 @@ These two customers have genuinely different needs. A well-formed log entry — 
 
 Most recipes serve one customer accidentally and ignore the other entirely. The JSON log serves the machine that was never built. The polished memo serves the executive who can't trace it back to source.
 
+![A two-column comparison: an agent contract column listing file-path inputs, deterministic steps, output schema, stop conditions, and run log, beside a human report card column listing purpose, evidence summary, caveats, decisions, and gate, with the gap labeled what most recipes skip.](images/04-two-customers-fig-01.png)
+*Figure 4.1 — The two customers: the agent and the reviewer have genuinely different needs.*
+
 <!-- → [DIAGRAM: Two-column visual. Left: "Agent Contract" — file path inputs, deterministic steps, output schema, stop conditions, run log. Right: "Human Report Card" — purpose statement, evidence summary, explicit caveats, decisions named, gate visible. Gap between them labeled "What most recipes skip." Caption: The two customers have genuinely different needs. Designing for one is not designing for both.] -->
 
 ---
@@ -49,7 +52,18 @@ Fourth, stop conditions: the list of states that cause the recipe to halt rather
 
 Fifth, the run log: a machine-readable record of every input consumed, every transformation applied, every flag raised, every stop condition evaluated. The log is what makes the run auditable. It is also what makes the human report meaningful — the reviewer can see not just the conclusion but the basis for it.
 
-<!-- → [TABLE: Five-row table. Columns: Component, What It Specifies, What Goes Wrong Without It. Rows: Inputs (source, version, period — ambiguous pulls from wrong version), Steps (deterministic sequence — unmaintainable, unreproducible), Output Schema (valid output definition — bad output reaches human undetected), Stop Conditions (halt criteria — recipe proceeds on bad data), Run Log (what ran and what was found — conclusion without basis). Caption: The agent contract is what makes a run auditable. Missing any component makes the run a black box.] -->
+| Component | What it specifies | What goes wrong without it |
+|---|---|---|
+| Inputs | Source file, version, period label | Ambiguous pulls draw from the wrong version |
+| Steps | The deterministic operation sequence | The run is unmaintainable and unreproducible |
+| Output schema | What a valid output looks like | Bad output reaches the human undetected |
+| Stop conditions | The states that halt the run | The recipe proceeds on bad data |
+| Run log | What ran and what was found | A conclusion arrives with no basis |
+
+*Table 1 — The agent contract is what makes a run auditable. Missing any component makes the run a black box.*
+
+![An anatomy diagram of the agent contract showing its five stacked components — inputs, steps, output schema, stop conditions, and run log — each labeled as a layer that makes the run reproducible.](images/04-two-customers-fig-02.png)
+*Figure 4.2 — Anatomy of the agent contract: five components that answer one question — can this run be reproduced?*
 
 ---
 
@@ -69,7 +83,18 @@ Decisions: what does the human need to do before this output moves forward? This
 
 Gate: who approves, and what does approval mean? The gate is the moment when an accountable human looks at the evidence summary, evaluates whether the caveats are acceptable, confirms that the decisions have been addressed, and decides the output is ready to move. Without a named approver and a defined gate, "ready" is a state that happens by default — someone copies the output forward because it looks finished, and no one has actually decided it was.
 
-<!-- → [TABLE: Five-row table. Columns: Component, What It Answers, Example. Rows: Purpose (what was this trying to find — "checks whether payments are supported by reconciled AP records"), Evidence Summary (what did it find — "fourteen flags, two unreconciled items totaling $28,400"), Caveats (what it didn't check — "invoices not checked against POs"), Decisions (what the human must do — "AP manager confirms two items before batch runs"), Gate (who approves and what that means — "Controller signs off: evidence adequate, caveats acceptable"). Caption: The human report card is not a summary of the log. It is a translation that makes the run legible to someone who carries accountability for the conclusion.] -->
+| Component | What it answers | Example |
+|---|---|---|
+| Purpose | What was this trying to find? | Checks whether payments are supported by reconciled AP records |
+| Evidence summary | What did it find? | Fourteen flags; two unreconciled items totaling $28,400 |
+| Caveats | What did it not check? | Invoices not checked against purchase orders |
+| Decisions | What must the human do? | AP manager confirms two items before the batch runs |
+| Gate | Who approves, and what does it mean? | Controller signs off: evidence adequate, caveats acceptable |
+
+*Table 2 — The human report card is not a summary of the log. It is a translation that makes the run legible to someone who carries accountability for the conclusion.*
+
+![An anatomy diagram of the human report card showing its five stacked components — purpose, evidence summary, caveats, decisions, and gate — each labeled as a layer that makes the run legible to a reviewer.](images/04-two-customers-fig-03.png)
+*Figure 4.3 — Anatomy of the human report card: five components that make the run legible to an accountable reviewer.*
 
 ---
 
@@ -85,6 +110,9 @@ There is a third failure mode that is subtler and more common: the recipe was wr
 
 This is the maintainability problem, and it is where the two-customer design pays off in ways that are not immediately obvious. A recipe designed for two customers is also, necessarily, designed for a future maintainer. The agent contract documents the run in enough detail that someone else can reproduce it. The human report card explains the purpose and scope in enough detail that someone else can evaluate it. The two-customer design is not just about the current run. It is about whether the work survives the person who built it.
 
+![Three columns of recipe failure types — written for machines, written for humans, written for the builder — each with its own gap, all converging downward on a single outcome: both customers unserved.](images/04-two-customers-fig-04.png)
+*Figure 4.4 — Three ways a recipe serves neither customer, all sharing one cause: no second customer in mind.*
+
 <!-- → [DIAGRAM: Three-column visual showing three recipe types. Left: "Written for machines" — full agent contract, no human report, log readable by no reviewer. Center: "Written for humans" — polished output, no agent contract, irreproducible. Right: "Written for the builder" — implicit knowledge, neither customer served when builder leaves. Arrow pointing down from all three to: "Both customers unserved." Caption: The three failure modes all share a common cause: the recipe was not designed with a second customer in mind.] -->
 
 ---
@@ -99,7 +127,19 @@ The note is written before the recipe runs the first time, not after. This is no
 
 The note is also the artifact that gets reviewed at the gate. The approver reads the purpose: does this scope match what I need to decide? The approver reads the evidence summary: does this finding reflect what the run actually found? The approver reads the caveats: are these limits acceptable for this decision? The approver reads the decisions: have the named actions been completed? If the answer to any of those questions is no, the gate does not open.
 
-<!-- → [TABLE: Two-section table representing a sample two-customer recipe note. Section 1 (Agent Contract): Input — "AP_aging_2024-Q3_v2.csv, pulled 2024-10-03 06:00 UTC"; Output Schema — "flags table, required fields: flag_id, variance, source_line, period, threshold_used"; Stop Conditions — "halt if source file missing, period mismatch, or row count < 50"; Log pointer — "/logs/ap-recon-2024-Q3-run-001.json." Section 2 (Human Report Card): Purpose — "checks whether payments scheduled for 2024-10-04 batch are supported by reconciled AP records for Q3"; Evidence — "14 flags; 12 timing differences within range; 2 unreconciled items totaling $28,400"; Caveats — "invoices not checked against POs; threshold set at $5,000, not audited"; Decisions — "AP manager confirms two items before batch"; Gate — "Controller: evidence adequate, caveats acceptable, decisions complete." Caption: The two-customer recipe note is written before the run, not after. It is the artifact reviewed at the gate.] -->
+| Section | Field | Entry |
+|---|---|---|
+| Agent contract | Input | `AP_aging_2024-Q3_v2.csv`, pulled 2024-10-03 06:00 UTC |
+| Agent contract | Output schema | Flags table; required fields: `flag_id, variance, source_line, period, threshold_used` |
+| Agent contract | Stop conditions | Halt if source file missing, period mismatch, or row count < 50 |
+| Agent contract | Log pointer | `/logs/ap-recon-2024-Q3-run-001.json` |
+| Human report card | Purpose | Checks whether payments scheduled for the 2024-10-04 batch are supported by reconciled AP records for Q3 |
+| Human report card | Evidence | 14 flags; 12 timing differences within range; 2 unreconciled items totaling $28,400 |
+| Human report card | Caveats | Invoices not checked against POs; threshold set at $5,000, not audited |
+| Human report card | Decisions | AP manager confirms two items before the batch |
+| Human report card | Gate | Controller: evidence adequate, caveats acceptable, decisions complete |
+
+*Table 3 — A sample two-customer recipe note. It is written before the run, not after, and it is the artifact reviewed at the gate.*
 
 ---
 
@@ -154,3 +194,23 @@ The two-customer recipe note is clear as a structure. What is less clear is how 
 **Challenge**
 
 9. *(Advanced)* The "Still Puzzling" section identifies a real tension: translating the run log for the reviewer risks introducing interpretive gaps, but leaving the raw log for the reviewer sacrifices legibility. Design a protocol for calibrating evidence summary depth based on (a) the reviewer's domain knowledge, (b) the consequence of the decision the output supports, and (c) the reversibility of the action the output authorizes. What would a tiered evidence summary look like across three consequence levels — routine, material, disclosure-supporting? *What this tests: ability to operationalize the calibration problem the chapter leaves open, producing a workable standard rather than a theoretical framework.*
+
+---
+
+## Prompts
+
+### Figure 4.1 — The two customers
+**Files:** images/04-two-customers-fig-01.svg · d3/04-two-customers-fig-01.html
+**Prompt:** A brutalist two-column comparison on white — an agent contract column (file-path inputs, deterministic steps, output schema, stop conditions, run log) beside a human report card column (purpose, evidence summary, caveats, decisions, gate) — with the gate row in red and the gap between columns labeled "what most recipes skip." Hairline borders, one red accent.
+
+### Figure 4.2 — Anatomy of the agent contract
+**Files:** images/04-two-customers-fig-02.svg · d3/04-two-customers-fig-02.html
+**Prompt:** A brutalist vertical stack of five labeled layers on white — inputs, steps, output schema, stop conditions, run log — neutral fills with the run-log layer outlined in red, and a side arrow labeled reproducibility. Hairline borders, one red accent.
+
+### Figure 4.3 — Anatomy of the human report card
+**Files:** images/04-two-customers-fig-03.svg · d3/04-two-customers-fig-03.html
+**Prompt:** A brutalist vertical stack of five labeled layers on white — purpose, evidence summary, caveats, decisions, gate — neutral fills with the gate layer in solid red, and a side arrow labeled legibility. Hairline borders, one red accent.
+
+### Figure 4.4 — Three ways a recipe serves neither
+**Files:** images/04-two-customers-fig-04.svg · d3/04-two-customers-fig-04.html
+**Prompt:** A brutalist three-column diagram on white — written for machines, written for humans, written for the builder — with neutral converging lines dropping to a single red outcome bar reading "both customers unserved." Hairline borders, one red accent for the outcome.

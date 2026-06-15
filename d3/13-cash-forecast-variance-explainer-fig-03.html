@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Four-state driver classification</title>
+  <style>
+    :root {
+      --color-white:     #FFFFFF;
+      --color-ink:       #2a1a0e;
+      --color-red:       #C8102E;
+      --color-secondary: #545454;
+      --color-border:    #D4D4D4;
+      --color-ochre:     #C8860E;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-white:     #111111;
+        --color-ink:       #F0EBE3;
+        --color-red:       #E8243A;
+        --color-secondary: #A0978C;
+        --color-border:    #2E2E2E;
+        --color-ochre:     #D49A30;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--color-white); color: var(--color-ink); font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif; }
+    #chart { width: 100%; }
+    .chart-title { font-size: 16px; font-weight: 700; fill: var(--color-ink); }
+    .chart-subtitle { font-size: 13px; fill: var(--color-secondary); }
+    .state-title { font-size: 13px; font-weight: 700; fill: var(--color-ink); }
+    .state-sub { font-size: 11px; fill: var(--color-secondary); }
+    .state-flag { font-size: 11px; font-weight: 700; }
+    .tooltip {
+      position: absolute; pointer-events: none; opacity: 0;
+      background: var(--color-white); color: var(--color-ink);
+      border: 1px solid var(--color-border); border-radius: 8px;
+      padding: 8px 10px; font-size: 13px; max-width: 230px;
+      box-shadow: 0 6px 20px -6px rgb(18 18 18 / 0.14);
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  </style>
+</head>
+<body>
+  <div id="chart" role="main"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script>
+    const FALLBACK_DATA = [
+      { state: 'Fully explained',     sub: 'driver source matches full amount', flag: 'Closes cleanly', review: false, desc: 'A single driver record accounts for the full variance; source reference attached.' },
+      { state: 'Partially explained', sub: 'driver matches part; residual remains', flag: 'Residual flagged', review: false, desc: 'Some of the variance is matched to a driver; a residual is flagged for follow-up.' },
+      { state: 'Timing — verify',     sub: 'dated transaction near period boundary', flag: 'Human review', review: true, desc: 'A period-boundary effect is hypothesized from dated records; treasury must confirm.' },
+      { state: 'Unexplained',         sub: 'no driver source found', flag: 'Escalate if material', review: true, desc: 'No driver record found; escalation required when the amount is above threshold.' }
+    ];
+
+    const tooltip = d3.select('body').append('div').attr('class', 'tooltip');
+    function showTip(event, html) {
+      tooltip.html(html).style('left', (event.pageX + 12) + 'px').style('top', (event.pageY - 28) + 'px')
+        .transition().duration(150).style('opacity', 1);
+    }
+    function moveTip(event) { tooltip.style('left', (event.pageX + 12) + 'px').style('top', (event.pageY - 28) + 'px'); }
+    function hideTip() { tooltip.transition().duration(100).style('opacity', 0); }
+
+    async function loadData() {
+      try { return await d3.json('./13-cash-forecast-variance-explainer-fig-03/data.json'); }
+      catch { return FALLBACK_DATA; }
+    }
+
+    function draw(data) {
+      d3.select('#chart').selectAll('*').remove();
+      const totalWidth = document.getElementById('chart').clientWidth || 800;
+      const totalHeight = 420;
+
+      const svg = d3.select('#chart').append('svg')
+        .attr('width', totalWidth).attr('height', totalHeight)
+        .attr('role', 'img').attr('aria-labelledby', 'chart-title chart-desc');
+      svg.append('title').attr('id', 'chart-title').text('Four-state driver classification');
+      svg.append('desc').attr('id', 'chart-desc')
+        .text('Driver attachment produces four states; the timing and unexplained states require human review before resolution.');
+
+      svg.append('text').attr('class', 'chart-title').attr('x', 16).attr('y', 26)
+        .text('Four-state driver classification');
+      svg.append('text').attr('class', 'chart-subtitle').attr('x', 16).attr('y', 46)
+        .text('States 3 and 4 require human review before the variance is resolved.');
+
+      const cols = 2, gap = 20, top = 66, left = 16;
+      const cellW = (totalWidth - left * 2 - gap) / cols;
+      const cellH = (totalHeight - top - 16 - gap) / 2;
+
+      const g = svg.selectAll('.state').data(data).join('g')
+        .attr('tabindex', 0).attr('aria-label', d => `${d.state}: ${d.sub}; ${d.flag}`)
+        .style('cursor', 'pointer');
+
+      g.each(function (d, i) {
+        const col = i % cols, row = Math.floor(i / cols);
+        const x = left + col * (cellW + gap);
+        const y = top + row * (cellH + gap);
+        const sel = d3.select(this);
+        const accent = d.review ? 'var(--color-red)' : 'var(--color-secondary)';
+        sel.append('rect').attr('x', x).attr('y', y).attr('width', cellW).attr('height', cellH)
+          .attr('rx', 8).attr('fill', 'var(--color-white)').attr('stroke', accent).attr('stroke-width', 1.5)
+          .style('transition', 'opacity 120ms')
+          .on('mouseover', function (event) { d3.select(this).style('opacity', 0.9); showTip(event, `<strong>${d.state}</strong><br>${d.desc}`); })
+          .on('mousemove', moveTip)
+          .on('mouseout', function () { d3.select(this).style('opacity', 1); hideTip(); });
+        // ochre state index marker
+        sel.append('rect').attr('x', x).attr('y', y).attr('width', 4).attr('height', cellH).attr('fill', d.review ? 'var(--color-red)' : 'var(--color-ochre)');
+        sel.append('text').attr('class', 'state-title').attr('x', x + 18).attr('y', y + 30).text(`${i + 1}. ${d.state}`);
+        sel.append('text').attr('class', 'state-sub').attr('x', x + 18).attr('y', y + 52).text(d.sub);
+        sel.append('text').attr('class', 'state-flag').attr('x', x + 18).attr('y', y + cellH - 16)
+          .attr('fill', accent).text(d.flag);
+      });
+    }
+
+    loadData().then(data => {
+      draw(data);
+      const ro = new ResizeObserver(() => draw(data));
+      ro.observe(document.getElementById('chart'));
+    });
+  </script>
+</body>
+</html>

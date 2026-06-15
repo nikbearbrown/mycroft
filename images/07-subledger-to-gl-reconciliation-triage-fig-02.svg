@@ -1,0 +1,45 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig02-title fig02-desc">
+<title id="fig02-title">A matching funnel: deterministic matches clear with certainty, the residue becomes fuzzy hypotheses awaiting accountant confirmation</title>
+<desc id="fig02-desc">All items enter deterministic matching; matched items clear with no judgment. The remainder falls to fuzzy matching, producing a suggested classification labeled hypothesis, into an exception queue marked unreviewed, then to accountant review where confirmation is required before status changes.</desc>
+<defs><marker id="arr07b" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#545454"/></marker></defs>
+
+<text x="32" y="40" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="18" fill="#2a1a0e">Certainty before guessing &#8212; suggestions are not conclusions</text>
+
+<rect x="180" y="62" width="200" height="40" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="280" y="87" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">All open items enter</text>
+<line x1="280" y1="102" x2="280" y2="120" stroke="#545454" stroke-width="1.5" marker-end="url(#arr07b)"/>
+
+<polygon points="120,126 440,126 380,182 180,182" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1.5"/>
+<text x="280" y="150" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" font-weight="700" fill="#2a1a0e">Stage 1 · Deterministic matching</text>
+<text x="280" y="170" text-anchor="middle" font-family="'JetBrains Mono','Courier New',monospace" font-size="11" fill="#545454">exact ID · exact amount · exact period</text>
+
+<line x1="440" y1="154" x2="500" y2="154" stroke="#545454" stroke-width="1.5" marker-end="url(#arr07b)"/>
+<rect x="504" y="130" width="164" height="50" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="586" y="152" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Cleared</text>
+<text x="586" y="168" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">no judgment needed</text>
+
+<line x1="280" y1="182" x2="280" y2="202" stroke="#545454" stroke-width="1.5" marker-end="url(#arr07b)"/>
+<text x="296" y="198" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">unmatched residue</text>
+
+<polygon points="180,206 380,206 340,256 220,256" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.5"/>
+<text x="280" y="228" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" font-weight="700" fill="#2a1a0e">Stage 2 · Fuzzy matching</text>
+<text x="280" y="244" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">relaxed criteria</text>
+
+<line x1="280" y1="256" x2="280" y2="274" stroke="#545454" stroke-width="1.5" marker-end="url(#arr07b)"/>
+
+<rect x="160" y="278" width="240" height="44" fill="#FFFFFF" stroke="#787878" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="280" y="300" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Suggested classification</text>
+<text x="280" y="316" text-anchor="middle" font-family="'JetBrains Mono','Courier New',monospace" font-size="10" fill="#C8102E">labeled: hypothesis</text>
+
+<line x1="400" y1="300" x2="430" y2="300" stroke="#545454" stroke-width="1.5" marker-end="url(#arr07b)"/>
+
+<rect x="434" y="278" width="234" height="44" fill="#FFFFFF" stroke="#787878" stroke-width="1"/>
+<text x="551" y="300" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Exception queue</text>
+<text x="551" y="316" text-anchor="middle" font-family="'JetBrains Mono','Courier New',monospace" font-size="10" fill="#545454">status: unreviewed</text>
+
+<line x1="551" y1="322" x2="551" y2="340" stroke="#545454" stroke-width="1.5" marker-end="url(#arr07b)"/>
+
+<rect x="434" y="344" width="234" height="48" fill="#F5F5F5" stroke="#C8102E" stroke-width="1.5"/>
+<text x="551" y="366" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" font-weight="700" fill="#2a1a0e">Accountant review</text>
+<text x="551" y="382" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">confirmation required before status changes</text>
+</svg>

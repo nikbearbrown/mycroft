@@ -1,0 +1,29 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d" font-family="'Inter', sans-serif">
+  <title id="t">The verification pipeline</title>
+  <desc id="d">A pipeline: the recipe checks the six dimensions, flags gaps, a human adequacy gate, the human judges sufficiency in context, then the artifact is released with warranted language.</desc>
+  <rect width="700" height="420" fill="#FFFFFF"/>
+  <text x="40" y="40" font-size="20" font-family="'EB Garamond', Georgia, serif" fill="#2a1a0e">The verification pipeline</text>
+  <text x="40" y="60" font-size="13" fill="#545454">The recipe finds the gaps; the human decides whether they matter.</text>
+  <g font-size="12" fill="#2a1a0e">
+    <rect x="40"  y="110" width="170" height="70" fill="#F5F5F5" stroke="#545454"/><text x="54" y="138">Recipe checks</text><text x="54" y="156">six dimensions</text>
+    <rect x="40"  y="220" width="170" height="70" fill="#F5F5F5" stroke="#545454"/><text x="54" y="248">Recipe flags gaps</text><text x="54" y="266">surfaces findings</text>
+  </g>
+  <!-- gate -->
+  <rect x="270" y="150" width="60" height="200" fill="#C8102E"/>
+  <text x="300" y="368" font-size="11" font-family="'JetBrains Mono', monospace" fill="#C8102E" text-anchor="middle">adequacy gate</text>
+  <text x="300" y="200" font-size="10" fill="#FFFFFF" text-anchor="middle">human</text>
+  <text x="300" y="216" font-size="10" fill="#FFFFFF" text-anchor="middle">adequacy</text>
+  <text x="300" y="232" font-size="10" fill="#FFFFFF" text-anchor="middle">check</text>
+  <g font-size="12" fill="#2a1a0e">
+    <rect x="390" y="110" width="270" height="70" fill="#F5F5F5" stroke="#2a1a0e"/><text x="404" y="138">Human judges sufficiency</text><text x="404" y="156">&amp; appropriateness in context</text>
+    <rect x="390" y="220" width="270" height="70" fill="#F5F5F5" stroke="#2a1a0e"/><text x="404" y="248">Artifact released</text><text x="404" y="266">with warranted language</text>
+  </g>
+  <!-- arrows -->
+  <g stroke="#2a1a0e" stroke-width="2" fill="#2a1a0e">
+    <line x1="125" y1="180" x2="125" y2="218"/><polygon points="125,220 120,208 130,208"/>
+    <line x1="210" y1="255" x2="268" y2="255"/><polygon points="270,255 263,251 263,259"/>
+    <line x1="330" y1="180" x2="388" y2="150"/><polygon points="390,148 377,150 382,159"/>
+    <line x1="525" y1="180" x2="525" y2="218"/><polygon points="525,220 520,208 530,208"/>
+  </g>
+  <text x="345" y="172" font-size="10" font-family="'JetBrains Mono', monospace" fill="#545454">adequate</text>
+</svg>

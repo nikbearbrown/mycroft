@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Two-bucket exception triage funnel</title>
+  <style>
+    :root {
+      --color-white:     #FFFFFF;
+      --color-ink:       #2a1a0e;
+      --color-red:       #C8102E;
+      --color-secondary: #545454;
+      --color-border:    #D4D4D4;
+      --color-ochre:     #C8860E;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-white:     #111111;
+        --color-ink:       #F0EBE3;
+        --color-red:       #E8243A;
+        --color-secondary: #A0978C;
+        --color-border:    #2E2E2E;
+        --color-ochre:     #D49A30;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--color-white); color: var(--color-ink); font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif; }
+    #chart { width: 100%; }
+    .chart-title { font-size: 16px; font-weight: 700; fill: var(--color-ink); }
+    .chart-subtitle { font-size: 13px; fill: var(--color-secondary); }
+    .bucket-head { font-size: 13px; font-weight: 700; fill: var(--color-ink); }
+    .ex-label { font-size: 11px; fill: var(--color-secondary); }
+    .route-label { font-size: 11px; font-weight: 700; }
+    .rule-label { font-size: 11px; fill: var(--color-ink); }
+    .input-label { font-size: 12px; font-weight: 700; fill: var(--color-white); }
+    .link { stroke: var(--color-secondary); stroke-width: 1.5; fill: none; }
+    .tooltip {
+      position: absolute; pointer-events: none; opacity: 0;
+      background: var(--color-white); color: var(--color-ink);
+      border: 1px solid var(--color-border); border-radius: 8px;
+      padding: 8px 10px; font-size: 13px; max-width: 230px;
+      box-shadow: 0 6px 20px -6px rgb(18 18 18 / 0.14);
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  </style>
+</head>
+<body>
+  <div id="chart" role="main"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script>
+    const FALLBACK_DATA = {
+      factual: { head: 'Factual mismatches', examples: ['Wrong price', 'Wrong date', 'Renamed SKU', 'Missing amendment in billing'], route: 'Route to billing ops for correction' },
+      policy:  { head: 'Accounting-policy questions', examples: ['Contract modification type', 'Milestone timing', 'Variable consideration', 'Principal vs. agent'], route: 'Route to accounting team for policy memo' }
+    };
+
+    const tooltip = d3.select('body').append('div').attr('class', 'tooltip');
+    function showTip(event, html) {
+      tooltip.html(html).style('left', (event.pageX + 12) + 'px').style('top', (event.pageY - 28) + 'px')
+        .transition().duration(150).style('opacity', 1);
+    }
+    function moveTip(event) { tooltip.style('left', (event.pageX + 12) + 'px').style('top', (event.pageY - 28) + 'px'); }
+    function hideTip() { tooltip.transition().duration(100).style('opacity', 0); }
+
+    async function loadData() {
+      try { return await d3.json('./15-revenue-contract-and-billing-exception-triage-fig-03/data.json'); }
+      catch { return FALLBACK_DATA; }
+    }
+
+    function bucket(svg, d, x, w, top, accent) {
+      const h = 150;
+      const g = svg.append('g');
+      g.append('rect').attr('x', x).attr('y', top).attr('width', w).attr('height', h)
+        .attr('rx', 8).attr('fill', 'var(--color-white)').attr('stroke', accent).attr('stroke-width', 1.5)
+        .attr('tabindex', 0).attr('aria-label', `${d.head}: ${d.examples.join(', ')}. ${d.route}`)
+        .style('cursor', 'pointer')
+        .on('mouseover', function (event) { showTip(event, `<strong>${d.head}</strong><br>${d.route}`); })
+        .on('mousemove', moveTip).on('mouseout', hideTip);
+      g.append('rect').attr('x', x).attr('y', top).attr('width', 4).attr('height', h).attr('fill', accent);
+      g.append('text').attr('class', 'bucket-head').attr('x', x + 14).attr('y', top + 24).text(d.head);
+      d.examples.forEach((e, i) => {
+        g.append('text').attr('class', 'ex-label').attr('x', x + 16).attr('y', top + 46 + i * 16).text('· ' + e);
+      });
+      g.append('text').attr('class', 'route-label').attr('x', x + 14).attr('y', top + h + 22)
+        .attr('fill', accent).text(d.route);
+    }
+
+    function draw(data) {
+      d3.select('#chart').selectAll('*').remove();
+      const totalWidth = document.getElementById('chart').clientWidth || 800;
+      const totalHeight = 440;
+
+      const svg = d3.select('#chart').append('svg')
+        .attr('width', totalWidth).attr('height', totalHeight)
+        .attr('role', 'img').attr('aria-labelledby', 'chart-title chart-desc');
+      svg.append('title').attr('id', 'chart-title').text('Two-bucket exception triage funnel');
+      svg.append('desc').attr('id', 'chart-desc')
+        .text('Flagged exceptions split into factual mismatches routed to billing ops and accounting-policy questions routed to accounting.');
+
+      svg.append('text').attr('class', 'chart-title').attr('x', 16).attr('y', 26)
+        .text('Exception triage: two buckets, two teams');
+      svg.append('text').attr('class', 'chart-subtitle').attr('x', 16).attr('y', 46)
+        .text('Can billing ops resolve this without an accounting interpretation? Yes → left. No → right.');
+
+      // input node (top center)
+      const inX = totalWidth / 2 - 130, inY = 64, inW = 260, inH = 44;
+      svg.append('rect').attr('x', inX).attr('y', inY).attr('width', inW).attr('height', inH)
+        .attr('rx', 8).attr('fill', 'var(--color-ink)');
+      svg.append('text').attr('class', 'input-label').attr('x', totalWidth / 2).attr('y', inY + 27)
+        .attr('text-anchor', 'middle').text('All flagged exceptions');
+
+      const colW = Math.min(280, (totalWidth - 60) / 2);
+      const leftX = totalWidth / 2 - colW - 20;
+      const rightX = totalWidth / 2 + 20;
+      const bTop = 180;
+
+      // connectors
+      svg.append('path').attr('class', 'link').attr('aria-hidden', 'true')
+        .attr('d', `M${totalWidth / 2 - 40},${inY + inH} C${totalWidth / 2 - 40},${bTop - 20} ${leftX + colW / 2},${bTop - 30} ${leftX + colW / 2},${bTop}`);
+      svg.append('path').attr('class', 'link').attr('aria-hidden', 'true')
+        .attr('d', `M${totalWidth / 2 + 40},${inY + inH} C${totalWidth / 2 + 40},${bTop - 20} ${rightX + colW / 2},${bTop - 30} ${rightX + colW / 2},${bTop}`);
+
+      bucket(svg, data.factual, leftX, colW, bTop, 'var(--color-secondary)');
+      bucket(svg, data.policy, rightX, colW, bTop, 'var(--color-red)');
+    }
+
+    loadData().then(data => {
+      draw(data);
+      const ro = new ResizeObserver(() => draw(data));
+      ro.observe(document.getElementById('chart'));
+    });
+  </script>
+</body>
+</html>

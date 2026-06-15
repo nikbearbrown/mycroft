@@ -737,7 +737,7 @@ Every finance recipe produces two outputs:
 
 ## 11. Source Notes
 
-**Mycroft repository materials:** MYCROFT.md, DOMAIN.md, DATA_CONTRACT.md, docs/recipes.md, docs/phase-gates.md, docs/workflows.md, docs/data-and-provenance.md, logs/RUN_LOG.md, existing finance recipe cards, finance report templates.
+**Mycroft repository materials:** SNICKERDOODLE.md, DOMAIN.md, DATA_CONTRACT.md, docs/recipes.md, docs/phase-gates.md, docs/workflows.md, docs/data-and-provenance.md, logs/RUN_LOG.md, existing finance recipe cards, finance report templates.
 
 **BLS Occupational Outlook Handbook (2024–2034):** Financial analysts, accountants/auditors, budget analysts, financial risk specialists, bookkeeping/accounting clerks. Employment, wage, and workflow characteristics.
 

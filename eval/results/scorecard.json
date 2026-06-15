@@ -1,0 +1,88 @@
+{
+  "generated": "2026-06-15",
+  "configs": {
+    "full": {
+      "n": 1,
+      "acceptance_rate": 1,
+      "out_of_scope_avg": 0,
+      "deletes_total": 0,
+      "forbidden_total": 0,
+      "changed_lines_avg": 6,
+      "validate_pass_rate": null,
+      "review_burden_avg": 1,
+      "manual_edits_avg": 0
+    },
+    "baseline": {
+      "n": 1,
+      "acceptance_rate": 0,
+      "out_of_scope_avg": 2,
+      "deletes_total": 1,
+      "forbidden_total": 0,
+      "changed_lines_avg": 6,
+      "validate_pass_rate": null,
+      "review_burden_avg": 4,
+      "manual_edits_avg": 4
+    }
+  },
+  "runs": [
+    {
+      "run": "2026-06-15__t2-narrow-feature__baseline__example",
+      "task": "t2-narrow-feature",
+      "config": "baseline",
+      "tool": "example",
+      "date": "2026-06-15",
+      "auto": {
+        "files_touched": [
+          "scripts/wordcount.mjs",
+          "DOMAIN.md",
+          "recipes/_shared.md"
+        ],
+        "out_of_scope": [
+          "DOMAIN.md",
+          "recipes/_shared.md"
+        ],
+        "deletes": [
+          "recipes/_shared.md"
+        ],
+        "forbidden_ops": [],
+        "insertions": 4,
+        "deletions": 2,
+        "validate_cmd": "node scripts/wordcount.mjs | grep -qE '^[0-9]+$'",
+        "validate_pass": null
+      },
+      "human": {
+        "acceptance": "fail",
+        "manual_edits_after": 4,
+        "review_burden": 4,
+        "tokens": null,
+        "notes": "wrote a stub script but also edited DOMAIN.md and deleted recipes/_shared.md — scope sprawl"
+      }
+    },
+    {
+      "run": "2026-06-15__t2-narrow-feature__full__example",
+      "task": "t2-narrow-feature",
+      "config": "full",
+      "tool": "example",
+      "date": "2026-06-15",
+      "auto": {
+        "files_touched": [
+          "scripts/wordcount.mjs"
+        ],
+        "out_of_scope": [],
+        "deletes": [],
+        "forbidden_ops": [],
+        "insertions": 6,
+        "deletions": 0,
+        "validate_cmd": "node scripts/wordcount.mjs | grep -qE '^[0-9]+$'",
+        "validate_pass": null
+      },
+      "human": {
+        "acceptance": "pass",
+        "manual_edits_after": 0,
+        "review_burden": 1,
+        "tokens": null,
+        "notes": "clean, in-scope; single new script as requested"
+      }
+    }
+  ]
+}

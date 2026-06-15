@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Where the recovered time goes</title>
+<style>
+  :root { --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E; --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E; --color-fill:#F5F5F5; }
+  @media (prefers-color-scheme: dark){ :root{ --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A; --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30; --color-fill:#1A1A1A; } }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--color-white);color:var(--color-ink);font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif;}
+  #chart{width:100%;}
+  .heading{font-family:'EB Garamond',Georgia,serif;fill:var(--color-ink);} .sub{fill:var(--color-secondary);}
+  .seg-prep{fill:var(--color-secondary);} .seg-judg{fill:var(--color-red);}
+  .seg-prep,.seg-judg{transition:opacity 120ms cubic-bezier(0.2,0.8,0.2,1);}
+  .axis line,.axis path{stroke:var(--color-secondary);} .axis text{fill:var(--color-secondary);font-family:'JetBrains Mono','Fira Code',monospace;font-size:11px;}
+  .xlabel{fill:var(--color-ink);font-size:12px;} .leg{fill:var(--color-secondary);font-size:11px;}
+  .tooltip{position:absolute;pointer-events:none;opacity:0;background:var(--color-white);color:var(--color-ink);border:1px solid var(--color-border);padding:6px 8px;font-size:13px;}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;}}
+</style></head>
+<body><div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const FALLBACK_DATA=[
+ {scenario:'Pre-automation',prep:3.5,judgment:0.5},
+ {scenario:'Reallocated',prep:1,judgment:3}
+];
+let tooltip;
+function draw(data){
+  d3.select('#chart').selectAll('*').remove();
+  if(tooltip)tooltip.remove(); tooltip=d3.select('body').append('div').attr('class','tooltip');
+  const margin={top:64,right:40,bottom:56,left:64};
+  const totalW=document.getElementById('chart').clientWidth||700, totalH=Math.max(420,totalW*0.6);
+  const cw=totalW-margin.left-margin.right, ch=totalH-margin.top-margin.bottom;
+  const svg=d3.select('#chart').append('svg').attr('width',totalW).attr('height',totalH).attr('viewBox',`0 0 ${totalW} ${totalH}`).attr('role','img').attr('aria-labelledby','t d');
+  svg.append('title').attr('id','t').text('Where the recovered time goes');
+  svg.append('desc').attr('id','d').text('Two equal-height stacked bars: preparation shrinks and judgment grows while the four-hour total stays constant.');
+  svg.append('text').attr('class','heading').attr('x',24).attr('y',32).attr('font-size',20).text('Where the recovered time goes');
+  svg.append('text').attr('class','sub').attr('x',24).attr('y',52).attr('font-size',13).text('Same four-hour total; the mix shifts from preparation to judgment.');
+  const g=svg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
+  const x=d3.scaleBand().domain(data.map(d=>d.scenario)).range([0,cw]).padding(0.4);
+  const y=d3.scaleLinear().domain([0,4]).range([ch,0]);
+  g.append('g').attr('class','axis').call(d3.axisLeft(y).ticks(4).tickFormat(d=>d+'h'));
+  g.append('g').attr('class','axis').attr('transform',`translate(0,${ch})`).call(d3.axisBottom(x));
+  data.forEach(d=>{
+    const bx=x(d.scenario), bw=x.bandwidth();
+    const prepH=ch-y(d.prep), judgY=y(d.prep+d.judgment), judgH=y(d.prep)-y(d.prep+d.judgment);
+    g.append('rect').attr('class','seg-prep').attr('x',bx).attr('y',y(d.prep)).attr('width',bw).attr('height',prepH)
+      .attr('tabindex',0).attr('aria-label',`${d.scenario} preparation: ${d.prep} hours`)
+      .on('mouseover',(e)=>tooltip.html('<strong>Preparation</strong><br>'+d.prep+' h').style('opacity',1))
+      .on('mousemove',e=>tooltip.style('left',(e.pageX+12)+'px').style('top',(e.pageY-28)+'px')).on('mouseout',()=>tooltip.style('opacity',0));
+    g.append('rect').attr('class','seg-judg').attr('x',bx).attr('y',judgY).attr('width',bw).attr('height',judgH)
+      .attr('tabindex',0).attr('aria-label',`${d.scenario} judgment: ${d.judgment} hours`)
+      .on('mouseover',(e)=>tooltip.html('<strong>Judgment</strong><br>'+d.judgment+' h').style('opacity',1))
+      .on('mousemove',e=>tooltip.style('left',(e.pageX+12)+'px').style('top',(e.pageY-28)+'px')).on('mouseout',()=>tooltip.style('opacity',0));
+  });
+  // legend
+  const lg=svg.append('g').attr('transform',`translate(${margin.left},${totalH-20})`);
+  lg.append('rect').attr('class','seg-prep').attr('width',12).attr('height',12); lg.append('text').attr('class','leg').attr('x',18).attr('y',11).text('Preparation');
+  lg.append('rect').attr('class','seg-judg').attr('x',110).attr('width',12).attr('height',12); lg.append('text').attr('class','leg').attr('x',128).attr('y',11).text('Judgment');
+}
+let current=FALLBACK_DATA;
+async function load(){try{current=await d3.json('./02-the-reallocation-principle-fig-04.json');}catch(e){current=FALLBACK_DATA;}draw(current);}
+load(); new ResizeObserver(()=>draw(current)).observe(document.getElementById('chart'));
+</script></body></html>

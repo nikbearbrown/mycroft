@@ -1,0 +1,24 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t2 d2" font-family="'Inter', sans-serif">
+  <title id="t2">The finance work stack</title>
+  <desc id="d2">A vertical three-tier stack: Data at the bottom, Preparation above it, Judgment on top, with a heavy gate line on the boundary between Preparation and Judgment.</desc>
+  <rect width="700" height="420" fill="#FFFFFF"/>
+  <text x="40" y="42" font-size="20" font-family="'EB Garamond', Georgia, serif" fill="#2a1a0e">The finance work stack</text>
+  <text x="40" y="64" font-size="13" fill="#545454">The fluency trap lives on the gate between preparation and judgment.</text>
+  <!-- bands -->
+  <rect x="150" y="96" width="420" height="74" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1"/>
+  <text x="170" y="130" font-size="15" font-weight="700" fill="#2a1a0e">Judgment</text>
+  <text x="170" y="150" font-size="12" fill="#545454">Meaning · materiality · cause · action — accountable human</text>
+  <!-- gate bar on prep/judgment boundary -->
+  <rect x="150" y="172" width="420" height="10" fill="#C8102E"/>
+  <text x="576" y="180" font-size="11" font-family="'JetBrains Mono', monospace" fill="#C8102E">gate</text>
+  <rect x="150" y="184" width="420" height="74" fill="#F5F5F5" stroke="#545454" stroke-width="1"/>
+  <text x="170" y="218" font-size="15" font-weight="700" fill="#2a1a0e">Preparation</text>
+  <text x="170" y="238" font-size="12" fill="#545454">Structuring · comparing · drafting — AI-assisted, checkable</text>
+  <rect x="150" y="270" width="420" height="74" fill="#F5F5F5" stroke="#545454" stroke-width="1"/>
+  <text x="170" y="304" font-size="15" font-weight="700" fill="#2a1a0e">Data</text>
+  <text x="170" y="324" font-size="12" fill="#545454">Raw exports · system records — accurate and traceable</text>
+  <!-- side arrow -->
+  <line x1="110" y1="338" x2="110" y2="106" stroke="#2a1a0e" stroke-width="2"/>
+  <polygon points="110,100 105,112 115,112" fill="#2a1a0e"/>
+  <text x="66" y="226" font-size="11" font-family="'JetBrains Mono', monospace" fill="#545454" transform="rotate(-90 66 226)">accountability ↑ · checkability ↓</text>
+</svg>

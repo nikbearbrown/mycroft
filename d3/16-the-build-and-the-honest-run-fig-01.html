@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Four-component run output</title>
+  <style>
+    :root {
+      --color-white:     #FFFFFF;
+      --color-ink:       #2a1a0e;
+      --color-red:       #C8102E;
+      --color-secondary: #545454;
+      --color-border:    #D4D4D4;
+      --color-ochre:     #C8860E;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-white:     #111111;
+        --color-ink:       #F0EBE3;
+        --color-red:       #E8243A;
+        --color-secondary: #A0978C;
+        --color-border:    #2E2E2E;
+        --color-ochre:     #D49A30;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--color-white); color: var(--color-ink); font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif; }
+    #chart { width: 100%; }
+    .chart-title { font-size: 16px; font-weight: 700; fill: var(--color-ink); }
+    .chart-subtitle { font-size: 13px; fill: var(--color-secondary); }
+    .card-head { font-size: 14px; font-weight: 700; fill: var(--color-ink); }
+    .card-sub { font-size: 11px; fill: var(--color-secondary); }
+    .note-label { font-size: 11px; font-weight: 700; fill: var(--color-red); }
+    .tooltip {
+      position: absolute; pointer-events: none; opacity: 0;
+      background: var(--color-white); color: var(--color-ink);
+      border: 1px solid var(--color-border); border-radius: 8px;
+      padding: 8px 10px; font-size: 13px; max-width: 240px;
+      box-shadow: 0 6px 20px -6px rgb(18 18 18 / 0.14);
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  </style>
+</head>
+<body>
+  <div id="chart" role="main"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script>
+    const FALLBACK_DATA = [
+      { head: 'Run log', sub: 'Machine-readable; every source and transformation; the reconstruction record.', desc: 'Every source accessed, transformation applied, check run, flag raised, and stop hit — for reconstruction.' },
+      { head: 'Human report', sub: 'Decision-organized; warranted language; no gate-crossing conclusions.', desc: 'The readable output the professional uses to make the judgment, organized by decision, not recipe step.' },
+      { head: 'Evidence appendix', sub: 'Source-traceable; every finding pointed to a file and timestamp.', desc: 'Connects each report finding to its source — file, version, extract timestamp, control total.' },
+      { head: 'Gate record', sub: 'Every decision documented; conditions recorded; non-approvals visible.', desc: 'Who cleared each gate, when, on what basis, with conditions and non-approvals preserved.' }
+    ];
+
+    const tooltip = d3.select('body').append('div').attr('class', 'tooltip');
+    function showTip(event, html) {
+      tooltip.html(html).style('left', (event.pageX + 12) + 'px').style('top', (event.pageY - 28) + 'px')
+        .transition().duration(150).style('opacity', 1);
+    }
+    function moveTip(event) { tooltip.style('left', (event.pageX + 12) + 'px').style('top', (event.pageY - 28) + 'px'); }
+    function hideTip() { tooltip.transition().duration(100).style('opacity', 0); }
+
+    function wrap(textSel, text, x, startY, lineH, maxChars) {
+      const words = text.split(' ');
+      let line = '', y = startY;
+      words.forEach(w => {
+        if ((line + ' ' + w).trim().length > maxChars) {
+          textSel.append('tspan').attr('x', x).attr('y', y).text(line.trim());
+          line = w; y += lineH;
+        } else { line = (line + ' ' + w).trim(); }
+      });
+      if (line) textSel.append('tspan').attr('x', x).attr('y', y).text(line);
+    }
+
+    async function loadData() {
+      try { return await d3.json('./16-the-build-and-the-honest-run-fig-01/data.json'); }
+      catch { return FALLBACK_DATA; }
+    }
+
+    function draw(data) {
+      d3.select('#chart').selectAll('*').remove();
+      const totalWidth = document.getElementById('chart').clientWidth || 800;
+      const totalHeight = 460;
+
+      const svg = d3.select('#chart').append('svg')
+        .attr('width', totalWidth).attr('height', totalHeight)
+        .attr('role', 'img').attr('aria-labelledby', 'chart-title chart-desc');
+      svg.append('title').attr('id', 'chart-title').text('Four-component run output');
+      svg.append('desc').attr('id', 'chart-desc')
+        .text('The honest run produces four outputs — run log, human report, evidence appendix, and gate record; any one missing degrades the whole.');
+
+      svg.append('text').attr('class', 'chart-title').attr('x', 16).attr('y', 26)
+        .text('The four components of the honest run');
+      svg.append('text').attr('class', 'chart-subtitle').attr('x', 16).attr('y', 46)
+        .text('Together they constitute the honest run. Any one missing degrades the whole.');
+
+      const left = 16, gapX = 18, gapY = 16, top = 64;
+      const cardW = (totalWidth - left * 2 - gapX) / 2;
+      const cardH = 130;
+
+      data.forEach((d, i) => {
+        const col = i % 2, row = Math.floor(i / 2);
+        const x = left + col * (cardW + gapX);
+        const y = top + row * (cardH + gapY);
+        const g = svg.append('g')
+          .attr('tabindex', 0).attr('aria-label', `${d.head}: ${d.sub}`)
+          .style('cursor', 'pointer');
+        g.append('rect').attr('x', x).attr('y', y).attr('width', cardW).attr('height', cardH)
+          .attr('rx', 8).attr('fill', 'var(--color-white)').attr('stroke', 'var(--color-ink)').attr('stroke-width', 1.5)
+          .style('transition', 'opacity 120ms')
+          .on('mouseover', function (event) { d3.select(this).style('opacity', 0.9); showTip(event, `<strong>${d.head}</strong><br>${d.desc}`); })
+          .on('mousemove', moveTip)
+          .on('mouseout', function () { d3.select(this).style('opacity', 1); hideTip(); });
+        g.append('rect').attr('x', x).attr('y', y).attr('width', cardW).attr('height', 5).attr('fill', 'var(--color-ochre)');
+        g.append('text').attr('class', 'card-head').attr('x', x + 16).attr('y', y + 34).text(d.head);
+        const t = g.append('text').attr('class', 'card-sub');
+        wrap(t, d.sub, x + 16, y + 58, 16, Math.floor(cardW / 6.2));
+      });
+
+      svg.append('text').attr('class', 'note-label').attr('x', totalWidth / 2).attr('y', totalHeight - 16)
+        .attr('text-anchor', 'middle')
+        .text('The four outputs together constitute the honest run.');
+    }
+
+    loadData().then(data => {
+      draw(data);
+      const ro = new ResizeObserver(() => draw(data));
+      ro.observe(document.getElementById('chart'));
+    });
+  </script>
+</body>
+</html>

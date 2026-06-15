@@ -1,0 +1,34 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t4 d4" font-family="'Inter', sans-serif">
+  <title id="t4">The gate between preparation and judgment</title>
+  <desc id="d4">A preparation layer on the left and an accountable layer on the right, separated by a tall central gate; an arrow passes from left through the gate into the right zone.</desc>
+  <rect width="700" height="420" fill="#FFFFFF"/>
+  <text x="40" y="42" font-size="20" font-family="'EB Garamond', Georgia, serif" fill="#2a1a0e">The gate between preparation and judgment</text>
+  <text x="40" y="64" font-size="13" fill="#545454">Where accountability enters the artifact.</text>
+  <!-- left zone -->
+  <rect x="40" y="100" width="250" height="280" fill="#F5F5F5" stroke="#545454" stroke-width="1"/>
+  <text x="56" y="128" font-size="13" font-weight="700" fill="#2a1a0e">PREPARATION LAYER</text>
+  <g font-size="12" fill="#545454">
+    <text x="56" y="156">AI-assisted</text>
+    <text x="56" y="182">Auditable steps</text>
+    <text x="56" y="208">Source-linked</text>
+    <text x="56" y="234">Reviewable</text>
+  </g>
+  <!-- gate -->
+  <rect x="325" y="120" width="50" height="240" fill="#C8102E"/>
+  <rect x="343" y="220" width="14" height="14" fill="#FFFFFF"/>
+  <text x="350" y="392" font-size="11" font-family="'JetBrains Mono', monospace" fill="#C8102E" text-anchor="middle">gate</text>
+  <text x="350" y="108" font-size="11" fill="#545454" text-anchor="middle">named approver · logged</text>
+  <!-- right zone -->
+  <rect x="410" y="100" width="250" height="280" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1"/>
+  <text x="426" y="128" font-size="13" font-weight="700" fill="#2a1a0e">ACCOUNTABLE LAYER</text>
+  <g font-size="12" fill="#2a1a0e">
+    <text x="426" y="156">Human judgment</text>
+    <text x="426" y="182">Materiality</text>
+    <text x="426" y="208">Cause</text>
+    <text x="426" y="234">Treatment</text>
+    <text x="426" y="260">Release</text>
+  </g>
+  <!-- through arrow -->
+  <line x1="270" y1="300" x2="430" y2="300" stroke="#2a1a0e" stroke-width="2"/>
+  <polygon points="430,300 418,295 418,305" fill="#2a1a0e"/>
+</svg>

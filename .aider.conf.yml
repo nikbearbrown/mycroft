@@ -1,0 +1,6 @@
+# GENERATED FILE — do not edit by hand.
+# Source: instructions/ · manifest: instructions/manifest.yml
+# Rebuild: node scripts/build-instructions.mjs --promote
+read:
+  - AGENTS.md
+  - SNICKERDOODLE.md

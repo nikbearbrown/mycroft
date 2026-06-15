@@ -1,0 +1,47 @@
+<!--
+  Scope Definition Template
+  Book: Mycroft
+  Chapter: 16-the-build-and-the-honest-run
+  Figure 02
+  Type: structural schematic
+  Generated 2026-06-15
+  Source: pantry/16-the-build-and-the-honest-run-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-02">
+<title id="fig-title-02">Scope Definition Template</title>
+<desc>A scope definition filled in before a run starts: entities, period, source systems, recipes to run, stop conditions, and the did-not-test list. The did-not-test list is the most omitted but essential field; scope changes require a documented amendment.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="16-the-build-and-the-honest-run" figure-number="02" figure-title="Scope Definition Template" figure-slug="scope-definition-template" figure-type="structural schematic" priority="Important" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/16-the-build-and-the-honest-run-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">Scope is defined before the run begins</text>
+
+<!-- rows y0=52 h=44 -->
+<rect x="32" y="52" width="636" height="44" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="42" y="72" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Entities in scope</text>
+<text x="280" y="79" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">list, with rationale for exclusions</text>
+
+<rect x="32" y="96" width="636" height="44" fill="#FAFAFA" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="42" y="116" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Period</text>
+<text x="280" y="123" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">start, end, extract timestamps</text>
+
+<rect x="32" y="140" width="636" height="44" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="42" y="160" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Source systems</text>
+<text x="280" y="167" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">system, extract version, as-of date</text>
+
+<rect x="32" y="184" width="636" height="44" fill="#FAFAFA" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="42" y="204" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Recipes to run</text>
+<text x="280" y="211" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">in sequence, dependencies noted</text>
+
+<rect x="32" y="228" width="636" height="44" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="42" y="248" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Stop conditions</text>
+<text x="280" y="255" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">when the run halts</text>
+
+<!-- did-not-test emphasized -->
+<rect x="32" y="272" width="636" height="44" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.5"/>
+<text x="42" y="292" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#C8102E" font-weight="bold">Did-not-test list</text>
+<text x="280" y="299" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">what is excluded and why</text>
+
+<!-- footer band -->
+<rect x="32" y="328" width="636" height="36" fill="#2a1a0e" stroke="#2a1a0e" stroke-width="1"/>
+<text x="350" y="350" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF">Scope is defined before the run; changes require a documented amendment</text>
+</svg>

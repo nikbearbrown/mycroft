@@ -1,0 +1,26 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig01-title fig01-desc">
+<title id="fig01-title">What the machine computes versus what the human explains, separated by a hard gate</title>
+<desc id="fig01-desc">Two equal panels divided by a dominant vertical gate line. Left panel lists machine computations; right panel lists human judgments. Nothing crosses the gate.</desc>
+<text x="32" y="40" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="18" fill="#2a1a0e">A variance is computed by the machine, explained by a person</text>
+
+<!-- Left panel: machine computes -->
+<rect x="32" y="66" width="290" height="320" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="177" y="92" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="13" font-weight="700" fill="#2a1a0e">What the machine computes</text>
+<rect x="50" y="108" width="254" height="42" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/><text x="62" y="134" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="13" fill="#2a1a0e">Dollar variance</text>
+<rect x="50" y="158" width="254" height="42" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/><text x="62" y="184" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="13" fill="#2a1a0e">Percent variance</text>
+<rect x="50" y="208" width="254" height="42" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/><text x="62" y="234" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="13" fill="#2a1a0e">Rank by magnitude</text>
+<rect x="50" y="258" width="254" height="42" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/><text x="62" y="284" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="13" fill="#2a1a0e">Flag by threshold</text>
+<rect x="50" y="308" width="254" height="42" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/><text x="62" y="334" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="13" fill="#2a1a0e">Attach prior comment</text>
+
+<!-- GATE -->
+<rect x="338" y="60" width="6" height="332" fill="#C8102E"/>
+<text x="341" y="408" text-anchor="middle" font-family="'JetBrains Mono','Courier New',monospace" font-size="11" fill="#C8102E">the gate</text>
+
+<!-- Right panel: human explains -->
+<rect x="360" y="66" width="290" height="320" fill="#FFFFFF" stroke="#2a1a0e" stroke-width="1.5"/>
+<text x="505" y="92" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="13" font-weight="700" fill="#2a1a0e">What the human explains</text>
+<rect x="378" y="108" width="254" height="54" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/><text x="390" y="140" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="13" fill="#2a1a0e">Causal explanation</text>
+<rect x="378" y="170" width="254" height="54" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/><text x="390" y="202" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="13" fill="#2a1a0e">Materiality decision</text>
+<rect x="378" y="232" width="254" height="54" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/><text x="390" y="264" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="13" fill="#2a1a0e">Accounting treatment</text>
+<rect x="378" y="294" width="254" height="54" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/><text x="390" y="326" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="13" fill="#2a1a0e">Release authorization</text>
+</svg>

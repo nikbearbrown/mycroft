@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matching funnel — deterministic before fuzzy</title>
+<style>
+  :root {
+    --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E;
+    --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E; --color-fill:#F5F5F5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A;
+            --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30; --color-fill:#1A1A1A; }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--color-white); color:var(--color-ink);
+         font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif; }
+  #chart { width:100%; }
+  .chart-title { font-size:16px; font-weight:700; fill:var(--color-ink); }
+  .chart-sub { font-size:13px; fill:var(--color-secondary); }
+  .axis text { font-family:'JetBrains Mono',monospace; font-size:11px; fill:var(--color-secondary); }
+  .axis path, .axis line { stroke:var(--color-border); }
+  .stage-label { font-size:12px; fill:var(--color-ink); }
+  .bar-value { font-size:12px; fill:var(--color-ink); }
+  .tooltip { position:absolute; pointer-events:none; opacity:0; background:var(--color-ink);
+             color:var(--color-white); font-size:13px; padding:6px 10px; border-radius:4px; }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; animation:none !important; } }
+</style>
+</head>
+<body>
+<div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+// Each stage shows how many items remain. Deterministic clears most; fuzzy produces hypotheses.
+const FALLBACK_DATA = [
+  { stage:"All open items", value:1231, kind:"in", note:"Everything enters the funnel" },
+  { stage:"After deterministic match", value:47, kind:"residue", note:"1,184 cleared with no judgment; 47 residue" },
+  { stage:"Fuzzy hypotheses", value:47, kind:"hypothesis", note:"Each labeled a hypothesis, status unreviewed" },
+  { stage:"Confirmed by accountant", value:0, kind:"confirmed", note:"Confirmation required before any status changes" }
+];
+
+const tooltip = d3.select('body').append('div').attr('class','tooltip');
+
+async function loadData() {
+  try { return await d3.json('./07-subledger-to-gl-reconciliation-triage-fig-02/data.json'); }
+  catch { return FALLBACK_DATA; }
+}
+
+function draw(data) {
+  d3.select('#chart').selectAll('*').remove();
+  const totalWidth = document.getElementById('chart').clientWidth || 800;
+  const totalHeight = 380;
+  const margin = { top: 64, right: 56, bottom: 40, left: 200 };
+  const chartWidth = totalWidth - margin.left - margin.right;
+  const chartHeight = totalHeight - margin.top - margin.bottom;
+
+  const svg = d3.select('#chart').append('svg')
+    .attr('width',totalWidth).attr('height',totalHeight)
+    .attr('role','img').attr('aria-labelledby','t2 d2');
+  svg.append('title').attr('id','t2').text('Deterministic matching before fuzzy matching');
+  svg.append('desc').attr('id','d2').text('A funnel of horizontal bars: all items enter, deterministic matching leaves a small residue, fuzzy matching turns it into hypotheses, and none are confirmed until an accountant reviews.');
+
+  svg.append('text').attr('class','chart-title').attr('x',16).attr('y',26)
+     .text('The matching funnel');
+  svg.append('text').attr('class','chart-sub').attr('x',16).attr('y',46)
+     .text('Certainty before guessing — suggestions are not conclusions.');
+
+  const g = svg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
+
+  const xScaleLinear = d3.scaleLinear()
+    .domain([0, d3.max(data, d=>d.value)]).nice().range([0, chartWidth]);
+  const yScaleBand = d3.scaleBand()
+    .domain(data.map(d=>d.stage)).range([0, chartHeight]).padding(0.28);
+
+  g.append('g').attr('class','axis').call(d3.axisLeft(yScaleBand).tickSize(0)).select('.domain').remove();
+  g.append('g').attr('class','axis').attr('transform',`translate(0,${chartHeight})`)
+   .call(d3.axisBottom(xScaleLinear).ticks(5));
+
+  const colorFor = d => d.kind==='in' ? 'var(--color-ink)'
+                     : d.kind==='hypothesis' ? 'var(--color-red)'
+                     : 'var(--color-secondary)';
+
+  g.selectAll('.bar-rect').data(data).join('rect')
+    .attr('class','bar-rect')
+    .attr('x',0).attr('y',d=>yScaleBand(d.stage)).attr('height',yScaleBand.bandwidth())
+    .attr('width',d=>Math.max(xScaleLinear(d.value), d.value>0?2:0))
+    .attr('fill',colorFor)
+    .attr('tabindex',0).attr('aria-label',d=>`${d.stage}: ${d.value}`)
+    .on('mouseover',function(event,d){
+      d3.selectAll('.bar-rect').attr('opacity',0.35); d3.select(this).attr('opacity',1);
+      tooltip.html(`<strong>${d.stage}</strong><br>${d.value} items — ${d.note}`)
+        .style('left',(event.pageX+12)+'px').style('top',(event.pageY-28)+'px')
+        .transition().duration(150).style('opacity',1);
+    })
+    .on('mousemove',event=>tooltip.style('left',(event.pageX+12)+'px').style('top',(event.pageY-28)+'px'))
+    .on('mouseout',function(){ d3.selectAll('.bar-rect').attr('opacity',1); tooltip.transition().duration(100).style('opacity',0); });
+
+  g.selectAll('.bar-value').data(data).join('text')
+    .attr('class','bar-value')
+    .attr('x',d=>Math.max(xScaleLinear(d.value),2)+6)
+    .attr('y',d=>yScaleBand(d.stage)+yScaleBand.bandwidth()/2+4)
+    .text(d=>d.value);
+}
+
+loadData().then(data => {
+  draw(data);
+  const ro = new ResizeObserver(() => draw(data));
+  ro.observe(document.getElementById('chart'));
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!--
+  Seven PBC Request Fields: Set vs. Track
+  Book: Mycroft
+  Chapter: 14-pbc-request-tracker-and-audit-evidence-binder
+  Figure 02
+  Type: comparison panels
+  Generated 2026-06-15
+  Source: pantry/14-pbc-request-tracker-and-audit-evidence-binder-cajal.md
+-->
+<svg viewBox="0 0 700 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-02">
+<title id="fig-title-02">Seven PBC Request Fields: Set vs. Track</title>
+<desc>Seven prepared-by-client request fields, each showing who sets it and what the recipe checks. A human sets every field; the recipe only tracks and confirms. The privilege flag blocks the delivery queue until cleared.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="14-pbc-request-tracker-and-audit-evidence-binder" figure-number="02" figure-title="Seven PBC Request Fields: Set vs. Track" figure-slug="seven-pbc-request-fields" figure-type="comparison panels" priority="Important" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/14-pbc-request-tracker-and-audit-evidence-binder-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">A human sets every field; the recipe only tracks</text>
+
+<text x="40" y="58" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">Field</text>
+<text x="190" y="58" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">Who sets it</text>
+<text x="410" y="58" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">What the recipe checks</text>
+<line x1="32" y1="66" x2="668" y2="66" stroke="#D4D4D4" stroke-width="1"/>
+
+<!-- rows y0=70 h=50 -->
+<rect x="32" y="70" width="636" height="50" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="40" y="100" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Request ID</text>
+<text x="190" y="100" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">auditors</text>
+<text x="410" y="100" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">every support path maps to an ID</text>
+
+<rect x="32" y="120" width="636" height="50" fill="#FAFAFA" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="40" y="150" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Description</text>
+<text x="190" y="150" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">auditors</text>
+<text x="410" y="150" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">reviewer evaluates adequacy (human)</text>
+
+<rect x="32" y="170" width="636" height="50" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="40" y="200" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Owner</text>
+<text x="190" y="200" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">finance lead</text>
+<text x="410" y="200" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">flags items overdue by owner</text>
+
+<rect x="32" y="220" width="636" height="50" fill="#FAFAFA" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="40" y="250" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Due date</text>
+<text x="190" y="250" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">auditors</text>
+<text x="410" y="250" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">flags approaching / past due</text>
+
+<rect x="32" y="270" width="636" height="50" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="40" y="300" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Status</text>
+<text x="190" y="300" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">owner + reviewer</text>
+<text x="410" y="300" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">reads only, never advances alone</text>
+
+<rect x="32" y="320" width="636" height="50" fill="#FAFAFA" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="40" y="350" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Support path</text>
+<text x="190" y="350" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">owner</text>
+<text x="410" y="350" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">confirms existence; human confirms adequacy</text>
+
+<!-- privilege flag blocking -->
+<rect x="32" y="370" width="636" height="50" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.5"/>
+<text x="40" y="400" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#C8102E" font-weight="bold">Privilege flag</text>
+<text x="190" y="400" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">recipe applies; human clears</text>
+<text x="410" y="400" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#C8102E">blocks delivery queue until cleared</text>
+
+<text x="32" y="448" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">The recipe sets none of these on a human's behalf — it confirms, flags, and reads.</text>
+</svg>

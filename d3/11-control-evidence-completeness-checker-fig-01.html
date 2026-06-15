@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Control claim decomposition</title>
+  <style>
+    :root {
+      --color-white:     #FFFFFF;
+      --color-ink:       #2a1a0e;
+      --color-red:       #C8102E;
+      --color-secondary: #545454;
+      --color-border:    #D4D4D4;
+      --color-ochre:     #C8860E;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-white:     #111111;
+        --color-ink:       #F0EBE3;
+        --color-red:       #E8243A;
+        --color-secondary: #A0978C;
+        --color-border:    #2E2E2E;
+        --color-ochre:     #D49A30;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--color-white); color: var(--color-ink); font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif; }
+    #chart { width: 100%; }
+    .chart-title { font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 700; fill: var(--color-ink); }
+    .chart-subtitle { font-family: 'Inter', sans-serif; font-size: 13px; fill: var(--color-secondary); }
+    .node-label { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; fill: var(--color-ink); }
+    .node-sub { font-family: 'Inter', sans-serif; font-size: 11px; fill: var(--color-secondary); }
+    .claim-label { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; fill: var(--color-white); }
+    .term-label { font-family: 'Inter', sans-serif; font-size: 11px; fill: var(--color-ink); }
+    .link { stroke: var(--color-secondary); stroke-width: 1.5; fill: none; }
+    .tooltip {
+      position: absolute; pointer-events: none; opacity: 0;
+      background: var(--color-white); color: var(--color-ink);
+      border: 1px solid var(--color-border); border-radius: 8px;
+      padding: 8px 10px; font-size: 13px; max-width: 220px;
+      box-shadow: 0 6px 20px -6px rgb(18 18 18 / 0.14);
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  </style>
+</head>
+<body>
+  <div id="chart" role="main"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script>
+    const FALLBACK_DATA = [
+      { id: 'period',     label: 'Period',     sub: 'timestamps within review window',     desc: 'Evidence timestamps fall within the review period — not before, not after.' },
+      { id: 'population', label: 'Population', sub: 'sample represents the full set',        desc: 'The sample reviewed is representative of the whole transaction population.' },
+      { id: 'people',     label: 'People',     sub: 'preparer & reviewer authorized',       desc: 'Preparer and reviewer are identified and resolve to authorized roles.' },
+      { id: 'process',    label: 'Process',    sub: 'required steps documented, traceable', desc: 'Each required control step is documented and can be traced.' }
+    ];
+
+    const tooltip = d3.select('body').append('div').attr('class', 'tooltip');
+    function showTip(event, html) {
+      tooltip.html(html)
+        .style('left', (event.pageX + 12) + 'px')
+        .style('top', (event.pageY - 28) + 'px')
+        .transition().duration(150).style('opacity', 1);
+    }
+    function moveTip(event) {
+      tooltip.style('left', (event.pageX + 12) + 'px').style('top', (event.pageY - 28) + 'px');
+    }
+    function hideTip() { tooltip.transition().duration(100).style('opacity', 0); }
+
+    async function loadData() {
+      try { return await d3.json('./11-control-evidence-completeness-checker-fig-01/data.json'); }
+      catch { return FALLBACK_DATA; }
+    }
+
+    function draw(data) {
+      d3.select('#chart').selectAll('*').remove();
+      const totalWidth = document.getElementById('chart').clientWidth || 800;
+      const totalHeight = 460;
+
+      const svg = d3.select('#chart').append('svg')
+        .attr('width', totalWidth)
+        .attr('height', totalHeight)
+        .attr('role', 'img')
+        .attr('aria-labelledby', 'chart-title chart-desc');
+      svg.append('title').attr('id', 'chart-title').text('Control claim decomposition');
+      svg.append('desc').attr('id', 'chart-desc')
+        .text('A control claim that risk was mitigated rests on four conditional elements: period, population, people, and process.');
+
+      svg.append('text').attr('class', 'chart-title').attr('x', 16).attr('y', 26)
+        .text('The control claim rests on four conditional elements');
+      svg.append('text').attr('class', 'chart-subtitle').attr('x', 16).attr('y', 46)
+        .text('If any one element fails, the claim that the risk was mitigated is unsupported.');
+
+      const cx = totalWidth / 2;
+      const claimY = 76, claimH = 56, claimW = 200;
+      const n = data.length;
+      const slot = totalWidth / n;
+      const nodeY = 220, nodeH = 56, nodeW = Math.min(160, slot - 24);
+      const termY = 320, termH = 44, termW = nodeW;
+
+      const xs = data.map((d, i) => slot * i + slot / 2);
+
+      const gLinks = svg.append('g').attr('class', 'g-links').attr('aria-hidden', 'true');
+      xs.forEach(x => {
+        gLinks.append('path').attr('class', 'link')
+          .attr('d', `M${cx},${claimY + claimH} L${x},${nodeY}`);
+        gLinks.append('path').attr('class', 'link')
+          .attr('d', `M${x},${nodeY + nodeH} L${x},${termY}`);
+      });
+
+      // claim node
+      const gClaim = svg.append('g');
+      gClaim.append('rect')
+        .attr('x', cx - claimW / 2).attr('y', claimY).attr('width', claimW).attr('height', claimH)
+        .attr('rx', 6).attr('fill', 'var(--color-red)');
+      gClaim.append('text').attr('class', 'claim-label').attr('x', cx).attr('y', claimY + 24)
+        .attr('text-anchor', 'middle').text('Control claim');
+      gClaim.append('text').attr('x', cx).attr('y', claimY + 42).attr('text-anchor', 'middle')
+        .attr('font-size', 11).attr('fill', 'var(--color-white)').attr('font-family', 'Inter, sans-serif')
+        .text('risk was mitigated');
+
+      // element nodes
+      const gNodes = svg.append('g').selectAll('.node')
+        .data(data).join('g').attr('class', 'node')
+        .attr('tabindex', 0)
+        .attr('aria-label', d => `${d.label}: ${d.sub}`)
+        .style('cursor', 'pointer');
+
+      gNodes.append('rect')
+        .attr('x', (d, i) => xs[i] - nodeW / 2).attr('y', nodeY)
+        .attr('width', nodeW).attr('height', nodeH).attr('rx', 6)
+        .attr('fill', 'var(--color-white)').attr('stroke', 'var(--color-ink)').attr('stroke-width', 1.5)
+        .style('transition', 'opacity 120ms')
+        .on('mouseover', function (event, d) {
+          gNodes.selectAll('rect').style('opacity', 0.35);
+          d3.select(this).style('opacity', 1);
+          showTip(event, `<strong>${d.label}</strong><br>${d.desc}`);
+        })
+        .on('mousemove', moveTip)
+        .on('mouseout', function () { gNodes.selectAll('rect').style('opacity', 1); hideTip(); })
+        .on('focus', function (event, d) { showTip({ pageX: xs[data.indexOf(d)], pageY: nodeY + 100 }, `<strong>${d.label}</strong><br>${d.desc}`); })
+        .on('blur', hideTip);
+
+      gNodes.append('text').attr('class', 'node-label')
+        .attr('x', (d, i) => xs[i]).attr('y', nodeY + 24).attr('text-anchor', 'middle')
+        .text(d => d.label);
+      gNodes.append('text').attr('class', 'node-sub')
+        .attr('x', (d, i) => xs[i]).attr('y', nodeY + 44).attr('text-anchor', 'middle')
+        .each(function (d, i) {
+          const words = d.sub.split(' ');
+          const mid = Math.ceil(words.length / 2);
+          const t = d3.select(this);
+          t.append('tspan').attr('x', xs[i]).text(words.slice(0, mid).join(' '));
+        });
+
+      // terminal nodes
+      const gTerm = svg.append('g').selectAll('.term')
+        .data(data).join('g').attr('class', 'term');
+      gTerm.append('rect')
+        .attr('x', (d, i) => xs[i] - termW / 2).attr('y', termY)
+        .attr('width', termW).attr('height', termH).attr('rx', 6)
+        .attr('fill', 'var(--color-white)').attr('stroke', 'var(--color-ochre)').attr('stroke-width', 2);
+      gTerm.append('text').attr('class', 'term-label')
+        .attr('x', (d, i) => xs[i]).attr('y', termY + 19).attr('text-anchor', 'middle')
+        .text('evidence must');
+      gTerm.append('text').attr('class', 'term-label')
+        .attr('x', (d, i) => xs[i]).attr('y', termY + 33).attr('text-anchor', 'middle')
+        .text('establish, or unsupported');
+    }
+
+    loadData().then(data => {
+      draw(data);
+      const ro = new ResizeObserver(() => draw(data));
+      ro.observe(document.getElementById('chart'));
+    });
+  </script>
+</body>
+</html>

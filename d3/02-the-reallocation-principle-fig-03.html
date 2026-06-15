@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pipeline with an explicit stop</title>
+<style>
+  :root { --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E; --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E; --color-fill:#F5F5F5; }
+  @media (prefers-color-scheme: dark){ :root{ --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A; --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30; --color-fill:#1A1A1A; } }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--color-white);color:var(--color-ink);font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif;}
+  #chart{width:100%;}
+  .stage{fill:var(--color-fill);stroke:var(--color-secondary);stroke-width:1;} .stage.human{stroke:var(--color-ink);}
+  .gate{fill:var(--color-red);} .notch{fill:var(--color-white);}
+  .heading{font-family:'EB Garamond',Georgia,serif;fill:var(--color-ink);} .sub{fill:var(--color-secondary);}
+  .slabel{fill:var(--color-ink);font-size:12px;}
+  .mono{font-family:'JetBrains Mono','Fira Code',monospace;font-size:11px;fill:var(--color-secondary);}
+  .arrow{stroke:var(--color-ink);stroke-width:2;fill:var(--color-ink);}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;}}
+</style></head>
+<body><div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const FALLBACK_DATA={recipe:['Data pull (recipe)','Normalize & compare','Draft summary'],human:'Release / file / send (human)'};
+function draw(data){
+  d3.select('#chart').selectAll('*').remove();
+  const w=document.getElementById('chart').clientWidth||700, h=Math.max(360,w*0.5);
+  const svg=d3.select('#chart').append('svg').attr('width',w).attr('height',h).attr('viewBox',`0 0 ${w} ${h}`).attr('role','img').attr('aria-labelledby','t d');
+  svg.append('title').attr('id','t').text('Pipeline with an explicit stop');
+  svg.append('desc').attr('id','d').text('Three recipe stages, then a red gate bar, then a single human release stage.');
+  svg.append('text').attr('class','heading').attr('x',24).attr('y',32).attr('font-size',20).text('Pipeline with an explicit stop');
+  svg.append('text').attr('class','sub').attr('x',24).attr('y',52).attr('font-size',13).text('The recipe halts at the gate until a named approver clears it.');
+  const n=data.recipe.length, top=h*0.42, bh=64, gateW=44;
+  const avail=w-48-gateW-24, sw=Math.min(150,(avail*0.7)/n), hw=avail*0.3;
+  let x=24;
+  svg.append('text').attr('class','mono').attr('x',24).attr('y',top-18).text('preparation layer (recipe)');
+  data.recipe.forEach((t,i)=>{
+    svg.append('rect').attr('class','stage').attr('x',x).attr('y',top).attr('width',sw).attr('height',bh);
+    const words=t.split(' '); svg.append('text').attr('class','slabel').attr('x',x+10).attr('y',top+bh/2+4).text(words.slice(0,2).join(' '));
+    if(i<n-1){ svg.append('line').attr('class','arrow').attr('x1',x+sw).attr('y1',top+bh/2).attr('x2',x+sw+14).attr('y2',top+bh/2); svg.append('polygon').attr('class','arrow').attr('points',`${x+sw+16},${top+bh/2} ${x+sw+9},${top+bh/2-4} ${x+sw+9},${top+bh/2+4}`); }
+    x+=sw+16;
+  });
+  // arrow to gate
+  svg.append('line').attr('class','arrow').attr('x1',x).attr('y1',top+bh/2).attr('x2',x+14).attr('y2',top+bh/2);
+  svg.append('polygon').attr('class','arrow').attr('points',`${x+16},${top+bh/2} ${x+9},${top+bh/2-4} ${x+9},${top+bh/2+4}`);
+  x+=18;
+  const gx=x; svg.append('rect').attr('class','gate').attr('x',gx).attr('y',top-22).attr('width',gateW).attr('height',bh+44);
+  svg.append('rect').attr('class','notch').attr('x',gx+gateW/2-7).attr('y',top+bh/2-7).attr('width',14).attr('height',14);
+  svg.append('text').attr('class','mono').attr('fill','var(--color-red)').attr('x',gx+gateW/2).attr('y',top+bh+40).attr('text-anchor','middle').text('gate');
+  svg.append('text').attr('class','mono').attr('x',gx+gateW/2).attr('y',top-28).attr('text-anchor','middle').text('approver');
+  x=gx+gateW+18;
+  svg.append('line').attr('class','arrow').attr('x1',gx+gateW).attr('y1',top+bh/2).attr('x2',x-2).attr('y2',top+bh/2);
+  svg.append('polygon').attr('class','arrow').attr('points',`${x},${top+bh/2} ${x-7},${top+bh/2-4} ${x-7},${top+bh/2+4}`);
+  svg.append('text').attr('class','mono').attr('x',x).attr('y',top-18).text('judgment layer (human)');
+  svg.append('rect').attr('class','stage human').attr('x',x).attr('y',top).attr('width',Math.max(120,w-x-24)).attr('height',bh);
+  svg.append('text').attr('class','slabel').attr('x',x+12).attr('y',top+bh/2-2).text('Release / file');
+  svg.append('text').attr('class','slabel').attr('x',x+12).attr('y',top+bh/2+16).text('/ send (human)');
+}
+let current=FALLBACK_DATA;
+async function load(){try{current=await d3.json('./02-the-reallocation-principle-fig-03.json');}catch(e){current=FALLBACK_DATA;}draw(current);}
+load(); new ResizeObserver(()=>draw(current)).observe(document.getElementById('chart'));
+</script></body></html>

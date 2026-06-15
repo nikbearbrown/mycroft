@@ -1,7 +1,8 @@
 name: verify
 
-# Machine half of P4 (MYCROFT.md): every push/PR must conform, and the generated
-# instruction files must match their source. Humans still verify adequacy.
+# Machine half of P4 (SNICKERDOODLE.md): every push/PR must conform, and the
+# generated instruction/adapter files must match their source. Humans still
+# verify adequacy.
 on:
   push:
   pull_request:
@@ -20,16 +21,16 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install PyYAML (conformance parses YAML via python3)
+      - name: Install PyYAML (conformance + manifest-check parse YAML via python3)
         run: pip install pyyaml
 
       - name: Conformance — JSON/YAML/JS/MD well-formed
         run: node scripts/conformance.mjs
 
-      - name: Drift guard — AGENTS.md / CLAUDE.md must match instructions/ source
-        run: |
-          node scripts/build-instructions.mjs
-          echo "--- diffing generated instruction files vs committed ---"
-          diff -u AGENTS.md  instructions/.build/AGENTS.md
-          diff -u CLAUDE.md  instructions/.build/CLAUDE.md
-          echo "✓ instruction files are in sync with source"
+      # Subsumes the old hand-rolled AGENTS/CLAUDE diff: manifest-check rebuilds
+      # from instructions/ and verifies ALL generated adapters match (AGENTS.md,
+      # CLAUDE.md, .gemini/settings.json, .aider.conf.yml,
+      # .github/copilot-instructions.md, .cursor/rules/mycroft.mdc), plus that every
+      # canonical file exists. Fails (exit 1) on drift or a missing canonical file.
+      - name: Manifest check — adapters in sync + canonical files present
+        run: node scripts/manifest-check.mjs

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warranted verbs by evidence level</title>
+<style>
+  :root { --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E; --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E; --color-fill:#F5F5F5; }
+  @media (prefers-color-scheme: dark){ :root{ --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A; --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30; --color-fill:#1A1A1A; } }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--color-white);color:var(--color-ink);font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif;}
+  #chart{width:100%;}
+  .rung{fill:var(--color-fill);stroke:var(--color-secondary);stroke-width:1;transition:opacity 120ms cubic-bezier(0.2,0.8,0.2,1);}
+  .rung.first{stroke:var(--color-ink);} .rung.flag{fill:var(--color-white);stroke:var(--color-red);stroke-width:2;}
+  .heading{font-family:'EB Garamond',Georgia,serif;fill:var(--color-ink);} .sub{fill:var(--color-secondary);}
+  .rname{font-weight:700;fill:var(--color-ink);font-size:14px;}
+  .rverbs{fill:var(--color-secondary);font-size:12px;font-family:'JetBrains Mono','Fira Code',monospace;} .rverbs.flag{fill:var(--color-red);}
+  .rail{stroke:var(--color-secondary);stroke-width:2;}
+  .mono{font-family:'JetBrains Mono','Fira Code',monospace;font-size:10px;fill:var(--color-secondary);}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;}}
+</style></head>
+<body><div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const FALLBACK_DATA=[
+ {name:'Can say',verbs:'confirms · shows · establishes · documents'},
+ {name:'Can suggest',verbs:'indicates · consistent with · appears to'},
+ {name:'Cannot claim',verbs:'state what evidence does not support'},
+ {name:'Needs review',verbs:'explicit flag · held at the gate',flag:true}
+];
+function draw(data){
+  d3.select('#chart').selectAll('*').remove();
+  const w=document.getElementById('chart').clientWidth||700, h=Math.max(360,w*0.52);
+  const svg=d3.select('#chart').append('svg').attr('width',w).attr('height',h).attr('viewBox',`0 0 ${w} ${h}`).attr('role','img').attr('aria-labelledby','t d');
+  svg.append('title').attr('id','t').text('Warranted verbs by evidence level');
+  svg.append('desc').attr('id','d').text('Four rungs of evidence levels from can say to needs review, each carrying its warranted verbs.');
+  svg.append('text').attr('class','heading').attr('x',24).attr('y',32).attr('font-size',20).text('Warranted verbs by evidence level');
+  svg.append('text').attr('class','sub').attr('x',24).attr('y',52).attr('font-size',13).text('Language calibrated to the evidence you actually have.');
+  const lx=70, lw=w-lx-30, top=78, gap=10, rh=(h-top-30-gap*(data.length-1))/data.length;
+  svg.append('line').attr('class','rail').attr('x1',46).attr('y1',top+10).attr('x2',46).attr('y2',top+(rh+gap)*(data.length-1)+rh-10);
+  data.forEach((d,i)=>{ const y=top+i*(rh+gap);
+    svg.append('rect').attr('class','rung '+(i===0?'first':d.flag?'flag':'')).attr('x',lx).attr('y',y).attr('width',lw).attr('height',rh);
+    svg.append('text').attr('class','rname').attr('x',lx+18).attr('y',y+rh/2+5).text(d.name);
+    svg.append('text').attr('class','rverbs'+(d.flag?' flag':'')).attr('x',lx+lw*0.34).attr('y',y+rh/2+5).text(d.verbs);
+  });
+  svg.append('text').attr('class','mono').attr('transform',`rotate(-90 30 ${top+(h-top)/2})`).attr('x',30).attr('y',top+(h-top)/2).attr('text-anchor','middle').text('strongest support → flagged');
+}
+let current=FALLBACK_DATA;
+async function load(){try{current=await d3.json('./05-verifying-finance-evidence-fig-03.json');}catch(e){current=FALLBACK_DATA;}draw(current);}
+load(); new ResizeObserver(()=>draw(current)).observe(document.getElementById('chart'));
+</script></body></html>

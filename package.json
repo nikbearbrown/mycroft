@@ -4,9 +4,12 @@
   "type": "module",
   "description": "Cowork agentic book repository",
   "scripts": {
-    "verify": "node scripts/conformance.mjs",
+    "verify": "node scripts/conformance.mjs && node scripts/manifest-check.mjs",
+    "manifest-check": "node scripts/manifest-check.mjs",
     "build-instructions": "node scripts/build-instructions.mjs",
     "to-markdown": "node scripts/to-markdown.mjs",
+    "eval:score": "node scripts/eval/score-run.mjs",
+    "eval:report": "node scripts/eval/report.mjs",
     "svg-to-png": "node scripts/svg-to-png.mjs"
   },
   "dependencies": {

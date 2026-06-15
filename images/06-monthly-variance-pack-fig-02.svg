@@ -1,0 +1,33 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig02-title fig02-desc">
+<title id="fig02-title">The recipe flow: machine operations on the left, the gate, then human judgment on the right</title>
+<desc id="fig02-desc">A pipeline of machine operations ending at a vertical gate, after which a single human node holds commentary and release. The recipe stops at the gate.</desc>
+<defs><marker id="arr02" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0, 9 3.5, 0 7" fill="#545454"/></marker></defs>
+<text x="32" y="40" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="18" fill="#2a1a0e">The recipe's scope ends at the gate</text>
+
+<rect x="32" y="70" width="180" height="40" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/><text x="122" y="95" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Ingredients verified</text>
+<rect x="32" y="126" width="180" height="40" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/><text x="122" y="151" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Compute variances</text>
+<rect x="32" y="182" width="180" height="40" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/><text x="122" y="207" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Rank by magnitude</text>
+<rect x="32" y="238" width="180" height="40" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/><text x="122" y="263" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Flag by threshold</text>
+<rect x="32" y="294" width="180" height="40" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/><text x="122" y="319" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Attach prior comments</text>
+
+<line x1="122" y1="110" x2="122" y2="124" stroke="#545454" stroke-width="1.5" marker-end="url(#arr02)"/>
+<line x1="122" y1="166" x2="122" y2="180" stroke="#545454" stroke-width="1.5" marker-end="url(#arr02)"/>
+<line x1="122" y1="222" x2="122" y2="236" stroke="#545454" stroke-width="1.5" marker-end="url(#arr02)"/>
+<line x1="122" y1="278" x2="122" y2="292" stroke="#545454" stroke-width="1.5" marker-end="url(#arr02)"/>
+
+<rect x="244" y="182" width="150" height="72" fill="#FFFFFF" stroke="#2a1a0e" stroke-width="1.5"/><text x="319" y="212" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" font-weight="700" fill="#2a1a0e">Structured</text><text x="319" y="230" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" font-weight="700" fill="#2a1a0e">work surface</text>
+<line x1="212" y1="218" x2="242" y2="218" stroke="#545454" stroke-width="1.5" marker-end="url(#arr02)"/>
+
+<rect x="430" y="70" width="6" height="280" fill="#C8102E"/>
+<text x="433" y="368" text-anchor="middle" font-family="'JetBrains Mono','Courier New',monospace" font-size="11" fill="#C8102E">gate · stop</text>
+<line x1="394" y1="218" x2="428" y2="218" stroke="#545454" stroke-width="1.5" marker-end="url(#arr02)"/>
+
+<rect x="468" y="160" width="190" height="116" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1.5"/>
+<text x="563" y="192" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="13" font-weight="700" fill="#2a1a0e">Human judgment</text>
+<text x="563" y="220" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Commentary</text>
+<text x="563" y="244" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Release authorization</text>
+<line x1="436" y1="218" x2="466" y2="218" stroke="#545454" stroke-width="1.5" marker-end="url(#arr02)"/>
+
+<text x="122" y="378" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">machine operations</text>
+<text x="563" y="296" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">nothing crosses without a person</text>
+</svg>

@@ -1,0 +1,61 @@
+<!--
+  Run Completion Record: Three Sections
+  Book: Mycroft
+  Chapter: 16-the-build-and-the-honest-run
+  Figure 04
+  Type: structural schematic
+  Generated 2026-06-15
+  Source: pantry/16-the-build-and-the-honest-run-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-04">
+<title id="fig-title-04">Run Completion Record: Three Sections</title>
+<desc>A run completion record carries a did-not-test list, open risks, and the run certification. The first two are the truth-telling lists most runs omit. AI cannot certify the run as adequate; the certification is signed by the finance professional who cleared the final gate.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="16-the-build-and-the-honest-run" figure-number="04" figure-title="Run Completion Record: Three Sections" figure-slug="run-completion-record-three-sections" figure-type="structural schematic" priority="Supplementary" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/16-the-build-and-the-honest-run-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">A run completion record ends with a human signature</text>
+
+<!-- section 1 did-not-test emphasized -->
+<rect x="32" y="52" width="636" height="74" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.5"/>
+<text x="42" y="72" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#C8102E" font-weight="bold">Section 1 — Did-not-test list</text>
+<rect x="42" y="82" width="180" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="132" y="103" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">item</text>
+<rect x="232" y="82" width="200" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="332" y="103" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">reason excluded</text>
+<rect x="442" y="82" width="216" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="550" y="103" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">impact on run scope</text>
+
+<!-- section 2 open risks emphasized -->
+<rect x="32" y="134" width="636" height="74" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.5"/>
+<text x="42" y="154" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#C8102E" font-weight="bold">Section 2 — Open risks</text>
+<rect x="42" y="164" width="120" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="102" y="185" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">item</text>
+<rect x="172" y="164" width="140" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="242" y="185" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">raised by recipe</text>
+<rect x="322" y="164" width="100" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="372" y="185" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">owner</text>
+<rect x="432" y="164" width="100" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="482" y="185" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">status</text>
+<rect x="542" y="164" width="116" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="600" y="185" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">expected resolution</text>
+
+<!-- section 3 certification -->
+<rect x="32" y="216" width="636" height="74" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="42" y="236" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Section 3 — Run certification</text>
+<rect x="42" y="246" width="100" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="92" y="267" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">run by</text>
+<rect x="152" y="246" width="120" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="212" y="267" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">scope as defined</text>
+<rect x="282" y="246" width="130" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="347" y="267" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">recipes completed</text>
+<rect x="422" y="246" width="110" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="477" y="267" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">recipes halted</text>
+<rect x="542" y="246" width="116" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="600" y="267" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">gate-record ref</text>
+
+<!-- footer human certification -->
+<rect x="32" y="298" width="636" height="40" fill="#2a1a0e" stroke="#2a1a0e" stroke-width="1"/>
+<text x="350" y="322" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF">AI cannot certify adequacy — signed by the professional who cleared the final gate</text>
+
+<text x="32" y="364" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">The did-not-test and open-risks lists are the parts most runs leave out.</text>
+</svg>

@@ -1,0 +1,64 @@
+<!--
+  AR vs. AP Aging Distribution
+  Book: Mycroft
+  Chapter: 12-ap-ar-exception-and-aging-workbench
+  Figure 01
+  Type: statistical/quantitative
+  Generated 2026-06-15
+  Source: pantry/12-ap-ar-exception-and-aging-workbench-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-01">
+<title id="fig-title-01">AR vs. AP Aging Distribution</title>
+<desc>Outstanding balances across five aging buckets, from current to ninety-plus days, shown as paired horizontal bars comparing accounts receivable against accounts payable. The snapshot is valid only as of its export date.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="12-ap-ar-exception-and-aging-workbench" figure-number="01" figure-title="AR vs. AP Aging Distribution" figure-slug="ar-vs-ap-aging-distribution" figure-type="statistical/quantitative" priority="Important" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/12-ap-ar-exception-and-aging-workbench-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">Receivables and payables by aging bucket</text>
+
+<!-- plot region: x from 160 to 660, y 64..330 -->
+<rect x="160" y="64" width="500" height="280" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<!-- zero axis -->
+<line x1="160" y1="64" x2="160" y2="344" stroke="#2a1a0e" stroke-width="1"/>
+
+<!-- bucket rows; each row holds AR (top) and AP (bottom) bar. scale: 0..500 maps to 0..480px -->
+<!-- Row group 1: Current  y=80 -->
+<text x="150" y="96" text-anchor="end" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Current</text>
+<rect x="160" y="78" width="430" height="14" fill="#C8102E"/>
+<rect x="160" y="94" width="360" height="14" fill="#2a1a0e"/>
+
+<!-- 1-30 y=130 -->
+<text x="150" y="146" text-anchor="end" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">1-30 days</text>
+<rect x="160" y="128" width="240" height="14" fill="#C8102E"/>
+<rect x="160" y="144" width="290" height="14" fill="#2a1a0e"/>
+
+<!-- 31-60 y=180 -->
+<text x="150" y="196" text-anchor="end" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">31-60 days</text>
+<rect x="160" y="178" width="150" height="14" fill="#C8102E"/>
+<rect x="160" y="194" width="120" height="14" fill="#2a1a0e"/>
+
+<!-- 61-90 y=230 -->
+<text x="150" y="246" text-anchor="end" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">61-90 days</text>
+<rect x="160" y="228" width="95" height="14" fill="#C8102E"/>
+<rect x="160" y="244" width="60" height="14" fill="#2a1a0e"/>
+
+<!-- 90+ y=280 -->
+<text x="150" y="296" text-anchor="end" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">90+ days</text>
+<rect x="160" y="278" width="70" height="14" fill="#C8102E"/>
+<rect x="160" y="294" width="35" height="14" fill="#2a1a0e"/>
+
+<!-- x ticks -->
+<line x1="160" y1="344" x2="660" y2="344" stroke="#2a1a0e" stroke-width="1"/>
+<text x="160" y="360" text-anchor="middle" font-family="'JetBrains Mono','Fira Code','Courier New',monospace" font-size="11" fill="#545454">0</text>
+<text x="285" y="360" text-anchor="middle" font-family="'JetBrains Mono','Fira Code','Courier New',monospace" font-size="11" fill="#545454">125</text>
+<text x="410" y="360" text-anchor="middle" font-family="'JetBrains Mono','Fira Code','Courier New',monospace" font-size="11" fill="#545454">250</text>
+<text x="535" y="360" text-anchor="middle" font-family="'JetBrains Mono','Fira Code','Courier New',monospace" font-size="11" fill="#545454">375</text>
+<text x="660" y="360" text-anchor="middle" font-family="'JetBrains Mono','Fira Code','Courier New',monospace" font-size="11" fill="#545454">500</text>
+<text x="410" y="378" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">Outstanding balance ($000s)</text>
+
+<!-- legend -->
+<rect x="160" y="392" width="14" height="12" fill="#C8102E"/>
+<text x="180" y="402" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Accounts receivable</text>
+<rect x="320" y="392" width="14" height="12" fill="#2a1a0e"/>
+<text x="340" y="402" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Accounts payable</text>
+<text x="500" y="402" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-style="italic">valid as of export date only</text>
+</svg>

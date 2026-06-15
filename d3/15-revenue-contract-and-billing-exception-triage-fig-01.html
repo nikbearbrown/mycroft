@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contract source chain with stop signal</title>
+  <style>
+    :root {
+      --color-white:     #FFFFFF;
+      --color-ink:       #2a1a0e;
+      --color-red:       #C8102E;
+      --color-secondary: #545454;
+      --color-border:    #D4D4D4;
+      --color-ochre:     #C8860E;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-white:     #111111;
+        --color-ink:       #F0EBE3;
+        --color-red:       #E8243A;
+        --color-secondary: #A0978C;
+        --color-border:    #2E2E2E;
+        --color-ochre:     #D49A30;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--color-white); color: var(--color-ink); font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif; }
+    #chart { width: 100%; }
+    .chart-title { font-size: 16px; font-weight: 700; fill: var(--color-ink); }
+    .chart-subtitle { font-size: 13px; fill: var(--color-secondary); }
+    .node-label { font-size: 12px; font-weight: 700; fill: var(--color-ink); }
+    .node-sub { font-size: 10px; fill: var(--color-secondary); }
+    .check-label { font-size: 10px; fill: var(--color-secondary); }
+    .stop-label { font-size: 11px; font-weight: 700; fill: var(--color-white); }
+    .link { stroke: var(--color-secondary); stroke-width: 1.5; fill: none; }
+    .tooltip {
+      position: absolute; pointer-events: none; opacity: 0;
+      background: var(--color-white); color: var(--color-ink);
+      border: 1px solid var(--color-border); border-radius: 8px;
+      padding: 8px 10px; font-size: 13px; max-width: 220px;
+      box-shadow: 0 6px 20px -6px rgb(18 18 18 / 0.14);
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  </style>
+</head>
+<body>
+  <div id="chart" role="main"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script>
+    const FALLBACK_DATA = [
+      { label: 'Master agreement', sub: 'v1, executed', check: 'executed?' },
+      { label: 'Amendment 1',       sub: 'references master', check: 'references prior?' },
+      { label: 'Amendment 2',       sub: 'references Amd 1', check: 'no gap?' },
+      { label: 'Amendment 3',       sub: 'references Amd 2', check: 'no gap?' },
+      { label: 'Billing config',    sub: 'current setup', check: 'reflects this version?' }
+    ];
+
+    const tooltip = d3.select('body').append('div').attr('class', 'tooltip');
+    function showTip(event, html) {
+      tooltip.html(html).style('left', (event.pageX + 12) + 'px').style('top', (event.pageY - 28) + 'px')
+        .transition().duration(150).style('opacity', 1);
+    }
+    function moveTip(event) { tooltip.style('left', (event.pageX + 12) + 'px').style('top', (event.pageY - 28) + 'px'); }
+    function hideTip() { tooltip.transition().duration(100).style('opacity', 0); }
+
+    async function loadData() {
+      try { return await d3.json('./15-revenue-contract-and-billing-exception-triage-fig-01/data.json'); }
+      catch { return FALLBACK_DATA; }
+    }
+
+    function draw(data) {
+      d3.select('#chart').selectAll('*').remove();
+      const totalWidth = document.getElementById('chart').clientWidth || 800;
+      const totalHeight = 420;
+
+      const svg = d3.select('#chart').append('svg')
+        .attr('width', totalWidth).attr('height', totalHeight)
+        .attr('role', 'img').attr('aria-labelledby', 'chart-title chart-desc');
+      svg.append('title').attr('id', 'chart-title').text('Contract source chain with stop signal');
+      svg.append('desc').attr('id', 'chart-desc')
+        .text('The contract source chain runs from master agreement through amendments to billing configuration; a missing amendment stops the run.');
+
+      svg.append('text').attr('class', 'chart-title').attr('x', 16).attr('y', 26)
+        .text('Contract source chain');
+      svg.append('text').attr('class', 'chart-subtitle').attr('x', 16).attr('y', 46)
+        .text('Verify each link before comparing billing — an amendment gap stops the run.');
+
+      const n = data.length;
+      const margin = 24;
+      const nodeW = Math.min(120, (totalWidth - margin * 2) / n - 14);
+      const span = (totalWidth - margin * 2);
+      const xs = data.map((d, i) => margin + (span / n) * i + (span / n - nodeW) / 2);
+      const nodeY = 100, nodeH = 56;
+
+      // connectors
+      for (let i = 0; i < n - 1; i++) {
+        svg.append('line').attr('class', 'link').attr('aria-hidden', 'true')
+          .attr('x1', xs[i] + nodeW).attr('y1', nodeY + nodeH / 2)
+          .attr('x2', xs[i + 1]).attr('y2', nodeY + nodeH / 2)
+          .attr('marker-end', 'url(#arrow)');
+      }
+      svg.append('defs').append('marker').attr('id', 'arrow')
+        .attr('markerWidth', 8).attr('markerHeight', 6).attr('refX', 7).attr('refY', 3).attr('orient', 'auto')
+        .append('polygon').attr('points', '0 0, 8 3, 0 6').attr('fill', 'var(--color-secondary)');
+
+      const g = svg.selectAll('.node').data(data).join('g')
+        .attr('tabindex', 0).attr('aria-label', d => `${d.label}: ${d.sub}; check: ${d.check}`)
+        .style('cursor', 'pointer');
+      g.append('rect')
+        .attr('x', (d, i) => xs[i]).attr('y', nodeY).attr('width', nodeW).attr('height', nodeH).attr('rx', 6)
+        .attr('fill', (d, i) => i === n - 1 ? 'var(--color-ink)' : 'var(--color-white)')
+        .attr('stroke', 'var(--color-ink)').attr('stroke-width', 1.5)
+        .style('transition', 'opacity 120ms')
+        .on('mouseover', function (event, d) { d3.select(this).style('opacity', 0.85); showTip(event, `<strong>${d.label}</strong><br>${d.sub}<br><em>check: ${d.check}</em>`); })
+        .on('mousemove', moveTip)
+        .on('mouseout', function () { d3.select(this).style('opacity', 1); hideTip(); });
+      g.append('text').attr('class', 'node-label')
+        .attr('x', (d, i) => xs[i] + nodeW / 2).attr('y', nodeY + 24).attr('text-anchor', 'middle')
+        .attr('fill', (d, i) => i === n - 1 ? 'var(--color-white)' : 'var(--color-ink)')
+        .each(function (d) {
+          const words = d.label.split(' ');
+          const t = d3.select(this);
+          if (words.length > 1) {
+            t.append('tspan').attr('x', t.attr('x')).text(words[0]);
+            t.append('tspan').attr('x', t.attr('x')).attr('dy', '1.1em').text(words.slice(1).join(' '));
+          } else { t.text(d.label); }
+        });
+
+      // check track
+      g.append('text').attr('class', 'check-label')
+        .attr('x', (d, i) => xs[i] + nodeW / 2).attr('y', nodeY + nodeH + 22).attr('text-anchor', 'middle')
+        .text(d => d.check);
+
+      // stop signal
+      const stopY = 250;
+      svg.append('rect').attr('x', totalWidth / 2 - 130).attr('y', stopY).attr('width', 260).attr('height', 48)
+        .attr('rx', 8).attr('fill', 'var(--color-red)');
+      svg.append('text').attr('class', 'stop-label').attr('x', totalWidth / 2).attr('y', stopY + 30)
+        .attr('text-anchor', 'middle').text('Amendment gap: run stops here');
+
+      svg.append('text').attr('x', totalWidth / 2).attr('y', stopY + 80).attr('text-anchor', 'middle')
+        .attr('font-size', 11).attr('fill', 'var(--color-secondary)')
+        .text('The recipe cannot compare billing to a contract it does not fully have.');
+    }
+
+    loadData().then(data => {
+      draw(data);
+      const ro = new ResizeObserver(() => draw(data));
+      ro.observe(document.getElementById('chart'));
+    });
+  </script>
+</body>
+</html>

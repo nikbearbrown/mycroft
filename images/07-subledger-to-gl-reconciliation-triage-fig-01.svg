@@ -1,0 +1,57 @@
+<!--
+  Subledger, GL, and the Reconciliation Split
+  Book: Mycroft
+  Chapter: 07-subledger-to-gl-reconciliation-triage
+  Figure: 01
+  Type: systems diagram
+  Generated: 2026-06-15
+  Source: pantry/07-subledger-to-gl-reconciliation-triage-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-01">
+<title id="fig-title-01">Subledger detail and the GL control account feed reconciliation, which splits into cleared and exception outputs</title>
+<desc>On the left, an AR subledger node (invoices, payments, credits, adjustments) and a GL control-account balance node feed a central reconciliation process. It diverges into two outputs: matched items (cleared) and an exception queue (requires accountant judgment). An equivalence bracket links the subledger sum to the GL balance.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="07-subledger-to-gl-reconciliation-triage" figure-number="01" figure-title="Subledger, GL, and the Reconciliation Split" figure-slug="subledger-gl-reconciliation-split" figure-type="systems diagram" priority="Critical" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/07-subledger-to-gl-reconciliation-triage-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="44" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">The GL control account should equal the sum of open subledger items</text>
+
+<!-- AR subledger node -->
+<rect x="32" y="86" width="150" height="120" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="107" y="108" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">AR subledger</text>
+<text x="44" y="132" font-family="'JetBrains Mono','Fira Code','Courier New',monospace" font-size="10" fill="#545454">invoices</text>
+<text x="44" y="150" font-family="'JetBrains Mono','Fira Code','Courier New',monospace" font-size="10" fill="#545454">payments</text>
+<text x="44" y="168" font-family="'JetBrains Mono','Fira Code','Courier New',monospace" font-size="10" fill="#545454">credits</text>
+<text x="44" y="186" font-family="'JetBrains Mono','Fira Code','Courier New',monospace" font-size="10" fill="#545454">adjustments</text>
+
+<!-- GL control account node -->
+<rect x="32" y="230" width="150" height="80" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1.5"/>
+<text x="107" y="262" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">GL control account</text>
+<text x="107" y="282" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">single balance</text>
+
+<!-- equivalence bracket -->
+<path d="M196 150 q12 0 12 12 l0 56 q0 12 12 12" fill="none" stroke="#545454" stroke-width="1" stroke-dasharray="5 4"/>
+<text x="200" y="216" font-family="'JetBrains Mono','Fira Code','Courier New',monospace" font-size="11" fill="#545454">&#931; = balance</text>
+
+<!-- arrows into reconciliation -->
+<line x1="182" y1="146" x2="266" y2="190" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="182" y1="270" x2="266" y2="216" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- reconciliation hub -->
+<rect x="272" y="160" width="156" height="86" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.5"/>
+<text x="350" y="198" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">Reconciliation</text>
+<text x="350" y="216" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">process</text>
+
+<!-- diverging arrows to outputs -->
+<line x1="428" y1="180" x2="512" y2="138" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="428" y1="226" x2="512" y2="268" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- matched output -->
+<rect x="518" y="104" width="150" height="76" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="593" y="136" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">Matched items</text>
+<text x="593" y="156" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">cleared</text>
+
+<!-- exception queue -->
+<rect x="518" y="236" width="150" height="76" fill="#FFFFFF" stroke="#2a1a0e" stroke-width="1.5"/>
+<text x="593" y="268" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">Exception queue</text>
+<text x="593" y="288" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">requires accountant judgment</text>
+</svg>

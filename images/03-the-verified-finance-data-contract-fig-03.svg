@@ -1,0 +1,31 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d" font-family="'Inter', sans-serif">
+  <title id="t">The recipe boundary</title>
+  <desc id="d">Preparation-layer tasks on the left separated by a vertical gate from accountable-layer tasks on the right; the recipe stops at the gate and the finance professional crosses it.</desc>
+  <rect width="700" height="420" fill="#FFFFFF"/>
+  <text x="40" y="40" font-size="20" font-family="'EB Garamond', Georgia, serif" fill="#2a1a0e">The recipe boundary</text>
+  <text x="40" y="60" font-size="13" fill="#545454">The recipe stops at the gate; the finance professional crosses it.</text>
+  <!-- left zone -->
+  <rect x="40" y="88" width="280" height="296" fill="#F5F5F5" stroke="#545454" stroke-width="1"/>
+  <text x="56" y="114" font-size="13" font-weight="700" fill="#2a1a0e">PREPARATION LAYER</text>
+  <g font-size="12" fill="#2a1a0e">
+    <rect x="56" y="128" width="248" height="32" fill="#FFFFFF" stroke="#545454"/><text x="68" y="148">File tracing</text>
+    <rect x="56" y="170" width="248" height="32" fill="#FFFFFF" stroke="#545454"/><text x="68" y="190">Schema comparison</text>
+    <rect x="56" y="212" width="248" height="32" fill="#FFFFFF" stroke="#545454"/><text x="68" y="232">Control total check</text>
+    <rect x="56" y="254" width="248" height="32" fill="#FFFFFF" stroke="#545454"/><text x="68" y="274">Version logging</text>
+    <rect x="56" y="296" width="248" height="32" fill="#FFFFFF" stroke="#545454"/><text x="68" y="316">Report generation</text>
+  </g>
+  <!-- gate -->
+  <rect x="338" y="100" width="24" height="272" fill="#C8102E"/>
+  <text x="350" y="392" font-size="11" font-family="'JetBrains Mono', monospace" fill="#C8102E" text-anchor="middle">human approval</text>
+  <line x1="312" y1="236" x2="336" y2="236" stroke="#2a1a0e" stroke-width="2"/><polygon points="338,236 331,231 331,241" fill="#2a1a0e"/>
+  <!-- right zone -->
+  <rect x="380" y="88" width="280" height="296" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1"/>
+  <text x="396" y="114" font-size="13" font-weight="700" fill="#2a1a0e">ACCOUNTABLE LAYER</text>
+  <g font-size="12" fill="#2a1a0e">
+    <rect x="396" y="128" width="248" height="32" fill="#FFFFFF" stroke="#2a1a0e"/><text x="408" y="148">Materiality judgment</text>
+    <rect x="396" y="170" width="248" height="32" fill="#FFFFFF" stroke="#2a1a0e"/><text x="408" y="190">Adequacy assessment</text>
+    <rect x="396" y="212" width="248" height="32" fill="#FFFFFF" stroke="#2a1a0e"/><text x="408" y="232">Accounting treatment</text>
+    <rect x="396" y="254" width="248" height="32" fill="#FFFFFF" stroke="#2a1a0e"/><text x="408" y="274">Release decision</text>
+  </g>
+  <line x1="362" y1="236" x2="378" y2="236" stroke="#2a1a0e" stroke-width="2"/><polygon points="380,236 373,231 373,241" fill="#2a1a0e"/>
+</svg>

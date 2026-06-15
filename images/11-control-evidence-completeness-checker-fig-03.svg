@@ -1,0 +1,108 @@
+<!--
+  Evidence Readiness Ledger Structure
+  Book: Mycroft
+  Chapter: 11-control-evidence-completeness-checker
+  Figure 03
+  Type: structural schematic
+  Generated 2026-06-15
+  Source: pantry/11-control-evidence-completeness-checker-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-03">
+<title id="fig-title-03">Evidence Readiness Ledger Structure</title>
+<desc>The readiness ledger is a state matrix: rows are controls, columns are the eight checks plus identifying fields, and each body cell holds one of four states — pass, flag, missing, not applicable. It carries no ready column and no effectiveness conclusion.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="11-control-evidence-completeness-checker" figure-number="03" figure-title="Evidence Readiness Ledger Structure" figure-slug="evidence-readiness-ledger-structure" figure-type="structural schematic" priority="Important" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/11-control-evidence-completeness-checker-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">The ledger records states, not a verdict</text>
+
+<!-- header band -->
+<rect x="32" y="52" width="636" height="28" fill="#2a1a0e" stroke="#2a1a0e" stroke-width="1"/>
+<text x="42" y="70" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF">Control ID</text>
+<text x="120" y="70" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF">Description</text>
+<text x="232" y="70" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF">Period</text>
+<text x="300" y="70" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF">Eight check columns</text>
+<text x="555" y="70" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF">Notes</text>
+<text x="615" y="70" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF">Status</text>
+
+<!-- ledger rows: identifying columns at left, 8 check cells (x 295..540, 8 cells of ~30) -->
+<!-- helper: check cells start x=295, each width 30, 8 cells -> 295..535 -->
+<!-- Row pattern: identifying cells then 8 swatch cells -->
+
+<!-- Row 1 -->
+<rect x="32" y="84" width="80" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="112" y="84" width="110" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="222" y="84" width="68" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="295" y="84" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="325" y="84" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="355" y="84" width="30" height="34" fill="#C8102E" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="385" y="84" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="415" y="84" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="445" y="84" width="30" height="34" fill="#ADADAD" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="475" y="84" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="505" y="84" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="540" y="84" width="60" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="600" y="84" width="68" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+
+<!-- Row 2 -->
+<rect x="32" y="118" width="80" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="112" y="118" width="110" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="222" y="118" width="68" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="295" y="118" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="325" y="118" width="30" height="34" fill="#787878" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="355" y="118" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="385" y="118" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="415" y="118" width="30" height="34" fill="#C8102E" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="445" y="118" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="475" y="118" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="505" y="118" width="30" height="34" fill="#ADADAD" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="540" y="118" width="60" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="600" y="118" width="68" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+
+<!-- Row 3 -->
+<rect x="32" y="152" width="80" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="112" y="152" width="110" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="222" y="152" width="68" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="295" y="152" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="325" y="152" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="355" y="152" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="385" y="152" width="30" height="34" fill="#787878" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="415" y="152" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="445" y="152" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="475" y="152" width="30" height="34" fill="#C8102E" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="505" y="152" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="540" y="152" width="60" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="600" y="152" width="68" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+
+<!-- Row 4 -->
+<rect x="32" y="186" width="80" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="112" y="186" width="110" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="222" y="186" width="68" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="295" y="186" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="325" y="186" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="355" y="186" width="30" height="34" fill="#ADADAD" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="385" y="186" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="415" y="186" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="445" y="186" width="30" height="34" fill="#787878" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="475" y="186" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="505" y="186" width="30" height="34" fill="#2a1a0e" stroke="#FFFFFF" stroke-width="0.75"/>
+<rect x="540" y="186" width="60" height="34" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="600" y="186" width="68" height="34" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+
+<!-- emphasis band: no ready / effectiveness column -->
+<rect x="32" y="234" width="636" height="34" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="350" y="255" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#C8102E">No "control ready" column and no "effectiveness" conclusion column exist here</text>
+
+<!-- legend -->
+<text x="32" y="300" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">Cell states</text>
+<rect x="120" y="290" width="18" height="14" fill="#2a1a0e"/>
+<text x="144" y="301" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">pass</text>
+<rect x="200" y="290" width="18" height="14" fill="#C8102E"/>
+<text x="224" y="301" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">flag</text>
+<rect x="275" y="290" width="18" height="14" fill="#787878"/>
+<text x="299" y="301" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">missing</text>
+<rect x="365" y="290" width="18" height="14" fill="#ADADAD"/>
+<text x="389" y="301" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">not applicable</text>
+
+<text x="32" y="345" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">Each row is a control; each of the eight body cells records one observed state.</text>
+<text x="32" y="362" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">The ledger reports what was checked — a human draws the conclusion.</text>
+</svg>

@@ -1,0 +1,69 @@
+<!--
+  Normalized Contract Data: Five Field Categories
+  Book: Mycroft
+  Chapter: 15-revenue-contract-and-billing-exception-triage
+  Figure 02
+  Type: comparison panels
+  Generated 2026-06-15
+  Source: pantry/15-revenue-contract-and-billing-exception-triage-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-02">
+<title id="fig-title-02">Normalized Contract Data: Five Field Categories</title>
+<desc>Five field categories map contract terms to billing-system fields for comparison — dates, products and services, prices, milestones, and modifications. The comparison-logic column is where a flag is raised; the milestones row is where factual mismatches and accounting questions collide.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="15-revenue-contract-and-billing-exception-triage" figure-number="02" figure-title="Normalized Contract Data: Five Field Categories" figure-slug="normalized-contract-data-five-categories" figure-type="comparison panels" priority="Important" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/15-revenue-contract-and-billing-exception-triage-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">Mapping contract terms to billing fields for comparison</text>
+
+<text x="40" y="60" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">Category</text>
+<text x="180" y="60" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">Contract source</text>
+<text x="350" y="60" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">Billing field</text>
+<text x="500" y="60" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#C8102E" font-weight="bold">Comparison logic</text>
+<line x1="32" y1="66" x2="668" y2="66" stroke="#D4D4D4" stroke-width="1"/>
+
+<!-- rows y0=70 h=56 -->
+<rect x="32" y="70" width="636" height="56" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="490" y="70" width="178" height="56" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="40" y="102" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Dates</text>
+<text x="180" y="102" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">effective / term / cycle</text>
+<text x="350" y="102" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">config dates</text>
+<text x="498" y="96" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#C8102E">match within one cycle</text>
+<text x="498" y="110" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#C8102E">or flag</text>
+
+<rect x="32" y="126" width="636" height="56" fill="#FAFAFA" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="490" y="126" width="178" height="56" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="40" y="151" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Products /</text>
+<text x="40" y="165" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">services</text>
+<text x="180" y="158" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">description / tier / unit</text>
+<text x="350" y="158" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">SKU / product code</text>
+<text x="498" y="152" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#C8102E">map via table or</text>
+<text x="498" y="166" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#C8102E">flag unmapped</text>
+
+<rect x="32" y="182" width="636" height="56" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="490" y="182" width="178" height="56" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="40" y="214" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Prices</text>
+<text x="180" y="214" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">rate / discount / escalation</text>
+<text x="350" y="214" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">configured rate</text>
+<text x="498" y="208" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#C8102E">match current-period</text>
+<text x="498" y="222" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#C8102E">rate or flag variance</text>
+
+<!-- milestones row emphasized -->
+<rect x="32" y="238" width="636" height="56" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.5"/>
+<text x="40" y="270" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#C8102E" font-weight="bold">Milestones</text>
+<text x="40" y="285" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="9" fill="#545454">collision point</text>
+<text x="180" y="270" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">delivery / completion trigger</text>
+<text x="350" y="270" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">billing event config</text>
+<text x="498" y="264" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#C8102E">match event def. or</text>
+<text x="498" y="278" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#C8102E">flag for accounting</text>
+
+<rect x="32" y="294" width="636" height="56" fill="#FAFAFA" stroke="#D4D4D4" stroke-width="0.75"/>
+<rect x="490" y="294" width="178" height="56" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="40" y="326" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Modifications</text>
+<text x="180" y="326" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">amendment / superseded</text>
+<text x="350" y="326" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">last billing update</text>
+<text x="498" y="320" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#C8102E">amendment post-dates</text>
+<text x="498" y="334" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#C8102E">last update -&gt; flag</text>
+
+<line x1="490" y1="70" x2="490" y2="350" stroke="#C8102E" stroke-width="1"/>
+<text x="32" y="375" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">Milestones are where a factual mismatch and an accounting question can be the same flag.</text>
+</svg>

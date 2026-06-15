@@ -21,6 +21,9 @@ The second texture is different. Someone looks at the flagged variance and decid
 
 The distinction matters because finance artifacts are not neutral. A variance report can affect how a business allocates resources. An accounts receivable aging affects credit decisions. A budget-versus-actual lands in front of people who will make plans based on what it says. Getting the preparation layer wrong produces a flawed surface for judgment. Letting the AI cross into the judgment layer without a gate produces something more dangerous: a professional output without professional accountability.
 
+![A vertical two-layer stack: a preparation layer of five nodes below a judgment layer of four nodes, separated by a heavy human gate, with AI arrows moving freely below the gate and one arrow stopping at it.](images/02-the-reallocation-principle-fig-01.png)
+*Figure 2.1 — The two layers and the human gate: AI operates freely in preparation and stops at the gate.*
+
 <!-- → [DIAGRAM: Two-layer stack — preparation layer (data pull, normalization, comparison, formatting, threshold flagging) below judgment layer (materiality, causal explanation, accounting treatment, release decision) — separated by a visible gate labeled "human gate"; arrows show AI operating freely below the gate and stopping at it] -->
 
 ---
@@ -45,7 +48,13 @@ A generated summary is not evidence in this sense. It is a transformation of evi
 
 This matters operationally because when something goes wrong — and in finance work, something eventually goes wrong — the question is always: what is defensible? What can you point to? A logged data pull with a timestamp and a source path is defensible. A control total that reconciles to the general ledger is defensible. An AI-generated narrative that paraphrased three source files without a log of what it read is not defensible.
 
-<!-- → [TABLE: Three-column table — column headers: "Category", "Examples", "Defensible?" — rows: Verified evidence (source files, version numbers, control totals, reconciliation paths, logged transformations) Yes; Model output (classification suggestions, anomaly labels, language drafts, formatted summaries) Only if traced to verified evidence; Human judgment (materiality calls, accounting treatment, release decisions, causal explanations) Yes, when owned by named person] -->
+| Category | Examples | Defensible? |
+|---|---|---|
+| Verified evidence | Source files, version numbers, control totals, reconciliation paths, logged transformations | Yes |
+| Model output | Classification suggestions, anomaly labels, language drafts, formatted summaries | Only if traced to verified evidence |
+| Human judgment | Materiality calls, accounting treatment, release decisions, causal explanations | Yes, when owned by a named person |
+
+*Table 1 — What is defensible when something goes wrong. Model output borrows its standing from the evidence beneath it.*
 
 The recipe, properly designed, produces two outputs: a machine-readable log for reproducibility and a human-readable report for decision support. The log is what makes the preparation layer defensible. The report is what the human brings to the judgment layer. Neither is the judgment itself.
 
@@ -61,6 +70,9 @@ The second question is approval. Who clears the gate before the output moves for
 
 The third question is verification. What source, control total, or owner confirmation would make the finding defensible? This is the question that connects the machine-readable log to the human review. If you can answer it — if you can point to the row in the source, the reconciled total, the confirmation from the data owner — then the preparation layer did its job. If you cannot, the recipe has a gap.
 
+![Three nodes — Scope, Approval, Verification — arranged in a triangular cycle with curved arrows, and a connector dropping from Approval to a small gate glyph below.](images/02-the-reallocation-principle-fig-02.png)
+*Figure 2.2 — The supervision loop: scope, approval, and verification, with approval governing the gate.*
+
 <!-- → [DIAGRAM: Supervision loop — three nodes arranged in a cycle: "Scope" (what is this recipe allowed to touch?), "Approval" (who clears the gate?), "Verification" (what makes the finding defensible?) — arrows connecting all three; positioned above the preparation/judgment stack from the earlier diagram, with a line connecting "Approval" to the gate] -->
 
 ---
@@ -75,6 +87,9 @@ Here is what the reallocation looks like if the preparation layer is automated c
 
 That something different is the point. It is reading the variance and asking whether the explanation makes sense given what you know about the business. It is checking whether the flagged items are the right items — whether the threshold the recipe used is appropriate for this period, this entity, this type of variance. It is deciding whether the draft accounting treatment is correct, or whether this situation is one of the exceptions the recipe does not know about. It is signing off on the artifact before it moves forward, not as a formality but as an informed act.
 
+![Two equal-height stacked bars for the same four-hour total: the pre-automation bar is mostly preparation with a thin judgment cap; the reallocated bar compresses preparation and expands judgment to fill the recovered time.](images/02-the-reallocation-principle-fig-04.png)
+*Figure 2.4 — Where the recovered time goes: the total holds constant; the mix shifts from preparation to judgment.*
+
 The failure version of this story is where the analyst uses the three recovered hours to take on three more tasks. The recipe ran; the output looked good; no one spent time on review because the output looked good. Execution got cheaper. Review disappeared.
 
 This is not a hypothetical risk. It is the natural equilibrium of a system that measures productivity by output volume and does not measure quality of the judgment layer. The reallocation principle is a design choice you have to make explicitly, against that gravity.
@@ -88,6 +103,9 @@ There is one structural element that I want to name directly because it is easy 
 The phase gate is the explicit stop point between the preparation layer and the judgment layer. It is not a review in the sense of someone glancing at the output. It is a gate: the artifact cannot proceed until a named person has cleared it, with a record that they did.
 
 In the recipe design, this looks like a stop condition. The recipe prepares the work surface and then stops. It does not send the email. It does not update the record. It does not file the report. It produces an output that a human will evaluate and, if adequate, carry forward. The recipe knows what "adequate" means mechanically — the required fields are present, the numbers parse, the source paths resolve. The human knows what "adequate" means professionally — the variance is explained, the treatment is right, the artifact is ready to represent the work.
+
+![A left-to-right pipeline of three recipe stages — data pull, normalize and compare, draft summary — interrupted by a tall gate bar with a lock notch, after which a single human release stage continues.](images/02-the-reallocation-principle-fig-03.png)
+*Figure 2.3 — Pipeline with an explicit stop: the recipe halts at the gate until a named approver clears it.*
 
 <!-- → [DIAGRAM: Linear pipeline with explicit stop — boxes in sequence: "Data pull (recipe)" → "Normalize and compare (recipe)" → "Draft summary (recipe)" → [GATE: named approver] → "Release / file / send (human)" — the gate is visually distinct, perhaps a vertical bar with a lock icon; above the gate a label "preparation layer," below it "judgment layer"] -->
 
@@ -150,3 +168,23 @@ That question connects to Chapter 3, which is about the finance data contract �
 **Exercise 2.** Take the variance analysis scenario from the opening. Write a prompt that instructs an AI to produce a draft summary with explicit uncertainty markers — places where the model cannot determine the answer from the source data and flags the gap for human review. Compare the output to a prompt that does not include that instruction.
 
 **Exercise 3.** Design a phase gate for one step in your reallocation hypothesis artifact. Specify: who is the named approver, what does the recipe hand them, what are the stop conditions, and what would make the finding defensible if someone asked tomorrow. Then ask the model to review your gate design and identify any scope or verification gaps.
+
+---
+
+## Prompts
+
+### Figure 2.1 — The two layers and the human gate
+**Files:** images/02-the-reallocation-principle-fig-01.svg · d3/02-the-reallocation-principle-fig-01.html
+**Prompt:** A brutalist vertical two-layer stack on white — a preparation layer of five neutral nodes below a judgment layer of four nodes — separated by a single heavy red human gate, with neutral arrows flowing between preparation nodes and one upward arrow stopping at the gate. Hairline borders, one red accent for the gate.
+
+### Figure 2.2 — The supervision loop
+**Files:** images/02-the-reallocation-principle-fig-02.svg · d3/02-the-reallocation-principle-fig-02.html
+**Prompt:** A brutalist three-node cycle on white — Scope, Approval, Verification — joined by neutral curved arrows in one direction, with the Approval node ringed in red and a red connector dropping to a small gate glyph. Neutral fills, one red accent on approval and the gate.
+
+### Figure 2.3 — Pipeline with an explicit stop
+**Files:** images/02-the-reallocation-principle-fig-03.svg · d3/02-the-reallocation-principle-fig-03.html
+**Prompt:** A brutalist left-to-right pipeline on white — three neutral recipe stages interrupted by a tall red gate bar with a notch, then one human release stage — with neutral layer brackets above. Hairline borders, single red accent for the gate.
+
+### Figure 2.4 — Where the recovered time goes
+**Files:** images/02-the-reallocation-principle-fig-04.svg · d3/02-the-reallocation-principle-fig-04.html
+**Prompt:** A brutalist two-bar stacked chart on white with a zero baseline, both bars the same four-hour height: preparation in neutral gray shrinking from the pre-automation bar to the reallocated bar while judgment in red expands to fill the recovered time. JetBrains Mono axis ticks, one red accent for the judgment segment.

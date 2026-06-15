@@ -22,6 +22,9 @@ The second thing the recipe checks is whether every invoice in the aging has an 
 
 These two checks — as-of date and counterparty completeness — are not audits. They are the minimum verification that the aging is usable for its stated purpose. A report that passes both checks is ready for the workbench. A report that fails either one needs to be corrected before the workbench is built.
 
+![Grouped horizontal bar chart showing open balance distribution across five aging buckets — current, 1–30, 31–60, 61–90, and 90+ days — for AR and AP side by side, with the as-of date called out as the snapshot's validity anchor.](images/12-ap-ar-exception-and-aging-workbench-fig-01.png)
+*Figure 12.1 — AR vs. AP aging distribution*
+
 <!-- → [DIAGRAM: Aging bucket visualization — horizontal bar chart showing invoice balance distribution across five aging buckets (current, 1–30 days, 31–60 days, 61–90 days, 90+ days) for both AR and AP side by side. AR bars in one color, AP in another. Caption: the aging snapshot is only valid as of its date; the recipe confirms the as-of date before any downstream processing.] -->
 
 ---
@@ -38,7 +41,17 @@ This distinction — candidate versus confirmed — matters because the conseque
 
 The verification standard for a duplicate candidate is specific: same vendor confirmed by master data match, same amount within tolerance, date window within the defined range, invoice numbers distinct. A pair that meets all four criteria is a strong candidate. A pair that meets three is a weaker one. The recipe should surface both, with the match strength visible, so the reviewer can prioritize.
 
-<!-- → [TABLE: Duplicate candidate match criteria — columns: criterion, what the recipe checks, match strength weight, failure mode. Rows: vendor (master data match, not just name string — same string can match two vendors if master data is inconsistent), amount (exact match or within defined tolerance — tolerance too wide catches non-duplicates; too narrow misses rounding variants), date window (invoice dates within N days of each other — window definition is a human parameter, not model-inferred), invoice number (distinct numbers required — same number on two records is a different problem: a processing error, not a duplicate candidate). Caption: candidates are flagged by the recipe; only a human can confirm.] -->
+| Criterion | What the recipe checks | Match strength weight | Failure mode |
+|---|---|---|---|
+| Vendor | Master data match, not just name string | High | Same string can match two vendors if master data is inconsistent |
+| Amount | Exact match or within defined tolerance | High | Tolerance too wide catches non-duplicates; too narrow misses rounding variants |
+| Date window | Invoice dates within N days of each other | Medium | Window definition is a human parameter, not model-inferred |
+| Invoice number | Distinct numbers required | Confirming | Same number on two records is a processing error, not a duplicate candidate |
+
+*Candidates are flagged by the recipe; only a human can confirm.*
+
+![Four-criterion panel for duplicate candidate matching — vendor, amount, date window, and invoice number — each showing what the recipe checks and the failure mode, with match strength marked.](images/12-ap-ar-exception-and-aging-workbench-fig-02.png)
+*Figure 12.3 — Duplicate candidate match criteria*
 
 ---
 
@@ -51,6 +64,9 @@ The AR workbench is not just an aging report with flags. It is a surface for man
 **Missing owners** are invoices with no assigned collections contact. An unowned invoice is an invoice that will not be collected, not because the customer will not pay but because no one is responsible for asking. The recipe flags unowned past-due invoices and routes them to a supervisor queue for assignment. Assignment is a human decision — it depends on portfolio structure, relationship history, and workload — but the system can make the unowned population visible so the assignment can happen.
 
 **Counterparty anomalies** are invoices where the customer record is incomplete, inconsistent, or potentially duplicated in the customer master. A customer who appears twice under slightly different names — "Acme Corp" and "Acme Corporation" — may be one account split across two records, or may be two genuinely different entities. The recipe flags the pairing and routes it to a data quality queue. Resolution requires a human who can look at the contract, the billing address, the tax ID, and the relationship history to determine whether the records should be merged, kept separate, or escalated for further review.
+
+![Routing diagram in which aging-export exceptions split into four human-action queues — collections follow-up, dispute resolution, supervisor assignment, and data quality — with none flowing directly to customer communication.](images/12-ap-ar-exception-and-aging-workbench-fig-03.png)
+*Figure 12.2 — AR exception routing to human-action queues*
 
 <!-- → [DIAGRAM: AR exception routing — three input queues from the aging export: (1) past-due, no dispute, owner assigned → collections follow-up queue; (2) dispute status attached → dispute resolution queue; (3) no owner assigned → supervisor assignment queue. A fourth path: counterparty anomaly detected → data quality queue. All four queues flow to human action; none flow directly to customer communication. Caption: the workbench routes exceptions; humans decide what happens next.] -->
 
@@ -68,6 +84,9 @@ A recipe that can send a collection email — even a well-drafted, professionall
 
 This is Mycroft's principle stated in the specific context of AP and AR: AI can classify and queue. Humans communicate with vendors and customers, approve holds, release payments, and write off balances. The queue is the boundary. Everything before the queue is preparation. Everything after it is judgment.
 
+![Boundary diagram separating what the recipe may do — classify, age, flag, and queue — from world actions reserved for humans: sending communications, placing holds, releasing payments, writing off balances, and merging records.](images/12-ap-ar-exception-and-aging-workbench-fig-04.png)
+*Figure 12.4 — The action boundary: queue prep vs. world actions*
+
 ---
 
 ## Supervision in a Transactional Workflow
@@ -82,7 +101,13 @@ Approval: who reviews the queues before action is taken? For AP duplicate candid
 
 Verification: what would make a flagged item defensible? For a duplicate candidate, the answer is: purchase order confirmation that only one delivery was authorized, vendor invoice documentation that shows two distinct invoices, and a reviewer who examined both and made a determination. "The recipe flagged it as a candidate" is not verification. The reviewer's documented evaluation is.
 
-<!-- → [TABLE: Supervision questions in AP/AR context — columns: question, AP application, AR application. Rows: scope (invoice range, entity, duplicate window defined by human, action space limited to queue — entity coverage, as-of date confirmed, owner-assignment queue not auto-populated), approval (AP lead reviews duplicate candidates against PO and delivery docs — collections manager or account owner reviews dispute and past-due queues), verification (PO confirmation + vendor docs + reviewer determination for duplicates — dispute record + customer communication history + reviewer decision for AR exceptions). Caption: transactional frequency increases propagation risk — supervision questions must be answered before each run, not just at workflow setup.] -->
+| Question | AP application | AR application |
+|---|---|---|
+| Scope | Invoice range, entity, duplicate window defined by human; action space limited to queue | Entity coverage, as-of date confirmed, owner-assignment queue not auto-populated |
+| Approval | AP lead reviews duplicate candidates against PO and delivery docs | Collections manager or account owner reviews dispute and past-due queues |
+| Verification | PO confirmation + vendor docs + reviewer determination for duplicates | Dispute record + customer communication history + reviewer decision for AR exceptions |
+
+*Transactional frequency increases propagation risk — supervision questions must be answered before each run, not just at workflow setup.*
 
 ---
 
@@ -144,3 +169,23 @@ What happens next — the calls, the holds, the decisions about relationships an
 
 9. *Difficulty: Advanced* — The chapter states that "AI can classify and queue. Humans communicate with vendors and customers, approve holds, release payments, or write off balances." A fintech argument holds that this boundary is already obsolete: modern payment systems authorize and release payments algorithmically at scale, collections platforms send automated communications, and write-off rules are encoded in policy engines — all without human review of individual transactions. The chapter's boundary, the argument goes, describes a workflow that barely exists anymore. Construct the strongest version of this argument, drawing on what automated payment and collections systems actually do. Then evaluate it: does high-frequency algorithmic action eliminate the accountability requirement, or does it relocate it? If the boundary moves — from individual transaction review to policy design and exception escalation — does the chapter's core principle still hold, and in what form?
 *What this tests: ability to engage with the most direct challenge to the chapter's premise, reason from what automated systems actually do rather than the chapter's assumptions, and determine whether the principle survives under changed conditions or requires reformulation.*
+
+---
+
+## Prompts
+
+### Figure 12.1 — AR vs. AP aging distribution
+**Files:** images/12-ap-ar-exception-and-aging-workbench-fig-01.svg · d3/12-ap-ar-exception-and-aging-workbench-fig-01.html
+**Prompt:** A grouped horizontal bar chart comparing AR and AP open balances across five aging buckets (current, 1–30, 31–60, 61–90, 90+). AR in red as the primary series, AP in ink. Zero baseline, mono axis ticks, the as-of date framed as the snapshot's validity anchor. No third color.
+
+### Figure 12.2 — AR exception routing to human-action queues
+**Files:** images/12-ap-ar-exception-and-aging-workbench-fig-03.svg · d3/12-ap-ar-exception-and-aging-workbench-fig-03.html
+**Prompt:** A routing diagram: one red source node ("aging export, flagged exceptions") fanning to four neutral queue nodes — collections follow-up, dispute resolution, supervisor assignment, data quality. Single-headed connectors, ink on white, with a footnote that no queue flows to customer communication.
+
+### Figure 12.3 — Duplicate candidate match criteria
+**Files:** images/12-ap-ar-exception-and-aging-workbench-fig-02.svg
+**Prompt:** A four-row criterion panel — vendor, amount, date window, invoice number — each with what the recipe checks and the failure mode, match strength marked by weight. Flat, ink on white, one blocking accent for the failure-mode zone.
+
+### Figure 12.4 — The action boundary: queue prep vs. world actions
+**Files:** images/12-ap-ar-exception-and-aging-workbench-fig-04.svg
+**Prompt:** A two-zone boundary diagram: left, recipe-permitted preparation (classify, age, flag, queue); right, human-only world actions (send communications, place holds, release payments, write off balances, merge records). The dividing line is the loudest mark — the queue is the boundary.

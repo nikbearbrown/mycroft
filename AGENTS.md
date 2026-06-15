@@ -7,9 +7,9 @@
 
 ## Governance
 
-Read `MYCROFT.md` (the constitution — principles, the verification stack, the recipe lifecycle, the logging rules) and `DOMAIN.md` (this project's index — layout and what is runnable today) before acting. If any file conflicts with `MYCROFT.md`, `MYCROFT.md` governs and the conflict is a bug — log it in `logs/RUN_LOG.md`.
+Read `SNICKERDOODLE.md` (the constitution — principles, the verification stack, the recipe lifecycle, the logging rules) and `DOMAIN.md` (this project's index — layout and what is runnable today) before acting. If any file conflicts with `SNICKERDOODLE.md`, `SNICKERDOODLE.md` governs and the conflict is a bug — log it in `logs/RUN_LOG.md`.
 
-The contract in brief (MYCROFT.md governs in full):
+The contract in brief (SNICKERDOODLE.md governs in full):
 
 1. Verified local data before external lookup; stored scripts before ad-hoc code.
 2. Never invent a count, rate, or confidence; label model judgments as judgments.
@@ -39,8 +39,9 @@ Before reporting a task complete, state: files changed; scripts or data checked;
 
 ## Mycroft
 
-Mycroft is **both a book and an agentic Cowork system** — the manuscript explains the method; the repo gives agents and humans a verified way to operate it. It is the framework; domains like Madison (branding & marketing intelligence) are built on it. Project-specific rules:
+Mycroft is **both a book and an agentic Cowork system** — the manuscript explains the method; the repo gives agents and humans a verified way to operate it. It is built on the Snickerdoodle framework (`SNICKERDOODLE.md`), alongside sibling domains like Madison (branding & marketing intelligence) and the-reallocation-engine. Project-specific rules:
 
+- Read `_MANIFEST.md` for the portable read-first map — what is canonical, task-relevant, generated, quarantined, or private (a thin index over `SNICKERDOODLE.md` / `DOMAIN.md`; machine-readable twin in `.ai/manifest.yaml`).
 - Use lowercase `scripts/`; never create `SCRIPTS/`.
 - Manuscript content lives in `chapters/` — no scripts or data there.
 - `scripts/mycroft-main/`, `docs/mycroft-main/`, `data/mycroft-main/` are **quarantined Tier 3** — do not read, load, or treat as source unless explicitly asked for a named file inside them.
@@ -64,7 +65,7 @@ WHAT YOU CAN DO
 
 HOW IT WORKS
   Every finding traces report -> log -> recipe -> source. Gates are hard stops a named
-  human clears. Machines verify conformance; humans verify adequacy. (Constitution: MYCROFT.md)
+  human clears. Machines verify conformance; humans verify adequacy. (Constitution: SNICKERDOODLE.md)
 
 TRY
   "show me a recipe and its conductor"   ·   "what's runnable today?"

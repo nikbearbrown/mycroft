@@ -1,0 +1,62 @@
+<!--
+  Version and Period Confirmation Gates
+  Book: Mycroft
+  Chapter: 13-cash-forecast-variance-explainer
+  Figure 02
+  Type: process flowchart
+  Generated 2026-06-15
+  Source: pantry/13-cash-forecast-variance-explainer-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-02">
+<title id="fig-title-02">Version and Period Confirmation Gates</title>
+<desc>Two stop-condition gates run before any variance is computed: a forecast-version gate and a period-alignment gate. Each unresolved gate halts and requires a human; only when both pass does variance analysis begin.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="13-cash-forecast-variance-explainer" figure-number="02" figure-title="Version and Period Confirmation Gates" figure-slug="version-period-confirmation-gates" figure-type="process flowchart" priority="Important" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/13-cash-forecast-variance-explainer-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">Two gates must pass before variance analysis begins</text>
+
+<!-- entry -->
+<rect x="40" y="160" width="100" height="50" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="90" y="190" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Entry</text>
+
+<line x1="140" y1="185" x2="190" y2="185" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- gate 1 -->
+<rect x="195" y="155" width="130" height="60" fill="#2a1a0e" stroke="#2a1a0e" stroke-width="1"/>
+<text x="260" y="180" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#FFFFFF" font-weight="bold">Forecast version</text>
+<text x="260" y="197" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF">locked version predates</text>
+<text x="260" y="209" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF">period start?</text>
+
+<!-- gate1 halt -->
+<line x1="260" y1="155" x2="260" y2="100" stroke="#C8102E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="270" y="130" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#C8102E">unresolved</text>
+<rect x="200" y="60" width="130" height="44" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.5"/>
+<text x="265" y="80" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#C8102E" font-weight="bold">HALT</text>
+<text x="265" y="95" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">confirm baseline version</text>
+
+<!-- pass to gate 2 -->
+<line x1="325" y1="185" x2="375" y2="185" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="350" y="178" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">pass</text>
+
+<!-- gate 2 -->
+<rect x="380" y="155" width="130" height="60" fill="#2a1a0e" stroke="#2a1a0e" stroke-width="1"/>
+<text x="445" y="180" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#FFFFFF" font-weight="bold">Period alignment</text>
+<text x="445" y="197" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF">all sources cover same</text>
+<text x="445" y="209" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF">period boundaries?</text>
+
+<!-- gate2 halt -->
+<line x1="445" y1="155" x2="445" y2="100" stroke="#C8102E" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="455" y="130" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#C8102E">unresolved</text>
+<rect x="385" y="60" width="130" height="44" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.5"/>
+<text x="450" y="80" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#C8102E" font-weight="bold">HALT</text>
+<text x="450" y="95" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">fix misaligned sources</text>
+
+<!-- pass to analysis -->
+<line x1="510" y1="185" x2="555" y2="185" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="535" y="178" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">pass</text>
+<rect x="560" y="158" width="108" height="54" fill="#C8102E" stroke="#C8102E" stroke-width="1"/>
+<text x="614" y="182" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF" font-weight="bold">Variance</text>
+<text x="614" y="198" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF">analysis begins</text>
+
+<text x="32" y="290" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">A halt is a stop condition, not a warning. The run does not proceed until a human resolves it.</text>
+</svg>

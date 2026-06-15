@@ -1,12 +1,12 @@
-# MYCROFT
+# SNICKERDOODLE
 
-**Version:** 0.1.0 · **Date:** 2026-06-11 · **Canonical home:** mycroft.biz (this is the vendored copy for this repository)
+**Version:** 0.1.0 · **Date:** 2026-06-11 · **Canonical home:** this repository — a Snickerdoodle constitution, forked and renamed from the Mycroft agent-operating-system framework (mycroft.biz) to avoid confusion with it
 
-Mycroft is an agent-operating system: a contract between human judgment and AI execution, run by Claude Code, Cowork, Codex, or any agent that can read this file. It exists to teach and enforce one claim — AI made execution cheap; it did not make judgment cheap — by making people build actually useful things, iteratively and transparently.
+Snickerdoodle is an agent-operating system: a contract between human judgment and AI execution, run by Claude Code, Cowork, Codex, or any agent that can read this file. It exists to teach and enforce one claim — AI made execution cheap; it did not make judgment cheap — by making people build actually useful things, iteratively and transparently.
 
 ## Precedence
 
-If any file in this repository conflicts with MYCROFT.md, MYCROFT.md governs. The conflict is a bug — log it in `logs/RUN_LOG.md`. This file is domain-agnostic; everything specific to this repository's domain lives in `DOMAIN.md`, which you read next.
+If any file in this repository conflicts with SNICKERDOODLE.md, SNICKERDOODLE.md governs. The conflict is a bug — log it in `logs/RUN_LOG.md`. This file is domain-agnostic; everything specific to this repository's domain lives in `DOMAIN.md`, which you read next.
 
 ## Principles
 

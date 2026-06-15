@@ -1,0 +1,34 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d" font-family="'Inter', sans-serif">
+  <title id="t">Six dimensions of evidence adequacy</title>
+  <desc id="d">Six evidence-adequacy dimensions arranged as checkpoints around a center: completeness, freshness, control totals, mapping, threshold logic, contradiction.</desc>
+  <rect width="700" height="420" fill="#FFFFFF"/>
+  <text x="40" y="40" font-size="20" font-family="'EB Garamond', Georgia, serif" fill="#2a1a0e">Six dimensions of evidence adequacy</text>
+  <text x="40" y="60" font-size="13" fill="#545454">Each one fails silently — the artifact looks fine when it is broken.</text>
+  <!-- center -->
+  <circle cx="350" cy="250" r="52" fill="#C8102E"/>
+  <text x="350" y="246" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">Evidence</text>
+  <text x="350" y="262" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">adequacy</text>
+  <!-- six nodes around -->
+  <g font-size="12" fill="#2a1a0e">
+    <!-- top -->
+    <rect x="270" y="92" width="160" height="44" fill="#F5F5F5" stroke="#545454"/><text x="350" y="119" text-anchor="middle">Completeness</text>
+    <!-- top-right -->
+    <rect x="500" y="160" width="160" height="44" fill="#F5F5F5" stroke="#545454"/><text x="580" y="187" text-anchor="middle">Freshness</text>
+    <!-- bottom-right -->
+    <rect x="500" y="296" width="160" height="44" fill="#F5F5F5" stroke="#545454"/><text x="580" y="323" text-anchor="middle">Control totals</text>
+    <!-- bottom -->
+    <rect x="270" y="356" width="160" height="44" fill="#F5F5F5" stroke="#545454"/><text x="350" y="383" text-anchor="middle">Mapping</text>
+    <!-- bottom-left -->
+    <rect x="40" y="296" width="160" height="44" fill="#F5F5F5" stroke="#545454"/><text x="120" y="323" text-anchor="middle">Threshold logic</text>
+    <!-- top-left -->
+    <rect x="40" y="160" width="160" height="44" fill="#F5F5F5" stroke="#545454"/><text x="120" y="187" text-anchor="middle">Contradiction</text>
+  </g>
+  <g stroke="#D4D4D4" stroke-width="1">
+    <line x1="350" y1="136" x2="350" y2="198"/>
+    <line x1="500" y1="182" x2="398" y2="232"/>
+    <line x1="500" y1="318" x2="398" y2="268"/>
+    <line x1="350" y1="356" x2="350" y2="302"/>
+    <line x1="200" y1="318" x2="302" y2="268"/>
+    <line x1="200" y1="182" x2="302" y2="232"/>
+  </g>
+</svg>

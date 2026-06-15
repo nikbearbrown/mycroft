@@ -1,0 +1,69 @@
+<!--
+  Support Coverage Decision Tree
+  Book: Mycroft
+  Chapter: 09-close-flux-analysis-and-balance-sheet-review
+  Figure: 03
+  Type: process flowchart
+  Generated: 2026-06-15
+  Source: pantry/09-close-flux-analysis-and-balance-sheet-review-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-03">
+<title id="fig-title-03">A decision tree for a flagged material flux: only current-dated support can exit the gate to sign-off</title>
+<desc>One root, a detected material flux, branches by support-file state into three outcomes: support current-dated (supported, needs review), support prior-period dated (stale, needs update), and no support (unsupported, blocks gate). All converge at a human-review gate. Only the supported path reaches sign-off; stale and unsupported paths route to a requires-additional-action node before re-entering the gate.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="09-close-flux-analysis-and-balance-sheet-review" figure-number="03" figure-title="Support Coverage Decision Tree" figure-slug="support-coverage-decision-tree" figure-type="process flowchart" priority="Critical" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/09-close-flux-analysis-and-balance-sheet-review-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="44" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">Only current-dated support clears the gate to sign-off</text>
+
+<!-- root -->
+<rect x="270" y="64" width="160" height="44" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="350" y="91" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Material flux detected</text>
+
+<!-- three branches -->
+<line x1="300" y1="108" x2="140" y2="140" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="350" y1="108" x2="350" y2="140" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="400" y1="108" x2="560" y2="140" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- branch 1: supported -->
+<rect x="32" y="144" width="190" height="60" fill="#F5F5F5" stroke="#C8102E" stroke-width="1.5"/>
+<text x="127" y="168" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">Supported</text>
+<text x="127" y="186" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">current-dated, needs review</text>
+
+<!-- branch 2: stale -->
+<rect x="255" y="144" width="190" height="60" fill="#FFFFFF" stroke="#787878" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="350" y="168" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">Stale support</text>
+<text x="350" y="186" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">prior-period dated, needs update</text>
+
+<!-- branch 3: unsupported (blocking) -->
+<rect x="478" y="144" width="190" height="60" fill="#FFFFFF" stroke="#2a1a0e" stroke-width="1.5"/>
+<text x="573" y="168" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">Unsupported</text>
+<text x="573" y="186" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">no support, blocks gate</text>
+
+<!-- converge to gate -->
+<line x1="127" y1="204" x2="320" y2="252" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="350" y1="204" x2="350" y2="252" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<!-- unsupported blocking edge ends with a bar (⊣) -->
+<line x1="573" y1="204" x2="430" y2="248" stroke="#2a1a0e" stroke-width="1.5"/>
+<line x1="424" y1="240" x2="438" y2="256" stroke="#C8102E" stroke-width="2.5"/>
+
+<!-- gate -->
+<rect x="280" y="256" width="140" height="50" fill="#2a1a0e"/>
+<text x="350" y="280" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#FFFFFF" font-weight="600">Human-review gate</text>
+<text x="350" y="297" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF">controller judgment</text>
+
+<!-- supported exits to sign-off -->
+<line x1="280" y1="281" x2="200" y2="281" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="40" y="256" width="156" height="50" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.5"/>
+<text x="118" y="280" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">Sign-off terminal</text>
+<text x="118" y="297" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">supported path only</text>
+
+<!-- stale & unsupported route to additional action -->
+<line x1="420" y1="281" x2="500" y2="281" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="504" y="252" width="164" height="58" fill="#F5F5F5" stroke="#787878" stroke-width="1"/>
+<text x="586" y="276" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Requires additional</text>
+<text x="586" y="292" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">human action</text>
+
+<!-- re-enter gate loop -->
+<path d="M586 310 q0 40 -40 40 l-160 0 q-36 0 -36 -36" fill="none" stroke="#2a1a0e" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+<text x="430" y="372" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">update support, then re-enter the gate</text>
+</svg>

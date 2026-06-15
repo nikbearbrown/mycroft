@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Close status vs. adequacy gate</title>
+<style>
+  :root {
+    --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E;
+    --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E; --color-fill:#F5F5F5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A;
+            --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30; --color-fill:#1A1A1A; }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--color-white); color:var(--color-ink);
+         font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif; }
+  #chart { width:100%; }
+  .chart-title { font-size:16px; font-weight:700; fill:var(--color-ink); }
+  .chart-sub { font-size:13px; fill:var(--color-secondary); }
+  .stage-title { font-size:12px; font-weight:700; fill:var(--color-ink); }
+  .stage-detail { font-size:11px; fill:var(--color-secondary); }
+  .gap-label { font-family:'JetBrains Mono',monospace; font-size:11px; fill:var(--color-red); }
+  .tooltip { position:absolute; pointer-events:none; opacity:0; background:var(--color-ink);
+             color:var(--color-white); font-size:13px; padding:6px 10px; border-radius:4px; }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; animation:none !important; } }
+</style>
+</head>
+<body>
+<div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const FALLBACK_DATA = [
+  { stage:"Close tasks complete", detail:"Journals posted, reconciliations submitted — status: green", side:"status" },
+  { stage:"Trial balance extracted", detail:"After all posted activity", side:"status" },
+  { stage:"Flux analysis computed", detail:"Material movements ranked, support checked", side:"bridge" },
+  { stage:"Controller reviews", detail:"Support adequate? Unexplained items resolved?", side:"gate" },
+  { stage:"Sign-off and release", detail:"Books declared ready", side:"gate" }
+];
+const tooltip = d3.select('body').append('div').attr('class','tooltip');
+async function loadData() {
+  try { return await d3.json('./09-close-flux-analysis-and-balance-sheet-review-fig-01/data.json'); }
+  catch { return FALLBACK_DATA; }
+}
+function draw(data) {
+  d3.select('#chart').selectAll('*').remove();
+  const totalWidth = document.getElementById('chart').clientWidth || 800;
+  const stepH = 54, pad = 18;
+  const totalHeight = 70 + data.length*(stepH+pad) + 20;
+  const margin = { top: 64, right: 24, bottom: 20, left: 24 };
+  const innerW = totalWidth - margin.left - margin.right;
+
+  const svg = d3.select('#chart').append('svg')
+    .attr('width',totalWidth).attr('height',totalHeight)
+    .attr('role','img').attr('aria-labelledby','t1 d1');
+  svg.append('title').attr('id','t1').text('Close status versus close adequacy');
+  svg.append('desc').attr('id','d1').text('A vertical close workflow runs to a green status milestone, then a visible adequacy gap, before the controller gate and sign-off.');
+
+  svg.append('text').attr('class','chart-title').attr('x',16).attr('y',26).text('Status is not adequacy');
+  svg.append('text').attr('class','chart-sub').attr('x',16).attr('y',46).text('The dashboard measures task completion; the flux review measures account adequacy.');
+
+  const g = svg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
+
+  g.selectAll('.step').data(data).join('rect')
+    .attr('class','step').attr('x',0).attr('y',(d,i)=>i*(stepH+pad))
+    .attr('width',innerW).attr('height',stepH)
+    .attr('fill','var(--color-fill)')
+    .attr('stroke',d=> d.side==='gate' ? 'var(--color-ink)' : 'var(--color-border)')
+    .attr('stroke-width',d=> d.side==='gate' ? 1.5 : 1)
+    .attr('tabindex',0).attr('aria-label',d=>`${d.stage}: ${d.detail}`)
+    .on('mouseover',function(event,d){
+      d3.selectAll('.step').attr('opacity',0.35); d3.select(this).attr('opacity',1);
+      tooltip.html(`<strong>${d.stage}</strong><br>${d.detail}`)
+        .style('left',(event.pageX+12)+'px').style('top',(event.pageY-28)+'px')
+        .transition().duration(150).style('opacity',1);
+    })
+    .on('mousemove',event=>tooltip.style('left',(event.pageX+12)+'px').style('top',(event.pageY-28)+'px'))
+    .on('mouseout',function(){ d3.selectAll('.step').attr('opacity',1); tooltip.transition().duration(100).style('opacity',0); });
+
+  g.selectAll('.stitle').data(data).join('text')
+    .attr('class','stage-title').attr('x',14).attr('y',(d,i)=>i*(stepH+pad)+22).text(d=>d.stage);
+  g.selectAll('.sdetail').data(data).join('text')
+    .attr('class','stage-detail').attr('x',14).attr('y',(d,i)=>i*(stepH+pad)+40).text(d=>d.detail);
+
+  // adequacy gap: between last 'status' and the gate band — find boundary
+  const gateIdx = data.findIndex(d=>d.side==='gate');
+  if (gateIdx>0) {
+    const gapY = gateIdx*(stepH+pad) - pad/2;
+    g.append('line').attr('aria-hidden','true').attr('x1',0).attr('x2',innerW)
+     .attr('y1',gapY).attr('y2',gapY).attr('stroke','var(--color-red)').attr('stroke-width',2).attr('stroke-dasharray','6 4');
+    g.append('text').attr('class','gap-label').attr('x',innerW-4).attr('text-anchor','end')
+     .attr('y',gapY-6).text('adequacy gap');
+  }
+}
+loadData().then(data => { draw(data); new ResizeObserver(()=>draw(data)).observe(document.getElementById('chart')); });
+</script>
+</body>
+</html>

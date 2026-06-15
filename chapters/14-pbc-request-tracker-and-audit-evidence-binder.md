@@ -24,6 +24,9 @@ The consequences have two shapes. The first is adequacy failure: the organizatio
 
 Neither failure announces itself in advance. Both look, at the preparation layer, like a document matched to a request ID. The gate exists because the preparation layer cannot see what the judgment layer sees.
 
+![Two parallel PBC tracks — a preparation layer (ingest list, assign owners, map files, check sign-off, flag gaps, build index) and a judgment layer (adequacy, privilege, approval) — converging at a single delivery gate before any document reaches the auditors.](images/14-pbc-request-tracker-and-audit-evidence-binder-fig-01.png)
+*Figure 14.1 — Two parallel tracks converging at the delivery gate*
+
 <!-- → [DIAGRAM: PBC workflow showing two parallel tracks — top track: preparation layer (ingest PBC list, assign owners, map support files, check sign-off status, flag gaps, build index) → work surface produced; bottom track: judgment layer (adequacy review: does this document answer the request? privilege review: can this document be shared? approval: who authorized external delivery?). Both tracks converge at a gate before any document moves to the auditors. Caption: the binder organizes the preparation layer; the gate is where the judgment layer takes control.] -->
 
 ---
@@ -46,7 +49,20 @@ Each item on the PBC list is a structured request. Understanding its components 
 
 **Privilege flag** is a binary indicator that the item or its support has been flagged for legal review before sharing. The recipe can apply this flag automatically to categories of documents that warrant it — legal correspondence, board minutes, attorney invoices, certain contract files. Human review is required before the flag is cleared. An item with an uncleared privilege flag does not move to the delivery queue regardless of its other status fields.
 
-<!-- → [TABLE: PBC request fields — columns: field, what it contains, who sets it, what the recipe checks. Rows: request ID (auditor reference, auditors set in PBC list, recipe confirms every support path maps to at least one ID), description (scope of the request, auditors set, human reviewer evaluates adequacy against description), owner (accountable internal contact, assigned by finance lead at audit start, recipe flags overdue items by owner), due date (tiered audit deadline, auditors set, recipe flags approaching and past-due items), status (workflow stage, owner and reviewer maintain, recipe reads and reports; does not advance unilaterally), support path (file location of responsive documents, owner provides, recipe confirms file existence; human reviewer confirms adequacy), privilege flag (legal review required, recipe applies by category; human clears, recipe blocks delivery queue until cleared). Caption: the recipe tracks all seven fields; it can set none of them on behalf of a human.] -->
+| Field | What it contains | Who sets it | What the recipe checks |
+|---|---|---|---|
+| Request ID | Auditor reference | Auditors, in the PBC list | Confirms every support path maps to at least one ID |
+| Description | Scope of the request | Auditors | Human reviewer evaluates adequacy against description |
+| Owner | Accountable internal contact | Finance lead, at audit start | Flags overdue items by owner |
+| Due date | Tiered audit deadline | Auditors | Flags approaching and past-due items |
+| Status | Workflow stage | Owner and reviewer maintain | Reads and reports; does not advance unilaterally |
+| Support path | File location of responsive documents | Owner provides | Confirms file existence; human reviewer confirms adequacy |
+| Privilege flag | Legal review required | Recipe applies by category | Blocks delivery queue until a human clears it |
+
+*The recipe tracks all seven fields; it can set none of them on behalf of a human.*
+
+![Seven-field PBC request panel distinguishing fields the recipe merely tracks from fields a human sets — request ID, description, owner, due date, status, support path, and privilege flag.](images/14-pbc-request-tracker-and-audit-evidence-binder-fig-02.png)
+*Figure 14.3 — Seven PBC request fields: set vs. track*
 
 ---
 
@@ -62,6 +78,9 @@ The privilege review column is the second critical field. For items in privilege
 
 The delivery authorization column records who approved the completed package for transmission to the auditors, and when. This is the final gate. It is not the reviewer's sign-off on individual items — it is the senior finance or legal officer's confirmation that the package as a whole is ready, complete, and appropriately scoped. Audit packages are delivered by a person who is accountable for their contents.
 
+![Binder index schematic with rows per request ID and columns for support path, period, reviewer sign-off, privilege review, and delivery authorization — items with an uncleared privilege flag are structurally held out of the delivery queue.](images/14-pbc-request-tracker-and-audit-evidence-binder-fig-04.png)
+*Figure 14.4 — Binder index with privilege-block on delivery*
+
 ---
 
 ## What the Recipe Cannot Judge
@@ -73,6 +92,9 @@ The first is adequacy. A support document either answers the auditor's request o
 The second is privilege. Attorney-client privilege is a legal doctrine with specific requirements — a communication must be made in confidence, between an attorney and a client, for the purpose of obtaining legal advice. Whether a specific document in the binder satisfies those requirements, and whether the privilege has been waived by prior disclosure, is a legal question. Finance professionals can flag categories of documents that typically require legal review. They cannot make the privilege determination themselves, and neither can a recipe. A recipe that clears a privilege flag based on document type or content matching is performing legal analysis it is not qualified to perform.
 
 The third is scope. The auditors' PBC list defines what they asked for. The organization's response defines what it provides. There is often a gap between the two — auditors ask for everything in a category, the organization provides what it judges to be responsive and appropriate. Decisions about what falls within the scope of a response, and what can be provided in a narrower form, are made through communication between the audit team and the client's legal and finance leadership. A recipe that automatically expands or narrows the scope of a response — by including documents not in the request or excluding documents that match the request criteria — has substituted its own judgment for a negotiation that requires humans on both sides.
+
+![Three columns — adequacy, privilege, and scope — each splitting what the recipe can do (confirm matches, flag, map) from the judgment that belongs to a human (evaluate support, determine privilege, negotiate scope).](images/14-pbc-request-tracker-and-audit-evidence-binder-fig-03.png)
+*Figure 14.2 — Three judgment boundaries: adequacy, privilege, scope*
 
 <!-- → [DIAGRAM: Three judgment boundaries in PBC — three vertical columns labeled "Adequacy," "Privilege," "Scope." Under each: what the recipe can do (adequacy: confirm period/entity match, flag period mismatches; privilege: flag by category, block delivery until cleared; scope: map files to request IDs, flag unmapped items) and what requires human judgment (adequacy: evaluate whether document supports the audited assertion; privilege: determine whether document is legally privileged and whether privilege is waived; scope: negotiate what falls within and outside the auditors' request). Caption: the recipe handles the logistics of all three; none of the three judgments belongs to the recipe.] -->
 
@@ -148,3 +170,23 @@ That is the right outcome. The preparation was fast. The judgment took as long a
 
 9. *Difficulty: Advanced* — The chapter argues that adequacy, privilege, and scope are judgment calls that cannot be automated because they require professional standing, legal expertise, and negotiation with external parties. A legal technology argument holds that AI-assisted privilege review is already deployed in large-scale document review (e-discovery), that adequacy determinations follow patterns recognizable from prior audit cycles, and that scope negotiation is increasingly codified in audit standards — suggesting all three judgments are, in principle, automatable with sufficient training data and oversight structure. Construct the strongest version of this argument, drawing on what AI-assisted legal review and audit analytics platforms actually do. Then evaluate it: does the existence of AI-assisted privilege tagging in e-discovery mean the privilege judgment can be delegated to a recipe in the PBC context? Is there a meaningful difference between AI-assisted review (human confirms model output) and human review (human evaluates independently), and if so, where does that difference matter most in an audit binder context?
 *What this tests: ability to engage with the chapter's most sophisticated challenge — the existence of deployed AI tools in adjacent legal and audit contexts — and reason about whether those tools relocate or eliminate the judgment requirement, rather than simply asserting that judgment cannot be automated.*
+
+---
+
+## Prompts
+
+### Figure 14.1 — Two parallel tracks converging at the delivery gate
+**Files:** images/14-pbc-request-tracker-and-audit-evidence-binder-fig-01.svg · d3/14-pbc-request-tracker-and-audit-evidence-binder-fig-01.html
+**Prompt:** Two horizontal tracks — a solid-bordered preparation track (recipe) and a dashed-bordered judgment track (human) — both feeding one red delivery gate before documents reach the auditors. Ink on white, single red accent on the gate, single-headed connectors.
+
+### Figure 14.2 — Three judgment boundaries: adequacy, privilege, scope
+**Files:** images/14-pbc-request-tracker-and-audit-evidence-binder-fig-03.svg · d3/14-pbc-request-tracker-and-audit-evidence-binder-fig-03.html
+**Prompt:** Three columns — adequacy, privilege, scope — each stacked into a neutral "recipe can do" cell over a red-edged "human judgment" cell. The red edge marks where the recipe stops in all three. Flat, restrained, ink on white.
+
+### Figure 14.3 — Seven PBC request fields: set vs. track
+**Files:** images/14-pbc-request-tracker-and-audit-evidence-binder-fig-02.svg
+**Prompt:** A seven-row field panel — request ID, description, owner, due date, status, support path, privilege flag — each row marking who sets the field versus what the recipe merely tracks. One accent distinguishes set-by-human from tracked-by-recipe.
+
+### Figure 14.4 — Binder index with privilege-block on delivery
+**Files:** images/14-pbc-request-tracker-and-audit-evidence-binder-fig-04.svg
+**Prompt:** A binder-index grid — rows per request ID, columns for support path, period, reviewer sign-off, privilege review, delivery authorization. Rows with an uncleared privilege flag are visibly held out of the delivery queue by a single blocking accent.

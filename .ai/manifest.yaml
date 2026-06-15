@@ -1,0 +1,79 @@
+# .ai/manifest.yaml — machine-readable twin of _MANIFEST.md
+# Lets scripts, CI, and validators act on the same map without parsing prose.
+# Keep in sync with _MANIFEST.md. SNICKERDOODLE.md governs all conflicts.
+name: mycroft
+governed_by: SNICKERDOODLE.md
+domain_map: DOMAIN.md
+
+# All generated from instructions/ by scripts/build-instructions.mjs (do not hand-edit).
+# AGENTS.md is canonical; the rest are thin shims that point at it (no rule duplication).
+generated_instructions:
+  - AGENTS.md
+  - CLAUDE.md
+  - .gemini/settings.json
+  - .aider.conf.yml
+  - .github/copilot-instructions.md
+  - .cursor/rules/mycroft.mdc
+
+canonical:
+  - SNICKERDOODLE.md
+  - DOMAIN.md
+  - AGENTS.md
+  - PROJECT_RULES.md
+  - DATA_CONTRACT.md
+  - status.md
+  - logs/RUN_LOG.md
+
+task_relevant:
+  - recipes/
+  - conductor/
+  - scripts/
+  - chapters/
+  - data/raw/
+  - data/verified/
+  - pantry/
+  - reports/
+  - docs/
+  - instructions/
+  - eval/
+  - session-handoff.md
+
+ignore:
+  - output/
+  - node_modules/
+  - instructions/.build/
+  - "**/__pycache__/"
+  - "*.pyc"
+
+# Private by default — never commit without review.
+private:
+  - data/private/
+  - .env
+
+# Quarantined Tier 3 — vendored upstream; provenance only, never source.
+quarantine:
+  - scripts/mycroft-main/
+  - docs/mycroft-main/
+  - data/mycroft-main/
+
+entrypoints:
+  verify: "npm run verify"
+  build_instructions: "node scripts/build-instructions.mjs"
+  conformance: "node scripts/conformance.mjs"
+  manifest_check: "node scripts/manifest-check.mjs"
+
+invariants:
+  - "SNICKERDOODLE.md governs; conflicts are bugs logged in logs/RUN_LOG.md."
+  - "Never invent a count, rate, or confidence; label model judgments as judgments."
+  - "Gates are hard stops cleared by a named human and logged."
+  - "Nothing enters data/verified/ without validation."
+  - "Never delete source, data, recipes, or logs — archive instead. Safe rm: .build, __pycache__, *.pyc, *.bak."
+  - "AGENTS.md and CLAUDE.md (and the tool shims) are generated from instructions/ — edit the source, then rebuild."
+  - "scripts/|docs/|data/mycroft-main/ are quarantined Tier 3 — do not load as source."
+
+permissions:
+  filesystem_scope: workspace-only
+  private_paths_require_review_before_commit: true
+  forbidden:
+    - "rm -rf"
+    - "git push --force"

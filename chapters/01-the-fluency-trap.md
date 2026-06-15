@@ -25,6 +25,9 @@ The problem is that "sounds like finished work" and "is finished work" are two c
 
 This is not a subtle failure mode. It is the central failure mode of AI-assisted finance work, and it shows up at every level — in junior analysts who paste model output into decks without checking sources, in managers who approve language that sounds right without asking what it's grounded in, and in workflows that were built for human review but didn't account for the possibility that the draft would arrive already polished.
 
+![Two side-by-side panels with near-identical outer shapes: the left labeled fluent output, the right labeled finished work, with a single arrow crossing the gap between them marking what is missing.](images/01-the-fluency-trap-fig-01.png)
+*Figure 1.1 — Fluent output versus finished work: the trap is that the left column looks like the right.*
+
 <!-- → [DIAGRAM: Two-column visual showing "Fluent Output" on the left (polished paragraph, confident claim, ready-looking deck) vs. "Finished Work" on the right (source file, period label, owner confirmation, approval gate). Arrow between them labeled "What's Missing." Caption: The fluency trap is that the left column looks like the right column.] -->
 
 ---
@@ -43,7 +46,16 @@ The fluency trap lives at the boundary between preparation and judgment. AI is g
 
 When fluent output crosses that boundary without a gate — when the prepared surface becomes the finished judgment because it arrived looking polished — the accountability disappears. The organization is left with a clean paragraph that no one can actually stand behind.
 
-<!-- → [TABLE: Three-row table with columns: Layer, What It Is, Who/What Does It, What Makes It Verifiable. Rows: Data (raw records, system exports), Preparation (structuring, comparing, drafting), Judgment (meaning, materiality, cause, action). Caption: Finance work is a stack. AI operates in the preparation layer. Judgment requires a human who carries accountability.] -->
+| Layer | What it is | Who/what does it | What makes it verifiable |
+|---|---|---|---|
+| Data | Raw exports, system-generated files, period-labeled records | Source systems | Traceable to a system of record; control totals tie out |
+| Preparation | Structuring, comparing periods, drafting the review surface | AI-assisted, human-supervised | Output can be compared line-for-line against the source |
+| Judgment | Meaning, materiality, cause, recommended action | A human who carries accountability | Defensible reasoning the owner can be asked to stand behind |
+
+*Table 1 — Finance work is a stack. AI operates in the preparation layer; judgment requires a human who carries accountability.*
+
+![A vertical three-tier stack — Data at the bottom, Preparation in the middle, Judgment at the top — with a single heavy gate-line on the boundary between Preparation and Judgment and a side arrow marking rising accountability.](images/01-the-fluency-trap-fig-02.png)
+*Figure 1.2 — The finance work stack: the fluency trap lives on the gate between preparation and judgment.*
 
 ---
 
@@ -59,6 +71,9 @@ This produces a specific artifact failure: a document that is organized, fluent,
 
 There is a compounding problem. Once the language is polished, it is harder to question. The organizational reflex when a deck looks ready is to move forward, not to interrogate sources. A rough draft invites revision. A clean draft invites approval. Fluency raises the bar for pushback at exactly the moment when pushback is most needed.
 
+![A left-to-right pipeline of six stages from model generates explanation through to explanation enters record unchecked, with the final failure node and the polished-to-unchecked segment marked in red.](images/01-the-fluency-trap-fig-03.png)
+*Figure 1.3 — How fluency defeats pushback: the danger segment runs from polished output to the missing source check.*
+
 <!-- → [DIAGRAM: Pipeline with stages: Model generates explanation → Output arrives polished → Reviewer reads fluent language → Organizational reflex is approval → No one checks source → Explanation enters record unchecked. Red highlight on the gap between "Output arrives polished" and "No one checks source." Caption: Fluency raises the bar for pushback at the exact moment it is most needed.] -->
 
 ---
@@ -73,7 +88,15 @@ A generated paragraph fails all three by default. It is not sourced in the docum
 
 This is the practical meaning of the preparation/judgment boundary. Preparation work can be AI-assisted because preparation work can be checked: you can compare the output to the source and see whether it matches. Judgment work requires a human who can be accountable for the conclusion, not just accurate in the phrasing.
 
-<!-- → [TABLE: Two-column table — left: "What AI Can Prepare," right: "What Requires Human Judgment." Left entries: structured comparison of periods, flagged anomalies with source references, draft language for review, classification of line items for orientation. Right entries: whether a variance is material, what caused it, whether evidence is adequate, accounting treatment, release decision. Caption: The boundary is not about capability — it is about accountability and traceability.] -->
+| What AI can prepare | What requires human judgment |
+|---|---|
+| Structured comparison of periods | Whether a variance is material |
+| Flagged anomalies with source references | What caused the variance |
+| Draft language for review | Whether the evidence is adequate |
+| Classification of line items for orientation | The correct accounting treatment |
+| A populated assessment artifact | The decision to release or report |
+
+*Table 2 — The boundary is not about capability. It is about accountability and traceability.*
 
 ---
 
@@ -87,7 +110,13 @@ This is not a bureaucratic checklist. It is the difference between a finance out
 
 The table also creates a machine-readable log. If the work needs to be reproduced — because a number changed, because the period was wrong, because someone asks six months later what the variance explanation was based on — the log shows the chain. Without it, you have a polished paragraph and no way to reconstruct where it came from.
 
-<!-- → [TABLE: Example assessment artifact with five rows. Columns: Claim, Source, Period, Owner, Status, Gate Required. Row 1: "Revenue down 8% QoQ" — Q3 revenue export v2, Q3 2024, Controller, Verified, None (clear to use). Row 2: "Enterprise renewals slipped" — Analyst inference from pipeline call, Q3 2024, Enterprise lead, Owner-needed, Confirm with enterprise lead before deck. Row 3: "Mid-market accounts for 23% of ARR" — No source identified, Unknown, Unknown, Unsupported, Remove or source before use. Caption: The assessment artifact makes invisible gaps visible. Blank cells are findings, not omissions.] -->
+| Claim | Source | Period | Owner | Status | Gate required |
+|---|---|---|---|---|---|
+| Revenue down 8% QoQ | Q3 revenue export v2 | Q3 2024 | Controller | Verified | None — clear to use |
+| Enterprise renewals slipped | Analyst inference from pipeline call | Q3 2024 | Enterprise lead | Owner-needed | Confirm with enterprise lead before deck |
+| Mid-market is 23% of ARR | No source identified | Unknown | Unknown | Unsupported | Remove or source before use |
+
+*Table 3 — The assessment artifact makes invisible gaps visible. Blank cells are findings, not omissions.*
 
 ---
 
@@ -114,6 +143,9 @@ When a model generates the variance note and no human reviews the substance — 
 This is Mycroft's finance rule: automate the preparation layer, preserve the accountable layer. Not because human judgment is always better than model output — sometimes the model will produce a more careful structure than a rushed analyst would. But because financial work that affects reporting, cash, controls, compliance, or external trust requires someone who can be asked to defend it, and a model is not that someone.
 
 The fluency trap is not primarily a technology failure. It is an organizational failure — a failure to maintain the gate between preparation and judgment when the preparation arrives looking polished enough to pass as the finished thing.
+
+![Two zones, a preparation layer on the left and an accountable layer on the right, separated by a tall central gate; a single arrow runs from the left zone through the gate into the right zone.](images/01-the-fluency-trap-fig-04.png)
+*Figure 1.4 — The gate between preparation and judgment: where accountability enters the artifact.*
 
 <!-- → [DIAGRAM: Two zones separated by a gate. Left zone: "Preparation Layer" — AI-assisted, auditable steps, source-linked, reviewable. Gate in the middle: named approver, adequacy decision, gate logged. Right zone: "Accountable Layer" — human judgment, materiality, cause, treatment, release. Arrow showing preparation work passing through the gate, not bypassing it. Caption: The gate is not a slow-down. It is where accountability enters the artifact.] -->
 
@@ -172,3 +204,23 @@ The supervision questions — scope, approval, verification — are clear as a f
 **Challenge**
 
 9. *(Advanced)* The "adequacy bar" for finance artifacts varies by artifact type, audience, and consequence — a department variance note, a board presentation, and an audit workpaper are not the same thing. But in most organizations, the adequacy standard is implicit rather than written. Design a process for making those standards explicit: what categories of artifact would you distinguish, what questions would you ask to calibrate each one, and how would you build those standards into the gate process rather than leaving them to individual reviewer judgment? *What this tests: ability to operationalize the "still puzzling" problem in the chapter — the gap between a clear framework and a workable organizational standard.*
+
+---
+
+## Prompts
+
+### Figure 1.1 — Fluent output versus finished work
+**Files:** images/01-the-fluency-trap-fig-01.svg · d3/01-the-fluency-trap-fig-01.html
+**Prompt:** A brutalist two-panel comparison on white: a left panel of identical surface rectangles labeled fluent output and a right panel of grounded tokens (source, period, owner, gate) labeled finished work, the two near-identical in outline. A single red arrow crosses the gap labeled "what's missing." EB Garamond heading, Inter labels, JetBrains Mono annotation, one red accent only.
+
+### Figure 1.2 — The finance work stack
+**Files:** images/01-the-fluency-trap-fig-02.svg · d3/01-the-fluency-trap-fig-02.html
+**Prompt:** A brutalist vertical three-tier stack on white — Data, Preparation, Judgment from bottom to top — with a single heavy red gate bar sitting on the Preparation–Judgment boundary and a neutral side arrow marking rising accountability. Neutral fills and hairlines throughout, one red accent reserved for the gate.
+
+### Figure 1.3 — How fluency defeats pushback
+**Files:** images/01-the-fluency-trap-fig-03.svg · d3/01-the-fluency-trap-fig-03.html
+**Prompt:** A brutalist six-stage pipeline on white from "model generates explanation" to "explanation enters record unchecked," neutral nodes with the terminal failure node in red and a dashed red bracket marking the danger segment where the pushback bar rises. Inter node labels, JetBrains Mono annotation, single red accent.
+
+### Figure 1.4 — The gate between preparation and judgment
+**Files:** images/01-the-fluency-trap-fig-04.svg · d3/01-the-fluency-trap-fig-04.html
+**Prompt:** A brutalist two-zone systems diagram on white — a neutral preparation layer on the left and an accountable layer on the right — separated by a tall red gate with a small notch, and one neutral arrow passing through the gate into the accountable zone. Hairline borders, one red accent for the gate.

@@ -1,0 +1,22 @@
+run: 2026-06-15__t2-narrow-feature__full__example
+task: t2-narrow-feature
+config: full
+tool: example
+date: '2026-06-15'
+auto:
+  files_touched:
+  - scripts/wordcount.mjs
+  out_of_scope: []
+  deletes: []
+  forbidden_ops: []
+  insertions: 6
+  deletions: 0
+  validate_cmd: node scripts/wordcount.mjs | grep -qE '^[0-9]+$'
+  validate_pass: null
+human:
+  acceptance: pass
+  manual_edits_after: 0
+  review_burden: 1
+  tokens: null
+  notes: clean, in-scope; single new script as requested
+

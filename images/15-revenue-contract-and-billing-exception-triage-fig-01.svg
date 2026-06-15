@@ -1,0 +1,65 @@
+<!--
+  Contract Source Chain with Stop Signal
+  Book: Mycroft
+  Chapter: 15-revenue-contract-and-billing-exception-triage
+  Figure 01
+  Type: process flowchart
+  Generated 2026-06-15
+  Source: pantry/15-revenue-contract-and-billing-exception-triage-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-01">
+<title id="fig-title-01">Contract Source Chain with Stop Signal</title>
+<desc>A contract's authoritative documents form an ordered chain from master agreement through three amendments to the billing configuration, with a verification check under each link. A missing amendment breaks the chain and halts the run.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="15-revenue-contract-and-billing-exception-triage" figure-number="01" figure-title="Contract Source Chain with Stop Signal" figure-slug="contract-source-chain-stop-signal" figure-type="process flowchart" priority="Critical" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/15-revenue-contract-and-billing-exception-triage-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">A broken source chain halts the run</text>
+
+<!-- chain nodes y=90 h=50 -->
+<rect x="32" y="90" width="110" height="50" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="87" y="112" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e" font-weight="bold">Master</text>
+<text x="87" y="127" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">agreement</text>
+
+<line x1="142" y1="115" x2="166" y2="115" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="168" y="90" width="110" height="50" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="223" y="112" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e" font-weight="bold">Amendment 1</text>
+<text x="223" y="127" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">refs master</text>
+
+<line x1="278" y1="115" x2="302" y2="115" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="304" y="90" width="110" height="50" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="359" y="112" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e" font-weight="bold">Amendment 2</text>
+<text x="359" y="127" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">refs amend. 1</text>
+
+<!-- stop signal: gap between amend 2 and amend 3 -->
+<line x1="414" y1="115" x2="430" y2="115" stroke="#2a1a0e" stroke-width="1.5"/>
+<line x1="436" y1="92" x2="436" y2="138" stroke="#C8102E" stroke-width="4"/>
+<text x="436" y="78" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#C8102E" font-weight="bold">amendment gap</text>
+
+<rect x="446" y="90" width="110" height="50" fill="#F5F5F5" stroke="#C8102E" stroke-width="1.25" stroke-dasharray="4 3"/>
+<text x="501" y="112" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#C8102E" font-weight="bold">Amendment 3</text>
+<text x="501" y="127" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#C8102E">missing</text>
+
+<line x1="556" y1="115" x2="572" y2="115" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="4 3"/>
+<rect x="574" y="90" width="94" height="50" fill="#2a1a0e" stroke="#2a1a0e" stroke-width="1"/>
+<text x="621" y="112" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF" font-weight="bold">Billing</text>
+<text x="621" y="127" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF">config</text>
+
+<!-- parallel check track -->
+<text x="32" y="200" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">Verification under each link</text>
+<line x1="87" y1="140" x2="87" y2="215" stroke="#D4D4D4" stroke-width="1" stroke-dasharray="4 3"/>
+<rect x="42" y="215" width="90" height="40" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="87" y="239" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">executed?</text>
+<line x1="223" y1="140" x2="223" y2="215" stroke="#D4D4D4" stroke-width="1" stroke-dasharray="4 3"/>
+<rect x="178" y="215" width="90" height="40" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="223" y="233" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">references</text>
+<text x="223" y="246" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">prior doc?</text>
+<line x1="359" y1="140" x2="359" y2="215" stroke="#D4D4D4" stroke-width="1" stroke-dasharray="4 3"/>
+<rect x="314" y="215" width="90" height="40" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="359" y="239" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">no gap?</text>
+<line x1="621" y1="140" x2="621" y2="215" stroke="#D4D4D4" stroke-width="1" stroke-dasharray="4 3"/>
+<rect x="574" y="215" width="94" height="40" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="621" y="233" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">billing reflects</text>
+<text x="621" y="246" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#2a1a0e">this version?</text>
+
+<text x="32" y="300" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">The discipline is to stop at the gap, not to reconstruct the missing amendment.</text>
+</svg>

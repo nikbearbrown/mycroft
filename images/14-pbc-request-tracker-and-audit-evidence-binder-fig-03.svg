@@ -1,0 +1,65 @@
+<!--
+  Three Judgment Boundaries: Adequacy, Privilege, Scope
+  Book: Mycroft
+  Chapter: 14-pbc-request-tracker-and-audit-evidence-binder
+  Figure 03
+  Type: comparison panels
+  Generated 2026-06-15
+  Source: pantry/14-pbc-request-tracker-and-audit-evidence-binder-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-03">
+<title id="fig-title-03">Three Judgment Boundaries: Adequacy, Privilege, Scope</title>
+<desc>Across adequacy, privilege, and scope, a shared horizontal boundary separates what the recipe can do above from what requires human judgment below. The hand-off line sits at the same height in all three columns.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="14-pbc-request-tracker-and-audit-evidence-binder" figure-number="03" figure-title="Three Judgment Boundaries: Adequacy, Privilege, Scope" figure-slug="three-judgment-boundaries" figure-type="comparison panels" priority="Critical" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/14-pbc-request-tracker-and-audit-evidence-binder-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">One hand-off line runs across all three boundaries</text>
+
+<!-- column headers -->
+<text x="120" y="60" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Adequacy</text>
+<text x="350" y="60" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Privilege</text>
+<text x="580" y="60" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Scope</text>
+
+<!-- recipe-can zones (upper) -->
+<text x="32" y="84" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">The recipe can</text>
+<rect x="32" y="90" width="176" height="90" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="120" y="120" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">confirm period /</text>
+<text x="120" y="135" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">entity match</text>
+<text x="120" y="158" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">flag mismatches</text>
+
+<rect x="262" y="90" width="176" height="90" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="350" y="120" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">flag by category</text>
+<text x="350" y="143" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">block delivery</text>
+<text x="350" y="158" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">until cleared</text>
+
+<rect x="492" y="90" width="176" height="90" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="580" y="120" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">map files to</text>
+<text x="580" y="135" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">request IDs</text>
+<text x="580" y="158" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">flag unmapped</text>
+
+<!-- shared boundary -->
+<line x1="32" y1="200" x2="668" y2="200" stroke="#C8102E" stroke-width="4"/>
+<text x="350" y="220" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#C8102E" font-weight="bold">the hand-off line</text>
+
+<!-- human-must zones (lower) -->
+<text x="32" y="244" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">A human must</text>
+<rect x="32" y="250" width="176" height="100" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="120" y="285" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">evaluate whether</text>
+<text x="120" y="300" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">the document</text>
+<text x="120" y="315" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">supports the</text>
+<text x="120" y="330" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">audited assertion</text>
+
+<rect x="262" y="250" width="176" height="100" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="350" y="285" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">determine legal</text>
+<text x="350" y="300" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">privilege and</text>
+<text x="350" y="315" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">whether it is</text>
+<text x="350" y="330" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">waived</text>
+
+<rect x="492" y="250" width="176" height="100" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="580" y="285" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">negotiate what</text>
+<text x="580" y="300" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">falls within and</text>
+<text x="580" y="315" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">outside the</text>
+<text x="580" y="330" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">request</text>
+
+<text x="32" y="380" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">Above the line is structural and checkable. Below it is judgment, the same in every column.</text>
+</svg>

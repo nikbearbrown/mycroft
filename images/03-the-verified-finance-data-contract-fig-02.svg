@@ -1,0 +1,26 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d" font-family="'Inter', sans-serif">
+  <title id="t">The data contract field inventory</title>
+  <desc id="d">Twelve data-contract fields arranged as a labeled grid of cells: source, period, entity, version, owner, freshness, schema, control total, transformation, log, report, approval record.</desc>
+  <rect width="700" height="420" fill="#FFFFFF"/>
+  <text x="40" y="40" font-size="20" font-family="'EB Garamond', Georgia, serif" fill="#2a1a0e">The data contract field inventory</text>
+  <text x="40" y="60" font-size="13" fill="#545454">Each field is a handle the next reviewer can grab.</text>
+  <g font-size="13" fill="#2a1a0e" font-family="'JetBrains Mono', monospace">
+    <!-- 4 cols x 3 rows -->
+    <!-- row1 -->
+    <rect x="40"  y="90"  width="150" height="78" fill="#F5F5F5" stroke="#545454"/><text x="54" y="134">source</text>
+    <rect x="200" y="90"  width="150" height="78" fill="#F5F5F5" stroke="#545454"/><text x="214" y="134">period</text>
+    <rect x="360" y="90"  width="150" height="78" fill="#F5F5F5" stroke="#545454"/><text x="374" y="134">entity</text>
+    <rect x="520" y="90"  width="140" height="78" fill="#F5F5F5" stroke="#545454"/><text x="534" y="134">version</text>
+    <!-- row2 -->
+    <rect x="40"  y="178" width="150" height="78" fill="#F5F5F5" stroke="#545454"/><text x="54" y="222">owner</text>
+    <rect x="200" y="178" width="150" height="78" fill="#F5F5F5" stroke="#545454"/><text x="214" y="222">freshness</text>
+    <rect x="360" y="178" width="150" height="78" fill="#F5F5F5" stroke="#545454"/><text x="374" y="222">schema</text>
+    <rect x="520" y="178" width="140" height="78" fill="#F5F5F5" stroke="#545454"/><text x="534" y="214">control</text><text x="534" y="232">total</text>
+    <!-- row3 -->
+    <rect x="40"  y="266" width="150" height="78" fill="#F5F5F5" stroke="#545454"/><text x="54" y="310">transform</text>
+    <rect x="200" y="266" width="150" height="78" fill="#F5F5F5" stroke="#545454"/><text x="214" y="310">log</text>
+    <rect x="360" y="266" width="150" height="78" fill="#F5F5F5" stroke="#545454"/><text x="374" y="310">report</text>
+    <rect x="520" y="266" width="140" height="78" fill="#FFFFFF" stroke="#C8102E" stroke-width="2"/><text x="534" y="302">approval</text><text x="534" y="320">record</text>
+  </g>
+  <text x="40" y="372" font-size="11" font-family="'JetBrains Mono', monospace" fill="#C8102E">the gate field — where the accountable layer takes ownership</text>
+</svg>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The phase gate flow</title>
+<style>
+  :root { --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E; --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E; --color-fill:#F5F5F5; }
+  @media (prefers-color-scheme: dark){ :root{ --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A; --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30; --color-fill:#1A1A1A; } }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--color-white);color:var(--color-ink);font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif;}
+  #chart{width:100%;}
+  .stage{fill:var(--color-fill);stroke-width:1;} .stage.prep{stroke:var(--color-secondary);} .stage.acct{stroke:var(--color-ink);}
+  .gate{fill:var(--color-red);}
+  .heading{font-family:'EB Garamond',Georgia,serif;fill:var(--color-ink);} .sub{fill:var(--color-secondary);}
+  .slabel{fill:var(--color-ink);font-size:12px;} .slabel2{fill:var(--color-secondary);font-size:11px;}
+  .gatelabel{fill:var(--color-white);font-size:9px;text-anchor:middle;}
+  .mono{font-family:'JetBrains Mono','Fira Code',monospace;font-size:10px;fill:var(--color-secondary);}
+  .monoR{font-family:'JetBrains Mono','Fira Code',monospace;font-size:11px;fill:var(--color-red);text-anchor:middle;}
+  .arrow{stroke:var(--color-ink);stroke-width:2;fill:var(--color-ink);}
+  .loop{fill:none;stroke:var(--color-secondary);stroke-width:1.5;stroke-dasharray:4 3;}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;}}
+</style></head>
+<body><div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const FALLBACK_DATA={checks:['scope?','approval?','verify?']};
+function draw(data){
+  d3.select('#chart').selectAll('*').remove();
+  const w=document.getElementById('chart').clientWidth||700, h=Math.max(380,w*0.55);
+  const svg=d3.select('#chart').append('svg').attr('width',w).attr('height',h).attr('viewBox',`0 0 ${w} ${h}`).attr('role','img').attr('aria-labelledby','t d');
+  svg.append('title').attr('id','t').text('The phase gate flow');
+  svg.append('desc').attr('id','d').text('Source files to AI preparation to a gate of three checks, then the accountable layer, with a stop-condition loop back.');
+  svg.append('text').attr('class','heading').attr('x',24).attr('y',32).attr('font-size',20).text('The phase gate flow');
+  svg.append('text').attr('class','sub').attr('x',24).attr('y',52).attr('font-size',13).text('The gate is not overhead — it is what makes automation trustworthy.');
+  const my=h*0.45, bh=60;
+  const sx=24, sw=Math.min(110,w*0.16);
+  const px=sx+sw+38, pw=Math.min(150,w*0.2);
+  const gx=px+pw+38, gw=58;
+  const ax=gx+gw+38, aw=w-ax-24;
+  // source
+  svg.append('rect').attr('class','stage prep').attr('x',sx).attr('y',my).attr('width',sw).attr('height',bh);
+  svg.append('text').attr('class','slabel').attr('x',sx+12).attr('y',my+bh/2+4).text('Source files');
+  // prep
+  svg.append('rect').attr('class','stage prep').attr('x',px).attr('y',my).attr('width',pw).attr('height',bh);
+  svg.append('text').attr('class','slabel').attr('x',px+12).attr('y',my+bh/2-4).text('AI preparation');
+  svg.append('text').attr('class','slabel2').attr('x',px+12).attr('y',my+bh/2+14).text('trace · check · log');
+  // gate
+  svg.append('rect').attr('class','gate').attr('x',gx).attr('y',my-26).attr('width',gw).attr('height',bh+52);
+  data.checks.forEach((c,i)=>svg.append('text').attr('class','gatelabel').attr('x',gx+gw/2).attr('y',my-2+i*22).text(c));
+  svg.append('text').attr('class','monoR').attr('x',gx+gw/2).attr('y',my+bh+44).text('gate');
+  // accountable
+  svg.append('rect').attr('class','stage acct').attr('x',ax).attr('y',my).attr('width',aw).attr('height',bh);
+  svg.append('text').attr('class','slabel').attr('x',ax+12).attr('y',my+bh/2-4).text('Accountable layer');
+  svg.append('text').attr('class','slabel2').attr('x',ax+12).attr('y',my+bh/2+14).text('materiality · treatment · release');
+  // arrows
+  function arr(x1,x2){ svg.append('line').attr('class','arrow').attr('x1',x1).attr('y1',my+bh/2).attr('x2',x2-2).attr('y2',my+bh/2); svg.append('polygon').attr('class','arrow').attr('points',`${x2},${my+bh/2} ${x2-8},${my+bh/2-4} ${x2-8},${my+bh/2+4}`); }
+  arr(sx+sw,px); arr(px+pw,gx); arr(gx+gw,ax);
+  svg.append('text').attr('class','mono').attr('x',(gx+gw+ax)/2).attr('y',my+bh/2-8).attr('text-anchor','middle').text('adequate');
+  // stop loop back to prep
+  const loopY=my+bh+64;
+  svg.append('path').attr('class','loop').attr('d',`M${gx+gw/2},${my+bh+26} L${gx+gw/2},${loopY} L${px+pw/2},${loopY} L${px+pw/2},${my+bh+2}`);
+  svg.append('polygon').attr('class','arrow').attr('fill','var(--color-secondary)').attr('stroke','none').attr('points',`${px+pw/2},${my+bh} ${px+pw/2-5},${my+bh+12} ${px+pw/2+5},${my+bh+12}`);
+  svg.append('text').attr('class','mono').attr('x',(px+pw/2+gx+gw/2)/2).attr('y',loopY-6).attr('text-anchor','middle').text('stop conditions → back to preparation');
+}
+let current=FALLBACK_DATA;
+async function load(){try{current=await d3.json('./03-the-verified-finance-data-contract-fig-04.json');}catch(e){current=FALLBACK_DATA;}draw(current);}
+load(); new ResizeObserver(()=>draw(current)).observe(document.getElementById('chart'));
+</script></body></html>

@@ -1,0 +1,51 @@
+<!--
+  Unexplained Variance Escalation Record
+  Book: Mycroft
+  Chapter: 13-cash-forecast-variance-explainer
+  Figure 04
+  Type: structural schematic
+  Generated 2026-06-15
+  Source: pantry/13-cash-forecast-variance-explainer-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-04">
+<title id="fig-title-04">Unexplained Variance Escalation Record</title>
+<desc>The escalation record is a structured template: identifying fields, a search log documenting which sources were checked, the residual after any driver was attached, and an escalation status that hands the gap to a controller or CFO.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="13-cash-forecast-variance-explainer" figure-number="04" figure-title="Unexplained Variance Escalation Record" figure-slug="unexplained-variance-escalation-record" figure-type="structural schematic" priority="Supplementary" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/13-cash-forecast-variance-explainer-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">The record documents what was searched, not just the gap</text>
+
+<!-- identifying fields row -->
+<text x="32" y="68" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">Identifying fields</text>
+<rect x="32" y="76" width="150" height="44" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="107" y="102" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Variance ID</text>
+<rect x="182" y="76" width="150" height="44" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="257" y="102" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Category</text>
+<rect x="332" y="76" width="150" height="44" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="407" y="102" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Amount</text>
+<rect x="482" y="76" width="150" height="44" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="557" y="102" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Period</text>
+
+<!-- search log zone -->
+<text x="32" y="152" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#C8102E" font-weight="bold">Sources checked (search log)</text>
+<rect x="32" y="160" width="600" height="60" fill="#F5F5F5" stroke="#C8102E" stroke-width="1.5"/>
+<rect x="48" y="176" width="170" height="28" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="133" y="194" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">disbursement log</text>
+<rect x="232" y="176" width="170" height="28" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="317" y="194" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">AP aging</text>
+<rect x="416" y="176" width="200" height="28" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="516" y="194" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">period-boundary search</text>
+
+<!-- residual + escalation -->
+<rect x="32" y="252" width="290" height="48" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="177" y="272" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e" font-weight="bold">Residual after driver attachment</text>
+<text x="177" y="289" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">amount still unexplained</text>
+
+<line x1="322" y1="276" x2="362" y2="276" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<rect x="368" y="252" width="264" height="48" fill="#2a1a0e" stroke="#2a1a0e" stroke-width="1"/>
+<text x="500" y="272" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF" font-weight="bold">Escalation status</text>
+<text x="500" y="289" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF">handoff to controller / CFO</text>
+
+<text x="32" y="340" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">The search log is the credibility of the record: it shows the gap survived a documented search.</text>
+</svg>

@@ -50,7 +50,18 @@ Do not run a fully automated pipeline until these gates pass:
 6. Review gate
 7. Logging gate
 
+![The seven phase gates in sequence — problem, local evidence, stored script, small-run, verification, review, and logging — each a checkpoint a fully automated pipeline must clear before it proceeds.](images/98-appendix-best-practices-fig-01.png)
+*Figure 98.1 — The seven phase gates*
+
 ## Logging
 
 Use `skills/RUN_LOG.md` for meaningful runs, blockers, generated artifacts, and
 workflow changes. Do not log secrets or private user details.
+
+---
+
+## Prompts
+
+### Figure 98.1 — The seven phase gates
+**Files:** images/98-appendix-best-practices-fig-01.svg
+**Prompt:** Seven sequential gate checkpoints — problem, local evidence, stored script, small-run, verification, review, logging — drawn as an ordered pipeline that a run must clear in order. Single-headed connectors, ink on white, one red accent on the gate a run is currently held at.

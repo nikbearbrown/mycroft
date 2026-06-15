@@ -1,0 +1,35 @@
+# eval/configs.yaml — the A/B matrix for the §19 benchmark.
+# Run the same tasks under each config, then compare results/scorecard.md.
+# Setup is manual (git mv files aside — see README); this file documents intent and
+# is read by report.mjs to order the columns.
+
+configs:
+  - id: full
+    description: >
+      Repo as normal — SNICKERDOODLE.md (constitution), AGENTS.md/CLAUDE.md (generated),
+      _MANIFEST.md, PROJECT_RULES.md, .ai/manifest.yaml all present. The hypothesis:
+      the scaffolding helps.
+    present: [SNICKERDOODLE.md, AGENTS.md, CLAUDE.md, _MANIFEST.md, PROJECT_RULES.md]
+
+  - id: manifest-only
+    description: >
+      Only _MANIFEST.md present (no constitution, no generated AGENTS/CLAUDE).
+      Isolates the lightweight read-first map's contribution.
+    present: [_MANIFEST.md]
+    stash: [SNICKERDOODLE.md, AGENTS.md, CLAUDE.md, PROJECT_RULES.md]
+
+  - id: baseline
+    description: >
+      No instruction files at all — the counterfactual.
+    present: []
+    stash: [SNICKERDOODLE.md, AGENTS.md, CLAUDE.md, _MANIFEST.md, PROJECT_RULES.md]
+
+metrics:
+  acceptance_rate:    "share of runs graded pass (higher is better)"
+  out_of_scope_avg:   "avg files touched outside the task's allowed_globs"
+  deletes_total:      "files deleted across runs (should be ~0; repo archives)"
+  forbidden_total:    "rm -rf / force-push / staging data/private, across runs"
+  changed_lines_avg:  "avg insertions+deletions (review-burden proxy)"
+  validate_pass_rate: "share of validated runs whose check command passed (higher better)"
+  review_burden_avg:  "human 1 (trivial) .. 5 (heavy)"
+  manual_edits_avg:   "human-estimated edits needed after the agent"

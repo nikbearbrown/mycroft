@@ -1,0 +1,34 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d" font-family="'Inter', sans-serif">
+  <title id="t">The phase gate flow</title>
+  <desc id="d">A flow from source files through AI preparation to a gate where a human checks scope, approval, and verification, then on to the accountable layer, with a stop-condition branch looping back.</desc>
+  <rect width="700" height="420" fill="#FFFFFF"/>
+  <text x="40" y="40" font-size="20" font-family="'EB Garamond', Georgia, serif" fill="#2a1a0e">The phase gate flow</text>
+  <text x="40" y="60" font-size="13" fill="#545454">The gate is not overhead — it is what makes automation trustworthy.</text>
+  <g font-size="12" fill="#2a1a0e">
+    <rect x="40"  y="170" width="120" height="60" fill="#F5F5F5" stroke="#545454"/><text x="52" y="196">Source</text><text x="52" y="214">files</text>
+    <rect x="200" y="170" width="140" height="60" fill="#F5F5F5" stroke="#545454"/><text x="212" y="190">AI preparation</text><text x="212" y="208">trace · check · log</text>
+  </g>
+  <!-- gate -->
+  <rect x="386" y="140" width="60" height="120" fill="#C8102E"/>
+  <text x="416" y="278" font-size="11" font-family="'JetBrains Mono', monospace" fill="#C8102E" text-anchor="middle">gate</text>
+  <g font-size="9" fill="#FFFFFF" text-anchor="middle">
+    <text x="416" y="178">scope?</text>
+    <text x="416" y="200">approval?</text>
+    <text x="416" y="222">verify?</text>
+  </g>
+  <!-- accountable -->
+  <rect x="488" y="170" width="172" height="60" fill="#F5F5F5" stroke="#2a1a0e"/>
+  <text x="500" y="190" font-size="12" fill="#2a1a0e">Accountable layer</text>
+  <text x="500" y="208" font-size="12" fill="#545454">materiality · treatment · release</text>
+  <!-- arrows -->
+  <g stroke="#2a1a0e" stroke-width="2" fill="#2a1a0e">
+    <line x1="160" y1="200" x2="198" y2="200"/><polygon points="200,200 193,196 193,204"/>
+    <line x1="340" y1="200" x2="384" y2="200"/><polygon points="386,200 379,196 379,204"/>
+    <line x1="446" y1="200" x2="486" y2="200"/><polygon points="488,200 481,196 481,204"/>
+  </g>
+  <text x="452" y="194" font-size="10" font-family="'JetBrains Mono', monospace" fill="#545454">adequate</text>
+  <!-- stop condition loop back -->
+  <path d="M416,260 L416,330 L270,330 L270,232" fill="none" stroke="#545454" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <polygon points="270,230 265,242 275,242" fill="#545454"/>
+  <text x="300" y="324" font-size="10" font-family="'JetBrains Mono', monospace" fill="#545454">stop conditions → back to preparation</text>
+</svg>

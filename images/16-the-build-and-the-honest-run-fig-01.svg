@@ -1,0 +1,56 @@
+<!--
+  Four-Component Run Output
+  Book: Mycroft
+  Chapter: 16-the-build-and-the-honest-run
+  Figure 01
+  Type: systems diagram
+  Generated 2026-06-15
+  Source: pantry/16-the-build-and-the-honest-run-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-01">
+<title id="fig-title-01">Four-Component Run Output</title>
+<desc>An honest run produces four outputs tied at a central junction — a run log, a human report, an evidence appendix, and a gate record. Together they constitute the honest run; any one missing degrades the whole.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="16-the-build-and-the-honest-run" figure-number="01" figure-title="Four-Component Run Output" figure-slug="four-component-run-output" figure-type="systems diagram" priority="Critical" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/16-the-build-and-the-honest-run-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">Four outputs constitute the honest run</text>
+
+<!-- top-left run log -->
+<rect x="60" y="58" width="250" height="120" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="72" y="82" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Run log</text>
+<text x="72" y="104" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">machine-readable</text>
+<text x="72" y="122" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">every source and transformation</text>
+<text x="72" y="140" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">reconstruction record</text>
+
+<!-- top-right human report -->
+<rect x="390" y="58" width="250" height="120" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="402" y="82" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Human report</text>
+<text x="402" y="104" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">decision-organized</text>
+<text x="402" y="122" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">warranted language</text>
+<text x="402" y="140" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">no gate-crossing conclusions</text>
+
+<!-- bottom-left evidence appendix -->
+<rect x="60" y="238" width="250" height="120" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="72" y="262" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Evidence appendix</text>
+<text x="72" y="284" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">source-traceable</text>
+<text x="72" y="302" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">every finding pointed to</text>
+<text x="72" y="320" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">a file and timestamp</text>
+
+<!-- bottom-right gate record -->
+<rect x="390" y="238" width="250" height="120" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="402" y="262" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Gate record</text>
+<text x="402" y="284" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">every decision documented</text>
+<text x="402" y="302" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">conditions recorded</text>
+<text x="402" y="320" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">non-approvals visible</text>
+
+<!-- central junction -->
+<line x1="310" y1="118" x2="332" y2="190" stroke="#2a1a0e" stroke-width="1.5"/>
+<line x1="390" y1="118" x2="368" y2="190" stroke="#2a1a0e" stroke-width="1.5"/>
+<line x1="310" y1="298" x2="332" y2="226" stroke="#2a1a0e" stroke-width="1.5"/>
+<line x1="390" y1="298" x2="368" y2="226" stroke="#2a1a0e" stroke-width="1.5"/>
+<circle cx="350" cy="208" r="26" fill="#C8102E" stroke="#C8102E" stroke-width="1"/>
+<text x="350" y="205" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF" font-weight="bold">honest</text>
+<text x="350" y="217" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#FFFFFF" font-weight="bold">run</text>
+
+<text x="32" y="390" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">Remove any one component and the run no longer reconstructs, warrants, traces, or accounts for itself.</text>
+</svg>

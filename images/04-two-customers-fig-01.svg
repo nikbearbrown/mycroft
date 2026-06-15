@@ -1,0 +1,27 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d" font-family="'Inter', sans-serif">
+  <title id="t">The two customers</title>
+  <desc id="d">A two-column comparison: an agent contract of inputs, steps, schema, stop conditions, and log beside a human report card of purpose, evidence, caveats, decisions, and gate, with the gap labeled what most recipes skip.</desc>
+  <rect width="700" height="420" fill="#FFFFFF"/>
+  <text x="40" y="40" font-size="20" font-family="'EB Garamond', Georgia, serif" fill="#2a1a0e">The two customers</text>
+  <text x="40" y="60" font-size="13" fill="#545454">The agent and the reviewer have genuinely different needs.</text>
+  <rect x="40" y="84" width="280" height="300" fill="#F5F5F5" stroke="#545454" stroke-width="1"/>
+  <text x="56" y="110" font-size="13" font-weight="700" fill="#2a1a0e">AGENT CONTRACT</text>
+  <g font-size="12" fill="#2a1a0e">
+    <rect x="56" y="124" width="248" height="40" fill="#FFFFFF" stroke="#545454"/><text x="68" y="148">File-path inputs</text>
+    <rect x="56" y="174" width="248" height="40" fill="#FFFFFF" stroke="#545454"/><text x="68" y="198">Deterministic steps</text>
+    <rect x="56" y="224" width="248" height="40" fill="#FFFFFF" stroke="#545454"/><text x="68" y="248">Output schema</text>
+    <rect x="56" y="274" width="248" height="40" fill="#FFFFFF" stroke="#545454"/><text x="68" y="298">Stop conditions</text>
+    <rect x="56" y="324" width="248" height="40" fill="#FFFFFF" stroke="#545454"/><text x="68" y="348">Run log</text>
+  </g>
+  <rect x="380" y="84" width="280" height="300" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1"/>
+  <text x="396" y="110" font-size="13" font-weight="700" fill="#2a1a0e">HUMAN REPORT CARD</text>
+  <g font-size="12" fill="#2a1a0e">
+    <rect x="396" y="124" width="248" height="40" fill="#FFFFFF" stroke="#2a1a0e"/><text x="408" y="148">Purpose</text>
+    <rect x="396" y="174" width="248" height="40" fill="#FFFFFF" stroke="#2a1a0e"/><text x="408" y="198">Evidence summary</text>
+    <rect x="396" y="224" width="248" height="40" fill="#FFFFFF" stroke="#2a1a0e"/><text x="408" y="248">Caveats</text>
+    <rect x="396" y="274" width="248" height="40" fill="#FFFFFF" stroke="#2a1a0e"/><text x="408" y="298">Decisions</text>
+    <rect x="396" y="324" width="248" height="40" fill="#C8102E"/><text x="408" y="348" fill="#FFFFFF" font-weight="700">Gate</text>
+  </g>
+  <text x="350" y="220" font-size="10" font-family="'JetBrains Mono', monospace" fill="#C8102E" text-anchor="middle" transform="rotate(-90 350 220)">what most recipes skip</text>
+  <line x1="334" y1="234" x2="376" y2="234" stroke="#D4D4D4" stroke-width="1"/>
+</svg>

@@ -1,0 +1,46 @@
+<!--
+  Template Verification Gate
+  Book: Mycroft
+  Chapter: 10-budget-request-normalizer-and-challenge-pack
+  Figure: 02
+  Type: comparison panels
+  Generated: 2026-06-15
+  Source: pantry/10-budget-request-normalizer-and-challenge-pack-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-02">
+<title id="fig-title-02">Four pre-normalization verification checks; any failure blocks the submission from entering the pipeline</title>
+<desc>Four rows, three zones each: template version, required fields present, period coverage match, currency declaration. Columns are the check, what it catches, and the recipe action if it fails. A blocking gate junction marks that a failed submission does not enter normalization.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="10-budget-request-normalizer-and-challenge-pack" figure-number="02" figure-title="Template Verification Gate" figure-slug="template-verification-gate" figure-type="comparison panels" priority="Important" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/10-budget-request-normalizer-and-challenge-pack-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="44" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">A failed submission never enters the normalization pipeline</text>
+
+<!-- column headers -->
+<text x="44" y="84" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">Check</text>
+<text x="244" y="84" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">What it catches</text>
+<text x="476" y="84" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">Action if it fails</text>
+
+<!-- Row 1 -->
+<rect x="32" y="92" width="200" height="56" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1.5"/><text x="44" y="124" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Template version</text>
+<rect x="236" y="92" width="200" height="56" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/><text x="248" y="124" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">old template submitted</text>
+<rect x="440" y="92" width="228" height="56" fill="#F5F5F5" stroke="#C8102E" stroke-width="1.5"/><line x1="452" y1="120" x2="464" y2="120" stroke="#C8102E" stroke-width="2"/><text x="472" y="124" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">reject, notify submitter</text>
+
+<!-- Row 2 -->
+<rect x="32" y="152" width="200" height="56" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1.5"/><text x="44" y="184" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Required fields present</text>
+<rect x="236" y="152" width="200" height="56" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/><text x="248" y="178" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">missing headcount,</text><text x="248" y="194" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">rate, or mapping</text>
+<rect x="440" y="152" width="228" height="56" fill="#F5F5F5" stroke="#C8102E" stroke-width="1.5"/><line x1="452" y1="180" x2="464" y2="180" stroke="#C8102E" stroke-width="2"/><text x="472" y="184" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">pause, request resubmission</text>
+
+<!-- Row 3 -->
+<rect x="32" y="212" width="200" height="56" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1.5"/><text x="44" y="244" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Period coverage match</text>
+<rect x="236" y="212" width="200" height="56" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/><text x="248" y="244" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">incomplete fiscal year</text>
+<rect x="440" y="212" width="228" height="56" fill="#F5F5F5" stroke="#C8102E" stroke-width="1.5"/><line x1="452" y1="240" x2="464" y2="240" stroke="#C8102E" stroke-width="2"/><text x="472" y="244" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">flag gap, request resubmission</text>
+
+<!-- Row 4 -->
+<rect x="32" y="272" width="200" height="56" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1.5"/><text x="44" y="304" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Currency declaration</text>
+<rect x="236" y="272" width="200" height="56" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/><text x="248" y="304" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">currency not declared</text>
+<rect x="440" y="272" width="228" height="56" fill="#F5F5F5" stroke="#C8102E" stroke-width="1.5"/><line x1="452" y1="300" x2="464" y2="300" stroke="#C8102E" stroke-width="2"/><text x="472" y="304" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">request declaration first</text>
+
+<!-- blocking gate junction -->
+<rect x="32" y="346" width="636" height="44" fill="#2a1a0e"/>
+<text x="350" y="373" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#FFFFFF" font-weight="600">Verification gate &#8212; only clean submissions pass into normalization</text>
+</svg>

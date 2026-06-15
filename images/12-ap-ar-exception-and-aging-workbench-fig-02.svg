@@ -1,0 +1,60 @@
+<!--
+  Duplicate Candidate Match Criteria
+  Book: Mycroft
+  Chapter: 12-ap-ar-exception-and-aging-workbench
+  Figure 02
+  Type: comparison panels
+  Generated 2026-06-15
+  Source: pantry/12-ap-ar-exception-and-aging-workbench-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-02">
+<title id="fig-title-02">Duplicate Candidate Match Criteria</title>
+<desc>Four criteria the recipe weighs when flagging a possible duplicate payable — vendor, amount, date window, and invoice number — each with a relative match-strength weight. The recipe flags candidates only; it never confirms, holds, or contacts the vendor.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="12-ap-ar-exception-and-aging-workbench" figure-number="02" figure-title="Duplicate Candidate Match Criteria" figure-slug="duplicate-candidate-match-criteria" figure-type="comparison panels" priority="Important" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/12-ap-ar-exception-and-aging-workbench-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">Match criteria and relative weight for duplicate candidates</text>
+
+<!-- headers -->
+<text x="40" y="60" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">Criterion</text>
+<text x="180" y="60" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">What the recipe checks</text>
+<text x="470" y="60" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">Match weight</text>
+<line x1="32" y1="66" x2="668" y2="66" stroke="#D4D4D4" stroke-width="1"/>
+
+<!-- Row 1: vendor weight high -->
+<rect x="32" y="70" width="636" height="44" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="40" y="97" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Vendor</text>
+<text x="180" y="97" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">master-data match, not name string</text>
+<rect x="470" y="83" width="170" height="16" fill="#2a1a0e"/>
+
+<!-- Row 2: amount weight highest -->
+<rect x="32" y="114" width="636" height="44" fill="#FAFAFA" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="40" y="141" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Amount</text>
+<text x="180" y="141" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">exact or within tolerance</text>
+<rect x="470" y="127" width="190" height="16" fill="#2a1a0e"/>
+
+<!-- Row 3: date window medium -->
+<rect x="32" y="158" width="636" height="44" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="40" y="185" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Date window</text>
+<text x="180" y="185" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">invoice dates within N days (human-set)</text>
+<rect x="470" y="171" width="110" height="16" fill="#2a1a0e"/>
+
+<!-- Row 4: invoice number low (distinct required) -->
+<rect x="32" y="202" width="636" height="44" fill="#FAFAFA" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="40" y="229" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Invoice number</text>
+<text x="180" y="229" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">distinct numbers required</text>
+<rect x="470" y="215" width="70" height="16" fill="#2a1a0e"/>
+
+<!-- candidate output and blocking terminal -->
+<rect x="180" y="280" width="160" height="44" fill="#C8102E" stroke="#C8102E" stroke-width="1"/>
+<text x="260" y="300" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#FFFFFF" font-weight="bold">Flag as candidate</text>
+<text x="260" y="316" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF">weighted match</text>
+
+<line x1="340" y1="302" x2="400" y2="302" stroke="#2a1a0e" stroke-width="1.5"/>
+<!-- blocking terminal: bar -->
+<line x1="406" y1="282" x2="406" y2="322" stroke="#C8102E" stroke-width="4"/>
+<text x="420" y="298" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e" font-weight="bold">Stops here</text>
+<text x="420" y="314" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">no confirm, no hold, no vendor contact</text>
+
+<text x="32" y="370" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">Same invoice number on two records is a different problem — a processing error, not a duplicate payment.</text>
+</svg>

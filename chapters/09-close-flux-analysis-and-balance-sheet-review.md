@@ -20,6 +20,9 @@ What flux measures is movement. An account that moved needs to be understood. An
 
 The accountant's tool for this is the flux analysis. It sits between the trial balance and the controller's sign-off. It is the surface on which the question "does every material movement in the balance sheet have support?" gets answered. Before the recipe, this was manual work: someone pulled two trial balances, computed the deltas in a spreadsheet, sorted by magnitude, and started asking questions. The recipe does the computational part of that. The asking-questions part remains human.
 
+![A close workflow runs to a green status milestone, then a visible adequacy gap, before the controller gate and sign-off; status and adequacy are shown as distinct questions.](images/09-close-flux-analysis-and-balance-sheet-review-fig-01.png)
+*Figure 9.1 — Close status is not close adequacy*
+
 <!-- → [DIAGRAM: Timeline showing close workflow — left to right: period end → journals posted, reconciliations submitted, intercompany done (close tasks complete → status: green) → trial balance extracted → flux analysis computed (material movements ranked, support checked) → gate: controller reviews (support adequate? unexplained items resolved?) → sign-off and release. The "status: green" and "gate: controller reviews" are visually distinct, with a gap between them labeled "adequacy gap." Caption: the dashboard measures task completion; the flux review measures account adequacy — these are not the same question.] -->
 
 ---
@@ -34,7 +37,13 @@ The prior trial balance is the prior period's closing balance — the same versi
 
 With two sourced, versioned, approved trial balances, the recipe computes. Every account gets a dollar flux and a percent flux. The dollar flux is the change in absolute terms. The percent flux is that change divided by the absolute value of the prior balance — which avoids the sign confusion that arises when balances cross zero. Both are logged for every account in the balance sheet.
 
-<!-- → [TABLE: Source contracts for flux analysis — columns: input, source, version requirement, failure mode if wrong. Rows: current trial balance (close-complete GL extract, version + timestamp after all journals post, mid-close extract includes incomplete activity — flux overstates movement), prior trial balance (prior-period approved close, same version used for prior flux review, restated prior balance inflates flux with restatement — obscures current-period activity), threshold parameters (human-set materiality by account category, set before run, model-inferred thresholds may not reflect risk profile of this entity's balance sheet). Caption: flux is only meaningful if both inputs are the right version.] -->
+| Input | Source | Version requirement | Failure mode if wrong |
+|---|---|---|---|
+| Current trial balance | Close-complete GL extract | Version + timestamp after all journals post | A mid-close extract includes incomplete activity, so flux overstates movement |
+| Prior trial balance | Prior-period approved close | The same version used for the prior flux review | A restated prior balance inflates flux with the restatement, obscuring current-period activity |
+| Threshold parameters | Human-set materiality by account category | Set before the run | Model-inferred thresholds may not reflect this entity's balance-sheet risk profile |
+
+*Table 1 — Flux is only meaningful if both inputs are the right version.*
 
 ---
 
@@ -47,6 +56,9 @@ Support, in this context, means documentation that explains why an account moved
 The recipe can check support coverage. It can look for whether a support file exists, whether it is attached to the account or the journal entry, whether the file has a current-period date. What it cannot do is evaluate whether the support is adequate — whether the invoice actually explains the movement, whether the accrual estimate is reasonable, whether the revenue recognition treatment is correct. That evaluation requires professional judgment about the specific facts of the specific transaction. It requires a human.
 
 The recipe's output on support coverage is therefore binary: supported or unsupported. A material account movement with an attached, current-dated support file is flagged as supported — it still needs human review, but the surface is there. A material movement with no attached support, or with support from a prior period that has not been updated, is flagged as unsupported. Unsupported material movements stop the close review. They do not get carried past the gate by the recipe. They wait for human resolution.
+
+![A decision tree for a flagged material flux: supported, stale, and unsupported branches all converge at the human-review gate, but only the current-dated supported path can exit to sign-off.](images/09-close-flux-analysis-and-balance-sheet-review-fig-02.png)
+*Figure 9.2 — The support coverage decision tree: the recipe routes, the controller decides*
 
 <!-- → [DIAGRAM: Support coverage decision tree for a flagged account movement — starting node: material flux detected. Branch 1: support file exists, current-dated → flagged "supported, needs review." Branch 2: support file exists, prior-period dated → flagged "stale support, needs update." Branch 3: no support file → flagged "unsupported, blocks gate." All three branches flow to the human review gate. Only "supported, needs review" can exit to sign-off after review; the other two require additional human action before the gate can be cleared. Caption: the recipe routes; the controller decides.] -->
 
@@ -72,7 +84,16 @@ Approval: who clears the gate before the close is released? This is the controll
 
 Verification: what would make a flagged item defensible? For a material movement, the answer is specific: the support file exists, it is current-period, it explains the movement in terms that connect to the accounting treatment, and it was reviewed by someone with the standing to evaluate it. "The model confirmed the file exists" is not verification. "The controller reviewed the support and confirmed the accounting treatment is appropriate" is.
 
-<!-- → [TABLE: Supervision questions in close context — columns: question, close-specific application, failure if unasked. Rows: scope (period confirmed, entity specific, action space limited to read-and-report — if unasked: recipe may pull wrong period or expand entity coverage silently), approval (named controller, sign-off authority, approval record dated to this close cycle — if unasked: release happens before gate, unresolved items travel forward), verification (support exists, current-period, treatment confirmed by reviewer with standing — if unasked: "supported" label on flux item does not mean support was evaluated). Caption: in a close workflow, the gate is the controller's sign-off — not the dashboard's green light.] -->
+| Question | Close-specific application | Failure if unasked |
+|---|---|---|
+| Scope | Period confirmed, entity-specific, action space limited to read-and-report | Recipe may pull the wrong period or expand entity coverage silently |
+| Approval | Named controller, sign-off authority, approval record dated to this close cycle | Release happens before the gate; unresolved items travel forward |
+| Verification | Support exists, current-period, treatment confirmed by a reviewer with standing | A "supported" label on a flux item does not mean the support was evaluated |
+
+*Table 2 — In a close workflow, the gate is the controller's sign-off, not the dashboard's green light.*
+
+![The three supervision questions applied to the close — scope, approval, verification — each paired with the failure that follows from leaving it unasked.](images/09-close-flux-analysis-and-balance-sheet-review-fig-04.png)
+*Figure 9.3 — Supervision questions in the close context*
 
 ---
 
@@ -146,3 +167,19 @@ That is the workflow. Not slower — more reliable. The dashboard was never the 
 
 9. *Difficulty: Advanced* — The chapter argues that the recipe "cannot declare the books ready" because readiness is a professional judgment requiring knowledge the model does not have: the entity's operating context, the materiality of movements in context, and the standing to be accountable. A skeptic argues this is a temporary limitation — that a sufficiently trained model, given enough historical close data for the same entity, could in principle develop the contextual knowledge required to assess adequacy and that the "human judgment" boundary is a policy choice, not a logical necessity. Construct the strongest version of this argument. Then evaluate it against the chapter's claim: is the boundary a limitation of current models, or is there something about the accountability requirement that cannot be satisfied by a model regardless of its contextual knowledge? What would need to be true — about the model, the legal framework, and the professional standards — for the skeptic's argument to hold?
 *What this tests: ability to engage with the chapter's deepest claim about the nature of professional judgment, reason from the accountability requirement rather than capability, and evaluate whether the boundary is contingent or structural.*
+
+---
+
+## Prompts
+
+### Figure 9.1 — Close status is not close adequacy
+**Files:** images/09-close-flux-analysis-and-balance-sheet-review-fig-01.svg · d3/09-close-flux-analysis-and-balance-sheet-review-fig-01.html
+**Prompt:** A vertical brutalist close workflow on white: green status milestones at the top, a dashed red adequacy-gap line, then the controller-gate band and sign-off below. Ink-on-fill stage boxes, Inter labels, mono gap caption; the single red accent marks the gap between "complete" and "ready."
+
+### Figure 9.2 — The support coverage decision tree: the recipe routes, the controller decides
+**Files:** images/09-close-flux-analysis-and-balance-sheet-review-fig-02.svg · d3/09-close-flux-analysis-and-balance-sheet-review-fig-02.html
+**Prompt:** A brutalist decision tree: a material-flux root branches into supported, stale, and unsupported nodes that converge at a solid ink human-review gate; only the supported path exits to sign-off. White canvas, grey arrowheads, dashed stale node; the unsupported branch and its blocking stop-mark carry the single red accent.
+
+### Figure 9.3 — Supervision questions in the close context
+**Files:** images/09-close-flux-analysis-and-balance-sheet-review-fig-04.svg
+**Prompt:** Three stacked brutalist rows — scope, approval, verification — each paired with the failure that follows if it is left unasked. Uniform ink-on-fill cells on white, neutral grey failure text; a single red accent flags the verification row where a "supported" label can be mistaken for a reviewed one.

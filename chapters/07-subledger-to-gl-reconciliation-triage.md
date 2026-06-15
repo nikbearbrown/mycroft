@@ -23,6 +23,9 @@ The reconciliation process is the systematic search for which of those things ha
 
 This is exactly the kind of work where automation adds value: matching at scale, applying consistent rules, flagging exceptions without tiring. And it is exactly the kind of work where the output requires a human before it becomes actionable, because the exception classifications are hypotheses until an accountant confirms them.
 
+![The AR subledger detail and the GL control-account balance feed a reconciliation process that splits into matched (cleared) items and an exception queue requiring accountant judgment.](images/07-subledger-to-gl-reconciliation-triage-fig-01.png)
+*Figure 7.1 — Subledger, GL, and the reconciliation split*
+
 <!-- → [DIAGRAM: Flow showing AR subledger (individual invoices, payments, credits, adjustments) and GL control account (single balance) with a reconciliation process in the middle. The reconciliation produces two outputs: "Matched items — clear" and "Exception queue — requires accountant judgment." The GL control account has a note: "Should equal sum of all open subledger items." Caption: The subledger holds the detail. The GL holds the summary. The reconciliation finds where they diverge.] -->
 
 ---
@@ -39,7 +42,14 @@ Fourth, and often forgotten: are there duplicate transaction IDs in the subledge
 
 Stop conditions matter here more than in most finance workflows. A reconciliation that proceeds on bad source data produces an exception queue that looks real and isn't. The accountant spends time chasing differences that were artifacts of the extract, not actual breaks in the records. Worse, a clean exception queue built on bad data can give false assurance — the reconciliation "cleared" because the errors canceled each other out, not because the records were actually in agreement.
 
-<!-- → [TABLE: Four-row table. Columns: Verification Check, What It Catches, Stop Condition if Failed. Rows: Source file identity (system, version, timestamp — catches wrong-version extracts — halt, re-pull from system), Period coverage match (same date range on both sides — catches period-boundary artifacts — halt, confirm period convention with controller), Control totals (export matches source system totals — catches truncated or partial exports — halt, reconcile export to system before proceeding), Duplicate transaction IDs (double-counted transactions in subledger — catches data migration artifacts — halt, require human review). Caption: Source verification is not optional setup. It is the first gate in the reconciliation recipe.] -->
+| Verification check | What it catches | Stop condition if failed |
+|---|---|---|
+| Source file identity | Wrong-version extracts (system, version, timestamp mismatch) | Halt; re-pull from the source system |
+| Period coverage match | Period-boundary artifacts (date ranges differ across sides) | Halt; confirm period convention with the controller |
+| Control totals | Truncated or partial exports (export disagrees with source system totals) | Halt; reconcile the export to the system before proceeding |
+| Duplicate transaction IDs | Double-counted transactions from data-migration artifacts | Halt; require human review before continuing |
+
+*Table 1 — Source verification is not optional setup. It is the first gate in the reconciliation recipe.*
 
 ---
 
@@ -56,6 +66,9 @@ Fuzzy matching means relaxing one or more of the matching criteria to look for n
 The output of fuzzy matching is a suggested classification, not a confirmed one. "This item looks like a timing difference based on the date proximity and amount match" is a useful starting point for the accountant. It is not accounting treatment. The accountant may look at the item, check the supporting documentation, and confirm it is indeed a timing difference that will clear in the next period. Or they may find that what looked like a timing difference is actually a payment applied to the wrong invoice — a different problem with a different fix.
 
 The recipe should make this distinction explicit in the exception queue. Each item gets: the unmatched record from the subledger, the unmatched record from the GL (if any), the deterministic match result (no match found), the fuzzy match suggestion (if applicable), the suggested exception class, and the status: unreviewed. The accountant's job is to change that status to confirmed or reclassified, with a note. Until that happens, the exception is a hypothesis.
+
+![A two-stage funnel: deterministic matching clears items with certainty, the residue passes to fuzzy matching which produces hypotheses, and an accountant must confirm before any status changes.](images/07-subledger-to-gl-reconciliation-triage-fig-02.png)
+*Figure 7.2 — Deterministic before fuzzy: the matching funnel*
 
 <!-- → [DIAGRAM: Two-stage funnel. Stage 1 "Deterministic matching" — all items in, matched items exit as "Cleared — no judgment needed." Remaining items pass to Stage 2 "Fuzzy matching" — produces "Suggested classification" for each item, labeled explicitly as hypothesis. Exception queue output shows items with status "Unreviewed." Arrow from exception queue to "Accountant review" with label "Confirmation required before status changes." Caption: Deterministic matching produces certainty. Fuzzy matching produces hypotheses. The accountant converts hypotheses into conclusions.] -->
 
@@ -75,7 +88,18 @@ The exception queue organizes unmatched items into five classes. The classes are
 
 **Unexplained** is the residual category: items that don't fit the other four classes after review. An unexplained material difference is an escalation. It goes to the controller with full documentation of what was checked and what was not resolved.
 
-<!-- → [TABLE: Five-row table. Columns: Exception Class, What It Means, Expected Resolution, Urgency. Rows: Timing difference (posts to one system before other — clears in next period, no entry — low, confirm it clears), Mapping error (posted to wrong account — correcting journal entry — medium, requires entry before close), Duplicate (posted more than once — void or reverse — medium, confirm which posting is correct), Missing support (transaction without documentation — locate or escalate to controller — medium-high, control finding), Unexplained (does not fit other classes — escalate with full documentation — high, material items escalate immediately). Caption: The five exception classes map to five different actions. The classification is a hypothesis; the accountant confirms.] -->
+| Exception class | What it means | Expected resolution | Urgency |
+|---|---|---|---|
+| Timing difference | Posts to one system before the other | Clears in the next period; no entry | Low — confirm it clears |
+| Mapping error | Posted to the wrong account | Correcting journal entry | Medium — requires entry before close |
+| Duplicate | Posted more than once | Void or reverse | Medium — confirm which posting is correct |
+| Missing support | Transaction without documentation | Locate support or escalate to controller | Medium-high — control finding |
+| Unexplained | Does not fit the other classes | Escalate with full documentation | High — material items escalate immediately |
+
+*Table 2 — The five exception classes map to five different actions. The classification is a hypothesis; the accountant confirms.*
+
+![Five mutually exclusive exception classes ordered by ascending urgency — timing difference, mapping error, duplicate, missing support, unexplained — each paired with its own resolution.](images/07-subledger-to-gl-reconciliation-triage-fig-04.png)
+*Figure 7.3 — The five exception classes, ordered by urgency*
 
 ---
 
@@ -89,7 +113,17 @@ The recipe should carry forward prior-period open items and display their age in
 
 The carry-forward also catches a failure mode that is more common than it should be: the "cleared by aging out" problem, where an item disappears from the queue not because it was resolved but because the reconciliation was re-run with a shorter lookback window. If the recipe always carries forward open items from prior periods, items cannot silently disappear from the queue without a resolution record.
 
-<!-- → [TABLE: Aging schedule example. Columns: Item ID, Description, Original Period, Periods Open, Current Class, Status. Example rows showing items aging from 1 period (new timing difference, unreviewed) to 3+ periods (escalated unexplained item, requires controller sign-off before close). Caption: Aged items are a different kind of finding. A timing difference that has been open for three periods is not a timing difference.] -->
+| Item ID | Description | Original period | Periods open | Current class | Status |
+|---|---|---|---|---|---|
+| AR-1042 | Customer payment posted to subledger, not yet to GL | 2026-05 | 1 | Timing difference | Unreviewed |
+| AR-0918 | Invoice booked to wrong control account | 2026-04 | 2 | Mapping error | Open — correcting entry not yet made |
+| AR-0774 | Cash receipt with no remittance backup | 2026-03 | 3 | Missing support | Open — escalated, audit-track |
+| AR-0661 | $52K difference, cause not identified after review | 2026-03 | 3 | Unexplained | Escalated — controller sign-off required before close |
+
+*Table 3 — Aged items are a different kind of finding. A timing difference that has been open for three periods is not a timing difference.*
+
+![A single exception item tracked across periods, its meaning escalating from a routine timing difference when new to an escalation requiring controller sign-off once it has aged.](images/07-subledger-to-gl-reconciliation-triage-fig-05.png)
+*Figure 7.4 — Aging the exception queue changes what an item means*
 
 ---
 
@@ -144,3 +178,23 @@ The five exception classes are designed to be mutually exclusive, and in most ca
 **Challenge**
 
 9. *(Advanced)* The "Still Puzzling" section identifies a real design tension: the five exception classes are mutually exclusive in the recipe, but real items sometimes fit more than one class, and the primary classification is a heuristic that practitioners may accept without reviewing. Design an accountant review workflow that treats the primary classification as a starting point, not a conclusion — including what the confirmation interface looks like, how reclassifications are logged, and how the recipe uses reclassification data over time to improve the fuzzy matching heuristics. Address explicitly how you prevent the confirmation step from becoming a rubber stamp while keeping the review efficient enough that practitioners don't bypass it. *What this tests: ability to close the loop between human review and recipe improvement — operationalizing the principle that classification suggestions are hypotheses, not outputs.*
+
+---
+
+## Prompts
+
+### Figure 7.1 — Subledger, GL, and the reconciliation split
+**Files:** images/07-subledger-to-gl-reconciliation-triage-fig-01.svg · d3/07-subledger-to-gl-reconciliation-triage-fig-01.html
+**Prompt:** A brutalist systems diagram on white: an AR subledger detail node and a GL control-account node feed a central reconciliation process that diverges into matched (cleared) and exception-queue outputs. Ink boxes, grey connectors, JetBrains Mono for the sum-equals-balance bracket; the exception-queue node carries the single red border to mark where judgment is required.
+
+### Figure 7.2 — Deterministic before fuzzy: the matching funnel
+**Files:** images/07-subledger-to-gl-reconciliation-triage-fig-02.svg · d3/07-subledger-to-gl-reconciliation-triage-fig-02.html
+**Prompt:** A vertical brutalist funnel: a wide deterministic-matching trapezoid clears items to a neutral cleared node, the residue narrows into a fuzzy-matching trapezoid, then a dashed hypothesis box and an unreviewed exception queue. EB Garamond title, ink strokes, grey arrowheads; the red accent marks the fuzzy stage and the accountant-review gate where confirmation is required.
+
+### Figure 7.3 — The five exception classes, ordered by urgency
+**Files:** images/07-subledger-to-gl-reconciliation-triage-fig-04.svg
+**Prompt:** Five stacked brutalist class rows — timing difference, mapping error, duplicate, missing support, unexplained — ordered by ascending urgency, each with its resolution token. Uniform ink-on-fill cells on white; the highest-urgency unexplained row carries the single red accent.
+
+### Figure 7.4 — Aging the exception queue changes what an item means
+**Files:** images/07-subledger-to-gl-reconciliation-triage-fig-05.svg
+**Prompt:** A horizontal brutalist timeline of one exception item across successive periods, its label shifting from a routine timing difference to an escalation. Neutral ink markers on white with mono period stamps; the final aged state is marked in the single red accent to signal controller sign-off.

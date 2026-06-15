@@ -1,0 +1,29 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d" font-family="'Inter', sans-serif">
+  <title id="t">Parsing versus proving</title>
+  <desc id="d">A two-level stack: a structural integrity base whose checkmark does not propagate up to the evidentiary adequacy level, with the link labeled necessary but not sufficient.</desc>
+  <rect width="700" height="420" fill="#FFFFFF"/>
+  <text x="40" y="40" font-size="20" font-family="'EB Garamond', Georgia, serif" fill="#2a1a0e">Parsing versus proving</text>
+  <text x="40" y="60" font-size="13" fill="#545454">Structural integrity is necessary for evidence, not sufficient.</text>
+  <!-- top level -->
+  <rect x="120" y="92" width="460" height="110" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1"/>
+  <text x="140" y="118" font-size="15" font-weight="700" fill="#2a1a0e">Evidentiary adequacy</text>
+  <g font-size="12" fill="#545454">
+    <text x="140" y="142">Complete · fresh · correctly mapped</text>
+    <text x="140" y="162">Logically coherent</text>
+    <text x="140" y="182">Conclusions warranted</text>
+  </g>
+  <!-- arrow -->
+  <line x1="350" y1="286" x2="350" y2="208" stroke="#C8102E" stroke-width="2"/>
+  <polygon points="350,202 345,214 355,214" fill="#C8102E"/>
+  <text x="362" y="252" font-size="11" font-family="'JetBrains Mono', monospace" fill="#C8102E">necessary but not sufficient</text>
+  <!-- bottom level -->
+  <rect x="120" y="292" width="460" height="100" fill="#F5F5F5" stroke="#545454" stroke-width="1"/>
+  <text x="140" y="318" font-size="15" font-weight="700" fill="#2a1a0e">Structural integrity</text>
+  <g font-size="12" fill="#545454">
+    <text x="140" y="342">File parses · formulas return</text>
+    <text x="140" y="362">No broken references</text>
+  </g>
+  <!-- checkmark that does not propagate -->
+  <text x="540" y="352" font-size="22" fill="#2a1a0e">&#10003;</text>
+  <text x="528" y="372" font-size="10" font-family="'JetBrains Mono', monospace" fill="#545454">stops here</text>
+</svg>

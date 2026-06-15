@@ -1,0 +1,60 @@
+<!--
+  AR Exception Routing to Human-Action Queues
+  Book: Mycroft
+  Chapter: 12-ap-ar-exception-and-aging-workbench
+  Figure 03
+  Type: process flowchart
+  Generated 2026-06-15
+  Source: pantry/12-ap-ar-exception-and-aging-workbench-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-03">
+<title id="fig-title-03">AR Exception Routing to Human-Action Queues</title>
+<desc>A single aging export branches by condition into four exception queues — collections follow-up, dispute resolution, supervisor assignment, and data quality — that converge into a human-action zone. No queue flows directly to any world action.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="12-ap-ar-exception-and-aging-workbench" figure-number="03" figure-title="AR Exception Routing to Human-Action Queues" figure-slug="ar-exception-routing" figure-type="process flowchart" priority="Critical" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/12-ap-ar-exception-and-aging-workbench-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">Exceptions route into queues, then stop at the action boundary</text>
+
+<!-- source -->
+<rect x="32" y="170" width="120" height="56" fill="#2a1a0e" stroke="#2a1a0e" stroke-width="1"/>
+<text x="92" y="194" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#FFFFFF" font-weight="bold">Aging export</text>
+<text x="92" y="210" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF">single source</text>
+
+<!-- four queues -->
+<line x1="152" y1="198" x2="240" y2="78" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="152" y1="198" x2="240" y2="148" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="152" y1="198" x2="240" y2="248" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="152" y1="198" x2="240" y2="318" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<rect x="245" y="56" width="200" height="48" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="255" y="76" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Collections follow-up</text>
+<text x="255" y="92" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">past-due, owner set, no dispute</text>
+
+<rect x="245" y="126" width="200" height="48" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="255" y="146" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Dispute resolution</text>
+<text x="255" y="162" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">dispute status attached</text>
+
+<rect x="245" y="226" width="200" height="48" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="255" y="246" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Supervisor assignment</text>
+<text x="255" y="262" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">no owner assigned</text>
+
+<rect x="245" y="296" width="200" height="48" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="255" y="316" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Data quality</text>
+<text x="255" y="332" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">counterparty anomaly</text>
+
+<!-- converge to human-action zone -->
+<line x1="445" y1="80" x2="510" y2="190" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="445" y1="150" x2="510" y2="195" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="445" y1="250" x2="510" y2="205" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="445" y1="320" x2="510" y2="210" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<rect x="515" y="170" width="120" height="56" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="575" y="194" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="bold">Human action</text>
+<text x="575" y="210" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">zone</text>
+
+<!-- blocking boundary before world actions -->
+<line x1="655" y1="150" x2="655" y2="246" stroke="#C8102E" stroke-width="4"/>
+<text x="650" y="270" text-anchor="end" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#C8102E" font-weight="bold">workbench limit</text>
+
+<text x="32" y="380" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">No queue flows directly to customer communication, holds, payment release, write-off, or record merge.</text>
+</svg>

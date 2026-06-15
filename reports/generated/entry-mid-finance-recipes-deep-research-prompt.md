@@ -25,7 +25,7 @@ Existing Mycroft finance-adjacent recipes include SEC filings analysis, forecast
 
 Use local repository evidence first:
 
-- `MYCROFT.md`
+- `SNICKERDOODLE.md`
 - `DOMAIN.md`
 - `DATA_CONTRACT.md`
 - `docs/recipes.md`

@@ -1,0 +1,48 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig02-title fig02-desc">
+<title id="fig02-title">A decision tree for a flagged material flux: only current-dated support can exit the gate to sign-off</title>
+<desc id="fig02-desc">A detected material flux branches by support state into supported, stale, and unsupported outcomes, all converging at a human-review gate; only the supported path reaches sign-off, while stale and unsupported paths require additional action before re-entering the gate.</desc>
+<defs><marker id="arr09" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#545454"/></marker></defs>
+
+<text x="32" y="40" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="18" fill="#2a1a0e">Only current-dated support clears the gate to sign-off</text>
+
+<rect x="270" y="62" width="160" height="44" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="350" y="89" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Material flux detected</text>
+
+<line x1="300" y1="106" x2="140" y2="140" stroke="#545454" stroke-width="1.5" marker-end="url(#arr09)"/>
+<line x1="350" y1="106" x2="350" y2="140" stroke="#545454" stroke-width="1.5" marker-end="url(#arr09)"/>
+<line x1="400" y1="106" x2="560" y2="140" stroke="#545454" stroke-width="1.5" marker-end="url(#arr09)"/>
+
+<rect x="32" y="144" width="190" height="60" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1.5"/>
+<text x="127" y="168" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" font-weight="700" fill="#2a1a0e">Supported</text>
+<text x="127" y="186" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">current-dated, needs review</text>
+
+<rect x="255" y="144" width="190" height="60" fill="#FFFFFF" stroke="#787878" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="350" y="168" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" font-weight="700" fill="#2a1a0e">Stale support</text>
+<text x="350" y="186" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">prior-period dated, needs update</text>
+
+<rect x="478" y="144" width="190" height="60" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.5"/>
+<text x="573" y="168" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" font-weight="700" fill="#2a1a0e">Unsupported</text>
+<text x="573" y="186" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">no support, blocks gate</text>
+
+<line x1="127" y1="204" x2="320" y2="252" stroke="#545454" stroke-width="1.5" marker-end="url(#arr09)"/>
+<line x1="350" y1="204" x2="350" y2="252" stroke="#545454" stroke-width="1.5" marker-end="url(#arr09)"/>
+<line x1="573" y1="204" x2="432" y2="248" stroke="#545454" stroke-width="1.5"/>
+<line x1="424" y1="240" x2="440" y2="256" stroke="#C8102E" stroke-width="3"/>
+
+<rect x="280" y="256" width="140" height="50" fill="#2a1a0e"/>
+<text x="350" y="280" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">Human-review gate</text>
+<text x="350" y="297" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#FFFFFF">controller judgment</text>
+
+<line x1="280" y1="281" x2="202" y2="281" stroke="#545454" stroke-width="1.5" marker-end="url(#arr09)"/>
+<rect x="40" y="256" width="156" height="50" fill="#FFFFFF" stroke="#2a1a0e" stroke-width="1.5"/>
+<text x="118" y="280" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" font-weight="700" fill="#2a1a0e">Sign-off terminal</text>
+<text x="118" y="297" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">supported path only</text>
+
+<line x1="420" y1="281" x2="500" y2="281" stroke="#545454" stroke-width="1.5" marker-end="url(#arr09)"/>
+<rect x="504" y="252" width="164" height="58" fill="#F5F5F5" stroke="#787878" stroke-width="1"/>
+<text x="586" y="276" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Requires additional</text>
+<text x="586" y="292" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">human action</text>
+
+<path d="M586 310 q0 40 -40 40 l-160 0 q-36 0 -36 -36" fill="none" stroke="#545454" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr09)"/>
+<text x="430" y="372" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">update support, then re-enter the gate</text>
+</svg>

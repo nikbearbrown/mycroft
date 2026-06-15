@@ -35,6 +35,9 @@ A full Mycroft finance recipe run produces four outputs, and each one has a spec
 
 **The gate record** is the documentation of every human decision in the run. For each gate: who cleared it, when, with what information, and on what basis. Not a checkbox — a record. If the gate was cleared conditionally — "approved pending resolution of the stale screenshot in control 7B" — that condition appears in the gate record. If the gate was not cleared because the evidence was insufficient, that appears too. The gate record is the proof that the workflow functioned as designed: that the preparation layer prepared and the judgment layer judged, and that the two were not collapsed into each other.
 
+![Four-component run output in a 2x2 grid — run log, human report, evidence appendix, and gate record — with a note that the four together constitute the honest run and any one missing degrades the whole.](images/16-the-build-and-the-honest-run-fig-01.png)
+*Figure 16.1 — Four-component run output*
+
 <!-- → [DIAGRAM: Four-component run output — four boxes arranged in a 2x2 grid: top-left "Run log" (machine-readable, every source and transformation, reconstruction record); top-right "Human report" (decision-organized, warranted language, no gate-crossing conclusions); bottom-left "Evidence appendix" (source traceable, every finding pointed to a file and timestamp); bottom-right "Gate record" (every decision documented, conditions recorded, non-approvals visible) — a label below the grid: "The four outputs together constitute the honest run. Any one missing degrades the whole."] -->
 
 ---
@@ -49,7 +52,19 @@ Defining scope means writing down, before the run starts, what is included and w
 
 It also means writing down what is not included and why. This is the part that tends to get omitted, because it feels like admitting a limitation. But the "did not test" list is one of the most important outputs of an honest run. A report that says "this covers entities A, B, and C" is incomplete without "entity D was excluded because the source system extract was unavailable; the run does not cover entity D's position." The reader of the report needs to know this before they rely on it.
 
-<!-- → [TABLE: Scope definition template — rows: "Entities in scope" (list, with rationale for any exclusions); "Period" (start date, end date, extract timestamps); "Source systems" (system name, extract version, as-of date); "Recipes to run" (in sequence, with dependencies noted); "Stop conditions" (conditions under which the run halts); "Did-not-test list" (what is excluded and why) — a note at the bottom: "Scope is defined before the run starts. Changes to scope after the run require a documented amendment."] -->
+| Scope element | What it records |
+|---|---|
+| Entities in scope | The list of entities, with a rationale for any exclusions |
+| Period | Start date, end date, extract timestamps |
+| Source systems | System name, extract version, as-of date |
+| Recipes to run | In sequence, with dependencies noted |
+| Stop conditions | The conditions under which the run halts |
+| Did-not-test list | What is excluded and why |
+
+*Scope is defined before the run starts. Changes to scope after the run require a documented amendment.*
+
+![Scope definition template laid out as a stack of fields — entities, period, source systems, recipes to run, stop conditions, and the did-not-test list — all fixed before the run starts.](images/16-the-build-and-the-honest-run-fig-02.png)
+*Figure 16.2 — Scope definition template*
 
 ---
 
@@ -75,7 +90,16 @@ The gate record should document, for each gate: the name of the approver and the
 
 What the gate record should not contain is a conclusion on any question that was not explicitly in scope for that gate. A gate that clears the cash position does not clear the variance analysis. A gate that approves the evidence readiness ledger does not certify control effectiveness. Each gate clears what it was designed to clear, and the record reflects that precision.
 
-<!-- → [TABLE: Gate record structure — column headers: "Gate ID", "Recipe or artifact cleared", "Approver name and role", "Date and time", "Evidence surface reviewed", "Decision (approved / conditional / not approved)", "Condition if applicable", "Condition owner", "Resolution date" — a note: "No gate clears a scope beyond the artifact it was designed to review"] -->
+| Gate ID | Recipe or artifact cleared | Approver name and role | Date and time | Evidence surface reviewed | Decision | Condition if applicable | Condition owner | Resolution date |
+|---|---|---|---|---|---|---|---|---|
+| G-01 | Data contract checks | J. Okafor, Controller | 2024-10-18 09:14 | Source check log | Approved | — | — | — |
+| G-04 | Control evidence ledger | M. Reyes, Audit lead | 2024-10-18 14:02 | Readiness ledger §7B | Conditional | Resolve stale screenshot in control 7B | Control owner | 2024-10-21 |
+| G-06 | Final run certification | J. Okafor, Controller | 2024-10-19 08:30 | Completion record | Not approved | Open AP feed staleness unresolved | Treasury | Pending |
+
+*No gate clears a scope beyond the artifact it was designed to review.*
+
+![Gate record structure showing one row per gate with approver, time, evidence surface, and a three-state decision — approved, conditional, not approved — so that non-approvals stay visible.](images/16-the-build-and-the-honest-run-fig-03.png)
+*Figure 16.3 — Gate record structure with three decision states*
 
 ---
 
@@ -87,7 +111,35 @@ The did-not-test list is the explicit accounting of what the run did not cover. 
 
 The open risks list is the accounting of unresolved questions that the run surfaced but could not resolve. An exception that was flagged but not triaged because the accounting team was not available. A control evidence gap that requires a conversation with the control owner to determine whether there is a compensating control. A threshold breach in the liquidity watch that the treasury team acknowledged but whose resolution is pending. These items are still open. The run documented them. The reader needs to know they are open before acting on anything connected to them.
 
-<!-- → [TABLE: Run completion record — three sections: "Did-not-test list" (item, reason excluded, impact on run scope); "Open risks" (item, raised by which recipe, owner, status, expected resolution); "Run certification" (run by, date, scope as defined, recipes that completed, recipes that halted, gate record reference) — a note at the bottom: "AI cannot certify the run as adequate. The run certification is signed by the finance professional who cleared the final gate."] -->
+**Did-not-test list**
+
+| Item | Reason excluded | Impact on run scope |
+|---|---|---|
+| Entity D position | Source system extract unavailable | Run does not cover entity D |
+| 8 of 31 contracts | Source chain incomplete; run halted | Contract triage covers 23 contracts |
+
+**Open risks**
+
+| Item | Raised by | Owner | Status | Expected resolution |
+|---|---|---|---|---|
+| AP feed for subsidiary B arrived 12h late, possibly stale | AP/AR workbench | Treasury | Open | 2024-10-21 |
+| Control 7B stale screenshot | Control evidence ledger | Control owner | Conditional | 2024-10-21 |
+
+**Run certification**
+
+| Field | Value |
+|---|---|
+| Run by | J. Okafor, Controller |
+| Date | 2024-10-19 |
+| Scope as defined | Entities A–C, October 2024 close |
+| Recipes completed | Data contract, variance, control ledger, contract triage |
+| Recipes halted | Contract triage (8 contracts, source-chain gap) |
+| Gate record reference | GR-2024-10 |
+
+*AI cannot certify the run as adequate. The run certification is signed by the finance professional who cleared the final gate.*
+
+![Run completion record in three sections — did-not-test list, open risks, and run certification — with the certification signed by a human, not the recipe.](images/16-the-build-and-the-honest-run-fig-04.png)
+*Figure 16.4 — Run completion record: three sections*
 
 The run certification at the bottom of the completion record is the human's statement that the run was conducted as described, that the scope was as defined, and that the gate decisions were made on the basis of the evidence produced. It is not a statement that the run covered everything. It is not a statement that the underlying evidence is conclusive. It is a statement that this run, as described, was conducted honestly.
 
@@ -158,3 +210,23 @@ This is partly a design problem and partly a culture problem. The design can mak
 **Exercise 2.** Produce a draft gate record for one gate in your run. Include the approver name and role, the evidence surface reviewed, the decision, and any condition. Then ask the model to write the gate record for the same gate based only on the recipe output, without your input. Compare the two records: what does the model assert about the gate decision that you would not assert, and why?
 
 **Exercise 3.** Write the did-not-test list and open risks list for your full run. For each item, write one sentence explaining what the risk is if the excluded item or unresolved question goes the wrong way. Then ask the model to draft a run certification based on your four-component output. Review what it certifies: identify every claim the model makes that goes beyond what the evidence supports, and rewrite the certification to stay within what can honestly be said.
+
+---
+
+## Prompts
+
+### Figure 16.1 — Four-component run output
+**Files:** images/16-the-build-and-the-honest-run-fig-01.svg · d3/16-the-build-and-the-honest-run-fig-01.html
+**Prompt:** A 2x2 card grid — run log, human report, evidence appendix, gate record — each card an ink-bordered panel with an ochre top rule. A red note beneath reads that the four together constitute the honest run and any one missing degrades the whole. Restrained, ink on white.
+
+### Figure 16.2 — Scope definition template
+**Files:** images/16-the-build-and-the-honest-run-fig-02.svg
+**Prompt:** A stacked-field template — entities, period, source systems, recipes to run, stop conditions, did-not-test list — fixed before the run begins. Plain rows, ink on white, one ochre marker on the did-not-test row to flag the field most often omitted.
+
+### Figure 16.3 — Gate record structure with three decision states
+**Files:** images/16-the-build-and-the-honest-run-fig-03.svg
+**Prompt:** A gate-record grid, one row per gate, columns for approver, time, evidence surface, and a three-state decision. Approved / conditional / not-approved each read distinctly; non-approvals stay visible rather than hidden. Ink on white, one accent for the not-approved state.
+
+### Figure 16.4 — Run completion record: three sections
+**Files:** images/16-the-build-and-the-honest-run-fig-04.svg
+**Prompt:** A three-section completion record — did-not-test list, open risks, run certification — the certification block signed by a human, with a clear mark that the recipe cannot sign it. Flat, ink on white, one accent on the certification signature line.

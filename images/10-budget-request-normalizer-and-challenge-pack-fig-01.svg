@@ -1,0 +1,51 @@
+<!--
+  The Normalization Pipeline
+  Book: Mycroft
+  Chapter: 10-budget-request-normalizer-and-challenge-pack
+  Figure: 01
+  Type: systems diagram
+  Generated: 2026-06-15
+  Source: pantry/10-budget-request-normalizer-and-challenge-pack-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-01">
+<title id="fig-title-01">Six heterogeneous department submissions converge through three alignment stages into one uniform comparison surface</title>
+<desc>On the left, six department submissions drawn as visibly different shapes (heterogeneous templates). They converge into a three-stage pipeline: period alignment, account alignment, currency alignment. On the right, a single uniform comparison surface, regular and consistent, contrasting with the irregular inputs.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="10-budget-request-normalizer-and-challenge-pack" figure-number="01" figure-title="The Normalization Pipeline" figure-slug="the-normalization-pipeline" figure-type="systems diagram" priority="Critical" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/10-budget-request-normalizer-and-challenge-pack-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="44" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">Heterogeneous submissions to one comparable surface &#8212; without judging the numbers</text>
+
+<text x="100" y="78" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">Department submissions</text>
+
+<!-- six varied input shapes -->
+<rect x="40" y="92" width="120" height="38" fill="#F5F5F5" stroke="#787878" stroke-width="1"/><text x="100" y="115" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Sales</text>
+<rect x="40" y="138" width="120" height="38" rx="0" fill="#F5F5F5" stroke="#787878" stroke-width="1" transform="skewX(-8) translate(20 0)"/><text x="108" y="161" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Engineering</text>
+<polygon points="40,184 160,184 150,222 50,222" fill="#F5F5F5" stroke="#787878" stroke-width="1"/><text x="100" y="207" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Marketing</text>
+<rect x="48" y="230" width="104" height="38" fill="#F5F5F5" stroke="#787878" stroke-width="1"/><text x="100" y="253" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Operations</text>
+<polygon points="100,276 158,296 100,316 42,296" fill="#F5F5F5" stroke="#787878" stroke-width="1"/><text x="100" y="300" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Finance</text>
+<rect x="40" y="324" width="120" height="38" rx="0" fill="#F5F5F5" stroke="#787878" stroke-width="1" transform="skewX(6) translate(-30 0)"/><text x="96" y="347" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">HR</text>
+
+<!-- converging arrows into pipeline -->
+<line x1="160" y1="111" x2="244" y2="200" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="170" y1="157" x2="244" y2="210" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="160" y1="203" x2="244" y2="218" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="152" y1="249" x2="244" y2="226" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="158" y1="296" x2="244" y2="234" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="150" y1="343" x2="244" y2="244" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- three-stage pipeline -->
+<rect x="248" y="176" width="208" height="92" fill="none" stroke="#D4D4D4" stroke-width="1" stroke-dasharray="4 3"/>
+<rect x="256" y="190" width="192" height="22" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1"/><text x="352" y="206" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">1 &#183; Period alignment</text>
+<rect x="256" y="216" width="192" height="22" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1"/><text x="352" y="232" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">2 &#183; Account alignment</text>
+<rect x="256" y="242" width="192" height="22" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1"/><text x="352" y="258" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">3 &#183; Currency alignment</text>
+
+<line x1="456" y1="222" x2="496" y2="222" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- single uniform output -->
+<rect x="500" y="150" width="168" height="146" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.5"/>
+<text x="584" y="174" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">Unified comparison surface</text>
+<rect x="516" y="190" width="136" height="18" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<rect x="516" y="214" width="136" height="18" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<rect x="516" y="238" width="136" height="18" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<rect x="516" y="262" width="136" height="18" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+</svg>

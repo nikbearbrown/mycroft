@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fluent output versus finished work</title>
+<style>
+  :root {
+    --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E;
+    --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E;
+    --color-fill:#F5F5F5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A;
+      --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30;
+      --color-fill:#1A1A1A;
+    }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--color-white); color:var(--color-ink); font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif; }
+  #chart { width:100%; }
+  .panel-rect { fill:var(--color-fill); stroke:var(--color-border); stroke-width:1; }
+  .surface { fill:var(--color-white); stroke:var(--color-secondary); stroke-width:1; }
+  .grounded { fill:var(--color-white); stroke:var(--color-ink); stroke-width:1; }
+  .gate { fill:var(--color-red); }
+  .heading { font-family:'EB Garamond',Georgia,serif; fill:var(--color-ink); }
+  .sub { fill:var(--color-secondary); }
+  .label { fill:var(--color-ink); font-size:12px; }
+  .panel-title { font-weight:700; fill:var(--color-ink); font-size:13px; }
+  .mono { font-family:'JetBrains Mono','Fira Code',monospace; fill:var(--color-red); font-size:11px; }
+  .arrow { stroke:var(--color-red); stroke-width:2; fill:var(--color-red); }
+  .panel-rect, .surface, .grounded { transition:opacity 120ms cubic-bezier(0.2,0.8,0.2,1); }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; animation:none !important; } }
+</style>
+</head>
+<body>
+<div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const FALLBACK_DATA = {
+  fluent: ["Polished paragraph","Polished paragraph","Confident claim","Ready-looking deck"],
+  finished: ["Source file","Period label","Owner confirmation","Approval gate"]
+};
+function draw(data){
+  d3.select('#chart').selectAll('*').remove();
+  const w = document.getElementById('chart').clientWidth || 700;
+  const h = Math.max(380, w*0.6);
+  const svg = d3.select('#chart').append('svg')
+    .attr('width',w).attr('height',h)
+    .attr('viewBox',`0 0 ${w} ${h}`)
+    .attr('role','img').attr('aria-labelledby','t d');
+  svg.append('title').attr('id','t').text('Fluent output versus finished work');
+  svg.append('desc').attr('id','d').text('Two near-identical panels; the left shows surface-only fluent output, the right shows grounded finished work, with an arrow marking what is missing.');
+  svg.append('text').attr('class','heading').attr('x',24).attr('y',32).attr('font-size',20).text('Fluent output looks like finished work');
+  svg.append('text').attr('class','sub').attr('x',24).attr('y',52).attr('font-size',13).text('The trap is that the left column resembles the right.');
+
+  const top=80, pw=(w-72)/2, ph=h-top-40;
+  // left panel
+  const gL = svg.append('g');
+  gL.append('rect').attr('class','panel-rect').attr('x',24).attr('y',top).attr('width',pw).attr('height',ph);
+  gL.append('text').attr('class','panel-title').attr('x',40).attr('y',top+26).text('FLUENT OUTPUT');
+  const lItems=[{t:'',h:18},{t:'',h:18},{t:'',h:14},{t:'Confident claim',h:24},{t:'Ready-looking deck',h:32}];
+  let ly=top+44;
+  lItems.forEach(it=>{ if(it.t){gL.append('text').attr('class','label sub').attr('x',40).attr('y',ly+12).text(it.t);ly+=18;}
+    gL.append('rect').attr('class','surface').attr('x',40).attr('y',ly).attr('width',pw-32).attr('height',it.h); ly+=it.h+10; });
+
+  // right panel
+  const rx=48+pw;
+  const gR = svg.append('g');
+  gR.append('rect').attr('class','panel-rect').attr('x',rx).attr('y',top).attr('width',pw).attr('height',ph);
+  gR.append('text').attr('class','panel-title').attr('x',rx+16).attr('y',top+26).text('FINISHED WORK');
+  let ry=top+40;
+  data.finished.forEach((t,i)=>{
+    const isGate = i===data.finished.length-1;
+    gR.append('rect').attr('class',isGate?'gate':'grounded').attr('x',rx+16).attr('y',ry).attr('width',pw-32).attr('height',28);
+    gR.append('text').attr('x',rx+28).attr('y',ry+19).attr('font-size',12)
+      .attr('fill',isGate?'var(--color-white)':'var(--color-ink)').attr('font-weight',isGate?'700':'400').text(t);
+    ry+=38;
+  });
+
+  // arrow across gap
+  const my=top+ph/2;
+  svg.append('line').attr('class','arrow').attr('x1',24+pw+2).attr('y1',my).attr('x2',rx-2).attr('y2',my);
+  svg.append('polygon').attr('class','arrow').attr('points',`${rx-2},${my} ${rx-12},${my-5} ${rx-12},${my+5}`);
+  svg.append('text').attr('class','mono').attr('x',24+pw+6).attr('y',my-8).text("what's missing");
+}
+let current = FALLBACK_DATA;
+async function load(){ try{ current = await d3.json('./01-the-fluency-trap-fig-01.json'); }catch(e){ current=FALLBACK_DATA; } draw(current); }
+load();
+new ResizeObserver(()=>draw(current)).observe(document.getElementById('chart'));
+</script>
+</body>
+</html>

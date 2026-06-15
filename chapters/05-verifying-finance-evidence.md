@@ -19,6 +19,9 @@ The structural integrity of the file tells you nothing about this. The report co
 
 This is the core distinction I want to establish before anything else: structural integrity is a necessary condition for evidence, not a sufficient one. The artifact has to parse *and* be complete, fresh, correctly mapped, and logically coherent before the conclusions it supports are warranted.
 
+![A two-level stack: a structural integrity base (file parses, formulas return, no broken references) whose checkmark does not propagate up to the evidentiary adequacy level (complete, fresh, correctly mapped, coherent, conclusions warranted), with the link labeled necessary but not sufficient.](images/05-verifying-finance-evidence-fig-01.png)
+*Figure 5.1 — Parsing versus proving: structural integrity is necessary for evidence, not sufficient.*
+
 <!-- → [DIAGRAM: Two-level stack — bottom level labeled "Structural integrity" (file parses, formulas return, no broken references) with a checkmark that does NOT propagate upward; top level labeled "Evidentiary adequacy" (complete, fresh, correctly mapped, logically coherent, conclusions warranted) — an arrow from bottom to top labeled "necessary but not sufficient"; the gap between levels is the focus of the chapter] -->
 
 Finance work has a habit of conflating these two levels. The reason is partly practical — if something parses, it usually means someone did the work, and the work usually produces something approximately right. But "approximately right" is not a standard that holds up when the artifact influences a cash decision, a reporting number, or an external disclosure.
@@ -41,7 +44,19 @@ The freshness question is: does the extract timestamp match the period you are a
 
 The control total question is: what is the number this should tie to, and does it?
 
-<!-- → [TABLE: Six-row table — column headers: "Dimension", "The silent failure mode", "The question to ask" — rows: Completeness (missing population, excluded entities) "What should be here?"; Freshness (stale extract, pre-restatement data) "Does the timestamp match the moment?"; Control totals (extract doesn't tie to GL) "What does this reconcile to?"; Mapping (account reclassification, changed categories) "Are the categories consistent across periods?"; Threshold logic (wrong cutoff, inappropriate materiality level) "Is this threshold right for this decision?"; Contradiction (two sources tell different stories) "What would explain the discrepancy?"] -->
+| Dimension | The silent failure mode | The question to ask |
+|---|---|---|
+| Completeness | Missing population, excluded entities | What should be here, and is it? |
+| Freshness | Stale extract, pre-restatement data | Does the timestamp match the moment? |
+| Control totals | Extract does not tie to the GL | What does this reconcile to? |
+| Mapping | Account reclassification, changed categories | Are the categories consistent across periods? |
+| Threshold logic | Wrong cutoff, inappropriate materiality level | Is this threshold right for this decision? |
+| Contradiction | Two sources tell different stories | What would explain the discrepancy? |
+
+*Table 1 — Six dimensions of evidence adequacy. Each one fails silently: the artifact looks fine even when the dimension is broken.*
+
+![A radial arrangement of six evidence-adequacy dimensions — completeness, freshness, control totals, mapping, threshold logic, contradiction — each shown as a checkpoint that can fail silently.](images/05-verifying-finance-evidence-fig-02.png)
+*Figure 5.2 — Six dimensions of evidence adequacy, each a silent failure mode the recipe can surface.*
 
 **Mapping.** Are the categories consistent across the periods being compared? Account reclassifications, cost center restructurings, and product line redefinitions all change the basis of comparison without changing the format of the output. A trend that shows Q3 up 12% over Q3-prior might be a real increase, or it might be a reclassification that moved revenue from one line to another. Mapping problems are particularly hard to catch because they require knowledge that lives outside the file — organizational history, chart-of-accounts change logs, system migration records.
 
@@ -73,7 +88,17 @@ These four categories correspond to four families of verbs.
 
 "Needs review" flags: when a finding is ambiguous — when the threshold logic may be wrong, when a mapping change is suspected, when two sources disagree without explanation — the artifact should flag the item explicitly and hold it at the gate rather than carrying it forward.
 
-<!-- → [TABLE: Four-row table — column headers: "Category", "Warranted verbs / language", "Use when" — rows: Can say (confirms, shows, establishes, documents, records) "Evidence is complete, fresh, reconciled, directly supports the statement"; Can suggest (indicates, is consistent with, appears to, may reflect) "Pattern supports the conclusion but alternatives are not ruled out"; Cannot claim (explicit statement of what the evidence does not support) "Evidence is incomplete or does not cover the conclusion"; Needs review (explicit flag held at gate) "Finding is ambiguous — threshold, mapping, or source conflict present"] -->
+| Category | Warranted verbs / language | Use when |
+|---|---|---|
+| Can say | confirms, shows, establishes, documents, records | Evidence is complete, fresh, reconciled, and directly supports the statement |
+| Can suggest | indicates, is consistent with, appears to, may reflect | The pattern supports the conclusion but alternatives are not ruled out |
+| Cannot claim | explicit statement of what the evidence does not support | Evidence is incomplete or does not cover the conclusion |
+| Needs review | explicit flag held at the gate | The finding is ambiguous — threshold, mapping, or source conflict present |
+
+*Table 2 — Warranted verbs by evidence level. The language should be calibrated to the evidence you actually have.*
+
+![A ladder of four evidence levels — can say, can suggest, cannot claim, needs review — each rung carrying its warranted verbs, ascending from strongest support to flagged ambiguity.](images/05-verifying-finance-evidence-fig-03.png)
+*Figure 5.3 — Warranted verbs by evidence level: language climbs or descends with the strength of the evidence.*
 
 The warranted-verb discipline does something important beyond accurate language: it makes the gap between evidence and conclusion visible. A summary that uses "confirms" throughout signals that someone checked the evidence and it held up. A summary that uses "indicates" and "may reflect" signals that the pattern is real but the causal story needs a professional judgment. A summary with explicit "cannot claim" statements signals where the analysis has limits. These signals are useful to the reviewer — they tell you where to spend your attention.
 
@@ -90,6 +115,9 @@ A well-designed recipe can do significant verification work. It can check comple
 The limit is not that the model cannot find gaps. The limit is that the model cannot judge whether a gap matters. A completeness gap in subsidiary B might be immaterial in a given period — subsidiary B contributed 0.3% of revenue and the analysis is for a high-level management review. Or it might be critical — subsidiary B is the one that had the acquisition close in Q3 and excluding it understates the story by $4 million. The recipe can flag the gap. It cannot decide which situation you are in, because that requires knowing what the analysis is for and who will use it.
 
 This is where the PCAOB's evidence standard becomes useful as a frame. AS 1105 defines evidence as sufficient and appropriate — sufficient in quantity, appropriate in relevance and reliability. Sufficiency and appropriateness are not properties that a recipe can assess in context. They depend on the purpose of the artifact, the stakes of the decision, and the standards that apply in this particular situation. Those are professional judgments, and they belong on the human side of the gate.
+
+![A pipeline: the recipe checks the six dimensions, then flags gaps, then a human adequacy gate, then the human judges sufficiency and appropriateness in context, then the artifact is released with warranted language.](images/05-verifying-finance-evidence-fig-04.png)
+*Figure 5.4 — The verification pipeline: the recipe finds the gaps; the human decides whether they matter.*
 
 <!-- → [DIAGRAM: Verification pipeline — sequence of boxes: "Recipe checks completeness, freshness, control totals, mapping, threshold logic, contradictions" → "Recipe flags gaps and surfaces findings" → [GATE: human adequacy check] → "Human judges sufficiency and appropriateness in context" → "Artifact released with warranted language" — below the pipeline, a label: "The recipe finds the gaps. The human decides whether they matter."] -->
 
@@ -156,3 +184,23 @@ The threshold question is the one I find hardest to operationalize. I know that 
 **Exercise 2.** Design a completeness check for one data extract you use regularly. What is the defined population the extract should cover? What is the mechanism you would use to verify that coverage — a row count against a control table, a sum against a GL total, a cross-reference to an authoritative list? Write the check as a recipe step, then ask the model to identify any cases where the check would pass but the extract could still be incomplete.
 
 **Exercise 3.** Write a prompt that instructs an AI to draft a variance commentary using only warranted verbs — specifying that the model must distinguish between what the data confirms, what it suggests, and what it cannot support, and that it must flag any item where the evidence is insufficient for a claim. Compare the output to a commentary drafted without that instruction. What changed in the language, and what did the model flag that a standard prompt would have asserted?
+
+---
+
+## Prompts
+
+### Figure 5.1 — Parsing versus proving
+**Files:** images/05-verifying-finance-evidence-fig-01.svg · d3/05-verifying-finance-evidence-fig-01.html
+**Prompt:** A brutalist two-level stack on white — a structural integrity base (file parses, formulas return, no broken references) with a checkmark that stops, and an evidentiary adequacy level above (complete, fresh, mapped, coherent, warranted) — joined by a red arrow labeled "necessary but not sufficient." Hairline borders, one red accent for the arrow.
+
+### Figure 5.2 — Six dimensions of evidence adequacy
+**Files:** images/05-verifying-finance-evidence-fig-02.svg · d3/05-verifying-finance-evidence-fig-02.html
+**Prompt:** A brutalist radial diagram on white — six neutral dimension nodes (completeness, freshness, control totals, mapping, threshold logic, contradiction) on hairline spokes around a central red evidence-adequacy hub. One red accent for the hub.
+
+### Figure 5.3 — Warranted verbs by evidence level
+**Files:** images/05-verifying-finance-evidence-fig-03.svg · d3/05-verifying-finance-evidence-fig-03.html
+**Prompt:** A brutalist four-rung ladder on white — can say, can suggest, cannot claim, needs review — each rung listing its warranted verbs in monospace, with the needs-review rung outlined in red and a side rail marking strongest support to flagged. One red accent.
+
+### Figure 5.4 — The verification pipeline
+**Files:** images/05-verifying-finance-evidence-fig-04.svg · d3/05-verifying-finance-evidence-fig-04.html
+**Prompt:** A brutalist pipeline on white — two neutral recipe boxes (checks six dimensions, flags gaps) feeding a tall red human adequacy gate, then two accountable boxes (judges sufficiency in context, releases with warranted language) — with neutral arrows. Hairline borders, one red accent for the gate.

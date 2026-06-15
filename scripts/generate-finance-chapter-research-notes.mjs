@@ -7,7 +7,7 @@ mkdirSync(pantry, { recursive: true });
 
 const commonSources = [
   "TIKTOC.md",
-  "MYCROFT.md",
+  "SNICKERDOODLE.md",
   "DOMAIN.md",
   "DATA_CONTRACT.md",
   "docs/recipes.md",
@@ -268,7 +268,7 @@ The case should be written as a realistic finance work scenario. Show the source
 
 A recipe that posts a journal entry, releases payment, sends a customer/vendor message, concludes on control effectiveness, submits a filing, or issues investor-facing commentary has crossed from preparation into accountable action. This is a Mycroft hard stop.
 
-**Source(s):** MYCROFT.md; reports/generated/mycroft-finance-recipe-opportunities-attached-research.md
+**Source(s):** SNICKERDOODLE.md; reports/generated/mycroft-finance-recipe-opportunities-attached-research.md
 
 ---
 
@@ -309,7 +309,7 @@ A recipe that posts a journal entry, releases payment, sends a customer/vendor m
 
 **Key references:**
 
-1. MYCROFT.md - The governing labor-separation and verification-stack constitution.
+1. SNICKERDOODLE.md - The governing labor-separation and verification-stack constitution.
 2. DATA_CONTRACT.md - Local data and evidence rules.
 3. BLS Occupational Outlook Handbook - Role-level grounding for financial analysts, accountants/auditors, and budget analysts.
 4. PCAOB AS 1105 - Audit evidence concepts useful for sufficiency, appropriateness, and contradictory evidence.

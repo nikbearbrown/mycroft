@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The verification pipeline</title>
+<style>
+  :root { --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E; --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E; --color-fill:#F5F5F5; }
+  @media (prefers-color-scheme: dark){ :root{ --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A; --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30; --color-fill:#1A1A1A; } }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--color-white);color:var(--color-ink);font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif;}
+  #chart{width:100%;}
+  .box{fill:var(--color-fill);stroke-width:1;} .box.recipe{stroke:var(--color-secondary);} .box.human{stroke:var(--color-ink);}
+  .gate{fill:var(--color-red);}
+  .heading{font-family:'EB Garamond',Georgia,serif;fill:var(--color-ink);} .sub{fill:var(--color-secondary);}
+  .blabel{fill:var(--color-ink);font-size:12px;} .gtext{fill:var(--color-white);font-size:10px;text-anchor:middle;}
+  .mono{font-family:'JetBrains Mono','Fira Code',monospace;font-size:10px;fill:var(--color-secondary);}
+  .monoR{font-family:'JetBrains Mono','Fira Code',monospace;font-size:11px;fill:var(--color-red);text-anchor:middle;}
+  .arrow{stroke:var(--color-ink);stroke-width:2;fill:var(--color-ink);}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;}}
+</style></head>
+<body><div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const FALLBACK_DATA={recipe:[['Recipe checks','six dimensions'],['Recipe flags gaps','surfaces findings']],human:[['Human judges sufficiency','& appropriateness in context'],['Artifact released','with warranted language']]};
+function draw(data){
+  d3.select('#chart').selectAll('*').remove();
+  const w=document.getElementById('chart').clientWidth||700, h=Math.max(400,w*0.58);
+  const svg=d3.select('#chart').append('svg').attr('width',w).attr('height',h).attr('viewBox',`0 0 ${w} ${h}`).attr('role','img').attr('aria-labelledby','t d');
+  svg.append('title').attr('id','t').text('The verification pipeline');
+  svg.append('desc').attr('id','d').text('Recipe checks and flags, a human adequacy gate, then human judgment and release with warranted language.');
+  svg.append('text').attr('class','heading').attr('x',24).attr('y',32).attr('font-size',20).text('The verification pipeline');
+  svg.append('text').attr('class','sub').attr('x',24).attr('y',52).attr('font-size',13).text('The recipe finds the gaps; the human decides whether they matter.');
+  const top=86, bh=70, vgap=40, lw=Math.min(190,w*0.27), gateW=58;
+  const lx=24, gx=lx+lw+44, rx=gx+gateW+44, rw=Math.max(200,w-rx-24);
+  const r1=top, r2=top+bh+vgap;
+  // recipe boxes
+  function box(x,y,wid,cls,lines){ svg.append('rect').attr('class','box '+cls).attr('x',x).attr('y',y).attr('width',wid).attr('height',bh);
+    lines.forEach((t,i)=>svg.append('text').attr('class','blabel').attr('x',x+14).attr('y',y+bh/2-6+i*18).text(t)); }
+  box(lx,r1,lw,'recipe',data.recipe[0]);
+  box(lx,r2,lw,'recipe',data.recipe[1]);
+  // gate spanning
+  svg.append('rect').attr('class','gate').attr('x',gx).attr('y',r1).attr('width',gateW).attr('height',r2+bh-r1);
+  ['human','adequacy','check'].forEach((t,i)=>svg.append('text').attr('class','gtext').attr('x',gx+gateW/2).attr('y',(r1+r2+bh)/2-12+i*16).text(t));
+  svg.append('text').attr('class','monoR').attr('x',gx+gateW/2).attr('y',r2+bh+18).text('adequacy gate');
+  // human boxes
+  box(rx,r1,rw,'human',data.human[0]);
+  box(rx,r2,rw,'human',data.human[1]);
+  // arrows
+  svg.append('line').attr('class','arrow').attr('x1',lx+lw/2).attr('y1',r1+bh).attr('x2',lx+lw/2).attr('y2',r2-2); svg.append('polygon').attr('class','arrow').attr('points',`${lx+lw/2},${r2} ${lx+lw/2-5},${r2-12} ${lx+lw/2+5},${r2-12}`);
+  svg.append('line').attr('class','arrow').attr('x1',lx+lw).attr('y1',r2+bh/2).attr('x2',gx-2).attr('y2',r2+bh/2); svg.append('polygon').attr('class','arrow').attr('points',`${gx},${r2+bh/2} ${gx-7},${r2+bh/2-4} ${gx-7},${r2+bh/2+4}`);
+  svg.append('line').attr('class','arrow').attr('x1',gx+gateW).attr('y1',r1+bh/2).attr('x2',rx-2).attr('y2',r1+bh/2); svg.append('polygon').attr('class','arrow').attr('points',`${rx},${r1+bh/2} ${rx-7},${r1+bh/2-4} ${rx-7},${r1+bh/2+4}`);
+  svg.append('text').attr('class','mono').attr('x',(gx+gateW+rx)/2).attr('y',r1+bh/2-8).attr('text-anchor','middle').text('adequate');
+  svg.append('line').attr('class','arrow').attr('x1',rx+rw/2).attr('y1',r1+bh).attr('x2',rx+rw/2).attr('y2',r2-2); svg.append('polygon').attr('class','arrow').attr('points',`${rx+rw/2},${r2} ${rx+rw/2-5},${r2-12} ${rx+rw/2+5},${r2-12}`);
+}
+let current=FALLBACK_DATA;
+async function load(){try{current=await d3.json('./05-verifying-finance-evidence-fig-04.json');}catch(e){current=FALLBACK_DATA;}draw(current);}
+load(); new ResizeObserver(()=>draw(current)).observe(document.getElementById('chart'));
+</script></body></html>

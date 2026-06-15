@@ -1,0 +1,32 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d" font-family="'Inter', sans-serif">
+  <title id="t">Pipeline with an explicit stop</title>
+  <desc id="d">A left-to-right pipeline of three recipe stages interrupted by a tall gate bar with a lock notch, after which a single human release stage continues.</desc>
+  <rect width="700" height="420" fill="#FFFFFF"/>
+  <text x="40" y="40" font-size="20" font-family="'EB Garamond', Georgia, serif" fill="#2a1a0e">Pipeline with an explicit stop</text>
+  <text x="40" y="60" font-size="13" fill="#545454">The recipe halts at the gate until a named approver clears it.</text>
+  <!-- layer brackets -->
+  <text x="40" y="120" font-size="11" font-family="'JetBrains Mono', monospace" fill="#545454">preparation layer (recipe)</text>
+  <line x1="40" y1="128" x2="430" y2="128" stroke="#D4D4D4" stroke-width="1"/>
+  <text x="500" y="120" font-size="11" font-family="'JetBrains Mono', monospace" fill="#545454">judgment layer (human)</text>
+  <line x1="500" y1="128" x2="660" y2="128" stroke="#D4D4D4" stroke-width="1"/>
+  <!-- recipe stages -->
+  <g font-size="12" fill="#2a1a0e">
+    <rect x="40"  y="180" width="120" height="60" fill="#F5F5F5" stroke="#545454"/><text x="54" y="206">Data pull</text><text x="54" y="224">(recipe)</text>
+    <rect x="180" y="180" width="120" height="60" fill="#F5F5F5" stroke="#545454"/><text x="194" y="206">Normalize</text><text x="194" y="224">&amp; compare</text>
+    <rect x="320" y="180" width="120" height="60" fill="#F5F5F5" stroke="#545454"/><text x="334" y="206">Draft</text><text x="334" y="224">summary</text>
+  </g>
+  <g stroke="#2a1a0e" stroke-width="2" fill="#2a1a0e">
+    <line x1="160" y1="210" x2="178" y2="210"/><polygon points="180,210 173,206 173,214"/>
+    <line x1="300" y1="210" x2="318" y2="210"/><polygon points="320,210 313,206 313,214"/>
+  </g>
+  <!-- gate -->
+  <rect x="466" y="150" width="44" height="120" fill="#C8102E"/>
+  <rect x="481" y="204" width="14" height="14" fill="#FFFFFF"/>
+  <text x="488" y="292" font-size="11" font-family="'JetBrains Mono', monospace" fill="#C8102E" text-anchor="middle">gate</text>
+  <text x="488" y="142" font-size="10" fill="#545454" text-anchor="middle">named approver</text>
+  <line x1="440" y1="210" x2="464" y2="210" stroke="#2a1a0e" stroke-width="2"/><polygon points="466,210 459,206 459,214" fill="#2a1a0e"/>
+  <!-- human stage -->
+  <rect x="536" y="180" width="124" height="60" fill="#F5F5F5" stroke="#2a1a0e"/>
+  <text x="550" y="206" font-size="12" fill="#2a1a0e">Release / file</text><text x="550" y="224" font-size="12" fill="#2a1a0e">/ send (human)</text>
+  <line x1="510" y1="210" x2="534" y2="210" stroke="#2a1a0e" stroke-width="2"/><polygon points="536,210 529,206 529,214" fill="#2a1a0e"/>
+</svg>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assertion versus evidence</title>
+<style>
+  :root { --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E; --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E; --color-fill:#F5F5F5; }
+  @media (prefers-color-scheme: dark){ :root{ --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A; --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30; --color-fill:#1A1A1A; } }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--color-white);color:var(--color-ink);font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif;}
+  #chart{width:100%;}
+  .col{fill:var(--color-fill);stroke-width:1;} .col.assert{stroke:var(--color-secondary);} .col.evid{stroke:var(--color-ink);}
+  .heading{font-family:'EB Garamond',Georgia,serif;fill:var(--color-ink);} .sub{fill:var(--color-secondary);}
+  .ctitle{font-weight:700;fill:var(--color-ink);font-size:13px;}
+  .item{font-size:12px;} .item.assert{fill:var(--color-secondary);} .item.evid{fill:var(--color-ink);}
+  .arrow{stroke:var(--color-red);stroke-width:2;fill:var(--color-red);}
+  .mono{font-family:'JetBrains Mono','Fira Code',monospace;font-size:11px;fill:var(--color-red);}
+  .rule{fill:var(--color-ochre);}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;}}
+</style></head>
+<body><div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const FALLBACK_DATA={assertion:['Fluent summary','Model output','No source path','No version','No owner'],evidence:['Source file','Period · entity','Version · owner','Control total','Logged transformation']};
+function draw(data){
+  d3.select('#chart').selectAll('*').remove();
+  const w=document.getElementById('chart').clientWidth||700, h=Math.max(400,w*0.6);
+  const svg=d3.select('#chart').append('svg').attr('width',w).attr('height',h).attr('viewBox',`0 0 ${w} ${h}`).attr('role','img').attr('aria-labelledby','t d');
+  svg.append('title').attr('id','t').text('Assertion versus evidence');
+  svg.append('desc').attr('id','d').text('Unsupported assertions on the left, traceable evidence on the right; the contract converts one into the other.');
+  svg.append('text').attr('class','heading').attr('x',24).attr('y',32).attr('font-size',20).text('Assertion versus evidence');
+  svg.append('text').attr('class','sub').attr('x',24).attr('y',52).attr('font-size',13).text('The contract is what converts the left column into the right.');
+  const top=78, cw=(w-48-56)/2, ch=h-top-30, lx=24, rx=lx+cw+56;
+  svg.append('rect').attr('class','col assert').attr('x',lx).attr('y',top).attr('width',cw).attr('height',ch);
+  svg.append('text').attr('class','ctitle').attr('x',lx+16).attr('y',top+26).text('ASSERTION');
+  data.assertion.forEach((t,i)=>svg.append('text').attr('class','item assert').attr('x',lx+16).attr('y',top+56+i*28).text(t));
+  svg.append('rect').attr('class','col evid').attr('x',rx).attr('y',top).attr('width',cw).attr('height',ch);
+  svg.append('text').attr('class','ctitle').attr('x',rx+16).attr('y',top+26).text('EVIDENCE');
+  data.evidence.forEach((t,i)=>svg.append('text').attr('class','item evid').attr('x',rx+16).attr('y',top+56+i*26).text(t));
+  svg.append('rect').attr('class','rule').attr('x',rx+16).attr('y',top+56+data.evidence.length*26+4).attr('width',cw-32).attr('height',2);
+  svg.append('text').attr('class','mono').attr('fill','var(--color-secondary)').attr('x',rx+16).attr('y',top+56+data.evidence.length*26+24).text('reproducible by another person');
+  const my=top+ch/2;
+  svg.append('line').attr('class','arrow').attr('x1',lx+cw+6).attr('y1',my).attr('x2',rx-6).attr('y2',my);
+  svg.append('polygon').attr('class','arrow').attr('points',`${rx-6},${my} ${rx-16},${my-5} ${rx-16},${my+5}`);
+  svg.append('text').attr('class','mono').attr('x',(lx+cw+rx)/2).attr('y',my-10).attr('text-anchor','middle').text('contract');
+}
+let current=FALLBACK_DATA;
+async function load(){try{current=await d3.json('./03-the-verified-finance-data-contract-fig-01.json');}catch(e){current=FALLBACK_DATA;}draw(current);}
+load(); new ResizeObserver(()=>draw(current)).observe(document.getElementById('chart'));
+</script></body></html>

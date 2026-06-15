@@ -12,7 +12,7 @@ mkdirSync(logsDir, { recursive: true });
 
 const commonSources = [
   "TIKTOC.md",
-  "MYCROFT.md",
+  "SNICKERDOODLE.md",
   "DATA_CONTRACT.md",
   "docs/recipes.md",
   "docs/phase-gates.md",

@@ -1,0 +1,53 @@
+<!--
+  Supervision Questions in the Close Context
+  Book: Mycroft
+  Chapter: 09-close-flux-analysis-and-balance-sheet-review
+  Figure: 04
+  Type: comparison panels
+  Generated: 2026-06-15
+  Source: pantry/09-close-flux-analysis-and-balance-sheet-review-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-04">
+<title id="fig-title-04">The three supervision questions applied to the close, each with the failure of leaving it unasked</title>
+<desc>Three rows mapping supervision questions to the close: scope, approval, verification. Each row has two zones, the close-specific application and the failure if the question is unasked, with a directional cue from application to failure. The failure zone is marked as the consequence.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="09-close-flux-analysis-and-balance-sheet-review" figure-number="04" figure-title="Supervision Questions in the Close Context" figure-slug="supervision-questions-in-the-close-context" figure-type="comparison panels" priority="Important" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/09-close-flux-analysis-and-balance-sheet-review-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="44" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">Skip a supervision question, get its failure</text>
+
+<text x="44" y="86" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">Close application</text>
+<text x="440" y="86" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">Failure if unasked</text>
+
+<!-- Row 1: scope -->
+<rect x="32" y="94" width="80" height="90" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1.5"/>
+<text x="72" y="143" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">Scope</text>
+<rect x="120" y="94" width="288" height="90" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="134" y="124" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">period confirmed, entity-specific,</text>
+<text x="134" y="142" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">action limited to read-and-report</text>
+<line x1="408" y1="139" x2="426" y2="139" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="430" y="94" width="238" height="90" fill="#F5F5F5" stroke="#C8102E" stroke-width="1.5"/>
+<text x="444" y="133" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">wrong period, or silent</text>
+<text x="444" y="151" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">entity expansion</text>
+
+<!-- Row 2: approval -->
+<rect x="32" y="192" width="80" height="90" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1.5"/>
+<text x="72" y="241" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">Approval</text>
+<rect x="120" y="192" width="288" height="90" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="134" y="222" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">named controller, sign-off</text>
+<text x="134" y="240" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">authority, dated approval record</text>
+<line x1="408" y1="237" x2="426" y2="237" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="430" y="192" width="238" height="90" fill="#F5F5F5" stroke="#C8102E" stroke-width="1.5"/>
+<text x="444" y="231" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">release before gate, unresolved</text>
+<text x="444" y="249" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">items travel forward</text>
+
+<!-- Row 3: verification -->
+<rect x="32" y="290" width="80" height="90" fill="#F5F5F5" stroke="#2a1a0e" stroke-width="1.5"/>
+<text x="72" y="333" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">Verify</text>
+<rect x="120" y="290" width="288" height="90" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="134" y="320" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">support exists, current-period,</text>
+<text x="134" y="338" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">treatment confirmed by a reviewer</text>
+<line x1="408" y1="335" x2="426" y2="335" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="430" y="290" width="238" height="90" fill="#F5F5F5" stroke="#C8102E" stroke-width="1.5"/>
+<text x="444" y="329" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">"supported" label applied</text>
+<text x="444" y="347" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">without evaluation</text>
+</svg>

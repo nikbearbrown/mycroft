@@ -1,0 +1,53 @@
+<!--
+  The Phase Gate Across Five Recipe Families
+  Book: Mycroft
+  Chapter: 97-fundamental-themes
+  Figure 01
+  Type: comparison panels
+  Generated 2026-06-15
+  Source: pantry/97-fundamental-themes-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-01">
+<title id="fig-title-01">The Phase Gate Across Five Recipe Families</title>
+<desc>Across five recipe families, one consistent gate separates the AI-assistance step from the accountable human step: AI computes, matches, flags, assembles, and compares — a human explains, signs off, decides, concludes, and sets policy.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="97-fundamental-themes" figure-number="01" figure-title="The Phase Gate Across Five Recipe Families" figure-slug="phase-gate-five-recipe-families" figure-type="comparison panels" priority="Important" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/97-fundamental-themes-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="30" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">One gate recurs across all five recipe families</text>
+
+<text x="60" y="60" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">AI assists</text>
+<text x="400" y="60" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454" font-weight="bold">An accountable human</text>
+
+<!-- 5 rows; gate divider at x=350 -->
+<!-- row 1 -->
+<rect x="40" y="70" width="290" height="48" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="50" y="99" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">computes a variance</text>
+<rect x="370" y="70" width="290" height="48" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="380" y="99" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">explains it</text>
+<!-- row 2 -->
+<rect x="40" y="118" width="290" height="48" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="50" y="147" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">matches subledger records</text>
+<rect x="370" y="118" width="290" height="48" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="380" y="147" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">signs off</text>
+<!-- row 3 -->
+<rect x="40" y="166" width="290" height="48" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="50" y="195" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">flags a liquidity threshold breach</text>
+<rect x="370" y="166" width="290" height="48" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="380" y="195" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">treasury decides what to do</text>
+<!-- row 4 -->
+<rect x="40" y="214" width="290" height="48" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="50" y="243" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">assembles control evidence</text>
+<rect x="370" y="214" width="290" height="48" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="380" y="243" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">audit / control humans conclude</text>
+<!-- row 5 -->
+<rect x="40" y="262" width="290" height="48" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="0.75"/>
+<text x="50" y="291" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">compares contract terms to billing</text>
+<rect x="370" y="262" width="290" height="48" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+<text x="380" y="291" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">accounting decides policy treatment</text>
+
+<!-- shared vertical gate -->
+<line x1="350" y1="64" x2="350" y2="316" stroke="#C8102E" stroke-width="4"/>
+<text x="350" y="334" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#C8102E" font-weight="bold">the phase gate</text>
+
+<text x="32" y="370" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">The boundary never moves: the machine prepares, the human decides and is accountable.</text>
+</svg>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The gate between preparation and judgment</title>
+<style>
+  :root { --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E; --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E; --color-fill:#F5F5F5; }
+  @media (prefers-color-scheme: dark) { :root { --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A; --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30; --color-fill:#1A1A1A; } }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--color-white); color:var(--color-ink); font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif; }
+  #chart { width:100%; }
+  .zone { fill:var(--color-fill); stroke-width:1; }
+  .zone.prep { stroke:var(--color-secondary); }
+  .zone.acct { stroke:var(--color-ink); }
+  .gate { fill:var(--color-red); }
+  .notch { fill:var(--color-white); }
+  .heading { font-family:'EB Garamond',Georgia,serif; fill:var(--color-ink); }
+  .sub { fill:var(--color-secondary); }
+  .ztitle { font-weight:700; fill:var(--color-ink); font-size:13px; }
+  .zitem { fill:var(--color-secondary); font-size:12px; }
+  .zitem.acct { fill:var(--color-ink); }
+  .mono { font-family:'JetBrains Mono','Fira Code',monospace; font-size:11px; fill:var(--color-red); }
+  .arrow { stroke:var(--color-ink); stroke-width:2; fill:var(--color-ink); }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; animation:none !important; } }
+</style>
+</head>
+<body>
+<div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const FALLBACK_DATA = {
+  prep:['AI-assisted','Auditable steps','Source-linked','Reviewable'],
+  acct:['Human judgment','Materiality','Cause','Treatment','Release']
+};
+function draw(data){
+  d3.select('#chart').selectAll('*').remove();
+  const w = document.getElementById('chart').clientWidth || 700;
+  const h = Math.max(380, w*0.58);
+  const svg = d3.select('#chart').append('svg').attr('width',w).attr('height',h)
+    .attr('viewBox',`0 0 ${w} ${h}`).attr('role','img').attr('aria-labelledby','t d');
+  svg.append('title').attr('id','t').text('The gate between preparation and judgment');
+  svg.append('desc').attr('id','d').text('A preparation layer on the left and an accountable layer on the right separated by a central gate, with one arrow passing through the gate.');
+  svg.append('text').attr('class','heading').attr('x',24).attr('y',32).attr('font-size',20).text('The gate between preparation and judgment');
+  svg.append('text').attr('class','sub').attr('x',24).attr('y',52).attr('font-size',13).text('Where accountability enters the artifact.');
+
+  const top=82, zh=h-top-30, gateW=46, zw=(w-48-gateW-24)/2;
+  const lx=24, gx=lx+zw+12, rx=gx+gateW+12;
+  // left
+  svg.append('rect').attr('class','zone prep').attr('x',lx).attr('y',top).attr('width',zw).attr('height',zh);
+  svg.append('text').attr('class','ztitle').attr('x',lx+16).attr('y',top+26).text('PREPARATION LAYER');
+  data.prep.forEach((t,i)=>svg.append('text').attr('class','zitem').attr('x',lx+16).attr('y',top+56+i*26).text(t));
+  // gate
+  svg.append('rect').attr('class','gate').attr('x',gx).attr('y',top+20).attr('width',gateW).attr('height',zh-40);
+  svg.append('rect').attr('class','notch').attr('x',gx+gateW/2-7).attr('y',top+zh/2-7).attr('width',14).attr('height',14);
+  svg.append('text').attr('class','mono').attr('x',gx+gateW/2).attr('y',top+zh+18).attr('text-anchor','middle').text('gate');
+  svg.append('text').attr('class','sub').attr('x',gx+gateW/2).attr('y',top+12).attr('text-anchor','middle').attr('font-size',10).text('approver · logged');
+  // right
+  svg.append('rect').attr('class','zone acct').attr('x',rx).attr('y',top).attr('width',zw).attr('height',zh);
+  svg.append('text').attr('class','ztitle').attr('x',rx+16).attr('y',top+26).text('ACCOUNTABLE LAYER');
+  data.acct.forEach((t,i)=>svg.append('text').attr('class','zitem acct').attr('x',rx+16).attr('y',top+56+i*26).text(t));
+  // through arrow
+  const my=top+zh*0.72;
+  svg.append('line').attr('class','arrow').attr('x1',lx+zw-30).attr('y1',my).attr('x2',rx+30).attr('y2',my);
+  svg.append('polygon').attr('class','arrow').attr('points',`${rx+30},${my} ${rx+20},${my-5} ${rx+20},${my+5}`);
+}
+let current=FALLBACK_DATA;
+async function load(){ try{ current=await d3.json('./01-the-fluency-trap-fig-04.json'); }catch(e){ current=FALLBACK_DATA; } draw(current); }
+load();
+new ResizeObserver(()=>draw(current)).observe(document.getElementById('chart'));
+</script>
+</body>
+</html>

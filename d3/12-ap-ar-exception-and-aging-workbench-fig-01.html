@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR vs. AP aging distribution</title>
+  <style>
+    :root {
+      --color-white:     #FFFFFF;
+      --color-ink:       #2a1a0e;
+      --color-red:       #C8102E;
+      --color-secondary: #545454;
+      --color-border:    #D4D4D4;
+      --color-ochre:     #C8860E;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-white:     #111111;
+        --color-ink:       #F0EBE3;
+        --color-red:       #E8243A;
+        --color-secondary: #A0978C;
+        --color-border:    #2E2E2E;
+        --color-ochre:     #D49A30;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--color-white); color: var(--color-ink); font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif; }
+    #chart { width: 100%; }
+    .chart-title { font-size: 16px; font-weight: 700; fill: var(--color-ink); }
+    .chart-subtitle { font-size: 13px; fill: var(--color-secondary); }
+    .axis-tick text { font-family: 'JetBrains Mono', monospace; font-size: 11px; fill: var(--color-secondary); }
+    .axis-title { font-size: 12px; fill: var(--color-secondary); }
+    .legend-label { font-size: 12px; fill: var(--color-ink); }
+    .gridline line { stroke: var(--color-border); stroke-opacity: 0.6; }
+    .tooltip {
+      position: absolute; pointer-events: none; opacity: 0;
+      background: var(--color-white); color: var(--color-ink);
+      border: 1px solid var(--color-border); border-radius: 8px;
+      padding: 8px 10px; font-size: 13px;
+      box-shadow: 0 6px 20px -6px rgb(18 18 18 / 0.14);
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  </style>
+</head>
+<body>
+  <div id="chart" role="main"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script>
+    const FALLBACK_DATA = [
+      { bucket: 'Current', ar: 412000, ap: 528000 },
+      { bucket: '1–30',  ar: 186000, ap: 214000 },
+      { bucket: '31–60', ar: 98000,  ap: 122000 },
+      { bucket: '61–90', ar: 64000,  ap: 41000 },
+      { bucket: '90+',    ar: 121000, ap: 33000 }
+    ];
+
+    const tooltip = d3.select('body').append('div').attr('class', 'tooltip');
+    const fmt = d3.format('$,.0f');
+
+    async function loadData() {
+      try { return await d3.json('./12-ap-ar-exception-and-aging-workbench-fig-01/data.json'); }
+      catch { return FALLBACK_DATA; }
+    }
+
+    function draw(data) {
+      d3.select('#chart').selectAll('*').remove();
+      const margin = { top: 64, right: 40, bottom: 56, left: 96 };
+      const totalWidth = document.getElementById('chart').clientWidth || 800;
+      const totalHeight = 440;
+      const chartWidth = totalWidth - margin.left - margin.right;
+      const chartHeight = totalHeight - margin.top - margin.bottom;
+
+      const svg = d3.select('#chart').append('svg')
+        .attr('width', totalWidth).attr('height', totalHeight)
+        .attr('role', 'img').attr('aria-labelledby', 'chart-title chart-desc');
+      svg.append('title').attr('id', 'chart-title').text('AR vs. AP aging distribution');
+      svg.append('desc').attr('id', 'chart-desc')
+        .text('Grouped horizontal bars compare AR and AP open balances across five aging buckets as of the snapshot date.');
+
+      svg.append('text').attr('class', 'chart-title').attr('x', 16).attr('y', 26)
+        .text('AR vs. AP aging distribution');
+      svg.append('text').attr('class', 'chart-subtitle').attr('x', 16).attr('y', 46)
+        .text('The snapshot is valid only as of its date; the recipe confirms the as-of date first.');
+
+      const gChart = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+      const yScaleBand = d3.scaleBand().domain(data.map(d => d.bucket)).range([0, chartHeight]).padding(0.25);
+      const ySub = d3.scaleBand().domain(['ar', 'ap']).range([0, yScaleBand.bandwidth()]).padding(0.15);
+      const maxV = d3.max(data, d => Math.max(d.ar, d.ap));
+      const xScaleLinear = d3.scaleLinear().domain([0, maxV]).nice().range([0, chartWidth]);
+
+      // gridlines
+      gChart.append('g').attr('class', 'gridline').attr('aria-hidden', 'true')
+        .selectAll('line').data(xScaleLinear.ticks(5)).join('line')
+        .attr('x1', d => xScaleLinear(d)).attr('x2', d => xScaleLinear(d))
+        .attr('y1', 0).attr('y2', chartHeight);
+
+      // y axis
+      const yAxis = gChart.append('g').attr('class', 'axis-tick')
+        .call(d3.axisLeft(yScaleBand).tickSize(0));
+      yAxis.select('.domain').attr('stroke', 'var(--color-border)');
+
+      // x axis
+      const xAxis = gChart.append('g').attr('class', 'axis-tick')
+        .attr('transform', `translate(0,${chartHeight})`)
+        .call(d3.axisBottom(xScaleLinear).ticks(5).tickFormat(d3.format('$,.2s')));
+      xAxis.select('.domain').attr('stroke', 'var(--color-border)');
+
+      const color = { ar: 'var(--color-red)', ap: 'var(--color-ink)' };
+      const labelMap = { ar: 'AR', ap: 'AP' };
+
+      data.forEach(d => {
+        const g = gChart.append('g').attr('transform', `translate(0,${yScaleBand(d.bucket)})`);
+        ['ar', 'ap'].forEach(series => {
+          g.append('rect')
+            .attr('y', ySub(series)).attr('x', 0).attr('height', ySub.bandwidth())
+            .attr('width', xScaleLinear(d[series]))
+            .attr('fill', color[series])
+            .attr('tabindex', 0)
+            .attr('aria-label', `${labelMap[series]} ${d.bucket} days: ${fmt(d[series])}`)
+            .style('cursor', 'pointer')
+            .style('transition', 'opacity 120ms')
+            .on('mouseover', function (event) {
+              d3.select(this).style('opacity', 0.8);
+              tooltip.html(`<strong>${labelMap[series]} · ${d.bucket} days</strong><br>${fmt(d[series])}`)
+                .style('left', (event.pageX + 12) + 'px').style('top', (event.pageY - 28) + 'px')
+                .transition().duration(150).style('opacity', 1);
+            })
+            .on('mousemove', function (event) {
+              tooltip.style('left', (event.pageX + 12) + 'px').style('top', (event.pageY - 28) + 'px');
+            })
+            .on('mouseout', function () { d3.select(this).style('opacity', 1); tooltip.transition().duration(100).style('opacity', 0); });
+        });
+      });
+
+      // legend
+      const legend = svg.append('g').attr('transform', `translate(${totalWidth - 160},26)`);
+      [['ar', 'AR'], ['ap', 'AP']].forEach((s, i) => {
+        const row = legend.append('g').attr('transform', `translate(${i * 70},0)`);
+        row.append('rect').attr('width', 12).attr('height', 12).attr('y', -10).attr('fill', color[s[0]]);
+        row.append('text').attr('class', 'legend-label').attr('x', 18).attr('y', 0).text(s[1]);
+      });
+    }
+
+    loadData().then(data => {
+      draw(data);
+      const ro = new ResizeObserver(() => draw(data));
+      ro.observe(document.getElementById('chart'));
+    });
+  </script>
+</body>
+</html>

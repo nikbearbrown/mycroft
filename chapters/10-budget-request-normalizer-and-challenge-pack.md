@@ -25,6 +25,9 @@ Third, currency alignment: any submission denominated in a non-base currency nee
 
 None of these transformations involves judgment about whether the numbers are right. They are mechanical steps that convert heterogeneous inputs into a homogeneous comparison surface. The recipe can do them reliably and document every transformation in a log. The analyst cannot do them reliably at scale while also thinking about the substance of the submissions.
 
+![Six heterogeneous department submissions on the left converge through three alignment stages — period, account, currency — into a single normalized comparison surface on the right.](images/10-budget-request-normalizer-and-challenge-pack-fig-01.png)
+*Figure 10.1 — The normalization pipeline converts heterogeneous inputs into a comparison surface*
+
 <!-- → [DIAGRAM: Six department submission boxes on the left, each with a different shape (different color/icon representing different templates). Center: Normalization pipeline with three stages labeled Period alignment, Account alignment, Currency alignment. Right: Single normalized comparison surface. Caption: Normalization converts heterogeneous inputs into a surface where numbers can be compared. It does not evaluate whether the numbers are right.] -->
 
 ---
@@ -41,7 +44,17 @@ The recipe should reject old-template submissions before normalization begins. N
 
 The rejection log is also useful information for the planning lead: which departments submitted on the wrong template, and how many days before the deadline? A pattern of old-template submissions is a signal about the template distribution process, not just about individual departments.
 
-<!-- → [TABLE: Four-row table. Columns: Verification Check, What It Catches, Recipe Action if Failed. Rows: Template version (old template — rejects submission, logs version received vs. required, notifies submitter), Required fields present (missing headcount, rate assumptions, account mapping — flags missing fields, pauses submission, requests resubmission), Period coverage match (doesn't cover full fiscal year — flags gap, requests resubmission), Currency declaration (submission currency not declared — flags, requests declaration before normalization). Caption: Template verification is the first gate. A submission that fails it does not enter the normalization pipeline.] -->
+| Verification check | What it catches | Recipe action if failed |
+|---|---|---|
+| Template version | Old template | Reject submission; log version received vs. required; notify submitter |
+| Required fields present | Missing headcount, rate assumptions, or account mapping | Flag missing fields; pause submission; request resubmission |
+| Period coverage match | Submission does not cover the full fiscal year | Flag the gap; request resubmission |
+| Currency declaration | Submission currency not declared | Flag; request declaration before normalization |
+
+*Table 1 — Template verification is the first gate. A submission that fails it does not enter the normalization pipeline.*
+
+![Four pre-normalization verification checks — template version, required fields, period coverage, currency declaration — where any failure blocks the submission from entering the pipeline.](images/10-budget-request-normalizer-and-challenge-pack-fig-02.png)
+*Figure 10.2 — The template verification gate*
 
 ---
 
@@ -55,7 +68,13 @@ When a headcount line cannot be matched to the rate card, the recipe flags it as
 
 The same logic applies to non-headcount assumptions. A software renewal with no documented contract rate, a travel budget with no stated per-head assumption, a facilities cost with no stated square footage and rate — each of these is an unsupported assumption that the challenge pack needs to surface. The recipe flags them; the business partner conversation confirms or resolves them.
 
-<!-- → [TABLE: Three-row table. Columns: Assumption Type, What the Recipe Checks, Flag if. Rows: Headcount (role, level, location against rate card — role or level unspecified, rate card match fails), Software/SaaS (contract or renewal rate against vendor contract log — no documented contract rate, renewal date not current period), Travel/Entertainment (per-head rate against policy — no per-head assumption stated, rate exceeds policy maximum). Caption: Unsupported assumptions are not wrong assumptions. They are assumptions without a documented basis. The flag requests the basis; the business partner provides it.] -->
+| Assumption type | What the recipe checks | Flag if |
+|---|---|---|
+| Headcount | Role, level, location against the rate card | Role or level unspecified, or rate-card match fails |
+| Software / SaaS | Contract or renewal rate against the vendor contract log | No documented contract rate, or renewal date not in the current period |
+| Travel / entertainment | Per-head rate against policy | No per-head assumption stated, or rate exceeds the policy maximum |
+
+*Table 2 — Unsupported assumptions are not wrong assumptions. They are assumptions without a documented basis. The flag requests the basis; the business partner provides it.*
 
 ---
 
@@ -71,7 +90,16 @@ The threshold is not a judgment about what is acceptable. It is a filter that di
 
 New spend — budget for initiatives, projects, or capabilities that did not exist in the prior plan — requires special handling. New spend that is buried in the base budget rather than identified as new spend is a common error and occasionally a deliberate one. The recipe compares the current submission to the prior-year account structure and flags any account or headcount line that has no prior-year counterpart. The flag does not assume the new spend is unjustified. It asks the submitting department to explicitly acknowledge that it is new and to provide the supporting rationale.
 
-<!-- → [TABLE: Example change table for one department. Columns: Account, Prior Year Actual, Current Year Plan, Current Year EAC, Submitted Request, YoY Change ($), YoY Change (%), Flag. Sample rows showing headcount (flagged at +35%), software renewals (within threshold), new initiative line (flagged as new spend, no prior year). Caption: The change table describes what changed. It does not evaluate whether the change is justified. That is the planning discussion.] -->
+| Account | Prior-year actual | Current-year plan | Current-year EAC | Submitted request | YoY change ($) | YoY change (%) | Flag |
+|---|---|---|---|---|---|---|---|
+| Headcount — engineering | 4,200,000 | 4,400,000 | 4,350,000 | 5,940,000 | +1,590,000 | +35% | Flagged — exceeds threshold |
+| Software renewals | 820,000 | 860,000 | 845,000 | 902,000 | +57,000 | +7% | Within threshold |
+| New initiative — platform | — | — | — | 400,000 | — | new | Flagged — new spend, no prior year |
+
+*Table 3 — The change table describes what changed. It does not evaluate whether the change is justified. That is the planning discussion.*
+
+![Prior-year actual versus submitted request by budget category, with an attention threshold that flags the largest year-over-year changes for the challenge pack.](images/10-budget-request-normalizer-and-challenge-pack-fig-03.png)
+*Figure 10.3 — The prior-period change table directs attention, it does not judge*
 
 ---
 
@@ -91,7 +119,13 @@ These questions are not challenges to the department's judgment. They are reques
 
 The challenge pack is reviewed by the planning lead before it goes to the departments. The planning lead may remove questions that have already been answered informally, combine questions that relate to the same issue, or add questions based on context the recipe doesn't have. The pack is a preparation layer; the planning lead's review is the gate.
 
-<!-- → [TABLE: Example challenge pack section. Columns: Flag Type, Department, Line Item, Flag Description, Challenge Question. Three example rows covering: unsupported headcount (engineering, senior engineer line — location/level unspecified — "What is the intended location and level?"), above-policy rate (sales, T&E — $1,200 vs. $800 policy maximum — "What is the basis for the above-policy assumption?"), new spend (product, initiative account — no prior-year counterpart — "Please confirm new spend and provide initiative brief."). Caption: Challenge questions are sourced, specific, and resolvable. They ask for information, not justification.] -->
+| Flag type | Department | Line item | Flag description | Challenge question |
+|---|---|---|---|---|
+| Unsupported headcount | Engineering | Senior engineer line | Location and level unspecified | What is the intended location and level for this position? |
+| Above-policy rate | Sales | Travel & entertainment | $1,200 per head vs. $800 policy maximum | What is the basis for the above-policy assumption? |
+| New spend | Product | Initiative account | No prior-year counterpart | Please confirm this is new spend and provide the initiative brief. |
+
+*Table 4 — Challenge questions are sourced, specific, and resolvable. They ask for information, not justification.*
 
 ---
 
@@ -146,3 +180,19 @@ The challenge question generation is the step in this recipe where the preparati
 **Challenge**
 
 9. *(Advanced)* The "Still Puzzling" section identifies a real tension: challenge questions that are specific enough to be actionable can land as accusations rather than inquiries, and the calibration is left to the planning lead's review — a human judgment step the recipe cannot assist with. Design a tiered question format that preserves specificity while signaling collaborative intent: what would a three-tier structure look like (information request, assumption flag, policy exception), how would the language differ across tiers, and how would the planning lead's review criteria differ for each tier? Address whether this tiering should be visible to the departments receiving the pack or only to the planning team. *What this tests: ability to operationalize the tone calibration problem the chapter leaves open — designing a structure that makes the human judgment step more consistent without removing it.*
+
+---
+
+## Prompts
+
+### Figure 10.1 — The normalization pipeline converts heterogeneous inputs into a comparison surface
+**Files:** images/10-budget-request-normalizer-and-challenge-pack-fig-01.svg · d3/10-budget-request-normalizer-and-challenge-pack-fig-01.html
+**Prompt:** A brutalist convergence diagram on white: six differently-shaped department submission boxes on the left funnel through a framed three-stage alignment pipeline — period, account, currency — into one uniform normalized-surface node on the right. Ink boxes, grey arrowheads, Inter labels; the single red accent frames the normalization pipeline that makes numbers comparable but not judged.
+
+### Figure 10.2 — The template verification gate
+**Files:** images/10-budget-request-normalizer-and-challenge-pack-fig-02.svg
+**Prompt:** Four stacked brutalist verification-check rows — template version, required fields, period coverage, currency declaration — under one frame, each with a stop-marker for the blocking consequence. White canvas, ink-on-fill cells; the first gate that fails carries the single red accent to mark that a failed submission never enters the pipeline.
+
+### Figure 10.3 — The prior-period change table directs attention, it does not judge
+**Files:** images/10-budget-request-normalizer-and-challenge-pack-fig-03.svg
+**Prompt:** A brutalist horizontal bar comparison of prior-year actual versus submitted request by budget category, with a vertical attention-threshold line. Zero-baseline ink bars on white, mono value labels; the single red accent marks the bars that cross the threshold and earn a challenge question.

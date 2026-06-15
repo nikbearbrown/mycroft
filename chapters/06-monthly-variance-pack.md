@@ -22,6 +22,9 @@ What a variance is not is an explanation. The number tells you something moved. 
 
 This seems obvious stated plainly. It becomes less obvious when the tool that computed the delta also generates a sentence explaining it, and the sentence is fluent, and the sentence is often plausible, and the deadline is three o'clock. The variance pack is a structural response to that problem — a way of designing the workflow so the sentence cannot be treated as explanation unless a human put it there.
 
+![Two equal panels separated by a hard vertical gate; the left lists machine computations, the right lists human judgments.](images/06-monthly-variance-pack-fig-01.png)
+*Figure 6.1 — Compute vs. explain: the gate keeps the columns separate*
+
 <!-- → [DIAGRAM: Two-column split showing "What the machine computes" vs. "What the human explains" — left column: dollar variance, percent variance, rank by magnitude, flag by threshold, attach prior comment; right column: causal explanation, materiality decision, accounting treatment, release authorization. A hard vertical line between them labeled "the gate." Caption: the pack is the mechanism that keeps these columns separate.] -->
 
 ---
@@ -42,7 +45,16 @@ A variance pack has a defined set of inputs. Each one has a contract: a source, 
 
 **Prior comments** are the explanations attached to the same line items in previous periods. They are not answers — last month's explanation for a revenue variance does not explain this month's — but they are context. A model that can attach the prior comment to the flagged line item gives the reviewer a starting point. The prior comment is labeled as prior commentary, not as an explanation of the current variance.
 
-<!-- → [TABLE: Variance pack ingredients — columns: input, source, version requirement, what happens if missing. Rows: actuals (approved GL/ERP export, version + timestamp, pack stops), budget (current-version budget file, version identifier, run against prior version flagged), forecast (optional, same version requirements as budget, absence noted), mapping tables (current period crosswalk, reconciled to account list, unmapped accounts above threshold stop run), thresholds (human-set materiality parameters, set before run, model does not infer), prior comments (prior period commentary file, dated, attached as context not explanation). Caption: every ingredient has a contract; missing contracts stop the run before they corrupt the output.] -->
+| Input | Source | Version requirement | What happens if missing |
+|---|---|---|---|
+| Actuals | Approved GL / ERP export | Version identifier + timestamp | Pack stops; no variance is computed against unapproved actuals |
+| Budget | Current-version budget file | Version identifier for the period and entity | Run against a prior version is flagged, not silently used |
+| Forecast | Optional forecast file | Same version requirements as budget | Absence is noted; budget-only variances proceed |
+| Mapping tables | Current-period crosswalk | Reconciled to the full account list | Unmapped accounts above threshold stop the run |
+| Thresholds | Human-set materiality parameters | Set before the run | Model does not infer thresholds during the run |
+| Prior comments | Prior-period commentary file | Dated to the prior period | Attached as context, labeled prior — never as current explanation |
+
+*Table 1 — Every ingredient has a contract; missing contracts stop the run before they corrupt the output.*
 
 ---
 
@@ -60,6 +72,9 @@ With ingredients verified, the recipe has a defined scope. It computes. It ranks
 
 **Stop** means the recipe does not cross into explanation. It does not write sentences about why revenue missed. It does not characterize a cost variance as favorable or adverse in a narrative sense. It does not assess materiality. It does not recommend whether the variance requires disclosure. It produces a structured work surface — a ranked, flagged, sourced table with prior comments where they exist — and it delivers that surface to the finance professional who will cross the gate.
 
+![A pipeline of machine operations ending at a vertical gate, after which a single human node holds commentary and release.](images/06-monthly-variance-pack-fig-02.png)
+*Figure 6.2 — The recipe flow stops at the gate*
+
 <!-- → [DIAGRAM: Recipe flow — left to right: ingredients verified → compute variances (dollar, percent, budget, forecast, prior period) → rank by magnitude → flag by threshold → attach prior comments → blank fields for unsupported lines → structured work surface → gate → human commentary + release. The gate is shown as a vertical bar. To the left of the gate: machine operations. To the right: human judgment. Caption: the recipe's scope ends at the gate; nothing crosses without a person.] -->
 
 ---
@@ -76,6 +91,9 @@ The fix is structural, not instructional. You cannot solve this by telling the m
 
 This is what "unsupported explanations are visible" means in practice. The visibility is not a warning label on a generated sentence. It is the absence of a sentence where no human has yet spoken.
 
+![A flagged-items list with two commentary sub-columns: a sourced prior column always filled, and a current-explanation column that mixes human-authored cells with intentionally blank cells where no human has spoken.](images/06-monthly-variance-pack-fig-04.png)
+*Figure 6.3 — The two commentary sub-columns: a blank cell is information*
+
 ---
 
 ## Agentic Supervision in a Variance Workflow
@@ -88,7 +106,13 @@ Approval: who clears the gate before the output moves forward? This is the named
 
 Verification: what source, control total, or owner confirmation would make this finding defensible? For a variance pack, this means: do the actuals tie to the approved GL export? Does the budget version match the current-version file? Are all mapped accounts reconciled? Is the control total — the sum of actuals across all mapped accounts — consistent with the source? These are machine-checkable questions, and the recipe should check them. The variance itself is not the finding; it is the starting point. The finding is the human's explanation of the variance, supported by the source trail.
 
-<!-- → [TABLE: Supervision questions applied to variance workflow — columns: question, concrete application, what breaks if unasked. Rows: scope (period, entity, source, action space — if unasked: agent may process wrong entity or period without flagging it), approval (named approver, scope of review, approval record — if unasked: distribution happens before gate, generated commentary travels as reviewed analysis), verification (actuals tie, budget version, control total, mapped accounts — if unasked: variance is computed against wrong or stale inputs, error enters without detection). Caption: the questions are a gate, not a checklist — all three must be answered before the pack moves.] -->
+| Question | Concrete application | What breaks if unasked |
+|---|---|---|
+| Scope | Which period, entity, source file, and action space the agent operates in | Agent may process the wrong entity or period without flagging it |
+| Approval | Named approver, defined scope of review, recorded sign-off | Distribution happens before the gate; generated commentary travels as reviewed analysis |
+| Verification | Actuals tie to the approved export, budget version matches, control total reconciles, accounts mapped | Variance is computed against wrong or stale inputs and the error enters undetected |
+
+*Table 2 — The questions are a gate, not a checklist; all three must be answered before the pack moves.*
 
 ---
 
@@ -172,3 +196,19 @@ The dangerous shortcut is skipping the forty-five minutes because the machine al
 
 9. *Difficulty: Advanced* — The chapter argues that the commentary column should be blank when no human has written an explanation, and that a blank is "information — it tells the reviewer that a flagged item has no prior context and needs fresh commentary." A CFO argues the opposite: blanks in a distribution pack look incomplete, erode confidence in the finance team, and should be filled with at least a model-generated placeholder marked as preliminary. Construct the strongest version of the CFO's argument. Then evaluate it against the chapter's core claim about the structural separation of preparation and judgment. Does the CFO's concern reveal a genuine tension in the design, or does it dissolve under scrutiny? If the concern is genuine, propose a structural solution that preserves the gate while addressing the presentation problem.
 *What this tests: ability to engage with the chapter's most contestable design claim, reason from first principles rather than the chapter's conclusion, and propose a structural rather than cosmetic resolution.*
+
+---
+
+## Prompts
+
+### Figure 6.1 — Compute vs. explain: the gate keeps the columns separate
+**Files:** images/06-monthly-variance-pack-fig-01.svg · d3/06-monthly-variance-pack-fig-01.html
+**Prompt:** Two equal brutalist panels on a white canvas, ink-on-fill cells, divided by one dominant vertical gate line in the single red accent; left column holds machine computations, right column holds human judgments. EB Garamond title, Inter labels, JetBrains Mono gate label; flat, no shadows, nothing crosses the gate.
+
+### Figure 6.2 — The recipe flow stops at the gate
+**Files:** images/06-monthly-variance-pack-fig-02.svg · d3/06-monthly-variance-pack-fig-02.html
+**Prompt:** A left-to-right brutalist pipeline of stacked machine-operation boxes flowing into a structured work-surface node, then a single red vertical gate, with one human-judgment node beyond it. Neutral grey connectors with arrowheads, ink borders, white canvas; the red gate is the only color and marks where the recipe stops.
+
+### Figure 6.3 — The two commentary sub-columns: a blank cell is information
+**Files:** images/06-monthly-variance-pack-fig-04.svg
+**Prompt:** A flagged-items list beside two commentary sub-columns on a brutalist white canvas — a sourced prior column rendered filled, and a current-explanation column mixing human-authored cells with deliberately empty cells. The empty cells are an intentional design element; a single red author marker distinguishes the human-written rows.

@@ -1,0 +1,59 @@
+<!--
+  Aging the Exception Queue
+  Book: Mycroft
+  Chapter: 07-subledger-to-gl-reconciliation-triage
+  Figure: 05
+  Type: timeline/progression
+  Generated: 2026-06-15
+  Source: pantry/07-subledger-to-gl-reconciliation-triage-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-05">
+<title id="fig-title-05">A single exception item ages across periods, its meaning changing from timing difference to escalation</title>
+<desc>A left-to-right time axis with period intervals tracks one item: period one a new timing difference unreviewed; period two still open, no longer plausibly a timing difference; period three and beyond escalated, requiring controller sign-off before close. A carry-forward bracket shows open items are always carried forward, never aging out silently.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="07-subledger-to-gl-reconciliation-triage" figure-number="05" figure-title="Aging the Exception Queue" figure-slug="aging-the-exception-queue" figure-type="timeline/progression" priority="Supplementary" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/07-subledger-to-gl-reconciliation-triage-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="44" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">An open item's age changes its meaning &#8212; nothing ages out silently</text>
+
+<!-- carry-forward bracket above -->
+<path d="M120 96 q0 -16 16 -16 l428 0 q16 0 16 16" fill="none" stroke="#545454" stroke-width="1" stroke-dasharray="5 4"/>
+<text x="350" y="74" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">Open items carry forward into the next period's queue</text>
+
+<!-- time axis -->
+<line x1="80" y1="290" x2="668" y2="290" stroke="#2a1a0e" stroke-width="1.5"/>
+<line x1="200" y1="285" x2="200" y2="295" stroke="#2a1a0e" stroke-width="1"/>
+<line x1="380" y1="285" x2="380" y2="295" stroke="#2a1a0e" stroke-width="1"/>
+<line x1="560" y1="285" x2="560" y2="295" stroke="#2a1a0e" stroke-width="1"/>
+<text x="200" y="312" text-anchor="middle" font-family="'JetBrains Mono','Fira Code','Courier New',monospace" font-size="11" fill="#545454">Period 1</text>
+<text x="380" y="312" text-anchor="middle" font-family="'JetBrains Mono','Fira Code','Courier New',monospace" font-size="11" fill="#545454">Period 2</text>
+<text x="560" y="312" text-anchor="middle" font-family="'JetBrains Mono','Fira Code','Courier New',monospace" font-size="11" fill="#545454">Period 3+</text>
+
+<!-- progression arrows between states -->
+<line x1="252" y1="200" x2="328" y2="200" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="432" y1="200" x2="508" y2="200" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Period 1: new timing difference (unreviewed) -->
+<rect x="140" y="150" width="120" height="100" fill="#F5F5F5" stroke="#ADADAD" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="200" y="186" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#545454" font-weight="600">Timing</text>
+<text x="200" y="202" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#545454" font-weight="600">difference</text>
+<text x="200" y="224" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">unreviewed</text>
+
+<!-- Period 2: no longer plausibly timing -->
+<rect x="320" y="150" width="120" height="100" fill="#FFFFFF" stroke="#787878" stroke-width="1"/>
+<text x="380" y="186" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">Still open</text>
+<text x="380" y="208" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">no longer plausibly</text>
+<text x="380" y="223" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">a timing difference</text>
+
+<!-- Period 3+: escalated -->
+<rect x="500" y="150" width="120" height="100" fill="#F5F5F5" stroke="#C8102E" stroke-width="1.5"/>
+<text x="560" y="186" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">Escalated</text>
+<text x="560" y="208" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">controller sign-off</text>
+<text x="560" y="223" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">before close</text>
+
+<!-- drop to axis markers -->
+<line x1="200" y1="250" x2="200" y2="284" stroke="#D4D4D4" stroke-width="1"/>
+<line x1="380" y1="250" x2="380" y2="284" stroke="#D4D4D4" stroke-width="1"/>
+<line x1="560" y1="250" x2="560" y2="284" stroke="#D4D4D4" stroke-width="1"/>
+
+<text x="80" y="356" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">Aging is a fact the recipe records; why the item is still open is judgment.</text>
+</svg>

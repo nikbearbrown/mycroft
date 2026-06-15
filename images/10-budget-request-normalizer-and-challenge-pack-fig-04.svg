@@ -1,0 +1,56 @@
+<!--
+  Flag-to-Challenge-Question Flow with Distribution Gate
+  Book: Mycroft
+  Chapter: 10-budget-request-normalizer-and-challenge-pack
+  Figure: 04
+  Type: process flowchart
+  Generated: 2026-06-15
+  Source: pantry/10-budget-request-normalizer-and-challenge-pack-cajal.md
+-->
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title-04">
+<title id="fig-title-04">Flags become sourced challenge questions, held at a planning-lead gate before any pack reaches departments</title>
+<desc>Three flag types (unsupported assumption, threshold-exceeding change, new spend without rationale) flow into a generate-sourced-challenge-question node, then to a planning-lead review gate where questions may be removed, combined, or added. Only after the gate does the pack reach departments.</desc>
+<metadata><cajal:figure xmlns:cajal="https://bearbrown.ai/cajal/1.0" book="Mycroft" book-slug="mycroft" chapter="10-budget-request-normalizer-and-challenge-pack" figure-number="04" figure-title="Flag-to-Challenge-Question Flow with Distribution Gate" figure-slug="flag-to-challenge-question-flow" figure-type="process flowchart" priority="Supplementary" author="Nik Bear Brown" date-generated="2026-06-15" source-file="pantry/10-budget-request-normalizer-and-challenge-pack-cajal.md"/></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/></marker></defs>
+
+<text x="32" y="44" font-family="'EB Garamond','Garamond',Georgia,serif" font-size="14" fill="#2a1a0e">Nothing reaches departments before the planning lead reviews it</text>
+
+<!-- three flag types -->
+<text x="32" y="86" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#545454">Flag types</text>
+<rect x="32" y="96" width="180" height="52" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="44" y="123" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Unsupported assumption</text>
+<rect x="32" y="184" width="180" height="52" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="44" y="206" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Threshold-exceeding</text>
+<text x="44" y="222" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">change</text>
+<rect x="32" y="272" width="180" height="52" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="44" y="294" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">New spend without</text>
+<text x="44" y="310" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">rationale</text>
+
+<!-- arrows to generation node -->
+<line x1="212" y1="122" x2="260" y2="195" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="212" y1="210" x2="260" y2="210" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="212" y1="298" x2="260" y2="225" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- generation node -->
+<rect x="264" y="176" width="150" height="68" fill="#FFFFFF" stroke="#2a1a0e" stroke-width="1.5"/>
+<text x="339" y="204" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">Generate sourced</text>
+<text x="339" y="222" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e">challenge question</text>
+
+<line x1="414" y1="210" x2="452" y2="210" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- planning-lead gate -->
+<rect x="456" y="160" width="20" height="100" fill="#2a1a0e"/>
+<rect x="480" y="176" width="78" height="68" fill="#FFFFFF" stroke="#C8102E" stroke-width="1.5"/>
+<text x="519" y="200" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">Planning</text>
+<text x="519" y="216" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="12" fill="#2a1a0e" font-weight="600">lead</text>
+<text x="519" y="234" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="10" fill="#545454">review</text>
+<text x="466" y="284" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">gate</text>
+<text x="519" y="270" text-anchor="middle" font-family="'JetBrains Mono','Fira Code','Courier New',monospace" font-size="10" fill="#545454">remove / combine / add</text>
+
+<line x1="558" y1="210" x2="596" y2="210" stroke="#2a1a0e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- distribution terminal -->
+<rect x="600" y="176" width="68" height="68" fill="#F5F5F5" stroke="#D4D4D4" stroke-width="1"/>
+<text x="634" y="204" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">Pack</text>
+<text x="634" y="220" text-anchor="middle" font-family="'Inter',-apple-system,'Helvetica Neue',sans-serif" font-size="11" fill="#2a1a0e">distributed</text>
+</svg>

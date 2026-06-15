@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The five-step cash position pipeline</title>
+<style>
+  :root {
+    --color-white:#FFFFFF; --color-ink:#2a1a0e; --color-red:#C8102E;
+    --color-secondary:#545454; --color-border:#D4D4D4; --color-ochre:#C8860E; --color-fill:#F5F5F5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --color-white:#111111; --color-ink:#F0EBE3; --color-red:#E8243A;
+            --color-secondary:#A0978C; --color-border:#2E2E2E; --color-ochre:#D49A30; --color-fill:#1A1A1A; }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--color-white); color:var(--color-ink);
+         font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif; }
+  #chart { width:100%; }
+  .chart-title { font-size:16px; font-weight:700; fill:var(--color-ink); }
+  .chart-sub { font-size:13px; fill:var(--color-secondary); }
+  .step-num { font-family:'JetBrains Mono',monospace; font-size:12px; fill:var(--color-red); }
+  .step-title { font-size:12px; font-weight:700; fill:var(--color-ink); }
+  .step-detail { font-size:11px; fill:var(--color-secondary); }
+  .stop-label { font-family:'JetBrains Mono',monospace; font-size:11px; fill:var(--color-red); }
+  .tooltip { position:absolute; pointer-events:none; opacity:0; background:var(--color-ink);
+             color:var(--color-white); font-size:13px; padding:6px 10px; border-radius:4px; }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; animation:none !important; } }
+</style>
+</head>
+<body>
+<div id="chart" role="main"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const FALLBACK_DATA = [
+  { n:"1", title:"Validate feed freshness", detail:"Flag if late or stale" },
+  { n:"2", title:"Normalize by account / entity / currency", detail:"Flag unknown accounts" },
+  { n:"3", title:"Bucket by availability", detail:"Operating / restricted / investment / facility" },
+  { n:"4", title:"Compare to thresholds", detail:"Flag breaches, never suppress" },
+  { n:"5", title:"Escalate to treasury team", detail:"Information only, no recommended action" }
+];
+const tooltip = d3.select('body').append('div').attr('class','tooltip');
+async function loadData() {
+  try { return await d3.json('./08-daily-cash-position-and-liquidity-watch-fig-02/data.json'); }
+  catch { return FALLBACK_DATA; }
+}
+function draw(data) {
+  d3.select('#chart').selectAll('*').remove();
+  const totalWidth = document.getElementById('chart').clientWidth || 800;
+  const stepH = 56, pad = 16;
+  const totalHeight = 70 + data.length*(stepH+pad) + 30;
+  const margin = { top: 64, right: 24, bottom: 30, left: 24 };
+  const innerW = totalWidth - margin.left - margin.right;
+
+  const svg = d3.select('#chart').append('svg')
+    .attr('width',totalWidth).attr('height',totalHeight)
+    .attr('role','img').attr('aria-labelledby','t2 d2');
+  svg.append('title').attr('id','t2').text('The five-step cash position pipeline');
+  svg.append('desc').attr('id','d2').text('Five sequential steps from feed validation to escalation, ending in a deliberate stop where the recipe hands off to the treasury team.');
+
+  svg.append('text').attr('class','chart-title').attr('x',16).attr('y',26).text('The five-step cash position pipeline');
+  svg.append('text').attr('class','chart-sub').attr('x',16).attr('y',46).text('Recipe stops here. Treasury decides what happens next.');
+
+  const g = svg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
+
+  g.selectAll('.step').data(data).join('rect')
+    .attr('class','step').attr('x',0).attr('y',(d,i)=>i*(stepH+pad))
+    .attr('width',innerW).attr('height',stepH)
+    .attr('fill','var(--color-fill)').attr('stroke','var(--color-border)').attr('stroke-width',1)
+    .attr('tabindex',0).attr('aria-label',d=>`Step ${d.n}: ${d.title}. ${d.detail}`)
+    .on('mouseover',function(event,d){
+      d3.selectAll('.step').attr('opacity',0.35); d3.select(this).attr('opacity',1);
+      tooltip.html(`<strong>${d.n}. ${d.title}</strong><br>${d.detail}`)
+        .style('left',(event.pageX+12)+'px').style('top',(event.pageY-28)+'px')
+        .transition().duration(150).style('opacity',1);
+    })
+    .on('mousemove',event=>tooltip.style('left',(event.pageX+12)+'px').style('top',(event.pageY-28)+'px'))
+    .on('mouseout',function(){ d3.selectAll('.step').attr('opacity',1); tooltip.transition().duration(100).style('opacity',0); });
+
+  g.selectAll('.snum').data(data).join('text')
+    .attr('class','step-num').attr('x',14).attr('y',(d,i)=>i*(stepH+pad)+stepH/2+5).text(d=>d.n);
+  g.selectAll('.stitle').data(data).join('text')
+    .attr('class','step-title').attr('x',38).attr('y',(d,i)=>i*(stepH+pad)+24).text(d=>d.title);
+  g.selectAll('.sdetail').data(data).join('text')
+    .attr('class','step-detail').attr('x',38).attr('y',(d,i)=>i*(stepH+pad)+42).text(d=>d.detail);
+
+  // connectors
+  g.selectAll('.conn').data(data.slice(0,-1)).join('line')
+    .attr('class','conn').attr('aria-hidden','true')
+    .attr('x1',innerW/2).attr('x2',innerW/2)
+    .attr('y1',(d,i)=>i*(stepH+pad)+stepH).attr('y2',(d,i)=>(i+1)*(stepH+pad))
+    .attr('stroke','var(--color-secondary)').attr('stroke-width',1.5);
+
+  // stop bar after last
+  const lastY = (data.length-1)*(stepH+pad)+stepH;
+  g.append('line').attr('aria-hidden','true').attr('x1',0).attr('x2',innerW)
+   .attr('y1',lastY+8).attr('y2',lastY+8).attr('stroke','var(--color-red)').attr('stroke-width',3);
+  g.append('text').attr('class','stop-label').attr('x',innerW/2).attr('text-anchor','middle')
+   .attr('y',lastY+24).text('recipe stops — treasury decides');
+}
+loadData().then(data => { draw(data); new ResizeObserver(()=>draw(data)).observe(document.getElementById('chart')); });
+</script>
+</body>
+</html>

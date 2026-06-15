@@ -1,0 +1,32 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t3 d3" font-family="'Inter', sans-serif">
+  <title id="t3">How fluency defeats pushback</title>
+  <desc id="d3">A six-stage left-to-right pipeline from model generates explanation to explanation enters record unchecked, with the danger segment and final failure node marked in red.</desc>
+  <rect width="700" height="420" fill="#FFFFFF"/>
+  <text x="40" y="42" font-size="20" font-family="'EB Garamond', Georgia, serif" fill="#2a1a0e">How fluency defeats pushback</text>
+  <text x="40" y="64" font-size="13" fill="#545454">The danger segment runs from polished output to the missing source check.</text>
+  <g font-size="12" fill="#2a1a0e">
+    <rect x="40"  y="120" width="180" height="48" fill="#F5F5F5" stroke="#545454" stroke-width="1"/>
+    <text x="52" y="142">Model generates</text><text x="52" y="158">explanation</text>
+    <rect x="40"  y="196" width="180" height="48" fill="#F5F5F5" stroke="#545454" stroke-width="1"/>
+    <text x="52" y="218">Output arrives</text><text x="52" y="234">polished</text>
+    <rect x="40"  y="272" width="180" height="48" fill="#F5F5F5" stroke="#545454" stroke-width="1"/>
+    <text x="52" y="294">Reviewer reads</text><text x="52" y="310">fluent language</text>
+    <rect x="480" y="120" width="180" height="48" fill="#F5F5F5" stroke="#545454" stroke-width="1"/>
+    <text x="492" y="142">Reflex is</text><text x="492" y="158">approval</text>
+    <rect x="480" y="196" width="180" height="48" fill="#F5F5F5" stroke="#545454" stroke-width="1"/>
+    <text x="492" y="218">No one checks</text><text x="492" y="234">source</text>
+    <rect x="480" y="272" width="180" height="48" fill="#C8102E"/>
+    <text x="492" y="294" fill="#FFFFFF" font-weight="700">Enters record</text><text x="492" y="310" fill="#FFFFFF" font-weight="700">unchecked</text>
+  </g>
+  <!-- arrows -->
+  <g stroke="#2a1a0e" stroke-width="2" fill="#2a1a0e">
+    <line x1="130" y1="168" x2="130" y2="190"/><polygon points="130,196 125,184 135,184"/>
+    <line x1="130" y1="244" x2="130" y2="266"/><polygon points="130,272 125,260 135,260"/>
+    <line x1="220" y1="296" x2="476" y2="144"/><polygon points="480,142 467,143 472,152"/>
+    <line x1="570" y1="168" x2="570" y2="190"/><polygon points="570,196 565,184 575,184"/>
+    <line x1="570" y1="244" x2="570" y2="266"/><polygon points="570,272 565,260 575,260"/>
+  </g>
+  <!-- emphasis bracket polished -> no source check -->
+  <rect x="30" y="196" width="200" height="48" fill="none" stroke="#C8102E" stroke-width="2" stroke-dasharray="4 3"/>
+  <text x="240" y="222" font-size="11" font-family="'JetBrains Mono', monospace" fill="#C8102E">pushback bar rises here</text>
+</svg>

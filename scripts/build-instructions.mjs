@@ -2,23 +2,25 @@
 // build-instructions.mjs
 // Compile the instruction SOURCE (instructions/_shared/*.md shared modules +
 // instructions/<project>.md + instructions/manifest.yml) into the tool-native
-// adapters AGENTS.md and CLAUDE.md — the same source-vs-adapter pattern as
-// build-prompts.mjs, applied to the repo's instruction files.
+// adapters — the same source-vs-adapter pattern, applied to the repo's
+// instruction files.
 //
 //   AGENTS.md  — the cross-tool standard (Codex, Cursor, Gemini CLI, Copilot…):
-//                shared modules + project, INLINED (AGENTS.md has no import syntax).
-//   CLAUDE.md  — Claude Code reads this name: `@AGENTS.md` import + a claude_only
-//                tail (Claude supports @import, so no duplication).
+//                shared modules + project, INLINED. The CANONICAL adapter.
+//   CLAUDE.md  — Claude Code reads this name: `@AGENTS.md` import + a claude_only tail.
 //
-// Both carry a generated-file banner. NEVER hand-edit AGENTS.md / CLAUDE.md —
-// edit instructions/ and rebuild. This is what kills the drift class (the two
-// files can no longer diverge, because nobody writes them by hand).
+// Thin shims (generated, never hand-edited — they cannot drift; each points at
+// the canonical AGENTS.md / SNICKERDOODLE.md instead of duplicating rule content):
+//   .gemini/settings.json               — Gemini CLI context.fileName → AGENTS.md
+//   .aider.conf.yml                     — Aider read: AGENTS.md
+//   .github/copilot-instructions.md     — Copilot pointer to AGENTS.md
+//   .cursor/rules/mycroft.mdc           — Cursor alwaysApply rule → AGENTS.md
 //
-// Usage:
+// Which shims are emitted is controlled by `targets:` in instructions/manifest.yml.
+// NEVER hand-edit any generated file — edit instructions/ and rebuild.
+//
 //   node scripts/build-instructions.mjs            # build to .build/ + show the diff vs root
 //   node scripts/build-instructions.mjs --promote  # build, then promote .build/ -> repo root
-//
-// The default (no --promote) is the VERIFIED gate: review the diff, then promote.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -29,13 +31,27 @@ const SHARED = path.join(SRC, '_shared');
 const BUILD = path.join(SRC, '.build');
 const ROOT = '.';
 
-const BANNER =
+// Per-repo identity (Mycroft is the framework; constitution renamed to avoid
+// confusion with the Mycroft project at mycroft.biz).
+const CONSTITUTION = 'SNICKERDOODLE.md';
+const TITLE = 'Mycroft';
+const CURSOR_RULE = '.cursor/rules/mycroft.mdc';
+
+const MD_BANNER =
 `<!-- GENERATED FILE — do not edit by hand.
      Source: instructions/ (_shared/ modules + project file) · manifest: instructions/manifest.yml
      Rebuild: node scripts/build-instructions.mjs   ·   Promote: --promote
      Hand edits are overwritten on the next build. -->\n\n`;
 
-// --- manifest (YAML via PyYAML, like conformance.mjs) --------------------
+const YAML_BANNER =
+`# GENERATED FILE — do not edit by hand.
+# Source: instructions/ · manifest: instructions/manifest.yml
+# Rebuild: node scripts/build-instructions.mjs --promote\n`;
+
+const GEN_NOTE =
+`GENERATED from instructions/ by scripts/build-instructions.mjs — do not edit by hand. ` +
+`Thin shim: points at the canonical AGENTS.md (${CONSTITUTION} governs).`;
+
 function loadManifest() {
   const p = path.join(SRC, 'manifest.yml');
   if (!fs.existsSync(p)) { console.error(`No ${p}`); process.exit(2); }
@@ -46,8 +62,6 @@ function loadManifest() {
 }
 
 function readModule(name) {
-  // suite-local-first: a project may override a shared module by dropping a
-  // same-named file in instructions/ (mirrors prompts/ _shared resolution)
   for (const base of [SRC, SHARED]) {
     const p = path.join(base, name);
     if (fs.existsSync(p)) return fs.readFileSync(p, 'utf8').trim();
@@ -61,13 +75,55 @@ function assembleBody(m) {
   return parts.join('\n\n');
 }
 
+// --- builders ------------------------------------------------------------
 function buildAgents(body) {
-  return BANNER + '# Agent Instructions\n\n' + body + '\n';
+  return MD_BANNER + '# Agent Instructions\n\n' + body + '\n';
 }
 function buildClaude(m) {
   const tail = (m.claude_only || []).join('\n');
-  return BANNER + '@AGENTS.md\n\n' + (tail ? tail + '\n' : '');
+  return MD_BANNER + '@AGENTS.md\n\n' + (tail ? tail + '\n' : '');
 }
+function buildGemini() {
+  return JSON.stringify({
+    _comment: GEN_NOTE,
+    context: { fileName: ['AGENTS.md', CONSTITUTION] },
+  }, null, 2) + '\n';
+}
+function buildAider() {
+  return YAML_BANNER + `read:\n  - AGENTS.md\n  - ${CONSTITUTION}\n`;
+}
+function buildCopilot() {
+  return MD_BANNER +
+`# Copilot Instructions — ${TITLE}
+
+Read **\`AGENTS.md\`** (generated cross-agent instructions) and **\`${CONSTITUTION}\`**
+(the constitution — it governs) before acting. The portable read-first map is
+**\`_MANIFEST.md\`**.
+
+If anything conflicts with \`${CONSTITUTION}\`, it wins, and the conflict is a bug —
+log it in \`logs/RUN_LOG.md\`.
+`;
+}
+function buildCursor() {
+  return `---
+description: ${TITLE} — read the canonical agent instructions
+alwaysApply: true
+---
+` + MD_BANNER +
+`Read \`AGENTS.md\` (generated cross-agent instructions) and \`${CONSTITUTION}\`
+(the constitution; it governs) before acting. Portable read-first map: \`_MANIFEST.md\`.
+Conflicts → \`${CONSTITUTION}\` wins; log them in \`logs/RUN_LOG.md\`.
+`;
+}
+
+const TARGETS = {
+  agents:  { file: 'AGENTS.md',                          build: (m, body) => buildAgents(body) },
+  claude:  { file: 'CLAUDE.md',                          build: (m)       => buildClaude(m) },
+  gemini:  { file: '.gemini/settings.json',             build: ()        => buildGemini() },
+  aider:   { file: '.aider.conf.yml',                   build: ()        => buildAider() },
+  copilot: { file: '.github/copilot-instructions.md',   build: ()        => buildCopilot() },
+  cursor:  { file: CURSOR_RULE,                          build: ()        => buildCursor() },
+};
 
 function diff(rootFile, buildFile) {
   if (!fs.existsSync(rootFile)) { console.log(`  (new) ${rootFile} — no current version`); return true; }
@@ -81,6 +137,12 @@ function diff(rootFile, buildFile) {
   }
 }
 
+function writeNested(base, name, content) {
+  const out = path.join(base, name);
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  fs.writeFileSync(out, content);
+}
+
 function main() {
   const promote = process.argv.includes('--promote');
   const m = loadManifest();
@@ -88,11 +150,14 @@ function main() {
 
   fs.mkdirSync(BUILD, { recursive: true });
   const outputs = {};
-  if ((m.targets || []).includes('agents')) outputs['AGENTS.md'] = buildAgents(body);
-  if ((m.targets || []).includes('claude')) outputs['CLAUDE.md'] = buildClaude(m);
+  for (const t of (m.targets || [])) {
+    const spec = TARGETS[t];
+    if (!spec) { console.error(`  ! unknown target in manifest.yml: ${t} (skipped)`); continue; }
+    outputs[spec.file] = spec.build(m, body);
+  }
 
   for (const [name, content] of Object.entries(outputs))
-    fs.writeFileSync(path.join(BUILD, name), content);
+    writeNested(BUILD, name, content);
   console.log(`✓ staged ${Object.keys(outputs).join(' + ')} in ${BUILD}/\n`);
 
   if (!promote) {
@@ -106,10 +171,12 @@ function main() {
   }
 
   for (const name of Object.keys(outputs)) {
-    fs.copyFileSync(path.join(BUILD, name), path.join(ROOT, name));
-    console.log(`  promoted ${name} → repo root`);
+    const dest = path.join(ROOT, name);
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
+    fs.copyFileSync(path.join(BUILD, name), dest);
+    console.log(`  promoted ${name}`);
   }
-  console.log('✓ AGENTS.md and CLAUDE.md regenerated from source. Do not hand-edit them.');
+  console.log('✓ Adapters regenerated from source. Do not hand-edit them.');
 }
 
 main();
