@@ -1,0 +1,187 @@
+{
+  "run_at": "2026-06-25T21:22:20.168989",
+  "source_csv": "C:\\Users\\ameya\\OneDrive\\Documents\\github_ameya\\MCP-Stocks_indication\\data\\verified\\enriched_trades.csv",
+  "gate_passed": true,
+  "gate_failures": [],
+  "total_trades": 5409,
+  "priced_trades": "4166",
+  "clusters_found": 205,
+  "strong": 9,
+  "watch": 174,
+  "skip": 22,
+  "strong_signals": [
+    {
+      "ticker": "UNH",
+      "sector": "healthcare",
+      "cluster_size": 3,
+      "politicians": [
+        "Gil Cisneros",
+        "Maria Elvira Salazar",
+        "Ro Khanna"
+      ],
+      "max_bcr": 0.909,
+      "anchor_date": "2026-05-11",
+      "avg_alpha": 6.5158,
+      "win_rate": 100.0,
+      "n": 4,
+      "signal_score": 2.727,
+      "source": "capitoltrades.com \u2014 3 disclosures from 2026-05-11 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "HD",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Kevin Hern",
+        "Lloyd Doggett"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2023-07-11",
+      "avg_alpha": 5.4912,
+      "win_rate": 100.0,
+      "n": 3,
+      "signal_score": 2.0,
+      "source": "capitoltrades.com \u2014 2 disclosures from 2023-07-11 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "HD",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Kevin Hern",
+        "Lloyd Doggett"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2024-07-04",
+      "avg_alpha": 3.0558,
+      "win_rate": 33.3,
+      "n": 3,
+      "signal_score": 2.0,
+      "source": "capitoltrades.com \u2014 2 disclosures from 2024-07-04 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "HD",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Lloyd Doggett"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2024-10-11",
+      "avg_alpha": 0.9232,
+      "win_rate": 50.0,
+      "n": 2,
+      "signal_score": 2.0,
+      "source": "capitoltrades.com \u2014 2 disclosures from 2024-10-11 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "HD",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Kevin Hern",
+        "Lloyd Doggett"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2025-01-09",
+      "avg_alpha": 0.1423,
+      "win_rate": 50.0,
+      "n": 2,
+      "signal_score": 2.0,
+      "source": "capitoltrades.com \u2014 2 disclosures from 2025-01-09 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "HD",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Lloyd Doggett"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2025-12-16",
+      "avg_alpha": 8.9943,
+      "win_rate": 100.0,
+      "n": 2,
+      "signal_score": 2.0,
+      "source": "capitoltrades.com \u2014 2 disclosures from 2025-12-16 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "IBM",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Lloyd Doggett"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2025-04-07",
+      "avg_alpha": 0.9008,
+      "win_rate": 100.0,
+      "n": 2,
+      "signal_score": 2.0,
+      "source": "capitoltrades.com \u2014 2 disclosures from 2025-04-07 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "JNJ",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Kevin Hern",
+        "Lloyd Doggett"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2024-07-04",
+      "avg_alpha": 11.7337,
+      "win_rate": 100.0,
+      "n": 2,
+      "signal_score": 2.0,
+      "source": "capitoltrades.com \u2014 2 disclosures from 2024-07-04 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "JNJ",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Lloyd Doggett"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2025-01-09",
+      "avg_alpha": 5.2852,
+      "win_rate": 100.0,
+      "n": 2,
+      "signal_score": 2.0,
+      "source": "capitoltrades.com \u2014 2 disclosures from 2025-01-09 window",
+      "signal_state": "STRONG"
+    }
+  ],
+  "research_notes": {
+    "UNH": "STRONG signal \u2014 UNH (healthcare). 3 politicians bought within 30 days (max BCR 0.91, signal score 2.73). Historical avg alpha: +6.52% above SPY (100.0% win rate, n=4). Sector context: drug pricing legislation and Medicare negotiation timelines. Politicians: Gil Cisneros, Maria Elvira Salazar, Ro Khanna. Source: capitoltrades.com \u2014 3 disclosures from 2026-05-11 window.",
+    "HD": "STRONG signal \u2014 HD (general). 2 politicians bought within 30 days (max BCR 1.00, signal score 2.00). Historical avg alpha: +8.99% above SPY (100.0% win rate, n=2). Sector context: general legislative activity. Politicians: Gil Cisneros, Lloyd Doggett. Source: capitoltrades.com \u2014 2 disclosures from 2025-12-16 window.",
+    "IBM": "STRONG signal \u2014 IBM (general). 2 politicians bought within 30 days (max BCR 1.00, signal score 2.00). Historical avg alpha: +0.90% above SPY (100.0% win rate, n=2). Sector context: general legislative activity. Politicians: Josh Gottheimer, Lloyd Doggett. Source: capitoltrades.com \u2014 2 disclosures from 2025-04-07 window.",
+    "JNJ": "STRONG signal \u2014 JNJ (general). 2 politicians bought within 30 days (max BCR 1.00, signal score 2.00). Historical avg alpha: +5.29% above SPY (100.0% win rate, n=2). Sector context: general legislative activity. Politicians: Josh Gottheimer, Lloyd Doggett. Source: capitoltrades.com \u2014 2 disclosures from 2025-01-09 window."
+  },
+  "run_log": [
+    "[conformance] starting \u2014 2026-06-25T21:22:17.493197",
+    "[conformance] rows=5409  priced=4166 (77.0%)  blank_tickers=891  blank_disclos=161  blank_pol=0",
+    "[conformance] gate_skip_rate=19.4%  failures=0",
+    "[conformance] GATE PASSED",
+    "[cluster] detecting clusters \u2014 window=30d  min_pols=2",
+    "[cluster] found 205 clusters  top=IBM",
+    "[scorer] applying phase gates: score\u22652 \u2192 STRONG, score\u22651 \u2192 WATCH, else SKIP",
+    "[scorer] STRONG=9  WATCH=174  SKIP=22",
+    "[research] generating notes for 9 STRONG signals",
+    "[research] rule-based notes generated (--no-llm mode)",
+    "[report] writing artifacts \u2014 20260625_212220"
+  ]
+}
