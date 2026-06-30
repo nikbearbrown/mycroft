@@ -1,0 +1,638 @@
+{
+  "run_at": "2026-06-30T16:37:45.869698",
+  "source_csv": "C:\\Users\\ameya\\OneDrive\\Documents\\github_ameya\\MCP-Stocks_indication\\data\\verified\\enriched_trades.csv",
+  "gate_passed": true,
+  "gate_failures": [],
+  "total_trades": 9211,
+  "priced_trades": "4166",
+  "clusters_found": 425,
+  "strong": 33,
+  "watch": 352,
+  "skip": 40,
+  "strong_signals": [
+    {
+      "ticker": "MSFT",
+      "sector": "ai_cloud",
+      "cluster_size": 5,
+      "politicians": [
+        "Cleo Fields",
+        "David Taylor",
+        "Gil Cisneros",
+        "John Fetterman",
+        "Rich McCormick"
+      ],
+      "max_bcr": 0.942,
+      "anchor_date": "2026-03-09",
+      "avg_alpha": 1.783,
+      "win_rate": 100.0,
+      "n": 1,
+      "signal_score": 4.71,
+      "source": "capitoltrades.com \u2014 5 disclosures from 2026-03-09 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "MSFT",
+      "sector": "ai_cloud",
+      "cluster_size": 5,
+      "politicians": [
+        "Cleo Fields",
+        "Gil Cisneros",
+        "John Fetterman",
+        "Josh Gottheimer",
+        "Rich McCormick"
+      ],
+      "max_bcr": 0.942,
+      "anchor_date": "2026-03-18",
+      "avg_alpha": 2.4499,
+      "win_rate": 100.0,
+      "n": 3,
+      "signal_score": 4.71,
+      "source": "capitoltrades.com \u2014 5 disclosures from 2026-03-18 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "HD",
+      "sector": "general",
+      "cluster_size": 4,
+      "politicians": [
+        "David Taylor",
+        "Gil Cisneros",
+        "Lloyd Doggett",
+        "Rich McCormick"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2025-12-10",
+      "avg_alpha": 8.9943,
+      "win_rate": 100.0,
+      "n": 2,
+      "signal_score": 4.0,
+      "source": "capitoltrades.com \u2014 4 disclosures from 2025-12-10 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "MSFT",
+      "sector": "ai_cloud",
+      "cluster_size": 5,
+      "politicians": [
+        "Gil Cisneros",
+        "John Fetterman",
+        "Josh Gottheimer",
+        "Mark Warner",
+        "Rich McCormick"
+      ],
+      "max_bcr": 0.785,
+      "anchor_date": "2026-04-03",
+      "avg_alpha": 2.4499,
+      "win_rate": 100.0,
+      "n": 3,
+      "signal_score": 3.925,
+      "source": "capitoltrades.com \u2014 5 disclosures from 2026-04-03 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "GOOGL",
+      "sector": "ai_cloud",
+      "cluster_size": 4,
+      "politicians": [
+        "Bill Keating",
+        "Cleo Fields",
+        "John Fetterman",
+        "Ro Khanna"
+      ],
+      "max_bcr": 0.942,
+      "anchor_date": "2026-03-17",
+      "avg_alpha": 17.3559,
+      "win_rate": 100.0,
+      "n": 2,
+      "signal_score": 3.768,
+      "source": "capitoltrades.com \u2014 4 disclosures from 2026-03-17 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "UNH",
+      "sector": "healthcare",
+      "cluster_size": 5,
+      "politicians": [
+        "Chuck Fleischmann",
+        "Gil Cisneros",
+        "Josh Gottheimer",
+        "Rich McCormick",
+        "Ro Khanna"
+      ],
+      "max_bcr": 0.745,
+      "anchor_date": "2026-03-17",
+      "avg_alpha": 13.2339,
+      "win_rate": 100.0,
+      "n": 5,
+      "signal_score": 3.725,
+      "source": "capitoltrades.com \u2014 5 disclosures from 2026-03-17 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "MSFT",
+      "sector": "ai_cloud",
+      "cluster_size": 4,
+      "politicians": [
+        "Gil Cisneros",
+        "Josh Gottheimer",
+        "Mark Warner",
+        "Rich McCormick"
+      ],
+      "max_bcr": 0.785,
+      "anchor_date": "2026-04-08",
+      "avg_alpha": 2.4499,
+      "win_rate": 100.0,
+      "n": 3,
+      "signal_score": 3.14,
+      "source": "capitoltrades.com \u2014 4 disclosures from 2026-04-08 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "HD",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Kevin Hern",
+        "Lloyd Doggett",
+        "Sheldon Whitehouse"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2024-07-04",
+      "avg_alpha": 3.0558,
+      "win_rate": 33.3,
+      "n": 3,
+      "signal_score": 3.0,
+      "source": "capitoltrades.com \u2014 3 disclosures from 2024-07-04 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "HD",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "David Taylor",
+        "Gil Cisneros",
+        "Lloyd Doggett"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2025-12-16",
+      "avg_alpha": 8.9943,
+      "win_rate": 100.0,
+      "n": 2,
+      "signal_score": 3.0,
+      "source": "capitoltrades.com \u2014 3 disclosures from 2025-12-16 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "IBM",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Dwight Evans",
+        "Josh Gottheimer",
+        "Lloyd Doggett"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2025-04-07",
+      "avg_alpha": 0.9008,
+      "win_rate": 100.0,
+      "n": 2,
+      "signal_score": 3.0,
+      "source": "capitoltrades.com \u2014 3 disclosures from 2025-04-07 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "JNJ",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Josh Gottheimer",
+        "Lloyd Doggett",
+        "Virginia Foxx"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2025-01-07",
+      "avg_alpha": 5.2852,
+      "win_rate": 100.0,
+      "n": 2,
+      "signal_score": 3.0,
+      "source": "capitoltrades.com \u2014 3 disclosures from 2025-01-07 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "UNH",
+      "sector": "healthcare",
+      "cluster_size": 4,
+      "politicians": [
+        "Chuck Fleischmann",
+        "Gil Cisneros",
+        "Rich McCormick",
+        "Ro Khanna"
+      ],
+      "max_bcr": 0.745,
+      "anchor_date": "2026-03-23",
+      "avg_alpha": 15.258,
+      "win_rate": 100.0,
+      "n": 4,
+      "signal_score": 2.98,
+      "source": "capitoltrades.com \u2014 4 disclosures from 2026-03-23 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "GOOGL",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "Cleo Fields",
+        "Julie Johnson",
+        "Michael McCaul"
+      ],
+      "max_bcr": 0.942,
+      "anchor_date": "2025-10-31",
+      "avg_alpha": 6.4168,
+      "win_rate": 100.0,
+      "n": 1,
+      "signal_score": 2.826,
+      "source": "capitoltrades.com \u2014 3 disclosures from 2025-10-31 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "GOOGL",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "Cleo Fields",
+        "Julie Johnson",
+        "Michael McCaul"
+      ],
+      "max_bcr": 0.942,
+      "anchor_date": "2025-11-11",
+      "avg_alpha": 6.4168,
+      "win_rate": 100.0,
+      "n": 1,
+      "signal_score": 2.826,
+      "source": "capitoltrades.com \u2014 3 disclosures from 2025-11-11 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "GOOGL",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "Cleo Fields",
+        "John Fetterman",
+        "Ro Khanna"
+      ],
+      "max_bcr": 0.942,
+      "anchor_date": "2026-04-03",
+      "avg_alpha": 17.3559,
+      "win_rate": 100.0,
+      "n": 2,
+      "signal_score": 2.826,
+      "source": "capitoltrades.com \u2014 3 disclosures from 2026-04-03 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "MSFT",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "Cleo Fields",
+        "Jefferson Shreve",
+        "Josh Gottheimer"
+      ],
+      "max_bcr": 0.942,
+      "anchor_date": "2025-06-12",
+      "avg_alpha": 0.4773,
+      "win_rate": 66.7,
+      "n": 3,
+      "signal_score": 2.826,
+      "source": "capitoltrades.com \u2014 3 disclosures from 2025-06-12 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "MU",
+      "sector": "semiconductor",
+      "cluster_size": 3,
+      "politicians": [
+        "Cleo Fields",
+        "Gil Cisneros",
+        "Tony Wied"
+      ],
+      "max_bcr": 0.942,
+      "anchor_date": "2026-02-25",
+      "avg_alpha": 2.722,
+      "win_rate": 100.0,
+      "n": 2,
+      "signal_score": 2.826,
+      "source": "capitoltrades.com \u2014 3 disclosures from 2026-02-25 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "NVDA",
+      "sector": "semiconductor",
+      "cluster_size": 3,
+      "politicians": [
+        "Cleo Fields",
+        "Jefferson Shreve",
+        "Josh Gottheimer"
+      ],
+      "max_bcr": 0.942,
+      "anchor_date": "2025-06-23",
+      "avg_alpha": 7.3182,
+      "win_rate": 100.0,
+      "n": 2,
+      "signal_score": 2.826,
+      "source": "capitoltrades.com \u2014 3 disclosures from 2025-06-23 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "CARR",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Maria Elvira Salazar",
+        "Rick Larsen",
+        "Ro Khanna"
+      ],
+      "max_bcr": 0.909,
+      "anchor_date": "2026-04-16",
+      "avg_alpha": 5.6889,
+      "win_rate": 100.0,
+      "n": 4,
+      "signal_score": 2.727,
+      "source": "capitoltrades.com \u2014 3 disclosures from 2026-04-16 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "UNH",
+      "sector": "healthcare",
+      "cluster_size": 3,
+      "politicians": [
+        "Gil Cisneros",
+        "Maria Elvira Salazar",
+        "Ro Khanna"
+      ],
+      "max_bcr": 0.909,
+      "anchor_date": "2026-05-11",
+      "avg_alpha": 5.9662,
+      "win_rate": 100.0,
+      "n": 4,
+      "signal_score": 2.727,
+      "source": "capitoltrades.com \u2014 3 disclosures from 2026-05-11 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "HD",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "David Taylor",
+        "Gil Cisneros",
+        "Rich McCormick"
+      ],
+      "max_bcr": 0.745,
+      "anchor_date": "2025-11-19",
+      "avg_alpha": 5.2374,
+      "win_rate": 100.0,
+      "n": 1,
+      "signal_score": 2.235,
+      "source": "capitoltrades.com \u2014 3 disclosures from 2025-11-19 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "UNH",
+      "sector": "healthcare",
+      "cluster_size": 3,
+      "politicians": [
+        "Gil Cisneros",
+        "Rich McCormick",
+        "Ro Khanna"
+      ],
+      "max_bcr": 0.745,
+      "anchor_date": "2026-04-08",
+      "avg_alpha": 15.258,
+      "win_rate": 100.0,
+      "n": 4,
+      "signal_score": 2.235,
+      "source": "capitoltrades.com \u2014 3 disclosures from 2026-04-08 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "MSFT",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "David Taylor",
+        "John McGuire",
+        "Michael McCaul"
+      ],
+      "max_bcr": 0.714,
+      "anchor_date": "2026-01-22",
+      "avg_alpha": 1.4454,
+      "win_rate": 100.0,
+      "n": 1,
+      "signal_score": 2.142,
+      "source": "capitoltrades.com \u2014 3 disclosures from 2026-01-22 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "MSFT",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "David Taylor",
+        "John McGuire",
+        "Michael McCaul"
+      ],
+      "max_bcr": 0.714,
+      "anchor_date": "2026-02-03",
+      "avg_alpha": 1.4454,
+      "win_rate": 100.0,
+      "n": 1,
+      "signal_score": 2.142,
+      "source": "capitoltrades.com \u2014 3 disclosures from 2026-02-03 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "MSFT",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "David Taylor",
+        "John McGuire",
+        "Michael McCaul"
+      ],
+      "max_bcr": 0.714,
+      "anchor_date": "2026-02-11",
+      "avg_alpha": 1.4454,
+      "win_rate": 100.0,
+      "n": 1,
+      "signal_score": 2.142,
+      "source": "capitoltrades.com \u2014 3 disclosures from 2026-02-11 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "MSFT",
+      "sector": "ai_cloud",
+      "cluster_size": 4,
+      "politicians": [
+        "Bill Keating",
+        "Josh Gottheimer",
+        "Thomas Kean Jr",
+        "Tony Wied"
+      ],
+      "max_bcr": 0.535,
+      "anchor_date": "2025-02-20",
+      "avg_alpha": 3.3215,
+      "win_rate": 100.0,
+      "n": 5,
+      "signal_score": 2.14,
+      "source": "capitoltrades.com \u2014 4 disclosures from 2025-02-20 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "HD",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Kevin Hern",
+        "Lloyd Doggett"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2023-07-11",
+      "avg_alpha": 5.4912,
+      "win_rate": 100.0,
+      "n": 3,
+      "signal_score": 2.0,
+      "source": "capitoltrades.com \u2014 2 disclosures from 2023-07-11 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "HD",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Lloyd Doggett"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2024-10-11",
+      "avg_alpha": 0.9232,
+      "win_rate": 50.0,
+      "n": 2,
+      "signal_score": 2.0,
+      "source": "capitoltrades.com \u2014 2 disclosures from 2024-10-11 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "HD",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Kevin Hern",
+        "Lloyd Doggett"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2025-01-09",
+      "avg_alpha": 0.1423,
+      "win_rate": 50.0,
+      "n": 2,
+      "signal_score": 2.0,
+      "source": "capitoltrades.com \u2014 2 disclosures from 2025-01-09 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "HD",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Lloyd Doggett"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2025-12-22",
+      "avg_alpha": 12.7512,
+      "win_rate": 100.0,
+      "n": 1,
+      "signal_score": 2.0,
+      "source": "capitoltrades.com \u2014 2 disclosures from 2025-12-22 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "JNJ",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Kevin Hern",
+        "Lloyd Doggett"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2024-07-04",
+      "avg_alpha": 11.7337,
+      "win_rate": 100.0,
+      "n": 2,
+      "signal_score": 2.0,
+      "source": "capitoltrades.com \u2014 2 disclosures from 2024-07-04 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "JNJ",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Lloyd Doggett"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2025-01-09",
+      "avg_alpha": 5.2852,
+      "win_rate": 100.0,
+      "n": 2,
+      "signal_score": 2.0,
+      "source": "capitoltrades.com \u2014 2 disclosures from 2025-01-09 window",
+      "signal_state": "STRONG"
+    },
+    {
+      "ticker": "JNJ",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Lloyd Doggett",
+        "Rich McCormick"
+      ],
+      "max_bcr": 1.0,
+      "anchor_date": "2025-12-10",
+      "avg_alpha": 14.9844,
+      "win_rate": 100.0,
+      "n": 1,
+      "signal_score": 2.0,
+      "source": "capitoltrades.com \u2014 2 disclosures from 2025-12-10 window",
+      "signal_state": "STRONG"
+    }
+  ],
+  "research_notes": {
+    "MSFT": "STRONG signal \u2014 MSFT (ai_cloud). 4 politicians bought within 30 days (max BCR 0.54, signal score 2.14). Historical avg alpha: +3.32% above SPY (100.0% win rate, n=5). Sector context: AI executive orders and federal AI procurement policy. Politicians: Bill Keating, Josh Gottheimer, Thomas Kean Jr.... Source: capitoltrades.com \u2014 4 disclosures from 2025-02-20 window.",
+    "HD": "STRONG signal \u2014 HD (general). 2 politicians bought within 30 days (max BCR 1.00, signal score 2.00). Historical avg alpha: +12.75% above SPY (100.0% win rate, n=1). Sector context: general legislative activity. Politicians: David Taylor, Lloyd Doggett. Source: capitoltrades.com \u2014 2 disclosures from 2025-12-22 window.",
+    "GOOGL": "STRONG signal \u2014 GOOGL (ai_cloud). 3 politicians bought within 30 days (max BCR 0.94, signal score 2.83). Historical avg alpha: +17.36% above SPY (100.0% win rate, n=2). Sector context: AI executive orders and federal AI procurement policy. Politicians: Cleo Fields, John Fetterman, Ro Khanna. Source: capitoltrades.com \u2014 3 disclosures from 2026-04-03 window.",
+    "UNH": "STRONG signal \u2014 UNH (healthcare). 3 politicians bought within 30 days (max BCR 0.74, signal score 2.23). Historical avg alpha: +15.26% above SPY (100.0% win rate, n=4). Sector context: drug pricing legislation and Medicare negotiation timelines. Politicians: Gil Cisneros, Rich McCormick, Ro Khanna. Source: capitoltrades.com \u2014 3 disclosures from 2026-04-08 window.",
+    "IBM": "STRONG signal \u2014 IBM (general). 3 politicians bought within 30 days (max BCR 1.00, signal score 3.00). Historical avg alpha: +0.90% above SPY (100.0% win rate, n=2). Sector context: general legislative activity. Politicians: Dwight Evans, Josh Gottheimer, Lloyd Doggett. Source: capitoltrades.com \u2014 3 disclosures from 2025-04-07 window.",
+    "JNJ": "STRONG signal \u2014 JNJ (general). 2 politicians bought within 30 days (max BCR 1.00, signal score 2.00). Historical avg alpha: +14.98% above SPY (100.0% win rate, n=1). Sector context: general legislative activity. Politicians: Lloyd Doggett, Rich McCormick. Source: capitoltrades.com \u2014 2 disclosures from 2025-12-10 window.",
+    "MU": "STRONG signal \u2014 MU (semiconductor). 3 politicians bought within 30 days (max BCR 0.94, signal score 2.83). Historical avg alpha: +2.72% above SPY (100.0% win rate, n=2). Sector context: active CHIPS Act 2.0 drafting and AI National Security Commission work. Politicians: Cleo Fields, Gil Cisneros, Tony Wied. Source: capitoltrades.com \u2014 3 disclosures from 2026-02-25 window.",
+    "NVDA": "STRONG signal \u2014 NVDA (semiconductor). 3 politicians bought within 30 days (max BCR 0.94, signal score 2.83). Historical avg alpha: +7.32% above SPY (100.0% win rate, n=2). Sector context: active CHIPS Act 2.0 drafting and AI National Security Commission work. Politicians: Cleo Fields, Jefferson Shreve, Josh Gottheimer. Source: capitoltrades.com \u2014 3 disclosures from 2025-06-23 window.",
+    "CARR": "STRONG signal \u2014 CARR (general). 3 politicians bought within 30 days (max BCR 0.91, signal score 2.73). Historical avg alpha: +5.69% above SPY (100.0% win rate, n=4). Sector context: general legislative activity. Politicians: Maria Elvira Salazar, Rick Larsen, Ro Khanna. Source: capitoltrades.com \u2014 3 disclosures from 2026-04-16 window."
+  },
+  "run_log": [
+    "[conformance] starting \u2014 2026-06-30T16:37:39.680817",
+    "[conformance] rows=9211  priced=4166 (45.2%)  blank_tickers=2271  blank_disclos=465  blank_pol=0",
+    "[conformance] gate_skip_rate=29.7%  failures=0",
+    "[conformance] GATE PASSED",
+    "[cluster] detecting clusters \u2014 window=30d  min_pols=2",
+    "[cluster] found 425 clusters  top=MSFT",
+    "[scorer] applying phase gates: score\u22652 \u2192 STRONG, score\u22651 \u2192 WATCH, else SKIP",
+    "[scorer] STRONG=33  WATCH=352  SKIP=40",
+    "[research] generating notes for 33 STRONG signals",
+    "[research] rule-based notes generated (--no-llm mode)",
+    "[report] writing artifacts \u2014 20260630_163745"
+  ]
+}
