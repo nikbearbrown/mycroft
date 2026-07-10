@@ -1,0 +1,13 @@
+# Never commit real credentials
+.env
+
+# Runtime-generated, not part of the repo
+audit_log.jsonl
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Common environment/OS clutter
+venv/
+.venv/
+.DS_Store
