@@ -103,37 +103,49 @@ def is_valid_equity_ticker(ticker: str) -> bool:
     return True
 
 
+# Per-ticker full-history cache. We download each ticker ONCE over the whole
+# study window, then answer every date lookup locally. This turns ~4 API calls
+# per trade (tens of thousands total -> instant rate-limit) into ~1 call per
+# unique ticker (a few hundred total), which yfinance tolerates.
+import time
+_ticker_hist: dict[str, "pd.Series | None"] = {}
+_HIST_START = "2023-01-01"
+
+
+def _load_ticker(ticker: str) -> "pd.Series | None":
+    if ticker in _ticker_hist:
+        return _ticker_hist[ticker]
+    end = (datetime.today() + timedelta(days=2)).strftime("%Y-%m-%d")
+    series = None
+    for attempt in range(3):
+        try:
+            df = yf.download(ticker, start=_HIST_START, end=end,
+                             progress=False, auto_adjust=True)
+            if not df.empty:
+                s = df["Close"]
+                if hasattr(s, "columns"):        # flatten multiindex
+                    s = s.iloc[:, 0]
+                s.index = pd.to_datetime(s.index).tz_localize(None).normalize()
+                series = s.sort_index()
+                break
+        except Exception as exc:
+            log.debug("yfinance error %s (attempt %d): %s", ticker, attempt + 1, exc)
+        time.sleep(1.0 * (attempt + 1))          # backoff on empty/error
+    _ticker_hist[ticker] = series
+    return series
+
+
 def get_close(ticker: str, date: datetime) -> float | None:
-    """
-    Fetch the closing price on `date` or the nearest prior trading day
-    (looks back up to 7 calendar days to skip weekends/holidays).
-    Returns None on any error or if no data is available.
-    """
-    key = (ticker, date.strftime("%Y-%m-%d"))
-    if key in _price_cache:
-        return _price_cache[key]
-
-    start = (date - timedelta(days=7)).strftime("%Y-%m-%d")
-    end = (date + timedelta(days=1)).strftime("%Y-%m-%d")
-
-    try:
-        df = yf.download(
-            ticker,
-            start=start,
-            end=end,
-            progress=False,
-            auto_adjust=True,
-        )
-        if df.empty:
-            _price_cache[key] = None
-            return None
-        price = float(df["Close"].iloc[-1])
-        _price_cache[key] = price
-        return price
-    except Exception as exc:
-        log.debug("yfinance error %s @ %s: %s", ticker, date.date(), exc)
-        _price_cache[key] = None
+    """Closing price on `date` or the nearest prior trading day. Local lookup
+    against the ticker's cached full history (downloaded once)."""
+    s = _load_ticker(ticker)
+    if s is None or len(s) == 0:
         return None
+    dt = pd.Timestamp(date).normalize()
+    sub = s[s.index <= dt]
+    if sub.empty:
+        return None
+    return round(float(sub.iloc[-1]), 4)
 
 
 def pct(before: float | None, after: float | None) -> float | None:
@@ -181,13 +193,27 @@ def main() -> None:
     records = raw.to_dict("records")
 
     # Resume: load already-enriched rows and skip them this run.
+    # A row counts as "done" only if it was actually priced OR is genuinely
+    # unpriceable (non-equity ticker). A valid-equity row left blank is a
+    # rate-limit casualty — drop it from the base so it gets re-enriched.
+    def _priced(r: dict) -> bool:
+        return (str(r.get("price_at_disclosure", "")).strip() != "" or
+                str(r.get("price_at_trade", "")).strip() != "")
+
+    def _retryable(r: dict) -> bool:
+        tk = clean_ticker(r.get("ticker", ""))
+        return is_valid_equity_ticker(tk) and not _priced(r)
+
     existing_records: list[dict] = []
     done_keys: set[str] = set()
     if OUTPUT.exists():
         ex = pd.read_csv(OUTPUT, dtype=str, on_bad_lines="skip").fillna("")
-        existing_records = ex.to_dict("records")
+        all_existing = ex.to_dict("records")
+        retry = [r for r in all_existing if _retryable(r)]
+        existing_records = [r for r in all_existing if not _retryable(r)]  # base we keep
         done_keys = {_row_key(r) for r in existing_records}
-        log.info("Resume: %d rows already enriched in %s", len(done_keys), OUTPUT)
+        log.info("Resume: %d kept, %d valid-but-unpriced rows will be RE-enriched",
+                 len(done_keys), len(retry))
 
     todo = [r for r in records if _row_key(r) not in done_keys]
     log.info("Total=%d  already-done=%d  to-enrich=%d", len(records), len(done_keys), len(todo))

@@ -170,21 +170,41 @@ def get_buy_signals(days: int = 30, min_politicians: int = 2) -> list[dict]:
         days: Look-back window in calendar days (default 30).
         min_politicians: Minimum distinct politicians who must have bought (default 2).
 
+    Ranking (matches the offline pipeline):
+        signal_score = distinct_politicians x max(BCR among them)
+      where BCR (buy-conviction ratio) = a politician's BUYs / (BUYs + SELLs)
+      across the whole dataset. Signals are ranked by signal_score, so a small
+      cluster of high-conviction buyers can outrank a larger low-conviction one.
+
+    Args:
+        days: Look-back window in calendar days (default 30).
+        min_politicians: Minimum DISTINCT politicians who must have bought (default 2).
+
     Returns:
-        List of signal dicts sorted by conviction (number of buyers desc), each with:
-          ticker, asset_name, buy_count, politicians (list), total_amount_hint,
-          latest_transaction_date, latest_disclosure_date
+        List of signal dicts sorted by signal_score desc, each with:
+          ticker, asset_name, n_politicians (distinct), buy_rows, max_bcr,
+          signal_score, politicians (list), latest_transaction_date,
+          latest_disclosure_date
         Returns [{"error": "..."}] if no data available yet.
     """
     df = _load_trades()
     if df.empty:
         return [{"error": "No trade data yet — scraper still running."}]
 
-    buys = df[df["trade_type"].str.upper() == "BUY"].copy()
+    # Buy-conviction ratio per politician, computed over the FULL history
+    # (not just the recent window) so conviction reflects long-run behaviour.
+    tt = df["trade_type"].str.upper()
+    bcr_by_pol: dict[str, float] = {}
+    for pol, g in df.assign(_tt=tt).groupby("politician"):
+        b = (g["_tt"] == "BUY").sum()
+        s = (g["_tt"] == "SELL").sum()
+        bcr_by_pol[pol] = round(b / (b + s), 3) if (b + s) else 0.5
+
+    buys = df[tt == "BUY"].copy()
     buys = buys[buys["ticker"].str.len().between(1, 5)]
     buys = buys[buys["ticker"].str.isalpha()]
 
-    # Filter by date window if dates are available
+    # Filter by recency window if dates are available
     if "transaction_date" in buys.columns and buys["transaction_date"].str.len().gt(0).any():
         from datetime import datetime, timedelta
         cutoff = (datetime.today() - timedelta(days=days)).strftime("%Y-%m-%d")
@@ -199,7 +219,7 @@ def get_buy_signals(days: int = 30, min_politicians: int = 2) -> list[dict]:
         buys.groupby("ticker")
         .agg(
             asset_name=("asset_name", "first"),
-            buy_count=("politician", "count"),
+            buy_rows=("politician", "count"),               # raw # of BUY rows
             politicians=("politician", lambda x: sorted(x.unique().tolist())),
             latest_transaction_date=("transaction_date", "max"),
             latest_disclosure_date=("disclosure_date", "max"),
@@ -207,9 +227,22 @@ def get_buy_signals(days: int = 30, min_politicians: int = 2) -> list[dict]:
         .reset_index()
     )
 
-    signals = grouped[grouped["buy_count"] >= min_politicians].sort_values("buy_count", ascending=False)
-    log.info("get_buy_signals: %d signals (days=%d, min_pol=%d)", len(signals), days, min_politicians)
-    return json.loads(signals.to_json(orient="records"))
+    # Distinct-politician count (the real cluster size) + two-factor score
+    grouped["n_politicians"] = grouped["politicians"].apply(len)
+    grouped["max_bcr"] = grouped["politicians"].apply(
+        lambda names: round(max((bcr_by_pol.get(n, 0.5) for n in names), default=0.5), 3)
+    )
+    grouped["signal_score"] = (grouped["n_politicians"] * grouped["max_bcr"]).round(3)
+
+    signals = (
+        grouped[grouped["n_politicians"] >= min_politicians]
+        .sort_values("signal_score", ascending=False)
+    )
+    log.info("get_buy_signals: %d signals (days=%d, min_pol=%d) ranked by signal_score",
+             len(signals), days, min_politicians)
+    cols = ["ticker", "asset_name", "n_politicians", "buy_rows", "max_bcr",
+            "signal_score", "politicians", "latest_transaction_date", "latest_disclosure_date"]
+    return json.loads(signals[cols].to_json(orient="records"))
 
 
 @mcp.tool()
