@@ -1,0 +1,46 @@
+services:
+  n8n:
+    build: .
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      # --- Task runners (external mode) ---
+      # n8n v2's Python Code node runs through an external task runner. The
+      # `n8nio/runners` sidecar below ships the managed Python virtualenv, which
+      # the official n8n image does NOT include (internal mode -> "Virtual
+      # environment is missing from this system").
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_RUNNERS_MODE=external
+      - N8N_RUNNERS_BROKER_LISTEN_ADDRESS=0.0.0.0
+      - N8N_RUNNERS_AUTH_TOKEN=humanitarians-ai
+      - N8N_NATIVE_PYTHON_RUNNER=true
+      # --- General ---
+      - GENERIC_TIMEZONE=America/New_York
+      - TZ=America/New_York
+      # Allow the Execute Command node to run python from workflows
+      - NODE_FUNCTION_ALLOW_EXTERNAL=*
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+  # Sidecar that executes Code-node tasks (JS + Python). Its image tag MUST
+  # match the n8n version (currently 2.25.6).
+  n8n-runners:
+    image: n8nio/runners:2.25.6
+    container_name: n8n-runners
+    restart: unless-stopped
+    depends_on:
+      - n8n
+    environment:
+      - N8N_RUNNERS_AUTH_TOKEN=humanitarians-ai
+      - N8N_RUNNERS_TASK_BROKER_URI=http://n8n:5679
+      - N8N_NATIVE_PYTHON_RUNNER=true
+    volumes:
+      # The launcher filters/overrides the Python runner's env and blanks
+      # N8N_RUNNERS_STDLIB_ALLOW. Override the launcher config so the Python
+      # sandbox actually receives the stdlib allowlist ("*" = all stdlib).
+      - ./n8n-task-runners.json:/etc/n8n-task-runners.json:ro
+
+volumes:
+  n8n_data:

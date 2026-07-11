@@ -97,3 +97,21 @@ workflow changes.
   - Phase 2: Run full sample brief (company: "Anthropic") with all gates open (no human decision yet, just logging).
   - Phase 2: Generate `signals-validation-audit.md` (spot-check 10 signals, assess quality).
   - Phase 3: Solve Groq token limit (upgrade tier or secondary provider for news classification).
+
+## 2026-07-11 -- Hacker News AI Buzz Tracker: historical backfill, baselines, and watchlist-version guard
+
+- **Recipe:** Hacker News AI Buzz Tracker (`data/raw/Hacker_News_AI_Buzz_Tracker/`) — historical backfill and trailing-baseline phase.
+- **Inputs:** the project's 12-entity v1 watchlist config, existing scoring/parsing code from earlier phases (reused as-is, not rewritten), the Hacker News Algolia `search_by_date` API, Supabase (`hn_buzz_runs`, plus two new tables: a dedicated backfill table and an entity-baseline table).
+- **Commands:**
+  - Wrote and ran a 90-day historical backfill script (dry-run first, then live) — weekly chunked, paginated Algolia pulls, deduped by story ID, scored with the existing scoring code, inserted into the new dedicated backfill table.
+  - Wrote and ran a trailing-baselines script against the backfilled data into the new entity-baseline table.
+  - Diagnosed and fixed an Algolia query-matching bug (unquoted short terms, e.g. one entity's ticker-style term, matched hundreds of unrelated stories; some terms returned zero real hits) by quoting every query term and enabling exact-phrase matching, in both the backfill script and the live n8n workflow.
+  - Fixing the live workflow required adding a separate quoted-term field threaded through the workflow's node schema, since an existing merge step matched the API's echoed query string against the original unquoted term field.
+  - Migrated the live snapshot table to add a `watchlist_version` column and updated the live workflow's previous-run read query, row-builder, and insert step to close a gap: the version tag previously existed only as metadata on the backfill table, with no structural guard against a future watchlist-version comparison in the live velocity lookup.
+  - Ran the live workflow manually post-migration to confirm the guard works without breaking velocity computation.
+- **Outputs:** new backfill script and trailing-baselines script, updated live n8n workflow export, updated database setup documentation (new table schemas + migration note).
+- **Result:** 13 weekly backfilled rows in the new backfill table (verified: full entity coverage per row, no duplicates, internally consistent confidence/score flags, query-matching fix holding at scale); one row per entity in the new baseline table; watchlist-version guard live and confirmed on a partial manual test run (velocity computed correctly, non-cold-start).
+- **Open issues:**
+  - [GATE OPEN] Full-watchlist live-run regression test of the watchlist-version guard — only tested with a subset of entities so far.
+  - [BLOCKER] Backfilled engagement totals (points/comments) carry a look-ahead risk, since the source API returns current rather than point-in-time totals — unresolved; story count designated the primary metric for downstream analysis to route around it.
+  - [GATE OPEN] Signal-validation backtest (pooled panel design with entity fixed effects, multiple-comparison correction, lead-lag test) specified but not yet implemented.

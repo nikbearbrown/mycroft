@@ -1,0 +1,755 @@
+{
+  "name": "Hacker News AI Tracker",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -272,
+        96
+      ],
+      "id": "125e7176-1325-45d6-a320-443e9a52ee75",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        -96
+      ],
+      "id": "2894528d-7b7a-40da-a7c5-bd01cd9529f0",
+      "name": "Manual Trigger"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# Loop over input items and add a new field called 'my_new_field' to the JSON of each one\nimport time\n\nwindowHours = 24\n\nreturn [{\n    \"json\": {\n        \"sinceUnix\": int(time.time()) - windowHours * 3600\n    }\n}]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        -96
+      ],
+      "id": "62fa4450-1dfb-42e0-88a8-e18686b39bfe",
+      "name": "Get Day Ago Unix Time"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# Loop over input items and add a new field called 'my_new_field' to the JSON of each one\nreturn [\n    { \n        \"entity\": \"NVIDIA\", \n        \"ticker\": \"NVDA\",\n        \"queryTerms\": [\"NVIDIA\", \"Nvidia\", \"CUDA\"],\n        \"frontPagePoints\": 100, \n        \"breakoutThreshold\": 70\n    },\n    {\n        \"entity\": \"OpenAI\",\n        \"ticker\": None,\n        \"queryTerms\": [\"OpenAI\",\"ChatGPT\",\"GPT-5\",\"Sora\"],\n        \"frontPagePoints\": 100,\n        \"breakoutThreshold\": 70\n    },\n    {\n        \"entity\": \"Microsoft (Copilot)\",\n        \"ticker\": \"MSFT\",\n        \"queryTerms\": [\"Microsoft Copilot\",\"GitHub Copilot\"],\n        \"frontPagePoints\": 100,\n        \"breakoutThreshold\": 70\n    },\n    {\n        \"entity\": \"Google (Gemini)\",\n        \"ticker\": \"GOOGL\",\n        \"queryTerms\": [\"Gemini\",\"DeepMind\",\"Google AI\"],\n        \"frontPagePoints\": 100,\n        \"breakoutThreshold\": 70\n    },\n    {\n        \"entity\": \"Meta (Llama)\",\n        \"ticker\": \"META\",\n        \"queryTerms\": [\"Llama\",\"Meta AI\"],\n        \"frontPagePoints\": 100,\n        \"breakoutThreshold\": 70\n    },\n    {\n        \"entity\": \"AMD\",\n        \"ticker\": \"AMD\",\n        \"queryTerms\": [\"AMD\",\"ROCm\",\"Instinct MI300\"],\n        \"frontPagePoints\": 100,\n        \"breakoutThreshold\": 70\n    },\n    {\n        \"entity\": \"Palantir\",\n        \"ticker\": \"PLTR\",\n        \"queryTerms\": [\"Palantir\"],\n        \"frontPagePoints\": 75,\n        \"breakoutThreshold\": 60\n    },\n    {\n        \"entity\": \"Amazon (AWS AI)\",\n        \"ticker\": \"AMZN\",\n        \"queryTerms\": [\"AWS Bedrock\",\"Amazon Bedrock\",\"Trainium\"],\n        \"frontPagePoints\": 100,\n        \"breakoutThreshold\": 70\n    },\n    {\n        \"entity\": \"Apple (Apple Intelligence)\",\n        \"ticker\": \"AAPL\",\n        \"queryTerms\": [\"Apple Intelligence\"],\n        \"frontPagePoints\": 75,\n        \"breakoutThreshold\": 60\n    },\n    {\n        \"entity\": \"Tesla (AI/FSD)\",\n        \"ticker\": \"TSLA\",\n        \"queryTerms\": [\"Tesla FSD\",\"Tesla Optimus\",\"Dojo\"],\n        \"frontPagePoints\": 100,\n        \"breakoutThreshold\": 70\n    },\n    {\n        \"entity\": \"Anthropic\",\n        \"ticker\": None,\n        \"queryTerms\": [\"Anthropic\",\"Claude\"],\n        \"frontPagePoints\": 75,\n        \"breakoutThreshold\": 60\n    },\n    {\n        \"entity\": \"Mistral\",\n        \"ticker\": None,\n        \"queryTerms\": [\"Mistral AI\",\"Mistral\"],\n        \"frontPagePoints\": 75,\n        \"breakoutThreshold\": 60\n    }\n]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        96
+      ],
+      "id": "e24662e9-7a9c-477d-b179-6dc6d546d1d3",
+      "name": "WatchList"
+    },
+    {
+      "parameters": {
+        "mode": "combineBySql",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        272,
+        -80
+      ],
+      "id": "902df6dc-27ef-46af-9c80-1684ce0eecf6",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "url": "https://hn.algolia.com/api/v1/search_by_date",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $json.queryTerm }}"
+            },
+            {
+              "name": "tags",
+              "value": "story"
+            },
+            {
+              "name": "=numericFilters",
+              "value": "=created_at_i>{{ $json.sinceUnix }}"
+            },
+            {
+              "name": "hitsPerPage",
+              "value": "100"
+            },
+            {
+              "name": "page",
+              "value": "0"
+            },
+            {
+              "name": "advancedSyntax",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "pagination": {},
+          "timeout": 15000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        704,
+        208
+      ],
+      "id": "cf049feb-66fe-4ea2-9170-f5bad6d62b49",
+      "name": "HTTP Request",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        496,
+        -80
+      ],
+      "id": "3d493991-360a-4690-9b7c-69ecb2ce230c",
+      "name": "Loop Over Entities"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# # Loop over input items and add a new field called 'my_new_field' to the JSON of each one\n# for item in _items:\n#   item[\"json\"][\"my_new_field\"] = 1\n# return _items\n\n# tmp = []\n# for item in _items:\n#   item[\"json\"][\"tmp\"] = 1\n\n# return _items\n\nres = []\nfor item in _items:\n  for query in item[\"json\"][\"queryTerms\"]:\n    res.append({\n      \"entity\": item[\"json\"][\"entity\"],\n      \"term\": query,\n      \"queryTerm\": f'\"{query}\"',\n      \"sinceUnix\": item[\"json\"][\"sinceUnix\"],\n      \"ticker\": item[\"json\"][\"ticker\"],\n      \"frontPagePoints\": item[\"json\"][\"frontPagePoints\"],\n      \"breakoutThreshold\": item[\"json\"][\"breakoutThreshold\"],\n    })\n\nreturn res\n# for query in _input.item.json.queryTerms:\n#   print(query)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        688,
+        64
+      ],
+      "id": "b0688d19-8d05-4253-9540-0dd63c54dfb3",
+      "name": "Entity Term Pair"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "entity"
+            },
+            {
+              "name": "term"
+            },
+            {
+              "name": "queryTerm"
+            },
+            {
+              "name": "sinceUnix",
+              "type": "number"
+            },
+            {
+              "name": "ticker"
+            },
+            {
+              "name": "frontPagePoints",
+              "type": "number"
+            },
+            {
+              "name": "breakoutThreshold",
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        528,
+        224
+      ],
+      "id": "3b71acfb-7f89-438d-8630-4be6d34fd6aa",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "query",
+              "field2": "queryTerm"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        848,
+        400
+      ],
+      "id": "c284194b-9a09-4188-99cf-227cab47d0b3",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# Loop over input items and add a new field called 'my_new_field' to the JSON of each one\nfrom datetime import datetime, timezone\n\n# WINDOW_HOURS = 24  # fixed lookback window (see plan.md); sinceUnix is its start\n\n\ndef parse_hit(hit):\n    \"\"\"Keep only the fields we need; drop _highlightResult / _tags noise.\"\"\"\n    return {\n        \"title\": hit.get(\"title\"),\n        \"url\": hit.get(\"url\"),\n        \"points\": hit.get(\"points\") or 0,\n        \"num_comments\": hit.get(\"num_comments\") or 0,\n        \"created_at_i\": hit.get(\"created_at_i\"),\n        \"objectID\": hit.get(\"objectID\"),\n    }\n\n\ndef run_date_from_since(since):\n    \"\"\"Window-start date as YYYY-MM-DD (UTC). Falls back to None if unset.\"\"\"\n    if since is None:\n        return None\n    return datetime.fromtimestamp(since, tz=timezone.utc).strftime(\"%Y-%m-%d\")\n\n\ndef func(_items):\n    # Per-execution accumulators (local, so nothing leaks between entity runs).\n    hits_by_id = {}     # objectID -> parsed_hit  (dedupe: same story across terms counts once)\n    entity = None       # canonical entity name (same across all input items)\n    since = None        # smallest sinceUnix seen across this entity's terms\n    meta = {            # per-entity config, captured from the first item that has it\n        \"ticker\": None,\n        \"frontPagePoints\": 100,\n        \"breakoutThreshold\": 70,\n    }\n    meta_captured = False\n\n    for item in _items:\n        try:\n            data = item.get(\"json\", {})\n\n            # All items belong to the same entity; capture the name + meta once.\n            if entity is None and data.get(\"entity\"):\n                entity = data.get(\"entity\")\n            if not meta_captured and data.get(\"entity\"):\n                meta = {\n                    \"ticker\": data.get(\"ticker\"),\n                    \"frontPagePoints\": data.get(\"frontPagePoints\", 100),\n                    \"breakoutThreshold\": data.get(\"breakoutThreshold\", 70),\n                }\n                meta_captured = True\n\n            term_since = data.get(\"sinceUnix\")\n            if term_since is not None:\n                since = term_since if since is None else min(since, term_since)\n\n            for hit in (data.get(\"hits\") or []):\n                rec = parse_hit(hit)\n                oid = rec[\"objectID\"]\n                if oid is None:\n                    continue\n                hits_by_id[oid] = rec\n        except Exception:\n            # Empty / malformed response for one term: skip the term, keep going.\n            continue\n\n    fp_points = meta[\"frontPagePoints\"]\n    hits = list(hits_by_id.values())\n\n    story_count = len(hits)\n    total_points = sum(h[\"points\"] for h in hits)\n    total_comments = sum(h[\"num_comments\"] for h in hits)\n    front_page_count = sum(1 for h in hits if h[\"points\"] >= fp_points)\n\n    top_story = None\n    if hits:\n        top = max(hits, key=lambda h: h[\"points\"])\n        top_story = {\n            \"title\": top[\"title\"],\n            \"url\": top[\"url\"],\n            \"points\": top[\"points\"],\n            \"num_comments\": top[\"num_comments\"],\n            \"objectID\": top[\"objectID\"],\n            \"permalink\": f\"https://news.ycombinator.com/item?id={top['objectID']}\",\n        }\n\n    top_stories = []\n    for h in sorted(hits, key=lambda h: h[\"points\"],\n    reverse=True)[:3]:\n        top_stories.append({\n            \"title\": h[\"title\"],\n            \"url\": h[\"url\"],\n            \"points\": h[\"points\"],\n            \"num_comments\": h[\"num_comments\"],\n            \"objectID\": h[\"objectID\"],\n            \"permalink\":\n    f\"https://news.ycombinator.com/item?id={h['objectID']}\",\n        })\n\n    return {\n        \"json\": {\n            \"entity\": entity,\n            \"ticker\": meta[\"ticker\"],\n            \"breakoutThreshold\": meta[\"breakoutThreshold\"],\n            # \"windowHours\": WINDOW_HOURS,\n            \"runDate\": run_date_from_since(since),\n            \"rawMetrics\": {\n                \"storyCount\": story_count,        # = deduped hit count\n                \"totalPoints\": total_points,\n                \"totalComments\": total_comments,\n                \"frontPageCount\": front_page_count,\n            },\n            \"topStory\": top_story,\n            \"topStories\": top_stories,\n            \"lowConfidence\": story_count < 3,      # sparse-entity floor (plan.md)\n        }\n    }\n\nreturn func(_items)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1056,
+        400
+      ],
+      "id": "75902126-b940-4d94-b40b-5dee2b9ff329",
+      "name": "Get Metrics"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT run_date, leaderboard\nFROM hn_buzz_runs\nWHERE complete = true AND watchlist_version = 'v1'\nORDER BY created_at DESC\nLIMIT 1;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        -256
+      ],
+      "id": "b7b4cf18-f40d-4c5b-8b6f-bc8bfdfab3a8",
+      "name": "Get Previous Run",
+      "credentials": {
+        "postgres": {
+          "id": "Utf7akeIjwVRiOaF",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "import math\n\n# --- calibration knobs (Week 3 deliverable; tune against fixtures)---\nVOLUME_REF    = 30    # storyCount that earns ~full volume points\nENGAGEMENT_REF = 1000 # (points+comments) that earns ~full engagement points\nFRONTPAGE_REF = 5     # frontPageCount that earns full front-page points\n\n# --- Week 4 acceleration bounds (per plan.md / S0-10) ---\nACCEL_MIN = -1.0      # full negative velocity floor (score dropped to ~0 or below)\nACCEL_MAX = 2.0       # cap reward at +200% growth vs the prior run\n\n\ndef clamp(x, lo=0.0, hi=1.0):\n    return max(lo, min(hi, x))\n\n\ndef base_of(entry):\n    \"\"\"Reconstruct an entry's non-acceleration score from its stored components.\n\n    Yesterday's snapshot stores scoreComponents; the acceleration part is\n    excluded so today's velocity is measured against yesterday's *base*, not a\n    figure that already contained yesterday's own acceleration (avoids compounding).\n    \"\"\"\n    c = entry.get(\"scoreComponents\", {}) or {}\n    return c.get(\"volume\", 0) + c.get(\"engagement\", 0) + c.get(\"frontPage\", 0)\n\n\ndef split_inputs(_items):\n    \"\"\"Separate the single previous-run item (has a 'leaderboard' key) from the\n    current per-entity metric items. Returns (prev_leaderboard, current_items).\"\"\"\n    prev_leaderboard = []\n    current = []\n    for item in _items:\n        d = item.get(\"json\", {})\n        if \"leaderboard\" in d:\n            # The DB read row merged in before this node.\n            prev_leaderboard = d.get(\"leaderboard\") or []\n        elif \"rawMetrics\" in d:\n            current.append(d)\n    return prev_leaderboard, current\n\n\ndef func(_items):\n    prev_leaderboard, current = split_inputs(_items)\n    prev_by_entity = {e.get(\"entity\"): e for e in prev_leaderboard if e.get(\"entity\")}\n\n    out = []\n    for d in current:\n        m = d[\"rawMetrics\"]\n        story_count = m[\"storyCount\"]\n        engagement = m[\"totalPoints\"] + m[\"totalComments\"]\n        fp_count = m[\"frontPageCount\"]\n        low_conf = d.get(\"lowConfidence\", False)\n\n        if low_conf:\n            # Sparse-entity floor: absolute scale, not the cross-entity log scale.\n            volume_score = 30.0 * clamp(story_count / 3.0)\n            engagement_score = 30.0 * clamp(engagement / 50.0)\n            front_page_score = 0.0\n        else:\n            volume_score = 30.0 * clamp(math.log1p(story_count) / math.log1p(VOLUME_REF))\n            engagement_score = 30.0 * clamp(math.log1p(engagement) / math.log1p(ENGAGEMENT_REF))\n            front_page_score = 20.0 * clamp(fp_count / FRONTPAGE_REF)\n\n        today_base = volume_score + engagement_score + front_page_score\n\n        # --- Acceleration vs the previous run (Week 4) ---\n        prev = prev_by_entity.get(d[\"entity\"])\n        if prev is None:\n            # Cold start: entity unseen (first run, or newly added at a version boundary).\n            accel_score = 0.0\n            cold_start = True\n        else:\n            yesterday_base = base_of(prev)\n            if yesterday_base <= 0:\n                # Zero-denominator guard: no meaningful baseline to grow from.\n                accel_score = 0.0\n            else:\n                delta = today_base - yesterday_base\n                accel_score = 20.0 * clamp(delta / yesterday_base, ACCEL_MIN, ACCEL_MAX)\n            cold_start = False\n\n        buzz = round(today_base + accel_score, 1)\n\n        buzz_score = clamp(buzz, 0, 100)\n        d[\"buzzScore\"] = buzz_score\n        d[\"scoreComponents\"] = {\n            \"volume\": round(volume_score, 1),\n            \"engagement\": round(engagement_score, 1),\n            \"frontPage\": round(front_page_score, 1),\n            \"acceleration\": round(accel_score, 1),\n        }\n        d[\"velocity\"] = round(accel_score, 1)   # exposed for the digest / JSON signal\n        d[\"coldStart\"] = cold_start\n        d[\"breakout\"] = buzz_score >= d.get(\"breakoutThreshold\", 70)\n        out.append({\"json\": d})\n\n    # Ranked leaderboard, highest first.\n    out.sort(key=lambda i: i[\"json\"][\"buzzScore\"], reverse=True)\n    return out\n\nreturn func(_items)\n\n# for item in _items:\n#   print(item)\n# # print(_items)\n\n# # First input connection\n# input_0 = _input.all(0)\n\n# # Second input connection\n# input_1 = _input.all(1)\n\n# print(input_0)\n# print(input_1)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        976,
+        -112
+      ],
+      "id": "b6659bf9-2c32-4f56-833c-1ad96bd7ff44",
+      "name": "Computer Buzz Score"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        800,
+        -112
+      ],
+      "id": "aad01a31-7586-445e-bdad-c0e63332334e",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "def func(_items):\n    leaderboard = [i[\"json\"] for i in _items]           # already sorted by score\n    run_date = leaderboard[0].get(\"runDate\") if leaderboard else None\n    raw_metrics = {i[\"entity\"]: i[\"rawMetrics\"] for i in leaderboard}\n    return [{\"json\": {\n        \"run_date\": run_date,\n        \"window_hours\": 24,\n        \"leaderboard\": leaderboard,\n        \"raw_metrics\": raw_metrics,\n        \"complete\": len(leaderboard) == len(_items) and len(leaderboard) > 0,\n        \"watchlist_version\": \"v1\"\n    }}]\n\nreturn func(_items)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1152,
+        -112
+      ],
+      "id": "7ad6ff88-5796-4b32-a0a3-ef0d13456c79",
+      "name": "Build Run Row"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "def func(_items):\n    row = _items[0][\"json\"]\n    lb = row.get(\"leaderboard\", [])\n\n    signal = {\n        \"source\": \"hacker_news_buzz\",\n        \"schema_version\": \"1.0\",\n        \"run_date\": row.get(\"run_date\"),\n        \"window_hours\": row.get(\"window_hours\", 24),\n        \"complete\": row.get(\"complete\", True),\n        \"entities\": [\n            {\n                \"entity\": e.get(\"entity\"),\n                \"ticker\": e.get(\"ticker\"),\n                \"buzz_score\": e.get(\"buzzScore\"),\n                \"velocity\": e.get(\"velocity\", 0),\n                \"breakout\": e.get(\"breakout\", False),\n                \"low_confidence\": e.get(\"lowConfidence\", False),\n                \"cold_start\": e.get(\"coldStart\", False),\n            }\n            for e in lb\n        ],\n    }\n    return [{\"json\": signal}]\n\nreturn func(_items)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1376,
+        64
+      ],
+      "id": "aefbcc9b-def6-4068-ac9a-634dc43077e5",
+      "name": "Code in Python"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "efbaf2c1-a361-42ce-bf14-652a77eff41d",
+              "leftValue": "={{ $json.leaderboard.some(e => e.breakout === true) }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1376,
+        224
+      ],
+      "id": "d8bc5fdd-0cfe-44c1-a477-c78fdd93fe79",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "def arrow(v):\n    if v > 0: return \"▲\"\n    if v < 0: return \"▼\"\n    return \"—\"\n\ndef func(_items):\n    row = _items[0][\"json\"]\n    lb = row.get(\"leaderboard\", [])\n    run_date = row.get(\"run_date\", \"\")\n\n    rows = []\n    for i, e in enumerate(lb, 1):\n        top = e.get(\"topStory\") or {}\n        conf = \" ⚠️\" if e.get(\"lowConfidence\") else \"\"\n        rows.append(\n            f\"<tr>\"\n            f\"<td>{i}</td>\"\n            f\"<td><b>{e.get('entity','')}</b>{conf}</td>\"\n            f\"<td>{e.get('buzzScore','')}</td>\"\n            f\"<td>{arrow(e.get('velocity',0))} {e.get('velocity',0)}</td>\"\n            f\"<td><a href=\\\"{top.get('permalink','')}\\\">{top.get('title','—')}</a> \"\n            f\"({top.get('points',0)} pts)</td>\"\n            f\"</tr>\"\n        )\n\n    html = f\"\"\"\n    <h2>Hacker News AI Buzz — {run_date}</h2>\n    <table border=\"1\" cellpadding=\"6\" cellspacing=\"0\"\n           style=\"border-collapse:collapse;font-family:sans-serif;font-size:14px\">\n      <tr style=\"background:#f2f2f2\">\n        <th>#</th><th>Entity</th><th>Buzz</th><th>Velocity</th><th>Top story</th>\n      </tr>\n      {''.join(rows)}\n    </table>\n    <p style=\"color:#888;font-size:12px\">⚠️ = low-confidence (sparse). Automated digest.</p>\n    \"\"\"\n    return [{\"json\": {\"subject\": f\"HN AI Buzz — {run_date}\", \"html\": html}}]\n\nreturn func(_items)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        224
+      ],
+      "id": "f646228b-61d5-415c-a818-b20b86cd6856",
+      "name": "Code in Python1"
+    },
+    {
+      "parameters": {
+        "fromEmail": "maliom9393@gmail.com",
+        "toEmail": "maliom9393@gmail.com",
+        "subject": "= {{ $json.subject }}",
+        "html": "={{ $json.html }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1808,
+        224
+      ],
+      "id": "6fef0ac3-e237-471a-b11a-a733a5a7f5c6",
+      "name": "Send an Email",
+      "webhookId": "e7c5d2ad-7ef5-4dcd-bbcb-da8a6d4a9d86",
+      "credentials": {
+        "smtp": {
+          "id": "OrMIYXVynix2p7gH",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO hn_buzz_runs (run_date, window_hours,  watchlist_version, leaderboard, raw_metrics, complete)\nVALUES ($1, $2, $3, $4::jsonb, $5::jsonb, $6);",
+        "options": {
+          "queryReplacement": "={{ $json.run_date }}, {{ $json.window_hours }}, {{ $json.watchlist_version }}, {{ JSON.stringify($json.leaderboard) }}, {{ JSON.stringify($json.raw_metrics) }}, {{ $json.complete }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1376,
+        -112
+      ],
+      "id": "0e53a1de-b3d9-4cc5-b990-36cabcbcef88",
+      "name": "Save Snapshot",
+      "credentials": {
+        "postgres": {
+          "id": "Utf7akeIjwVRiOaF",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "vW8ckxU63krtcKPO",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/vW8ckxU63krtcKPO",
+          "cachedResultName": "Hacker News AI Tracker"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sinceUnix": "={{ $json.sinceUnix }}",
+            "frontPagePoints": "={{ $json.frontPagePoints }}",
+            "breakoutThreshold": "={{ $json.breakoutThreshold }}",
+            "entity": "={{ $json.entity }}",
+            "term": "={{ $json.term }}",
+            "queryTerm": "={{ $json.queryTerm }}",
+            "ticker": "={{ $json.ticker }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "entity",
+              "displayName": "entity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "term",
+              "displayName": "term",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "queryTerm",
+              "displayName": "queryTerm",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "sinceUnix",
+              "displayName": "sinceUnix",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "ticker",
+              "displayName": "ticker",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "frontPagePoints",
+              "displayName": "frontPagePoints",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "breakoutThreshold",
+              "displayName": "breakoutThreshold",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        848,
+        64
+      ],
+      "id": "ff6a12ec-151c-4d9d-a63c-669b7fb3d915",
+      "name": "Call 'Hacker News AI Tracker'"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Day Ago Unix Time",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "WatchList",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Previous Run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Day Ago Unix Time",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "WatchList",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Previous Run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Day Ago Unix Time": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WatchList": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Entities",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Entities": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Entity Term Pair",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Entity Term Pair": {
+      "main": [
+        [
+          {
+            "node": "Call 'Hacker News AI Tracker'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get Metrics": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Entities",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Previous Run": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Computer Buzz Score": {
+      "main": [
+        [
+          {
+            "node": "Build Run Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Computer Buzz Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Run Row": {
+      "main": [
+        [
+          {
+            "node": "Code in Python",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Save Snapshot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code in Python1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python1": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Hacker News AI Tracker'": {
+      "main": [
+        [
+          {
+            "node": "Get Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "qFWaHv9Ns03089jf",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "a8befe2a-0567-4ed5-84e9-057daacb7e87",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d0a68b696e02b2fc92bad4789630b17f2998255dc1653cae92dc42ce1fb35cfe"
+  },
+  "nodeGroups": [],
+  "id": "vW8ckxU63krtcKPO",
+  "tags": []
+}
