@@ -1,0 +1,261 @@
+{
+  "source": "SEC EDGAR daily form index",
+  "index_date": "2026-07-09",
+  "fetched_at": "2026-07-13T17:36:59.146288+00:00",
+  "user_agent": "Mycroft insider-cluster-signals research baskar.sa@northeastern.edu",
+  "form4_filings_in_index": 623,
+  "limit_applied": 25,
+  "fetched": [
+    {
+      "cik": "1084869",
+      "company": "1 800 FLOWERS COM INC",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/1084869/0001437749-26-023109.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1084869/000143774926023109/rdgdoc.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001437749-26-023109.xml",
+      "sha256": "918f792e78c67bab7d3d6b6de770312453ffeb9dc044fc60d6586753d198b97b",
+      "bytes": 3253
+    },
+    {
+      "cik": "2018222",
+      "company": "707 Cayman Holdings Ltd.",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/2018222/0001475597-26-000150.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/2018222/000147559726000150/primary_doc.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001475597-26-000150.xml",
+      "sha256": "25bc5c81c7b4e775a1a49826d17600519c193766691f4755ed9665a48bf10d9a",
+      "bytes": 4535
+    },
+    {
+      "cik": "2036029",
+      "company": "83 Investment Group Income Fund",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/2036029/0001580642-26-004332.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/2036029/000158064226004332/ownership.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001580642-26-004332.xml",
+      "sha256": "9619118d380abc6b60ce7fd9398af587e945cd4db691dd5fd01c62b83cdab05a",
+      "bytes": 3244
+    },
+    {
+      "cik": "318306",
+      "company": "ABEONA THERAPEUTICS INC.",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/318306/0001493152-26-032740.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/318306/000149315226032740/ownership.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001493152-26-032740.xml",
+      "sha256": "2e2c31bf468144f4f90d32f4a238296d05971c8fc613bdcd8d90e9ac6df4f831",
+      "bytes": 3978
+    },
+    {
+      "cik": "318306",
+      "company": "ABEONA THERAPEUTICS INC.",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/318306/0001493152-26-032742.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/318306/000149315226032742/ownership.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001493152-26-032742.xml",
+      "sha256": "45e7125dc350e94de3ed043948ef4440b64d86fd33282b4d86cef6eefed5f0ff",
+      "bytes": 3973
+    },
+    {
+      "cik": "318306",
+      "company": "ABEONA THERAPEUTICS INC.",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/318306/0001493152-26-032744.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/318306/000149315226032744/ownership.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001493152-26-032744.xml",
+      "sha256": "186fc1284b93b2eafe3c1b5aea92946a1315ca9f6d23eecdd4bb22f9520ba692",
+      "bytes": 3970
+    },
+    {
+      "cik": "318306",
+      "company": "ABEONA THERAPEUTICS INC.",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/318306/0001493152-26-032746.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/318306/000149315226032746/ownership.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001493152-26-032746.xml",
+      "sha256": "7ef2da1777cd97cf03e1c30b460c883162458a62ae97abfd4da7fc92c586e2df",
+      "bytes": 3972
+    },
+    {
+      "cik": "1703056",
+      "company": "ADT Inc.",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/1703056/0001326278-26-000011.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1703056/000132627826000011/wk-form4_1783628605.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001326278-26-000011.xml",
+      "sha256": "298507de0778c02c4b729266838a1b1ed7cc9f3fb8aedb0ae9023a9dd2f715bb",
+      "bytes": 3420
+    },
+    {
+      "cik": "1703056",
+      "company": "ADT Inc.",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/1703056/0001432800-26-000009.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1703056/000143280026000009/wk-form4_1783628628.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001432800-26-000009.xml",
+      "sha256": "9bb8a5f12d53c91e8177b821543380b72027a826e8411e3ca28423022a0a637e",
+      "bytes": 3425
+    },
+    {
+      "cik": "1703056",
+      "company": "ADT Inc.",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/1703056/0001468136-26-000008.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1703056/000146813626000008/wk-form4_1783628493.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001468136-26-000008.xml",
+      "sha256": "505dfb202f464b752b830808468b04142b31dffb2bce2c5a5ac6aaad3def1dab",
+      "bytes": 3415
+    },
+    {
+      "cik": "1703056",
+      "company": "ADT Inc.",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/1703056/0001628280-26-047794.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1703056/000162828026047794/wk-form4_1783628405.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001628280-26-047794.xml",
+      "sha256": "567e31099f4f1cd53e332807ebf841365a53da2950b34d9b5bc2918d9c28ae36",
+      "bytes": 3398
+    },
+    {
+      "cik": "1703056",
+      "company": "ADT Inc.",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/1703056/0001758957-26-000008.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1703056/000175895726000008/wk-form4_1783628577.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001758957-26-000008.xml",
+      "sha256": "3709ef34cd13830653425144312e739adf49a7273604420aa61ab6c13075af45",
+      "bytes": 3416
+    },
+    {
+      "cik": "1703056",
+      "company": "ADT Inc.",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/1703056/0001950428-26-000009.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1703056/000195042826000009/wk-form4_1783628549.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001950428-26-000009.xml",
+      "sha256": "1163bdeea6f81e11bfea233a34ad58227a1e470cdd8a04bc21d3af3054d308da",
+      "bytes": 3415
+    },
+    {
+      "cik": "1703056",
+      "company": "ADT Inc.",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/1703056/0001965228-26-000013.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1703056/000196522826000013/wk-form4_1783628691.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001965228-26-000013.xml",
+      "sha256": "f3b6a443e02443ef3d24645af432e9fb277d24d56969ff969dbd46b4930a585e",
+      "bytes": 3504
+    },
+    {
+      "cik": "1703056",
+      "company": "ADT Inc.",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/1703056/0002026573-26-000008.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1703056/000202657326000008/wk-form4_1783628523.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0002026573-26-000008.xml",
+      "sha256": "655b9eb454778f91ff4f0c073e32817d436efd2cc5e1851a18d7922a7741617e",
+      "bytes": 3400
+    },
+    {
+      "cik": "1703056",
+      "company": "ADT Inc.",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/1703056/0002034136-26-000008.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1703056/000203413626000008/wk-form4_1783628460.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0002034136-26-000008.xml",
+      "sha256": "d5da2566d854962e480704184a4468dd90d03abe770e88253a1cea17a76b6685",
+      "bytes": 3398
+    },
+    {
+      "cik": "1703056",
+      "company": "ADT Inc.",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/1703056/0002058626-26-000010.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1703056/000205862626000010/wk-form4_1783628670.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0002058626-26-000010.xml",
+      "sha256": "05a0c8f5175e13b58cd2518da611ec4bf95d3b8cf142841c72cfc593a419a1db",
+      "bytes": 3484
+    },
+    {
+      "cik": "1703056",
+      "company": "ADT Inc.",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/1703056/0002105391-26-000011.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1703056/000210539126000011/wk-form4_1783628651.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0002105391-26-000011.xml",
+      "sha256": "50d9c20b89123c86845ba21e30cafd19c601560233e1f7e81d4127000559cd9c",
+      "bytes": 3506
+    },
+    {
+      "cik": "919012",
+      "company": "AMERICAN EAGLE OUTFITTERS INC",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/919012/0001225208-26-006551.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/919012/000122520826006551/doc4.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001225208-26-006551.xml",
+      "sha256": "f0b7be17b758b2ce12afaa4174e6f5e9c6aa619e14413c64b6be306123c195af",
+      "bytes": 3342
+    },
+    {
+      "cik": "919012",
+      "company": "AMERICAN EAGLE OUTFITTERS INC",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/919012/0001225208-26-006552.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/919012/000122520826006552/doc4.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001225208-26-006552.xml",
+      "sha256": "f8440371e8de553ca59b12b98efaf541efe74dca6426fa429c348bacbb719c32",
+      "bytes": 9118
+    },
+    {
+      "cik": "919012",
+      "company": "AMERICAN EAGLE OUTFITTERS INC",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/919012/0001225208-26-006553.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/919012/000122520826006553/doc4.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001225208-26-006553.xml",
+      "sha256": "71697033f74a655c259ebb78d6759fe8aeaf0832c28ca1019ced7413de781ff8",
+      "bytes": 2957
+    },
+    {
+      "cik": "2097545",
+      "company": "AMG BBH Asset-Backed Credit Fund, LLC",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/2097545/0001193125-26-299528.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/2097545/000119312526299528/ownership.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001193125-26-299528.xml",
+      "sha256": "e8c480142b10973a39598cc408a830771faff5f6c8e8c1af7edb4ecc7c5c5215",
+      "bytes": 3152
+    },
+    {
+      "cik": "2097545",
+      "company": "AMG BBH Asset-Backed Credit Fund, LLC",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/2097545/0001193125-26-299529.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/2097545/000119312526299529/ownership.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001193125-26-299529.xml",
+      "sha256": "c8058d1ccc5f7eb16bd0c2e9a7bf1c0247a5fc10698784279db9d03503b2cb73",
+      "bytes": 3060
+    },
+    {
+      "cik": "2073844",
+      "company": "AMG New York Holdings Corp.",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/2073844/0001193125-26-299529.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/2073844/000119312526299529/ownership.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001193125-26-299529.xml",
+      "sha256": "c8058d1ccc5f7eb16bd0c2e9a7bf1c0247a5fc10698784279db9d03503b2cb73",
+      "bytes": 3060
+    },
+    {
+      "cik": "6281",
+      "company": "ANALOG DEVICES INC",
+      "date_filed": "20260709",
+      "file_name": "edgar/data/6281/0000900729-26-000012.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/6281/000090072926000012/wk-form4_1783628487.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0000900729-26-000012.xml",
+      "sha256": "6fb9f6cec573e1077323a7cb5415faa403d669d492c2cc6cddbc887c7494c6fd",
+      "bytes": 42623
+    }
+  ],
+  "errors": []
+}

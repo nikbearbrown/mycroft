@@ -21,3 +21,19 @@ Append-only (P7). Every script run against real data, every gate decision, every
   - `price_per_share = 0` is legitimate for codes like G (gift) — enricher must not treat it as a data error.
   - One filing contained 2 transactions (11 records from 10 filings) — parser handles multi-transaction
     filings correctly; keep a fixture for this case in tests/.
+
+## 2026-07-13 -- Demo run: second sample date + provenance walk
+
+- **Inputs:** EDGAR daily form index 2026-07-09 (623 Form 4 filings).
+- **Commands:** `python fetcher.py --date 2026-07-09 --limit 25` · `python parser.py`
+- **Gate decision (live fetch):** approved by Sachin Vishaul Baskar in-session ("see it in action"),
+  same scope as 2026-07-12 entry: public EDGAR, sample mode, fair-access honored.
+- **Result:** 25 fetched, 0 errors. Corpus now 34 unique filings -> 57 records, 57 verified, 0 rejects.
+  Code mix: 32 S, 17 A, 4 P, 2 F, 1 G, 1 M. Found a live cluster candidate: 2 distinct 10%-owners
+  bought BBASX same day (2026-07-07). Provenance chain verified: record -> manifest -> SHA-256
+  re-hash MATCH -> EDGAR URL.
+- **Open issues:**
+  - Validation gap found: ticker "NONE" (issuer without a trading symbol) passes the non-empty
+    rule. Enricher/cluster must exclude non-priceable tickers; add explicit rule in Week 2.
+  - One accession appeared in both days' indexes (34 files from 10+25 fetches) — idempotent
+    overwrite worked as designed; parser de-duplicates by accession naturally.

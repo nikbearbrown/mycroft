@@ -129,3 +129,11 @@ workflow changes.
 - **Impact:** conformance is silently non-functional for yaml/py on Windows. The machine half
   of P4 has a platform hole; CI (Linux) presumably unaffected.
 - **Action:** logged as a defect per P6; not fixed in this branch (out of module scope).
+
+## 2026-07-13 -- insider-cluster-signals: demo run, cluster candidate found in sample
+
+- **Recipe:** insider-cluster-signals/recipes/insider-cluster-signal-agent.md v0.1.0 (DRAFT)
+- **Commands:** `fetcher.py --date 2026-07-09 --limit 25` + `parser.py` (details in module RUN_LOG).
+- **Result:** corpus 57 verified records / 0 rejects; live cluster candidate (BBASX, 2 distinct
+  10%-owners, same-day buys); SHA-256 provenance chain re-verified. New validation gap logged
+  (ticker "NONE" passes non-empty rule) — fix scheduled with Week 2 enricher.
