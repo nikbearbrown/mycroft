@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,6 +21,12 @@ from pathlib import Path
 # SEC Form 4 transaction codes (17 CFR 240.16a; EDGAR Form 4 instructions).
 # P = open-market purchase, S = open-market sale -- the two codes that carry signal.
 VALID_TRANSACTION_CODES = set("PSAFDGVJKCEHIMOUWXLZ")
+
+# Issuers without a listed symbol file placeholder strings; downstream enrichment
+# needs a priceable symbol, so these are rejected at the gate (found live 2026-07-13,
+# see logs/RUN_LOG.md).
+TICKER_PLACEHOLDERS = {"NONE", "N/A", "NA"}
+TICKER_PATTERN = re.compile(r"^[A-Z][A-Z0-9.\-]{0,9}$")
 
 
 def _text(element: ET.Element | None, path: str) -> str:
@@ -77,6 +84,10 @@ def validate(record: dict) -> list[str]:
     failures = []
     if not record["ticker"]:
         failures.append("missing ticker")
+    elif record["ticker"] in TICKER_PLACEHOLDERS:
+        failures.append(f"placeholder ticker {record['ticker']!r} (issuer has no listed symbol)")
+    elif not TICKER_PATTERN.match(record["ticker"]):
+        failures.append(f"ticker {record['ticker']!r} not a plausible exchange symbol")
     if not record["owner_name"]:
         failures.append("missing owner name")
     if record["transaction_code"] not in VALID_TRANSACTION_CODES:

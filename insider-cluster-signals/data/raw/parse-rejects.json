@@ -1,4 +1,28 @@
 {
-  "rejects": [],
+  "rejects": [
+    {
+      "accession": "0001580642-26-004332",
+      "period_of_report": "2026-07-01",
+      "issuer_cik": "0002036029",
+      "issuer_name": "83 Investment Group Income Fund",
+      "ticker": "NONE",
+      "owner_cik": "0002052742",
+      "owner_name": "Sarti Jeffrey",
+      "is_director": false,
+      "is_officer": true,
+      "is_ten_percent_owner": false,
+      "officer_title": "Vice President",
+      "security_title": "Class I Shares Common Stock",
+      "transaction_date": "2026-07-01",
+      "transaction_code": "P",
+      "shares": "12242.90",
+      "price_per_share": "10.21",
+      "acquired_disposed": "A",
+      "shares_owned_after": "12242.90",
+      "reject_reasons": [
+        "placeholder ticker 'NONE' (issuer has no listed symbol)"
+      ]
+    }
+  ],
   "parse_errors": []
 }
