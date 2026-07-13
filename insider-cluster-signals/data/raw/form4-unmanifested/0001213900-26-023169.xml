@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<ownershipDocument>
+
+    <schemaVersion>X0508</schemaVersion>
+
+    <documentType>4</documentType>
+
+    <periodOfReport>2026-02-20</periodOfReport>
+
+    <notSubjectToSection16>0</notSubjectToSection16>
+
+    <issuer>
+        <issuerCik>0002096900</issuerCik>
+        <issuerName>Averin Capital Acquisition Corp.</issuerName>
+        <issuerTradingSymbol>ACAAU</issuerTradingSymbol>
+    </issuer>
+
+    <reportingOwner>
+        <reportingOwnerId>
+            <rptOwnerCik>0002108995</rptOwnerCik>
+            <rptOwnerName>Averin Capital Acquisition Sponsor LLC</rptOwnerName>
+        </reportingOwnerId>
+        <reportingOwnerAddress>
+            <rptOwnerStreet1>C/O AVERIN CAPITAL ACQUISITION CORP.</rptOwnerStreet1>
+            <rptOwnerStreet2>240 W 40TH STREET, OFFICE 205</rptOwnerStreet2>
+            <rptOwnerCity>NEW YORK</rptOwnerCity>
+            <rptOwnerState>NY</rptOwnerState>
+            <rptOwnerZipCode>10018</rptOwnerZipCode>
+            <rptOwnerStateDescription></rptOwnerStateDescription>
+        </reportingOwnerAddress>
+        <reportingOwnerRelationship>
+            <isDirector>1</isDirector>
+            <isOfficer>1</isOfficer>
+            <isTenPercentOwner>1</isTenPercentOwner>
+            <isOther>0</isOther>
+            <officerTitle>See Remarks</officerTitle>
+            <otherText></otherText>
+        </reportingOwnerRelationship>
+    </reportingOwner>
+
+    <reportingOwner>
+        <reportingOwnerId>
+            <rptOwnerCik>0001204876</rptOwnerCik>
+            <rptOwnerName>BERRY DAVID A</rptOwnerName>
+        </reportingOwnerId>
+        <reportingOwnerAddress>
+            <rptOwnerStreet1>C/O AVERIN CAPITAL ACQUISITION CORP.</rptOwnerStreet1>
+            <rptOwnerStreet2>240 W 40TH STREET, OFFICE 205</rptOwnerStreet2>
+            <rptOwnerCity>NEW YORK</rptOwnerCity>
+            <rptOwnerState>NY</rptOwnerState>
+            <rptOwnerZipCode>10018</rptOwnerZipCode>
+            <rptOwnerStateDescription></rptOwnerStateDescription>
+        </reportingOwnerAddress>
+        <reportingOwnerRelationship>
+            <isDirector>1</isDirector>
+            <isOfficer>1</isOfficer>
+            <isTenPercentOwner>1</isTenPercentOwner>
+            <isOther>0</isOther>
+            <officerTitle>See Remarks</officerTitle>
+            <otherText></otherText>
+        </reportingOwnerRelationship>
+    </reportingOwner>
+
+    <reportingOwner>
+        <reportingOwnerId>
+            <rptOwnerCik>0002108994</rptOwnerCik>
+            <rptOwnerName>Handel Rose LLC</rptOwnerName>
+        </reportingOwnerId>
+        <reportingOwnerAddress>
+            <rptOwnerStreet1>C/O AVERIN CAPITAL ACQUISITION CORP.</rptOwnerStreet1>
+            <rptOwnerStreet2>240 W 40TH STREET, OFFICE 205</rptOwnerStreet2>
+            <rptOwnerCity>NEW YORK</rptOwnerCity>
+            <rptOwnerState>NY</rptOwnerState>
+            <rptOwnerZipCode>10018</rptOwnerZipCode>
+            <rptOwnerStateDescription></rptOwnerStateDescription>
+        </reportingOwnerAddress>
+        <reportingOwnerRelationship>
+            <isDirector>0</isDirector>
+            <isOfficer>0</isOfficer>
+            <isTenPercentOwner>1</isTenPercentOwner>
+            <isOther>0</isOther>
+            <officerTitle></officerTitle>
+            <otherText></otherText>
+        </reportingOwnerRelationship>
+    </reportingOwner>
+
+    <reportingOwner>
+        <reportingOwnerId>
+            <rptOwnerCik>0002115065</rptOwnerCik>
+            <rptOwnerName>Berry Eric Z.</rptOwnerName>
+        </reportingOwnerId>
+        <reportingOwnerAddress>
+            <rptOwnerStreet1>C/O AVERIN CAPITAL ACQUISITION CORP.</rptOwnerStreet1>
+            <rptOwnerStreet2>240 W 40TH STREET, OFFICE 205</rptOwnerStreet2>
+            <rptOwnerCity>NEW YORK</rptOwnerCity>
+            <rptOwnerState>NY</rptOwnerState>
+            <rptOwnerZipCode>10018</rptOwnerZipCode>
+            <rptOwnerStateDescription></rptOwnerStateDescription>
+        </reportingOwnerAddress>
+        <reportingOwnerRelationship>
+            <isDirector>0</isDirector>
+            <isOfficer>0</isOfficer>
+            <isTenPercentOwner>1</isTenPercentOwner>
+            <isOther>0</isOther>
+            <officerTitle></officerTitle>
+            <otherText></otherText>
+        </reportingOwnerRelationship>
+    </reportingOwner>
+
+    <aff10b5One>0</aff10b5One>
+
+    <nonDerivativeTable>
+        <nonDerivativeTransaction>
+            <securityTitle>
+                <value>Class A Ordinary Shares</value>
+            </securityTitle>
+            <transactionDate>
+                <value>2025-02-20</value>
+            </transactionDate>
+            <deemedExecutionDate></deemedExecutionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>P</transactionCode>
+                <equitySwapInvolved>0</equitySwapInvolved>
+            </transactionCoding>
+            <transactionTimeliness></transactionTimeliness>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>200000</value>
+                    <footnoteId id="F1"/>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <value>10</value>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>A</value>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>200000</value>
+                    <footnoteId id="F1"/>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                    <footnoteId id="F2"/>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeTransaction>
+    </nonDerivativeTable>
+
+    <footnotes>
+        <footnote id="F1">Represents shares underlying the private placement units (each unit consisting of one Class A ordinary share and one-sixth of one warrant, each whole warrant exercisable to purchase one Class A ordinary share) directly held by Averin Capital Acquisition Sponsor LLC (the &quot;Sponsor&quot;), and which were acquired pursuant to a Private Placement Units Purchase Agreement by and between the Sponsor and Averin Capital Acquisition Corp. (the &quot;Issuer&quot;). Does not include 7,187,500 Class B ordinary shares, which shares will automatically convert into Class A ordinary shares at the time of the Issuer's initial business combination, or earlier at the option of the holder, on a one-for-one basis, subject to adjustment as described under the heading &quot;Description of Securities--Founder Shares&quot; in the Issuer's registration statement on Form S-1 (File No. 333-293082).</footnote>
+        <footnote id="F2">The Sponsor is the record holder of such shares. Handel Rose LLC, is the sole managing member of the Sponsor and controls the management of the Sponsor, including the exercise of voting and investment discretion over the securities of the Issuer held by the Sponsor. Eric Berry and David Berry are the managers of Handel Rose LLC. David Berry and Eric Berry both may be deemed to have beneficial ownership of the securities held of record by the Sponsor. Each such person disclaims any beneficial ownership of the securities reported herein other than to the extent of any pecuniary interest they may have therein, directly or indirectly.</footnote>
+    </footnotes>
+
+    <remarks>Chief Executive Officer and Chairman of the Board of Directors.
+
+
+This Form 4/A amends the Form 4 filed on February 20, 2026 (the &quot;Original Form 4&quot;) solely to add Eric Berry as an additional Reporting Person. Although Eric Berry was identified in the Original Form 4, he was not separately listed as a Reporting Person at that time because he did not yet have EDGAR access codes.</remarks>
+
+    <ownerSignature>
+        <signatureName>/s/ Averin Capital Acquisition Sponsor LLC, By: Handel Rose LLC, its Managing Member, By: /s/ David Berry, Name: David Berry, Title: Manager</signatureName>
+        <signatureDate>2026-03-03</signatureDate>
+    </ownerSignature>
+
+    <ownerSignature>
+        <signatureName>/s/ Handel Rose LLC, By: David Berry, Managing Member</signatureName>
+        <signatureDate>2026-03-03</signatureDate>
+    </ownerSignature>
+
+    <ownerSignature>
+        <signatureName>/s/ David Berry</signatureName>
+        <signatureDate>2026-03-03</signatureDate>
+    </ownerSignature>
+
+    <ownerSignature>
+        <signatureName>/s/ Eric Berry</signatureName>
+        <signatureDate>2026-03-03</signatureDate>
+    </ownerSignature>
+</ownershipDocument>

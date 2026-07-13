@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<ownershipDocument>
+
+    <schemaVersion>X0508</schemaVersion>
+
+    <documentType>4</documentType>
+
+    <periodOfReport>2026-03-02</periodOfReport>
+
+    <issuer>
+        <issuerCik>0001113232</issuerCik>
+        <issuerName>AXCELIS TECHNOLOGIES INC</issuerName>
+        <issuerTradingSymbol>ACLS</issuerTradingSymbol>
+    </issuer>
+
+    <reportingOwner>
+        <reportingOwnerId>
+            <rptOwnerCik>0001979418</rptOwnerCik>
+            <rptOwnerName>Blumenstock Gerald M</rptOwnerName>
+        </reportingOwnerId>
+        <reportingOwnerAddress>
+            <rptOwnerStreet1>C/O AXCELIS TECHNOLOGIES, INC.</rptOwnerStreet1>
+            <rptOwnerStreet2>108 CHERRY HILL DRIVE</rptOwnerStreet2>
+            <rptOwnerCity>BEVERLY</rptOwnerCity>
+            <rptOwnerState>MA</rptOwnerState>
+            <rptOwnerZipCode>01915</rptOwnerZipCode>
+            <rptOwnerStateDescription></rptOwnerStateDescription>
+        </reportingOwnerAddress>
+        <reportingOwnerRelationship>
+            <isDirector>false</isDirector>
+            <isOfficer>true</isOfficer>
+            <isTenPercentOwner>false</isTenPercentOwner>
+            <isOther>false</isOther>
+            <officerTitle>EVP, Research, Dev. &amp; Eng.</officerTitle>
+            <otherText></otherText>
+        </reportingOwnerRelationship>
+    </reportingOwner>
+
+    <aff10b5One>0</aff10b5One>
+
+    <nonDerivativeTable>
+        <nonDerivativeTransaction>
+            <securityTitle>
+                <value>Common Stock</value>
+            </securityTitle>
+            <transactionDate>
+                <value>2026-03-02</value>
+            </transactionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>F</transactionCode>
+                <equitySwapInvolved>0</equitySwapInvolved>
+            </transactionCoding>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>1121</value>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <value>86.58</value>
+                    <footnoteId id="F2"/>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>D</value>
+                    <footnoteId id="F1"/>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>17540</value>
+                    <footnoteId id="F3"/>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+                <natureOfOwnership>
+                    <value></value>
+                </natureOfOwnership>
+            </ownershipNature>
+        </nonDerivativeTransaction>
+    </nonDerivativeTable>
+
+    <derivativeTable></derivativeTable>
+
+    <footnotes>
+        <footnote id="F1">This forfeiture of shares for tax withholding purposes relates to the vesting on February 28, 2026 of performance-based restricted stock units (&quot;2024 PRSUs&quot;) granted to the executive in May 2024. Of the 2024 PRSUs granted, 150% were determined to be earned by the executive pursuant to a resolution of the Axcelis Technologies, Inc. Compensation Committee on February 13, 2025, with half of the earned shares vesting on February 28, 2025 and the remaining half of the earned shares vesting on February 28, 2026. The shares issued to the executive on the vesting were reduced by a number of shares having a value equal to the executive's tax withholding obligation with respect to the vested 2024 PRSUs.</footnote>
+        <footnote id="F2">Represents the closing price of the Company's common stock on March 2, 2026, the date of the tax withholding.</footnote>
+        <footnote id="F3">Of the shares held after the vesting of the remaining 2024 PRSUs, 16,525 were issuable on vesting of restricted stock units granted to the reporting person under the 2012 Equity Incentive Plan and are subject to forfeiture.</footnote>
+    </footnotes>
+
+    <ownerSignature>
+        <signatureName>/s/ Eileen J. Evans, Attorney-in-Fact</signatureName>
+        <signatureDate>2026-03-03</signatureDate>
+    </ownerSignature>
+</ownershipDocument>

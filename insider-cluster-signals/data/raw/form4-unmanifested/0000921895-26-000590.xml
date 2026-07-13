@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<ownershipDocument>
+
+    <schemaVersion>X0508</schemaVersion>
+
+    <documentType>4</documentType>
+
+    <periodOfReport>2026-02-27</periodOfReport>
+
+    <notSubjectToSection16>0</notSubjectToSection16>
+
+    <issuer>
+        <issuerCik>0001597033</issuerCik>
+        <issuerName>Sabre Corp</issuerName>
+        <issuerTradingSymbol>SABR</issuerTradingSymbol>
+    </issuer>
+
+    <reportingOwner>
+        <reportingOwnerId>
+            <rptOwnerCik>0001113678</rptOwnerCik>
+            <rptOwnerName>CONSTELLATION SOFTWARE INC</rptOwnerName>
+        </reportingOwnerId>
+        <reportingOwnerAddress>
+            <rptOwnerStreet1>66 WELLINGTON STREET WEST, SUITE 5300</rptOwnerStreet1>
+            <rptOwnerStreet2>TD BANK TOWER</rptOwnerStreet2>
+            <rptOwnerCity>TORONTO</rptOwnerCity>
+            <rptOwnerState>A6</rptOwnerState>
+            <rptOwnerZipCode>M5K 1E6</rptOwnerZipCode>
+            <rptOwnerStateDescription>ONTARIO, CANADA</rptOwnerStateDescription>
+        </reportingOwnerAddress>
+        <reportingOwnerRelationship>
+            <isDirector>0</isDirector>
+            <isOfficer>0</isOfficer>
+            <isTenPercentOwner>1</isTenPercentOwner>
+            <isOther>0</isOther>
+            <officerTitle></officerTitle>
+            <otherText></otherText>
+        </reportingOwnerRelationship>
+    </reportingOwner>
+
+    <aff10b5One>0</aff10b5One>
+
+    <nonDerivativeTable>
+        <nonDerivativeTransaction>
+            <securityTitle>
+                <value>Common Stock, $0.01 par value</value>
+                <footnoteId id="F1"/>
+            </securityTitle>
+            <transactionDate>
+                <value>2026-02-27</value>
+            </transactionDate>
+            <deemedExecutionDate></deemedExecutionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>P</transactionCode>
+                <equitySwapInvolved>0</equitySwapInvolved>
+            </transactionCoding>
+            <transactionTimeliness></transactionTimeliness>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>10634702</value>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <value>1.1605</value>
+                    <footnoteId id="F3"/>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>A</value>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>50157523</value>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                    <footnoteId id="F2"/>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeTransaction>
+    </nonDerivativeTable>
+
+    <footnotes>
+        <footnote id="F1">This Form 4 is filed jointly by Constellation Software Inc (&quot;Constellation Software&quot;), Constellation Canadian Holdings Inc. (&quot;Constellation Holdings&quot;), and Mark Miller (collectively, the &quot;Reporting Persons&quot;). The EDGAR filing codes for Constellation Holdings and Mark Miller were not available at the time of this required filing, and the Reporting Persons intend to amend this Form 3 to include such Reporting Persons in the filing when such codes are available. Each Reporting Person disclaims beneficial ownership of the securities of the Issuer reported herein except to the extent of his or its pecuniary interest therein, and this report shall not be deemed to be an admission that any Reporting Person is the beneficial owner of such securities for purposes of Section 16 or for any other purpose.</footnote>
+        <footnote id="F2">Securities owned directly by Constellation Holdings. As the direct parent company of Constellation Holdings, Constellation Software may be deemed to beneficially own the securities owned directly by Constellation Holdings. Mr. Miller, as the President of Constellation Software, may be deemed to beneficially own the securities owned directly by Constellation Holdings.</footnote>
+        <footnote id="F3">The reported price represents a weighted average price. These shares were purchased in multiple transactions at prices ranging from $1.07 to $1.24 per share. The Reporting Persons undertake to provide to the Issuer, any security holder of the Issuer or the staff of the Securities and Exchange Commission, upon request, full information regarding the number of shares purchased at each separate price within the range set forth in this footnote.</footnote>
+    </footnotes>
+
+    <ownerSignature>
+        <signatureName>/s/ Constellation Software Inc., By Mark Dennison, Secretary and General Counsel</signatureName>
+        <signatureDate>2026-03-03</signatureDate>
+    </ownerSignature>
+
+    <ownerSignature>
+        <signatureName>/s/ Constellation Canadian Holdings., By Jamal Baksh, Chief Financial Officer</signatureName>
+        <signatureDate>2026-03-03</signatureDate>
+    </ownerSignature>
+
+    <ownerSignature>
+        <signatureName>/s/ Mark Miller</signatureName>
+        <signatureDate>2026-03-03</signatureDate>
+    </ownerSignature>
+</ownershipDocument>

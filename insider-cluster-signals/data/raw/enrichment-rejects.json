@@ -1,6 +1,52 @@
 {
   "rejects": [
     {
+      "accession": "0001072627-26-000013",
+      "period_of_report": "2026-02-27",
+      "issuer_cik": "0001072627",
+      "issuer_name": "KINGSWAY FINANCIAL SERVICES INC",
+      "ticker": "KFS",
+      "owner_cik": "0001584349",
+      "owner_name": "Fitzgerald John Taylor Maloney",
+      "is_director": true,
+      "is_officer": true,
+      "is_ten_percent_owner": false,
+      "officer_title": "President and CEO",
+      "security_title": "Common Stock",
+      "transaction_date": "2026-02-27",
+      "transaction_code": "P",
+      "shares": 202.0,
+      "price_per_share": 12.34,
+      "acquired_disposed": "A",
+      "shares_owned_after": "1460493",
+      "reject_reasons": [
+        "non-priceable ticker (no usable price series)"
+      ]
+    },
+    {
+      "accession": "0001072627-26-000014",
+      "period_of_report": "2026-02-27",
+      "issuer_cik": "0001072627",
+      "issuer_name": "KINGSWAY FINANCIAL SERVICES INC",
+      "ticker": "KFS",
+      "owner_cik": "0001686017",
+      "owner_name": "Hansen Kent A",
+      "is_director": false,
+      "is_officer": true,
+      "is_ten_percent_owner": false,
+      "officer_title": "CFO & EVP",
+      "security_title": "Common Stock",
+      "transaction_date": "2026-02-27",
+      "transaction_code": "P",
+      "shares": 126.0,
+      "price_per_share": 12.34,
+      "acquired_disposed": "A",
+      "shares_owned_after": "119961",
+      "reject_reasons": [
+        "non-priceable ticker (no usable price series)"
+      ]
+    },
+    {
       "accession": "0001193125-26-299528",
       "period_of_report": "2026-07-07",
       "issuer_cik": "0002097545",

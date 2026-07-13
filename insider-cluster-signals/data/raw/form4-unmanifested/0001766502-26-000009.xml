@@ -1,0 +1,259 @@
+<?xml version="1.0"?>
+<ownershipDocument>
+
+    <schemaVersion>X0508</schemaVersion>
+
+    <documentType>4</documentType>
+
+    <periodOfReport>2026-02-27</periodOfReport>
+
+    <issuer>
+        <issuerCik>0001766502</issuerCik>
+        <issuerName>Chewy, Inc.</issuerName>
+        <issuerTradingSymbol>CHWY</issuerTradingSymbol>
+    </issuer>
+
+    <reportingOwner>
+        <reportingOwnerId>
+            <rptOwnerCik>0002113658</rptOwnerCik>
+            <rptOwnerName>Deppe Christopher S.</rptOwnerName>
+        </reportingOwnerId>
+        <reportingOwnerAddress>
+            <rptOwnerStreet1>7700 WEST SUNRISE BOULEVARD</rptOwnerStreet1>
+            <rptOwnerStreet2></rptOwnerStreet2>
+            <rptOwnerCity>PLANTATION</rptOwnerCity>
+            <rptOwnerState>FL</rptOwnerState>
+            <rptOwnerZipCode>33322</rptOwnerZipCode>
+            <rptOwnerStateDescription></rptOwnerStateDescription>
+        </reportingOwnerAddress>
+        <reportingOwnerRelationship>
+            <isOfficer>1</isOfficer>
+            <officerTitle>Chief Financial Officer</officerTitle>
+        </reportingOwnerRelationship>
+    </reportingOwner>
+
+    <aff10b5One>1</aff10b5One>
+
+    <nonDerivativeTable>
+        <nonDerivativeTransaction>
+            <securityTitle>
+                <value>Class A Common Stock</value>
+            </securityTitle>
+            <transactionDate>
+                <value>2026-02-27</value>
+            </transactionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>F</transactionCode>
+                <equitySwapInvolved>0</equitySwapInvolved>
+            </transactionCoding>
+            <transactionTimeliness></transactionTimeliness>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>1976</value>
+                    <footnoteId id="F1"/>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <value>26.97</value>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>D</value>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>2302</value>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeTransaction>
+        <nonDerivativeTransaction>
+            <securityTitle>
+                <value>Class A Common Stock</value>
+            </securityTitle>
+            <transactionDate>
+                <value>2026-03-02</value>
+            </transactionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>S</transactionCode>
+                <equitySwapInvolved>0</equitySwapInvolved>
+            </transactionCoding>
+            <transactionTimeliness></transactionTimeliness>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>3043</value>
+                    <footnoteId id="F2"/>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <value>26.87</value>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>D</value>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>1566</value>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeTransaction>
+        <nonDerivativeHolding>
+            <securityTitle>
+                <value>Class A Common Stock</value>
+            </securityTitle>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>871</value>
+                    <footnoteId id="F3"/>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeHolding>
+        <nonDerivativeHolding>
+            <securityTitle>
+                <value>Class A Common Stock</value>
+            </securityTitle>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>2580</value>
+                    <footnoteId id="F4"/>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeHolding>
+        <nonDerivativeHolding>
+            <securityTitle>
+                <value>Class A Common Stock</value>
+            </securityTitle>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>1408</value>
+                    <footnoteId id="F5"/>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeHolding>
+        <nonDerivativeHolding>
+            <securityTitle>
+                <value>Class A Common Stock</value>
+            </securityTitle>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>7035</value>
+                    <footnoteId id="F6"/>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeHolding>
+        <nonDerivativeHolding>
+            <securityTitle>
+                <value>Class A Common Stock</value>
+            </securityTitle>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>6883</value>
+                    <footnoteId id="F7"/>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeHolding>
+        <nonDerivativeHolding>
+            <securityTitle>
+                <value>Class A Common Stock</value>
+            </securityTitle>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>5524</value>
+                    <footnoteId id="F8"/>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeHolding>
+        <nonDerivativeHolding>
+            <securityTitle>
+                <value>Class A Common Stock</value>
+            </securityTitle>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>2307</value>
+                    <footnoteId id="F9"/>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeHolding>
+        <nonDerivativeHolding>
+            <securityTitle>
+                <value>Class A Common Stock</value>
+            </securityTitle>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>19143</value>
+                    <footnoteId id="F10"/>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeHolding>
+    </nonDerivativeTable>
+
+    <footnotes>
+        <footnote id="F1">Represents shares of Class A common stock of Chewy, Inc. that were withheld to satisfy tax withholding and remittance obligations in connection with the net settlement of vested restricted stock units (&quot;RSUs&quot;) and does not represent a market transaction. This transaction is exempt from Section 16(b) of the Securities Exchange Act of 1934, as amended, pursuant to Rule 16b-3(e) promulgated thereunder.</footnote>
+        <footnote id="F2">Represents sales effected pursuant to a Rule 10b5-1 trading plan adopted by the filing person on December 30, 2025.</footnote>
+        <footnote id="F3">Represents restricted stock units (&quot;RSUs&quot;) granted to the filing person on September 14, 2022. Each RSU represents a contingent right to receive one share of Class A common stock of Chewy, Inc. The RSUs are subject to time vesting conditions. 100% will vest on September 1, 2026, subject to the filing person's continued employment with Chewy, Inc. through the applicable vesting date.</footnote>
+        <footnote id="F4">Represents RSUs granted to the filing person on September 14, 2022. Each RSU represents a contingent right to receive one share of Class A common stock of Chewy, Inc. 100% of these RSUs will vest on September 1, 2026, subject to the filing person's continued employment with Chewy, Inc. through the applicable vesting date.</footnote>
+        <footnote id="F5">Represents RSUs granted to the filing person on April 6, 2023. Each RSU represents a contingent right to receive one share of Class A common stock of Chewy, Inc. 50% of these RSUs will vest on August 1, 2026, and the remaining 50% of such RSUs will vest on February 1, 2027 subject to the filing person's continued employment with Chewy, Inc. through the applicable vesting date.</footnote>
+        <footnote id="F6">Represents RSUs granted to the filing person on April 1, 2024. Each RSU represents a contingent right to receive one share of Class A common stock of Chewy, Inc. 12.5% of these RSUs will vest on May 1, 2026, and on each three month anniversary thereafter, subject to the filing person's continued employment with Chewy, Inc. through the applicable vesting date.</footnote>
+        <footnote id="F7">Represents performance-based restricted stock units (&quot;PRSUs&quot;) granted to the filing person. Each PRSU represents a contingent right to receive one share of Class A common stock of Chewy, Inc. The PRSUs were initially granted on April 1, 2024 and the amount of PRSUs eligible for vesting was subject to certification of the satisfaction of certain performance conditions for the 2024 fiscal year by the Compensation Committee of the Board of Directors. On March 26, 2025, the Compensation Committee of the Board of Directors certified the achievement of the performance conditions for the PRSUs, which vest on February 1, 2027, subject to the filing person's continued employment with  Chewy, Inc. through the vesting date.</footnote>
+        <footnote id="F8">Represents RSUs granted to the filing person on April 1, 2025. Each RSU represents a contingent right to receive one share of Class A common stock of Chewy, Inc. The RSUs are subject to time-vesting conditions. 8.33% will vest on June 1, 2026 and 8.33% will vest on each three-month anniversary thereafter, subject to the filing person's continued employment with Chewy, Inc. through the applicable vesting date.</footnote>
+        <footnote id="F9">Represents RSUs granted to the filing person on April 1, 2025. Each RSU represents a contingent right to receive one share of Class A common stock of Chewy, Inc. The RSUs are subject to time-vesting conditions. 100% will vest on March 1, 2027, subject to the filing person's continued employment with Chewy, Inc. through the applicable vesting date.</footnote>
+        <footnote id="F10">Represents RSUs granted to the filing person on September 4, 2025. Each RSU represents a contingent right to receive one share of Class A common stock of Chewy, Inc. The RSUs are subject to time-vesting conditions. 33% of these RSUs will vest on May 1, 2026, and on each six-month anniversary thereafter, subject to the filing person's continued employment with Chewy, Inc. through the applicable vesting date.</footnote>
+    </footnotes>
+
+    <remarks>Exhibit 24:  Power of Attorney</remarks>
+
+    <ownerSignature>
+        <signatureName>/s/ Da-Wai Hu, as Attorney-in-Fact for Christopher S. Deppe</signatureName>
+        <signatureDate>2026-03-03</signatureDate>
+    </ownerSignature>
+</ownershipDocument>

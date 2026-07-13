@@ -47,3 +47,26 @@ Append-only (P7). Every script run against real data, every gate decision, every
   fair-access honored. Then: parse -> Yahoo price fetch (P tickers + SPY, window padded
   2026-02-20 .. 2026-05-01) -> enrich -> cluster. March chosen so every 30-day alpha
   window is fully matured.
+
+## 2026-07-13 -- Scale run executed (stopped early; 1 complete day) + first real clusters
+
+- **What happened:** the 10-day fetch was stopped during day 2. Day 1 (2026-03-02) completed
+  with a manifest: 2,973 index lines -> 1,460 unique filings fetched (2 errors). The 1,998
+  day-2 XMLs fetched before the stop have no manifest -> **archived to
+  `data/raw/form4-unmanifested/`** and excluded from parsing (P3: no provenance, no entry).
+- **Finding (fetcher improvement TODO):** the daily form index repeats a filing once per
+  joint filer — 2,971 fetch entries were only 1,460 unique accessions; fetcher should dedupe
+  by accession before fetching (idempotent overwrites made this harmless but wasteful).
+- **Commands:** fetcher (10-day loop, killed in day 2) -> parser -> price_fetcher
+  (--start 2026-02-20 --end 2026-05-01) -> enricher -> cluster_analyzer.
+- **Results (manifest-backed corpus: 2026-03-02 + July samples):**
+  - parse: 1,494 XMLs -> 2,496 transactions, 2,471 verified, 25 rejected (reasons recorded)
+  - prices: 56 P-tickers requested, 54 priced, BBASX non-priceable, 1 error
+  - enrich: 114 market trades enriched, 112 with matured 30d alpha, 4 rejects
+  - clusters: **6 found** — GENB (4 insiders, conviction 5.0, +13.9 alpha), CTEV (3, 4.5, +22.3),
+    LRMR (4, 4.0, -5.4), TNC (3, 3.5, +15.5), LAW (2, 2.5, +24.4), PVLA (2, 2.0, -9.2)
+- **Hand verification (P3):** LAW / Friedrichsen (CEO) 2026-02-27 buy at 3.25 recomputed by
+  hand from raw CSVs: stock +13.2308%, SPY -7.5657% -> alpha +20.7965 = pipeline value exactly.
+- **Open issues:** corpus is 1 trading day, not 10 — remaining 9 days can be fetched later
+  under the same logged gate; negative-alpha clusters (LRMR, PVLA) are evidence the detector
+  reports what it finds, not what flatters the method.

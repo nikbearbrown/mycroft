@@ -1,0 +1,231 @@
+<?xml version="1.0"?>
+<ownershipDocument>
+
+    <schemaVersion>X0508</schemaVersion>
+
+    <documentType>4</documentType>
+
+    <periodOfReport>2026-03-02</periodOfReport>
+
+    <issuer>
+        <issuerCik>0000011544</issuerCik>
+        <issuerName>BERKLEY W R CORP</issuerName>
+        <issuerTradingSymbol>WRB</issuerTradingSymbol>
+    </issuer>
+
+    <reportingOwner>
+        <reportingOwnerId>
+            <rptOwnerCik>0001142206</rptOwnerCik>
+            <rptOwnerName>MITSUI SUMITOMO INSURANCE CO LTD</rptOwnerName>
+        </reportingOwnerId>
+        <reportingOwnerAddress>
+            <rptOwnerStreet1>9, KANDA-SURUGADAI 3-CHOME, CHIYODA-KU</rptOwnerStreet1>
+            <rptOwnerStreet2></rptOwnerStreet2>
+            <rptOwnerCity>TOKYO</rptOwnerCity>
+            <rptOwnerState>M0</rptOwnerState>
+            <rptOwnerZipCode></rptOwnerZipCode>
+            <rptOwnerStateDescription>JAPAN</rptOwnerStateDescription>
+        </reportingOwnerAddress>
+        <reportingOwnerRelationship>
+            <isDirector>false</isDirector>
+            <isOfficer>false</isOfficer>
+            <isTenPercentOwner>true</isTenPercentOwner>
+            <isOther>false</isOther>
+        </reportingOwnerRelationship>
+    </reportingOwner>
+
+    <reportingOwner>
+        <reportingOwnerId>
+            <rptOwnerCik>0001431048</rptOwnerCik>
+            <rptOwnerName>MS&amp;AD Insurance Group Holdings, Inc.</rptOwnerName>
+        </reportingOwnerId>
+        <reportingOwnerAddress>
+            <rptOwnerStreet1>TOKYO SUMITOMO TWIN BUILDING WEST TOWER,</rptOwnerStreet1>
+            <rptOwnerStreet2>27-2, SHINKAWA 2-CHOME, CHUO-KU,</rptOwnerStreet2>
+            <rptOwnerCity>TOKYO</rptOwnerCity>
+            <rptOwnerState>M0</rptOwnerState>
+            <rptOwnerZipCode></rptOwnerZipCode>
+            <rptOwnerStateDescription>JAPAN</rptOwnerStateDescription>
+        </reportingOwnerAddress>
+        <reportingOwnerRelationship>
+            <isDirector>false</isDirector>
+            <isOfficer>false</isOfficer>
+            <isTenPercentOwner>true</isTenPercentOwner>
+            <isOther>false</isOther>
+        </reportingOwnerRelationship>
+    </reportingOwner>
+
+    <aff10b5One>true</aff10b5One>
+
+    <nonDerivativeTable>
+        <nonDerivativeTransaction>
+            <securityTitle>
+                <value>Common Stock</value>
+            </securityTitle>
+            <transactionDate>
+                <value>2026-03-02</value>
+            </transactionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>P</transactionCode>
+                <equitySwapInvolved>false</equitySwapInvolved>
+                <footnoteId id="F1"/>
+            </transactionCoding>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>45103</value>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <value>72.2854</value>
+                    <footnoteId id="F2"/>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>A</value>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>58567377</value>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                    <footnoteId id="F3"/>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeTransaction>
+        <nonDerivativeTransaction>
+            <securityTitle>
+                <value>Common Stock</value>
+            </securityTitle>
+            <transactionDate>
+                <value>2026-03-02</value>
+            </transactionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>P</transactionCode>
+                <equitySwapInvolved>false</equitySwapInvolved>
+                <footnoteId id="F1"/>
+            </transactionCoding>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>100897</value>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <value>73.1980</value>
+                    <footnoteId id="F4"/>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>A</value>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>58668274</value>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                    <footnoteId id="F3"/>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeTransaction>
+        <nonDerivativeTransaction>
+            <securityTitle>
+                <value>Common Stock</value>
+            </securityTitle>
+            <transactionDate>
+                <value>2026-03-03</value>
+            </transactionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>P</transactionCode>
+                <equitySwapInvolved>false</equitySwapInvolved>
+                <footnoteId id="F1"/>
+            </transactionCoding>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>38991</value>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <value>71.5961</value>
+                    <footnoteId id="F5"/>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>A</value>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>58707265</value>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                    <footnoteId id="F3"/>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeTransaction>
+        <nonDerivativeTransaction>
+            <securityTitle>
+                <value>Common Stock</value>
+            </securityTitle>
+            <transactionDate>
+                <value>2026-03-03</value>
+            </transactionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>P</transactionCode>
+                <equitySwapInvolved>false</equitySwapInvolved>
+                <footnoteId id="F1"/>
+            </transactionCoding>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>73185</value>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <value>72.5238</value>
+                    <footnoteId id="F6"/>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>A</value>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>58780450</value>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                    <footnoteId id="F3"/>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeTransaction>
+    </nonDerivativeTable>
+
+    <footnotes>
+        <footnote id="F1">The purchases reported on this Form 4 were effected pursuant to a Rule 10b5-1 purchase plan, adopted October 3, 2025.</footnote>
+        <footnote id="F2">The price reported is a weighted average price. These shares were purchased in multiple transactions at prices ranging from $71.72 to $72.69. The Reporting Persons undertake to provide to W.R. Berkley Corporation (the &quot;Issuer&quot;), any security holder of the Issuer, or the staff of the U.S. Securities and Exchange Commission, upon request, full information regarding the number of shares purchased at each separate price within the ranges set forth in this footnote and in footnotes 4, 5 and 6.</footnote>
+        <footnote id="F3">The shares are held directly by Mitsui Sumitomo Insurance Co., Ltd. (&quot;MSI&quot;). Because MSI is a wholly-owned subsidiary of MS&amp;AD Insurance Group Holdings, Inc. (&quot;MS&amp;AD&quot;), MS&amp;AD may be deemed to beneficially own the reported securities. MS&amp;AD expressly disclaims beneficial ownership of the reported securities, except to the extent of its pecuniary interest therein.</footnote>
+        <footnote id="F4">The price reported is a weighted average price. These shares were purchased in multiple transactions at prices ranging from $72.71 to $73.415.</footnote>
+        <footnote id="F5">The price reported is a weighted average price. These shares were purchased in multiple transactions at prices ranging from $71.1095 to $71.9984.</footnote>
+        <footnote id="F6">The price reported is a weighted average price. These shares were purchased in multiple transactions at prices ranging from $72.00 to $72.725.</footnote>
+    </footnotes>
+
+    <remarks>MSI, the Issuer and WR Berkley &amp; Others LLC (&quot;WRBO&quot;) are party to certain agreements described in, and filed as exhibits to, the Reporting Persons' Schedule 13D filed with the U.S. Securities and Exchange Commission on December 11, 2025. The Reporting Persons disclaim beneficial ownership of the securities of the Issuer owned by WRBO and disclaim that the Reporting Persons and WRBO constitute a &quot;group&quot; within the meaning of Rule 13d-5(b)(1) under the Securities Exchange Act of 1934, as amended.</remarks>
+
+    <ownerSignature>
+        <signatureName>MITSUI SUMITOMO INSURANCE CO., LTD., By: /s/ Hironori Morimoto, Name: Hironori Morimoto, Title: Authorized Signatory</signatureName>
+        <signatureDate>2026-03-03</signatureDate>
+    </ownerSignature>
+
+    <ownerSignature>
+        <signatureName>MS&amp;AD INSURANCE GROUP HOLDINGS, INC., By: /s/ Hironori Morimoto, Name: Hironori Morimoto, Title: Authorized Signatory</signatureName>
+        <signatureDate>2026-03-03</signatureDate>
+    </ownerSignature>
+</ownershipDocument>

@@ -137,3 +137,14 @@ workflow changes.
 - **Result:** corpus 57 verified records / 0 rejects; live cluster candidate (BBASX, 2 distinct
   10%-owners, same-day buys); SHA-256 provenance chain re-verified. New validation gap logged
   (ticker "NONE" passes non-empty rule) — fix scheduled with Week 2 enricher.
+
+## 2026-07-13 -- insider-cluster-signals: Week 2 complete — analytics layer + first real clusters
+
+- **Recipe:** insider-cluster-signal-agent v0.2.0 (DRAFT, todos 5->2).
+- **Delivered:** parser ticker-validation fix; price_fetcher (Yahoo v8 chart, stdlib — Stooq
+  re-decided after anti-bot wall, evidence in price manifest); enricher (30d SPY-adjusted
+  alpha, congressional-sibling formula); cluster_analyzer (>=2 insiders/30d, role-weighted);
+  21 unit tests; scale run (stopped day 2; complete 2026-03-02 corpus of 1,460 filings).
+- **Results:** 2,471 verified records -> 114 enriched -> **6 real clusters** (best: CTEV +22.3,
+  LAW +24.4 mean 30d alpha; negatives reported too). One alpha hand-recomputed from raw CSVs,
+  matches pipeline exactly. Details: insider-cluster-signals/logs/RUN_LOG.md.

@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<ownershipDocument>
+
+    <schemaVersion>X0508</schemaVersion>
+
+    <documentType>4</documentType>
+
+    <periodOfReport>2026-03-01</periodOfReport>
+
+    <issuer>
+        <issuerCik>0001821534</issuerCik>
+        <issuerName>Exodus Movement, Inc.</issuerName>
+        <issuerTradingSymbol>EXOD</issuerTradingSymbol>
+    </issuer>
+
+    <reportingOwner>
+        <reportingOwnerId>
+            <rptOwnerCik>0001967113</rptOwnerCik>
+            <rptOwnerName>Castagnoli Daniel</rptOwnerName>
+        </reportingOwnerId>
+        <reportingOwnerAddress>
+            <rptOwnerStreet1>15418 WEIR ST., #333</rptOwnerStreet1>
+            <rptOwnerStreet2></rptOwnerStreet2>
+            <rptOwnerCity>OMAHA</rptOwnerCity>
+            <rptOwnerState>NE</rptOwnerState>
+            <rptOwnerZipCode>68137</rptOwnerZipCode>
+            <rptOwnerStateDescription></rptOwnerStateDescription>
+        </reportingOwnerAddress>
+        <reportingOwnerRelationship>
+            <isDirector>true</isDirector>
+            <isOfficer>true</isOfficer>
+            <isTenPercentOwner>true</isTenPercentOwner>
+            <isOther>false</isOther>
+            <officerTitle>President, 3ZERO</officerTitle>
+        </reportingOwnerRelationship>
+    </reportingOwner>
+
+    <aff10b5One>false</aff10b5One>
+
+    <nonDerivativeTable>
+        <nonDerivativeTransaction>
+            <securityTitle>
+                <value>Class A Common Stock</value>
+            </securityTitle>
+            <transactionDate>
+                <value>2026-03-01</value>
+            </transactionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>F</transactionCode>
+                <equitySwapInvolved>false</equitySwapInvolved>
+            </transactionCoding>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>8892</value>
+                    <footnoteId id="F1"/>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <value>10.20</value>
+                    <footnoteId id="F2"/>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>D</value>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>745993</value>
+                    <footnoteId id="F3"/>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeTransaction>
+    </nonDerivativeTable>
+
+    <footnotes>
+        <footnote id="F1">In connection with the vesting and settlement of restricted stock units (&quot;RSUs&quot;) previously granted under the Issuer's equity incentive plans, the Issuer withheld shares of Class A common stock, par value $0.000001 per share (&quot;Class A Common Stock&quot;) to satisfy its tax withholding obligations.</footnote>
+        <footnote id="F2">Represents the price of the Company's Class A Common Stock on the vesting date.</footnote>
+        <footnote id="F3">Includes (i) 130,209 RSUs originally granted on January 1, 2023 that vest in equal monthly installments through January 1, 2027, (ii) 140,594 RSUs originally granted on March 13, 2024 that vest in equal monthly installments through January 1, 2028 and (iii) 45,403 RSUs originally granted on May 21, 2025 that vest in equal monthly installments through January 1, 2029. Each RSU represents the right to receive one share of Class A Common Stock upon settlement.</footnote>
+    </footnotes>
+
+    <ownerSignature>
+        <signatureName>/s/ James Gernetzke, attorney-in-fact for Daniel Castagnoli</signatureName>
+        <signatureDate>2026-03-03</signatureDate>
+    </ownerSignature>
+</ownershipDocument>

@@ -1,33 +1,403 @@
 {
   "source": "Yahoo Finance v8 chart API (query1.finance.yahoo.com), daily closes",
   "range": {
-    "start": "2026-06-25",
-    "end": "2026-07-13"
+    "start": "2026-02-20",
+    "end": "2026-05-01"
   },
-  "fetched_at": "2026-07-13T18:18:58.031313+00:00",
+  "fetched_at": "2026-07-13T19:31:11.326146+00:00",
   "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) mycroft-research",
   "fetched": [
     {
+      "ticker": "ABCL",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/ABCL?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/ABCL.csv",
+      "sha256": "63eaae3faf38a4d92b940d17a4a967c0b49254e80f11fdb66248154b5307b836",
+      "rows": 50
+    },
+    {
+      "ticker": "ACOG",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/ACOG?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/ACOG.csv",
+      "sha256": "34c32eb4246fd0108c51ae85413496e2f336437016339137dbe17334ee34bdac",
+      "rows": 50
+    },
+    {
+      "ticker": "ACVA",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/ACVA?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/ACVA.csv",
+      "sha256": "2060f8db4deaa81c10993f0dcf394de6e31df3e5d62425add5858d9561ab09b4",
+      "rows": 50
+    },
+    {
+      "ticker": "AWI",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/AWI?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/AWI.csv",
+      "sha256": "0340460050943688bcb34056241218e17210745558434cd67d54c09252efa89e",
+      "rows": 50
+    },
+    {
+      "ticker": "BCAX",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/BCAX?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/BCAX.csv",
+      "sha256": "d839921aae193324baaedcc9236786fc1e7c6948b6e9c53acf683522e8308a64",
+      "rows": 50
+    },
+    {
+      "ticker": "BCBP",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/BCBP?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/BCBP.csv",
+      "sha256": "192c824581e6a5ce513bd7c830903d43dcfdf2317a090b6832a689e040037f39",
+      "rows": 50
+    },
+    {
+      "ticker": "BCHT",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/BCHT?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/BCHT.csv",
+      "sha256": "2c67c14f19bb4e448e9190e178803efefb9b07e5ceabebab65201226709846b3",
+      "rows": 50
+    },
+    {
+      "ticker": "BWFG",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/BWFG?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/BWFG.csv",
+      "sha256": "2f8adceaee4b80b8c2c9e2f0e2a96ba88aa3a1fa028eadc1ee68cdda81c0a0d4",
+      "rows": 50
+    },
+    {
+      "ticker": "COFS",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/COFS?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/COFS.csv",
+      "sha256": "701741796d178ad30a1e052f0c9a5f236e2c2c2ae96478a3047464fdaa1f6d82",
+      "rows": 50
+    },
+    {
+      "ticker": "CSGP",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/CSGP?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/CSGP.csv",
+      "sha256": "e83f85b9f463b4328e106942171d52968dbb3c606235eb9a4860195036eaca88",
+      "rows": 50
+    },
+    {
+      "ticker": "CSWC",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/CSWC?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/CSWC.csv",
+      "sha256": "3e4167ca9d31bac2acfbd3701fc37d28e829f37dbe387f3bc64711e84623b868",
+      "rows": 50
+    },
+    {
+      "ticker": "CTEV",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/CTEV?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/CTEV.csv",
+      "sha256": "fa923a0f827631d419f47ac79e96e264a997ecf151b0bf7020654268f786c90a",
+      "rows": 50
+    },
+    {
+      "ticker": "CZFS",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/CZFS?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/CZFS.csv",
+      "sha256": "88bd06a042fd47d212f2f84c6b077a8a7c12ddff33ee7728dd6e6b8282c97436",
+      "rows": 50
+    },
+    {
+      "ticker": "DLPN",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/DLPN?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/DLPN.csv",
+      "sha256": "32376eb00761d5eea4c1c318dd5fc8c10254bf1fad666e63f8f904928b1e0db1",
+      "rows": 50
+    },
+    {
+      "ticker": "EDSA",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/EDSA?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/EDSA.csv",
+      "sha256": "414104961e138512f8289330b29eefe4d14620014cd0a812a44b62fcb9ff3110",
+      "rows": 50
+    },
+    {
+      "ticker": "EHTH",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/EHTH?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/EHTH.csv",
+      "sha256": "4a6f54d6a15890c30b7cba4f71697145a2fda26c05499a068f6f530b93b384e3",
+      "rows": 50
+    },
+    {
+      "ticker": "FBLG",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/FBLG?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/FBLG.csv",
+      "sha256": "68829c5c8accd90c7ab7cc4f04582e141e2d9952a116abde4ec05e983a8e1724",
+      "rows": 50
+    },
+    {
+      "ticker": "FOUR",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/FOUR?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/FOUR.csv",
+      "sha256": "f5e1068753e7f4ad2dd1973659a114b828043e350915cda64cffa0e8cd2526bd",
+      "rows": 50
+    },
+    {
+      "ticker": "FSCO",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/FSCO?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/FSCO.csv",
+      "sha256": "286f85be95bc094428ca6eb2a5bf32336c59bde315f3d92c78a58e3c4b0a2958",
+      "rows": 50
+    },
+    {
+      "ticker": "FSK",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/FSK?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/FSK.csv",
+      "sha256": "f0e78fb2b95e4de5c1208749aa63cb654068662b6734b2015975028c375a7496",
+      "rows": 50
+    },
+    {
+      "ticker": "GENB",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/GENB?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/GENB.csv",
+      "sha256": "fb547c8849c839d9d9dc83a837a7337ca6776de8ddcd2c42b404e3e67ce5ca86",
+      "rows": 45
+    },
+    {
+      "ticker": "HOG",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/HOG?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/HOG.csv",
+      "sha256": "08b06cc8c130c8bd0660d37291861d1bde60080103a891221091a5be2af77429",
+      "rows": 50
+    },
+    {
+      "ticker": "HRI",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/HRI?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/HRI.csv",
+      "sha256": "9816d9938b9abb713ccfdd530dcfb8e384733534e842fe594e40a72b125414cc",
+      "rows": 50
+    },
+    {
+      "ticker": "IDYA",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/IDYA?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/IDYA.csv",
+      "sha256": "c96092df5dfaefed1a58cb3855d3f33ff4e1e2000f3f3d6e064b6914fa05da14",
+      "rows": 50
+    },
+    {
+      "ticker": "INFU",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/INFU?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/INFU.csv",
+      "sha256": "3388ba7a388b4c850f231b271d6a80ebb53b1791a3d7e8c8bfeed0d2fcf0365b",
+      "rows": 50
+    },
+    {
+      "ticker": "ISPR",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/ISPR?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/ISPR.csv",
+      "sha256": "00e0f1b190de9494830266a3994b047638596bded0aaf48d173d966c1ef9f333",
+      "rows": 50
+    },
+    {
       "ticker": "JEM",
-      "url": "https://query1.finance.yahoo.com/v8/finance/chart/JEM?period1=1782345600&period2=1784035138&interval=1d",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/JEM?period1=1771545600&period2=1777680000&interval=1d",
       "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/JEM.csv",
-      "sha256": "cf769878cf9a558bc9e8755372085822036d7af5b228c89f8d6d77a53aa43562",
-      "rows": 12
+      "sha256": "52f793724c3eaefb272ea7301f9c8f8980a0bc2f7a49f02b616d2d52c01493b9",
+      "rows": 50
+    },
+    {
+      "ticker": "LAW",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/LAW?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/LAW.csv",
+      "sha256": "397a56f7c5dd3af34bcca8ae0d229d3dff79d863f0437dd78dccca1f344293e5",
+      "rows": 50
+    },
+    {
+      "ticker": "LFVN",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/LFVN?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/LFVN.csv",
+      "sha256": "405b1a198c8dee98b64379320e6396b5c66593fc1d9edc0cfedae4065f827811",
+      "rows": 50
+    },
+    {
+      "ticker": "LRMR",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/LRMR?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/LRMR.csv",
+      "sha256": "413f02d8f38b7779d91682a0cc745cf77f7cb87d585c70eed00d71ad47ff026f",
+      "rows": 50
+    },
+    {
+      "ticker": "MELI",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/MELI?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/MELI.csv",
+      "sha256": "64b40ef83f246ef78fcd1065501eb5f3dc8c852702628b75f2d4951bdc0415db",
+      "rows": 50
+    },
+    {
+      "ticker": "MQ",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/MQ?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/MQ.csv",
+      "sha256": "ea3ac8b5d24141e140e5404bba7f788c0eccf615829433ed64abd2cb9773f4a6",
+      "rows": 50
+    },
+    {
+      "ticker": "NFRX",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/NFRX?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/NFRX.csv",
+      "sha256": "fa73a8756c49a1c7a96c6d6827c293ee482822afa7bb54a202d974380a0ae6d6",
+      "rows": 50
+    },
+    {
+      "ticker": "NMFC",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/NMFC?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/NMFC.csv",
+      "sha256": "7893f9b3b01dcff7ff6864f72c53d18c3b7dde51e84b13b1728a24b28ab14d87",
+      "rows": 50
+    },
+    {
+      "ticker": "NOW",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/NOW?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/NOW.csv",
+      "sha256": "68d4827993cb3d57400d920fcc67a594ebc898ea06cf2d63b895d15c6b4ab9b0",
+      "rows": 50
+    },
+    {
+      "ticker": "NRGV",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/NRGV?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/NRGV.csv",
+      "sha256": "3789deee9efb6d88cf604882fc026deb77b250ab08400dfca41252de9d1ea8e2",
+      "rows": 50
+    },
+    {
+      "ticker": "OBDC",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/OBDC?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/OBDC.csv",
+      "sha256": "f3485838eef9c6a3891361084813146b5a403d6e1c3bf8a39de98dfb80801c44",
+      "rows": 50
+    },
+    {
+      "ticker": "PCB",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/PCB?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/PCB.csv",
+      "sha256": "3c8e15ff09a89a22def578de0dde02179739bc0131ab46d1399b1062ac21a48d",
+      "rows": 50
+    },
+    {
+      "ticker": "PKBK",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/PKBK?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/PKBK.csv",
+      "sha256": "f0a0bc6fc23863fe999872edc233d20e4dc0544dc2dca93db45ad2aa1462f7cb",
+      "rows": 50
+    },
+    {
+      "ticker": "PVLA",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/PVLA?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/PVLA.csv",
+      "sha256": "e22c2740de09862efb0b6642c370b4230da4f2a0750d409dbaf0208299c92f48",
+      "rows": 50
+    },
+    {
+      "ticker": "RBCAA",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/RBCAA?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/RBCAA.csv",
+      "sha256": "c221bc2320c29a96adfe28db03c811b30d7633b7ccfc1a6e491239fb050aa042",
+      "rows": 50
+    },
+    {
+      "ticker": "RCG",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/RCG?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/RCG.csv",
+      "sha256": "80058a4af7fe671bc857ad4e9e9c6940f77ce5000cbb27b6b564ae1178848d2d",
+      "rows": 50
+    },
+    {
+      "ticker": "SOFI",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/SOFI?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/SOFI.csv",
+      "sha256": "b7a6105d52f734f3c2334c21144924bef67923168b9abbec38a7bafb0593a7f8",
+      "rows": 50
+    },
+    {
+      "ticker": "SWZ",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/SWZ?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/SWZ.csv",
+      "sha256": "972c8f28b3d352dee3f03a59ac8c0f0b019d46e4440eaa20428853ef17f04995",
+      "rows": 50
+    },
+    {
+      "ticker": "SXC",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/SXC?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/SXC.csv",
+      "sha256": "5c35c6e9da7cd76eeef88c951aec6b06f533bc9c513ac69e541d23b193ca0b95",
+      "rows": 50
+    },
+    {
+      "ticker": "TBBK",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/TBBK?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/TBBK.csv",
+      "sha256": "05c935ad0cc5125f33a470f0206be98954e748d464b8021cf34ed96cfce76402",
+      "rows": 50
+    },
+    {
+      "ticker": "TFIN",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/TFIN?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/TFIN.csv",
+      "sha256": "655105c667cd76f8dd10d12df6f108f30a3bb04c7938a68f363524808847f971",
+      "rows": 50
+    },
+    {
+      "ticker": "TNC",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/TNC?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/TNC.csv",
+      "sha256": "b00e790939db5175008ea81fee3125afd12ecc21a3e284e6d612544ce893902e",
+      "rows": 50
+    },
+    {
+      "ticker": "TPL",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/TPL?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/TPL.csv",
+      "sha256": "b8adc211781c6fa03bf9decc4e0c1d27a5be50becdb9afe42fd5af97138e06af",
+      "rows": 50
+    },
+    {
+      "ticker": "TSLX",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/TSLX?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/TSLX.csv",
+      "sha256": "e951f436e7850b8bd8c2fe123ead5a32f69269b8867481a40e6667e8f07a3e91",
+      "rows": 50
+    },
+    {
+      "ticker": "UUU",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/UUU?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/UUU.csv",
+      "sha256": "d7dfa0a4ea5c9d28b4706362c5a45e1fd517519cd7ed848020c9f634a7794682",
+      "rows": 50
+    },
+    {
+      "ticker": "XMTR",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/XMTR?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/XMTR.csv",
+      "sha256": "fe498c6bf4a10b51b9b2d57f9700018dea248c49d57a1a11bed74fd86eb6a488",
+      "rows": 50
+    },
+    {
+      "ticker": "ZURA",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/ZURA?period1=1771545600&period2=1777680000&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/ZURA.csv",
+      "sha256": "7486361b24f1fa50fb37af622a556b89eaad8bdce97ac683b72237297a163c06",
+      "rows": 50
     },
     {
       "ticker": "SPY",
-      "url": "https://query1.finance.yahoo.com/v8/finance/chart/SPY?period1=1782345600&period2=1784035138&interval=1d",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/SPY?period1=1771545600&period2=1777680000&interval=1d",
       "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/SPY.csv",
-      "sha256": "f90e0b4806ce62c2ecd3718bf815e0bb26086744e81c401dbd62b347fb51ed1b",
-      "rows": 12
+      "sha256": "abd2d6ced555e56bc1a5778f089d97b52de13ff105ead9ec4cc5f8c9494c2dba",
+      "rows": 50
     }
   ],
   "non_priceable": [
     {
       "ticker": "BBASX",
-      "url": "https://query1.finance.yahoo.com/v8/finance/chart/BBASX?period1=1782345600&period2=1784035138&interval=1d",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/BBASX?period1=1771545600&period2=1777680000&interval=1d",
       "response_head": "HTTP 404"
     }
   ],
-  "errors": []
+  "errors": [
+    {
+      "ticker": "KFS",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/KFS?period1=1771545600&period2=1777680000&interval=1d",
+      "error": "HTTP 400"
+    }
+  ]
 }

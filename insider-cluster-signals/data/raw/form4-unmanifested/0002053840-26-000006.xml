@@ -1,0 +1,256 @@
+<?xml version="1.0"?>
+<ownershipDocument>
+
+    <schemaVersion>X0508</schemaVersion>
+
+    <documentType>4</documentType>
+
+    <periodOfReport>2026-02-27</periodOfReport>
+
+    <notSubjectToSection16>1</notSubjectToSection16>
+
+    <issuer>
+        <issuerCik>0001827821</issuerCik>
+        <issuerName>Forge Global Holdings, Inc.</issuerName>
+        <issuerTradingSymbol>FRGE</issuerTradingSymbol>
+    </issuer>
+
+    <reportingOwner>
+        <reportingOwnerId>
+            <rptOwnerCik>0002053840</rptOwnerCik>
+            <rptOwnerName>Nevin James</rptOwnerName>
+        </reportingOwnerId>
+        <reportingOwnerAddress>
+            <rptOwnerStreet1>4 EMBARCADERO CENTER, FLOOR 15</rptOwnerStreet1>
+            <rptOwnerStreet2></rptOwnerStreet2>
+            <rptOwnerCity>SAN FRANCISCO</rptOwnerCity>
+            <rptOwnerState>CA</rptOwnerState>
+            <rptOwnerZipCode>94111</rptOwnerZipCode>
+            <rptOwnerStateDescription></rptOwnerStateDescription>
+        </reportingOwnerAddress>
+        <reportingOwnerRelationship>
+            <isDirector>0</isDirector>
+            <isOfficer>1</isOfficer>
+            <isTenPercentOwner>0</isTenPercentOwner>
+            <isOther>0</isOther>
+            <officerTitle>Chief Financial Officer</officerTitle>
+        </reportingOwnerRelationship>
+    </reportingOwner>
+
+    <aff10b5One>0</aff10b5One>
+
+    <nonDerivativeTable>
+        <nonDerivativeTransaction>
+            <securityTitle>
+                <value>Common Stock,  $0.0001 par value per share</value>
+            </securityTitle>
+            <transactionDate>
+                <value>2026-03-02</value>
+            </transactionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>D</transactionCode>
+                <equitySwapInvolved>0</equitySwapInvolved>
+                <footnoteId id="F1"/>
+            </transactionCoding>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>20647</value>
+                    <footnoteId id="F1"/>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <value>45</value>
+                    <footnoteId id="F1"/>
+                    <footnoteId id="F2"/>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>D</value>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>0</value>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeTransaction>
+    </nonDerivativeTable>
+
+    <derivativeTable>
+        <derivativeTransaction>
+            <securityTitle>
+                <value>Performance Stock Units</value>
+            </securityTitle>
+            <conversionOrExercisePrice>
+                <footnoteId id="F3"/>
+            </conversionOrExercisePrice>
+            <transactionDate>
+                <value>2026-02-27</value>
+            </transactionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>A</transactionCode>
+                <equitySwapInvolved>0</equitySwapInvolved>
+                <footnoteId id="F3"/>
+            </transactionCoding>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>26665</value>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <footnoteId id="F3"/>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>A</value>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <exerciseDate>
+                <footnoteId id="F3"/>
+            </exerciseDate>
+            <expirationDate>
+                <footnoteId id="F3"/>
+            </expirationDate>
+            <underlyingSecurity>
+                <underlyingSecurityTitle>
+                    <value>Common Stock,  $0.0001 par value per share</value>
+                </underlyingSecurityTitle>
+                <underlyingSecurityShares>
+                    <value>26665</value>
+                </underlyingSecurityShares>
+            </underlyingSecurity>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>75222</value>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </derivativeTransaction>
+        <derivativeTransaction>
+            <securityTitle>
+                <value>Performance Stock Units</value>
+            </securityTitle>
+            <conversionOrExercisePrice>
+                <footnoteId id="F4"/>
+            </conversionOrExercisePrice>
+            <transactionDate>
+                <value>2026-03-02</value>
+            </transactionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>D</transactionCode>
+                <equitySwapInvolved>0</equitySwapInvolved>
+                <footnoteId id="F1"/>
+            </transactionCoding>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>75222</value>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <footnoteId id="F4"/>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>D</value>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <exerciseDate>
+                <footnoteId id="F4"/>
+            </exerciseDate>
+            <expirationDate>
+                <footnoteId id="F4"/>
+            </expirationDate>
+            <underlyingSecurity>
+                <underlyingSecurityTitle>
+                    <value>Common Stock,  $0.0001 par value per share</value>
+                </underlyingSecurityTitle>
+                <underlyingSecurityShares>
+                    <value>75222</value>
+                </underlyingSecurityShares>
+            </underlyingSecurity>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>0</value>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </derivativeTransaction>
+        <derivativeTransaction>
+            <securityTitle>
+                <value>Restricted Stock Units</value>
+            </securityTitle>
+            <conversionOrExercisePrice>
+                <footnoteId id="F5"/>
+            </conversionOrExercisePrice>
+            <transactionDate>
+                <value>2026-03-02</value>
+            </transactionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>D</transactionCode>
+                <equitySwapInvolved>0</equitySwapInvolved>
+                <footnoteId id="F1"/>
+            </transactionCoding>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>6740</value>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <footnoteId id="F5"/>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>D</value>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <exerciseDate>
+                <footnoteId id="F5"/>
+            </exerciseDate>
+            <expirationDate>
+                <footnoteId id="F5"/>
+            </expirationDate>
+            <underlyingSecurity>
+                <underlyingSecurityTitle>
+                    <value>Common Stock,  $0.0001 par value per share</value>
+                </underlyingSecurityTitle>
+                <underlyingSecurityShares>
+                    <value>6740</value>
+                </underlyingSecurityShares>
+            </underlyingSecurity>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>0</value>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </derivativeTransaction>
+    </derivativeTable>
+
+    <footnotes>
+        <footnote id="F1">Reflects the disposition of shares of common stock, par value $0.0001 per share (&quot;Common Stock&quot;), of the Issuer, or of equity awards in respect of such Common Stock, as applicable, in connection with the consummation of the transactions contemplated by the Agreement and Plan of Merger, dated as of November 5, 2025 (the &quot;Merger Agreement&quot;), by and among the Issuer, The Charles Schwab Corporation (&quot;Parent&quot;) and Ember-Falcon Merger Sub, Inc. (&quot;Merger Sub&quot;), a wholly owned subsidiary of Parent, pursuant to which, on March 2, 2026, the effective time of the Merger (the &quot;Effective Time&quot;), Merger Sub merged with and into the Issuer, with the Issuer surviving as a wholly owned subsidiary of Parent (the &quot;Merger&quot;).</footnote>
+        <footnote id="F2">Pursuant to the Merger Agreement, at the Effective Time, each issued and outstanding share of Common Stock (other than certain excluded shares described in the Merger Agreement) was cancelled and converted automatically into the right to receive cash (without interest) in an amount equal to $45.00 per share of Common Stock (the &quot;Merger Consideration&quot;).</footnote>
+        <footnote id="F3">Represents the acquisition of shares upon the certification of the Compensation Committee (the &quot;Committee&quot;) of the Board that the performance conditions were met with respect to the portion of the total shareholder return performance-based restricted stock units (&quot;TSR RSUs&quot;) based on achievement of certain stock price goals for the 2025 fiscal year, which was granted to the Reporting Person on July 18, 2025 under the forge Global Holdings, Inc. 2022 Stock Option and Incentive Plan and Forge Global Holdings, Inc. 2025 Inducement Plan (the &quot;Plans&quot;). The TSR RSUs were earned based on actual performance (200% of the target award).</footnote>
+        <footnote id="F4">Pursuant to the Merger Agreement, at the Effective Time, each outstanding performance-based restricted stock unit (each, a &quot;Company PSU&quot;) that was unvested as of immediately prior to the Effective Time was assumed and converted into a Parent RSU covering a number of shares of Parent Common Stock equal to the product of (i) the number of shares of Common Stock then subject to such Company PSU immediately prior to the Effective Time (for those award earned based on a relative total shareholder return metric through December 31, 2027, based on a performance factor of (200%) and for other Company PSUs, based on achievement of applicable metrics at target performance (100%)), multiplied by (ii) the Equity Award Exchange Ratio.</footnote>
+        <footnote id="F5">Pursuant to the Merger Agreement, at the Effective Time, each outstanding restricted stock unit (each, a &quot;Company RSU&quot;) was assumed and converted into a restricted stock unit award of Parent, (&quot;Parent RSU&quot;) covering a number of shares of common stock of Parent par value $0.01 per share (&quot;Parent Common Stock&quot;) equal to the product of (i) the number of shares of Common Stock then subject to such Company RSU immediately prior to the Effective Time, multiplied by (ii) the quotient of the Merger Consideration, divided by $94.7880, which is the average, rounded to the nearest one ten-thousandth, of the closing-sale prices of shares of Parent Common Stock on the New York Stock Exchange as reported by The Wall Street Journal for the five full trading days ending on (and including) the trading day preceding the Closing Date (the &quot;Equity Award Exchange Ratio&quot;).</footnote>
+    </footnotes>
+
+    <remarks></remarks>
+
+    <ownerSignature>
+        <signatureName>/s/ James Nevin, Attorney-in-Fact</signatureName>
+        <signatureDate>2026-03-03</signatureDate>
+    </ownerSignature>
+</ownershipDocument>

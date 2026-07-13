@@ -1,0 +1,245 @@
+<?xml version="1.0"?>
+<ownershipDocument>
+
+    <schemaVersion>X0508</schemaVersion>
+
+    <documentType>4</documentType>
+
+    <periodOfReport>2026-02-27</periodOfReport>
+
+    <notSubjectToSection16>0</notSubjectToSection16>
+
+    <issuer>
+        <issuerCik>0001618563</issuerCik>
+        <issuerName>National Storage Affiliates Trust</issuerName>
+        <issuerTradingSymbol>NSA</issuerTradingSymbol>
+    </issuer>
+
+    <reportingOwner>
+        <reportingOwnerId>
+            <rptOwnerCik>0001210694</rptOwnerCik>
+            <rptOwnerName>FISCHER TAMARA D</rptOwnerName>
+        </reportingOwnerId>
+        <reportingOwnerAddress>
+            <rptOwnerStreet1>C/O NATIONAL STORAGE AFFILIATES TRUST</rptOwnerStreet1>
+            <rptOwnerStreet2>8400 EAST PRENTICE AVENUE, 9TH FLOOR</rptOwnerStreet2>
+            <rptOwnerCity>GREENWOOD VILLAGE</rptOwnerCity>
+            <rptOwnerState>CO</rptOwnerState>
+            <rptOwnerZipCode>80111</rptOwnerZipCode>
+            <rptOwnerStateDescription></rptOwnerStateDescription>
+        </reportingOwnerAddress>
+        <reportingOwnerRelationship>
+            <isDirector>1</isDirector>
+            <isOfficer>1</isOfficer>
+            <isTenPercentOwner>0</isTenPercentOwner>
+            <isOther>0</isOther>
+            <officerTitle>Executive Chairperson</officerTitle>
+        </reportingOwnerRelationship>
+    </reportingOwner>
+
+    <aff10b5One>0</aff10b5One>
+
+    <nonDerivativeTable></nonDerivativeTable>
+
+    <derivativeTable>
+        <derivativeTransaction>
+            <securityTitle>
+                <value>Class A OP Units</value>
+                <footnoteId id="F1"/>
+            </securityTitle>
+            <conversionOrExercisePrice>
+                <footnoteId id="F1"/>
+                <footnoteId id="F2"/>
+                <footnoteId id="F3"/>
+            </conversionOrExercisePrice>
+            <transactionDate>
+                <value>2026-02-27</value>
+            </transactionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>A</transactionCode>
+                <equitySwapInvolved>0</equitySwapInvolved>
+            </transactionCoding>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>45237</value>
+                    <footnoteId id="F3"/>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <value>0</value>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>A</value>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <exerciseDate>
+                <footnoteId id="F1"/>
+                <footnoteId id="F2"/>
+                <footnoteId id="F3"/>
+            </exerciseDate>
+            <expirationDate>
+                <footnoteId id="F4"/>
+            </expirationDate>
+            <underlyingSecurity>
+                <underlyingSecurityTitle>
+                    <value>Common shares of beneficial interest, $0.01 par value</value>
+                    <footnoteId id="F1"/>
+                </underlyingSecurityTitle>
+                <underlyingSecurityShares>
+                    <value>45237</value>
+                    <footnoteId id="F1"/>
+                    <footnoteId id="F2"/>
+                    <footnoteId id="F3"/>
+                </underlyingSecurityShares>
+            </underlyingSecurity>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>594737</value>
+                    <footnoteId id="F5"/>
+                    <footnoteId id="F6"/>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </derivativeTransaction>
+        <derivativeTransaction>
+            <securityTitle>
+                <value>LTIP Units</value>
+                <footnoteId id="F1"/>
+                <footnoteId id="F2"/>
+            </securityTitle>
+            <conversionOrExercisePrice>
+                <footnoteId id="F1"/>
+                <footnoteId id="F7"/>
+            </conversionOrExercisePrice>
+            <transactionDate>
+                <value>2026-02-27</value>
+            </transactionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>C</transactionCode>
+                <equitySwapInvolved>0</equitySwapInvolved>
+            </transactionCoding>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>21827</value>
+                    <footnoteId id="F8"/>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <footnoteId id="F8"/>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>D</value>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <exerciseDate>
+                <footnoteId id="F1"/>
+                <footnoteId id="F8"/>
+            </exerciseDate>
+            <expirationDate>
+                <footnoteId id="F4"/>
+            </expirationDate>
+            <underlyingSecurity>
+                <underlyingSecurityTitle>
+                    <value>Class A OP Units</value>
+                    <footnoteId id="F1"/>
+                    <footnoteId id="F7"/>
+                </underlyingSecurityTitle>
+                <underlyingSecurityShares>
+                    <value>21827</value>
+                </underlyingSecurityShares>
+            </underlyingSecurity>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>124404</value>
+                    <footnoteId id="F2"/>
+                    <footnoteId id="F5"/>
+                    <footnoteId id="F9"/>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </derivativeTransaction>
+        <derivativeTransaction>
+            <securityTitle>
+                <value>Class A OP Units</value>
+                <footnoteId id="F1"/>
+            </securityTitle>
+            <conversionOrExercisePrice>
+                <footnoteId id="F1"/>
+            </conversionOrExercisePrice>
+            <transactionDate>
+                <value>2026-02-27</value>
+            </transactionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>C</transactionCode>
+                <equitySwapInvolved>0</equitySwapInvolved>
+            </transactionCoding>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>21827</value>
+                    <footnoteId id="F8"/>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <footnoteId id="F8"/>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>A</value>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <exerciseDate>
+                <footnoteId id="F1"/>
+            </exerciseDate>
+            <expirationDate>
+                <footnoteId id="F4"/>
+            </expirationDate>
+            <underlyingSecurity>
+                <underlyingSecurityTitle>
+                    <value>Common shares of beneficial interest, $0.01 par value</value>
+                    <footnoteId id="F1"/>
+                </underlyingSecurityTitle>
+                <underlyingSecurityShares>
+                    <value>21827</value>
+                </underlyingSecurityShares>
+            </underlyingSecurity>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>594737</value>
+                    <footnoteId id="F5"/>
+                    <footnoteId id="F9"/>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </derivativeTransaction>
+    </derivativeTable>
+
+    <footnotes>
+        <footnote id="F1">Pursuant to the agreement of limited partnership (the &quot;Partnership Agreement&quot;) of NSA OP, LP (the &quot;Partnership&quot;), the Reporting Person has the right to cause the Partnership to redeem all or a portion of the Reporting Person's Class A common units of limited partner interest (&quot;Class A OP Units&quot;) for cash in an amount equal to the market value of an equivalent number of the common shares of beneficial interest (&quot;Shares&quot;) of National Storage Affiliates Trust (the &quot;Issuer&quot;), or at the Issuer's option, Shares on a one-for-one basis, subject to certain adjustments.</footnote>
+        <footnote id="F2">The Class A OP Units in the first row of this table are comprised of 45,237 Class A OP Units issuable upon the conversion of 45,237 unvested long-term incentive plan units (&quot;LTIP Units&quot;) in the Partnership which were granted to the Reporting Person pursuant to a 2026 LTIP Unit Award Agreement between the Issuer and the Reporting Person under the Issuer's 2024 Equity Incentive Plan.  Of these, 16,670 vest in three annual installments on January 1, 2027, January 1, 2028, and January 1, 2029, subject to continued employment by the Reporting Person and 28,567 represent the maximum amount of LTIP Units that can vest on January 1, 2029 contingent upon the achievement of certain performance criteria.</footnote>
+        <footnote id="F3">The Reporting Person will not earn any of the 28,567 performance-based LTIP Units if the minimum performance criteria is not met. The 28,567 performance-based LTIP Units are being reported here for informational purposes only.  Vested LTIP Units, after achieving parity with Class A OP Units, are eligible to be converted into Class A OP Units on a one-for-one basis upon the satisfaction of conditions set forth in the Partnership Agreement.</footnote>
+        <footnote id="F4">N/A</footnote>
+        <footnote id="F5">The Reporting Person's total direct and indirect beneficial ownership of Class A OP Units following the reported transactions above (including the LTIP Units conversion described in footnote 8 below) is 594,737 Class A OP Units, which includes those Class A OP Units previously reported and the Class A OP Units reported herein (together with those securities convertible into, or exchangeable for, such Class A OP Units as specified therein). Excludes 25,504 previously reported LTIP Units granted on February 27, 2023 pursuant to a 2023 LTIP Unit Agreement, which did not vest upon the expiration of the performance period on January 1, 2026. All of the Reporting Person's 594,737 Class A OP Units are held directly through Tamara D. Fischer, trustee of the Tamara Diane Fischer Trust dated 01/20/2021.</footnote>
+        <footnote id="F6">This filing shall not be deemed to be an admission that the Reporting Person is the beneficial owner of any of the securities reported herein, and the Reporting Person disclaims beneficial ownership of such securities except to the extent of the Reporting Person's pecuniary interest therein.</footnote>
+        <footnote id="F7">Pursuant to the Partnership Agreement, upon the achievement of certain conditions, a holder of LTIP Units of the Partnership is entitled to convert such LTIP Units into Class A OP Units of the Partnership on a one-for-one basis.</footnote>
+        <footnote id="F8">Consists of 21,827 LTIP Units held by the Reporting Person which were converted into 21,827 Class A OP Units as described in footnote 7 above.</footnote>
+        <footnote id="F9">Following the reported transactions, the Reporting Person has total direct beneficial ownership in 14,576 vested LTIP Units and 109,828 unvested LTIP Units. The Reporting Person previously reported the 21,827 LTIP Units that were converted into Class A OP Units as described in this Form 4 as Class A OP Units on an as-converted basis. Accordingly, rows 2 and 3 of this Form 4 are being filed on a voluntary basis solely to provide notice of the conversion of the Reporting Person's 21,827 LTIP Units into 21,827 Class A OP Units.</footnote>
+    </footnotes>
+
+    <remarks></remarks>
+
+    <ownerSignature>
+        <signatureName>Tamara D. Fischer, by Zoya Afridi, her Attorney-in-fact</signatureName>
+        <signatureDate>2026-03-03</signatureDate>
+    </ownerSignature>
+</ownershipDocument>

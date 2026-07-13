@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<ownershipDocument>
+
+    <schemaVersion>X0508</schemaVersion>
+
+    <documentType>4</documentType>
+
+    <periodOfReport>2026-03-02</periodOfReport>
+
+    <notSubjectToSection16>1</notSubjectToSection16>
+
+    <issuer>
+        <issuerCik>0001827821</issuerCik>
+        <issuerName>Forge Global Holdings, Inc.</issuerName>
+        <issuerTradingSymbol>FRGE</issuerTradingSymbol>
+    </issuer>
+
+    <reportingOwner>
+        <reportingOwnerId>
+            <rptOwnerCik>0001660098</rptOwnerCik>
+            <rptOwnerName>Chrapaty Debra J.</rptOwnerName>
+        </reportingOwnerId>
+        <reportingOwnerAddress>
+            <rptOwnerStreet1>4 EMBARCADERO</rptOwnerStreet1>
+            <rptOwnerStreet2>FLOOR 15</rptOwnerStreet2>
+            <rptOwnerCity>SAN FRANCISCO</rptOwnerCity>
+            <rptOwnerState>CA</rptOwnerState>
+            <rptOwnerZipCode>94111</rptOwnerZipCode>
+            <rptOwnerStateDescription></rptOwnerStateDescription>
+        </reportingOwnerAddress>
+        <reportingOwnerRelationship>
+            <isDirector>1</isDirector>
+            <isOfficer>0</isOfficer>
+            <isTenPercentOwner>0</isTenPercentOwner>
+            <isOther>0</isOther>
+        </reportingOwnerRelationship>
+    </reportingOwner>
+
+    <aff10b5One>0</aff10b5One>
+
+    <nonDerivativeTable>
+        <nonDerivativeTransaction>
+            <securityTitle>
+                <value>Common Stock,  $0.0001 par value per share</value>
+            </securityTitle>
+            <transactionDate>
+                <value>2026-03-02</value>
+            </transactionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>D</transactionCode>
+                <equitySwapInvolved>0</equitySwapInvolved>
+                <footnoteId id="F1"/>
+            </transactionCoding>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>32450</value>
+                    <footnoteId id="F1"/>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <value>45</value>
+                    <footnoteId id="F1"/>
+                    <footnoteId id="F2"/>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>D</value>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>0</value>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </nonDerivativeTransaction>
+    </nonDerivativeTable>
+
+    <derivativeTable>
+        <derivativeTransaction>
+            <securityTitle>
+                <value>Restricted Stock Units</value>
+            </securityTitle>
+            <conversionOrExercisePrice>
+                <footnoteId id="F3"/>
+            </conversionOrExercisePrice>
+            <transactionDate>
+                <value>2026-03-02</value>
+            </transactionDate>
+            <transactionCoding>
+                <transactionFormType>4</transactionFormType>
+                <transactionCode>D</transactionCode>
+                <equitySwapInvolved>0</equitySwapInvolved>
+                <footnoteId id="F1"/>
+            </transactionCoding>
+            <transactionAmounts>
+                <transactionShares>
+                    <value>2833</value>
+                </transactionShares>
+                <transactionPricePerShare>
+                    <footnoteId id="F3"/>
+                </transactionPricePerShare>
+                <transactionAcquiredDisposedCode>
+                    <value>D</value>
+                </transactionAcquiredDisposedCode>
+            </transactionAmounts>
+            <exerciseDate>
+                <footnoteId id="F3"/>
+            </exerciseDate>
+            <expirationDate>
+                <footnoteId id="F3"/>
+            </expirationDate>
+            <underlyingSecurity>
+                <underlyingSecurityTitle>
+                    <value>Common Stock,  $0.0001 par value per share</value>
+                </underlyingSecurityTitle>
+                <underlyingSecurityShares>
+                    <value>2833</value>
+                </underlyingSecurityShares>
+            </underlyingSecurity>
+            <postTransactionAmounts>
+                <sharesOwnedFollowingTransaction>
+                    <value>0</value>
+                </sharesOwnedFollowingTransaction>
+            </postTransactionAmounts>
+            <ownershipNature>
+                <directOrIndirectOwnership>
+                    <value>D</value>
+                </directOrIndirectOwnership>
+            </ownershipNature>
+        </derivativeTransaction>
+    </derivativeTable>
+
+    <footnotes>
+        <footnote id="F1">Reflects the disposition of shares of common stock, par value $0.0001 per share (&quot;Common Stock&quot;), of the Issuer, or of equity awards in respect of such Common Stock, as applicable, in connection with the consummation of the transactions contemplated by the Agreement and Plan of Merger, dated as of November 5, 2025 (the &quot;Merger Agreement&quot;), by and among the Issuer, The Charles Schwab Corporation (&quot;Parent&quot;) and Ember-Falcon Merger Sub, Inc. (&quot;Merger Sub&quot;), a wholly owned subsidiary of Parent, pursuant to which, on March 2, 2026, the effective time of the Merger (the &quot;Effective Time&quot;), Merger Sub merged with and into the Issuer, with the Issuer surviving as a wholly owned subsidiary of Parent (the &quot;Merger&quot;).</footnote>
+        <footnote id="F2">Pursuant to the Merger Agreement, at the Effective Time, each issued and outstanding share of Common Stock (other than certain excluded shares described in the Merger Agreement) was cancelled and converted automatically into the right to receive cash (without interest) in an amount equal to $45.00 per share of Common Stock (the &quot;Merger Consideration&quot;).</footnote>
+        <footnote id="F3">Pursuant to the Merger Agreement, at the Effective Time, each outstanding restricted stock unit (each, a &quot;Company RSU&quot;) was assumed and converted into a restricted stock unit award of Parent, (&quot;Parent RSU&quot;) covering a number of shares of common stock of Parent par value $0.01 per share (&quot;Parent Common Stock&quot;) equal to the product of (i) the number of shares of Common Stock then subject to such Company RSU immediately prior to the Effective Time, multiplied by (ii) the quotient of the Merger Consideration, divided by $94.7880, which is the average, rounded to the nearest one ten-thousandth, of the closing-sale prices of shares of Parent Common Stock on the New York Stock Exchange as reported by The Wall Street Journal for the five full trading days ending on (and including) the trading day preceding the Closing Date (the &quot;Equity Award Exchange Ratio&quot;).</footnote>
+    </footnotes>
+
+    <remarks></remarks>
+
+    <ownerSignature>
+        <signatureName>/s/ James Nevin, Attorney-in-Fact</signatureName>
+        <signatureDate>2026-03-03</signatureDate>
+    </ownerSignature>
+</ownershipDocument>
