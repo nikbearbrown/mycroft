@@ -1,0 +1,50 @@
+{
+  "rejects": [
+    {
+      "accession": "0001193125-26-299528",
+      "period_of_report": "2026-07-07",
+      "issuer_cik": "0002097545",
+      "issuer_name": "AMG BBH Asset-Backed Credit Fund, LLC",
+      "ticker": "BBASX",
+      "owner_cik": "0002102651",
+      "owner_name": "BROWN BROTHERS HARRIMAN CREDIT PARTNERS, LLC",
+      "is_director": false,
+      "is_officer": false,
+      "is_ten_percent_owner": true,
+      "officer_title": "",
+      "security_title": "Class S units of beneficial interest",
+      "transaction_date": "2026-07-07",
+      "transaction_code": "P",
+      "shares": 45695.984,
+      "price_per_share": 9.99,
+      "acquired_disposed": "A",
+      "shares_owned_after": "354720.473",
+      "reject_reasons": [
+        "non-priceable ticker (no usable price series)"
+      ]
+    },
+    {
+      "accession": "0001193125-26-299529",
+      "period_of_report": "2026-07-07",
+      "issuer_cik": "0002097545",
+      "issuer_name": "AMG BBH Asset-Backed Credit Fund, LLC",
+      "ticker": "BBASX",
+      "owner_cik": "0002073844",
+      "owner_name": "AMG New York Holdings Corp.",
+      "is_director": false,
+      "is_officer": false,
+      "is_ten_percent_owner": true,
+      "officer_title": "",
+      "security_title": "Class S units of beneficial interest",
+      "transaction_date": "2026-07-07",
+      "transaction_code": "P",
+      "shares": 182783.934,
+      "price_per_share": 9.99,
+      "acquired_disposed": "A",
+      "shares_owned_after": "1398881.892",
+      "reject_reasons": [
+        "non-priceable ticker (no usable price series)"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "summary": {
+    "enriched_at": "2026-07-13T18:19:44.724121+00:00",
+    "market_trades_in": 35,
+    "sells_out_of_scope": 31,
+    "enriched": 2,
+    "with_alpha": 0,
+    "immature_or_edge": 2,
+    "rejected": 2
+  },
+  "records": [
+    {
+      "accession": "0001475597-26-000150",
+      "period_of_report": "2026-07-07",
+      "issuer_cik": "0002018222",
+      "issuer_name": "707 Cayman Holdings Ltd.",
+      "ticker": "JEM",
+      "owner_cik": "0001475597",
+      "owner_name": "HRT FINANCIAL LP",
+      "is_director": false,
+      "is_officer": false,
+      "is_ten_percent_owner": true,
+      "officer_title": "",
+      "security_title": "Common Stock",
+      "transaction_date": "2026-07-07",
+      "transaction_code": "P",
+      "shares": 137268.0,
+      "price_per_share": 1.36,
+      "acquired_disposed": "A",
+      "shares_owned_after": "172830",
+      "close_t0": 1.350000023841858,
+      "raw_return_30d": null,
+      "spy_return_30d": null,
+      "alpha_30d": null,
+      "alpha_unavailable_reason": "window not matured (series ends 2026-07-13, needs 2026-08-06)"
+    },
+    {
+      "accession": "0001475597-26-000150",
+      "period_of_report": "2026-07-07",
+      "issuer_cik": "0002018222",
+      "issuer_name": "707 Cayman Holdings Ltd.",
+      "ticker": "JEM",
+      "owner_cik": "0001475597",
+      "owner_name": "HRT FINANCIAL LP",
+      "is_director": false,
+      "is_officer": false,
+      "is_ten_percent_owner": true,
+      "officer_title": "",
+      "security_title": "Common Stock",
+      "transaction_date": "2026-07-08",
+      "transaction_code": "S",
+      "shares": 112322.0,
+      "price_per_share": 1.13,
+      "acquired_disposed": "D",
+      "shares_owned_after": "60508",
+      "close_t0": 1.1699999570846558,
+      "raw_return_30d": null,
+      "spy_return_30d": null,
+      "alpha_30d": null,
+      "alpha_unavailable_reason": "window not matured (series ends 2026-07-13, needs 2026-08-07)"
+    }
+  ]
+}

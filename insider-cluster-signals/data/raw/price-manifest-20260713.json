@@ -1,0 +1,33 @@
+{
+  "source": "Yahoo Finance v8 chart API (query1.finance.yahoo.com), daily closes",
+  "range": {
+    "start": "2026-06-25",
+    "end": "2026-07-13"
+  },
+  "fetched_at": "2026-07-13T18:18:58.031313+00:00",
+  "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) mycroft-research",
+  "fetched": [
+    {
+      "ticker": "JEM",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/JEM?period1=1782345600&period2=1784035138&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/JEM.csv",
+      "sha256": "cf769878cf9a558bc9e8755372085822036d7af5b228c89f8d6d77a53aa43562",
+      "rows": 12
+    },
+    {
+      "ticker": "SPY",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/SPY?period1=1782345600&period2=1784035138&interval=1d",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/prices/SPY.csv",
+      "sha256": "f90e0b4806ce62c2ecd3718bf815e0bb26086744e81c401dbd62b347fb51ed1b",
+      "rows": 12
+    }
+  ],
+  "non_priceable": [
+    {
+      "ticker": "BBASX",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/BBASX?period1=1782345600&period2=1784035138&interval=1d",
+      "response_head": "HTTP 404"
+    }
+  ],
+  "errors": []
+}
