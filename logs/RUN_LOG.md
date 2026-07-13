@@ -119,3 +119,13 @@ workflow changes.
     Same failures reproduce on a clean tree. Logged here per the conformance rule; not fixed.
   - Recipe was created after the first scripts (P6 ordering violation, corrected same day —
     DRAFT recipe now carries the intent and open TODOs).
+
+## 2026-07-12 -- Addendum: conformance failures root-caused (environment, not files)
+
+- **Finding:** `scripts/conformance.mjs` invokes `python3` for YAML and Python checks
+  (lines 65, 67). `python3` does not exist on this Windows environment (`python` does),
+  so every .yaml and .py check fails with Windows command-not-found — including files that
+  are demonstrably valid (`insider-cluster-signals/*.py` pass `ast.parse` and executed live).
+- **Impact:** conformance is silently non-functional for yaml/py on Windows. The machine half
+  of P4 has a platform hole; CI (Linux) presumably unaffected.
+- **Action:** logged as a defect per P6; not fixed in this branch (out of module scope).
