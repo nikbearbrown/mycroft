@@ -97,3 +97,25 @@ workflow changes.
   - Phase 2: Run full sample brief (company: "Anthropic") with all gates open (no human decision yet, just logging).
   - Phase 2: Generate `signals-validation-audit.md` (spot-check 10 signals, assess quality).
   - Phase 3: Solve Groq token limit (upgrade tier or secondary provider for news classification).
+
+## 2026-07-12 -- insider-cluster-signals: Week 1 data spine (new module, sample run)
+
+- **Recipe:** insider-cluster-signals/recipes/insider-cluster-signal-agent.md v0.1.0 (DRAFT)
+- **Inputs:** SEC EDGAR daily form index for 2026-07-10 (public, no credentials).
+- **Commands:**
+  - `python fetcher.py --date 2026-07-10 --limit 10` (live fetch, sample cap)
+  - `python parser.py` (raw -> verified validation gate)
+- **Gate decision (live network calls):** approved by Sachin Vishaul Baskar, 2026-07-12, in-session
+  instruction to begin Week 1 against live EDGAR. Scope: public EDGAR data only, sample mode
+  (limit 10), SEC fair-access policy honored (declared User-Agent, <10 req/s).
+- **Outputs:** module `data/verified/trades.json` (11 records, 0 rejects), fetch manifest with
+  SHA-256 per filing, module `logs/RUN_LOG.md` entry. Bulk raw XML gitignored (regenerable).
+- **Result:** 694 Form 4 filings in the 2026-07-10 index; 10 fetched, 0 errors; 11 transactions
+  extracted, all passed the 6-rule validation gate. Fetch -> parse -> verified chain proven live.
+- **Open issues:**
+  - `npm run verify` reports 2 pre-existing failures unrelated to this module
+    (`recipes/vendor-intelligence-brief.yaml`, `metadata.yaml`) — the YAML checker binary is
+    missing on this Windows environment ("operable program or batch file" = command-not-found).
+    Same failures reproduce on a clean tree. Logged here per the conformance rule; not fixed.
+  - Recipe was created after the first scripts (P6 ordering violation, corrected same day —
+    DRAFT recipe now carries the intent and open TODOs).
