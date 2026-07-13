@@ -1,0 +1,6 @@
+# Bulk raw filings are regenerable from the fetch manifest's URLs via fetcher.py.
+# Manifests, rejects, and verified outputs ARE committed (provenance + evidence).
+data/raw/form4/*.xml
+__pycache__/
+*.pyc
+.env
