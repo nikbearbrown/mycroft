@@ -37,3 +37,13 @@ Append-only (P7). Every script run against real data, every gate decision, every
     rule. Enricher/cluster must exclude non-priceable tickers; add explicit rule in Week 2.
   - One accession appeared in both days' indexes (34 files from 10+25 fetches) — idempotent
     overwrite worked as designed; parser de-duplicates by accession naturally.
+
+## 2026-07-13 -- Gate decision: Week 2 historical scale run (approved BEFORE execution)
+
+- **Decision:** approved by Sachin Vishaul Baskar via Week 2 plan approval (plan file:
+  "Scale run (gated)" section), recorded here before any request is sent.
+- **Scope:** EDGAR daily form indexes 2026-03-02 .. 2026-03-13 (10 trading days), full fetch
+  (no sample cap), ~6.5k filings expected, ~13k rate-limited requests (~40 min), SEC
+  fair-access honored. Then: parse -> Yahoo price fetch (P tickers + SPY, window padded
+  2026-02-20 .. 2026-05-01) -> enrich -> cluster. March chosen so every 30-day alpha
+  window is fully matured.
