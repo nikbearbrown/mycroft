@@ -25,41 +25,33 @@ import pandas as pd
 ROOT = Path(__file__).parent
 DATA = ROOT / "data"
 
-# GICS-inspired sector map -- expand as dataset grows
-SECTOR_MAP: dict[str, str] = {
-    # Semiconductors
-    "NVDA":"semiconductor","AMD":"semiconductor","INTC":"semiconductor",
-    "MU":"semiconductor","MRVL":"semiconductor","AVGO":"semiconductor",
-    "QCOM":"semiconductor","TSM":"semiconductor","AMAT":"semiconductor",
-    "LRCX":"semiconductor","KLAC":"semiconductor","SNDK":"semiconductor",
-    "TXN":"semiconductor","NXPI":"semiconductor","ON":"semiconductor",
-    # Cybersecurity / AI infra
-    "CRWD":"cybersecurity","FTNT":"cybersecurity","PANW":"cybersecurity",
-    "DDOG":"cybersecurity","ZS":"cybersecurity","S":"cybersecurity",
-    "OKTA":"cybersecurity","NET":"cybersecurity",
-    # Cloud / AI platforms
-    "MSFT":"ai_cloud","GOOGL":"ai_cloud","AMZN":"ai_cloud",
-    "META":"ai_cloud","ORCL":"ai_cloud","CRM":"ai_cloud",
-    # Healthcare / insurance
-    "HUM":"healthcare","UNH":"healthcare","CVS":"healthcare",
-    "ELV":"healthcare","MDT":"healthcare","BSX":"healthcare",
-    "ABT":"healthcare","JNJ":"healthcare","PFE":"healthcare",
-    "ABBV":"healthcare","LLY":"healthcare","MRK":"healthcare",
-    # Defense / government contractors
-    "LMT":"defense","RTX":"defense","NOC":"defense",
-    "GD":"defense","BA":"defense","HII":"defense",
-    # Energy
-    "XOM":"energy","CVX":"energy","COP":"energy",
-    "EOG":"energy","SLB":"energy","PSX":"energy",
-    # Financials
-    "JPM":"financials","BAC":"financials","GS":"financials",
-    "MS":"financials","WFC":"financials","C":"financials",
-    "BLK":"financials","SCHW":"financials",
-    # Consumer / retail
-    "AMZN":"consumer","COST":"consumer","WMT":"consumer",
-    "TGT":"consumer","HD":"consumer","NKE":"consumer",
-    "LULU":"consumer","DECK":"consumer","BKNG":"consumer",
-}
+# GICS-inspired sector map -- expand as dataset grows.
+def _mk(sector, tickers):
+    return {t: sector for t in tickers.split()}
+
+SECTOR_MAP: dict[str, str] = {}
+for _sec, _tks in {
+    "semiconductor": "NVDA AMD INTC MU MRVL AVGO QCOM TSM AMAT LRCX KLAC SNDK TXN "
+                     "NXPI ON ASML MCHP ADI SWKS QRVO MPWR TER ENTG WOLF SMCI GFS ARM CRUS LSCC",
+    "cybersecurity": "CRWD FTNT PANW DDOG ZS S OKTA NET CYBR TENB QLYS RPD VRNS CHKP GEN AKAM",
+    "ai_cloud":      "MSFT GOOGL GOOG AMZN META ORCL CRM NOW SNOW MDB PLTR IBM SAP ADBE INTU WDAY "
+                     "TEAM PANW ANET CSCO DELL HPE HPQ WDC STX",
+    "healthcare":    "HUM UNH CVS ELV MDT BSX ABT JNJ PFE ABBV LLY MRK TMO DHR ISRG SYK GILD AMGN "
+                     "BMY VRTX REGN ZTS CI HCA MCK IDXX IQV DXCM A EW BIIB MRNA RMD",
+    "defense":       "LMT RTX NOC GD BA HII LHX GEV AXON LDOS KTOS TDG HWM CW",
+    "energy":        "XOM CVX COP EOG SLB PSX MPC VLO OXY HES DVN WMB KMI OKE PXD HAL BKR FANG",
+    "financials":    "JPM BAC GS MS WFC C BLK SCHW AXP V MA SPGI CB PGR MMC PNC USB TFC COF BX "
+                     "KKR APO AJG MET AIG ICE CME COIN HOOD SOFI PYPL FI",
+    "consumer":      "COST WMT TGT HD NKE LULU DECK BKNG LOW SBUX MCD TJX ROST DG DLTR YUM CMG "
+                     "ORLY AZO ULTA EL KO PEP PG CL MDLZ MO PM DIS NFLX CCL RCL MAR HLT",
+    "industrials":   "GE HON UNP UPS CAT DE HD RTX ETN EMR ITW PH CMI FDX CSX NSC LUV DAL UAL "
+                     "URI PCAR ROK DOV AME FAST GWW PWR VRT",
+    "communications":"T VZ TMUS CMCSA CHTR TTD APP SPOT WBD PARA FOXA LYV EA TTWO OMC",
+    "materials":     "LIN APD SHW FCX NEM DOW DD ECL NUE MLM VMC MOS CF ALB LYB PPG",
+    "utilities":     "NEE DUK SO D AEP EXC XEL ED PEG VST CEG AEE WEC ES",
+    "real_estate":   "PLD AMT EQIX CCI PSA O SPG WELL DLR VICI CSGP EXR AVB",
+}.items():
+    SECTOR_MAP.update(_mk(_sec, _tks))
 
 
 def _load_enriched(csv_path: Path) -> pd.DataFrame:
