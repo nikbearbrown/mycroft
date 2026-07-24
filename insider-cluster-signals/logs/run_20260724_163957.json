@@ -1,18 +1,24 @@
 {
-  "summary": {
-    "scored_at": "2026-07-24T16:39:57.801002+00:00",
-    "clusters_in": 6,
-    "strong": 5,
-    "watch": 1,
-    "skip": 0,
-    "rules": {
-      "noise_floor_usd": 25000,
-      "strong_min_insiders": 3,
-      "strong_min_conviction": 2.5,
-      "strong_min_value_usd": 100000,
-      "alpha_used_in_classification": false
-    }
+  "run_id": "20260724_163957",
+  "generated_at": "2026-07-24T16:39:57.822117+00:00",
+  "mode": "dialogic",
+  "conformance": {
+    "failed": false,
+    "findings": [
+      "OK: 2471 verified trades, 114 enriched (112 with matured alpha)"
+    ]
   },
+  "clusters_found": 6,
+  "strong": 5,
+  "watch": 1,
+  "skip": 0,
+  "research_mode": "rule-based fallback (no ANTHROPIC_API_KEY)",
+  "source_manifests": [
+    "fetch-manifest-20260302.json",
+    "fetch-manifest-20260709.json",
+    "fetch-manifest-20260710.json",
+    "price-manifest-20260713.json"
+  ],
   "signals": [
     {
       "ticker": "GENB",
@@ -79,7 +85,8 @@
       ],
       "signal": "STRONG",
       "signal_reason": "4 distinct insiders in one 2026-03-02..2026-03-02 window",
-      "rank_score": 9.0881
+      "rank_score": 9.0881,
+      "research_note": "4 insiders (Silvers Jason (officer), Grous Beth (officer), AFEYAN NOUBAR (director), Mendillo Jane L (director)) bought GENB (Generate Biomedicines, Inc.) between 2026-03-02 and 2026-03-02; total $150,060,800; mean 30d alpha vs SPY +13.90% over 11 priced trades. [rule-based note]"
     },
     {
       "ticker": "LRMR",
@@ -145,7 +152,8 @@
       ],
       "signal": "STRONG",
       "signal_reason": "4 distinct insiders in one 2026-02-27..2026-02-27 window",
-      "rank_score": 7.7037
+      "rank_score": 7.7037,
+      "research_note": "4 insiders (SHERMAN JEFFREY W (director), THOMAS FRANK E (director), Hamilton Thomas Edward (director), Flynn James E (director)) bought LRMR (Larimar Therapeutics, Inc.) between 2026-02-27 and 2026-02-27; total $25,550,000; mean 30d alpha vs SPY -5.43% over 7 priced trades. [rule-based note]"
     },
     {
       "ticker": "CTEV",
@@ -200,7 +208,8 @@
       ],
       "signal": "STRONG",
       "signal_reason": "3 distinct insiders in one 2026-02-27..2026-03-02 window",
-      "rank_score": 7.4026
+      "rank_score": 7.4026,
+      "research_note": "3 insiders (Kim Michael (officer), Dalton Travis (officer), O'Neil Tara (officer)) bought CTEV (Claritev Corp) between 2026-02-27 and 2026-03-02; total $638,625; mean 30d alpha vs SPY +22.35% over 3 priced trades. [rule-based note]"
     },
     {
       "ticker": "TNC",
@@ -255,7 +264,8 @@
       ],
       "signal": "STRONG",
       "signal_reason": "3 distinct insiders in one 2026-02-26..2026-03-02 window",
-      "rank_score": 6.5505
+      "rank_score": 6.5505,
+      "research_note": "3 insiders (Huml David W. (officer), Mulligan Donal L (director), Glerum James T Jr. (director)) bought TNC (TENNANT CO) between 2026-02-26 and 2026-03-02; total $1,261,670; mean 30d alpha vs SPY +15.55% over 6 priced trades. [rule-based note]"
     },
     {
       "ticker": "LAW",
@@ -299,7 +309,8 @@
       ],
       "signal": "STRONG",
       "signal_reason": "conviction 2.5 >= 2.5 and value $188,800 >= $100,000",
-      "rank_score": 5.138
+      "rank_score": 5.138,
+      "research_note": "2 insiders (Friedrichsen Eric (officer), Srinivasan Krishna (director)) bought LAW (CS Disco, Inc.) between 2026-02-26 and 2026-02-27; total $188,800; mean 30d alpha vs SPY +24.36% over 3 priced trades. [rule-based note]"
     },
     {
       "ticker": "PVLA",
