@@ -95,17 +95,35 @@ def filing_xml_url(file_name: str) -> str | None:
     return f"{EDGAR_BASE}/{directory}/{xml_names[0]}"
 
 
+def dedupe_by_accession(entries: list[dict]) -> list[dict]:
+    """Collapse duplicate index lines to one entry per accession.
+
+    The daily form index repeats a filing once per joint filer — on 2026-03-02, 2,973
+    lines were only 1,460 unique accessions (see logs/RUN_LOG.md). One fetch per
+    accession halves request volume; first-seen entry wins (all carry the same file)."""
+    seen: set[str] = set()
+    unique = []
+    for entry in entries:
+        accession = entry["file_name"].rsplit("/", 1)[-1].removesuffix(".txt")
+        if accession not in seen:
+            seen.add(accession)
+            unique.append(entry)
+    return unique
+
+
 def fetch_form4_filings(date: datetime, limit: int, output_dir: Path) -> dict:
     """Fetch up to `limit` Form 4 XMLs filed on `date` into output_dir/form4/."""
     form4_dir = output_dir / "form4"
     form4_dir.mkdir(parents=True, exist_ok=True)
 
-    entries = fetch_daily_form_index(date)
+    index_entries = fetch_daily_form_index(date)
+    entries = dedupe_by_accession(index_entries)
     manifest = {
         "source": "SEC EDGAR daily form index",
         "index_date": date.strftime("%Y-%m-%d"),
         "fetched_at": datetime.now(timezone.utc).isoformat(),
         "user_agent": USER_AGENT,
+        "form4_index_lines": len(index_entries),
         "form4_filings_in_index": len(entries),
         "limit_applied": limit,
         "fetched": [],
