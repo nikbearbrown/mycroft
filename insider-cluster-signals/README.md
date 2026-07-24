@@ -34,6 +34,11 @@ break paths. Remaining open item â€” deliberately human: the signal-quality gate
 (`data/verified/scored-signals-audit.md`, 19 filings to spot-check) and the attestation
 signature (`ATTESTATION-DRAFT.md`). Every run and gate decision: `logs/RUN_LOG.md`.
 
+Week 5: fetcher dedupes joint-filer index duplicates (~50% fewer requests), and
+`reports/cross_regime_study.md` compares this module against the congressional-signals
+sibling (PR #3 import, provenance-tracked) — headline: their tiers classify on realized
+alpha (look-ahead bias), ours never do, so only population-level alpha is comparable.
+
 ## How to run
 
 ```bash

@@ -87,3 +87,23 @@ Append-only (P7). Every script run against real data, every gate decision, every
   left open: it can only be closed by a named human performing the spot-check and logging it.
 - **Open issues:** research node untested with a live API key; corpus is 1 trading day;
   attestation unsigned until the human runs the Tested table themselves.
+
+## 2026-07-24 -- Week 5: fetcher dedupe (TODO closed) + cross-regime study (no new data)
+
+- **TODO closure (2026-07-13 fetcher-improvement):** `dedupe_by_accession` in fetcher.py —
+  one fetch per unique accession (~50% fewer requests on joint-filer-heavy days); manifest
+  now reports `form4_index_lines` vs `form4_filings_in_index`. Evidence: 4 no-network unit
+  tests (suite 32/32), commit dc0afbb.
+- **Import (P2/P3):** congressional clusters from upstream PR #3 (`pr-3` local object,
+  source commit 823592e9, sha256 in `data/raw/congressional-import/PROVENANCE.md`) — RAW
+  third-party claim, shape-validated by cross_regime.py, not independently verified.
+- **Commands:** `python cross_regime.py` -> `reports/cross_regime_study.md`. Two numbers
+  hand-recomputed from source JSONs: their mean avg_alpha 0.38 (n=369/425, nulls excluded)
+  and cluster counts — both match the report exactly.
+- **Result:** corporate clusters (n=6, 1-day corpus) mean 30d alpha +10.25% vs congressional
+  population +0.38%. Headline finding is methodological: the congressional scorer classifies
+  USING realized alpha (avg_alpha > 1% -> STRONG = look-ahead bias), ours never does — tier
+  hit-rates across the two modules are NOT comparable, only population alpha is.
+- **Open issues:** corporate sample remains 1 trading day (illustrative, not statistical);
+  their null-alpha clusters (56 of 425) excluded from means; backtest deferred to a future
+  sprint alongside the remaining 9 gated fetch days.

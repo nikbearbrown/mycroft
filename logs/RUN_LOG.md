@@ -157,3 +157,12 @@ workflow changes.
   end-to-end on the March corpus: 6 clusters -> 5 STRONG / 1 WATCH; both break paths of the
   conformance gate verified; dual agent/human outputs emitted; spot-check audit (19 filings)
   and unsigned attestation draft prepared. Details: insider-cluster-signals/logs/RUN_LOG.md.
+
+## 2026-07-24 -- insider-cluster-signals: Week 5 — dedupe TODO closed + cross-regime study
+
+- **Recipe:** insider-cluster-signal-agent v0.3.0 (DRAFT; no lifecycle change).
+- **Result:** fetcher joint-filer dedupe (suite 32/32); congressional PR #3 clusters imported
+  with provenance (raw, shape-validated) and compared: corporate n=6 mean 30d alpha +10.25%
+  vs congressional n=369 mean +0.38%; key finding — their tiers classify on realized alpha
+  (look-ahead), ours don't, so tier-level comparison is void by construction. Report:
+  insider-cluster-signals/reports/cross_regime_study.md.
