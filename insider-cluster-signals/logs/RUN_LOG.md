@@ -70,3 +70,20 @@ Append-only (P7). Every script run against real data, every gate decision, every
 - **Open issues:** corpus is 1 trading day, not 10 — remaining 9 days can be fetched later
   under the same logged gate; negative-alpha clusters (LRMR, PVLA) are evidence the detector
   reports what it finds, not what flatters the method.
+
+## 2026-07-24 -- Week 3+4: scorer, gated pipeline (first full run), audit, attestation draft
+
+- **Commands:** `python signal_scorer.py` · `python pipeline.py` (run_20260724_163957) ·
+  `python audit_signals.py` · `python -m unittest discover tests` (28/28).
+- **Pipeline run:** G1 conformance PASSED (2,471 verified / 114 enriched / 112 alpha) ->
+  6 clusters -> 5 STRONG (GENB, LRMR, CTEV, TNC, LAW) / 1 WATCH (PVLA) / 0 SKIP ->
+  research node ran rule-based fallback (no ANTHROPIC_API_KEY in env) -> dual outputs:
+  logs/run_20260724_163957.json + reports/signal_report_20260724_163957.md (P5).
+- **Break tests (P4):** conformance gate halts on (a) missing verified files and (b) ledger
+  mismatch (verified+rejected != extracted) — both returned failed=True with named findings.
+- **Artifacts:** data/verified/scored_signals.json · scored-signals-audit.md (19 filings for
+  the Gate-3 human spot-check) · ATTESTATION-DRAFT.md (unsigned; Did-not-test list included).
+- **Recipe:** v0.3.0, todos_open 2 -> 1. Remaining TODO is the Gate-3 APPROVE — deliberately
+  left open: it can only be closed by a named human performing the spot-check and logging it.
+- **Open issues:** research node untested with a live API key; corpus is 1 trading day;
+  attestation unsigned until the human runs the Tested table themselves.

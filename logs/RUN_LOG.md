@@ -148,3 +148,12 @@ workflow changes.
 - **Results:** 2,471 verified records -> 114 enriched -> **6 real clusters** (best: CTEV +22.3,
   LAW +24.4 mean 30d alpha; negatives reported too). One alpha hand-recomputed from raw CSVs,
   matches pipeline exactly. Details: insider-cluster-signals/logs/RUN_LOG.md.
+
+## 2026-07-24 -- insider-cluster-signals: Weeks 3-4 — first full gated pipeline run
+
+- **Recipe:** insider-cluster-signal-agent v0.3.0 (DRAFT, todos 2->1; Gate-3 APPROVE remains,
+  human-only by design).
+- **Result:** pipeline (conformance halt-gate -> cluster -> score -> research -> report) ran
+  end-to-end on the March corpus: 6 clusters -> 5 STRONG / 1 WATCH; both break paths of the
+  conformance gate verified; dual agent/human outputs emitted; spot-check audit (19 filings)
+  and unsigned attestation draft prepared. Details: insider-cluster-signals/logs/RUN_LOG.md.

@@ -1,9 +1,9 @@
 ---
 status: DRAFT
-todos_open: 2
+todos_open: 1
 last_gate: "scale-run approval (2026-03-02..13 historical corpus), 2026-07-13, logs/RUN_LOG.md#2026-07-13"
 attestation: null
-recipe_version: 0.2.0
+recipe_version: 0.3.0
 ---
 
 # Insider Cluster Signal Agent
@@ -63,8 +63,16 @@ evidence (P1).
    tickers -> rejects with reasons.
 5. **Cluster** — `cluster_analyzer.py` (exists; DEV closed 2026-07-13; 10 unit tests). Labor: AI.
    Output: `data/verified/cluster_signals.json`, every cluster tracing to its accessions.
-6. **Score + report** — `signal_scorer.py` [TODO: DEV] conviction + alpha -> STRONG/WATCH/SKIP;
-   emit agent log + human report per the Output Contract. (Week 3.)
+6. **Score** — `signal_scorer.py` (exists; DEV closed 2026-07-24; 7 unit tests). Labor: AI.
+   STRONG/WATCH/SKIP from trade-time info ONLY — alpha never classifies (look-ahead bias).
+   Output: `data/verified/scored_signals.json`.
+7. **Pipeline + report** — `pipeline.py` (exists; DEV closed 2026-07-24; both break paths tested).
+   Labor: AI; G1 conformance gate halts the run on failure. 5 nodes: conformance -> cluster ->
+   score -> research (STRONG only; Claude `claude-opus-4-8` via stdlib when `ANTHROPIC_API_KEY`
+   is set, rule-based fallback otherwise; output labeled a model judgment, P8) -> dual reports
+   per the Output Contract.
+8. **Audit** — `audit_signals.py` (exists). Emits `data/verified/scored-signals-audit.md`, the
+   spot-check worksheet for Gate 3. The audit says what it found; the human decides adequacy.
 
 ## Output Contract
 

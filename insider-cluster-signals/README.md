@@ -26,10 +26,13 @@ and dual outputs: `logs/run_*.json` for agents, `reports/signal_report_*.md` for
 
 ## Status
 
-Week 2 — analytics layer live. Data spine (fetch → validate) plus price enrichment
-(30-day SPY-adjusted alpha, methodology mirrors the congressional sibling) and cluster
-detection (role-weighted: officer 1.5 > director 1.0 > 10%-owner 0.75 > other 0.5).
-21 unit tests. See `logs/RUN_LOG.md` for every live run and gate decision.
+Weeks 1–4 delivered: data spine → analytics → gated pipeline → honest-run governance.
+Recipe v0.3.0 (DRAFT, `todos_open: 1`). First real corpus (2026-03-02, 1,460 filings,
+2,471 verified trades) produced **6 clusters → 5 STRONG / 1 WATCH**, one alpha
+hand-verified to 4 decimals against raw CSVs. 28 unit tests incl. both conformance-gate
+break paths. Remaining open item — deliberately human: the signal-quality gate
+(`data/verified/scored-signals-audit.md`, 19 filings to spot-check) and the attestation
+signature (`ATTESTATION-DRAFT.md`). Every run and gate decision: `logs/RUN_LOG.md`.
 
 ## How to run
 
