@@ -97,3 +97,30 @@ workflow changes.
   - Phase 2: Run full sample brief (company: "Anthropic") with all gates open (no human decision yet, just logging).
   - Phase 2: Generate `signals-validation-audit.md` (spot-check 10 signals, assess quality).
   - Phase 3: Solve Groq token limit (upgrade tier or secondary provider for news classification).
+
+## 2026-07-20 -- Repository runtime and buildability audit
+
+- **Recipe:** Repository-level diagnostic review; no recipe lifecycle promotion attempted.
+- **Inputs:** Tier 1 governance files; non-quarantined recipes, conductors, scripts, reports, project exercises, verified schema, status, and run history.
+- **Commands:** `npm run verify`; strict manifest check; explicit conformance over 460 Python files and 109 additional human/data surfaces; Python compile-all; recipe/conductor/script path cross-checks; three representative local sample-script invocations.
+- **Outputs:** This audit entry only; no recipe output, verified records, gate decision, attestation, or human report was generated.
+- **Result:** The default 136-file gate and strict manifest check pass. All 460 stored Python files compile. The extended surface check fails because `data/verified/ai_company_signals-schema.yaml` contains a second YAML document marker at line 173. Representative scripts fail at runtime because 10 imported underscore-named shared modules exist only under hyphenated filenames; 103 internal import statements depend on those modules. The 98 actual recipe specifications declare 1,613 unique script paths, of which 401 exist and 1,212 are absent; 97 legacy Markdown recipes lack lifecycle status metadata. All 32 unique conductor-declared script paths are absent under their documented underscore names. The documented `snickerdoodle` CLI and the vendor recipe's `agents/run_brief.py` entry point are not present locally.
+- **Open issues:** Default conformance skips the verified schema and generated/imported step directories; no local verified records, operational generated reports, gate-decision files, or attestations were found; `status.md`, `DOMAIN.md`, and `_MANIFEST.md` counts/state lag the July vendor-intelligence additions. Human adequacy review and prioritization are still required before implementation.
+
+## 2026-07-24 -- Import Earnings Call Sentiment Analyzer project
+
+- **Recipe:** `earnings-call-sentiment-analyzer` v0.1.0 (`DRAFT`).
+- **Inputs:** User-supplied full-stack project at `/Users/adwaitchangan/Study/Mycroft/Earnings_Call_Sentiment_Analyzer/`; user-created Northstar Cloud Systems Q3 FY2026 sample transcript.
+- **Commands:** Copied 84 durable project files; compared the raw transcript copy with `cmp` and SHA-256; ran 9 Python worker tests; installed frontend dependencies; ran frontend production build and lint; validated Docker Compose configuration, Maven XML, Python compilation, 34-file targeted conformance, and repository verification.
+- **Outputs:** `projects/Earnings-Call-Sentiment-Analyzer/`; `data/raw/earnings-call-sentiment-analyzer/`; `recipes/earnings-call-sentiment-analyzer.md`; `conductor/earnings-call-sentiment-analyzer.md`; `reports/templates/earnings-call-sentiment-analyzer.md`; updated project indexes, status, and data contract.
+- **Result:** Source folder preserved; imported transcript hash is `b3f75b1f233281864121dbb5d5d372baf8e734c1c9c2670509b84c930e8ca14f`; worker tests pass 9/9; frontend build and lint pass; Compose configuration and targeted conformance pass. The transcript is explicitly classified as a user-created sample, not real issuer evidence.
+- **Open issues:** Maven is unavailable locally and the Docker daemon is not running, so the Spring Boot test/build, full Compose startup, FinBERT inference, PostgreSQL/RabbitMQ processing, export log/report, and human evidence review remain unverified. `npm ci` reported a non-blocking ESLint dependency engine warning and Recharts 2.x deprecation. Three recipe TODOs remain open; no lifecycle promotion occurred.
+
+## 2026-07-24 -- Full-stack Earnings Call Sentiment Analyzer sample run
+
+- **Recipe:** `earnings-call-sentiment-analyzer` v0.1.0 (`DRAFT`); no lifecycle promotion attempted.
+- **Inputs:** User-created Northstar Cloud Systems Q3 FY2026 sample at `data/raw/earnings-call-sentiment-analyzer/northstar-cloud-systems-q3-fy2026.txt`; SHA-256 `b3f75b1f233281864121dbb5d5d372baf8e734c1c9c2670509b84c930e8ca14f`.
+- **Commands:** Built and started the five-service Docker Compose stack; checked health and Flyway v1; uploaded the sample through the API; waited for FinBERT completion; fetched transcript, job, chunk, summary, section, and speaker APIs; reconciled probabilities, scores, orders, counts, and database rows with `jq` and PostgreSQL; tested HTTP 400 validation; ran 9 worker tests, frontend lint/build, and the backend Maven test lifecycle; inspected the live transcript list, dashboard, evidence search, and upload screen in the in-app browser.
+- **Outputs:** `logs/earnings-call-sentiment-analyzer-20260724-050407-ncs-q3fy2026.json`; `reports/generated/earnings-call-sentiment-analyzer-20260724-050407-ncs-q3fy2026.md`; PostgreSQL transcript/job/summary row 1 with 25 chunks and 25 sentiment results.
+- **Result:** All services ran; `ProsusAI/finbert` loaded; job 1 completed in under one second after receipt. Overall model judgment was +16.74% net tone with 9 positive, 11 neutral, and 5 negative evidence labels. All aggregates and stored evidence reconcile. Worker tests pass 9/9; frontend lint/build pass; Maven compiles 36 backend sources and succeeds. The run exposed a UI explanation that conflated FinBERT argmax evidence labels with ±5% aggregate net-tone bands; the copy was corrected before the feature-branch commit.
+- **Open issues:** Human adequacy review is not signed. Four chunks have unknown section attribution and two have unknown speaker attribution. The model revision is not pinned/persisted. Maven reports no backend test sources, and the frontend has no automated test suite. No result was promoted to `data/verified`.

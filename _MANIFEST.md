@@ -35,6 +35,7 @@
 | `docs/` | Durable human docs. Design reference (not governing): `docs/cli-agnostic-ai-tooling-grade.md`. |
 | `instructions/` | Source for the generated `AGENTS.md`/`CLAUDE.md` — edit here, then rebuild. |
 | `eval/` | §19 measurement harness — does the instruction scaffolding actually help? (`npm run eval:score` / `eval:report`). |
+| `projects/` | Self-contained applied projects linked to canonical recipes, data contracts, conductors, reports, and run evidence. |
 | `session-handoff.md` | Resume point when continuing a prior session. |
 
 ## Tier 3 — Generated / quarantined / private (ignore unless explicitly requested)

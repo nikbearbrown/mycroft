@@ -1,0 +1,12 @@
+.DS_Store
+.idea/
+.vscode/
+*.iml
+backend/target/
+frontend/node_modules/
+frontend/dist/
+worker/.venv/
+worker/**/__pycache__/
+worker/.pytest_cache/
+uploads/
+.env

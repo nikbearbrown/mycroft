@@ -1,0 +1,216 @@
+{
+  "recipe": "earnings-call-sentiment-analyzer",
+  "recipe_version": "0.1.0",
+  "run_id": "20260724-050407-ncs-q3fy2026",
+  "status": "COMPLETED_PENDING_HUMAN_REVIEW",
+  "classification": "user-created synthetic sample",
+  "transcript_provenance": {
+    "company_name": "Northstar Cloud Systems",
+    "ticker": "NCS",
+    "quarter": "Q3",
+    "fiscal_year": 2026,
+    "source_origin": "User-supplied project sample-data/sample-transcript.txt",
+    "raw_source_path": "data/raw/earnings-call-sentiment-analyzer/northstar-cloud-systems-q3-fy2026.txt",
+    "source_sha256": "b3f75b1f233281864121dbb5d5d372baf8e734c1c9c2670509b84c930e8ca14f",
+    "real_issuer_evidence": false
+  },
+  "implementation": {
+    "repository_commit_at_run": "f593b71950415542f92f6585ed165b831ae02e52",
+    "parser_path": "projects/Earnings-Call-Sentiment-Analyzer/worker/app/text_processing.py",
+    "parser_sha256": "f5d29cda002bd51ce489052898ad78238a25a52eaf8d2b21bca595a1ea8a07de",
+    "model_path": "projects/Earnings-Call-Sentiment-Analyzer/worker/app/model.py",
+    "model_code_sha256": "6762cf017f57b165a43227277e97521b93f4ffbdf012a37277a17f01d99994b8",
+    "persistence_path": "projects/Earnings-Call-Sentiment-Analyzer/worker/app/database.py",
+    "persistence_code_sha256": "18033c51e34dc12295d9c666a2d9c607b820b6477ecc64b08a60124c5e59648c",
+    "model_identifier": "ProsusAI/finbert",
+    "model_revision": null,
+    "model_revision_note": "The application records the model name but does not pin or persist an immutable Hugging Face revision."
+  },
+  "job": {
+    "transcript_id": 1,
+    "job_id": 1,
+    "started_at": "2026-07-24T05:04:07.117947Z",
+    "completed_at": "2026-07-24T05:04:08.093598Z",
+    "progress": 100,
+    "message": "Analysis complete"
+  },
+  "results": {
+    "chunk_count": 25,
+    "label_counts": {
+      "positive": 9,
+      "neutral": 11,
+      "negative": 5
+    },
+    "overall_label": "POSITIVE",
+    "score_calculation": "For each chunk: positive probability minus negative probability. Cohort scores are arithmetic means of member chunk scores.",
+    "scores": {
+      "overall": 0.1674419216439128,
+      "prepared_remarks": 0.2038601879030466,
+      "question_and_answer": 0.12332898629112886,
+      "management": 0.3752712232859007,
+      "analyst": -0.2669165153056383,
+      "guidance": 0.013853421434760094
+    },
+    "sections": [
+      {
+        "name": "Q_AND_A",
+        "chunk_count": 13,
+        "positive_count": 4,
+        "neutral_count": 7,
+        "negative_count": 2,
+        "score": 0.12332898629112886
+      },
+      {
+        "name": "UNKNOWN",
+        "chunk_count": 4,
+        "positive_count": 0,
+        "neutral_count": 4,
+        "negative_count": 0,
+        "score": -0.00870791357010603
+      },
+      {
+        "name": "PREPARED_REMARKS",
+        "chunk_count": 4,
+        "positive_count": 2,
+        "neutral_count": 0,
+        "negative_count": 2,
+        "score": 0.2038601879030466
+      },
+      {
+        "name": "FINANCIAL_RESULTS",
+        "chunk_count": 2,
+        "positive_count": 2,
+        "neutral_count": 0,
+        "negative_count": 0,
+        "score": 0.8872276395559311
+      },
+      {
+        "name": "GUIDANCE",
+        "chunk_count": 2,
+        "positive_count": 1,
+        "neutral_count": 0,
+        "negative_count": 1,
+        "score": 0.013853421434760094
+      }
+    ],
+    "speaker_roles": [
+      {
+        "name": "Maya Chen",
+        "role": "CEO",
+        "chunk_count": 9
+      },
+      {
+        "name": "Operator",
+        "role": "OPERATOR",
+        "chunk_count": 5
+      },
+      {
+        "name": "Daniel Ortiz",
+        "role": "CFO",
+        "chunk_count": 5
+      },
+      {
+        "name": "Unknown speaker",
+        "role": "UNKNOWN",
+        "chunk_count": 2
+      },
+      {
+        "name": "Sarah Kim",
+        "role": "ANALYST",
+        "chunk_count": 2
+      },
+      {
+        "name": "Michael Torres",
+        "role": "ANALYST",
+        "chunk_count": 2
+      }
+    ],
+    "unknown_attribution": {
+      "section_chunks": 4,
+      "speaker_chunks": 2
+    }
+  },
+  "verification": {
+    "docker_services": {
+      "postgres": "healthy",
+      "rabbitmq": "healthy",
+      "backend": "healthy",
+      "worker": "running",
+      "frontend": "running"
+    },
+    "database_rows": {
+      "transcripts": 1,
+      "analysis_jobs": 1,
+      "transcript_chunks": 25,
+      "sentiment_results": 25,
+      "sentiment_summaries": 1
+    },
+    "flyway_migrations": {
+      "version": "1",
+      "description": "initial schema",
+      "success": true
+    },
+    "numerical_checks": {
+      "probability_sum_max_absolute_error": 1.0989606380462646e-7,
+      "score_formula_max_absolute_error": 0,
+      "mean_to_summary_max_absolute_error": 0,
+      "model_label_argmax_mismatches": 0,
+      "chunk_order_is_sequential": true,
+      "section_counts_reconcile": true,
+      "speaker_counts_reconcile": true,
+      "label_counts_reconcile": true
+    },
+    "tests": [
+      {
+        "surface": "worker",
+        "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q",
+        "result": "9 passed"
+      },
+      {
+        "surface": "frontend",
+        "command": "npm run lint",
+        "result": "passed"
+      },
+      {
+        "surface": "frontend",
+        "command": "npm run build",
+        "result": "passed; 2316 modules transformed"
+      },
+      {
+        "surface": "backend",
+        "command": "mvn test in maven:3.9-eclipse-temurin-21",
+        "result": "BUILD SUCCESS; 36 sources compiled; no backend test sources"
+      },
+      {
+        "surface": "API",
+        "command": "invalid ticker upload",
+        "result": "HTTP 400 with validation message"
+      },
+      {
+        "surface": "browser",
+        "command": "render transcript list, analysis dashboard, evidence search, and upload page",
+        "result": "passed"
+      }
+    ]
+  },
+  "failures": [],
+  "warnings": [
+    "Human source, parser, and evidence adequacy gates have not been signed.",
+    "Four of 25 chunks have UNKNOWN section attribution and two of 25 have UNKNOWN speaker attribution.",
+    "At run time, the dashboard label explanation implied all labels use +/-5% net-tone thresholds, while evidence labels use FinBERT argmax; three chunks in this run differ under those two rules.",
+    "No backend unit or integration test sources exist.",
+    "The frontend has no configured automated test suite.",
+    "The model revision is not pinned or persisted."
+  ],
+  "post_run_resolutions": [
+    {
+      "issue": "Dashboard label-rule explanation",
+      "status": "RESOLVED_BEFORE_FEATURE_BRANCH_COMMIT",
+      "path": "projects/Earnings-Call-Sentiment-Analyzer/frontend/src/pages/DashboardPage.tsx",
+      "resolution": "The UI now distinguishes aggregate net-tone bands from individual FinBERT highest-probability class labels."
+    }
+  ],
+  "verified_output_path": null,
+  "verified_output_status": "Blocked pending named human adequacy review; no record was written to data/verified.",
+  "report_path": "reports/generated/earnings-call-sentiment-analyzer-20260724-050407-ncs-q3fy2026.md"
+}
