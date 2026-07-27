@@ -48,7 +48,8 @@ python parser.py                                  # validate raw XML -> data/ver
 python price_fetcher.py --start 2026-06-01        # Yahoo closes for P-tickers + SPY
 python enricher.py                                # 30d SPY-adjusted alpha per market trade
 python cluster_analyzer.py                        # detect >=2-insider 30-day buy clusters
-python -m unittest discover tests                 # 21 tests
+python build_dashboard.py                         # self-contained reports/dashboard.html
+python -m unittest discover tests                 # 38 tests
 ```
 
 Stdlib only — no dependencies to install.

@@ -166,3 +166,11 @@ workflow changes.
   vs congressional n=369 mean +0.38%; key finding — their tiers classify on realized alpha
   (look-ahead), ours don't, so tier-level comparison is void by construction. Report:
   insider-cluster-signals/reports/cross_regime_study.md.
+
+## 2026-07-24 -- insider-cluster-signals: Week 6 — static signal dashboard
+
+- **Recipe:** insider-cluster-signal-agent v0.3.0 (DRAFT; dashboard is an additional P5
+  human artifact, no lifecycle change).
+- **Result:** `build_dashboard.py` -> self-contained `reports/dashboard.html` (6 signal
+  cards, evidence drawers to EDGAR, Gate-3 worksheet as reading aid). brutalist/DESIGN.md
+  palette compliance enforced by unit test. Suite 38/38.

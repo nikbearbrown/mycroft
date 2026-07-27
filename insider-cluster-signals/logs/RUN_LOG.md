@@ -107,3 +107,20 @@ Append-only (P7). Every script run against real data, every gate decision, every
 - **Open issues:** corporate sample remains 1 trading day (illustrative, not statistical);
   their null-alpha clusters (56 of 425) excluded from means; backtest deferred to a future
   sprint alongside the remaining 9 gated fetch days.
+
+## 2026-07-24 -- Week 6: signal dashboard (static, brutalist-compliant)
+
+- **Commands:** `python build_dashboard.py` -> `reports/dashboard.html` (6 cards, 19 audit
+  rows) · `python -m unittest discover tests` (38/38).
+- **What it is:** second human-customer artifact (P5) beside the markdown report — one
+  self-contained HTML page (no server, no framework, no fetch; data inlined at build time
+  from `scored_signals.json` + run log + fetch manifests). Signal cards with tier badge,
+  conviction, alpha bar, members, tier reason; per-card evidence drawer linking every
+  accession to its EDGAR URL + sha256; Gate-3 worksheet rendered as a reading aid with an
+  explicit note that only the logged human decision closes the gate.
+- **Design compliance:** brutalist/DESIGN.md — 6 palette tokens only (test-enforced:
+  test_only_design_md_hex_colors), EB Garamond/Inter/JetBrains Mono stack, red = STRONG
+  badge only (brand/emphasis rule), alpha bars ink/secondary (red never encodes valence).
+- **Open issues:** dashboard reflects the latest pipeline run only; rebuild after each run
+  (documented in README). Checkbox state is not persisted (deliberate — the gate record
+  lives in the log, not the browser).
