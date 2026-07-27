@@ -1,8 +1,8 @@
-# Your Own Mycroft — Investment Research Desk
+# Mycroft — Investment Research Desk
 
-A personal research desk for interrogating investment theses before they become trades. The desk splits fluent claims from verified evidence, tracks what would need to be true for each claim to hold, and keeps the buy/hold/sell decision where it belongs — with a human who can defend it.
+A personal research desk for interrogating investment theses before they become trades. The desk splits fluent claims from verified evidence, tracks what would need to be true for each claim to hold, and keeps the buy/hold/sell decision where it belongs, with a human who can defend it.
 
-This is process, not picks. Nothing in this repository is investment advice.
+This is a process, not picks. Nothing in this repository is investment advice.
 
 ## Contents
 
