@@ -124,3 +124,28 @@ Append-only (P7). Every script run against real data, every gate decision, every
 - **Open issues:** dashboard reflects the latest pipeline run only; rebuild after each run
   (documented in README). Checkbox state is not persisted (deliberate — the gate record
   lives in the log, not the browser).
+
+## 2026-07-27 -- Full-system E2E verification (Playwright) — network-first, then offline re-run
+
+- **Design:** network-dependent checks executed FIRST (connection was expected to drop, and did);
+  all remaining checks are local-only. The offline re-run repeated the entire local suite with
+  the internet down — everything passed, proving the system's core loop needs no network.
+- **Backend (10 checks, all PASS):** unit suite 38/38 · ledger verified+rejected==extracted
+  (2471+25==2496) · sha256 re-hash of 5 random raw XMLs vs manifests (all match) · hand-recomputed
+  LAW alpha == pipeline (20.7965) · fresh pipeline runs (run_20260727_212745 online,
+  run_20260727_213858 offline; identical signals) · conformance gate halts on ledger mismatch AND
+  missing files · scorer determinism (two runs identical) · dashboard + audit rebuilt from fresh run
+  · LIVE: EDGAR fetch w/ dedupe (694 index lines -> 327 unique, 3 fetched to temp dir, corpus
+  untouched) · LIVE: Yahoo SPY prices (10 rows) · LIVE: 2 evidence URLs HTTP 200.
+- **Frontend (19 Playwright checks vs Chromium, all PASS after one fix):** loads via file:// with
+  zero JS errors (offline too — fonts degrade gracefully) · DOM==verified-JSON parity (cards,
+  ticker order, badge counts per tier) · all 4 filter interactions · 19 evidence links all
+  well-formed sec.gov URLs · alpha-bar valence classes match data · audit rows == accessions ·
+  computed style: STRONG badge renders exactly #C8102E, canvas #FFFFFF (DESIGN.md) · no horizontal
+  overflow at 375px.
+- **Defect found and fixed by the suite:** count tiles overflowed 59px at mobile width (375px) —
+  `.counts` now wraps (flex-wrap) + `.sub` gains overflow-wrap. Rebuilt, re-verified: 0px overflow.
+- **Test-script defect (not a system defect):** hardcoded run-id assertion went stale when the
+  offline run produced a newer run — made dynamic; the dashboard correctly tracks the latest run.
+- **Open issues:** push to fork pending network restoration; Playwright scripts live in the session
+  scratchpad (not committed — module stays stdlib-only).

@@ -174,3 +174,10 @@ workflow changes.
 - **Result:** `build_dashboard.py` -> self-contained `reports/dashboard.html` (6 signal
   cards, evidence drawers to EDGAR, Gate-3 worksheet as reading aid). brutalist/DESIGN.md
   palette compliance enforced by unit test. Suite 38/38.
+
+## 2026-07-27 -- insider-cluster-signals: full-system E2E verification (backend + Playwright)
+
+- **Result:** 10/10 backend checks (incl. 3 live-network probes banked before the connection
+  dropped; full local suite then re-passed offline) and 19/19 Playwright frontend checks.
+  One real defect found and fixed (mobile overflow in dashboard count tiles). Evidence:
+  insider-cluster-signals/logs/RUN_LOG.md 2026-07-27 entry.

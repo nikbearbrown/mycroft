@@ -1,6 +1,6 @@
 # scored-signals-audit.md — spot-check worksheet for the signal-quality gate (Gate 3, OPEN)
 
-Generated 2026-07-24T16:41:54Z by audit_signals.py from data/verified/scored_signals.json.
+Generated 2026-07-27T21:27:46Z by audit_signals.py from data/verified/scored_signals.json.
 This audit does not say pass. It surfaces every signal with its evidence links so a named
 human can verify each against the primary source and log the gate decision (P4).
 
