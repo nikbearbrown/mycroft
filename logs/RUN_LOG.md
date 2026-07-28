@@ -97,3 +97,18 @@ workflow changes.
   - Phase 2: Run full sample brief (company: "Anthropic") with all gates open (no human decision yet, just logging).
   - Phase 2: Generate `signals-validation-audit.md` (spot-check 10 signals, assess quality).
   - Phase 3: Solve Groq token limit (upgrade tier or secondary provider for news classification).
+
+## 2026-07-16 -- Add SEC Filings Financial Metrics Agent (Phase 1 scaffold)
+
+- **Recipe:** sec-filings-financial-metrics v0.1.0 (DRAFT) — deterministic extraction of standardized XBRL financial metrics from SEC EDGAR, with provenance and rule-based validation. No LLM in the critical path.
+- **Inputs:** SEC EDGAR public APIs — company ticker map, XBRL `companyfacts`.
+- **Commands:**
+  - Added `scripts/sec-filings-financial-metrics/secfma/` (Python stdlib package: EDGAR client, concept map, extractor, metrics, validation, report, CLI).
+  - Added `recipes/sec-filings-financial-metrics.yaml` (DRAFT, frontmatter + inputs/outputs + 4 phase gates + known issues + architecture).
+  - Registered the data layer in `DATA_CONTRACT.md`; added `projects/SEC-Filings-Financial-Metrics-Agent/` (README, Substack drafts, benchmark stub).
+- **Outputs:** `data/verified/sec-filings-financial-metrics/<TICKER>_financial_metrics.json` + `<TICKER>_report.md` (generated, not committed).
+- **Result:** Verified against Microsoft (FY2020–2025): revenue/net income correct (FY2025 revenue $281.7B, net income $101.8B), balance sheet balances to the dollar (accounting identity PASS), margin bounds 0 FAIL. Caught + fixed a fiscal-year mis-assignment (comparative years in a 10-K inherit the filing's `fy`) by keying annual data on period-end date.
+- **Open issues:**
+  - [TODO] Offline `--sample` mode from cached fixtures (live-fetch approval gate open).
+  - [TODO] Score extraction accuracy/coverage against `projects/SEC-Filings-Financial-Metrics-Agent/benchmarks/golden_set.csv`.
+  - [IMPROVEMENT] Map custom XBRL extensions (currently flagged MISSING). Validation now covers accounting identity, margin bounds, sum consistency, current-ratio sanity, unit consistency, and restatement flags.

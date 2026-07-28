@@ -1,0 +1,117 @@
+---
+name: sec-filings-financial-metrics
+description: |
+  Retrieve SEC EDGAR filings and extract standardized financial metrics from XBRL
+  companyfacts data, with full provenance and rule-based validation. Turns complex
+  regulatory disclosures into transparent, inspectable financial intelligence.
+  Deterministic by design — no LLM in the critical path. Complements the existing
+  mycroft-sec-filings-analysis pipeline by focusing on trustworthy metric
+  extraction, normalization, and validation rather than narrative parsing.
+
+status: DRAFT
+todos_open: 3
+recipe_version: 0.1.0
+last_gate: null
+attestation: null
+
+inputs:
+  - ticker (string): US-listed stock ticker to analyze (e.g., "MSFT", "AAPL")
+  - forms (array, optional): Filing forms to include (default ["10-K", "10-Q"])
+
+outputs:
+  - name: financial_metrics (JSON object)
+    description: |
+      Per-metric, per-period records plus derived ratios. Every value carries
+      provenance: us_gaap_tag, accession, form, period_start/end, filed date,
+      unit, and source-filing URL.
+      - records: base metrics (revenue, net_income, assets, liabilities, equity,
+        operating_cash_flow, ...) as reported, one record per filing period.
+      - derived_metrics: one row per fiscal year with gross/operating/net margin,
+        ROE, ROA, current ratio, debt-to-equity, and YoY growth.
+      - validation: PASS/FAIL/UNKNOWN results for each rule check.
+  - name: report (Markdown)
+    description: |
+      Human-readable report: reported figures ($ millions), derived ratios,
+      a validation summary, and a provenance appendix linking each fiscal year
+      to the exact filing its numbers came from.
+
+phase_gates:
+  - name: "Source gate — EDGAR concept mapping"
+    status: "[PASS-sample]"
+    description: |
+      Each canonical metric resolves to a us-gaap tag via an ordered candidate
+      list, and the matched tag is recorded on every value. Metrics with no
+      matching tag are flagged MISSING (custom extension), never guessed.
+      Evidence: missing_metrics list in the output JSON.
+    owner: "Fellow (Asavari Shejwal)"
+
+  - name: "Data-shape gate — output parses"
+    status: "[PASS-sample]"
+    description: |
+      Raw cached responses and the verified metrics JSON parse cleanly.
+      Test: python3 -m json.tool on outputs under data/verified/sec-filings-financial-metrics/.
+    owner: "Fellow (Asavari Shejwal)"
+
+  - name: "Validation gate — impossible values rejected"
+    status: "[PASS-sample]"
+    description: |
+      Rule checks return PASS/FAIL/UNKNOWN. Implemented: accounting identity
+      (Assets = Liabilities + Equity), margin bounds (<= 100%), cross-statement
+      sum consistency (gross_profit = revenue - cost; current <= totals),
+      current-ratio sanity, unit consistency, and restatement flagging
+      (latest-filed authoritative; restatements surfaced as UNKNOWN for review).
+    owner: "Fellow (Asavari Shejwal)"
+
+  - name: "Live-fetch approval gate"
+    status: "[TODO]"
+    description: |
+      Runs make read-only HTTPS GETs to public SEC endpoints (rate-limited,
+      cached). A --sample/offline mode driven purely from cached fixtures is
+      not yet implemented; until then, live runs should be acknowledged.
+    owner: "Domain lead (TBD)"
+
+known_issues:
+  - "[IMPROVEMENT] Custom XBRL extensions are flagged MISSING, not yet mapped."
+  - "[IMPROVEMENT] Fiscal-year label derived from period-end year; may differ from a company's own FY label for H1-ending fiscal years (documented convention)."
+  - "[IMPROVEMENT] Derived ratios are annual (10-K/FY) only; quarterly ratios not yet supported."
+  - "[TODO] No offline --sample mode from fixtures; runs currently require network for the first (uncached) fetch."
+  - "[TODO] Benchmark against hand-verified filings (projects/SEC-Filings-Financial-Metrics-Agent/benchmarks/golden_set.csv) not yet scored."
+
+architecture:
+  principle: |
+    Evidence before interpretation; verification before automation. Extraction
+    and validation are deterministic. AI is reserved for later, non-critical
+    phases (narrative/MD&A summarization with citations, RAG over filing text,
+    cross-period anomaly detection).
+  data_sources:
+    - name: "SEC EDGAR — company ticker map"
+      url: https://www.sec.gov/files/company_tickers.json
+      use: ticker -> CIK resolution
+    - name: "SEC EDGAR — XBRL companyfacts"
+      url: https://data.sec.gov/api/xbrl/companyfacts/CIK{cik10}.json
+      use: all reported financial facts, all periods
+      access: read-only GET, rate-limited ~7/sec, descriptive User-Agent (SEC policy)
+  pipeline:
+    - resolve ticker to CIK
+    - fetch + cache companyfacts (data/raw/, with fetch-timestamp provenance)
+    - extract canonical metrics; record matched us-gaap tag per value
+    - compute derived ratios per fiscal year (keyed by period-end date)
+    - run rule-based validation (PASS/FAIL/UNKNOWN)
+    - emit verified JSON + human-readable Markdown report
+
+execution:
+  current: "On-demand via CLI (python3 -m secfma.cli --ticker MSFT --report)"
+  latency: "First fetch a few seconds per company; cached runs are near-instant"
+  cache_ttl: "24 hours (configurable via SEC_CACHE_TTL_HOURS)"
+  verified_against: "Microsoft FY2020–2025 — revenue/net income correct; balance sheet balances to the dollar"
+
+scripts:
+  package: scripts/sec-filings-financial-metrics/secfma/
+  entry_point: scripts/sec-filings-financial-metrics/secfma/cli.py
+  runtime: Python 3 standard library only
+
+related_recipes:
+  - name: mycroft-sec-filings-analysis
+    description: "Existing EDGAR pipeline (fetch + financial + narrative parse); this recipe hardens the metric-extraction + validation half."
+  - name: mycroft-sec-filings-analysis-enhanced
+    description: "Enhanced variant with narrative/MD&A parsing."
