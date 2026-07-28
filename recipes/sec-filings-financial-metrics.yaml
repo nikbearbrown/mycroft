@@ -9,7 +9,7 @@ description: |
   extraction, normalization, and validation rather than narrative parsing.
 
 status: DRAFT
-todos_open: 3
+todos_open: 2
 recipe_version: 0.1.0
 last_gate: null
 attestation: null
@@ -75,7 +75,7 @@ known_issues:
   - "[IMPROVEMENT] Fiscal-year label derived from period-end year; may differ from a company's own FY label for H1-ending fiscal years (documented convention)."
   - "[IMPROVEMENT] Derived ratios are annual (10-K/FY) only; quarterly ratios not yet supported."
   - "[TODO] No offline --sample mode from fixtures; runs currently require network for the first (uncached) fetch."
-  - "[TODO] Benchmark against hand-verified filings (projects/SEC-Filings-Financial-Metrics-Agent/benchmarks/golden_set.csv) not yet scored."
+  - "[TODO] Expand the benchmark golden set with more companies (incl. a custom-extension filer) and independently hand-verified figures; current seed = MSFT FY2023-25 + AAPL FY2024, 8/8 match at 0.5% tolerance."
 
 architecture:
   principle: |

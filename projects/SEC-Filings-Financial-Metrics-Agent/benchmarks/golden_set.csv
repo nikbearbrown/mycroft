@@ -1,5 +1,9 @@
 ticker,cik,fiscal_year,fiscal_period,metric,expected_value,source_note
-MSFT,0000789019,2024,FY,revenue,,fill from the actual 10-K income statement
-MSFT,0000789019,2024,FY,net_income,,fill from the actual 10-K income statement
-AAPL,0000320193,2024,FY,revenue,,
-AAPL,0000320193,2024,FY,net_income,,
+MSFT,0000789019,2023,FY,revenue,211915000000,MSFT FY2023 10-K income statement (total revenue)
+MSFT,0000789019,2023,FY,net_income,72361000000,MSFT FY2023 10-K income statement (net income)
+MSFT,0000789019,2024,FY,revenue,245122000000,MSFT FY2024 10-K income statement (total revenue)
+MSFT,0000789019,2024,FY,net_income,88136000000,MSFT FY2024 10-K income statement (net income)
+MSFT,0000789019,2025,FY,revenue,281724000000,MSFT FY2025 10-K income statement (total revenue)
+MSFT,0000789019,2025,FY,net_income,101832000000,MSFT FY2025 10-K income statement (net income)
+AAPL,0000320193,2024,FY,revenue,391035000000,AAPL FY2024 10-K net sales (independently verify)
+AAPL,0000320193,2024,FY,net_income,93736000000,AAPL FY2024 10-K net income (independently verify)

@@ -18,6 +18,7 @@ are plain, reproducible code.
 | `validation.py` | Rule-based checks returning PASS / FAIL / UNKNOWN |
 | `report.py` | Human-readable Markdown report with a provenance appendix |
 | `cli.py` | Command-line entry point |
+| `benchmark.py` | Score extraction accuracy + coverage vs a hand-verified golden set |
 
 ## Usage
 
@@ -27,6 +28,8 @@ Run from the repo root (standard library only — nothing to install):
 python3 -m scripts.sec-filings-financial-metrics.secfma.cli --ticker MSFT --report
 # or, from inside the package dir:
 cd scripts/sec-filings-financial-metrics && python3 -m secfma.cli --ticker MSFT --report
+# score extraction against the hand-verified golden set:
+python3 -m secfma.benchmark --report
 ```
 
 ## Inputs

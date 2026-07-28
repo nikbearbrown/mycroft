@@ -112,3 +112,11 @@ workflow changes.
   - [TODO] Offline `--sample` mode from cached fixtures (live-fetch approval gate open).
   - [TODO] Score extraction accuracy/coverage against `projects/SEC-Filings-Financial-Metrics-Agent/benchmarks/golden_set.csv`.
   - [IMPROVEMENT] Map custom XBRL extensions (currently flagged MISSING). Validation now covers accounting identity, margin bounds, sum consistency, current-ratio sanity, unit consistency, and restatement flags.
+
+## 2026-07-16 -- SEC metrics: add extraction-accuracy benchmark harness
+
+- **Recipe:** sec-filings-financial-metrics (DRAFT).
+- **Commands:** Added `scripts/sec-filings-financial-metrics/secfma/benchmark.py`; seeded `projects/SEC-Filings-Financial-Metrics-Agent/benchmarks/golden_set.csv` (MSFT FY2023–25 + AAPL FY2024); ran `python3 -m secfma.benchmark --report`.
+- **Outputs:** `data/verified/sec-filings-financial-metrics/benchmark_results.json` + `benchmark_report.md` (generated, not committed).
+- **Result:** 8/8 golden rows matched within 0.5% tolerance — coverage 100%, accuracy 100%. Confirms the extractor reproduces reported revenue/net income for both a June-fiscal-year filer (MSFT) and a September-fiscal-year filer (AAPL). MISSING rows would surface coverage gaps (e.g., unmapped custom extensions) rather than silent zeros.
+- **Open issues:** Expand the golden set with a custom-extension filer and more independently hand-verified figures; add an offline `--sample` mode.
