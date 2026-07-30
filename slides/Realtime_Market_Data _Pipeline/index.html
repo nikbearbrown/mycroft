@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kafka Streaming Demo Checkpoint</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --panel: #141414;
+      --text: #f0f0f0;
+      --accent: #ff0055;
+      --accent-alt: #00ffcc;
+      --border: 4px solid #ffffff;
+      --font-mono: 'Courier New', Courier, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .deck {
+      width: 90vw;
+      max-width: 1100px;
+      height: 80vh;
+      position: relative;
+    }
+
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100%;
+      background: var(--panel);
+      border: var(--border);
+      padding: 3rem;
+      box-shadow: 14px 14px 0px var(--accent);
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .slide.active {
+      display: flex;
+    }
+
+    .tag {
+      display: inline-block;
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      padding: 0.4rem 0.8rem;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      width: fit-content;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -1px;
+    }
+
+    h2 {
+      font-size: 2rem;
+      text-transform: uppercase;
+      color: var(--accent-alt);
+      margin-bottom: 1rem;
+    }
+
+    p, li {
+      font-size: 1.25rem;
+      line-height: 1.5;
+    }
+
+    ul {
+      list-style-type: square;
+      padding-left: 1.5rem;
+    }
+
+    li { margin-bottom: 0.8rem; }
+
+    .code-box {
+      background: #000;
+      border: 2px solid var(--accent-alt);
+      padding: 1rem;
+      color: var(--accent-alt);
+      font-size: 1.05rem;
+      white-space: pre-wrap;
+      box-shadow: 6px 6px 0px #fff;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 2px solid #333;
+      padding-top: 1rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    .nav-hint {
+      position: absolute;
+      bottom: -40px;
+      right: 0;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="deck">
+  <!-- SLIDE 1: WHAT YOU BUILT -->
+  <div class="slide active" id="slide-1">
+    <div>
+      <div class="tag">Demo Checkpoint</div>
+      <h1>Live Ingestion Pipeline</h1>
+      <p>Single-broker <strong>KRaft Kafka</strong> cluster via Docker Compose ingesting real-time market ticks.</p>
+    </div>
+    <div class="code-box">
+Finnhub WS (Crypto 24/7) ──► producer.py ──► Kafka (market.prices.raw) ──► consumer.py
+    </div>
+    <div class="footer">
+      <span>ARCHITECTURE & INGESTION</span>
+      <span>SLIDE 01 / 03</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: KEY ENGINEERING DECISIONS -->
+  <div class="slide" id="slide-2">
+    <div>
+      <div class="tag">Trade-offs & Strategy</div>
+      <h2>Key Architectural Calls</h2>
+      <ul>
+        <li><strong>Partitioning:</strong> Ticker-keyed 3-partition topic (ADR-0001) for strict key ordering guarantees.</li>
+        <li><strong>Data Source:</strong> Chose Finnhub over Alpaca to avoid unnecessary KYC/SSN onboarding overhead for Phase 1.</li>
+        <li><strong>Market Hours Gap:</strong> Added 24/7 crypto fallback (<code>BINANCE:BTCUSDT</code>) for off-hours live testing.</li>
+      </ul>
+    </div>
+    <div class="footer">
+      <span>DECISION LOG</span>
+      <span>SLIDE 02 / 03</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: LESSONS & NEXT STEPS -->
+  <div class="slide" id="slide-3">
+    <div>
+      <div class="tag">Next Iteration</div>
+      <h2>Debugging & Roadmap</h2>
+      <ul>
+        <li><strong>Obstacles Resolved:</strong> Manual binary install for Docker Compose plugin &amp; smart-quote YAML parsing errors.</li>
+        <li><strong>Next Phase:</strong> Complete reliability configs (acks/retries) and upgrade to a 3-broker cluster.</li>
+        <li><strong>Downstream:</strong> Introduce PySpark Structured Streaming for real-time aggregations.</li>
+      </ul>
+    </div>
+    <div class="footer">
+      <span>ROADMAP</span>
+      <span>SLIDE 03 / 03</span>
+    </div>
+  </div>
+
+  <div class="nav-hint">Press <strong>← / →</strong> or <strong>Space</strong> to navigate</div>
+</div>
+
+<script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide');
+
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === index);
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
+    } else if (e.key === 'ArrowLeft') {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      showSlide(currentSlide);
+    }
+  });
+</script>
+
+</body>
+</html>
