@@ -10,7 +10,7 @@ from __future__ import annotations
 from datetime import date
 from typing import Any, Optional
 
-PROVENANCE_FIELDS = ("us_gaap_tag", "accession", "form", "filed", "source_url")
+PROVENANCE_FIELDS = ("us_gaap_tag", "tag_source", "accession", "form", "filed", "source_url")
 
 
 def _period_days(start: Optional[str], end: Optional[str]) -> Optional[int]:

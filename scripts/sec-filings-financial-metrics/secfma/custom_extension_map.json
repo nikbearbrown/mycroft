@@ -1,0 +1,7 @@
+{
+  "_comment": "Human-curated overrides for company-specific XBRL extensions. When a canonical metric has no matching us-gaap tag, the extractor resolves it here instead of guessing. Key = 10-digit CIK; value = { canonical_metric: { namespace, tag } }. Every entry is an explicit, auditable mapping decision.",
+
+  "0000000001": {
+    "research_and_development": {"namespace": "smpl", "tag": "ResearchAndDevelopmentInvestment"}
+  }
+}

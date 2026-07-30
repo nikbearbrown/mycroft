@@ -1,10 +1,11 @@
 """Command-line entry point: ticker -> provenance-tagged metrics + report.
 
-Usage (run from the project root):
+Usage (run from the package dir):
     python -m secfma.cli --ticker MSFT
     python -m secfma.cli --ticker AAPL --forms 10-K
-    python -m secfma.cli --ticker MSFT --report      # also write a Markdown report
-    python -m secfma.cli --ticker MSFT --validate     # also run validation checks
+    python -m secfma.cli --ticker MSFT --report        # also write a Markdown report
+    python -m secfma.cli --ticker MSFT --validate       # also run validation checks
+    python -m secfma.cli --sample --report              # offline run on the bundled fixture
 """
 from __future__ import annotations
 
@@ -21,7 +22,11 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="SEC Filings Financial Metrics Agent"
     )
-    parser.add_argument("--ticker", required=True, help="Stock ticker, e.g. MSFT")
+    parser.add_argument("--ticker", help="Stock ticker, e.g. MSFT (defaults to SMPL in --sample mode)")
+    parser.add_argument(
+        "--sample", action="store_true",
+        help="Offline mode: run against the bundled sample fixture, no network calls",
+    )
     parser.add_argument(
         "--forms", nargs="+", default=list(config.DEFAULT_FORMS),
         help="Filing forms to include (default: 10-K 10-Q)",
@@ -36,33 +41,45 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
-    client = EdgarClient()
-    ticker = args.ticker.upper()
+    if args.ticker:
+        ticker = args.ticker.upper()
+    elif args.sample:
+        ticker = "SMPL"  # the bundled offline fixture
+    else:
+        parser.error("--ticker is required (or use --sample for the bundled fixture)")
+
+    client = EdgarClient(sample=args.sample)
 
     print(f"[1/4] Resolving CIK for {ticker} ...")
     cik10 = client.ticker_to_cik(ticker)
     print(f"      CIK{cik10}")
 
-    print("[2/4] Fetching companyfacts (cached in data/raw) ...")
+    source = "sample fixture" if args.sample else "cached in data/raw"
+    print(f"[2/4] Loading companyfacts ({source}) ...")
     facts = client.company_facts(cik10)
 
     print("[3/4] Extracting canonical metrics with provenance ...")
     records = extract_metrics(facts, cik10, tuple(args.forms))
     ok = [r for r in records if r["status"] == "OK"]
     missing = [r for r in records if r["status"] == "MISSING"]
+    custom = sorted({r["metric"] for r in ok if r.get("tag_source") == "custom-extension"})
 
     print("[4/4] Computing derived metrics ...")
     annual = metrics.build_annual(records)
     print(f"      {len(annual)} fiscal years of derived ratios")
+    if custom:
+        print(f"      resolved via custom-extension overrides: {', '.join(custom)}")
 
     out = {
         "ticker": ticker,
         "cik": cik10,
         "entity": facts.get("entityName"),
         "generated_at": datetime.now(timezone.utc).isoformat(),
+        "mode": "sample" if args.sample else "live",
         "forms": args.forms,
         "record_count": len(ok),
         "missing_metrics": [r["metric"] for r in missing],
+        "custom_extension_metrics": custom,
         "derived_metrics": annual,
         "records": records,
     }
@@ -85,7 +102,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Wrote Markdown report to {report_path}")
 
     if missing:
-        print(f"Missing metrics (candidate tags not found): "
+        print(f"Missing metrics (no us-gaap tag or override): "
               f"{', '.join(r['metric'] for r in missing)}")
     return 0
 

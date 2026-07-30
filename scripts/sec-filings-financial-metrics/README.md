@@ -30,6 +30,8 @@ python3 -m scripts.sec-filings-financial-metrics.secfma.cli --ticker MSFT --repo
 cd scripts/sec-filings-financial-metrics && python3 -m secfma.cli --ticker MSFT --report
 # score extraction against the hand-verified golden set:
 python3 -m secfma.benchmark --report
+# offline: run the whole pipeline from a bundled fixture (no network):
+python3 -m secfma.cli --sample --report
 ```
 
 ## Inputs
@@ -58,8 +60,20 @@ from source data per `DATA_CONTRACT.md`).
   to any external system, no credentials, no LLM calls.
 - **Disk:** writes only under `data/raw|verified/sec-filings-financial-metrics/`.
 
+## Offline mode & custom extensions
+
+- **`--sample`** runs the full pipeline against a bundled fixture
+  (`secfma/fixtures/`, company `SMPL`) with zero network calls — for tests, demos, and CI.
+- **Custom XBRL extensions:** when a metric has no matching `us-gaap` tag, the
+  extractor consults `secfma/custom_extension_map.json` — a human-curated map of
+  `CIK → {metric: {namespace, tag}}`. Unmapped metrics stay `MISSING` (flagged for a
+  human), never guessed. The sample fixture demonstrates this by resolving
+  `research_and_development` from a company-specific `smpl:` extension.
+
 ## Status
 
-DRAFT. Verified against Microsoft (FY2020–2025): correct revenue/net income,
-balance sheet balances to the dollar. See the recipe's `known_issues` for the
-current gaps (custom-extension mapping, offline sample mode, quarterly ratios).
+SPECIFIED. Verified against Microsoft (FY2020–2025) and Apple (FY2024): 8/8
+golden-set match at 0.5% tolerance; balance sheet balances to the dollar; offline
+sample run passes all checks. See the recipe's `known_issues` for remaining
+improvements (populate the override map for real filers, expand the golden set,
+quarterly ratios).

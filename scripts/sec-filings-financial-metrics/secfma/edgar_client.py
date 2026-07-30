@@ -17,10 +17,13 @@ from typing import Any
 
 from . import config
 
+FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures"
+
 
 class EdgarClient:
-    def __init__(self, user_agent: str | None = None) -> None:
+    def __init__(self, user_agent: str | None = None, sample: bool = False) -> None:
         self.user_agent = user_agent or config.USER_AGENT
+        self.sample = sample  # offline: read only bundled fixtures, no network
         self._last_request_ts = 0.0
 
     # -- low-level -----------------------------------------------------------
@@ -63,8 +66,11 @@ class EdgarClient:
     # -- public API ----------------------------------------------------------
     def ticker_to_cik(self, ticker: str) -> str:
         """Resolve a ticker to a 10-digit zero-padded CIK string."""
-        cache = config.RAW_DIR / "company_tickers.json"
-        data = self._get_json(config.TICKER_MAP_URL, cache)
+        if self.sample:
+            data = json.loads((FIXTURES_DIR / "company_tickers.json").read_text())
+        else:
+            cache = config.RAW_DIR / "company_tickers.json"
+            data = self._get_json(config.TICKER_MAP_URL, cache)
         wanted = ticker.upper().strip()
         for row in data.values():
             if str(row["ticker"]).upper() == wanted:
@@ -72,6 +78,14 @@ class EdgarClient:
         raise ValueError(f"Ticker {ticker!r} not found in SEC ticker map")
 
     def company_facts(self, cik10: str) -> dict[str, Any]:
+        if self.sample:
+            path = FIXTURES_DIR / f"companyfacts_CIK{cik10}.json"
+            if not path.exists():
+                raise FileNotFoundError(
+                    f"No sample fixture for CIK{cik10} at {path}; "
+                    "sample mode only ships the bundled SMPL company."
+                )
+            return json.loads(path.read_text())
         cache = config.RAW_DIR / f"companyfacts_CIK{cik10}.json"
         return self._get_json(config.COMPANY_FACTS_URL.format(cik10=cik10), cache)
 
