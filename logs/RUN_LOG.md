@@ -291,3 +291,71 @@ workflow changes.
   - One labeler; no agreement measure.
   - Recommendation for Sprint 7: run every fixture on all three tiers (about a
     cent) so the cheapest correct tier is measured rather than predicted.
+- **[BLOCKER] Wrong-entity claims found in a finished brief.** `labeled_briefs.csv`
+  captures a real Scale AI brief attributing to Scale AI: "a Rs 170 Cr raise by Elevate
+  Education", "a $2.2 million raise by SambaNova", and "a $900m credit facility to scale
+  AI data centers" — two other companies' funding rounds, plus "scale AI" matched as an
+  ordinary verb phrase. Its COMPETITIVE POSITION names Ecolab (water treatment) as a
+  competitor. Scale AI's seed entry carries aliases ["Scale AI", "ScaleAI"] and no
+  `exclude_entities` or `exclude_terms`, so the deterministic filter had nothing to
+  reject on.
+  - *Effect on the gate:* **Signal validation stays CLEARED.** Its clearance on
+    2026-08-22 was explicitly batch-level and named common-word names as residual risk;
+    this is that risk confirmed, not a new one concealed. Decision by Muskan Khandelwal,
+    2026-08-26. `last_gate` and `todos_open` unchanged.
+  - *What changed:* the risk is no longer hypothetical, and it is now known to reach
+    finished briefs rather than stopping at the signal table.
+  - *Not yet applied:* populate `exclude_entities`/`exclude_terms` for common-word
+    vendors (Adept, Writer, Notion, Glean, Modal, Replicate, Scale AI).
+
+- **[LIMIT] Grounding checks cannot catch this class.** `check_date_grounding` and
+  `check_amount_grounding` verify that a claim traces to a *collected signal*. A
+  wrong-entity signal already in the corpus passes — the figure is real, it just belongs
+  to another company. This is why the Scale AI claims were not flagged. A clean eval run
+  is not evidence that a brief's signals belong to the right company.
+
+- **[DEFECT] README drift in the platform repo.** `README.md` (commit `2b44793`) states
+  that briefs write prose for COMPETITIVE POSITION when Neo4j is unreachable and that
+  the fix is "pending". The fix landed in the very next commit (`0fa8a10`). The README
+  has not been updated — a P6 mismatch between stated intent and shipped code. Not fixed
+  here: this log governs Mycroft, and the file lives in the other repo.
+
+- **Outputs:**
+  - `recipes/vendor-intelligence-brief.yaml` v0.3.0 — new `evaluation:` section (6
+    checks with severities, the harness limit, the human accuracy set, 17 tests, CI),
+    new `architecture.unknown_enforcement`, three issues added
+  - `data/verified/ai_company_signals-schema.yaml` v0.3.0 — residual risk upgraded to
+    CONFIRMED with the Scale AI instance; new note on the grounding-check limit
+  - Amended the 2026-08-22 entry: its open provenance issue is closed by `5edd72c`
+  - This entry
+- **Result:** Mycroft records the machine half of brief evaluation. Recipe stays
+  **DRAFT** — no gate closed this round, `todos_open` still 2, no attestation.
+- **Open issues:**
+  - [BLOCKER] No accuracy rate exists. `labeled_briefs.csv` has 6 queued claims and an
+    empty `accurate` column — the machine half runs, the human half has not started.
+    No accuracy figure may be quoted for this system (P3).
+  - [BLOCKER] Common-word vendors still lack exclusion lists (above).
+  - [GATE OPEN] Supervisor routing review (Phase 2) — no Langfuse trace reviewed.
+  - [GATE OPEN] Brief approval (Phase 2) — no procurement owner review process.
+  - [BLOCKER] Per-source signal counts still stale (pre-purge). Recount before citing.
+  - [BLOCKER] Groq token limit at company #33 of 50 — Phase 3 batch job still blocked.
+  - [OPEN] `eval_runner.py` is not wired to any Mycroft phase gate. It reports; nothing
+    yet requires it to pass before a brief ships. Deliberate for now — a gate is a hard
+    stop and needs a named owner.
+## 2026-07-26 -- Implement Mycroft Finance Investigator Weeks 1-3
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); no lifecycle promotion or human gate clearance attempted.
+- **Inputs:** Local synthetic finance pack in `data/raw/mycroft-finance-investigator/` containing provenance, account mapping, budget, actuals, ledger, customer drivers, and headcount drivers for one sample entity and period.
+- **Commands:** Ran `python3 -m unittest discover -s tests -v`; ran `python3 -m mycroft_finance_investigator.cli all --run-id sample-2026-02`; parsed generated JSON; reviewed the validation audit and human report; ran targeted `node scripts/conformance.mjs`; parsed `pyproject.toml`; ran `git diff --check`; ran `npm run verify`.
+- **Outputs:** `projects/Mycroft-Finance-Investigator/`; `recipes/mycroft-finance-investigator.md`; `conductor/mycroft-finance-investigator.md`; `reports/templates/mycroft-finance-investigator.md`; `data/verified/mycroft-finance-investigator/`; `logs/mycroft-finance-investigator-sample-2026-02.json`; `reports/generated/mycroft-finance-investigator-sample-2026-02.md`; updated data contract, indexes, and current status.
+- **Result:** All 12 unit tests pass, including deliberate ledger-mismatch, unmapped-account, agent-step-limit, and complete-category-bridge checks. Validation accepted 43 synthetic rows across six datasets; account coverage, single period/entity scope, actuals-to-ledger, customer-to-revenue, and headcount-to-payroll checks reconciled. The deterministic bridge calculated sample budget EBITDA of 350000.00 and actual EBITDA of 230000.00, a -120000.00 variance. The investigator completed seven conditionally selected tool steps, retained 41 evidence references, wrote separate machine/human artifacts, and kept the human gate open. Targeted conformance and repository-wide verification pass.
+- **Open issues:** The 10000.00 materiality amount is a demo fixture, not an approved finance policy. No human has supplied or approved causal explanations or authorized distribution. The local policy demonstrates the stateful observe-plan-act contract without a hosted model; an LLM planning policy, persistent database, reviewer agent, scenario engine, and UI remain future-week work.
+
+## 2026-07-31 -- Add Finance Investigator human review gate
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); no human decision or lifecycle promotion recorded.
+- **Inputs:** Completed synthetic sample run `logs/mycroft-finance-investigator-sample-2026-02.json` and its 41 evidence references.
+- **Commands:** Ran the project unit suite; generated an open review request with `review-request`; parsed the artifact; ran targeted conformance and repository verification.
+- **Outputs:** `mycroft_finance_investigator/review.py`; `schemas/review-decision.schema.json`; review CLI commands; `logs/gate-decisions/mycroft-finance-investigator-sample-2026-02-review-request.json`; review tests and updated contracts.
+- **Result:** The review gate binds decisions to the exact run hash, rejects agent identities and unknown evidence, requires evidence-backed explanations for approval, and refuses to overwrite a recorded decision. The committed sample request is `OPEN`; it is not an approval.
+- **Open issues:** No named finance reviewer has completed the request. Demo materiality, causal adequacy, and distribution remain human decisions.
