@@ -1,0 +1,111 @@
+{
+  "source": "SEC EDGAR daily form index",
+  "index_date": "2026-07-10",
+  "fetched_at": "2026-07-13T00:46:51.123533+00:00",
+  "user_agent": "Mycroft insider-cluster-signals research baskar.sa@northeastern.edu",
+  "form4_filings_in_index": 694,
+  "limit_applied": 10,
+  "fetched": [
+    {
+      "cik": "1565893",
+      "company": "ABRAMS STEVEN J",
+      "date_filed": "20260710",
+      "file_name": "edgar/data/1565893/0000891839-26-000297.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1565893/000089183926000297/form4.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0000891839-26-000297.xml",
+      "sha256": "f4e66b1ae644efd9cc5353c5af8ea62482541258f87e01e7646d5ffacf67e00f",
+      "bytes": 4165
+    },
+    {
+      "cik": "1880792",
+      "company": "AEROEQUITY GP, LLC",
+      "date_filed": "20260710",
+      "file_name": "edgar/data/1880792/0001104659-26-082651.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1880792/000110465926082651/tm2620027-1_4seq1.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001104659-26-082651.xml",
+      "sha256": "c3dc5a6f0028533331117b357efe61daaf12d0c179d9c05c437580dddf81690b",
+      "bytes": 7839
+    },
+    {
+      "cik": "1439222",
+      "company": "AGIOS PHARMACEUTICALS, INC.",
+      "date_filed": "20260710",
+      "file_name": "edgar/data/1439222/0001439222-26-000112.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1439222/000143922226000112/wk-form4_1783714678.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001439222-26-000112.xml",
+      "sha256": "05b99bb85106e712f025fd9aa69815411b4f96286256457c4959a9c91fd4ae31",
+      "bytes": 5531
+    },
+    {
+      "cik": "897077",
+      "company": "ALAMO GROUP INC",
+      "date_filed": "20260710",
+      "file_name": "edgar/data/897077/0002143589-26-000002.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/897077/000214358926000002/wk-form4_1783720041.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0002143589-26-000002.xml",
+      "sha256": "7540f0d850a23ec02066b4dc6b9de3243422822cab98a8a915feb4faee9dd0a4",
+      "bytes": 3331
+    },
+    {
+      "cik": "1280263",
+      "company": "AMBARELLA INC",
+      "date_filed": "20260710",
+      "file_name": "edgar/data/1280263/0001280263-26-000055.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1280263/000128026326000055/edgardoc.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001280263-26-000055.xml",
+      "sha256": "82f7688e52f8d34b3b4f5af8ba722206bf1e8faeb96235ae8757a39317871522",
+      "bytes": 3112
+    },
+    {
+      "cik": "1880438",
+      "company": "AN2 Therapeutics, Inc.",
+      "date_filed": "20260710",
+      "file_name": "edgar/data/1880438/0001193125-26-301092.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1880438/000119312526301092/ownership.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001193125-26-301092.xml",
+      "sha256": "aefe1ff4d36daa45148407d20f3d46178c49ffb3413d3187a51667d8dc45b05f",
+      "bytes": 4304
+    },
+    {
+      "cik": "1880438",
+      "company": "AN2 Therapeutics, Inc.",
+      "date_filed": "20260710",
+      "file_name": "edgar/data/1880438/0001193125-26-301165.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1880438/000119312526301165/ownership.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001193125-26-301165.xml",
+      "sha256": "2f6c55a3a9d1910a52e75d88bdde98c64762af1eb4fc77577fc5cb6a1fd36633",
+      "bytes": 3299
+    },
+    {
+      "cik": "1880438",
+      "company": "AN2 Therapeutics, Inc.",
+      "date_filed": "20260710",
+      "file_name": "edgar/data/1880438/0001193125-26-301166.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1880438/000119312526301166/ownership.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001193125-26-301166.xml",
+      "sha256": "ab8d4d4f9bd1c305588e381aa117cf5e9512fcba3bfb0a80ab07b1a1b5ca6162",
+      "bytes": 3300
+    },
+    {
+      "cik": "1880438",
+      "company": "AN2 Therapeutics, Inc.",
+      "date_filed": "20260710",
+      "file_name": "edgar/data/1880438/0001193125-26-301167.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1880438/000119312526301167/ownership.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001193125-26-301167.xml",
+      "sha256": "18b9dec78a0d1e7adcc60221b15701506d15adc9c3c963033a8399e262571825",
+      "bytes": 6040
+    },
+    {
+      "cik": "1439124",
+      "company": "AXIA Energia S.A.",
+      "date_filed": "20260710",
+      "file_name": "edgar/data/1439124/0001213900-26-076992.txt",
+      "xml_url": "https://www.sec.gov/Archives/edgar/data/1439124/000121390026076992/marketforms-73599.xml",
+      "saved_to": "C:/Users/sachi/OneDrive/Desktop/Latest Mycroft/mycroft_/insider-cluster-signals/data/raw/form4/0001213900-26-076992.xml",
+      "sha256": "8bdce61267f834698dc589aaecab61a9f855c4ac19341c9136b0160a29647961",
+      "bytes": 14509
+    }
+  ],
+  "errors": []
+}

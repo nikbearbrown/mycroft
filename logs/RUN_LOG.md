@@ -97,3 +97,87 @@ workflow changes.
   - Phase 2: Run full sample brief (company: "Anthropic") with all gates open (no human decision yet, just logging).
   - Phase 2: Generate `signals-validation-audit.md` (spot-check 10 signals, assess quality).
   - Phase 3: Solve Groq token limit (upgrade tier or secondary provider for news classification).
+
+## 2026-07-12 -- insider-cluster-signals: Week 1 data spine (new module, sample run)
+
+- **Recipe:** insider-cluster-signals/recipes/insider-cluster-signal-agent.md v0.1.0 (DRAFT)
+- **Inputs:** SEC EDGAR daily form index for 2026-07-10 (public, no credentials).
+- **Commands:**
+  - `python fetcher.py --date 2026-07-10 --limit 10` (live fetch, sample cap)
+  - `python parser.py` (raw -> verified validation gate)
+- **Gate decision (live network calls):** approved by Sachin Vishaul Baskar, 2026-07-12, in-session
+  instruction to begin Week 1 against live EDGAR. Scope: public EDGAR data only, sample mode
+  (limit 10), SEC fair-access policy honored (declared User-Agent, <10 req/s).
+- **Outputs:** module `data/verified/trades.json` (11 records, 0 rejects), fetch manifest with
+  SHA-256 per filing, module `logs/RUN_LOG.md` entry. Bulk raw XML gitignored (regenerable).
+- **Result:** 694 Form 4 filings in the 2026-07-10 index; 10 fetched, 0 errors; 11 transactions
+  extracted, all passed the 6-rule validation gate. Fetch -> parse -> verified chain proven live.
+- **Open issues:**
+  - `npm run verify` reports 2 pre-existing failures unrelated to this module
+    (`recipes/vendor-intelligence-brief.yaml`, `metadata.yaml`) — the YAML checker binary is
+    missing on this Windows environment ("operable program or batch file" = command-not-found).
+    Same failures reproduce on a clean tree. Logged here per the conformance rule; not fixed.
+  - Recipe was created after the first scripts (P6 ordering violation, corrected same day —
+    DRAFT recipe now carries the intent and open TODOs).
+
+## 2026-07-12 -- Addendum: conformance failures root-caused (environment, not files)
+
+- **Finding:** `scripts/conformance.mjs` invokes `python3` for YAML and Python checks
+  (lines 65, 67). `python3` does not exist on this Windows environment (`python` does),
+  so every .yaml and .py check fails with Windows command-not-found — including files that
+  are demonstrably valid (`insider-cluster-signals/*.py` pass `ast.parse` and executed live).
+- **Impact:** conformance is silently non-functional for yaml/py on Windows. The machine half
+  of P4 has a platform hole; CI (Linux) presumably unaffected.
+- **Action:** logged as a defect per P6; not fixed in this branch (out of module scope).
+
+## 2026-07-13 -- insider-cluster-signals: demo run, cluster candidate found in sample
+
+- **Recipe:** insider-cluster-signals/recipes/insider-cluster-signal-agent.md v0.1.0 (DRAFT)
+- **Commands:** `fetcher.py --date 2026-07-09 --limit 25` + `parser.py` (details in module RUN_LOG).
+- **Result:** corpus 57 verified records / 0 rejects; live cluster candidate (BBASX, 2 distinct
+  10%-owners, same-day buys); SHA-256 provenance chain re-verified. New validation gap logged
+  (ticker "NONE" passes non-empty rule) — fix scheduled with Week 2 enricher.
+
+## 2026-07-13 -- insider-cluster-signals: Week 2 complete — analytics layer + first real clusters
+
+- **Recipe:** insider-cluster-signal-agent v0.2.0 (DRAFT, todos 5->2).
+- **Delivered:** parser ticker-validation fix; price_fetcher (Yahoo v8 chart, stdlib — Stooq
+  re-decided after anti-bot wall, evidence in price manifest); enricher (30d SPY-adjusted
+  alpha, congressional-sibling formula); cluster_analyzer (>=2 insiders/30d, role-weighted);
+  21 unit tests; scale run (stopped day 2; complete 2026-03-02 corpus of 1,460 filings).
+- **Results:** 2,471 verified records -> 114 enriched -> **6 real clusters** (best: CTEV +22.3,
+  LAW +24.4 mean 30d alpha; negatives reported too). One alpha hand-recomputed from raw CSVs,
+  matches pipeline exactly. Details: insider-cluster-signals/logs/RUN_LOG.md.
+
+## 2026-07-24 -- insider-cluster-signals: Weeks 3-4 — first full gated pipeline run
+
+- **Recipe:** insider-cluster-signal-agent v0.3.0 (DRAFT, todos 2->1; Gate-3 APPROVE remains,
+  human-only by design).
+- **Result:** pipeline (conformance halt-gate -> cluster -> score -> research -> report) ran
+  end-to-end on the March corpus: 6 clusters -> 5 STRONG / 1 WATCH; both break paths of the
+  conformance gate verified; dual agent/human outputs emitted; spot-check audit (19 filings)
+  and unsigned attestation draft prepared. Details: insider-cluster-signals/logs/RUN_LOG.md.
+
+## 2026-07-24 -- insider-cluster-signals: Week 5 — dedupe TODO closed + cross-regime study
+
+- **Recipe:** insider-cluster-signal-agent v0.3.0 (DRAFT; no lifecycle change).
+- **Result:** fetcher joint-filer dedupe (suite 32/32); congressional PR #3 clusters imported
+  with provenance (raw, shape-validated) and compared: corporate n=6 mean 30d alpha +10.25%
+  vs congressional n=369 mean +0.38%; key finding — their tiers classify on realized alpha
+  (look-ahead), ours don't, so tier-level comparison is void by construction. Report:
+  insider-cluster-signals/reports/cross_regime_study.md.
+
+## 2026-07-24 -- insider-cluster-signals: Week 6 — static signal dashboard
+
+- **Recipe:** insider-cluster-signal-agent v0.3.0 (DRAFT; dashboard is an additional P5
+  human artifact, no lifecycle change).
+- **Result:** `build_dashboard.py` -> self-contained `reports/dashboard.html` (6 signal
+  cards, evidence drawers to EDGAR, Gate-3 worksheet as reading aid). brutalist/DESIGN.md
+  palette compliance enforced by unit test. Suite 38/38.
+
+## 2026-07-27 -- insider-cluster-signals: full-system E2E verification (backend + Playwright)
+
+- **Result:** 10/10 backend checks (incl. 3 live-network probes banked before the connection
+  dropped; full local suite then re-passed offline) and 19/19 Playwright frontend checks.
+  One real defect found and fixed (mobile overflow in dashboard count tiles). Evidence:
+  insider-cluster-signals/logs/RUN_LOG.md 2026-07-27 entry.

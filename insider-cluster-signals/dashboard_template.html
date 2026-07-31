@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insider Cluster Signals — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* brutalist/DESIGN.md — the complete palette; no other hex values appear in this file */
+  :root {
+    --color-white:     #FFFFFF;
+    --color-ink:       #2a1a0e;
+    --color-red:       #C8102E;
+    --color-secondary: #545454;
+    --color-border:    #D4D4D4;
+    --color-ochre:     #C8860E;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--color-white);
+    color: var(--color-ink);
+    font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif;
+    font-size: 15px; line-height: 1.55;
+    max-width: 960px; margin: 0 auto; padding: 40px 24px 80px;
+  }
+  h1 {
+    font-family: 'EB Garamond', 'Garamond', Georgia, serif;
+    font-size: 40px; line-height: 1.15; font-weight: 400; margin-bottom: 6px;
+  }
+  h2 {
+    font-family: 'EB Garamond', 'Garamond', Georgia, serif;
+    font-size: 28px; font-weight: 400; margin: 40px 0 14px;
+    border-bottom: 1px solid var(--color-border); padding-bottom: 8px;
+  }
+  .sub { color: var(--color-secondary); font-size: 13px; }
+  .disclaimer {
+    border-left: 3px solid var(--color-ochre);
+    padding: 8px 14px; margin: 18px 0 26px;
+    color: var(--color-secondary); font-size: 13px;
+  }
+  .counts { display: flex; flex-wrap: wrap; gap: 24px; margin: 18px 0 8px; }
+  .sub { overflow-wrap: anywhere; }
+  .count { border: 1px solid var(--color-border); padding: 10px 18px; text-align: center; }
+  .count b { display: block; font-size: 26px; font-family: 'JetBrains Mono', monospace; }
+  .count span { font-size: 11px; letter-spacing: 0.08em; color: var(--color-secondary); }
+
+  .filters { margin: 22px 0 14px; display: flex; gap: 8px; }
+  .filters button {
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+    background: var(--color-white); color: var(--color-ink);
+    border: 1px solid var(--color-border); padding: 6px 16px; cursor: pointer;
+  }
+  .filters button.active { border-color: var(--color-ink); background: var(--color-ink); color: var(--color-white); }
+
+  .card { border: 1px solid var(--color-border); padding: 18px 20px; margin-bottom: 16px; }
+  .card-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .ticker { font-family: 'JetBrains Mono', monospace; font-size: 21px; font-weight: 700; }
+  .issuer { color: var(--color-secondary); font-size: 14px; flex: 1; }
+  .badge {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    padding: 3px 10px; border: 1px solid;
+  }
+  .badge.STRONG { color: var(--color-red); border-color: var(--color-red); }   /* red = emphasis (brand rule) */
+  .badge.WATCH  { color: var(--color-secondary); border-color: var(--color-secondary); }
+  .badge.SKIP   { color: var(--color-secondary); border-color: var(--color-border); }
+
+  .meta { display: flex; gap: 26px; flex-wrap: wrap; margin: 12px 0; font-size: 13px; }
+  .meta div span { display: block; color: var(--color-secondary); font-size: 11px; letter-spacing: 0.05em; }
+  .meta div b { font-family: 'JetBrains Mono', monospace; font-weight: 400; }
+
+  /* alpha bar: ink for positive, secondary for negative — red never encodes valence (DESIGN.md) */
+  .alpha-row { display: flex; align-items: center; gap: 10px; margin: 6px 0 12px; }
+  .alpha-track { position: relative; height: 10px; flex: 1; background: var(--color-white); border: 1px solid var(--color-border); }
+  .alpha-fill { position: absolute; top: 0; height: 100%; }
+  .alpha-fill.pos { background: var(--color-ink); }
+  .alpha-fill.neg { background: var(--color-secondary); }
+  .alpha-zero { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--color-border); }
+  .alpha-num { font-family: 'JetBrains Mono', monospace; font-size: 13px; min-width: 84px; text-align: right; }
+
+  .members { font-size: 13px; margin: 8px 0; }
+  .members li { margin-left: 18px; margin-bottom: 2px; }
+  .role { color: var(--color-secondary); }
+  .reason { font-size: 13px; color: var(--color-secondary); font-style: italic; }
+
+  details { margin-top: 10px; }
+  summary { cursor: pointer; font-size: 13px; font-weight: 600; }
+  .evidence li { margin-left: 18px; font-size: 12px; font-family: 'JetBrains Mono', monospace; margin-bottom: 3px; }
+  a { color: var(--color-ink); }
+  a:hover { color: var(--color-red); }
+
+  .audit-note { border-left: 3px solid var(--color-ochre); padding: 8px 14px; margin-bottom: 14px; color: var(--color-secondary); font-size: 13px; }
+  .audit-list li { list-style: none; font-size: 12px; font-family: 'JetBrains Mono', monospace; margin-bottom: 4px; }
+  footer { margin-top: 46px; border-top: 1px solid var(--color-border); padding-top: 14px; color: var(--color-secondary); font-size: 12px; }
+  footer li { margin-left: 18px; }
+</style>
+</head>
+<body>
+  <h1>Insider cluster signals</h1>
+  <div class="sub" id="runline"></div>
+  <div class="disclaimer">
+    Research only — not investment advice. Every number traces to SEC EDGAR filings
+    (evidence drawers below). Method &amp; gates: <code>recipes/insider-cluster-signal-agent.md</code>.
+  </div>
+
+  <div class="counts" id="counts"></div>
+
+  <div class="filters" id="filters">
+    <button data-tier="ALL" class="active">All</button>
+    <button data-tier="STRONG">STRONG</button>
+    <button data-tier="WATCH">WATCH</button>
+    <button data-tier="SKIP">SKIP</button>
+  </div>
+
+  <div id="cards"></div>
+
+  <h2>Gate-3 spot-check worksheet</h2>
+  <div class="audit-note">
+    Ticking boxes here is a reading aid only — the gate closes when a named human logs the
+    decision in <code>logs/RUN_LOG.md</code> (SNICKERDOODLE P4).
+  </div>
+  <ul class="audit-list" id="audit"></ul>
+
+  <footer>
+    <b>Limitations</b>
+    <ul>
+      <li>Corpus: one complete trading day (2026-03-02) + July samples — illustrative, not statistical.</li>
+      <li>Alpha: 30-calendar-day window vs SPY only; no sector adjustment, no transaction costs.</li>
+      <li>Tiers are deterministic trade-time rules; realized alpha never classifies (no look-ahead).</li>
+    </ul>
+  </footer>
+
+<script>
+const DATA = /*__DATA__*/;
+
+function fmtUsd(v){ return '$' + Math.round(v).toLocaleString('en-US'); }
+function alphaBar(a){
+  if (a === null) return '<div class="alpha-row"><span class="sub">alpha window not matured</span></div>';
+  const cap = 30, pct = Math.min(Math.abs(a), cap) / cap * 50;
+  const cls = a >= 0 ? 'pos' : 'neg';
+  const style = a >= 0 ? `left:50%;width:${pct}%` : `left:${50-pct}%;width:${pct}%`;
+  return `<div class="alpha-row"><div class="alpha-track"><div class="alpha-zero"></div>` +
+         `<div class="alpha-fill ${cls}" style="${style}"></div></div>` +
+         `<div class="alpha-num">${a >= 0 ? '+' : ''}${a.toFixed(2)}%</div></div>`;
+}
+function card(s){
+  const members = s.members.map(m =>
+    `<li><b>${m.owner_name}</b> <span class="role">(${m.role}${m.officer_title ? ' — ' + m.officer_title : ''})</span>` +
+    ` — ${Math.round(m.shares).toLocaleString('en-US')} sh, ${fmtUsd(m.value_usd)}</li>`).join('');
+  const evidence = s.evidence.map(e =>
+    `<li><a href="${e.url}" target="_blank" rel="noopener">${e.accession}</a> <span class="role">sha256 ${e.sha256}</span></li>`).join('');
+  return `<div class="card" data-tier="${s.signal}">
+    <div class="card-head"><span class="ticker">${s.ticker}</span>
+      <span class="issuer">${s.issuer_name}</span><span class="badge ${s.signal}">${s.signal}</span></div>
+    <div class="meta">
+      <div><span>WINDOW</span><b>${s.window.start} → ${s.window.end}</b></div>
+      <div><span>INSIDERS</span><b>${s.n_insiders}</b></div>
+      <div><span>TRADES</span><b>${s.n_trades}</b></div>
+      <div><span>TOTAL VALUE</span><b>${fmtUsd(s.total_value_usd)}</b></div>
+      <div><span>CONVICTION</span><b>${s.weighted_conviction} (rank ${s.rank_score})</b></div>
+    </div>
+    <span class="sub">mean 30d alpha vs SPY</span>${alphaBar(s.mean_alpha_30d)}
+    <ul class="members">${members}</ul>
+    <div class="reason">${s.signal_reason}</div>
+    <details><summary>Evidence — ${s.evidence.length} EDGAR filings</summary><ul class="evidence">${evidence}</ul></details>
+  </div>`;
+}
+
+document.getElementById('runline').textContent =
+  `run ${DATA.run.run_id} · generated ${DATA.run.generated_at} · corpus: ${DATA.run.corpus} · research: ${DATA.run.research_mode}`;
+document.getElementById('counts').innerHTML =
+  `<div class="count"><b>${DATA.run.strong}</b><span>STRONG</span></div>` +
+  `<div class="count"><b>${DATA.run.watch}</b><span>WATCH</span></div>` +
+  `<div class="count"><b>${DATA.run.skip}</b><span>SKIP</span></div>` +
+  `<div class="count"><b>${DATA.signals.length}</b><span>CLUSTERS</span></div>`;
+document.getElementById('cards').innerHTML = DATA.signals.map(card).join('');
+document.getElementById('audit').innerHTML = DATA.audit.map(a =>
+  `<li><label><input type="checkbox"> <a href="${a.url}" target="_blank" rel="noopener">${a.accession}</a>` +
+  ` <span class="role">(${a.ticker})</span></label></li>`).join('');
+
+document.getElementById('filters').addEventListener('click', e => {
+  if (e.target.tagName !== 'BUTTON') return;
+  document.querySelectorAll('.filters button').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  const tier = e.target.dataset.tier;
+  document.querySelectorAll('.card').forEach(c =>
+    c.style.display = (tier === 'ALL' || c.dataset.tier === tier) ? '' : 'none');
+});
+</script>
+</body>
+</html>

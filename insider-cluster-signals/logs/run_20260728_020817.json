@@ -1,0 +1,360 @@
+{
+  "run_id": "20260728_020817",
+  "generated_at": "2026-07-28T02:08:18.009277+00:00",
+  "mode": "dialogic",
+  "conformance": {
+    "failed": false,
+    "findings": [
+      "OK: 2471 verified trades, 114 enriched (112 with matured alpha)"
+    ]
+  },
+  "clusters_found": 6,
+  "strong": 5,
+  "watch": 1,
+  "skip": 0,
+  "research_mode": "rule-based fallback (no ANTHROPIC_API_KEY)",
+  "source_manifests": [
+    "fetch-manifest-20260302.json",
+    "fetch-manifest-20260709.json",
+    "fetch-manifest-20260710.json",
+    "price-manifest-20260713.json"
+  ],
+  "signals": [
+    {
+      "ticker": "GENB",
+      "issuer_name": "Generate Biomedicines, Inc.",
+      "window": {
+        "start": "2026-03-02",
+        "end": "2026-03-02"
+      },
+      "n_insiders": 4,
+      "n_trades": 11,
+      "total_shares": 9378800.0,
+      "total_value_usd": 150060800.0,
+      "weighted_conviction": 5.0,
+      "mean_alpha_30d": 13.9041,
+      "trades_with_alpha": 11,
+      "members": [
+        {
+          "owner_cik": "0002109011",
+          "owner_name": "Silvers Jason",
+          "role": "officer",
+          "role_weight": 1.5,
+          "officer_title": "President & CFO",
+          "trades": 3,
+          "shares": 2000.0,
+          "value_usd": 32000.0
+        },
+        {
+          "owner_cik": "0002109144",
+          "owner_name": "Grous Beth",
+          "role": "officer",
+          "role_weight": 1.5,
+          "officer_title": "Chief People Officer",
+          "trades": 1,
+          "shares": 300.0,
+          "value_usd": 4800.0
+        },
+        {
+          "owner_cik": "0001222012",
+          "owner_name": "AFEYAN NOUBAR",
+          "role": "director",
+          "role_weight": 1.0,
+          "officer_title": "",
+          "trades": 6,
+          "shares": 9375000.0,
+          "value_usd": 150000000.0
+        },
+        {
+          "owner_cik": "0001672424",
+          "owner_name": "Mendillo Jane L",
+          "role": "director",
+          "role_weight": 1.0,
+          "officer_title": "",
+          "trades": 1,
+          "shares": 1500.0,
+          "value_usd": 24000.0
+        }
+      ],
+      "accessions": [
+        "0001193125-26-085855",
+        "0001193125-26-085872",
+        "0001193125-26-085888",
+        "0001193125-26-085898",
+        "0001193125-26-085939"
+      ],
+      "signal": "STRONG",
+      "signal_reason": "4 distinct insiders in one 2026-03-02..2026-03-02 window",
+      "rank_score": 9.0881,
+      "research_note": "4 insiders (Silvers Jason (officer), Grous Beth (officer), AFEYAN NOUBAR (director), Mendillo Jane L (director)) bought GENB (Generate Biomedicines, Inc.) between 2026-03-02 and 2026-03-02; total $150,060,800; mean 30d alpha vs SPY +13.90% over 11 priced trades. [rule-based note]"
+    },
+    {
+      "ticker": "LRMR",
+      "issuer_name": "Larimar Therapeutics, Inc.",
+      "window": {
+        "start": "2026-02-27",
+        "end": "2026-02-27"
+      },
+      "n_insiders": 4,
+      "n_trades": 7,
+      "total_shares": 5110000.0,
+      "total_value_usd": 25550000.0,
+      "weighted_conviction": 4.0,
+      "mean_alpha_30d": -5.4287,
+      "trades_with_alpha": 7,
+      "members": [
+        {
+          "owner_cik": "0001230482",
+          "owner_name": "SHERMAN JEFFREY W",
+          "role": "director",
+          "role_weight": 1.0,
+          "officer_title": "",
+          "trades": 1,
+          "shares": 5000.0,
+          "value_usd": 25000.0
+        },
+        {
+          "owner_cik": "0001242616",
+          "owner_name": "THOMAS FRANK E",
+          "role": "director",
+          "role_weight": 1.0,
+          "officer_title": "",
+          "trades": 1,
+          "shares": 5000.0,
+          "value_usd": 25000.0
+        },
+        {
+          "owner_cik": "0001769848",
+          "owner_name": "Hamilton Thomas Edward",
+          "role": "director",
+          "role_weight": 1.0,
+          "officer_title": "",
+          "trades": 1,
+          "shares": 100000.0,
+          "value_usd": 500000.0
+        },
+        {
+          "owner_cik": "0001352546",
+          "owner_name": "Flynn James E",
+          "role": "director",
+          "role_weight": 1.0,
+          "officer_title": "",
+          "trades": 4,
+          "shares": 5000000.0,
+          "value_usd": 25000000.0
+        }
+      ],
+      "accessions": [
+        "0001193125-26-085510",
+        "0001193125-26-085514",
+        "0001193125-26-085515",
+        "0001193805-26-000205"
+      ],
+      "signal": "STRONG",
+      "signal_reason": "4 distinct insiders in one 2026-02-27..2026-02-27 window",
+      "rank_score": 7.7037,
+      "research_note": "4 insiders (SHERMAN JEFFREY W (director), THOMAS FRANK E (director), Hamilton Thomas Edward (director), Flynn James E (director)) bought LRMR (Larimar Therapeutics, Inc.) between 2026-02-27 and 2026-02-27; total $25,550,000; mean 30d alpha vs SPY -5.43% over 7 priced trades. [rule-based note]"
+    },
+    {
+      "ticker": "CTEV",
+      "issuer_name": "Claritev Corp",
+      "window": {
+        "start": "2026-02-27",
+        "end": "2026-03-02"
+      },
+      "n_insiders": 3,
+      "n_trades": 3,
+      "total_shares": 46130.0,
+      "total_value_usd": 638625.2,
+      "weighted_conviction": 4.5,
+      "mean_alpha_30d": 22.3451,
+      "trades_with_alpha": 3,
+      "members": [
+        {
+          "owner_cik": "0001828369",
+          "owner_name": "Kim Michael",
+          "role": "officer",
+          "role_weight": 1.5,
+          "officer_title": "EVP, Chief Digital Officer",
+          "trades": 1,
+          "shares": 30000.0,
+          "value_usd": 428955.0
+        },
+        {
+          "owner_cik": "0001841409",
+          "owner_name": "Dalton Travis",
+          "role": "officer",
+          "role_weight": 1.5,
+          "officer_title": "Pres., CEO & Executive Chair",
+          "trades": 1,
+          "shares": 15380.0,
+          "value_usd": 199927.696
+        },
+        {
+          "owner_cik": "0002036762",
+          "owner_name": "O'Neil Tara",
+          "role": "officer",
+          "role_weight": 1.5,
+          "officer_title": "SVP, General Counsel",
+          "trades": 1,
+          "shares": 750.0,
+          "value_usd": 9742.5
+        }
+      ],
+      "accessions": [
+        "0001828369-26-000005",
+        "0001841409-26-000003",
+        "0002036762-26-000005"
+      ],
+      "signal": "STRONG",
+      "signal_reason": "3 distinct insiders in one 2026-02-27..2026-03-02 window",
+      "rank_score": 7.4026,
+      "research_note": "3 insiders (Kim Michael (officer), Dalton Travis (officer), O'Neil Tara (officer)) bought CTEV (Claritev Corp) between 2026-02-27 and 2026-03-02; total $638,625; mean 30d alpha vs SPY +22.35% over 3 priced trades. [rule-based note]"
+    },
+    {
+      "ticker": "TNC",
+      "issuer_name": "TENNANT CO",
+      "window": {
+        "start": "2026-02-26",
+        "end": "2026-03-02"
+      },
+      "n_insiders": 3,
+      "n_trades": 6,
+      "total_shares": 20163.0,
+      "total_value_usd": 1261669.97,
+      "weighted_conviction": 3.5,
+      "mean_alpha_30d": 15.5463,
+      "trades_with_alpha": 6,
+      "members": [
+        {
+          "owner_cik": "0001624242",
+          "owner_name": "Huml David W.",
+          "role": "officer",
+          "role_weight": 1.5,
+          "officer_title": "PRESIDENT AND CEO",
+          "trades": 3,
+          "shares": 4000.0,
+          "value_usd": 257560.305
+        },
+        {
+          "owner_cik": "0001406019",
+          "owner_name": "Mulligan Donal L",
+          "role": "director",
+          "role_weight": 1.0,
+          "officer_title": "",
+          "trades": 2,
+          "shares": 8000.0,
+          "value_usd": 504130.0
+        },
+        {
+          "owner_cik": "0002036886",
+          "owner_name": "Glerum James T Jr.",
+          "role": "director",
+          "role_weight": 1.0,
+          "officer_title": "",
+          "trades": 1,
+          "shares": 8163.0,
+          "value_usd": 499979.66849999997
+        }
+      ],
+      "accessions": [
+        "0001406019-26-000002",
+        "0001624242-26-000002",
+        "0002036886-26-000005"
+      ],
+      "signal": "STRONG",
+      "signal_reason": "3 distinct insiders in one 2026-02-26..2026-03-02 window",
+      "rank_score": 6.5505,
+      "research_note": "3 insiders (Huml David W. (officer), Mulligan Donal L (director), Glerum James T Jr. (director)) bought TNC (TENNANT CO) between 2026-02-26 and 2026-03-02; total $1,261,670; mean 30d alpha vs SPY +15.55% over 6 priced trades. [rule-based note]"
+    },
+    {
+      "ticker": "LAW",
+      "issuer_name": "CS Disco, Inc.",
+      "window": {
+        "start": "2026-02-26",
+        "end": "2026-02-27"
+      },
+      "n_insiders": 2,
+      "n_trades": 3,
+      "total_shares": 60500.0,
+      "total_value_usd": 188800.0,
+      "weighted_conviction": 2.5,
+      "mean_alpha_30d": 24.3642,
+      "trades_with_alpha": 3,
+      "members": [
+        {
+          "owner_cik": "0002019077",
+          "owner_name": "Friedrichsen Eric",
+          "role": "officer",
+          "role_weight": 1.5,
+          "officer_title": "Chief Executive Officer",
+          "trades": 1,
+          "shares": 15500.0,
+          "value_usd": 44950.0
+        },
+        {
+          "owner_cik": "0001439921",
+          "owner_name": "Srinivasan Krishna",
+          "role": "director",
+          "role_weight": 1.0,
+          "officer_title": "",
+          "trades": 2,
+          "shares": 45000.0,
+          "value_usd": 143850.0
+        }
+      ],
+      "accessions": [
+        "0001625641-26-000063",
+        "0001625641-26-000065"
+      ],
+      "signal": "STRONG",
+      "signal_reason": "conviction 2.5 >= 2.5 and value $188,800 >= $100,000",
+      "rank_score": 5.138,
+      "research_note": "2 insiders (Friedrichsen Eric (officer), Srinivasan Krishna (director)) bought LAW (CS Disco, Inc.) between 2026-02-26 and 2026-02-27; total $188,800; mean 30d alpha vs SPY +24.36% over 3 priced trades. [rule-based note]"
+    },
+    {
+      "ticker": "PVLA",
+      "issuer_name": "PALVELLA THERAPEUTICS, INC.",
+      "window": {
+        "start": "2026-02-27",
+        "end": "2026-02-27"
+      },
+      "n_insiders": 2,
+      "n_trades": 2,
+      "total_shares": 6400.0,
+      "total_value_usd": 800000.0,
+      "weighted_conviction": 2.0,
+      "mean_alpha_30d": -9.2096,
+      "trades_with_alpha": 2,
+      "members": [
+        {
+          "owner_cik": "0001235471",
+          "owner_name": "HERON ELAINE J",
+          "role": "director",
+          "role_weight": 1.0,
+          "officer_title": "",
+          "trades": 1,
+          "shares": 2400.0,
+          "value_usd": 300000.0
+        },
+        {
+          "owner_cik": "0001271081",
+          "owner_name": "JENKINS GEORGE M",
+          "role": "director",
+          "role_weight": 1.0,
+          "officer_title": "",
+          "trades": 1,
+          "shares": 4000.0,
+          "value_usd": 500000.0
+        }
+      ],
+      "accessions": [
+        "0001104659-26-021921",
+        "0001104659-26-021922"
+      ],
+      "signal": "WATCH",
+      "signal_reason": "2-insider cluster above the noise floor without a STRONG trigger",
+      "rank_score": 4.9515
+    }
+  ]
+}
