@@ -290,3 +290,20 @@ workflow changes.
   - [OPEN] `eval_runner.py` is not wired to any Mycroft phase gate. It reports; nothing
     yet requires it to pass before a brief ships. Deliberate for now — a gate is a hard
     stop and needs a named owner.
+## 2026-07-26 -- Implement Mycroft Finance Investigator Weeks 1-3
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); no lifecycle promotion or human gate clearance attempted.
+- **Inputs:** Local synthetic finance pack in `data/raw/mycroft-finance-investigator/` containing provenance, account mapping, budget, actuals, ledger, customer drivers, and headcount drivers for one sample entity and period.
+- **Commands:** Ran `python3 -m unittest discover -s tests -v`; ran `python3 -m mycroft_finance_investigator.cli all --run-id sample-2026-02`; parsed generated JSON; reviewed the validation audit and human report; ran targeted `node scripts/conformance.mjs`; parsed `pyproject.toml`; ran `git diff --check`; ran `npm run verify`.
+- **Outputs:** `projects/Mycroft-Finance-Investigator/`; `recipes/mycroft-finance-investigator.md`; `conductor/mycroft-finance-investigator.md`; `reports/templates/mycroft-finance-investigator.md`; `data/verified/mycroft-finance-investigator/`; `logs/mycroft-finance-investigator-sample-2026-02.json`; `reports/generated/mycroft-finance-investigator-sample-2026-02.md`; updated data contract, indexes, and current status.
+- **Result:** All 12 unit tests pass, including deliberate ledger-mismatch, unmapped-account, agent-step-limit, and complete-category-bridge checks. Validation accepted 43 synthetic rows across six datasets; account coverage, single period/entity scope, actuals-to-ledger, customer-to-revenue, and headcount-to-payroll checks reconciled. The deterministic bridge calculated sample budget EBITDA of 350000.00 and actual EBITDA of 230000.00, a -120000.00 variance. The investigator completed seven conditionally selected tool steps, retained 41 evidence references, wrote separate machine/human artifacts, and kept the human gate open. Targeted conformance and repository-wide verification pass.
+- **Open issues:** The 10000.00 materiality amount is a demo fixture, not an approved finance policy. No human has supplied or approved causal explanations or authorized distribution. The local policy demonstrates the stateful observe-plan-act contract without a hosted model; an LLM planning policy, persistent database, reviewer agent, scenario engine, and UI remain future-week work.
+
+## 2026-07-31 -- Add Finance Investigator human review gate
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); no human decision or lifecycle promotion recorded.
+- **Inputs:** Completed synthetic sample run `logs/mycroft-finance-investigator-sample-2026-02.json` and its 41 evidence references.
+- **Commands:** Ran the project unit suite; generated an open review request with `review-request`; parsed the artifact; ran targeted conformance and repository verification.
+- **Outputs:** `mycroft_finance_investigator/review.py`; `schemas/review-decision.schema.json`; review CLI commands; `logs/gate-decisions/mycroft-finance-investigator-sample-2026-02-review-request.json`; review tests and updated contracts.
+- **Result:** The review gate binds decisions to the exact run hash, rejects agent identities and unknown evidence, requires evidence-backed explanations for approval, and refuses to overwrite a recorded decision. The committed sample request is `OPEN`; it is not an approval.
+- **Open issues:** No named finance reviewer has completed the request. Demo materiality, causal adequacy, and distribution remain human decisions.

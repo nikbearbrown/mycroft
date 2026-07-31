@@ -1,0 +1,42 @@
+# Mycroft Integration — Finance Investigator
+
+## Purpose
+
+This project is the runnable sample implementation for an agentic monthly
+performance investigation. It applies the preparation-versus-judgment boundary
+from `chapters/06-monthly-variance-pack.md`.
+
+## Canonical Contracts
+
+- Recipe: `recipes/mycroft-finance-investigator.md`
+- Conductor: `conductor/mycroft-finance-investigator.md`
+- Raw data: `data/raw/mycroft-finance-investigator/`
+- Verified data: `data/verified/mycroft-finance-investigator/`
+- Human report template: `reports/templates/mycroft-finance-investigator.md`
+- Status: `DRAFT`
+
+## Labor Boundary
+
+- Machines validate, reconcile, calculate, rank, flag, and attach source rows.
+- The investigator plans which deterministic tools to run and surfaces missing
+  evidence.
+- Humans set production materiality, confirm causal explanations, judge
+  adequacy, and authorize distribution.
+
+The review gate is implemented in `mycroft_finance_investigator/review.py`.
+Review requests are bound to the source run hash. A named human supplies the
+decision; the recorder verifies cited evidence, prevents agent self-approval,
+and writes a new artifact without overwriting an earlier decision.
+
+The investigator must never convert a numerical variance into a causal claim.
+Its output may identify which customer, account, or department records move
+with the variance, but the reason for that movement remains owner-required.
+
+## Sample Classification
+
+All included company and transaction records are synthetic. They are designed
+to exercise the software and do not describe a real company, issuer, employee,
+customer, or investment.
+
+The committed sample review request remains `OPEN`. It is not a human decision
+and does not promote the recipe.

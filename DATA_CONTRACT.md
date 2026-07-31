@@ -17,6 +17,17 @@ Generated audits and reports should sit beside the data they inspect and use
 | `ai_company_signals` | PostgreSQL (4 ingest pipelines: EDGAR, GitHub, ArXiv, News RSS/scraping) | Production DB (external) | `data/verified/ai_company_signals/` + schema in `data/verified/ai_company_signals-schema.yaml` (v0.2.0) | **Phase 2: Signal Validation — PARTIALLY CLEARED.** Entity verification cleared 2026-08-22 by Muskan Khandelwal (batch-level: entity audit + 782-row purge, evidence in `logs/RUN_LOG.md#2026-08-22`). Still open: per-signal human review of source URL + score confidence. | Muskan Khandelwal |
 | `company-competitive-graph` | Neo4j (50 Company nodes + 8 Investor nodes; COMPETES_WITH, BACKED_BY edges) | Production DB (external) | `data/verified/company-graph.json` (quarterly snapshot) | Implicit: Neo4j query accuracy spot-checked before brief generation | Graph ingest owner (TBD) |
 
+## Mycroft Finance Investigator Data Layer
+
+| Dataset | Raw Source | Raw Location | Verified Location | Gate | Owner |
+|---|---|---|---|---|---|
+| `monthly-performance-sample` | Locally created synthetic budget, actual, ledger, customer, headcount, mapping, and provenance records | `data/raw/mycroft-finance-investigator/` | `data/verified/mycroft-finance-investigator/` | Provenance, schema, single-period/entity scope, account mapping, actuals-to-ledger reconciliation, customer-to-revenue reconciliation, headcount-to-payroll reconciliation, human materiality, and named human release review | Finance reviewer (TBD) |
+
+The included finance pack is synthetic and may support software verification
+only. Validation can establish structural conformance and control-total
+reconciliation. It cannot approve the demo materiality amount, a causal
+explanation, or distribution.
+
 ## Rules
 
 - Check local data before external lookup.
@@ -31,3 +42,4 @@ Generated audits and reports should sit beside the data they inspect and use
   `data/verified/ai_company_signals-schema.yaml`.
 - An audit that removes failing rows does not certify the rows that remain. Say which
   of the two a gate decision rests on.
+- Finance-investigator outputs must retain their source hashes, validation audit, calculation lineage, tool trace, open human gate, and blank owner-required explanation until review. Human decisions must be run-bound, evidence-backed, named, and append-only.
