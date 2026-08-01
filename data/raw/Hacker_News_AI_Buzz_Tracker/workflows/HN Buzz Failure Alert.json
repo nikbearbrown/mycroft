@@ -1,0 +1,68 @@
+{
+  "name": "HN Buzz Failure Alert",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        0
+      ],
+      "id": "b86df235-fdf7-444b-b781-916ec8a612f2",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "fromEmail": "maliom9393@gmail.com",
+        "toEmail": "maliom9393@gmail.com",
+        "subject": "⚠️ HN Buzz pipeline FAILED",
+        "html": "=<h2>⚠️ Hacker News AI Buzz — pipeline failure</h2>\n<table border=\"1\" cellpadding=\"6\" style=\"border-collapse:collapse;font-family:sans-serif\">\n  <tr><td><b>Workflow</b></td><td>{{ $json.workflow.name }}</td></tr>\n  <tr><td><b>Failed node</b></td><td>{{ $json.execution.error.node.name }}</td></tr>\n  <tr><td><b>Error</b></td><td>{{ $json.execution.error.message }}</td></tr>\n  <tr><td><b>Started</b></td><td>{{ $json.execution.startedAt }}</td></tr>\n  <tr><td><b>Mode</b></td><td>{{ $json.execution.mode }}</td></tr>\n</table>\n<p><a href=\"{{ $json.execution.url }}\">Open execution in n8n →</a></p>\n<pre style=\"background:#f6f6f6;padding:10px;font-size:12px\">{{ $json.execution.error.stack }}</pre>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        32,
+        0
+      ],
+      "id": "9b6be25a-6dd0-4ef0-b9b6-c1f558e614f6",
+      "name": "Send an Email",
+      "webhookId": "cf40cfb6-5b28-497a-b150-0bd585f1001d",
+      "credentials": {
+        "smtp": {
+          "id": "OrMIYXVynix2p7gH",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "38506b61-3171-41f9-89b0-68fdf6ee8051",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d0a68b696e02b2fc92bad4789630b17f2998255dc1653cae92dc42ce1fb35cfe"
+  },
+  "nodeGroups": [],
+  "id": "qFWaHv9Ns03089jf",
+  "tags": []
+}
