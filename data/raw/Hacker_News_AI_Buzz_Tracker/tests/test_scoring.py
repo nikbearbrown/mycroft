@@ -86,38 +86,28 @@ def _score_one(entity, story_count, points, comments, fp_count):
 
 def test_acceleration():
     """Verify velocity: cold start = 0, growth positive, decline negative, bounds respected."""
-    results = []
-
     # Case 1 — cold start: no previous run at all → velocity 0, coldStart True.
     out = func([_entity_item("NVIDIA", 8, 13, 1, 0)])
     d = out[0]["json"]
-    results.append(("cold_start_no_prev",
-                    d["velocity"] == 0.0 and d["coldStart"] is True))
+    assert d["velocity"] == 0.0 and d["coldStart"] is True
 
     # Case 2 — unchanged base → velocity ~0, coldStart False.
     prev = [_score_one("OpenAI", 42, 1027, 900, 3)]
     out = func([_prev_run_item(prev), _entity_item("OpenAI", 42, 1027, 900, 3)])
     d = out[0]["json"]
-    results.append(("unchanged_base_zero_velocity",
-                    abs(d["velocity"]) <= 0.2 and d["coldStart"] is False))
+    assert abs(d["velocity"]) <= 0.2 and d["coldStart"] is False
 
     # Case 3 — decline → negative velocity (base fell vs prior run).
     prev = [_score_one("NVIDIA", 20, 400, 100, 2)]
     out = func([_prev_run_item(prev), _entity_item("NVIDIA", 8, 13, 1, 0)])
     d = out[0]["json"]
-    results.append(("decline_negative_velocity", d["velocity"] < 0))
+    assert d["velocity"] < 0
 
     # Case 4 — surge → positive velocity, capped at ACCEL_MAX*20 = +40.
     prev = [_score_one("Mistral", 1, 5, 1, 0)]
     out = func([_prev_run_item(prev), _entity_item("Mistral", 30, 5000, 3000, 6)])
     d = out[0]["json"]
-    results.append(("surge_positive_capped",
-                    d["velocity"] > 0 and d["velocity"] <= 20 * ACCEL_MAX))
-
-    passed = sum(1 for _, ok in results if ok)
-    for name, ok in results:
-        print(f"{'PASS' if ok else 'FAIL'}  [accel:{name}]")
-    return passed, len(results) - passed
+    assert d["velocity"] > 0 and d["velocity"] <= 20 * ACCEL_MAX
 
 
 # ---------------------------------------------------------------------------
@@ -168,9 +158,14 @@ def run_tests():
             passed += 1
             print(f"PASS  [{fid}]  buzz={buzz}  components={components}")
 
-    accel_passed, accel_failed = test_acceleration()
-    passed += accel_passed
-    failed += accel_failed
+    try:
+        test_acceleration()
+    except AssertionError as exc:
+        failed += 1
+        print(f"FAIL  [accel]  {exc}")
+    else:
+        passed += 1
+        print("PASS  [accel]")
 
     print(f"\n{passed} passed, {failed} failed")
     if failed:

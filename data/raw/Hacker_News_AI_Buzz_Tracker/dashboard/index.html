@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hacker News AI Buzz Tracker — Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+  // n8n's "Inject Config" Code node replaces these two tokens with the real
+  // values from its own environment variables before responding to the
+  // webhook request. Each token appears exactly once here — the loader below
+  // detects "still literally %%...%%" (never replaced) as the signal to fall
+  // back to mock mode, e.g. when this file is opened directly or via
+  // python -m http.server instead of through n8n.
+  window.__SUPABASE_URL__ = "%%SUPABASE_URL%%";
+  window.__SUPABASE_ANON_KEY__ = "%%SUPABASE_ANON_KEY%%";
+</script>
+<style>
+  :root {
+    --color-white:     #FFFFFF;
+    --color-ink:       #2a1a0e;
+    --color-red:       #C8102E;
+    --color-secondary: #545454;
+    --color-border:    #D4D4D4;
+    --color-ochre:     #C8860E;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-white:     #111111;
+      --color-ink:       #F0EBE3;
+      --color-red:       #E8243A;
+      --color-secondary: #A0978C;
+      --color-border:    #2E2E2E;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--color-white);
+    color: var(--color-ink);
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    padding: 24px;
+  }
+  header { margin-bottom: 20px; border-bottom: 1px solid var(--color-border); padding-bottom: 12px; }
+  header h1 { margin: 0 0 4px 0; font-size: 1.4rem; }
+  header p { margin: 0; color: var(--color-secondary); font-size: 0.85rem; }
+  #status { font-size: 0.8rem; color: var(--color-secondary); margin-top: 6px; }
+  #status.error { color: var(--color-red); }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 16px;
+  }
+  .card h2 { margin: 0 0 12px 0; font-size: 1rem; }
+  .card .caption { color: var(--color-secondary); font-size: 0.75rem; margin-top: 8px; }
+  select { font-size: 0.85rem; padding: 4px; margin-bottom: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--color-border); }
+  th { color: var(--color-secondary); font-weight: 600; }
+  .breakout { color: var(--color-red); font-weight: 600; }
+  .low-confidence { color: var(--color-secondary); font-style: italic; }
+  .placeholder { color: var(--color-secondary); font-size: 0.85rem; padding: 20px 0; text-align: center; }
+  /* Community Opinion panel (Week 9) */
+  .opinion-panel { max-height: 460px; overflow-y: auto; }
+  .opinion { border-top: 1px solid var(--color-border); padding: 12px 2px; }
+  .opinion:first-child { border-top: none; }
+  .opinion-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .opinion-head .name { font-weight: 600; font-size: 0.9rem; }
+  .pill { font-size: 0.68rem; padding: 1px 8px; border: 1px solid var(--color-border);
+          border-radius: 10px; color: var(--color-secondary); text-transform: uppercase;
+          letter-spacing: 0.03em; white-space: nowrap; }
+  /* Red is reserved for breakouts/primary series; ochre is the annotation accent
+     for negative/mixed sentiment (DESIGN.md — no green in the palette). */
+  .pill.neg, .pill.mixed { color: var(--color-ochre); border-color: var(--color-ochre); }
+  .opinion .summary { font-size: 0.82rem; margin: 4px 0; }
+  .opinion.low .summary, .opinion.degraded .summary { color: var(--color-secondary); font-style: italic; }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0; }
+  .chip { font-size: 0.68rem; padding: 1px 6px; border: 1px solid var(--color-border);
+          border-radius: 4px; color: var(--color-secondary); }
+  .opinion ul.quotes { margin: 4px 0 0; padding-left: 18px; }
+  .opinion ul.quotes li { font-size: 0.75rem; color: var(--color-secondary); }
+  .opinion .meta { font-size: 0.7rem; color: var(--color-secondary); margin-top: 4px; }
+  .sector { border: 1px solid var(--color-ochre); border-radius: 6px; padding: 10px 12px; margin-bottom: 12px; }
+  .sector h3 { margin: 0 0 4px; font-size: 0.85rem; }
+  .sector p { margin: 0; font-size: 0.8rem; color: var(--color-secondary); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Hacker News AI Buzz Tracker</h1>
+  <p>Developer-attention leaderboard, trend, and reception — from <code>hn_buzz_runs</code>.</p>
+  <div id="status">Loading&hellip;</div>
+</header>
+
+<div class="grid">
+  <div class="card">
+    <h2>Leaderboard — latest run</h2>
+    <div id="leaderboard-table"></div>
+    <p class="caption">Buzz Score (0–100). <span class="breakout">Red</span> = breakout this run. Italic = low-confidence (below the sparse-entity floor).</p>
+  </div>
+
+  <div class="card">
+    <h2>7-day / weekly trend</h2>
+    <select id="entity-select"></select>
+    <canvas id="trend-chart" height="220"></canvas>
+    <p class="caption">Vertical marker = a watchlist version boundary (v1 → v2, etc). Series is Buzz Score over time for the selected entity.</p>
+  </div>
+
+  <div class="card">
+    <h2>Narrative theme breakdown</h2>
+    <canvas id="theme-chart" height="220"></canvas>
+    <div id="theme-placeholder" class="placeholder" style="display:none;">
+      No narrative data on the latest run (LLM narrative layer output, added Week 7 — this snapshot predates it or the LLM key was unset).
+    </div>
+  </div>
+
+</div>
+
+<div class="card" id="opinion-card">
+  <h2>Community Opinion — latest run</h2>
+  <div id="sector-narrative"></div>
+  <div id="opinion-panel" class="opinion-panel"></div>
+  <p class="caption">Comment-grounded per-entity opinion (Week 9), ordered to match the leaderboard.
+    <em>Italic</em> = low-confidence (fewer than 3 comments analyzed). Each opinion summarizes comments
+    on that entity's <em>top stories</em> — see <code>docs/community_opinion_design.md</code> for the
+    story-attribution caveat (a top story can incidentally mention an entity).</p>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const configInjected = window.__SUPABASE_URL__ && !window.__SUPABASE_URL__.includes('%%');
+const useMock = params.has('mock') || !configInjected;
+
+const CHART_COLORS = {
+  ink: getComputedStyle(document.documentElement).getPropertyValue('--color-ink').trim(),
+  red: getComputedStyle(document.documentElement).getPropertyValue('--color-red').trim(),
+  secondary: getComputedStyle(document.documentElement).getPropertyValue('--color-secondary').trim(),
+  border: getComputedStyle(document.documentElement).getPropertyValue('--color-border').trim(),
+};
+
+async function loadRuns() {
+  if (useMock) {
+    const res = await fetch('./fixture_runs.json');
+    if (!res.ok) throw new Error('fixture_runs.json fetch failed: ' + res.status);
+    return await res.json();
+  }
+  // This dashboard is read-only (anon key, no login): no session to persist
+  // across tabs. persistSession:false alone doesn't stop the client from
+  // touching navigator.locks though — it still acquires a startup lock by
+  // default. Overriding `lock` with a no-op skips the Locks API entirely,
+  // for browsers/contexts that deny it (SecurityError: Locks API is denied).
+  const noopLock = async (_name, _acquireTimeout, fn) => fn();
+  const client = supabase.createClient(window.__SUPABASE_URL__, window.__SUPABASE_ANON_KEY__, {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, lock: noopLock }
+  });
+  const { data, error } = await client
+    .from('hn_buzz_runs')
+    // community_opinions is the Week 9 comment-grounded analyzer output (jsonb map
+    // of entity -> {summary, sentiment, themes, notableOpinions, commentsAnalyzed,
+    // lowConfidence, degraded}). sectorNarrative is NOT selected: it's built in the
+    // workflow but not persisted as its own column yet (Save Snapshot writes only
+    // community_opinions) — the panel renders it only if a row happens to carry it.
+    .select('run_date, window_hours, watchlist_version, complete, leaderboard, narratives, community_opinions, raw_metrics')
+    .eq('complete', true)
+    .order('run_date', { ascending: true })
+    .limit(200);
+  if (error) throw error;
+  return data;
+}
+
+function setStatus(msg, isError) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = isError ? 'error' : '';
+}
+
+function renderLeaderboard(latestRun) {
+  const rows = [...latestRun.leaderboard].sort((a, b) => b.buzzScore - a.buzzScore);
+  let html = '<table><thead><tr><th>#</th><th>Entity</th><th>Ticker</th><th>Buzz Score</th><th>Stories</th></tr></thead><tbody>';
+  rows.forEach((r, i) => {
+    const cls = r.breakout ? 'breakout' : (r.lowConfidence ? 'low-confidence' : '');
+    html += `<tr class="${cls}"><td>${i + 1}</td><td>${r.entity}</td><td>${r.ticker || '—'}</td>` +
+            `<td>${r.buzzScore.toFixed(1)}</td><td>${r.rawMetrics.storyCount}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('leaderboard-table').innerHTML = html;
+}
+
+function renderTrend(runs) {
+  const entities = [...new Set(runs.flatMap(r => r.leaderboard.map(e => e.entity)))].sort();
+  const select = document.getElementById('entity-select');
+  select.innerHTML = entities.map(e => `<option value="${e}">${e}</option>`).join('');
+
+  // watchlist_version boundaries: index of the first run at each new version
+  const versionBoundaries = [];
+  let lastVersion = null;
+  runs.forEach((r, i) => {
+    if (r.watchlist_version !== lastVersion) {
+      if (lastVersion !== null) versionBoundaries.push(i);
+      lastVersion = r.watchlist_version;
+    }
+  });
+
+  const versionLinePlugin = {
+    id: 'versionLines',
+    afterDraw(chart) {
+      const { ctx, chartArea, scales } = chart;
+      versionBoundaries.forEach(idx => {
+        const x = scales.x.getPixelForValue(idx);
+        ctx.save();
+        ctx.strokeStyle = CHART_COLORS.ochre || '#C8860E';
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(x, chartArea.top);
+        ctx.lineTo(x, chartArea.bottom);
+        ctx.stroke();
+        ctx.restore();
+      });
+    }
+  };
+
+  let chart;
+  function draw(entity) {
+    const labels = runs.map(r => r.run_date);
+    const data = runs.map(r => {
+      const hit = r.leaderboard.find(e => e.entity === entity);
+      return hit ? hit.buzzScore : null;
+    });
+    if (chart) chart.destroy();
+    chart = new Chart(document.getElementById('trend-chart'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: entity + ' — Buzz Score',
+          data,
+          borderColor: CHART_COLORS.red,
+          backgroundColor: CHART_COLORS.red,
+          tension: 0.15,
+          spanGaps: true,
+        }]
+      },
+      options: {
+        scales: {
+          y: { min: 0, max: 100, grid: { color: CHART_COLORS.border } },
+          x: { grid: { color: CHART_COLORS.border } }
+        },
+        plugins: { legend: { labels: { color: CHART_COLORS.ink } } }
+      },
+      plugins: [versionLinePlugin]
+    });
+  }
+
+  select.addEventListener('change', () => draw(select.value));
+  draw(entities[0]);
+}
+
+function renderThemeBreakdown(latestRun) {
+  if (!latestRun.narratives || Object.keys(latestRun.narratives).length === 0) {
+    document.getElementById('theme-placeholder').style.display = 'block';
+    document.getElementById('theme-chart').style.display = 'none';
+    return;
+  }
+  const counts = {};
+  Object.values(latestRun.narratives).forEach(n => {
+    if (!n || !n.theme) return;
+    counts[n.theme] = (counts[n.theme] || 0) + 1;
+  });
+  const labels = Object.keys(counts);
+  const values = Object.values(counts);
+  const palette = [CHART_COLORS.red, CHART_COLORS.ink, '#787878', '#ADADAD', '#F0EBE3', CHART_COLORS.secondary];
+  new Chart(document.getElementById('theme-chart'), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: values, backgroundColor: labels.map((_, i) => palette[i % palette.length]) }] },
+    options: { plugins: { legend: { labels: { color: CHART_COLORS.ink } } } }
+  });
+}
+
+// LLM opinion text is arbitrary — escape before inserting into innerHTML.
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// Red is reserved for breakouts; only negative/mixed get the ochre accent class.
+function sentimentClass(s) {
+  return (s === 'negative' || s === 'mixed') ? 'neg' : '';
+}
+
+function renderCommunityOpinion(latestRun) {
+  const panel = document.getElementById('opinion-panel');
+  const sectorEl = document.getElementById('sector-narrative');
+  const ops = latestRun.community_opinions;
+
+  if (!ops || Object.keys(ops).length === 0) {
+    sectorEl.innerHTML = '';
+    panel.innerHTML = '<div class="placeholder">No Community Opinion data on the latest run ' +
+      '(comment-grounded analyzer, added Week 9 — this snapshot predates it).</div>';
+    return;
+  }
+
+  // Sector narrative renders only if the row carries it (not persisted from Supabase yet).
+  const sector = latestRun.sectorNarrative;
+  if (sector && !sector.degraded && sector.narrative) {
+    const st = (sector.crossEntityThemes || []).map(t => `<span class="chip">${escapeHtml(t)}</span>`).join('');
+    sectorEl.innerHTML = `<div class="sector"><h3>Sector narrative of the week</h3>` +
+      `<p>${escapeHtml(sector.narrative)}</p>` + (st ? `<div class="chips">${st}</div>` : '') + `</div>`;
+  } else {
+    sectorEl.innerHTML = '';
+  }
+
+  // Order to match the (ranked) leaderboard so the two panels line up.
+  let html = '';
+  latestRun.leaderboard.forEach(e => {
+    const op = ops[e.entity];
+    if (!op) return;
+    if (op.degraded) {
+      html += `<div class="opinion degraded"><div class="opinion-head">` +
+        `<span class="name">${escapeHtml(e.entity)}</span></div>` +
+        `<div class="summary">No comment-grounded opinion this run — ${escapeHtml(op.reason || 'no data')}.</div></div>`;
+      return;
+    }
+    const themes = (op.themes || []).map(t => `<span class="chip">${escapeHtml(t)}</span>`).join('');
+    const quotes = (op.notableOpinions || []).map(q => `<li>${escapeHtml(q)}</li>`).join('');
+    const meta = op.lowConfidence
+      ? `Based on ${op.commentsAnalyzed} comment(s) — low confidence`
+      : `Based on ${op.commentsAnalyzed} comments`;
+    html += `<div class="opinion${op.lowConfidence ? ' low' : ''}">` +
+      `<div class="opinion-head"><span class="name">${escapeHtml(e.entity)}</span>` +
+      `<span class="pill ${sentimentClass(op.sentiment)}">${escapeHtml(op.sentiment || 'n/a')}</span></div>` +
+      `<div class="summary">${escapeHtml(op.summary || '')}</div>` +
+      (themes ? `<div class="chips">${themes}</div>` : '') +
+      (quotes ? `<ul class="quotes">${quotes}</ul>` : '') +
+      `<div class="meta">${meta}</div></div>`;
+  });
+  panel.innerHTML = html || '<div class="placeholder">No per-entity opinions matched this run.</div>';
+}
+
+(async function init() {
+  try {
+    const runs = await loadRuns();
+    if (!runs || runs.length === 0) throw new Error('no complete runs returned');
+    setStatus(`${useMock ? '[mock data] ' : ''}${runs.length} run(s) loaded — latest: ${runs[runs.length - 1].run_date}`);
+    const latest = runs[runs.length - 1];
+    renderLeaderboard(latest);
+    renderTrend(runs);
+    renderThemeBreakdown(latest);
+    renderCommunityOpinion(latest);
+  } catch (err) {
+    setStatus('Failed to load runs: ' + err.message, true);
+    console.error(err);
+  }
+})();
+</script>
+
+</body>
+</html>

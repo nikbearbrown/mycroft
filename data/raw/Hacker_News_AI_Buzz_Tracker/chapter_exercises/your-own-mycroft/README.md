@@ -8,4 +8,6 @@ This is a personal investment research desk. It gathers evidence for and against
 - theses/: claim audits, one file per ticker. Currently META.
 - evidence/: source material tied to claims, such as filing lines and data series.
 - signals/: options and market signal notes, tested as hypotheses rather than followed.
-- book/: notes and longer analysis.
+- book/: notes and longer analysis, including a paper-portfolio positions file and its returns-vs-benchmark computation.
+- benchmark/: benchmark price series (e.g. SPY) used to compute active return against the paper portfolio in book/.
+- archive/: superseded artifacts kept for the record rather than deleted, per this repo's no-delete rule.

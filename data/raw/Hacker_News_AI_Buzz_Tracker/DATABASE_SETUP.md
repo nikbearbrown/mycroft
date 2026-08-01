@@ -48,6 +48,7 @@ create table hn_buzz_runs (
   leaderboard        jsonb,       -- ranked entities: score, velocity, components, top stories
   narratives         jsonb,       -- per-entity narrative/theme/tone (added Week 7)
   community_opinions jsonb,       -- per-entity comment-grounded opinion (added Week 9)
+  sector_narrative   jsonb,       -- cross-entity "mood of the sector" (added Week 11)
   raw_metrics        jsonb        -- per-entity storyCount / points / comments / frontPage
 );
 
@@ -145,7 +146,40 @@ latest baseline per entity while keeping prior computations for comparison.
 | `leaderboard` | The ranked array the scoring node emits: `buzzScore`, `velocity`, `scoreComponents`, `breakout`, `topStory`, etc. This is what the next run reads back. |
 | `narratives` | Null until Week 7 (LLM narrative layer). |
 | `community_opinions` | Null until Week 9 (Community Opinion analyzer). |
+| `sector_narrative` | Cross-entity "mood of the sector" (Week 11). A degraded object `{narrative: null, degraded: true}` on runs with no usable opinions. |
 | `raw_metrics` | Per-entity raw counts, keyed by entity name. |
+
+### Migration — get to one `sector_narrative` column (Week 11)
+
+Goal: a single snake_case `sector_narrative jsonb` column. Because the earlier
+`Save Snapshot` insert wrote to an **unquoted** `sectorNarrative` (which Postgres
+folds to lowercase `sectornarrative`), you may already have a `sectornarrative`
+column holding real data. **Check first, then rename or add** — renaming keeps
+that history and avoids two near-duplicate columns.
+
+**1. Check what exists:**
+
+```sql
+select column_name from information_schema.columns
+where table_name = 'hn_buzz_runs'
+  and column_name in ('sectornarrative', 'sector_narrative');
+```
+
+**2a. Returns `sectornarrative` → RENAME (preferred — keeps existing data, so old
+rows are immediately readable under the new name):**
+
+```sql
+alter table hn_buzz_runs rename column sectornarrative to sector_narrative;
+```
+
+**2b. Returns nothing → ADD (no prior column to preserve):**
+
+```sql
+alter table hn_buzz_runs add column if not exists sector_narrative jsonb;
+```
+
+Run 2a **or** 2b, not both. After this, the `Save Snapshot` insert and the
+`/webhook/signal` endpoint query below both reference `sector_narrative`.
 
 ---
 
@@ -198,15 +232,21 @@ the SQL string; JSON containing apostrophes will break it and is an injection
 risk):
 
 ```sql
-INSERT INTO hn_buzz_runs (run_date, window_hours, watchlist_version, leaderboard, raw_metrics, complete)
-VALUES ($1, $2, $3, $4::jsonb, $5::jsonb, $6);
+INSERT INTO hn_buzz_runs (run_date, window_hours, watchlist_version, leaderboard, narratives, community_opinions, sector_narrative, raw_metrics, complete)
+VALUES ($1, $2, $3, $4::jsonb, $5::jsonb, $6::jsonb, $7::jsonb, $8::jsonb, $9);
 ```
 
 **Options → Query Parameters:**
 
 ```
-{{ $json.run_date }}, {{ $json.window_hours }}, {{ $json.watchlist_version }}, {{ JSON.stringify($json.leaderboard) }}, {{ JSON.stringify($json.raw_metrics) }}, {{ $json.complete }}
+{{ $json.run_date }}, {{ $json.window_hours }}, {{ $json.watchlist_version }}, {{ JSON.stringify($json.leaderboard) }}, {{ JSON.stringify($json.narratives) }}, {{ JSON.stringify($json.community_opinions) }}, {{ JSON.stringify($json.sectorNarrative) }}, {{ JSON.stringify($json.raw_metrics) }}, {{ $json.complete }}
 ```
+
+> **Column name:** the SQL column is snake_case `sector_narrative`, but the run-row
+> field n8n reads is camelCase `$json.sectorNarrative` (set by `Attach Sector
+> Narrative` / `Skip Sector Clustering`). Keep the SQL identifier snake_case —
+> Postgres folds unquoted `sectorNarrative` to `sectornarrative`, which then won't
+> match a snake_case `SELECT`.
 
 - `JSON.stringify(...)` is correct here: Postgres receives text and `::jsonb`
   casts it. Apostrophes are safe because these are bound parameters.

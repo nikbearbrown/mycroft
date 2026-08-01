@@ -1,14 +1,7 @@
-"""
-Reference module for the Buzz Score math — kept in sync with the n8n Code node
-`node code/Computer Buzz Score.py` so tests/test_scoring.py verifying this module
-also describes the live node's behavior.
-
-(Previously this file held only the Week-3 cold-start version, which predated the
-Week-4 acceleration/velocity logic and no longer matched the node or the tests.)
-"""
+# n8n code node: Computer Buzz Score
 import math
 
-# --- calibration knobs (Week 3 deliverable; tune against fixtures) ---
+# --- calibration knobs (Week 3 deliverable; tune against fixtures)---
 VOLUME_REF    = 30    # storyCount that earns ~full volume points
 ENGAGEMENT_REF = 1000 # (points+comments) that earns ~full engagement points
 FRONTPAGE_REF = 5     # frontPageCount that earns full front-page points
@@ -41,6 +34,7 @@ def split_inputs(_items):
     for item in _items:
         d = item.get("json", {})
         if "leaderboard" in d:
+            # The DB read row merged in before this node.
             prev_leaderboard = d.get("leaderboard") or []
         elif "rawMetrics" in d:
             current.append(d)
@@ -105,3 +99,6 @@ def func(_items):
     # Ranked leaderboard, highest first.
     out.sort(key=lambda i: i["json"]["buzzScore"], reverse=True)
     return out
+
+
+return func(_items)

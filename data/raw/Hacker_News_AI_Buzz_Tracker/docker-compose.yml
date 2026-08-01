@@ -5,7 +5,18 @@ services:
     restart: unless-stopped
     ports:
       - "5678:5678"
+    env_file:
+      # Loads SUPABASE_URL / SUPABASE_ANON_KEY (and everything else already in
+      # this gitignored file) into the container's real environment, so the
+      # dashboard-injection Code node can read them via $env without anyone
+      # hardcoding a value in docker-compose.yml or the workflow JSON.
+      - .env
     environment:
+      # Code/Function nodes block $env access by default since n8n 1.x for
+      # security. The dashboard webhook workflow needs it to inject
+      # SUPABASE_URL/SUPABASE_ANON_KEY at serve time instead of hardcoding
+      # them in the exported workflow.json.
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=false
       # --- Task runners (external mode) ---
       # n8n v2's Python Code node runs through an external task runner. The
       # `n8nio/runners` sidecar below ships the managed Python virtualenv, which
@@ -21,8 +32,14 @@ services:
       - TZ=America/New_York
       # Allow the Execute Command node to run python from workflows
       - NODE_FUNCTION_ALLOW_EXTERNAL=*
+      
     volumes:
       - n8n_data:/home/node/.n8n
+      # Read/Write Files from Disk is restricted to /home/node/.n8n-files by
+      # default (N8N_RESTRICT_FILE_ACCESS_TO) — mount here instead of an
+      # arbitrary path, or the node throws NodeApiError: Access to the file
+      # is not allowed.
+      - ./dashboard:/home/node/.n8n-files/dashboard:ro
 
   # Sidecar that executes Code-node tasks (JS + Python). Its image tag MUST
   # match the n8n version (currently 2.25.6).

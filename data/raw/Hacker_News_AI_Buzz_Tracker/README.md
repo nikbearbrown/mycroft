@@ -27,9 +27,10 @@ among many, not a trade trigger.
 | **Buzz Score** | Code node | Overall HN attention per entity, 0–100 (deterministic). | ✅ Live |
 | **Buzz Velocity** | Code node | Acceleration vs. the previous run (`20 × clamp(Δ/prior_base, −1, 2)`). | ✅ Live (Week 4) |
 | **Front Page Breakouts** | Code node | Count of stories crossing a high points threshold. | ✅ Live |
-| **Narrative Theme** | LLM | launch, outage, funding, research, controversy, or hiring. | 🔜 Week 7 |
-| **Reception Tone** | LLM | bullish, bearish, or neutral developer reception. | 🔜 Week 7 |
-| **Community Opinion** | LLM (comment-text) | Comment-grounded opinion summary, sentiment, and themes per entity. | 🔜 Week 9 |
+| **Narrative Theme** | LLM | launch, outage, funding, research, controversy, or hiring. | ✅ Live (Week 7) |
+| **Reception Tone** | LLM | bullish, bearish, or neutral developer reception. | ✅ Live (Week 7) |
+| **Community Opinion** | LLM (comment-text) | Comment-grounded opinion summary, sentiment, and themes per entity. | ✅ Live (Week 9) |
+| **Sector Narrative** | LLM (cross-entity) | Weekly cross-cutting "mood of the sector," clustered from usable opinions (gated: no LLM call when nothing is usable). | ✅ Live (Week 9) |
 
 The workflow produces two **distinct** outputs each run: a machine-readable **JSON signal** for the
 coordination layer, and a human-readable **HTML email digest** of the top movers (sent on breakout).
@@ -44,18 +45,31 @@ Schedule Trigger (daily) / Manual Trigger
   → Loop Over Entities (Split In Batches)
       → Entity Term Pair → HTTP Request: HN Algolia search_by_date (trailing window)
       → Get Metrics: aggregate + dedupe per-entity metrics, retain top-3 stories
+        (top stories are relevance-filtered — a query term must appear in the title — Week 10)
   → Postgres (Supabase): Get Previous Run (latest complete snapshot)   ── before scoring
   → Merge (current metrics + previous run)
   → Code: compute Buzz Score + Velocity vs. previous run
   → Build Run Row (collapse to one snapshot row)
       ├→ Postgres (Supabase): Save Snapshot (parameterized jsonb insert)  ── after scoring
-      ├→ Build JSON Signal (coordination-layer contract)
-      └→ IF: any entity breakout? → Build Digest HTML → Send Email
+      ├→ Community Opinion branch: fetch HN comments → clean → LLM per entity →
+         Attach Opinions → cluster sector narrative (gated) (Week 9)
+      ├→ Build JSON Signal (coordination-layer contract — see docs/json_signal_contract.md)
+      └→ IF: any entity breakout? → Build Digest HTML (leaderboard + narratives +
+         Community Opinion, Week 10) → Send Email
   → [separate workflow] Error Trigger → Send Email (pipeline-failure alert)
+  → (optional) GET /webhook/dashboard serves HTML; GET /webhook/signal serves the JSON contract (Week 11)
 
-  Planned: LLM narrative/tone (Week 7), Community Opinion (Week 9),
-           dashboard webhook GET /webhook/dashboard (Week 8).
+  Planned: workflow.json re-export + demo recording (Week 12).
 ```
+
+## Dashboard
+
+`dashboard/index.html` is a static Chart.js page — leaderboard, per-entity trend (with
+watchlist-version boundary markers), and a narrative-theme breakdown — meant to be served from
+n8n at `GET /webhook/dashboard`. It reads `hn_buzz_runs` client-side via the Supabase JS client
+(anon key, read-only). See `docs/dashboard_design.md` for the webhook wiring and what has/hasn't
+been verified live. Open `dashboard/index.html?mock=1` to render it against the Week 5 backfill
+fixture without any Supabase project configured.
 
 ## Prerequisites
 

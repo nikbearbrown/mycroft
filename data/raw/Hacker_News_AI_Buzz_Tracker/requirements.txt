@@ -1,3 +1,15 @@
+# --- Week 6 signal-validation backtest: statistics stack ---
+# pandas: align buzz/price weekly panels; scipy.stats: Pearson r + p-value;
+# statsmodels.stats.multitest: Benjamini-Hochberg FDR across the lag family.
+numpy==2.5.1
+pandas==3.0.3
+scipy==1.18.0
+statsmodels==0.14.6
+patsy==1.0.2
+python-dateutil==2.9.0.post0
+six==1.17.0
+tzdata==2026.3
+# --- end Week 6 additions ---
 annotated-types==0.7.0
 anyio==4.14.1
 certifi==2026.6.17
