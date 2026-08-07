@@ -69,9 +69,11 @@ causal explanation, adequacy, and distribution.
 6. Let the investigator select category and driver tools based on observed
    material variances.
 7. Produce a structured machine log and a separate human review report.
-8. Produce a run-bound review request with causal commentary blank and the
+8. Run the committed baseline and adversarial control cases in isolated copies;
+   fail if any observed result differs from its explicit expectation.
+9. Produce a run-bound review request with causal commentary blank and the
    human gate open.
-9. Accept only a named human decision whose causal claims cite evidence from
+10. Accept only a named human decision whose causal claims cite evidence from
    that exact run; record it as an append-only gate artifact.
 
 ## Implementation Map
@@ -82,6 +84,7 @@ causal explanation, adequacy, and distribution.
 | Finance calculations | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/finance.py` |
 | Observe-plan-act investigator | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/agent.py` |
 | Human review gate | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/review.py` |
+| Adversarial evaluation | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/evaluation.py` |
 | Log and report rendering | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/reporting.py` |
 | Local orchestration | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/cli.py` |
 | Conformance and behavior tests | `projects/Mycroft-Finance-Investigator/tests/` |
@@ -109,6 +112,15 @@ Required sections: review status, question, verified mathematical findings,
 investigation prompts, intentionally blank current explanation, evidence index,
 agent trace, human decision, and did-not-test disclosures.
 
+### Evaluation Scorecard
+
+Paths: `logs/mycroft-finance-investigator-evaluation-[RUN_ID].json` and
+`reports/generated/mycroft-finance-investigator-evaluation-[RUN_ID].md`.
+
+Required fields: case specification hash, raw-source hashes, expected and
+observed behavior per case, exact differences, aggregate matched/unexpected
+counts, and a visible `PENDING_HUMAN_REVIEW` adequacy boundary.
+
 ## Stop Conditions
 
 - Stop if provenance is missing or ambiguous.
@@ -118,6 +130,8 @@ agent trace, human decision, and did-not-test disclosures.
 - Stop if actuals do not reconcile to ledger.
 - Stop if driver control totals do not reconcile.
 - Stop if the investigator exceeds its configured step limit.
+- Stop if an evaluation case produces an unexpected result.
+- Stop before treating an evaluation pass as confidence or production approval.
 - Stop if a reviewer is unnamed or identifies as an agent.
 - Stop if a causal explanation cites evidence absent from the source run.
 - Stop if an approval lacks an accepted materiality decision or an
@@ -133,6 +147,9 @@ agent trace, human decision, and did-not-test disclosures.
 cd projects/Mycroft-Finance-Investigator
 python3 -m unittest discover -s tests -v
 python3 -m mycroft_finance_investigator.cli all --run-id sample-2026-02
+python3 -m mycroft_finance_investigator.cli evaluate \
+  --output-log ../../logs/mycroft-finance-investigator-evaluation-week32.json \
+  --output-report ../../reports/generated/mycroft-finance-investigator-evaluation-week32.md
 ```
 
 Do not promote this recipe from `DRAFT` until both TODOs have the evidence

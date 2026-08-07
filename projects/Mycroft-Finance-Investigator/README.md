@@ -9,7 +9,7 @@ The application explains the **mathematical bridge**, not business causation.
 Current-period causal commentary remains owner-required and blank until a named
 human approves it.
 
-## Weeks 1–4 implemented
+## Weeks 1–5 implemented
 
 - **Week 1:** synthetic SaaS finance data, machine-readable schemas, provenance,
   raw-to-verified validation, and reconciliation checks.
@@ -19,6 +19,8 @@ human approves it.
   ledger, machine log, and human review report.
 - **Week 4:** run-bound human review requests, evidence-backed approval rules,
   agent self-approval prevention, and append-only gate decisions.
+- **Week 5:** isolated planted-discrepancy cases for reconciliation failures,
+  step-limit enforcement, self-approval prevention, and baseline regression.
 
 ## Quick start
 
@@ -49,6 +51,9 @@ python3 -m mycroft_finance_investigator.cli investigate
 python3 -m mycroft_finance_investigator.cli all --run-id demo-2026-02
 python3 -m mycroft_finance_investigator.cli review-request \
   --output ../../logs/gate-decisions/demo-2026-02-review-request.json
+python3 -m mycroft_finance_investigator.cli evaluate \
+  --output-log ../../logs/mycroft-finance-investigator-evaluation-week32.json \
+  --output-report ../../reports/generated/mycroft-finance-investigator-evaluation-week32.md
 ```
 
 After a named finance reviewer completes a copy of the review request, record
@@ -66,6 +71,11 @@ an unknown evidence reference, or an existing output path is a hard stop.
 
 The sample materiality amount is a test fixture, not an approved business
 policy. Reports remain `PENDING_HUMAN_REVIEW`.
+
+The evaluation command mutates temporary copies—not source data—and compares
+seven named observations with explicit expected outcomes. A passing scorecard
+is evidence that those cases behaved as specified; it is not model confidence,
+production certification, or a substitute for human adequacy review.
 
 ## Amount convention
 
@@ -90,6 +100,8 @@ deterministic finance engine
         |
         v
 single investigator (observe -> plan -> tool -> evidence)
+        |
+        +--> isolated adversarial evaluation
         |
         +--> structured machine log
         +--> human review report

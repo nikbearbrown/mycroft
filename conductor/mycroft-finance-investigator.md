@@ -54,7 +54,18 @@ demo-only materiality amount.
   references, and current explanation are visibly separated.
 - On failure: Stop before review.
 
-### Step 6 — Human Finance Review
+### Step 6 — Evaluate the Control Boundary
+
+- Labor: AI, with human adequacy judgment
+- AI task: Run each committed baseline and planted-discrepancy case in an
+  isolated copy; compare the observation with its exact expected outcome.
+- Human task: Decide whether the named case set is adequate for the intended
+  use; a machine pass cannot make this decision.
+- Handoff condition: No unexpected results and a scorecard exists.
+- On failure: Stop, preserve the failing observation, and do not weaken the
+  expectation merely to obtain a pass.
+
+### Step 7 — Human Finance Review
 
 - Labor: Human [IJ] [EI]
 - AI task: Produce a run-bound review request and validate the completed file
@@ -74,6 +85,7 @@ demo-only materiality amount.
 - Actuals/ledger and operational-driver reconciliations
 - Human-owned materiality
 - Calculation-to-source lineage
+- Named adversarial cases behave as specified
 - No generated causal commentary
 - Named human release decision
 
