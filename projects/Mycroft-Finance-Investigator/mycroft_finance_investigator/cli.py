@@ -9,6 +9,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from .agent import InvestigationAgent
+from .evaluation import run_evaluation, write_evaluation_artifacts
 from .finance import FinanceData, FinanceEngine
 from .reporting import write_human_report, write_machine_log
 from .review import record_review_decision, write_review_request
@@ -22,6 +23,7 @@ DEFAULT_VERIFIED = REPO_ROOT / "data/verified/mycroft-finance-investigator"
 DEFAULT_SCHEMA = PROJECT_ROOT / "schemas/finance-pack.schema.json"
 DEFAULT_CONFIG = PROJECT_ROOT / "config/sample-investigation.json"
 DEFAULT_RUN_LOG = REPO_ROOT / "logs/mycroft-finance-investigator-sample-2026-02.json"
+DEFAULT_EVALUATION_CASES = PROJECT_ROOT / "evaluations/cases.json"
 
 
 def _run_id() -> str:
@@ -100,6 +102,16 @@ def build_parser() -> argparse.ArgumentParser:
     record_review.add_argument("--run-log", type=Path, default=DEFAULT_RUN_LOG)
     record_review.add_argument("--decision", type=Path, required=True)
     record_review.add_argument("--output", type=Path, required=True)
+    evaluate = subparsers.add_parser(
+        "evaluate", help="run deterministic planted-discrepancy cases"
+    )
+    evaluate.add_argument("--cases", type=Path, default=DEFAULT_EVALUATION_CASES)
+    evaluate.add_argument("--raw-dir", type=Path, default=DEFAULT_RAW)
+    evaluate.add_argument("--schema", type=Path, default=DEFAULT_SCHEMA)
+    evaluate.add_argument("--run-log", type=Path, default=DEFAULT_RUN_LOG)
+    evaluate.add_argument("--run-id", default="week32-evaluation")
+    evaluate.add_argument("--output-log", type=Path, required=True)
+    evaluate.add_argument("--output-report", type=Path, required=True)
     return parser
 
 
@@ -123,6 +135,23 @@ def main() -> None:
         artifact = record_review_decision(args.run_log, args.decision, args.output)
         print(f"review gate: {artifact['gate_status']}")
         print(f"review decision: {args.output}")
+    if args.command == "evaluate":
+        payload = run_evaluation(
+            args.cases,
+            args.raw_dir,
+            args.schema,
+            args.run_log,
+            args.run_id,
+        )
+        write_evaluation_artifacts(payload, args.output_log, args.output_report)
+        print(
+            f"evaluation: {payload['summary']['matched_count']} / "
+            f"{payload['summary']['case_count']} expectations matched"
+        )
+        print(f"machine scorecard: {args.output_log}")
+        print(f"human scorecard: {args.output_report}")
+        if payload["summary"]["status"] != "PASS":
+            raise SystemExit(1)
 
 
 if __name__ == "__main__":

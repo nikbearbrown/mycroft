@@ -28,6 +28,12 @@ Review requests are bound to the source run hash. A named human supplies the
 decision; the recorder verifies cited evidence, prevents agent self-approval,
 and writes a new artifact without overwriting an earlier decision.
 
+The deterministic evaluation harness is implemented in
+`mycroft_finance_investigator/evaluation.py`. It runs the baseline and six
+adversarial cases in isolated temporary copies, compares observations with the
+committed expectations in `evaluations/cases.json`, and emits a scorecard. It
+reports coverage of named cases, not model confidence or production adequacy.
+
 The investigator must never convert a numerical variance into a causal claim.
 Its output may identify which customer, account, or department records move
 with the variance, but the reason for that movement remains owner-required.

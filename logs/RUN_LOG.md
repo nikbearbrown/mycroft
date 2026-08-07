@@ -307,3 +307,12 @@ workflow changes.
 - **Outputs:** `mycroft_finance_investigator/review.py`; `schemas/review-decision.schema.json`; review CLI commands; `logs/gate-decisions/mycroft-finance-investigator-sample-2026-02-review-request.json`; review tests and updated contracts.
 - **Result:** The review gate binds decisions to the exact run hash, rejects agent identities and unknown evidence, requires evidence-backed explanations for approval, and refuses to overwrite a recorded decision. The committed sample request is `OPEN`; it is not an approval.
 - **Open issues:** No named finance reviewer has completed the request. Demo materiality, causal adequacy, and distribution remain human decisions.
+
+## 2026-08-07 -- Add Finance Investigator adversarial evaluation
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); evaluation does not clear an adequacy or release gate.
+- **Inputs:** The committed synthetic finance pack, completed sample run, and seven explicit cases in `projects/Mycroft-Finance-Investigator/evaluations/cases.json`.
+- **Commands:** Ran the complete project unit suite; ran the `evaluate` CLI; parsed the JSON scorecard; checked that raw-source hashes were unchanged; ran targeted conformance and repository verification.
+- **Outputs:** `mycroft_finance_investigator/evaluation.py`; evaluation case/schema files; evaluation tests; `logs/mycroft-finance-investigator-evaluation-week32.json`; `reports/generated/mycroft-finance-investigator-evaluation-week32.md`; updated recipe, conductor, project documentation, and status.
+- **Result:** All seven named expectations matched: the reconciled baseline completed with the expected EBITDA, tool trace, evidence count, and open human gate; four planted reconciliation/mapping defects stopped validation; the step limit stopped the investigator; and an agent identity could not clear the human gate. Every mutation ran in a temporary copy.
+- **Open issues:** This finite synthetic case set is not model confidence or production certification. A named human still owns test adequacy, materiality, causal explanation, and distribution.
