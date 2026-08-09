@@ -1,0 +1,104 @@
+{
+  "universe_version": 1,
+  "frozen_on": "2026-08-08",
+  "frozen_by": "Om Mali",
+  "evidence": "docs/feasibility.md section 8; measured across all 5,347,869 holding rows of the 2026Q2 DERA bulk N-PORT data set",
+  "gate": "Week 1 universe freeze. Additions occur only at a version boundary, and a boundary is treated as a discontinuity in every series.",
+
+  "selection_criteria": [
+    "A full member must have enough distinct filers in a single quarter to support cross-manager dispersion analysis. The observed floor is 28 distinct submissions (Cerebras); everything below that gap falls to 12 or fewer.",
+    "Membership is decided on Level 3 equity rows only. Bank debt, 144A bonds and other instruments priced per $100 of face value are excluded even when the issuer name matches.",
+    "A company whose name matches only a public company is not in the universe regardless of row count.",
+    "Companies with real but insufficient coverage are carried with an explicit thin-coverage label: their marks are published, their dispersion is not."
+  ],
+
+  "members": [
+    {
+      "canonical_name": "Databricks, Inc.",
+      "status": "full",
+      "rows_2026q2": 360, "funds_2026q2": 152, "level3_2026q2": 306,
+      "distinct_issuer_names": 50,
+      "rationale": "Widest coverage in the cohort by a factor of two. Also the heaviest entity-resolution load at 50 distinct name spellings, and its price range spans 0.00 to 8,876,589.86 in a single quarter, so unit artifacts and null balances must be handled before any series is computed."
+    },
+    {
+      "canonical_name": "Space Exploration Technologies Corp.",
+      "status": "full",
+      "rows_2026q2": 154, "funds_2026q2": 69, "level3_2026q2": 154,
+      "distinct_issuer_names": 16,
+      "rationale": "Added at v1; not in the plan.md universe. Coverage exceeds four companies that were listed. Carries the documented 10x common-versus-preferred unit artifact (204.64 to 5,265.90), which makes it a useful split-detector test case as well as a subject."
+    },
+    {
+      "canonical_name": "Anthropic PBC",
+      "status": "full",
+      "rows_2026q2": 149, "funds_2026q2": 84, "level3_2026q2": 148,
+      "distinct_issuer_names": 10,
+      "rationale": "The hand-verified reference company. Six managers reproduced to the cent across a repricing event, so it is the regression anchor for the whole pipeline."
+    },
+    {
+      "canonical_name": "OpenAI Group PBC",
+      "status": "full",
+      "rows_2026q2": 142, "funds_2026q2": 73, "level3_2026q2": 142,
+      "distinct_issuer_names": 18,
+      "rationale": "Strong coverage and a tight observed price band (653.30 to 693.90). No LEI, so it exercises the fuzzy-name path with no short-circuit available."
+    },
+    {
+      "canonical_name": "Anduril Industries, Inc.",
+      "status": "full",
+      "rows_2026q2": 130, "funds_2026q2": 50, "level3_2026q2": 130,
+      "distinct_issuer_names": 13,
+      "rationale": "Clears the 50-fund threshold with every row at Level 3. Has an LEI, so it tests the LEI short-circuit against the fuzzy matcher."
+    },
+    {
+      "canonical_name": "Cerebras Systems Inc.",
+      "status": "full",
+      "rows_2026q2": 37, "funds_2026q2": 28, "level3_2026q2": 37,
+      "distinct_issuer_names": 3,
+      "rationale": "Lowest coverage of the full members, retained deliberately: it went public during the observation window, giving a Level 3 to Level 1 event study. That is the only available external check on whether these marks mean anything, and it cannot be reconstructed from any other company."
+    }
+  ],
+
+  "carried_thin": [
+    {
+      "canonical_name": "Figure AI Inc.",
+      "status": "thin",
+      "rows_2026q2": 12, "funds_2026q2": 12, "level3_2026q2": 12,
+      "rationale": "Real but sparse. Marks are published; dispersion and propagation are suppressed and the coverage count is stated in every output.",
+      "publish": ["price_per_share", "exposure_map"],
+      "suppress": ["dispersion", "propagation_lag"]
+    }
+  ],
+
+  "excluded": [
+    {
+      "name": "Cohere Inc.",
+      "reason": "false_positive",
+      "detail": "A %COHERE% substring match returns 1,094 rows, all of them Coherent Corp, a public NYSE optics company, across three spellings and zero at Level 3. Real Cohere has no 2026Q2 presence. plan.md attributed 32 hits to Cohere via the Private Shares Fund; that count did not survive measurement. Retained as golden-set case: a confident, entirely fictitious series is the failure this excludes."
+    },
+    {
+      "name": "X.AI Corp",
+      "reason": "instrument_mismatch",
+      "detail": "58 matching rows but only 7 are Level 3 equity (x.AI, Inc.). The remainder are X.AI LLC TL 1L BANKDEBT and X.AI LLC/X.AI CO ISSUER 144A, priced per $100 of face value, which is why the observed range starts at 0.97. Equity coverage alone is below the threshold. Revisit at v2 if equity positions grow."
+    },
+    {
+      "name": "Perplexity AI, Inc.",
+      "reason": "insufficient_coverage",
+      "detail": "7 rows across 6 funds. Below the threshold for cross-manager dispersion; publishing marks without comparison would misrepresent the project's output."
+    },
+    {
+      "name": "Groq, Inc.",
+      "reason": "insufficient_coverage",
+      "detail": "3 rows across 3 funds."
+    },
+    {
+      "name": "Scale AI, Inc.",
+      "reason": "no_presence",
+      "detail": "Zero rows in 2026Q2. Confirms the plan.md finding that Scale AI has no N-PORT presence following the Meta transaction."
+    }
+  ],
+
+  "revisit_at_v2": [
+    "X.AI Corp equity positions, if they grow past the coverage floor",
+    "Perplexity and Groq, if additional quarters show more holders",
+    "Any company surfacing in the 2019Q4-2026Q1 backfill that was not visible in the 2026Q2 snapshot"
+  ]
+}

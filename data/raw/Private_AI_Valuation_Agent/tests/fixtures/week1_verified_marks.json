@@ -1,0 +1,154 @@
+{
+  "_comment": "Hand-verified Anthropic PBC positions, transcribed from primary_doc.xml on EDGAR. Every row was read from the filing by a human, not scraped. This is the Week 1 evidence base and the seed of the golden set. Fields mirror the raw XML tag names exactly, including placeholder values, so the filter logic can be tested against real filer variation.",
+  "_verified_by": "Om Mali",
+  "_verified_on": "2026-08-07/2026-08-08",
+  "_source": "https://www.sec.gov/Archives/edgar/data/<cik>/<accession-no-dashes>/primary_doc.xml",
+  "positions": [
+    {
+      "manager": "Fidelity", "fund": "Fidelity fund, series TBD", "cik": "0000024238",
+      "accession": "0000035402-26-003406", "period_end": "2026-03-31", "filed": "2026-05-26",
+      "name": "ANTHROPIC PBC", "title": "ANTHROPIC PBC SERIES E PC PP", "lei": "984500B6DEB8CEBC4Z70",
+      "cusip": "N/A", "other_id": "LAG624000", "balance": 14900.0, "valUSD": 3861186.00,
+      "assetCat": "EP", "isRestrictedSec": "Y", "fairValLevel": 3
+    },
+    {
+      "manager": "Fidelity", "fund": "Fidelity fund, series TBD", "cik": "0000024238",
+      "accession": "0000035402-26-003406", "period_end": "2026-03-31", "filed": "2026-05-26",
+      "name": "ANTHROPIC PBC", "title": "ANTHROPIC PBC SERIES F PC PP", "lei": "984500B6DEB8CEBC4Z70",
+      "cusip": "N/A", "other_id": "LKV546000", "balance": 46814.0, "valUSD": 12131379.96,
+      "assetCat": "EP", "isRestrictedSec": "Y", "fairValLevel": 3
+    },
+    {
+      "manager": "Fidelity", "fund": "Fidelity fund, series TBD", "cik": "0000024238",
+      "accession": "0000035402-26-003406", "period_end": "2026-03-31", "filed": "2026-05-26",
+      "name": "ANTHROPIC PBC", "title": "ANTHROPIC PBC SERIES G PC PP", "lei": "984500B6DEB8CEBC4Z70",
+      "cusip": "N/A", "other_id": "MDT245000", "balance": 33200.0, "valUSD": 8603448.00,
+      "assetCat": "EP", "isRestrictedSec": "Y", "fairValLevel": 3
+    },
+
+    {
+      "manager": "Fidelity", "fund": "Contrafund S000006037 Class K", "cik": "0000024238",
+      "accession": "0000035402-26-003312", "period_end": "2026-03-31", "filed": "2026-05-26",
+      "name": "ANTHROPIC PBC", "title": "ANTHROPIC PBC SERIES E PC PP", "lei": "984500B6DEB8CEBC4Z70",
+      "cusip": "N/A", "other_id": "LAG624000", "balance": 204700.0, "valUSD": 53045958.00,
+      "assetCat": "EP", "isRestrictedSec": "Y", "fairValLevel": 3
+    },
+    {
+      "manager": "Fidelity", "fund": "Contrafund S000006037 Class K", "cik": "0000024238",
+      "accession": "0000035402-26-003312", "period_end": "2026-03-31", "filed": "2026-05-26",
+      "name": "ANTHROPIC PBC", "title": "ANTHROPIC PBC SERIES F PC PP", "lei": "984500B6DEB8CEBC4Z70",
+      "cusip": "N/A", "other_id": "LKV546000", "balance": 602500.0, "valUSD": 156131850.00,
+      "assetCat": "EP", "isRestrictedSec": "Y", "fairValLevel": 3
+    },
+
+    {
+      "manager": "Fidelity", "fund": "Contrafund K6 S000057289 (FLCNX)", "cik": "0000024238",
+      "accession": "0000035402-26-003310", "period_end": "2026-03-31", "filed": "2026-05-26",
+      "name": "ANTHROPIC PBC", "title": "ANTHROPIC PBC SERIES E PC PP", "lei": "984500B6DEB8CEBC4Z70",
+      "cusip": "N/A", "other_id": "LAG624000", "balance": 46100.0, "valUSD": 11946354.00,
+      "assetCat": "EP", "isRestrictedSec": "Y", "fairValLevel": 3
+    },
+    {
+      "manager": "Fidelity", "fund": "Contrafund K6 S000057289 (FLCNX)", "cik": "0000024238",
+      "accession": "0000035402-26-003310", "period_end": "2026-03-31", "filed": "2026-05-26",
+      "name": "ANTHROPIC PBC", "title": "ANTHROPIC PBC SERIES F PC PP", "lei": "984500B6DEB8CEBC4Z70",
+      "cusip": "N/A", "other_id": "LKV546000", "balance": 130800.0, "valUSD": 33895512.00,
+      "assetCat": "EP", "isRestrictedSec": "Y", "fairValLevel": 3
+    },
+    {
+      "manager": "Fidelity", "fund": "Contrafund K6 S000057289 (FLCNX)", "cik": "0000024238",
+      "accession": "0000035402-26-003310", "period_end": "2026-03-31", "filed": "2026-05-26",
+      "name": "ANTHROPIC PBC", "title": "ANTHROPIC PBC SERIES G PC PP", "lei": "984500B6DEB8CEBC4Z70",
+      "cusip": "N/A", "other_id": "MDT245000", "balance": 113200.0, "valUSD": 29334648.00,
+      "assetCat": "EP", "isRestrictedSec": "Y", "fairValLevel": 3
+    },
+
+    {
+      "manager": "Fidelity", "fund": "Advisor New Insights S000006036", "cik": "0000024238",
+      "accession": "0000035402-26-003299", "period_end": "2026-03-31", "filed": "2026-05-26",
+      "name": "ANTHROPIC PBC", "title": "ANTHROPIC PBC SERIES E PC PP", "lei": "984500B6DEB8CEBC4Z70",
+      "cusip": "N/A", "other_id": "LAG624000", "balance": 18000.0, "valUSD": 4664520.00,
+      "assetCat": "EP", "isRestrictedSec": "Y", "fairValLevel": 3
+    },
+    {
+      "manager": "Fidelity", "fund": "Advisor New Insights S000006036", "cik": "0000024238",
+      "accession": "0000035402-26-003299", "period_end": "2026-03-31", "filed": "2026-05-26",
+      "name": "ANTHROPIC PBC", "title": "ANTHROPIC PBC SERIES F PC PP", "lei": "984500B6DEB8CEBC4Z70",
+      "cusip": "N/A", "other_id": "LKV546000", "balance": 90300.0, "valUSD": 23400342.00,
+      "assetCat": "EP", "isRestrictedSec": "Y", "fairValLevel": 3
+    },
+
+    {
+      "manager": "T. Rowe Price", "fund": "Science & Technology S000002119", "cik": "0000819930",
+      "accession": "0001099263-26-006576", "period_end": "2026-03-31", "filed": "2026-05-28",
+      "name": "Anthropic PBC SER F-1 CVT PFD PP", "title": "ANTHROPIC PBC SER F-1 CVT PFD PP",
+      "lei": "984500B6DEB8CEBC4Z70", "cusip": "000000000", "other_id": "TC0OOVXB7",
+      "balance": 191245.0, "valUSD": 49558540.82,
+      "assetCat": "EP", "isRestrictedSec": "Y", "fairValLevel": 3
+    },
+    {
+      "manager": "T. Rowe Price", "fund": "Science & Technology S000002119", "cik": "0000819930",
+      "accession": "0001099263-26-006576", "period_end": "2026-03-31", "filed": "2026-05-28",
+      "name": "Anthropic PBC SER G-1 CVT PFD PP", "title": "ANTHROPIC PBC SER G-1 CVT PFD PP",
+      "lei": "984500B6DEB8CEBC4Z70", "cusip": "000000000", "other_id": "TC5ZHBZV3",
+      "balance": 104708.0, "valUSD": 27133654.17,
+      "assetCat": "EP", "isRestrictedSec": "Y", "fairValLevel": 3
+    },
+
+    {
+      "manager": "Alger", "fund": "AI Enablers & Adopters S000084279", "cik": "0000003521",
+      "accession": "0000940400-26-025787", "period_end": "2026-04-30", "filed": "2026-06-26",
+      "name": "Anthropic PBC", "title": "Anthropic PBC", "lei": "N/A",
+      "cusip": "000000000", "other_id": "ANTHROP", "balance": 1013.0, "valUSD": 262505.17,
+      "assetCat": "EC", "isRestrictedSec": "Y", "fairValLevel": 3
+    },
+    {
+      "manager": "Alger", "fund": "Capital Appreciation S000009163", "cik": "0000003521",
+      "accession": "0000940400-26-025773", "period_end": "2026-04-30", "filed": "2026-06-26",
+      "name": "Anthropic PBC", "title": "Anthropic PBC", "lei": "N/A",
+      "cusip": "000000000", "other_id": "ANTHROP", "balance": 29991.0, "valUSD": 7771759.77,
+      "assetCat": "EC", "isRestrictedSec": "Y", "fairValLevel": 3
+    },
+
+    {
+      "manager": "ARK", "fund": "ARK Venture Fund", "cik": "0001905088",
+      "accession": "0000940400-26-025087", "period_end": "2026-04-30", "filed": "2026-06-23",
+      "name": "Anthropic, Inc.", "title": "Anthropic, Inc.", "lei": "N/A",
+      "cusip": "000000000", "other_id": "PPANTHROP", "balance": 89078.0, "valUSD": 23083672.92,
+      "assetCat": "EC", "isRestrictedSec": "N", "fairValLevel": 3
+    },
+
+    {
+      "manager": "BlackRock", "fund": "Capital Appreciation S000002520", "cik": "0000887509",
+      "accession": "0000940400-26-028432", "period_end": "2026-05-29", "filed": "2026-07-27",
+      "name": "ANTHROPIC PBC", "title": "ANTHROPIC PBC", "lei": "N/A",
+      "cusip": "000000000", "other_id": "BYJ48C8U8", "balance": 33266.0, "valUSD": 19593990.03,
+      "assetCat": "EP", "isRestrictedSec": "Y", "fairValLevel": 3
+    },
+
+    {
+      "manager": "Capital Group", "fund": "New Economy S000009598", "cik": "0000719608",
+      "accession": "0001193125-26-323082", "period_end": "2026-05-31", "filed": "2026-07-29",
+      "name": "ANTHROPIC PBC", "title": "ANTHROPIC PBC CL F-1 PFD PP (PHYSICAL) (NOT LISTED OR TRADING)",
+      "lei": "984500B6DEB8CEBC4Z70", "cusip": "N/A", "other_id": "ECA408707",
+      "balance": 346983.0, "valUSD": 204376283.34,
+      "assetCat": "EP", "isRestrictedSec": "N", "fairValLevel": 3
+    },
+    {
+      "manager": "Capital Group", "fund": "New Economy S000009598", "cik": "0000719608",
+      "accession": "0001193125-26-323082", "period_end": "2026-05-31", "filed": "2026-07-29",
+      "name": "ANTHROPIC PBC", "title": "ANTHROPIC PBC PP (PHYSICAL) (NOT LISTED OR TRADING)",
+      "lei": "984500B6DEB8CEBC4Z70", "cusip": "N/A", "other_id": "EDA341",
+      "balance": 96339.0, "valUSD": 56744586.22,
+      "assetCat": "EC", "isRestrictedSec": "N", "fairValLevel": 3
+    },
+    {
+      "manager": "Capital Group", "fund": "New Economy S000009598", "cik": "0000719608",
+      "accession": "0001193125-26-323082", "period_end": "2026-05-31", "filed": "2026-07-29",
+      "name": "ANTHROPIC PBC", "title": "ANTHROPIC PBC CL G-1 PFD PP (PHYSICAL) (NOT LISTED OR TRADING)",
+      "lei": "984500B6DEB8CEBC4Z70", "cusip": "N/A", "other_id": "EPA8230",
+      "balance": 381888.0, "valUSD": 224935659.94,
+      "assetCat": "EP", "isRestrictedSec": "N", "fairValLevel": 3
+    }
+  ]
+}
