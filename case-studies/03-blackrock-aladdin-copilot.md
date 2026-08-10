@@ -128,7 +128,7 @@ Every autonomous step in this table is downstream of a human query and upstream 
 
 ## 4b. Reference Implementation
 
-A working reference implementation of the workflow illustrated in Section 4 is available at `blackrock-aladdin-private-credit-workflow/README.md`. Like the JPMorgan case study's `agentic-credit-workflow/README.md`, it is explicitly labeled as an illustrative teaching pattern grounded in publicly documented architecture concepts — not a specification of BlackRock's actual, proprietary system. Its own README states this directly, and repeats it in the docstrings and runtime warnings of the modules most likely to be mistaken for risk-reviewed guidance.
+A working reference implementation of the workflow illustrated in Section 4 is available at `case-study-workflows/blackrock-aladdin-private-credit-workflow/README.md`. Like the JPMorgan case study's `case-study-workflows/agentic-credit-workflow/README.md`, it is explicitly labeled as an illustrative teaching pattern grounded in publicly documented architecture concepts — not a specification of BlackRock's actual, proprietary system. Its own README states this directly, and repeats it in the docstrings and runtime warnings of the modules most likely to be mistaken for risk-reviewed guidance.
 
 Building the implementation surfaced two corrections that have been applied to Section 4 above, rather than left as silent discrepancies between the illustration and the working code:
 
