@@ -97,3 +97,34 @@ workflow changes.
   - Phase 2: Run full sample brief (company: "Anthropic") with all gates open (no human decision yet, just logging).
   - Phase 2: Generate `signals-validation-audit.md` (spot-check 10 signals, assess quality).
   - Phase 3: Solve Groq token limit (upgrade tier or secondary provider for news classification).
+
+## 2026-07-16 -- Add SEC Filings Financial Metrics Agent (Phase 1 scaffold)
+
+- **Recipe:** sec-filings-financial-metrics v0.1.0 (DRAFT) — deterministic extraction of standardized XBRL financial metrics from SEC EDGAR, with provenance and rule-based validation. No LLM in the critical path.
+- **Inputs:** SEC EDGAR public APIs — company ticker map, XBRL `companyfacts`.
+- **Commands:**
+  - Added `scripts/sec-filings-financial-metrics/secfma/` (Python stdlib package: EDGAR client, concept map, extractor, metrics, validation, report, CLI).
+  - Added `recipes/sec-filings-financial-metrics.yaml` (DRAFT, frontmatter + inputs/outputs + 4 phase gates + known issues + architecture).
+  - Registered the data layer in `DATA_CONTRACT.md`; added `projects/SEC-Filings-Financial-Metrics-Agent/` (README, Substack drafts, benchmark stub).
+- **Outputs:** `data/verified/sec-filings-financial-metrics/<TICKER>_financial_metrics.json` + `<TICKER>_report.md` (generated, not committed).
+- **Result:** Verified against Microsoft (FY2020–2025): revenue/net income correct (FY2025 revenue $281.7B, net income $101.8B), balance sheet balances to the dollar (accounting identity PASS), margin bounds 0 FAIL. Caught + fixed a fiscal-year mis-assignment (comparative years in a 10-K inherit the filing's `fy`) by keying annual data on period-end date.
+- **Open issues:**
+  - [TODO] Offline `--sample` mode from cached fixtures (live-fetch approval gate open).
+  - [TODO] Score extraction accuracy/coverage against `projects/SEC-Filings-Financial-Metrics-Agent/benchmarks/golden_set.csv`.
+  - [IMPROVEMENT] Map custom XBRL extensions (currently flagged MISSING). Validation now covers accounting identity, margin bounds, sum consistency, current-ratio sanity, unit consistency, and restatement flags.
+
+## 2026-07-16 -- SEC metrics: add extraction-accuracy benchmark harness
+
+- **Recipe:** sec-filings-financial-metrics (DRAFT).
+- **Commands:** Added `scripts/sec-filings-financial-metrics/secfma/benchmark.py`; seeded `projects/SEC-Filings-Financial-Metrics-Agent/benchmarks/golden_set.csv` (MSFT FY2023–25 + AAPL FY2024); ran `python3 -m secfma.benchmark --report`.
+- **Outputs:** `data/verified/sec-filings-financial-metrics/benchmark_results.json` + `benchmark_report.md` (generated, not committed).
+- **Result:** 8/8 golden rows matched within 0.5% tolerance — coverage 100%, accuracy 100%. Confirms the extractor reproduces reported revenue/net income for both a June-fiscal-year filer (MSFT) and a September-fiscal-year filer (AAPL). MISSING rows would surface coverage gaps (e.g., unmapped custom extensions) rather than silent zeros.
+- **Open issues:** Expand the golden set with a custom-extension filer and more independently hand-verified figures; add an offline `--sample` mode.
+
+## 2026-07-16 -- SEC metrics: offline sample mode + custom-extension mapping (DRAFT -> SPECIFIED)
+
+- **Recipe:** sec-filings-financial-metrics v0.2.0 (SPECIFIED).
+- **Commands:** Added offline `--sample` mode (bundled fixture `secfma/fixtures/`, company SMPL) so the full pipeline runs with no network; added a human-curated custom-extension override map (`secfma/custom_extension_map.json`) that resolves metrics with no us-gaap tag. Ran `python3 -m secfma.cli --sample --report`.
+- **Outputs:** `data/verified/sec-filings-financial-metrics/SMPL_*.{json,md}` (generated, not committed).
+- **Result:** Offline run passes — 2 fiscal years, all 21 validation checks PASS, R&D resolved from a company-specific `smpl:` extension (tag_source=custom-extension), `cash_and_equivalents` correctly flagged MISSING (no tag/override) rather than guessed. MSFT live-path regression clean (1462 checks, 0 FAIL). Recipe promoted DRAFT -> SPECIFIED; todos_open 2 -> 0.
+- **Open issues:** Populate the override map for real filers as encountered; expand the benchmark golden set.

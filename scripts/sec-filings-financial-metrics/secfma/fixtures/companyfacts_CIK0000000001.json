@@ -1,0 +1,94 @@
+{
+  "cik": 1,
+  "entityName": "SAMPLE CORP",
+  "facts": {
+    "us-gaap": {
+      "RevenueFromContractWithCustomerExcludingAssessedTax": {
+        "label": "Revenue",
+        "units": {"USD": [
+          {"start": "2023-01-01", "end": "2023-12-31", "val": 1000000000, "accn": "0000000001-24-000001", "fy": 2023, "fp": "FY", "form": "10-K", "filed": "2024-02-15", "frame": "CY2023"},
+          {"start": "2024-01-01", "end": "2024-12-31", "val": 1200000000, "accn": "0000000001-25-000001", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-15", "frame": "CY2024"}
+        ]}
+      },
+      "CostOfRevenue": {
+        "label": "Cost of revenue",
+        "units": {"USD": [
+          {"start": "2023-01-01", "end": "2023-12-31", "val": 400000000, "accn": "0000000001-24-000001", "fy": 2023, "fp": "FY", "form": "10-K", "filed": "2024-02-15"},
+          {"start": "2024-01-01", "end": "2024-12-31", "val": 460000000, "accn": "0000000001-25-000001", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-15"}
+        ]}
+      },
+      "GrossProfit": {
+        "label": "Gross profit",
+        "units": {"USD": [
+          {"start": "2023-01-01", "end": "2023-12-31", "val": 600000000, "accn": "0000000001-24-000001", "fy": 2023, "fp": "FY", "form": "10-K", "filed": "2024-02-15"},
+          {"start": "2024-01-01", "end": "2024-12-31", "val": 740000000, "accn": "0000000001-25-000001", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-15"}
+        ]}
+      },
+      "OperatingIncomeLoss": {
+        "label": "Operating income",
+        "units": {"USD": [
+          {"start": "2023-01-01", "end": "2023-12-31", "val": 300000000, "accn": "0000000001-24-000001", "fy": 2023, "fp": "FY", "form": "10-K", "filed": "2024-02-15"},
+          {"start": "2024-01-01", "end": "2024-12-31", "val": 380000000, "accn": "0000000001-25-000001", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-15"}
+        ]}
+      },
+      "NetIncomeLoss": {
+        "label": "Net income",
+        "units": {"USD": [
+          {"start": "2023-01-01", "end": "2023-12-31", "val": 200000000, "accn": "0000000001-24-000001", "fy": 2023, "fp": "FY", "form": "10-K", "filed": "2024-02-15"},
+          {"start": "2024-01-01", "end": "2024-12-31", "val": 260000000, "accn": "0000000001-25-000001", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-15"}
+        ]}
+      },
+      "NetCashProvidedByUsedInOperatingActivities": {
+        "label": "Operating cash flow",
+        "units": {"USD": [
+          {"start": "2023-01-01", "end": "2023-12-31", "val": 250000000, "accn": "0000000001-24-000001", "fy": 2023, "fp": "FY", "form": "10-K", "filed": "2024-02-15"},
+          {"start": "2024-01-01", "end": "2024-12-31", "val": 300000000, "accn": "0000000001-25-000001", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-15"}
+        ]}
+      },
+      "Assets": {
+        "label": "Total assets",
+        "units": {"USD": [
+          {"end": "2023-12-31", "val": 2000000000, "accn": "0000000001-24-000001", "fy": 2023, "fp": "FY", "form": "10-K", "filed": "2024-02-15"},
+          {"end": "2024-12-31", "val": 2300000000, "accn": "0000000001-25-000001", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-15"}
+        ]}
+      },
+      "Liabilities": {
+        "label": "Total liabilities",
+        "units": {"USD": [
+          {"end": "2023-12-31", "val": 1200000000, "accn": "0000000001-24-000001", "fy": 2023, "fp": "FY", "form": "10-K", "filed": "2024-02-15"},
+          {"end": "2024-12-31", "val": 1300000000, "accn": "0000000001-25-000001", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-15"}
+        ]}
+      },
+      "StockholdersEquity": {
+        "label": "Stockholders equity",
+        "units": {"USD": [
+          {"end": "2023-12-31", "val": 800000000, "accn": "0000000001-24-000001", "fy": 2023, "fp": "FY", "form": "10-K", "filed": "2024-02-15"},
+          {"end": "2024-12-31", "val": 1000000000, "accn": "0000000001-25-000001", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-15"}
+        ]}
+      },
+      "AssetsCurrent": {
+        "label": "Current assets",
+        "units": {"USD": [
+          {"end": "2023-12-31", "val": 500000000, "accn": "0000000001-24-000001", "fy": 2023, "fp": "FY", "form": "10-K", "filed": "2024-02-15"},
+          {"end": "2024-12-31", "val": 600000000, "accn": "0000000001-25-000001", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-15"}
+        ]}
+      },
+      "LiabilitiesCurrent": {
+        "label": "Current liabilities",
+        "units": {"USD": [
+          {"end": "2023-12-31", "val": 250000000, "accn": "0000000001-24-000001", "fy": 2023, "fp": "FY", "form": "10-K", "filed": "2024-02-15"},
+          {"end": "2024-12-31", "val": 280000000, "accn": "0000000001-25-000001", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-15"}
+        ]}
+      }
+    },
+    "smpl": {
+      "ResearchAndDevelopmentInvestment": {
+        "label": "R&D investment (company-specific extension)",
+        "units": {"USD": [
+          {"start": "2023-01-01", "end": "2023-12-31", "val": 90000000, "accn": "0000000001-24-000001", "fy": 2023, "fp": "FY", "form": "10-K", "filed": "2024-02-15"},
+          {"start": "2024-01-01", "end": "2024-12-31", "val": 110000000, "accn": "0000000001-25-000001", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-15"}
+        ]}
+      }
+    }
+  }
+}
