@@ -1,7 +1,7 @@
 ---
 project: mycroft
 status: active
-updated: 2026-08-07
+updated: 2026-08-13
 canonical: [SNICKERDOODLE.md, DOMAIN.md, AGENTS.md, outline.md, book.md, chapters/]
 next:
   - "Have a named finance reviewer complete the Finance Investigator's open run-bound review request"
@@ -18,7 +18,7 @@ _Read this first for current state._ `DOMAIN.md` = what the repo **is**; `logs/R
 - **Framework:** Snickerdoodle (`SNICKERDOODLE.md`) is the agent-operating-system framework; Mycroft (this book + recipe system), Madison, and the-reallocation-engine are domains built on it (shared governance + `instructions/_shared/` library).
 - **Manuscript:** `TIKTOC.md` rewritten as a finance recipe-engine architecture; named chapters `chapters/01`–`16` + `97` written to mirror the reallocation-engine pattern. Older `chapters/NN-chapter-NN.md` placeholders still present (cleanup pending).
 - **Operating surface:** 100 recipes + 49 `conductor/` step files; two-layer `data/raw` → `data/verified`.
-- **Applied projects:** AI Vendor Intelligence exercises, upstream case-study projects, and the DRAFT Mycroft Finance Investigator, which now runs locally from synthetic raw data through validation, deterministic EBITDA analysis, conditional tool selection, separate machine/human outputs, a run-bound human review gate, and isolated planted-discrepancy evaluation.
+- **Applied projects:** AI Vendor Intelligence exercises, upstream case-study projects, and the DRAFT Mycroft Finance Investigator, which now runs locally from synthetic raw data through validation, deterministic EBITDA analysis, conditional tool selection, separate machine/human outputs, a run-bound human review gate, isolated planted-discrepancy evaluation, and evidence-linked scenario sensitivities.
 - **Context architecture:** `AGENTS.md`/`CLAUDE.md` compile from `instructions/`; portable layer (`_MANIFEST.md`, `.ai/manifest.yaml`, `PROJECT_RULES.md`, this file) + CLI-agnostic tool shims now in place; `.claude/` hooks + CI verify.
 - **Enforcement:** `npm run verify` = conformance + manifest-check (adapter drift + canonical existence). `eval/` provides the §19 measurement harness.
 
@@ -26,7 +26,13 @@ _Read this first for current state._ `DOMAIN.md` = what the repo **is**; `logs/R
 - **Placeholder chapters** — archive `chapters/01-chapter-01.md` … `12-chapter-12.md` now that named chapters exist? (no-delete → archive, don't delete).
 - **Recipe lifecycle** — confirm which finance recipes are ready to promote past DRAFT with a logged, attested run.
 
-## Recently done (2026-08-07)
+## Recently done (2026-08-13)
+- Added a run-bound deterministic scenario decision pack with three synthetic
+  sensitivity exercises. Every assumption retains source lineage; every output
+  is `SIMULATION_NOT_FORECAST`, makes no recommendation, and leaves the decision
+  to a named human.
+
+## Previously done (2026-08-07)
 - Added seven deterministic evaluation cases covering the reconciled baseline,
   four planted data failures, the investigation step limit, and attempted agent
   self-approval. Cases mutate only temporary copies and retain exact expected

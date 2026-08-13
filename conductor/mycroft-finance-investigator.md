@@ -65,7 +65,20 @@ demo-only materiality amount.
 - On failure: Stop, preserve the failing observation, and do not weaken the
   expectation merely to obtain a pass.
 
-### Step 7 — Human Finance Review
+### Step 7 — Build a Scenario Decision Pack
+
+- Labor: AI with human-owned assumptions and decision [TO] [IJ]
+- AI task: Bind the scenario plan to the exact baseline run; apply each explicit
+  amount or percent-of-actual assumption; retain calculation and plan evidence;
+  compare resulting EBITDA without recommending a case.
+- Human task: Approve or replace assumptions, decide whether scenarios are
+  decision-useful, and make any resulting business decision.
+- Handoff condition: Every sensitivity is labeled `SIMULATION_NOT_FORECAST`,
+  recommendation is null, and decision is `HUMAN_REQUIRED`.
+- On failure: Stop if the plan is unbound, contradictory, non-finite, duplicates
+  a category, or would produce a negative category amount.
+
+### Step 8 — Human Finance Review
 
 - Labor: Human [IJ] [EI]
 - AI task: Produce a run-bound review request and validate the completed file
@@ -86,6 +99,8 @@ demo-only materiality amount.
 - Human-owned materiality
 - Calculation-to-source lineage
 - Named adversarial cases behave as specified
+- Scenario assumptions and arithmetic retain exact lineage
+- Sensitivities are never presented as forecasts or recommendations
 - No generated causal commentary
 - Named human release decision
 

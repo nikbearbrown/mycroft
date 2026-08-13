@@ -316,3 +316,12 @@ workflow changes.
 - **Outputs:** `mycroft_finance_investigator/evaluation.py`; evaluation case/schema files; evaluation tests; `logs/mycroft-finance-investigator-evaluation-week32.json`; `reports/generated/mycroft-finance-investigator-evaluation-week32.md`; updated recipe, conductor, project documentation, and status.
 - **Result:** All seven named expectations matched: the reconciled baseline completed with the expected EBITDA, tool trace, evidence count, and open human gate; four planted reconciliation/mapping defects stopped validation; the step limit stopped the investigator; and an agent identity could not clear the human gate. Every mutation ran in a temporary copy.
 - **Open issues:** This finite synthetic case set is not model confidence or production certification. A named human still owns test adequacy, materiality, causal explanation, and distribution.
+
+## 2026-08-13 -- Add Finance Investigator scenario decision pack
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); no planning, adequacy, or release gate was cleared.
+- **Inputs:** Verified synthetic sample, exact baseline run `sample-2026-02`, and three explicitly unapproved exercises in `projects/Mycroft-Finance-Investigator/config/sample-scenarios.json`.
+- **Commands:** Ran the complete project unit suite; ran the `scenario` CLI; parsed and reconciled the machine decision pack; reviewed the human Markdown view; ran targeted conformance and repository verification.
+- **Outputs:** `mycroft_finance_investigator/scenario.py`; scenario plan/schema and tests; `logs/mycroft-finance-investigator-scenarios-week33.json`; `reports/generated/mycroft-finance-investigator-scenarios-week33.md`; updated recipe, conductor, project documentation, and status.
+- **Result:** The engine bound the plan to the exact baseline log and reproduced actual EBITDA of 230000.00. It calculated three transparent sensitivities at 275500.00, 250000.00, and 252300.00, retaining baseline records and plan references for every assumption. Outputs are labeled `SIMULATION_NOT_FORECAST`, contain no recommendation, and require a human decision.
+- **Open issues:** The sample assumptions are not approved forecasts or operating plans. A named finance owner must approve or replace assumptions, judge scenario adequacy, and own any decision, causal explanation, materiality policy, or distribution.

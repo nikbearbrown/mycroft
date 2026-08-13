@@ -9,7 +9,7 @@ The application explains the **mathematical bridge**, not business causation.
 Current-period causal commentary remains owner-required and blank until a named
 human approves it.
 
-## Weeks 1–5 implemented
+## Weeks 1–6 implemented
 
 - **Week 1:** synthetic SaaS finance data, machine-readable schemas, provenance,
   raw-to-verified validation, and reconciliation checks.
@@ -21,6 +21,8 @@ human approves it.
   agent self-approval prevention, and append-only gate decisions.
 - **Week 5:** isolated planted-discrepancy cases for reconciliation failures,
   step-limit enforcement, self-approval prevention, and baseline regression.
+- **Week 6:** run-bound scenario sensitivities with explicit assumptions,
+  source lineage, exact EBITDA comparisons, and no generated recommendation.
 
 ## Quick start
 
@@ -54,6 +56,9 @@ python3 -m mycroft_finance_investigator.cli review-request \
 python3 -m mycroft_finance_investigator.cli evaluate \
   --output-log ../../logs/mycroft-finance-investigator-evaluation-week32.json \
   --output-report ../../reports/generated/mycroft-finance-investigator-evaluation-week32.md
+python3 -m mycroft_finance_investigator.cli scenario \
+  --output-log ../../logs/mycroft-finance-investigator-scenarios-week33.json \
+  --output-report ../../reports/generated/mycroft-finance-investigator-scenarios-week33.md
 ```
 
 After a named finance reviewer completes a copy of the review request, record
@@ -76,6 +81,12 @@ The evaluation command mutates temporary copies—not source data—and compares
 seven named observations with explicit expected outcomes. A passing scorecard
 is evidence that those cases behaved as specified; it is not model confidence,
 production certification, or a substitute for human adequacy review.
+
+The scenario command applies explicit sample assumptions to the verified actual
+baseline. Percentage assumptions mean percentage of the category's verified
+actual amount. Each output is labeled `SIMULATION_NOT_FORECAST`, carries its
+baseline and plan evidence, makes no recommendation, and requires a human
+decision.
 
 ## Amount convention
 
@@ -102,6 +113,8 @@ deterministic finance engine
 single investigator (observe -> plan -> tool -> evidence)
         |
         +--> isolated adversarial evaluation
+        |
+        +--> deterministic scenario sensitivities
         |
         +--> structured machine log
         +--> human review report
