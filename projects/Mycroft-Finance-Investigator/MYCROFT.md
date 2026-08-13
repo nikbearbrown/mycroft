@@ -34,6 +34,12 @@ adversarial cases in isolated temporary copies, compares observations with the
 committed expectations in `evaluations/cases.json`, and emits a scorecard. It
 reports coverage of named cases, not model confidence or production adequacy.
 
+The scenario engine is implemented in
+`mycroft_finance_investigator/scenario.py`. It binds a plan to the exact sample
+run, applies amount or percent-of-actual assumptions, and preserves calculation
+and plan lineage. Every output says `SIMULATION_NOT_FORECAST`, leaves
+`recommendation` null, and records `HUMAN_REQUIRED` for the decision.
+
 The investigator must never convert a numerical variance into a causal claim.
 Its output may identify which customer, account, or department records move
 with the variance, but the reason for that movement remains owner-required.
@@ -46,3 +52,7 @@ customer, or investment.
 
 The committed sample review request remains `OPEN`. It is not a human decision
 and does not promote the recipe.
+
+The committed scenario plan is also synthetic and unapproved. Its values exist
+to test arithmetic and disclosure behavior, not to represent a forecast or a
+preferred business action.

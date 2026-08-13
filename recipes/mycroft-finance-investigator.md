@@ -71,9 +71,11 @@ causal explanation, adequacy, and distribution.
 7. Produce a structured machine log and a separate human review report.
 8. Run the committed baseline and adversarial control cases in isolated copies;
    fail if any observed result differs from its explicit expectation.
-9. Produce a run-bound review request with causal commentary blank and the
+9. Apply explicit, unapproved exercise assumptions to the verified baseline;
+   emit arithmetic sensitivities with lineage and no recommendation.
+10. Produce a run-bound review request with causal commentary blank and the
    human gate open.
-10. Accept only a named human decision whose causal claims cite evidence from
+11. Accept only a named human decision whose causal claims cite evidence from
    that exact run; record it as an append-only gate artifact.
 
 ## Implementation Map
@@ -85,6 +87,7 @@ causal explanation, adequacy, and distribution.
 | Observe-plan-act investigator | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/agent.py` |
 | Human review gate | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/review.py` |
 | Adversarial evaluation | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/evaluation.py` |
+| Scenario sensitivities | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/scenario.py` |
 | Log and report rendering | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/reporting.py` |
 | Local orchestration | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/cli.py` |
 | Conformance and behavior tests | `projects/Mycroft-Finance-Investigator/tests/` |
@@ -121,6 +124,16 @@ Required fields: case specification hash, raw-source hashes, expected and
 observed behavior per case, exact differences, aggregate matched/unexpected
 counts, and a visible `PENDING_HUMAN_REVIEW` adequacy boundary.
 
+### Scenario Decision Pack
+
+Paths: `logs/mycroft-finance-investigator-scenarios-[RUN_ID].json` and
+`reports/generated/mycroft-finance-investigator-scenarios-[RUN_ID].md`.
+
+Required fields: exact baseline-run hash, scenario-plan hash, verified baseline
+category amounts, assumption method/value/reasoning/source, calculation and
+plan evidence, resulting EBITDA, `SIMULATION_NOT_FORECAST`, null
+recommendation, and `HUMAN_REQUIRED` decision.
+
 ## Stop Conditions
 
 - Stop if provenance is missing or ambiguous.
@@ -132,6 +145,10 @@ counts, and a visible `PENDING_HUMAN_REVIEW` adequacy boundary.
 - Stop if the investigator exceeds its configured step limit.
 - Stop if an evaluation case produces an unexpected result.
 - Stop before treating an evaluation pass as confidence or production approval.
+- Stop if a scenario plan does not bind to the exact baseline run.
+- Stop if a category has duplicate assumptions or would become negative.
+- Stop before presenting a sensitivity as a forecast, probability,
+  recommendation, or approved plan.
 - Stop if a reviewer is unnamed or identifies as an agent.
 - Stop if a causal explanation cites evidence absent from the source run.
 - Stop if an approval lacks an accepted materiality decision or an
@@ -150,6 +167,9 @@ python3 -m mycroft_finance_investigator.cli all --run-id sample-2026-02
 python3 -m mycroft_finance_investigator.cli evaluate \
   --output-log ../../logs/mycroft-finance-investigator-evaluation-week32.json \
   --output-report ../../reports/generated/mycroft-finance-investigator-evaluation-week32.md
+python3 -m mycroft_finance_investigator.cli scenario \
+  --output-log ../../logs/mycroft-finance-investigator-scenarios-week33.json \
+  --output-report ../../reports/generated/mycroft-finance-investigator-scenarios-week33.md
 ```
 
 Do not promote this recipe from `DRAFT` until both TODOs have the evidence

@@ -1,0 +1,187 @@
+{
+  "schema_version": "0.1.0",
+  "workflow": "mycroft-finance-investigator-scenarios",
+  "run_id": "week33",
+  "classification": "SIMULATION_NOT_FORECAST",
+  "source_plan": "projects/Mycroft-Finance-Investigator/config/sample-scenarios.json",
+  "source_plan_sha256": "591c343b00107ece5efa0ea29264800bef60f3e11cc79e07c81de55b37b74352",
+  "baseline_run": "logs/mycroft-finance-investigator-sample-2026-02.json",
+  "baseline_run_sha256": "41cfa60e7f28f47b3ef2484213155bdd90fa236f1789d6b306899d870ced4869",
+  "baseline_run_id": "sample-2026-02",
+  "verified_data_sha256": {
+    "account_mapping.csv": "c45ba1275b8daa38b6827e7257170a9ea34b255033be5128c4c6e74e51d1a839",
+    "budget.csv": "de05edd74e10eab58406d8378cc603699e4f1b34d38fdfa6bb0c7d4bd719dc79",
+    "actuals.csv": "389b724554635514fddb6bfbb0356744780dd21465f9795f7158626bab994015",
+    "ledger.csv": "3dddbc583608426447ca799360bf58bb00be8b86962ef2677107feebc9a3a05d",
+    "customers.csv": "4deba1e908e005d30fdd69fe564b71891f1a545d5010fa5a9e176eb9bc1b8b03",
+    "headcount.csv": "8938672e39fc1d0135b2ee961ce81036d0f141daab823ffed0bcc81c6550fb24"
+  },
+  "baseline_actuals": {
+    "revenue": "910000.00",
+    "cogs": "215000.00",
+    "payroll": "300000.00",
+    "opex": "165000.00"
+  },
+  "baseline_ebitda": "230000.00",
+  "scenario_count": 3,
+  "scenarios": [
+    {
+      "id": "revenue-recovery-5pct",
+      "name": "Revenue recovery exercise",
+      "purpose": "Show the arithmetic EBITDA sensitivity if actual revenue were 5% higher than the verified sample baseline.",
+      "classification": "SIMULATION_NOT_FORECAST",
+      "baseline_ebitda": "230000.00",
+      "scenario_ebitda": "275500.00",
+      "difference_from_baseline": "45500.00",
+      "category_actuals": {
+        "revenue": "955500.00",
+        "cogs": "215000.00",
+        "payroll": "300000.00",
+        "opex": "165000.00"
+      },
+      "assumptions": [
+        {
+          "category": "revenue",
+          "method": "PERCENT_OF_ACTUAL",
+          "value": "5.00",
+          "reasoning": "Illustrative sensitivity only; it is not a sales forecast.",
+          "source": "Unapproved sample exercise",
+          "baseline_actual": "910000.00",
+          "adjustment": "45500.00",
+          "resulting_actual": "955500.00",
+          "ebitda_impact": "45500.00",
+          "evidence": [
+            "budget.csv:account=4000",
+            "actuals.csv:account=4000",
+            "account_mapping.csv:account=4000",
+            "budget.csv:account=4010",
+            "actuals.csv:account=4010",
+            "account_mapping.csv:account=4010",
+            "projects/Mycroft-Finance-Investigator/config/sample-scenarios.json:scenario_id=revenue-recovery-5pct:category=revenue"
+          ]
+        }
+      ],
+      "recommendation": null,
+      "decision": "HUMAN_REQUIRED"
+    },
+    {
+      "id": "cogs-reduction-20000",
+      "name": "COGS reduction exercise",
+      "purpose": "Show the arithmetic EBITDA sensitivity if sample COGS were 20000 lower than the verified actual baseline.",
+      "classification": "SIMULATION_NOT_FORECAST",
+      "baseline_ebitda": "230000.00",
+      "scenario_ebitda": "250000.00",
+      "difference_from_baseline": "20000.00",
+      "category_actuals": {
+        "revenue": "910000.00",
+        "cogs": "195000.00",
+        "payroll": "300000.00",
+        "opex": "165000.00"
+      },
+      "assumptions": [
+        {
+          "category": "cogs",
+          "method": "AMOUNT",
+          "value": "-20000.00",
+          "reasoning": "Illustrative cost sensitivity only; no action or feasibility is implied.",
+          "source": "Unapproved sample exercise",
+          "baseline_actual": "215000.00",
+          "adjustment": "-20000.00",
+          "resulting_actual": "195000.00",
+          "ebitda_impact": "20000.00",
+          "evidence": [
+            "budget.csv:account=5000",
+            "actuals.csv:account=5000",
+            "account_mapping.csv:account=5000",
+            "projects/Mycroft-Finance-Investigator/config/sample-scenarios.json:scenario_id=cogs-reduction-20000:category=cogs"
+          ]
+        }
+      ],
+      "recommendation": null,
+      "decision": "HUMAN_REQUIRED"
+    },
+    {
+      "id": "balanced-operating-exercise",
+      "name": "Balanced operating exercise",
+      "purpose": "Show a combined sensitivity across revenue, payroll, and operating expenses without selecting it as a preferred case.",
+      "classification": "SIMULATION_NOT_FORECAST",
+      "baseline_ebitda": "230000.00",
+      "scenario_ebitda": "252300.00",
+      "difference_from_baseline": "22300.00",
+      "category_actuals": {
+        "revenue": "937300.00",
+        "cogs": "215000.00",
+        "payroll": "310000.00",
+        "opex": "160000.00"
+      },
+      "assumptions": [
+        {
+          "category": "revenue",
+          "method": "PERCENT_OF_ACTUAL",
+          "value": "3.00",
+          "reasoning": "Illustrative revenue sensitivity, not a probability-weighted estimate.",
+          "source": "Unapproved sample exercise",
+          "baseline_actual": "910000.00",
+          "adjustment": "27300.00",
+          "resulting_actual": "937300.00",
+          "ebitda_impact": "27300.00",
+          "evidence": [
+            "budget.csv:account=4000",
+            "actuals.csv:account=4000",
+            "account_mapping.csv:account=4000",
+            "budget.csv:account=4010",
+            "actuals.csv:account=4010",
+            "account_mapping.csv:account=4010",
+            "projects/Mycroft-Finance-Investigator/config/sample-scenarios.json:scenario_id=balanced-operating-exercise:category=revenue"
+          ]
+        },
+        {
+          "category": "payroll",
+          "method": "AMOUNT",
+          "value": "10000.00",
+          "reasoning": "Illustrative incremental payroll cost, not an approved hiring plan.",
+          "source": "Unapproved sample exercise",
+          "baseline_actual": "300000.00",
+          "adjustment": "10000.00",
+          "resulting_actual": "310000.00",
+          "ebitda_impact": "-10000.00",
+          "evidence": [
+            "budget.csv:account=6000",
+            "actuals.csv:account=6000",
+            "account_mapping.csv:account=6000",
+            "projects/Mycroft-Finance-Investigator/config/sample-scenarios.json:scenario_id=balanced-operating-exercise:category=payroll"
+          ]
+        },
+        {
+          "category": "opex",
+          "method": "AMOUNT",
+          "value": "-5000.00",
+          "reasoning": "Illustrative operating-cost sensitivity, not a committed saving.",
+          "source": "Unapproved sample exercise",
+          "baseline_actual": "165000.00",
+          "adjustment": "-5000.00",
+          "resulting_actual": "160000.00",
+          "ebitda_impact": "5000.00",
+          "evidence": [
+            "budget.csv:account=6100",
+            "actuals.csv:account=6100",
+            "account_mapping.csv:account=6100",
+            "budget.csv:account=6200",
+            "actuals.csv:account=6200",
+            "account_mapping.csv:account=6200",
+            "budget.csv:account=6300",
+            "actuals.csv:account=6300",
+            "account_mapping.csv:account=6300",
+            "projects/Mycroft-Finance-Investigator/config/sample-scenarios.json:scenario_id=balanced-operating-exercise:category=opex"
+          ]
+        }
+      ],
+      "recommendation": null,
+      "decision": "HUMAN_REQUIRED"
+    }
+  ],
+  "recommendation": null,
+  "decision": "HUMAN_REQUIRED",
+  "adequacy": "PENDING_HUMAN_REVIEW",
+  "boundary": "Outputs are arithmetic sensitivities to synthetic exercise assumptions; they are not forecasts, probabilities, recommendations, or approvals."
+}

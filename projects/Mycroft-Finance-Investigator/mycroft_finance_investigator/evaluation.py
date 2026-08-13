@@ -327,10 +327,16 @@ def write_evaluation_artifacts(
         f"- Run: `{payload['run_id']}`",
         f"- Classification: `{payload['classification']}`",
         f"- Result: `{payload['summary']['status']}`",
-        f"- Matched expectations: {payload['summary']['matched_count']} / {payload['summary']['case_count']}",
+        (
+            f"- Matched expectations: {payload['summary']['matched_count']} / "
+            f"{payload['summary']['case_count']}"
+        ),
         "- Human adequacy: `PENDING_HUMAN_REVIEW`",
         "",
-        "These are deterministic synthetic control checks, not a model-confidence score or production certification.",
+        (
+            "These are deterministic synthetic control checks, not a "
+            "model-confidence score or production certification."
+        ),
         "",
         "| Case | Stage | Expected | Observed | Result |",
         "|---|---|---|---|---|",
@@ -346,7 +352,11 @@ def write_evaluation_artifacts(
             "",
             "## Boundary",
             "",
-            "A passing scorecard proves only that these named cases behaved as specified. A named human still decides whether the case set is adequate for its intended use.",
+            (
+                "A passing scorecard proves only that these named cases behaved as "
+                "specified. A named human still decides whether the case set is "
+                "adequate for its intended use."
+            ),
             "",
         ]
     )

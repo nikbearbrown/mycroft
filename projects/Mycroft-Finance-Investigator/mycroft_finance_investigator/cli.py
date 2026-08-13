@@ -13,6 +13,7 @@ from .evaluation import run_evaluation, write_evaluation_artifacts
 from .finance import FinanceData, FinanceEngine
 from .reporting import write_human_report, write_machine_log
 from .review import record_review_decision, write_review_request
+from .scenario import run_scenarios, write_scenario_artifacts
 from .validation import validate_finance_pack
 
 
@@ -24,6 +25,7 @@ DEFAULT_SCHEMA = PROJECT_ROOT / "schemas/finance-pack.schema.json"
 DEFAULT_CONFIG = PROJECT_ROOT / "config/sample-investigation.json"
 DEFAULT_RUN_LOG = REPO_ROOT / "logs/mycroft-finance-investigator-sample-2026-02.json"
 DEFAULT_EVALUATION_CASES = PROJECT_ROOT / "evaluations/cases.json"
+DEFAULT_SCENARIO_PLAN = PROJECT_ROOT / "config/sample-scenarios.json"
 
 
 def _run_id() -> str:
@@ -42,7 +44,10 @@ def _validation_payload(verified_dir: Path) -> dict[str, object]:
 
 def run_validation(raw_dir: Path, verified_dir: Path, schema: Path) -> dict[str, object]:
     result = validate_finance_pack(raw_dir, verified_dir, schema)
-    print(f"validated {sum(result.row_counts.values())} rows across {len(result.row_counts)} datasets")
+    print(
+        f"validated {sum(result.row_counts.values())} rows across "
+        f"{len(result.row_counts)} datasets"
+    )
     print(f"verified sample: {verified_dir}")
     return result.to_dict()
 
@@ -62,8 +67,16 @@ def run_investigation(
         question=str(config["question"]),
         threshold=Decimal(str(config["materiality_amount"])),
     )
-    target_log = log_path or REPO_ROOT / "logs" / f"mycroft-finance-investigator-{run_id}.json"
-    target_report = report_path or REPO_ROOT / "reports/generated" / f"mycroft-finance-investigator-{run_id}.md"
+    target_log = (
+        log_path
+        or REPO_ROOT / "logs" / f"mycroft-finance-investigator-{run_id}.json"
+    )
+    target_report = (
+        report_path
+        or REPO_ROOT
+        / "reports/generated"
+        / f"mycroft-finance-investigator-{run_id}.md"
+    )
     write_machine_log(
         target_log,
         run_id,
@@ -112,6 +125,15 @@ def build_parser() -> argparse.ArgumentParser:
     evaluate.add_argument("--run-id", default="week32-evaluation")
     evaluate.add_argument("--output-log", type=Path, required=True)
     evaluate.add_argument("--output-report", type=Path, required=True)
+    scenario = subparsers.add_parser(
+        "scenario", help="run deterministic what-if sensitivities"
+    )
+    scenario.add_argument("--plan", type=Path, default=DEFAULT_SCENARIO_PLAN)
+    scenario.add_argument("--verified-dir", type=Path, default=DEFAULT_VERIFIED)
+    scenario.add_argument("--run-log", type=Path, default=DEFAULT_RUN_LOG)
+    scenario.add_argument("--run-id", default="week33-scenarios")
+    scenario.add_argument("--output-log", type=Path, required=True)
+    scenario.add_argument("--output-report", type=Path, required=True)
     return parser
 
 
@@ -152,6 +174,18 @@ def main() -> None:
         print(f"human scorecard: {args.output_report}")
         if payload["summary"]["status"] != "PASS":
             raise SystemExit(1)
+    if args.command == "scenario":
+        payload = run_scenarios(
+            args.plan,
+            args.verified_dir,
+            args.run_log,
+            args.run_id,
+        )
+        write_scenario_artifacts(payload, args.output_log, args.output_report)
+        print(f"scenario baseline EBITDA: {payload['baseline_ebitda']}")
+        print(f"scenarios rendered: {payload['scenario_count']}")
+        print(f"machine decision pack: {args.output_log}")
+        print(f"human decision pack: {args.output_report}")
 
 
 if __name__ == "__main__":
