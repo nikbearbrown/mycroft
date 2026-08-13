@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #14221f;
+  background: #f5f7f2;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 85% -10%, rgba(124, 188, 163, 0.18), transparent 32rem),
+    #f5f7f2;
+}
+
+button, input, select {
+  font: inherit;
+}
+
+::selection {
+  background: #b7ddce;
+  color: #14221f;
+}
+
+@layer components {
+  .panel {
+    @apply rounded-2xl border border-ink/10 bg-white shadow-card;
+  }
+
+  .field {
+    @apply h-12 w-full rounded-xl border border-ink/15 bg-white px-4 text-sm text-ink outline-none transition placeholder:text-ink/35 focus:border-moss focus:ring-4 focus:ring-moss/10;
+  }
+
+  .label {
+    @apply mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-ink/60;
+  }
+
+  .primary-button {
+    @apply inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-ink px-5 text-sm font-semibold text-white transition hover:bg-moss disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .secondary-button {
+    @apply inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-ink/15 bg-white px-5 text-sm font-semibold text-ink transition hover:border-moss/40 hover:bg-mint/40;
+  }
+}

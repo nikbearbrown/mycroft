@@ -7,8 +7,9 @@ Mycroft is **both a book and an agentic Cowork system**: the manuscript explains
 | Path | What it is |
 |---|---|
 | `SNICKERDOODLE.md` | the constitution — principles, verification stack, recipe lifecycle, logging rules (governs) |
-| `recipes/` | the operating surface: 99 recipes (monitor/pipeline + agent recipes), each with lifecycle frontmatter |
+| `recipes/` | the operating surface: 99 recipe specifications (legacy + lifecycle-native monitor/pipeline and agent recipes) |
 | `conductor/` | per-recipe conductor step files (49) — the orchestration layer |
+| `projects/` | self-contained applied projects; canonical lifecycle, evidence, and report contracts still live in `recipes/`, `data/`, `conductor/`, `reports/`, and `logs/` |
 | `reports/` | report templates the recipes emit |
 | `data/raw/`, `data/verified/` | the two-layer data architecture — nothing enters `verified/` without validation |
 | `data/mycroft-main/` | **quarantined Tier 3** (vendored upstream import); provenance only, do not load |

@@ -1,9 +1,10 @@
 ---
 project: mycroft
 status: active
-updated: 2026-06-15
+updated: 2026-07-24
 canonical: [SNICKERDOODLE.md, DOMAIN.md, AGENTS.md, outline.md, book.md, chapters/]
 next:
+  - "Complete the Earnings Call Sentiment Analyzer human evidence review and resolve its model-revision gap"
   - "Promote/verify finance recipes past DRAFT with logged runs"
   - "Editorial pass: expand the named finance chapters beyond first-pass drafts"
 blocked_by: null
@@ -17,6 +18,7 @@ _Read this first for current state._ `DOMAIN.md` = what the repo **is**; `logs/R
 - **Framework:** Snickerdoodle (`SNICKERDOODLE.md`) is the agent-operating-system framework; Mycroft (this book + recipe system), Madison, and the-reallocation-engine are domains built on it (shared governance + `instructions/_shared/` library).
 - **Manuscript:** `TIKTOC.md` rewritten as a finance recipe-engine architecture; named chapters `chapters/01`–`16` + `97` written to mirror the reallocation-engine pattern. Older `chapters/NN-chapter-NN.md` placeholders still present (cleanup pending).
 - **Operating surface:** 99 recipes + `conductor/` step files; two-layer `data/raw` → `data/verified`.
+- **Applied projects:** AI Vendor Intelligence exercises plus a DRAFT full-stack Earnings Call Sentiment Analyzer with a technically completed Docker/FinBERT sample run, user-created raw transcript, and Mycroft-native recipe/conductor/report contracts.
 - **Context architecture:** `AGENTS.md`/`CLAUDE.md` compile from `instructions/`; portable layer (`_MANIFEST.md`, `.ai/manifest.yaml`, `PROJECT_RULES.md`, this file) + CLI-agnostic tool shims now in place; `.claude/` hooks + CI verify.
 - **Enforcement:** `npm run verify` = conformance + manifest-check (adapter drift + canonical existence). `eval/` provides the §19 measurement harness.
 
@@ -24,7 +26,11 @@ _Read this first for current state._ `DOMAIN.md` = what the repo **is**; `logs/R
 - **Placeholder chapters** — archive `chapters/01-chapter-01.md` … `12-chapter-12.md` now that named chapters exist? (no-delete → archive, don't delete).
 - **Recipe lifecycle** — confirm which finance recipes are ready to promote past DRAFT with a logged, attested run.
 
-## Recently done (2026-06-15)
+## Recently done (2026-07-24)
+- Imported the user-supplied Earnings Call Sentiment Analyzer as a self-contained project; registered its raw sample transcript provenance, DRAFT recipe, conductor flow, report template, and data contract.
+- Built and started all five Compose services; completed and persisted the Northstar sample analysis; verified API, UI, numerical reconciliation, worker tests, frontend lint/build, and backend compilation. Exported a machine log and a human-review report; human adequacy remains open.
+
+## Previously done (2026-06-15)
 - Brought the repo up to the CLI-agnostic standard: portable read-first layer, generated tool shims (Gemini/Aider/Copilot/Cursor) from one source, `manifest-check` wired into verify + CI, and the §19 eval harness. Fixed the `.claude/hooks` "Madison" naming drift → "Mycroft".
 
 _Update this file at the end of each working session: state, decisions, next actions. Keep it short — it's the current-state file, not a log._
