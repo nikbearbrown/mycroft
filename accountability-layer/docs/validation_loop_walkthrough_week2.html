@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Validation Loop Walkthrough — Mycroft Accountability Layer</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f8f8f6; color: #1a1a1a; min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 2rem 1rem; }
+  .container { width: 100%; max-width: 720px; }
+  .masthead { margin-bottom: 2.5rem; }
+  .masthead-tag { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #888; margin-bottom: 8px; }
+  .masthead h1 { font-size: 22px; font-weight: 600; color: #111; margin-bottom: 4px; }
+  .masthead p { font-size: 14px; color: #666; }
+  .masthead code { font-family: "SF Mono", "Fira Code", monospace; font-size: 12px; background: #ebebeb; padding: 1px 5px; border-radius: 3px; }
+
+  .progress { display: flex; gap: 6px; margin-bottom: 2rem; align-items: center; }
+  .pip { height: 3px; width: 32px; border-radius: 2px; background: #ddd; transition: background 0.25s; cursor: pointer; }
+  .pip.done { background: #3d9970; }
+  .pip.active { background: #2563eb; }
+  .step-label { font-size: 12px; color: #888; margin-left: 6px; }
+
+  .cards { display: flex; flex-direction: column; gap: 12px; }
+  .card { background: #fff; border: 1px solid #e8e8e4; border-radius: 12px; padding: 1.25rem; }
+  .card-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #aaa; margin-bottom: 8px; }
+  .card h2 { font-size: 15px; font-weight: 600; color: #111; margin-bottom: 6px; }
+  .card p { font-size: 13px; color: #555; line-height: 1.65; }
+  .code { background: #f2f2f0; border: 1px solid #e4e4e0; border-radius: 8px; padding: 12px 14px; font-family: "SF Mono", "Fira Code", monospace; font-size: 12px; color: #222; margin-top: 10px; white-space: pre; overflow-x: auto; line-height: 1.6; }
+  .code.bad { border-left: 3px solid #e53e3e; background: #fff5f5; }
+  .code.good { border-left: 3px solid #38a169; background: #f0fff4; }
+  .code.directive { border-left: 3px solid #2563eb; background: #eff6ff; }
+
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; padding: 3px 10px; border-radius: 5px; margin-top: 10px; }
+  .badge-fail { background: #fed7d7; color: #9b2c2c; }
+  .badge-success { background: #c6f6d5; color: #22543d; }
+  .badge-halt { background: #fef3c7; color: #92400e; }
+  .badge-info { background: #dbeafe; color: #1e40af; }
+
+  .nav { display: flex; gap: 10px; align-items: center; margin-top: 1.75rem; }
+  .nav button { font-size: 13px; font-weight: 500; padding: 7px 16px; border-radius: 7px; border: 1px solid #ddd; background: #fff; color: #333; cursor: pointer; transition: background 0.15s, opacity 0.15s; }
+  .nav button:hover:not(:disabled) { background: #f4f4f2; }
+  .nav button:disabled { opacity: 0.35; cursor: default; }
+  .nav .counter { font-size: 12px; color: #aaa; margin-left: auto; }
+
+  .divider { border: none; border-top: 1px solid #ebebeb; margin: 10px 0; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .mini-card { background: #f8f8f6; border: 1px solid #e8e8e4; border-radius: 8px; padding: 12px; }
+  .mini-card-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #aaa; margin-bottom: 5px; }
+  .mini-card-value { font-size: 13px; font-weight: 600; color: #111; }
+
+  @media (max-width: 500px) { .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="masthead">
+    <div class="masthead-tag">Mycroft Accountability Layer · ADR-07</div>
+    <h1>Validation loop walkthrough</h1>
+    <p>Retry-then-halt logic from <code>middleware.py</code> — every agent response must pass structural validation before a grade is delivered.</p>
+  </div>
+
+  <div class="progress" id="progress"></div>
+  <div class="cards" id="cards"></div>
+  <div class="nav">
+    <button id="btn-prev" onclick="nav(-1)">← back</button>
+    <button id="btn-next" onclick="nav(1)">next →</button>
+    <span class="counter" id="counter"></span>
+  </div>
+
+</div>
+<script>
+const steps = [
+  {
+    label: "Request arrives",
+    cards: [
+      {
+        tag: "C-01 — audit middleware",
+        title: "A ticker analysis request enters the pipeline",
+        body: "The audit middleware opens a RunSession, assigns a run_id, and prepares to inject the active system directive into every agent prompt. No grade leaves the pipeline without a complete audit trail — a failed write halts the run.",
+        code: null, codeType: null, badge: null
+      },
+      {
+        tag: "directive.py — v1.1.0 active",
+        title: "The versioned directive is injected",
+        body: "Every agent receives the active directive requiring exactly two XML blocks and nothing else. The full directive text is stored verbatim in the RunSession at run time — not referenced by pointer.",
+        code: `"Your entire response MUST consist of exactly two XML blocks —
+nothing before, nothing after.
+
+Begin your response immediately with <thought_log> on the
+very first line. Do NOT write any introduction, preamble, or
+explanation before the opening tag.
+
+Block 1 — internal reasoning:
+<thought_log>
+  Document every step: data sources, quality issues,
+  intermediate conclusions, uncertainty.
+</thought_log>
+
+Block 2 — final output:
+<conclusion>
+  Your final analysis. Cite all sources as
+  [SOURCE: <label>, <url or N/A>].
+</conclusion>
+
+Rules:
+- First character of your response: <
+- Last character of your response: >
+- No text, whitespace, or markdown outside the blocks."`,
+        codeType: "directive", badge: null
+      }
+    ]
+  },
+  {
+    label: "Attempt 1 — failure",
+    cards: [
+      {
+        tag: "agent response — attempt 1",
+        title: "The agent responds — with text outside the blocks",
+        body: "The agent produces a response, but includes plain text before the opening tag. This is a common failure mode: the model narrates its intent before beginning the structured output.",
+        code: `Sure! Here is my analysis of AAPL...
+
+<thought_log>
+  Reviewed Q3 10-Q filing. Gross margin compressed
+  340bps YoY. SG&A grew 22% against 8% revenue growth.
+  Data source: SEC EDGAR (live). Confidence: 0.74.
+</thought_log>
+<conclusion>
+  Revenue trend: declining. Bearish outlook.
+  [SOURCE: 10-Q_2024Q3.pdf#p12, SEC EDGAR]
+</conclusion>`,
+        codeType: "bad", badge: null
+      },
+      {
+        tag: "parser.py — structural check",
+        title: "StructuralParseError is raised",
+        body: "The parser detects text outside the two required XML blocks. It raises a StructuralParseError, attaching the raw response so the middleware can preserve it in the audit record.",
+        code: `StructuralParseError:
+"Response contains text outside XML blocks"
+
+raw_response attached — preserved for audit log`,
+        codeType: null, badge: { text: "PARSE_FAILURE", type: "fail" }
+      },
+      {
+        tag: "audit record — ReasoningObject written",
+        title: "The failure is written immediately",
+        body: "A ReasoningObject is written to the RunSession with attempt_number=1 and parse_status=PARSE_FAILURE. The raw failed response is stored. A rising parse_failure_rate across runs is a drift signal — the failed attempt is evidence, not noise.",
+        code: `ReasoningObject(
+  run_id         = "a3f2...",
+  agent_id       = AgentID.FINANCIAL,
+  attempt_number = 1,
+  parse_status   = ParseStatus.PARSE_FAILURE,
+  confidence_score = 0.7,
+  raw_output     = { "text": "<raw failed response>" },
+  created_at     = "2026-04-26T09:14:33Z"
+)`,
+        codeType: null, badge: null
+      }
+    ]
+  },
+  {
+    label: "Attempt 2 — retry",
+    cards: [
+      {
+        tag: "middleware.py — corrective re-invocation",
+        title: "A corrective directive is issued for the single retry",
+        body: "The pipeline does not halt on the first failure. One retry is attempted using an explicit corrective directive. This is the only retry allowed — a second failure triggers a halt.",
+        code: `CORRECTIVE_DIRECTIVE_TEXT =
+  "Your previous response failed structural validation.
+   You must provide your internal reasoning in a
+   <thought_log> block and your final output in a
+   <conclusion> block. Adhere to the schema exactly."`,
+        codeType: "directive", badge: null
+      },
+      {
+        tag: "agent response — attempt 2",
+        title: "The agent responds correctly on retry",
+        body: "The corrective directive works. The agent produces exactly two XML blocks with nothing outside them. The parser extracts thought_log and conclusion successfully.",
+        code: `<thought_log>
+  Reviewed Q3 10-Q filing. Gross margin compressed
+  340bps YoY. SG&A grew 22% against 8% revenue growth.
+  Data source: SEC EDGAR (live). Confidence: 0.74.
+  No data quality issues detected.
+</thought_log>
+<conclusion>
+  Revenue trend: declining. Bearish outlook.
+  [SOURCE: 10-Q_2024Q3.pdf#p12, SEC EDGAR]
+</conclusion>`,
+        codeType: "good", badge: { text: "PARSE SUCCESS", type: "success" }
+      }
+    ]
+  },
+  {
+    label: "Result",
+    cards: [
+      {
+        tag: "audit record — attempt 2 written",
+        title: "Both ReasoningObjects coexist in the RunSession",
+        body: "The successful retry is written as attempt_number=2, parse_status=SUCCESS. The attempt_number=1 PARSE_FAILURE record is permanent — it cannot be deleted. The run continues.",
+        code: `ReasoningObject(
+  attempt_number  = 2,
+  parse_status    = ParseStatus.SUCCESS,
+  thought_log     = "Reviewed Q3 10-Q...",
+  conclusion      = "Revenue trend: declining...",
+  confidence_score = 0.74,
+  data_sources    = [DataSource(
+    source  = "SEC EDGAR",
+    status  = DataSourceStatus.LIVE,
+    url     = "https://www.sec.gov/..."
+  )]
+)`,
+        codeType: "good", badge: { text: "RUN CONTINUES", type: "success" }
+      },
+      {
+        tag: "halt path — if attempt 2 also fails",
+        title: "Second failure → HaltError. No grade delivered.",
+        body: "If the corrective retry also raises a StructuralParseError, the pipeline halts. Both ReasoningObjects are carried in the HaltError so the caller can persist the full audit trail before propagating the halt upstream.",
+        code: `HaltError:
+  "Agent 'financial' failed structural validation
+  twice for 'AAPL'. Pipeline halted —
+  no grade delivered."
+
+  reasoning_objects = [
+    ReasoningObject(attempt=1, status=PARSE_FAILURE),
+    ReasoningObject(attempt=2, status=HALT)
+  ]`,
+        codeType: null, badge: { text: "HALT — no grade delivered", type: "halt" }
+      },
+      {
+        tag: "SEC-01 — tier separation",
+        title: "The thought_log never reaches the investor",
+        body: "Once the run completes, the RunSession is queryable at two tiers. The investor scope structurally excludes thought_log, raw_output, and llm_tokens — not as a null, but as a field absent from the response schema. The auditor scope returns the full record.",
+        code: `# investor scope (SEC-01 enforced)
+{ conclusion, confidence_score, data_sources,
+  data_quality_warnings, citations }
+
+# auditor scope
+{ thought_log, raw_output, llm_tokens,
+  + all investor fields }`,
+        codeType: null, badge: { text: "ADR-03 · SEC-01", type: "info" }
+      }
+    ]
+  }
+];
+
+let cur = 0;
+
+function renderProgress() {
+  document.getElementById('progress').innerHTML =
+    steps.map((s, i) => `<div class="pip ${i < cur ? 'done' : i === cur ? 'active' : ''}" onclick="jump(${i})" title="${s.label}"></div>`).join('') +
+    `<span class="step-label">${steps[cur].label}</span>`;
+}
+
+function renderCards() {
+  document.getElementById('cards').innerHTML = steps[cur].cards.map(c => {
+    const code = c.code ? `<div class="code ${c.codeType || ''}">${c.code}</div>` : '';
+    const badge = c.badge ? `<span class="badge badge-${c.badge.type}">${c.badge.text}</span>` : '';
+    return `<div class="card">
+      <div class="card-tag">${c.tag}</div>
+      <h2>${c.title}</h2>
+      <p>${c.body}</p>
+      ${code}${badge}
+    </div>`;
+  }).join('');
+  document.getElementById('counter').textContent = `${cur + 1} of ${steps.length}`;
+  document.getElementById('btn-prev').disabled = cur === 0;
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.textContent = cur === steps.length - 1 ? 'done ✓' : 'next →';
+  nextBtn.disabled = cur === steps.length - 1;
+}
+
+function nav(d) { cur = Math.max(0, Math.min(steps.length - 1, cur + d)); renderProgress(); renderCards(); }
+function jump(i) { cur = i; renderProgress(); renderCards(); }
+
+renderProgress();
+renderCards();
+</script>
+</body>
+</html>
