@@ -11,8 +11,23 @@ import { execSync } from 'node:child_process';
 
 const RUNS = 'eval/runs';
 const RESULTS = 'eval/results';
+
+let PY_CMD = null;
+function pythonCmd() {
+  if (PY_CMD) return PY_CMD;
+  for (const c of ['python3', 'python', 'py']) {
+    try {
+      execSync(`${c} --version`, { stdio: 'pipe' });
+      PY_CMD = c;
+      return PY_CMD;
+    } catch { /* try next candidate */ }
+  }
+  PY_CMD = 'python3'; // none found; fail loudly with the conventional name
+  return PY_CMD;
+}
+
 const yload = (p) => JSON.parse(execSync(
-  `python3 -c "import yaml,json;print(json.dumps(yaml.safe_load(open('${p}')),default=str))"`, { encoding: 'utf8' }));
+  `${pythonCmd()} -c "import yaml,json;print(json.dumps(yaml.safe_load(open('${p}')),default=str))"`, { encoding: 'utf8' }));
 
 let order = [];
 try { order = (yload('eval/configs.yaml').configs || []).map((c) => c.id); } catch { /* ignore */ }

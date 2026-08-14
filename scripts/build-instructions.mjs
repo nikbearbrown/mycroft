@@ -52,11 +52,25 @@ const GEN_NOTE =
 `GENERATED from instructions/ by scripts/build-instructions.mjs — do not edit by hand. ` +
 `Thin shim: points at the canonical AGENTS.md (${CONSTITUTION} governs).`;
 
+let PY_CMD = null;
+function pythonCmd() {
+  if (PY_CMD) return PY_CMD;
+  for (const c of ['python3', 'python', 'py']) {
+    try {
+      execSync(`${c} --version`, { stdio: 'pipe' });
+      PY_CMD = c;
+      return PY_CMD;
+    } catch { /* try next candidate */ }
+  }
+  PY_CMD = 'python3'; // none found; fail loudly with the conventional name
+  return PY_CMD;
+}
+
 function loadManifest() {
   const p = path.join(SRC, 'manifest.yml');
   if (!fs.existsSync(p)) { console.error(`No ${p}`); process.exit(2); }
   const json = execSync(
-    `python3 -c "import yaml,json,sys;print(json.dumps(yaml.safe_load(open('${p}'))))"`,
+    `${pythonCmd()} -c "import yaml,json,sys;print(json.dumps(yaml.safe_load(open('${p}'))))"`,
     { encoding: 'utf8' });
   return JSON.parse(json);
 }

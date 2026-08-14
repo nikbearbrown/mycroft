@@ -10,17 +10,31 @@
 // the original file. This is a VIEW — it never edits the source.
 //
 // Usage: node scripts/to-markdown.mjs <file.json|.yaml|.yml>
-// (YAML is parsed via python3 + PyYAML; comments are dropped in the view.)
+// (YAML is parsed via python3/python/py + PyYAML; comments are dropped in the view.)
 
 import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
 
+let PY_CMD = null;
+function pythonCmd() {
+  if (PY_CMD) return PY_CMD;
+  for (const c of ['python3', 'python', 'py']) {
+    try {
+      execSync(`${c} --version`, { stdio: 'pipe' });
+      PY_CMD = c;
+      return PY_CMD;
+    } catch { /* try next candidate */ }
+  }
+  PY_CMD = 'python3'; // none found; fail loudly with the conventional name
+  return PY_CMD;
+}
+
 // Load JSON directly; convert YAML to JSON via PyYAML (no node yaml dependency).
 function load(file) {
   if (/\.ya?ml$/i.test(file)) {
     const j = execSync(
-      `python3 -c "import json,sys,yaml; json.dump(yaml.safe_load(open(sys.argv[1])), sys.stdout)" "${file}"`,
+      `${pythonCmd()} -c "import json,sys,yaml; json.dump(yaml.safe_load(open(sys.argv[1])), sys.stdout)" "${file}"`,
       { encoding: 'utf8' }
     );
     return JSON.parse(j);

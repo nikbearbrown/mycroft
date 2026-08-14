@@ -97,3 +97,12 @@ workflow changes.
   - Phase 2: Run full sample brief (company: "Anthropic") with all gates open (no human decision yet, just logging).
   - Phase 2: Generate `signals-validation-audit.md` (spot-check 10 signals, assess quality).
   - Phase 3: Solve Groq token limit (upgrade tier or secondary provider for news classification).
+
+## 2026-08-13 -- Fix `python3`-only shellouts breaking conformance on Windows
+
+- **Recipe:** Bugfix pass on the verification tooling itself (`scripts/conformance.mjs` and friends), triggered by a Stop-hook conformance failure.
+- **Inputs:** `.claude/hooks/conformance-check.sh` failure output: `recipes/vendor-intelligence-brief.yaml` and `metadata.yaml` both failing YAML conformance with "Python was not found ... Microsoft Store" — the Windows App Execution Alias stub, not a real parse error.
+- **Commands:** Confirmed the two YAML files themselves parse cleanly (`python -c "import yaml...` succeeds; a real PyYAML-capable interpreter is installed as `python`, not `python3`, on this machine — `python3` resolves to the non-functional Windows Store alias). Added a small `pythonCmd()` helper (tries `python3` → `python` → `py`, memoized) to every script that shells out to Python for YAML parsing: `scripts/conformance.mjs`, `scripts/manifest-check.mjs`, `scripts/build-instructions.mjs`, `scripts/to-markdown.mjs`, `scripts/eval/score-run.mjs`, `scripts/eval/report.mjs`. Reran `npm run verify` and smoke-tested `to-markdown.mjs` + `build-instructions.mjs` (no-op rebuild, root files unchanged).
+- **Outputs:** Edited the 6 scripts above (no content/data files touched — this was a script portability bug, not a recipe or data defect).
+- **Result:** `npm run verify` passes clean (136 files: 123 md · 2 yaml · 10 js · 1 json; manifest check passes; no adapter drift). Root cause was environment/script portability (hardcoded `python3`), not a defect in `metadata.yaml` or `vendor-intelligence-brief.yaml`.
+- **Open issues:** `node scripts/build-instructions.mjs` emits a harmless Python `SyntaxWarning: invalid escape sequence '\m'` on Windows (backslash path separator embedded in a `python -c` string literal) — cosmetic, not blocking; could normalize to forward slashes in a later pass. `to-markdown.mjs` output shows mangled em-dashes for non-ASCII characters piped through `python -c` on Windows (console codepage, not UTF-8) — cosmetic, unrelated to this fix.

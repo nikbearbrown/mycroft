@@ -51,6 +51,20 @@ function tail(e) {
   return s.split('\n').filter(Boolean).slice(-1)[0] || 'failed';
 }
 
+let PY_CMD = null;
+function pythonCmd() {
+  if (PY_CMD) return PY_CMD;
+  for (const c of ['python3', 'python', 'py']) {
+    try {
+      execSync(`${c} --version`, { stdio: 'pipe' });
+      PY_CMD = c;
+      return PY_CMD;
+    } catch { /* try next candidate */ }
+  }
+  PY_CMD = 'python3'; // none found; fail loudly with the conventional name
+  return PY_CMD;
+}
+
 function checkMd(file) {
   const t = fs.readFileSync(file, 'utf8');
   const fences = (t.match(/^```/gm) || []).length;
@@ -62,9 +76,9 @@ function checkMd(file) {
 function check(file, kind) {
   try {
     if (kind === 'json') JSON.parse(fs.readFileSync(file, 'utf8'));
-    else if (kind === 'yaml') execSync(`python3 -c "import yaml,sys; yaml.safe_load(open(sys.argv[1]))" "${file}"`, { stdio: 'pipe' });
+    else if (kind === 'yaml') execSync(`${pythonCmd()} -c "import yaml,sys; yaml.safe_load(open(sys.argv[1]))" "${file}"`, { stdio: 'pipe' });
     else if (kind === 'js') execSync(`node --check "${file}"`, { stdio: 'pipe' });
-    else if (kind === 'py') execSync(`python3 -m py_compile "${file}"`, { stdio: 'pipe' });
+    else if (kind === 'py') execSync(`${pythonCmd()} -m py_compile "${file}"`, { stdio: 'pipe' });
     else if (kind === 'sh') execSync(`bash -n "${file}"`, { stdio: 'pipe' });
     else if (kind === 'md') checkMd(file);
     return { ok: true };

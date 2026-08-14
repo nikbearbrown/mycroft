@@ -22,7 +22,21 @@ if (!runDir || !fs.existsSync(runDir)) {
   process.exit(2);
 }
 
-const py = (code, input) => execSync(`python3 -c "${code}"`, { input, encoding: 'utf8' });
+let PY_CMD = null;
+function pythonCmd() {
+  if (PY_CMD) return PY_CMD;
+  for (const c of ['python3', 'python', 'py']) {
+    try {
+      execSync(`${c} --version`, { stdio: 'pipe' });
+      PY_CMD = c;
+      return PY_CMD;
+    } catch { /* try next candidate */ }
+  }
+  PY_CMD = 'python3'; // none found; fail loudly with the conventional name
+  return PY_CMD;
+}
+
+const py = (code, input) => execSync(`${pythonCmd()} -c "${code}"`, { input, encoding: 'utf8' });
 const yloadFile = (p) => JSON.parse(py(`import yaml,json;print(json.dumps(yaml.safe_load(open('${p}')),default=str))`));
 const yloadStr  = (s) => JSON.parse(py(`import yaml,json,sys;print(json.dumps(yaml.safe_load(sys.stdin),default=str))`, s));
 const ydump     = (o) => py(`import yaml,json,sys;print(yaml.safe_dump(json.load(sys.stdin),sort_keys=False,allow_unicode=True))`, JSON.stringify(o));
