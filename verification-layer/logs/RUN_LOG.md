@@ -89,3 +89,29 @@ date, recipe, inputs, commands, outputs, result, open issues.
     a direct `py_compile` sweep of the tracked file list instead (see Commands/Result above).
   - The four CRITICAL findings in `accountability-layer-audit.md` remain open and are unaffected
     by this rename.
+
+## 2026-08-21 -- Resolve duplicate subsystem paths after an upstream merge
+
+- **Recipe:** Repo repair. Merge commit `f2855ca` (made outside this session) merged the remote
+  `feature/accountability-layer` — which still carried the pre-rename path — into the local
+  branch. Git did not recognise the incoming files as the source of the earlier rename, so HEAD
+  ended up tracking the entire subsystem twice: `accountability-layer/` (38 files) and
+  `verification-layer/` (35 files).
+- **Diagnosis before acting:** 31 of the shared files were byte-identical across both paths. The
+  4 that differed (`README.md`, `DATA_CONTRACT.md`, `.gitignore`, `logs/RUN_LOG.md`) were exactly
+  the files edited during the rename, so `verification-layer/` held the current versions and
+  `accountability-layer/` held the pre-rename originals. Three `docs/*.html` files were tracked
+  only under the old path; `git check-ignore` confirmed they are now covered by a deliberate
+  `/docs` rule in `verification-layer/.gitignore` (added outside this session, alongside
+  `/divij`), so dropping them from tracking loses nothing on disk.
+- **Commands:** `git rm -r accountability-layer` after confirming every file existed on disk under
+  `verification-layer/`. Re-ran the test suite and confirmed `divij/` (7 files) and `docs/`
+  (3 files) remain present on disk, gitignored.
+- **Result:** one tracked subsystem path. 129/129 tests pass. `accountability-layer/` no longer
+  exists in tracking or on disk; all content lives under `verification-layer/`.
+- **Open issues:**
+  - The remote branch `origin/feature/accountability-layer` still carries the old path. Pushing
+    this resolution will re-delete it there; anyone who pulled the intermediate state will see the
+    rename land as a delete-plus-add rather than a detected rename. The branch name itself is
+    still `feature/accountability-layer`, unchanged — renaming a pushed branch is shared-state
+    surgery and was left as the user's decision.
