@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inversion Audit Engine — Causal Divergence Delta</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f8f8f6; color: #1a1a1a; min-height: 100vh; padding: 2rem 1rem; display: flex; justify-content: center; }
+  .container { width: 100%; max-width: 720px; }
+
+  .masthead { margin-bottom: 2rem; }
+  .masthead-tag { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #888; margin-bottom: 8px; }
+  .masthead h1 { font-size: 22px; font-weight: 600; color: #111; margin-bottom: 6px; }
+  .masthead p { font-size: 14px; color: #666; line-height: 1.6; }
+
+  .progress { display: flex; gap: 6px; margin-bottom: 2rem; align-items: center; }
+  .pip { height: 3px; width: 32px; border-radius: 2px; background: #ddd; transition: background 0.25s; cursor: pointer; }
+  .pip.done { background: #7c3aed; }
+  .pip.active { background: #111; }
+  .step-label { font-size: 12px; color: #888; margin-left: 6px; }
+
+  .cards { display: flex; flex-direction: column; gap: 12px; }
+  .card { background: #fff; border: 1px solid #e8e8e4; border-radius: 12px; padding: 1.25rem; }
+  .card-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+  .card h2 { font-size: 15px; font-weight: 600; color: #111; margin-bottom: 6px; }
+  .card p { font-size: 13px; color: #555; line-height: 1.65; }
+
+  .code { background: #f2f2f0; border: 1px solid #e4e4e0; border-radius: 8px; padding: 12px 14px; font-family: "SF Mono", "Fira Code", monospace; font-size: 12px; color: #222; margin-top: 10px; white-space: pre; overflow-x: auto; line-height: 1.6; }
+  .code.purple { border-left: 3px solid #7c3aed; background: #f5f3ff; }
+  .code.red { border-left: 3px solid #e53e3e; background: #fff5f5; }
+  .code.green { border-left: 3px solid #38a169; background: #f0fff4; }
+  .code.amber { border-left: 3px solid #d97706; background: #fffbeb; }
+
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 5px; margin-top: 10px; }
+  .badge-purple { background: #ede9fe; color: #5b21b6; }
+  .badge-red { background: #fed7d7; color: #9b2c2c; }
+  .badge-green { background: #c6f6d5; color: #22543d; }
+  .badge-amber { background: #fef3c7; color: #92400e; }
+  .badge-gray { background: #f1f5f9; color: #475569; }
+
+  .delta-vis { display: flex; align-items: center; gap: 16px; margin: 14px 0 4px; }
+  .delta-bar-wrap { flex: 1; }
+  .delta-bar-bg { height: 8px; background: #e8e8e4; border-radius: 4px; overflow: hidden; }
+  .delta-bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s; }
+  .delta-labels { display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-top: 4px; }
+  .delta-value { font-size: 20px; font-weight: 700; min-width: 48px; text-align: right; }
+
+  .rejected { background: #fafaf8; border: 1px solid #e8e8e4; border-radius: 8px; padding: 12px 14px; margin-top: 10px; }
+  .rejected-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #e53e3e; margin-bottom: 6px; }
+  .rejected p { font-size: 13px; color: #666; line-height: 1.6; }
+
+  .nav { display: flex; gap: 10px; align-items: center; margin-top: 1.75rem; }
+  .nav button { font-size: 13px; font-weight: 500; padding: 7px 16px; border-radius: 7px; border: 1px solid #ddd; background: #fff; color: #333; cursor: pointer; transition: background 0.15s, opacity 0.15s; }
+  .nav button:hover:not(:disabled) { background: #f4f4f2; }
+  .nav button:disabled { opacity: 0.35; cursor: default; }
+  .nav .counter { font-size: 12px; color: #aaa; margin-left: auto; }
+
+  .nav-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e8e8e4; }
+  .nav-bottom span { font-size: 12px; color: #aaa; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="masthead">
+    <div class="masthead-tag">Mycroft Accountability Layer · Week 3 · Strategy A</div>
+    <h1>Inversion Audit Engine</h1>
+    <p>The enforcement layer validates structure, not truth. A post-hoc rationalization passes structural validation. The Inversion Audit Engine is designed to audit the audit — treating the agent's conclusion as a compiled asset and attempting to reverse-engineer the inputs.</p>
+  </div>
+
+  <div class="progress" id="progress"></div>
+  <div class="cards" id="cards"></div>
+  <div class="nav">
+    <button id="btn-prev" onclick="nav(-1)">← back</button>
+    <button id="btn-next" onclick="nav(1)">next →</button>
+    <span class="counter" id="counter"></span>
+  </div>
+
+  <div class="nav-bottom">
+    <span>Mycroft Accountability Layer · Divij Pawar · MS CS UMass Lowell</span>
+    <span>Week 3 artifact · Strategy A · testing Week 4</span>
+  </div>
+
+</div>
+<script>
+const steps = [
+  {
+    label: "The gap",
+    cards: [
+      {
+        tag: "the structural loophole",
+        tagColor: "#9b2c2c",
+        title: "The enforcement layer validates format — not truth",
+        body: "The current system enforces that every agent produces a thought_log and a conclusion. What it cannot enforce is that the thought_log reflects the agent's actual causal process. An agent can produce a perfectly formatted, permanently recorded log that describes reasoning it never executed.",
+        code: `# This passes structural validation — every time.
+
+<thought_log>
+  I reviewed the Q3 10-Q filing and noted revenue
+  declining 12% YoY with margin compression of 340bps.
+  Confidence: high.
+</thought_log>
+<conclusion>
+  Bearish outlook. Revenue trend: declining.
+</conclusion>
+
+# But what if the agent never read the 10-Q?
+# What if the conclusion came first?`,
+        codeType: "red",
+        badge: null
+      },
+      {
+        tag: "the distinction that matters",
+        tagColor: "#5b21b6",
+        title: "Structural truth vs causal truth",
+        body: "The question is not whether the log looks plausible. The question is whether the log contains sufficient causal information density to reconstruct the inputs that justified the conclusion. These are different claims.",
+        code: null,
+        badge: { text: "ADR-06 · the epistemological ceiling", type: "purple" }
+      }
+    ]
+  },
+  {
+    label: "Rejected approaches",
+    cards: [
+      {
+        tag: "alternative 1 — rejected",
+        tagColor: "#9b2c2c",
+        title: "LLM-as-a-judge",
+        body: "Feed the input data, thought_log, and conclusion to a critic model and ask: does this log make sense? Rejected before empirical testing.",
+        rejected: "A critic model evaluates narrative plausibility. A highly capable model can validate a beautifully written post-hoc lie because the narrative reads logically. It suffers from the exact same flaw as the agent itself. The flaw is not detectable at the output level.",
+        code: null,
+        badge: { text: "rejected — category error", type: "red" }
+      },
+      {
+        tag: "alternative 2 — rejected",
+        tagColor: "#9b2c2c",
+        title: "White-box gradient inversion",
+        body: "Move to local open-weights models (Llama 3) and execute mathematical gradient inversion — tracing the math backward through frozen weights to compute a precise algebraic delta. Rejected on infrastructure grounds.",
+        rejected: "The overhead forces abandonment of frontier closed models (Gemini) which carry the analytical capabilities the project depends on. Optimizing for verification rigor in isolation, at the cost of capability, is not a design judgment — it is a capability regression.",
+        code: null,
+        badge: { text: "rejected — infrastructure cost", type: "red" }
+      }
+    ]
+  },
+  {
+    label: "Strategy A",
+    cards: [
+      {
+        tag: "cycle-consistency inversion",
+        tagColor: "#5b21b6",
+        title: "Treat the conclusion as a compiled asset — reverse-engineer the inputs",
+        body: "A separate, clean evaluation model is given only the agent's thought_log and conclusion. It has zero access to the original source data. Its task: reconstruct the exact quantitative parameters required to justify that conclusion.",
+        code: `Step 1 — Isolation
+  Decompiler model receives:
+    - agent thought_log
+    - agent conclusion
+    - zero access to original input data X
+
+Step 2 — Reconstruction
+  Decompiler attempts to rebuild X' —
+  the input matrix that would justify
+  the conclusion causally.
+
+Step 3 — Delta calculation
+  Δ = distance(X, X')
+  comparing original inputs against
+  the reconstructed inputs.`,
+        codeType: "purple",
+        badge: null
+      },
+      {
+        tag: "the metric — causal divergence delta",
+        tagColor: "#5b21b6",
+        title: "Δ ≈ 0 means causal integrity. Δ ≫ 0 means hidden detour.",
+        body: "Low delta: the thought_log contains the exact information density required to drive the conclusion. High delta: the agent executed a hidden logical shortcut its log completely concealed — triggering an adversarial exploit flag.",
+        delta: true,
+        code: null,
+        badge: null
+      }
+    ]
+  },
+  {
+    label: "Unresolved",
+    cards: [
+      {
+        tag: "the judge-of-a-judge paradox",
+        tagColor: "#92400e",
+        title: "Two identical failure modes — opposite required responses",
+        body: "If the decompiler fails to reconstruct X from the thought_log, there are two explanations: (a) the original log was a post-hoc rationalization with insufficient causal density, or (b) the decompiler hallucinated during reconstruction. These produce identical output — a high delta score. Disentangling a flawed audit trail from a flawed auditor is not yet solved.",
+        code: `High delta score observed.
+
+Interpretation A: agent's log was post-hoc.
+  → Required response: flag the run, escalate to AAN.
+
+Interpretation B: decompiler hallucinated.
+  → Required response: ignore the delta, trust the run.
+
+These two interpretations are indistinguishable
+from the delta score alone.`,
+        codeType: "amber",
+        badge: { text: "central unresolved problem — Week 4", type: "amber" }
+      },
+      {
+        tag: "pre-specified failure mode — sycophantic mirroring",
+        tagColor: "#9b2c2c",
+        title: "The nightmare scenario: false negative delta",
+        body: "The decompiler, drawing on its pre-trained world-knowledge of financial markets, infers what the input data should have looked like to justify the conclusion — and reconstructs a fake X' that matches the true X by statistical correlation rather than causal extraction. Delta score: zero. Log: fabricated.",
+        code: `False negative scenario:
+
+Agent:      hallucinated conclusion from shortcut
+Decompiler: reconstructs X' using world-knowledge
+            of financial markets, not causal extraction
+
+Result:     X' ≈ X by coincidence
+            Δ ≈ 0
+
+Interpretation: "causal integrity confirmed"
+Reality:        complete fabrication, undetected
+
+If confirmed → Strategy B required
+  (local open-weights with gradient interrogation)`,
+        codeType: "red",
+        badge: { text: "specified before testing — Week 4", type: "gray" }
+      }
+    ]
+  }
+];
+
+let cur = 0;
+
+function renderProgress() {
+  document.getElementById('progress').innerHTML =
+    steps.map((s, i) => `<div class="pip ${i < cur ? 'done' : i === cur ? 'active' : ''}" onclick="jump(${i})" title="${s.label}"></div>`).join('') +
+    `<span class="step-label">${steps[cur].label}</span>`;
+}
+
+function renderCards() {
+  document.getElementById('cards').innerHTML = steps[cur].cards.map(c => {
+    const code = c.code ? `<div class="code ${c.codeType || ''}">${c.code}</div>` : '';
+    const badge = c.badge ? `<span class="badge badge-${c.badge.type}">${c.badge.text}</span>` : '';
+    const rejected = c.rejected ? `<div class="rejected"><div class="rejected-label">rejected — reason</div><p>${c.rejected}</p></div>` : '';
+    const delta = c.delta ? renderDelta() : '';
+    return `<div class="card">
+      <div class="card-tag" style="color:${c.tagColor}">${c.tag}</div>
+      <h2>${c.title}</h2>
+      <p>${c.body}</p>
+      ${rejected}${code}${delta}${badge}
+    </div>`;
+  }).join('');
+  document.getElementById('counter').textContent = `${cur + 1} of ${steps.length}`;
+  document.getElementById('btn-prev').disabled = cur === 0;
+  const nb = document.getElementById('btn-next');
+  nb.textContent = cur === steps.length - 1 ? 'done ✓' : 'next →';
+  nb.disabled = cur === steps.length - 1;
+}
+
+function renderDelta() {
+  return `
+    <div style="margin-top:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:12px;color:#888">Low delta — causal integrity</span>
+        <span style="font-size:12px;font-weight:700;color:#22543d">Δ ≈ 0</span>
+      </div>
+      <div style="height:8px;background:#e8e8e4;border-radius:4px;overflow:hidden">
+        <div style="width:8%;height:100%;background:#38a169;border-radius:4px"></div>
+      </div>
+      <div style="font-size:12px;color:#555;margin-top:6px;margin-bottom:14px">Thought_log contains the exact causal information required to reconstruct inputs. Agent's reasoning is genuine.</div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:12px;color:#888">High delta — hidden detour detected</span>
+        <span style="font-size:12px;font-weight:700;color:#9b2c2c">Δ ≫ 0</span>
+      </div>
+      <div style="height:8px;background:#e8e8e4;border-radius:4px;overflow:hidden">
+        <div style="width:82%;height:100%;background:#e53e3e;border-radius:4px"></div>
+      </div>
+      <div style="font-size:12px;color:#555;margin-top:6px">Decompiler cannot reconstruct inputs from the log. Agent executed an optimization shortcut its log concealed. AAN exploit flag triggered.</div>
+    </div>`;
+}
+
+function nav(d) { cur = Math.max(0, Math.min(steps.length - 1, cur + d)); renderProgress(); renderCards(); }
+function jump(i) { cur = i; renderProgress(); renderCards(); }
+
+renderProgress();
+renderCards();
+</script>
+</body>
+</html>

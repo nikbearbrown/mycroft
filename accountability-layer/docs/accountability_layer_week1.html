@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accountability Layer — Three Mechanisms Against Silence</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f8f8f6; color: #1a1a1a; min-height: 100vh; padding: 2rem 1rem; display: flex; justify-content: center; }
+  .container { width: 100%; max-width: 720px; }
+
+  .masthead { margin-bottom: 2.5rem; }
+  .masthead-tag { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #888; margin-bottom: 8px; }
+  .masthead h1 { font-size: 22px; font-weight: 600; color: #111; margin-bottom: 6px; }
+  .masthead p { font-size: 14px; color: #666; line-height: 1.6; }
+
+  .thesis { background: #111; color: #f0f0ee; border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 2rem; font-size: 15px; font-style: italic; line-height: 1.6; }
+  .thesis span { color: #aaa; font-size: 12px; font-style: normal; display: block; margin-top: 8px; }
+
+  .tab-row { display: flex; gap: 4px; margin-bottom: 1.5rem; border-bottom: 1px solid #e4e4e0; padding-bottom: 0; }
+  .tab { font-size: 13px; font-weight: 500; color: #888; padding: 8px 16px 10px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; border-radius: 6px 6px 0 0; transition: color 0.15s; }
+  .tab:hover { color: #333; }
+  .tab.active { color: #111; border-bottom-color: #111; }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .card { background: #fff; border: 1px solid #e8e8e4; border-radius: 12px; padding: 1.25rem; margin-bottom: 12px; }
+  .card-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+  .card h2 { font-size: 15px; font-weight: 600; color: #111; margin-bottom: 6px; }
+  .card p { font-size: 13px; color: #555; line-height: 1.65; }
+  .code { background: #f2f2f0; border: 1px solid #e4e4e0; border-radius: 8px; padding: 12px 14px; font-family: "SF Mono", "Fira Code", monospace; font-size: 12px; color: #222; margin-top: 10px; white-space: pre; overflow-x: auto; line-height: 1.6; }
+  .code.blue { border-left: 3px solid #2563eb; background: #eff6ff; }
+  .code.green { border-left: 3px solid #38a169; background: #f0fff4; }
+  .code.amber { border-left: 3px solid #d97706; background: #fffbeb; }
+
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 5px; margin-top: 10px; }
+  .badge-blue { background: #dbeafe; color: #1e40af; }
+  .badge-green { background: #c6f6d5; color: #22543d; }
+  .badge-amber { background: #fef3c7; color: #92400e; }
+  .badge-red { background: #fed7d7; color: #9b2c2c; }
+
+  .constraint { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; padding: 12px 14px; margin-top: 12px; }
+  .constraint-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #92400e; margin-bottom: 4px; }
+  .constraint p { font-size: 13px; color: #78350f; line-height: 1.6; }
+
+  .adr-pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: #f1f5f9; color: #475569; margin: 2px; border: 1px solid #e2e8f0; }
+
+  .nav-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e8e8e4; }
+  .nav-bottom a { font-size: 13px; color: #2563eb; text-decoration: none; }
+  .nav-bottom span { font-size: 12px; color: #aaa; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="masthead">
+    <div class="masthead-tag">Mycroft Accountability Layer · Week 1 · SDD v1.0</div>
+    <h1>Three mechanisms against silence</h1>
+    <p>Transforming Mycroft from a system that produces results into a system that produces verifiable intelligence. Designed from first principles — no inherited codebase.</p>
+  </div>
+
+  <div class="thesis">
+    "An unauditable conclusion is a system failure — no matter how accurate it is."
+    <span>— Divij Pawar, Week 1 Substack article</span>
+  </div>
+
+  <div class="tab-row">
+    <div class="tab active" onclick="switchTab(0)">1 · ReasoningObject</div>
+    <div class="tab" onclick="switchTab(1)">2 · Checkpointing</div>
+    <div class="tab" onclick="switchTab(2)">3 · Adversarial Arbitration</div>
+    <div class="tab" onclick="switchTab(3)">Architecture constraints</div>
+  </div>
+
+  <div class="panel active" id="panel-0">
+    <div class="card">
+      <div class="card-tag" style="color:#1e40af">The problem it solves</div>
+      <h2>Without this — a naked conclusion</h2>
+      <p>In a standard request-response cycle, if an agent flags a company's revenue as "unstable," the investor is forced to take its word for it. If the conclusion is based on a hallucinated footnote, the error is laundered through the system until it becomes an official — and incorrect — investment grade.</p>
+    </div>
+    <div class="card">
+      <div class="card-tag" style="color:#1e40af">The mechanism</div>
+      <h2>A signed affidavit — justification as a prerequisite</h2>
+      <p>Every specialized agent must produce a ReasoningObject before its logic can propagate. If the agent cannot point to the specific line in a 10-K that justifies its conclusion, the orchestrator rejects the state transition.</p>
+      <div class="code blue">{
+  "agent": "FinancialAgent",
+  "conclusion": "revenue_trend: declining",
+  "confidence": 0.74,
+  "causal_link": "Q3 gross margin compressed 340bps YoY;
+                  SG&A grew 22% against 8% revenue growth",
+  "citations": [
+    "10-Q_2024Q3.pdf#p12",
+    "earnings_transcript_2024Q3.txt#L847"
+  ],
+  "timestamp": "2026-04-26T09:14:33Z"
+}</div>
+      <span class="badge badge-blue">C-02 · SDD v1.0</span>
+    </div>
+    <div class="card">
+      <div class="card-tag" style="color:#92400e">Known constraint — ADR-06</div>
+      <h2>The thought_log is evidence of output, not process</h2>
+      <p>The ReasoningObject enforces that a log exists, is structured, and is permanently recorded. What it cannot enforce is that the log is true. A hallucinated conclusion may be accompanied by a coherent, plausible-sounding thought_log. This limitation is encoded honestly in ADR-06 — not papered over.</p>
+      <div class="constraint">
+        <div class="constraint-label">ADR-06 — encoded Week 2</div>
+        <p>The audit layer makes the system legible. It does not make it correct. Reviewers must be trained on this distinction. This is not a gap to be filled in a later phase — it is a property of LLM-generated reasoning that no logging layer can fix.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-1">
+    <div class="card">
+      <div class="card-tag" style="color:#166534">The problem it solves</div>
+      <h2>Post-hoc rationalization is a trap</h2>
+      <p>When a stateless system fails, the standard debugging move is to ask the LLM why it made a certain choice. LLMs are world-class rationalizers — they will produce a plausible-sounding explanation for a mistake they already made, even if that explanation has nothing to do with the original reasoning.</p>
+    </div>
+    <div class="card">
+      <div class="card-tag" style="color:#166534">The mechanism</div>
+      <h2>Forensic state snapshots — time-travel auditing</h2>
+      <p>Checkpointing snapshots the full state of the agentic committee at every decision node, preserving the raw context of the moment. Without it, you are investigating a crime scene after the rain has washed away the footprints.</p>
+      <div class="code green">Checkpoint saved at: STATE_NODE_3
+  run_id:        "a3f2..."
+  ticker:        "AAPL"
+  agents_active: [financial, patent, earnings]
+  context_hash:  "7b4f..."
+  timestamp:     "2026-04-26T09:14:33Z"
+
+→ Human operator can rewind to exact step
+  a logical contradiction entered the pipeline.
+  State preserved as the machine saw it —
+  not as it later remembered it.</div>
+      <span class="badge badge-green">C-03 RunRecord Store · append-only</span>
+    </div>
+    <div class="card">
+      <div class="card-tag" style="color:#166534">Implementation decision</div>
+      <h2>Append-only. No UPDATE. No DELETE.</h2>
+      <p>The RunRecord store is PostgreSQL with a DB-layer trigger that unconditionally blocks UPDATE and DELETE on run_records. The application user has INSERT and SELECT permissions only. Immutability is enforced at the database layer, not the application layer.</p>
+      <span class="badge badge-green">SEC-03 · ADR-02</span>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-2">
+    <div class="card">
+      <div class="card-tag" style="color:#92400e">The problem it solves</div>
+      <h2>Silent consensus hides the most dangerous signals</h2>
+      <p>In a monolithic pipeline, conflicting data is averaged out. If the Patent Agent sees a crumbling IP moat but the Financial Agent sees high R&D spend, a standard model reports "steady innovation." This silent smoothing is where the most dangerous financial risks hide.</p>
+    </div>
+    <div class="card">
+      <div class="card-tag" style="color:#92400e">The mechanism</div>
+      <h2>Hard-coded pause on semantic divergence</h2>
+      <p>The Adversarial Arbitration Node triggers when two agents move in opposite semantic directions — delta between confidence scores and sentiment vectors exceeds threshold. Each agent receives the other's ReasoningObject and issues a challenge. Maximum iterations: 1.</p>
+      <div class="code amber">AAN triggered:
+  financial_agent:  "revenue_trend: stable" (conf: 0.81)
+  patent_agent:     "ip_moat: declining"   (conf: 0.76)
+
+  Divergence delta exceeds threshold.
+  → Each agent receives the other's ReasoningObject
+  → Single debate loop: challenge directives issued
+  → Outcome: Affidavit of Disagreement produced
+
+  Result passed to Controller — not a halt.
+  Investor sees: "AI agents reached conflicting
+  conclusions on this analysis."</div>
+      <span class="badge badge-amber">AAN · UN-03</span>
+    </div>
+    <div class="card">
+      <div class="card-tag" style="color:#92400e">Residual risk — T-04</div>
+      <h2>Semantic poisoning is not eliminated</h2>
+      <p>A structurally valid but semantically poisoned thought_log — produced when an agent ingests a fabricated source — will pass schema validation. The AAN reduces this risk by forcing cross-examination from different data streams, but does not eliminate it. If both agents ingest the same poisoned source, the AAN will not detect the contamination. Documented, accepted residual risk.</p>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-3">
+    <div class="card">
+      <div class="card-tag" style="color:#555">What this system is</div>
+      <h2>Structural integrity — not fact verification</h2>
+      <p>The Accountability Layer provides a stateful, append-only audit log of every Mycroft analysis run. It enforces structured reasoning via system directive injection and separates investor-facing from reviewer-facing rendering.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:10px">
+        <span class="adr-pill">append-only audit log</span>
+        <span class="adr-pill">directive injection</span>
+        <span class="adr-pill">tiered access</span>
+        <span class="adr-pill">drift detection</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-tag" style="color:#9b2c2c">What this system is not</div>
+      <h2>Four explicit constraints — encoded in SDD v1.0</h2>
+      <p>These are not oversights. They are documented, accepted constraints from the first design session.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:10px">
+        <span class="badge badge-red">not a fact verification system</span>
+        <span class="badge badge-red">not a hallucination prevention system</span>
+        <span class="badge badge-red">not a grade override mechanism</span>
+        <span class="badge badge-red">not a compliance archive (Phase 1)</span>
+      </div>
+      <div class="constraint" style="margin-top:12px">
+        <div class="constraint-label">Scope decision — Week 1</div>
+        <p>The system was initially named "Accountability Mesh." The scope was narrowed to "Accountability Layer" before Week 2 build began — reflecting an honest assessment of what could be built in four weeks. That correction is a design decision, not an error.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-tag" style="color:#555">ADR register — v1.0</div>
+      <h2>Nine architecture decisions encoded in Week 1</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px">
+        <span class="adr-pill">ADR-01b active middleware</span>
+        <span class="adr-pill">ADR-02 flags separate table</span>
+        <span class="adr-pill">ADR-03 single event stream</span>
+        <span class="adr-pill">ADR-04 confidence computed</span>
+        <span class="adr-pill">ADR-05 directive verbatim</span>
+        <span class="adr-pill">ADR-06 thought_log as evidence</span>
+        <span class="adr-pill">ADR-07 validation loop</span>
+        <span class="adr-pill">ADR-08 low confidence transparent</span>
+        <span class="adr-pill">ADR-09 phase 1 auth temporary</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-bottom">
+    <span>Mycroft Accountability Layer · Divij Pawar · MS CS UMass Lowell</span>
+    <span>Week 1 artifact · SDD v1.0 · 2026-04-26</span>
+  </div>
+
+</div>
+<script>
+function switchTab(i) {
+  document.querySelectorAll('.tab').forEach((t, j) => t.classList.toggle('active', i === j));
+  document.querySelectorAll('.panel').forEach((p, j) => p.classList.toggle('active', i === j));
+}
+</script>
+</body>
+</html>

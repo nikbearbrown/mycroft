@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accountability Layer — Test Interface</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="logo">⬡</span>
+      <span class="topbar-title">Accountability Layer</span>
+      <span class="topbar-sub">Test Interface</span>
+    </div>
+    <div class="topbar-right">
+      <span class="status-dot" id="statusDot"></span>
+      <span class="status-label" id="statusLabel">Connecting…</span>
+      <button class="btn-ghost" id="btnDirective">View Directive</button>
+      <button class="btn-ghost danger" id="btnClear">Clear Runs</button>
+    </div>
+  </header>
+
+  <main class="layout">
+
+    <!-- ── CONFIG PANEL ───────────────────────────────── -->
+    <aside class="panel config-panel">
+      <h2 class="panel-title">Configuration</h2>
+
+      <!-- SEC-01 Scope Toggle -->
+      <div class="field-group">
+        <label class="field-label">View Scope
+          <span class="field-hint-inline">(SEC-01)</span>
+        </label>
+        <div class="scope-toggle">
+          <button class="scope-btn active" data-scope="auditor" id="scopeAuditor">Auditor</button>
+          <button class="scope-btn" data-scope="investor" id="scopeInvestor">Investor</button>
+        </div>
+        <p class="field-hint" id="scopeHint">Full record — thought_log visible.</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Provider -->
+      <div class="field-group">
+        <label class="field-label">Provider</label>
+        <select class="field-select" id="cfgProvider">
+          <option value="mock">Mock (no API needed)</option>
+          <option value="gemini">Gemini</option>
+          <option value="ollama">Ollama (local)</option>
+        </select>
+      </div>
+
+      <div id="ollamaFields" class="field-group hidden">
+        <label class="field-label">Ollama Model</label>
+        <select class="field-select" id="cfgOllamaModel">
+          <optgroup label="Qwen">
+            <option value="qwen3:4b">qwen3:4b</option>
+            <option value="qwen2.5:3b">qwen2.5:3b</option>
+            <option value="qwen3:1.7b">qwen3:1.7b</option>
+          </optgroup>
+          <optgroup label="Llama">
+            <option value="llama3.2">llama3.2</option>
+            <option value="llama3.1">llama3.1</option>
+          </optgroup>
+          <optgroup label="Other">
+            <option value="mistral">mistral</option>
+            <option value="phi3">phi3</option>
+            <option value="gemma2">gemma2</option>
+          </optgroup>
+        </select>
+        <label class="field-label mt">Seed
+          <span class="badge-neutral" id="cfgSeedLabel">42</span>
+        </label>
+        <input class="field-range" id="cfgSeed" type="range" min="0" max="999" step="1" value="42" />
+        <p class="field-hint">Ollama + seed + temp=0 → deterministic output within a model version.</p>
+      </div>
+
+      <div id="geminiFields" class="field-group">
+        <label class="field-label">Model</label>
+        <select class="field-select" id="cfgModel">
+          <optgroup label="Gemini 3.x (Preview)">
+            <option value="gemini-3.5-flash">gemini-3.5-flash</option>
+            <option value="gemini-3.1-pro-preview">gemini-3.1-pro-preview</option>
+            <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite</option>
+            <option value="gemini-3.1-flash-lite-preview">gemini-3.1-flash-lite-preview</option>
+            <option value="gemini-3-pro-preview">gemini-3-pro-preview</option>
+            <option value="gemini-3-flash-preview">gemini-3-flash-preview</option>
+          </optgroup>
+          <optgroup label="Gemini 2.5">
+            <option value="gemini-2.5-pro">gemini-2.5-pro</option>
+            <option value="gemini-2.5-flash" selected>gemini-2.5-flash</option>
+            <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
+          </optgroup>
+          <optgroup label="Gemini 2.0">
+            <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+            <option value="gemini-2.0-flash-001">gemini-2.0-flash-001</option>
+            <option value="gemini-2.0-flash-lite">gemini-2.0-flash-lite</option>
+            <option value="gemini-2.0-flash-lite-001">gemini-2.0-flash-lite-001</option>
+          </optgroup>
+          <optgroup label="Latest aliases">
+            <option value="gemini-flash-latest">gemini-flash-latest</option>
+            <option value="gemini-flash-lite-latest">gemini-flash-lite-latest</option>
+            <option value="gemini-pro-latest">gemini-pro-latest</option>
+          </optgroup>
+          <optgroup label="Gemma">
+            <option value="gemma-4-31b-it">gemma-4-31b-it</option>
+            <option value="gemma-4-26b-a4b-it">gemma-4-26b-a4b-it</option>
+          </optgroup>
+        </select>
+        <label class="field-label mt">Temperature
+          <span class="badge-neutral" id="cfgTempLabel">0.7</span>
+        </label>
+        <input class="field-range" id="cfgTemp" type="range" min="0" max="1" step="0.05" value="0.7" />
+      </div>
+
+      <!-- Agent -->
+      <div class="field-group">
+        <label class="field-label">Agent ID</label>
+        <select class="field-select" id="cfgAgentId">
+          <option value="external">external</option>
+          <option value="financial">financial</option>
+          <option value="patent">patent</option>
+          <option value="earnings">earnings</option>
+          <option value="competitive">competitive</option>
+          <option value="AAN">AAN</option>
+        </select>
+      </div>
+
+      <div class="divider"></div>
+      <h3 class="section-title">Guardrail Testing</h3>
+
+      <!-- Confidence — ADR-08 knob -->
+      <div class="field-group">
+        <label class="field-label">Confidence Score
+          <span class="badge-neutral" id="cfgConfLabel">0.75</span>
+        </label>
+        <input class="field-range" id="cfgConf" type="range" min="0" max="1" step="0.05" value="0.75" />
+        <p class="field-hint" id="confClassHint">STANDARD — score ≥ 0.4</p>
+      </div>
+
+      <!-- Failure simulation -->
+      <div class="field-group">
+        <label class="field-label">Failure Simulation</label>
+        <select class="field-select" id="cfgFailureMode">
+          <option value="none">None — always succeeds</option>
+          <option value="retry_success">Parse failure → retry succeeds</option>
+          <option value="halt">Double failure → pipeline halts</option>
+        </select>
+        <p class="field-hint" id="failureHint">Agent responds correctly every time.</p>
+      </div>
+
+      <!-- Consistency probe — ADR-06 mitigation -->
+      <div class="field-group">
+        <label class="field-label toggle-label">
+          <input type="checkbox" id="cfgConsistencyProbe" class="toggle-checkbox" />
+          Consistency Probe
+          <span class="field-hint-inline">(ADR-06)</span>
+        </label>
+        <p class="field-hint">Runs query twice and scores conclusion agreement. Doubles API calls.</p>
+      </div>
+
+      <div class="divider"></div>
+      <h3 class="section-title">Active Directive</h3>
+      <div class="directive-badge" id="directiveBadge">v1.0.0</div>
+    </aside>
+
+    <!-- ── CHAT PANEL ─────────────────────────────────── -->
+    <section class="panel chat-panel">
+      <h2 class="panel-title">Chat</h2>
+
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-empty">
+          Send a message to start a run.<br/>
+          The accountability layer wraps every response.
+        </div>
+      </div>
+
+      <div class="chat-input-area">
+        <div class="context-row">
+          <button class="btn-ghost small" id="btnToggleContext">+ Add context</button>
+        </div>
+        <textarea class="context-input hidden" id="contextInput"
+                  placeholder="Optional context for the agent…" rows="2"></textarea>
+        <div class="chat-input-row">
+          <textarea class="message-input" id="messageInput"
+                    placeholder="Ask the agent something…" rows="2"></textarea>
+          <button class="btn-send" id="btnSend">
+            <span id="sendLabel">Send</span>
+            <span id="sendSpinner" class="spinner hidden"></span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── AUDIT TRAIL ────────────────────────────────── -->
+    <aside class="panel audit-panel">
+      <div class="audit-tabs">
+        <button class="audit-tab active" data-tab="runs" id="tabRuns">Runs
+          <span class="badge-neutral" id="runCount">0</span>
+        </button>
+        <button class="audit-tab" data-tab="sessions" id="tabSessions">Sessions
+          <span class="badge-neutral" id="sessionCount">0</span>
+        </button>
+      </div>
+
+      <div id="auditRuns" class="audit-list">
+        <div class="audit-empty">No runs yet.</div>
+      </div>
+      <div id="auditSessions" class="audit-list hidden">
+        <div class="audit-empty">No sessions yet.</div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- ── DIRECTIVE MODAL ──────────────────────────────── -->
+  <div class="modal-overlay hidden" id="directiveModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Active Directive</span>
+        <span class="badge-neutral" id="modalDirectiveVersion"></span>
+        <button class="modal-close" id="btnCloseDirective">✕</button>
+      </div>
+      <pre class="modal-body" id="modalDirectiveText"></pre>
+    </div>
+  </div>
+
+  <!-- ── DETAIL MODAL (run / session) ─────────────────── -->
+  <div class="modal-overlay hidden" id="detailModal">
+    <div class="modal modal-wide">
+      <div class="modal-header">
+        <span class="modal-title" id="detailModalTitle">Record</span>
+        <span class="badge-neutral" id="detailModalId"></span>
+        <button class="modal-close" id="btnCloseDetail">✕</button>
+      </div>
+      <pre class="modal-body" id="detailModalJson"></pre>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
