@@ -8,12 +8,10 @@ subsystem is the argument in executable form: an agent wrapper that refuses to p
 along output it cannot structurally verify, writes an append-only record of every
 attempt, and renders that record differently to different readers.
 
-**Renamed from `accountability-layer` on 2026-08-21.** The folder was renamed, not the
-component described below — everything in this README still describes the same
-accountability/audit mechanism that was already built. The rename anticipates a second
-component, Cross-Agent Validation, being built on top of the same evidence store (see
-`sdd.md` in this session's planning trail); "verification layer" is the broader name for
-the folder that will hold both. See `logs/RUN_LOG.md` for the rename itself.
+**Renamed from `accountability-layer` on 2026-08-21**, when a second component, Cross-Agent
+Validation, was built on top of the same evidence store. This folder now holds both: the
+accountability mechanism (which records what one agent did) and Cross-Agent Validation
+(which compares two agents against each other). See `logs/RUN_LOG.md` for both changes.
 
 ## What the accountability component enforces
 
@@ -28,8 +26,8 @@ the folder that will hold both. See `logs/RUN_LOG.md` for the rename itself.
 
 **Research prototype. Localhost only. Do not expose to a network.**
 
-The core engine (parser, validation loop, schemas) is well-built and well-tested:
-**108 tests, all passing**, stdlib `unittest` only. The web/auth layer is not.
+The core engine (parser, validation loop, schemas, cross-agent comparison) is well-built and
+well-tested: **129 tests, all passing**, stdlib `unittest` only. The web/auth layer is not.
 [`accountability-layer-audit.md`](accountability-layer-audit.md) is a full technical
 audit of commit `fe45eb4` and records **four CRITICAL findings**, all reachable over
 HTTP with no credentials:
@@ -52,11 +50,13 @@ a verdict. Nothing here is attested, and no recipe in `recipes/` should claim
 | `schemas.py` | `ReasoningObject` / `RunSession` + their validation rules and tiered serialization. |
 | `directive.py` | Versioned system directives; the corrective directive used on retry. |
 | `claims.py`, `verification.py`, `consistency.py` | Claim extraction, claim verification, and consistency probing across repeated runs. |
+| `cross_validation.py` | **Cross-Agent Validation** — runs two agents on one subject, flags numeric contradictions between their conclusions, and persists both agents' records under one shared `run_id`. Reuses `consistency.py`'s scoring unmodified. |
+| `adapters/fixture_adapter.py` | Deterministic stand-in agent with a caller-chosen conclusion, for testing logic that consumes a conclusion. |
 | `financial_grader.py`, `observability.py` | EDGAR-backed financial grader **skeleton** + LangFuse tracing. Not wired into the web app. |
 | `adapters/` | `gemini_adapter.py`, `ollama_adapter.py`, `mock_adapter.py` — one contract: `(subject, context, directive) -> AgentResponse`. |
 | `web/` | FastAPI server, JWT auth, SQLite store, and the browser UI (`web/static/`). |
-| `tests/` | 108 stdlib `unittest` tests. |
-| `docs/`, `index.html` | Week 1–3 walkthrough artifacts (GitHub Pages). |
+| `tests/` | 129 stdlib `unittest` tests. |
+| `index.html` | Index for the Week 1–3 walkthrough artifacts in `docs/` (gitignored, present on disk only). |
 
 ## Install
 
@@ -81,8 +81,8 @@ cd verification-layer && python -m venv env
 python -m pip install -r requirements.txt
 ```
 
-**3.** Run the test suite — 108 tests, no credentials or network needed, since the
-mock adapter covers every path:
+**3.** Run the test suite — 129 tests, no credentials or network needed, since the
+mock and fixture adapters cover every path:
 
 ```bash
 cd verification-layer && python -m unittest discover -s tests
@@ -118,9 +118,12 @@ them. Run it yourself from the repo root before committing:
 node scripts/conformance.mjs verification-layer
 ```
 
-One wart, confirmed the hard way: that command has no exclusion list for this directory, so
-if a local `env/` virtualenv exists here, `node scripts/conformance.mjs verification-layer`
-walks into it and runs `py_compile` as a subprocess **per file** in site-packages — thousands
-of files, not a few seconds. It will look hung; it isn't, it's just extremely slow. Run
-conformance before creating the venv, or point it at specific files instead of the whole
-directory, or delete `env/` first and reinstall after.
+One wart, measured: that command has no exclusion list for this directory, so if a local
+`env/` virtualenv exists here, `node scripts/conformance.mjs verification-layer` walks into
+it and shells out to `py_compile` once **per file** in site-packages. Measured on this
+machine: **6,241 files, 10m45s** — it looks hung, but it is only extremely slow (and it does
+pass). Either run conformance before creating the venv, or point it at specific files:
+
+```bash
+node scripts/conformance.mjs verification-layer/cross_validation.py
+```

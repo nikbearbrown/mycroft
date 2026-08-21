@@ -115,3 +115,61 @@ date, recipe, inputs, commands, outputs, result, open issues.
     rename land as a delete-plus-add rather than a detected rename. The branch name itself is
     still `feature/accountability-layer`, unchanged — renaming a pushed branch is shared-state
     surgery and was left as the user's decision.
+
+## 2026-08-21 -- Implement Cross-Agent Validation v1 (SDD v1)
+
+- **Recipe:** Build the Cross-Agent Validation component specified in `divij/sdd.md`, integrated
+  with the existing accountability store. Implements the orchestration-layer component of the
+  published Mycroft architecture that previously had no implementation anywhere in the project.
+- **Inputs:** `divij/sdd.md` (design), `divij/cross-agent-validation-proposal.md` (scope);
+  existing unmodified modules `consistency.py`, `middleware.py`, `schemas.py`, `parser.py`,
+  `financial_grader.py`, `web/db.py`.
+- **Outputs (3 new files, no existing module changed):**
+  - `cross_validation.py` — `ComparisonStatus`, `CrossAgentComparisonResult`,
+    `run_cross_agent_validation`, plus `build_run_payload` / `persist_cross_agent_run` for the
+    store integration.
+  - `adapters/fixture_adapter.py` — `make_fixture_adapter`, a deterministic stand-in agent with a
+    caller-chosen conclusion. Satisfies the same `(subject, context, directive) -> AgentResponse`
+    contract as the other three adapters and routes through the real parser.
+  - `tests/test_cross_validation.py` — 21 tests.
+- **Result:** 129/129 tests pass (108 pre-existing + 21 new). Conformance passes on all three new
+  files. The comparison correctly classifies the SDD §10 fixture matrix: matching numbers with
+  different wording = no contradiction; differing values = flagged with both numbers reported;
+  a number present in one conclusion and absent from the other = flagged (same
+  symmetric-difference rule, no special-casing). End-to-end test builds Producer A's context from
+  the real EDGAR helpers with an injected fetch, persists through `insert_run`/`insert_session`,
+  and reads the comparison back via `get_run(run_id)["cross_agent_comparison"]`.
+- **Verified by mutation testing, not just green checkmarks:** replacing
+  `symmetric_difference` with `intersection` broke 7 tests; returning `False` instead of `None`
+  for `contradiction_flag` on a halt broke 3. File restored byte-identical afterwards and the
+  suite reconfirmed. The tests genuinely fail on broken logic.
+- **No side effects on real state:** the e2e tests patch `web.db.DB_PATH` to a temp file, so
+  `web/data/accountability.db` was never written to (confirmed: mtime unchanged).
+- **Implementation notes beyond the SDD (all additive, all documented in the code):**
+  - `run_cross_agent_validation` gained keyword-only `confidence_score`, `data_sources_a`,
+    `data_sources_b`, passed straight through to `run_validation_loop` so real per-agent
+    provenance can be recorded. Defaults match `run_validation_loop`'s own.
+  - `build_run_payload` was split out of `persist_cross_agent_run` so a caller can inspect or
+    amend the payload before writing. SDD §7.2 showed this as inline caller code; making it a
+    function means the integration is real code rather than test-only.
+  - Producer A composes via `financial_grader`'s `lookup_cik` / `fetch_company_facts` /
+    `summarize_facts` to build the context, not via `analyze_ticker`. `analyze_ticker` runs its
+    own validation loop internally, so its signature cannot serve as a `call_agent_fn`. This
+    matches the SDD §4 diagram ("financial_grader-based" adapter) rather than deviating from it.
+  - `fixture_adapter` rejects empty text or embedded XML block tags at construction time, since
+    either would break the two-block structural contract it exists to satisfy.
+- **Open issues:**
+  - [DESIGN GAP, deliberate] Only `HaltError` is caught per agent. Any other adapter exception
+    (rate limit, EDGAR fetch failure) propagates and aborts the comparison, discarding the other
+    agent's already-collected records. `ComparisonStatus` has no `ERROR` state in v1 — adding one
+    is a design decision, not something to improvise during implementation. Documented in the
+    module docstring.
+  - [SCOPE] Comparison is numeric only. Two conclusions that disagree in substance while citing
+    the same figures will not be flagged. This detects number mismatches, not reasoning mismatches.
+  - [SCOPE] Producer B remains a fixture. No real second agent exists yet, so no genuine
+    cross-agent disagreement has been observed on live data — only on fixtures with known answers.
+  - [SCOPE, per SDD §7.3] `cross_agent_comparison` lives inside the payload JSON blob, so it is
+    retrievable by `run_id` but not queryable in SQL. "Every contradiction this month" needs a
+    Python-side scan or SQLite's JSON1 extension.
+  - The four CRITICAL findings in `accountability-layer-audit.md` remain open. v1 adds no HTTP
+    route, so none of them are newly reachable by this component.
