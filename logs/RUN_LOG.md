@@ -97,3 +97,100 @@ workflow changes.
   - Phase 2: Run full sample brief (company: "Anthropic") with all gates open (no human decision yet, just logging).
   - Phase 2: Generate `signals-validation-audit.md` (spot-check 10 signals, assess quality).
   - Phase 3: Solve Groq token limit (upgrade tier or secondary provider for news classification).
+
+## 2026-07-13 -- Add AI-Vendor-Intelligence project exercises
+
+> Logged retroactively on 2026-08-22. Commit `d2039bc` changed artifacts without a
+> RUN_LOG entry, which the logging rule requires; this entry backfills the record and
+> is not a contemporaneous account.
+
+- **Recipe:** vendor-intelligence-brief (supporting course material, not a recipe run).
+- **Inputs:** Mycroft chapters 2-5; the vendor intelligence platform as worked example.
+- **Commands:** None — authored content, no scripts run.
+- **Outputs:** `projects/AI-Vendor-Intelligence/` — four exercise files for chapters
+  2-1, 3, 4, and 5 (859 lines total), committed as `d2039bc`.
+- **Result:** Chapter exercises available; recipe status unchanged (DRAFT).
+- **Open issues:** Exercises were written against recipe v0.1.0 and the pre-purge
+  signal counts. They may cite coverage figures corrected on 2026-08-22 — review them
+  against recipe v0.2.0 before use.
+
+## 2026-08-22 -- Entity verification: signal validation gate cleared, schema drift corrected
+
+- **Recipe:** vendor-intelligence-brief v0.1.0 -> v0.2.0 (stays DRAFT).
+- **Inputs:** Uncommitted work in the sibling repo
+  `~/Documents/AI-Vendor-Intelligence-Platform`
+  (github.com/MuskanKhandelwal/AI-Vendor-Intelligence-Platform, branch `main`):
+  new `collector/entity_filter.py`, `collector/audit_entities.py`,
+  `collector/backfill_edgar_summaries.py`; modified `collector/{arxiv,news,edgar}_collector.py`,
+  `collector/db.py`, `collector/seed_companies.json`, `agents/llm.py`.
+  Backup artifacts `backups/wrong_entity_signals_20260807T*.json`.
+- **Commands:**
+  - Read the platform diff and the authoritative DDL at `collector/db.py:16-38`.
+  - Counted the purged rows directly from the backup JSON (not estimated).
+  - Rewrote `data/verified/ai_company_signals-schema.yaml` to v0.2.0.
+  - Updated `recipes/vendor-intelligence-brief.yaml` to v0.2.0 and closed gate 1.
+  - Updated `DATA_CONTRACT.md`; verified with `node scripts/conformance.mjs`.
+
+- **The defect that prompted this.** Signals were collected by name search alone, and
+  a company name is not a unique identifier. Namesake organisations were stored as the
+  tracked vendor and became citable evidence in procurement briefs. Observed harm,
+  per the platform's own source comments: a **$28M Department of War contract awarded
+  to Cohere Technologies (wireless RF) raised the AI vendor Cohere's Financial Health
+  score by 25 points**; quantum-physics papers matched on the stemmed word "coherence"
+  were counted as its technology momentum; Cohere Health (health insurance) executive
+  changes were filed under the AI vendor. arXiv was worst — the old `all:"{name}"`
+  query searched full text including bibliographies against a stemmed index, and
+  **85% of collected papers were unrelated to the vendor they were filed under**.
+
+- **[GATE CLEARED] Signal validation (Phase 2)** — Muskan Khandelwal, 2026-08-22.
+  - *Evidence:* `collector/audit_entities.py` run 2026-08-07 purged **782 rows** --
+    650 `research_paper`, 49 `other`, 34 `negative`, 17 `product_launch`,
+    16 `partnership`, 12 `regulatory`, 2 `executive_change`, 2 `funding` (sums to
+    782). Most affected: Writer (52), OpenAI (49), Cohere (46), Anthropic (43),
+    Modal (43), Mistral (41). All rows backed up to
+    `backups/wrong_entity_signals_20260807T010057Z.json` (780) and
+    `...T010153Z.json` (2) before deletion; nothing was destroyed.
+  - *Scope of the clearance:* **batch level, not per signal.** The gate's original
+    wording asked for human validation of >= 50% of individual signals. What was done
+    is broader in coverage and shallower in depth — every name-searched row was
+    machine-checked and the failures purged. There is no per-row human sign-off, and
+    the `validated_by` column that wording assumed does not exist in the DDL.
+  - *What it does not establish:* removing rows that failed the check says nothing
+    about whether the survivors are right.
+
+- **[DEFECT] Schema drift (P6), corrected.** `ai_company_signals-schema.yaml` v0.1.0
+  described columns that do not exist. Corrected against `collector/db.py:16`:
+  `signal_id`/UUID -> `id`/SERIAL, `company_id` -> `company_name`,
+  `signal_title` -> `headline`, `signal_value` -> `summary`, `score` ->
+  `importance_score`, `occurred_date` -> `signal_date`, `ingested_at` -> `created_at`;
+  `source_type` removed (no such column — source is inferred from `raw_data` keys);
+  `ticker`, `raw_data`, `langfuse_trace_id` added. The four validation columns
+  (`validated_by`, `validation_note`, `validation_date`, `used_in_brief`) are not in
+  the DDL and were moved to a labelled `planned_fields` block rather than deleted.
+
+- **[DEFECT] Schema file never passed conformance.** v0.1.0 ended with a stray `---`
+  document separator, so `yaml.safe_load` — the exact check `scripts/conformance.mjs`
+  runs — raised `expected a single document in the stream`. The file had been carried
+  since 2026-07-09 as if it were valid. Separator removed; the file now parses.
+
+- **Outputs:**
+  - `data/verified/ai_company_signals-schema.yaml` v0.2.0 (real DDL; new
+    `entity_verification` section; entity audit registered under `audit_checks`)
+  - `recipes/vendor-intelligence-brief.yaml` v0.2.0 (gate 1 `[CLEARED]`,
+    `todos_open` 3 -> 2, arXiv/News/EDGAR source entries corrected, Langfuse v3 noted)
+  - `DATA_CONTRACT.md` (gate row now partially cleared; two rules added)
+  - This entry
+- **Result:** Mycroft's record now matches the running system. Recipe stays **DRAFT** —
+  SPECIFIED requires zero open TODOs and two gates are still open. No attestation.
+- **Open issues:**
+  - [GATE OPEN] Supervisor routing review (Phase 2) — no Langfuse trace reviewed or logged.
+  - [GATE OPEN] Brief approval (Phase 2) — no procurement owner review process.
+  - [BLOCKER] All per-source signal counts are stale (pre-purge). Recount before citing.
+  - [RESIDUAL RISK] Common-word vendor names (Adept, Writer, Notion, Glean, Modal,
+    Replicate) can still admit unrelated text; the LLM `about_company` backstop fails
+    open on API error, so signals admitted during a Groq outage carry only the
+    deterministic check.
+  - [BLOCKER] Groq token limit at company #33 of 50 — Phase 3 batch job still blocked.
+  - The platform-repo changes above are **uncommitted** in that repo. Mycroft now
+    documents work that has no commit hash to cite; commit there to complete the
+    provenance chain (P3).

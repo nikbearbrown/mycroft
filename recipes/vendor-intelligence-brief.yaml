@@ -6,10 +6,10 @@ description: |
   via LLM supervisor. Each agent queries verified signals from PostgreSQL and Neo4j,
   synthesizes evidence, and produces a scored assessment with citations.
 
-status: DRAFT
-todos_open: 3
-recipe_version: 0.1.0
-last_gate: null
+status: DRAFT          # 2 gates still open; SPECIFIED requires zero
+todos_open: 2
+recipe_version: 0.2.0
+last_gate: "signal-validation, 2026-08-22, logs/RUN_LOG.md#2026-08-22 (Muskan Khandelwal)"
 attestation: null
 
 inputs:
@@ -37,11 +37,31 @@ outputs:
 
 phase_gates:
   - name: "Signal validation (Phase 2)"
-    status: "[TODO]"
+    status: "[CLEARED]"
+    cleared_by: "Muskan Khandelwal"
+    cleared_date: "2026-08-22"
     description: |
-      Human must validate >= 50% of signals in data/verified/ai_company_signals
-      before brief generation. Evidence: signed-off audit in signals-validation-audit.md.
-    owner: "Data steward (TBD)"
+      Signals must be verified as belonging to the named vendor before they can be
+      cited as evidence in a brief.
+
+      Cleared at the BATCH level, not per signal. The original wording asked for
+      human validation of >= 50% of individual signals; what was actually done is
+      stronger in coverage and weaker in depth — every name-searched row in the
+      table was machine-checked against the entity filter, and the 782 that failed
+      were purged. No per-row human sign-off exists, and the validated_by column
+      the original wording assumed is not in the DDL.
+    evidence:
+      - "collector/audit_entities.py run 2026-08-07 (AI-Vendor-Intelligence-Platform repo)"
+      - "backups/wrong_entity_signals_20260807T010057Z.json — 780 rows"
+      - "backups/wrong_entity_signals_20260807T010153Z.json — 2 rows"
+      - "logs/RUN_LOG.md#2026-08-22 — gate decision, who/what/when"
+      - "data/verified/ai_company_signals-schema.yaml v0.2.0 — entity_verification section"
+    residual_risk: |
+      Removing rows that failed the check does not prove the survivors are correct.
+      Common-word vendor names (Adept, Writer, Notion, Glean, Modal, Replicate) can
+      still admit unrelated text; for those the only remaining defence is the LLM
+      about_company screen, which fails open on API error.
+    owner: "Muskan Khandelwal"
 
   - name: "Supervisor routing review (Phase 2)"
     status: "[TODO]"
@@ -58,9 +78,27 @@ phase_gates:
     owner: "Procurement owner (TBD)"
 
 known_issues:
-  - "[BLOCKER] Zero human signal validation — signals enter verified layer unvetted (P4 violation)"
+  - |
+    [RESOLVED 2026-08-22] Zero human signal validation. Closed at the batch level by
+    the entity audit + purge; see the Signal validation gate above. Per-signal human
+    review still does not exist.
+  - |
+    [RESIDUAL RISK] Entity contamination. 782 wrong-entity rows were found in the
+    table and purged 2026-08-07 — a $28M Department of War contract awarded to Cohere
+    Technologies had raised the AI vendor Cohere's Financial Health score by 25 points,
+    and quantum-physics papers matching the stemmed word "coherence" were counted as
+    its technology momentum. Collectors now verify entity before insert. NOT fully
+    closed: common-word vendor names (Adept, Writer, Notion, Glean, Modal, Replicate)
+    can still admit unrelated text, and the LLM backstop fails open.
+  - |
+    [BLOCKER] Signal coverage counts are unknown. Every per-source figure in this
+    recipe predates the purge. Recount before any of them is cited.
   - "[BLOCKER] Brief approval gate not logged — no procurement review record (Phase 2)"
+  - "[BLOCKER] Supervisor routing gate not logged — no Langfuse trace reviewed (Phase 2)"
   - "[BLOCKER] Groq token limit at company #33 of 50 batch — Phase 3 batch job blocked"
+  - |
+    [IMPROVEMENT] No used_in_brief tracking. The column does not exist, so the audit
+    "which signals actually made it into the brief?" cannot be run from the table.
   - "[IMPROVEMENT] No historical trend detection — single-run only (Phase 3 feature)"
   - "[IMPROVEMENT] Neo4j graph may be stale — ingest frequency not documented"
 
@@ -68,14 +106,23 @@ architecture:
   supervisor: |
     LLM (AWS Bedrock Nova Micro) receives company_name and verified signals from all 4 sources.
     Routes agent calls in dependency order: financial → technology → news → personnel → competitive.
-    Each agent call is traced in Langfuse; supervisor decides next agent based on collected signals.
+    Each agent call is traced in Langfuse (v3 client: CallbackHandler() reads credentials
+    from the environment and takes no kwargs; flushing is get_client().flush(), not a
+    handler method — see agents/llm.py). Supervisor decides next agent based on collected signals.
     Final synthesis stage aggregates all agent outputs into the 6-section brief.
 
   data_sources:
     - name: "EDGAR (10-K, 10-Q, 8-K filings)"
       table: ai_company_signals
-      signal_types: ["funding", "executive_change"]
-      coverage: "3 public companies, ~50 signals"
+      signal_types: ["funding", "executive_change", "annual_filing"]
+      coverage: "3 public companies, ~50 signals (keyed to CIK — not collision-prone)"
+      summaries: |
+        Grounded in an excerpt of the actual filing text. When no text is extractable
+        the prompt passes the sentinel "No description available" and instructs the
+        model to stay generic rather than invent detail (collector/edgar_collector.py).
+        Pre-existing rows were rewritten in place by
+        collector/backfill_edgar_summaries.py, which preserves the prior text in
+        raw_data["summary_before_backfill"] and deletes nothing.
       refresh: quarterly
       owner: "Data ingest (Phase 1)"
 
@@ -89,14 +136,33 @@ architecture:
     - name: "ArXiv (research papers by company affiliation)"
       table: ai_company_signals
       signal_types: ["research_paper"]
-      coverage: "50 companies, ~440 signals"
+      coverage: |
+        50 companies. Signal count UNKNOWN — the Phase 1 figure (~440) predates the
+        2026-08-07 purge, which removed 650 research_paper rows. Recount before citing.
+      query: 'ti:"{name}" OR abs:"{name}" — title/abstract only'
+      filters: |
+        Two gates before insert (collector/arxiv_collector.py):
+        (1) primary category must be cs.* / stat.ML / eess.AS / eess.IV;
+        (2) check_entity must match the company or an author affiliation as a whole word.
+        The previous all:"{name}" query searched full text including bibliographies
+        against a stemmed index; 85% of collected papers were unrelated to the vendor
+        they were filed under.
       refresh: weekly
       owner: "Data ingest (Phase 1)"
 
     - name: "News (RSS + scraping, LLM-classified by keyword)"
       table: ai_company_signals
       signal_types: ["news_mention", "partnership", "product_launch"]
-      coverage: "50 companies, ~413 signals"
+      coverage: |
+        50 companies. Signal count UNKNOWN — the Phase 1 figure (~413) predates the
+        2026-08-07 purge (132 non-research rows removed). Recount before citing.
+      filters: |
+        Three layers (collector/news_collector.py):
+        (1) news_query() injects -"namesake" exclusions into the Google News RSS query;
+        (2) check_entity vets the headline deterministically;
+        (3) the LLM classifier returns about_company as its FIRST field, instructed to
+            answer false when uncertain. Layer 3 is a JUDGMENT and fails OPEN — on a
+            Groq error or unparseable response about_company defaults to true.
       refresh: daily
       owner: "Data ingest (Phase 1)"
 
