@@ -2,8 +2,19 @@
 .env
 *.pem
 
-# Bulk SEC downloads (rebuildable; hundreds of MB per quarter)
-data/
+# Bulk SEC downloads (rebuildable; hundreds of MB per quarter).
+# Excluded a level at a time, because git will not look inside a directory it
+# has already excluded -- so a bare `data/` would make the negations below dead
+# letters. The per-quarter reconciliation records ARE kept: they are provenance,
+# not bulk data (P3 -- the evidence behind every row count this project
+# publishes), a few hundred bytes each, and they must survive a clean checkout.
+data/*
+!data/parquet/
+data/parquet/*
+!data/parquet/*/
+data/parquet/*/*
+!data/parquet/*/reconciliation.json
+
 *.zip
 *.tsv
 *.parquet
@@ -21,4 +32,5 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-docs/video_script_week1.md
+docs/video_script_*
+scripts/make_week*

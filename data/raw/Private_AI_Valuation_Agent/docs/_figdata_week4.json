@@ -1,0 +1,1229 @@
+{
+ "spellings": [
+  {
+   "company": "Databricks, Inc.",
+   "names": 51,
+   "titles": 69,
+   "holdings": 2224
+  },
+  {
+   "company": "Space Exploration Technologies Corp.",
+   "names": 28,
+   "titles": 37,
+   "holdings": 1692
+  },
+  {
+   "company": "OpenAI Group PBC",
+   "names": 23,
+   "titles": 33,
+   "holdings": 481
+  },
+  {
+   "company": "X.AI Corp",
+   "names": 19,
+   "titles": 22,
+   "holdings": 278
+  },
+  {
+   "company": "Anduril Industries, Inc.",
+   "names": 11,
+   "titles": 19,
+   "holdings": 524
+  },
+  {
+   "company": "Anthropic PBC",
+   "names": 10,
+   "titles": 22,
+   "holdings": 428
+  },
+  {
+   "company": "Cerebras Systems Inc.",
+   "names": 3,
+   "titles": 4,
+   "holdings": 80
+  },
+  {
+   "company": "Perplexity AI, Inc.",
+   "names": 3,
+   "titles": 3,
+   "holdings": 24
+  },
+  {
+   "company": "Groq, Inc.",
+   "names": 2,
+   "titles": 3,
+   "holdings": 16
+  },
+  {
+   "company": "Figure AI Inc.",
+   "names": 2,
+   "titles": 2,
+   "holdings": 31
+  }
+ ],
+ "corpus": {
+  "distinct_names_private": 3204853,
+  "universe_holdings": 5806,
+  "universe_distinct_names": 154
+ },
+ "databricks_sample": [
+  "DATABRICKS INC",
+  "DATABRICKS SER H CVT",
+  "DATABRICKS, INC.",
+  "DATABRICKS SER G CVT PFD",
+  "DATABRICKS INC.",
+  "DATABRICKS INC PP",
+  "DATABRICKS, INC. SERIES H PREFERRED SHARES",
+  "DATABRICKS SER H CVT PFD STOCK PP",
+  "DATABRICKS, INC. SERIES J"
+ ],
+ "xai": {
+  "missed_holdings": 85,
+  "top_family": "Fidelity Mt. Vernon Street Trust"
+ },
+ "scoreboard": {
+  "A_like_patterns": {
+   "macro": {
+    "tp": 235,
+    "fp": 2,
+    "fn": 5,
+    "precision": 0.9916,
+    "recall": 0.9792,
+    "f1": 0.9853
+   },
+   "micro": {
+    "tp": 5850,
+    "fp": 28,
+    "fn": 85,
+    "precision": 0.9952,
+    "recall": 0.9857,
+    "f1": 0.9904
+   }
+  },
+  "B_matcher_v1": {
+   "macro": {
+    "tp": 240,
+    "fp": 1,
+    "fn": 0,
+    "precision": 0.9959,
+    "recall": 1.0,
+    "f1": 0.9979
+   },
+   "micro": {
+    "tp": 5935,
+    "fp": 1,
+    "fn": 0,
+    "precision": 0.9998,
+    "recall": 1.0,
+    "f1": 0.9999
+   }
+  }
+ },
+ "hard": {
+  "A_like_patterns": {
+   "tp": 139,
+   "fp": 0,
+   "fn": 1,
+   "precision": 1.0,
+   "recall": 0.9929,
+   "f1": 0.9964
+  },
+  "B_matcher_v1": {
+   "tp": 140,
+   "fp": 1,
+   "fn": 0,
+   "precision": 0.9929,
+   "recall": 1.0,
+   "f1": 0.9964
+  }
+ },
+ "openair": [
+  {
+   "registrant": "BlackRock Funds V",
+   "period_end": "2026-03-31",
+   "balance": 18821.0,
+   "value": 12942955.14,
+   "price": 687.6869
+  },
+  {
+   "registrant": "BlackRock Series Fund, Inc.",
+   "period_end": "2026-03-31",
+   "balance": 122.0,
+   "value": 83897.8,
+   "price": 687.6869
+  },
+  {
+   "registrant": "NEW YORK LIFE INVESTMENTS VP FUNDS TRUST",
+   "period_end": "2026-03-31",
+   "balance": 18219.0,
+   "value": 12528967.63,
+   "price": 687.6869
+  },
+  {
+   "registrant": "BlackRock Global Allocation Fund, Inc.",
+   "period_end": "2026-04-30",
+   "balance": 12993.0,
+   "value": 8935115.89,
+   "price": 687.6869
+  },
+  {
+   "registrant": "NEW YORK LIFE INVESTMENTS FUNDS",
+   "period_end": "2026-04-30",
+   "balance": 119017.0,
+   "value": 81846431.78,
+   "price": 687.6869
+  }
+ ],
+ "openai_anchor": [
+  {
+   "period_end": "2026-03-31",
+   "price": 687.6869,
+   "holdings": 8,
+   "registrants": 6,
+   "lei_confirmed": 1
+  }
+ ],
+ "tied_at_080": [
+  {
+   "name": "OPEN BAY AUTOS AI INC.",
+   "score": 0.8,
+   "truth": "NOT_IN_UNIVERSE",
+   "predicted": "OpenAI",
+   "correct": false,
+   "holdings": 1
+  },
+  {
+   "name": "DXYZ SPACEX I LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 99% CLASS A COMMON STOCK AND 1% SERIES J PREFERRED STOCK)",
+   "score": 0.8,
+   "truth": "Space Exploration Technologies Corp.",
+   "predicted": "Space Exploration",
+   "correct": true,
+   "holdings": 7
+  },
+  {
+   "name": "MWAM VC SPACEX-II, LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 55% CLASS A COMMON STOCK AND 45% CLASS C COMMON STOCK)",
+   "score": 0.8,
+   "truth": "Space Exploration Technologies Corp.",
+   "predicted": "Space Exploration",
+   "correct": true,
+   "holdings": 8
+  },
+  {
+   "name": "MWAM VC SPACEX-II, LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 55% CLASS A COMMON STOCK AND 45% CLASS C COMMON STOCK) ",
+   "score": 0.8,
+   "truth": "Space Exploration Technologies Corp.",
+   "predicted": "Space Exploration",
+   "correct": true,
+   "holdings": 1
+  }
+ ],
+ "sweep": [
+  {
+   "threshold": 0.0,
+   "tp": 140,
+   "fp": 1,
+   "fn": 0,
+   "precision": 0.9929,
+   "recall": 1.0,
+   "f1": 0.9964,
+   "resolved": 141,
+   "errors": [
+    {
+     "id": "g0207",
+     "issuer_name": "OPEN BAY AUTOS AI INC.",
+     "truth": "NOT_IN_UNIVERSE",
+     "predicted": "OpenAI Group PBC",
+     "kind": "false_positive"
+    }
+   ]
+  },
+  {
+   "threshold": 0.5,
+   "tp": 140,
+   "fp": 1,
+   "fn": 0,
+   "precision": 0.9929,
+   "recall": 1.0,
+   "f1": 0.9964,
+   "resolved": 141,
+   "errors": [
+    {
+     "id": "g0207",
+     "issuer_name": "OPEN BAY AUTOS AI INC.",
+     "truth": "NOT_IN_UNIVERSE",
+     "predicted": "OpenAI Group PBC",
+     "kind": "false_positive"
+    }
+   ]
+  },
+  {
+   "threshold": 0.7,
+   "tp": 140,
+   "fp": 1,
+   "fn": 0,
+   "precision": 0.9929,
+   "recall": 1.0,
+   "f1": 0.9964,
+   "resolved": 141,
+   "errors": [
+    {
+     "id": "g0207",
+     "issuer_name": "OPEN BAY AUTOS AI INC.",
+     "truth": "NOT_IN_UNIVERSE",
+     "predicted": "OpenAI Group PBC",
+     "kind": "false_positive"
+    }
+   ]
+  },
+  {
+   "threshold": 0.75,
+   "tp": 140,
+   "fp": 1,
+   "fn": 0,
+   "precision": 0.9929,
+   "recall": 1.0,
+   "f1": 0.9964,
+   "resolved": 141,
+   "errors": [
+    {
+     "id": "g0207",
+     "issuer_name": "OPEN BAY AUTOS AI INC.",
+     "truth": "NOT_IN_UNIVERSE",
+     "predicted": "OpenAI Group PBC",
+     "kind": "false_positive"
+    }
+   ]
+  },
+  {
+   "threshold": 0.8,
+   "tp": 140,
+   "fp": 1,
+   "fn": 0,
+   "precision": 0.9929,
+   "recall": 1.0,
+   "f1": 0.9964,
+   "resolved": 141,
+   "errors": [
+    {
+     "id": "g0207",
+     "issuer_name": "OPEN BAY AUTOS AI INC.",
+     "truth": "NOT_IN_UNIVERSE",
+     "predicted": "OpenAI Group PBC",
+     "kind": "false_positive"
+    }
+   ]
+  },
+  {
+   "threshold": 0.85,
+   "tp": 137,
+   "fp": 0,
+   "fn": 3,
+   "precision": 1.0,
+   "recall": 0.9786,
+   "f1": 0.9892,
+   "resolved": 137,
+   "errors": [
+    {
+     "id": "g0157",
+     "issuer_name": "DXYZ SPACEX I LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 99% CLASS A COMMON STOCK AND 1% SERIES J PREFERRED STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0199",
+     "issuer_name": "MWAM VC SPACEX-II, LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 55% CLASS A COMMON STOCK AND 45% CLASS C COMMON STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0200",
+     "issuer_name": "MWAM VC SPACEX-II, LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 55% CLASS A COMMON STOCK AND 45% CLASS C COMMON STOCK) ",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    }
+   ]
+  },
+  {
+   "threshold": 0.9,
+   "tp": 137,
+   "fp": 0,
+   "fn": 3,
+   "precision": 1.0,
+   "recall": 0.9786,
+   "f1": 0.9892,
+   "resolved": 137,
+   "errors": [
+    {
+     "id": "g0157",
+     "issuer_name": "DXYZ SPACEX I LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 99% CLASS A COMMON STOCK AND 1% SERIES J PREFERRED STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0199",
+     "issuer_name": "MWAM VC SPACEX-II, LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 55% CLASS A COMMON STOCK AND 45% CLASS C COMMON STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0200",
+     "issuer_name": "MWAM VC SPACEX-II, LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 55% CLASS A COMMON STOCK AND 45% CLASS C COMMON STOCK) ",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    }
+   ]
+  },
+  {
+   "threshold": 0.92,
+   "tp": 115,
+   "fp": 0,
+   "fn": 25,
+   "precision": 1.0,
+   "recall": 0.8214,
+   "f1": 0.902,
+   "resolved": 115,
+   "errors": [
+    {
+     "id": "g0017",
+     "issuer_name": "AESTAS LLC DBA OPENAI LLC EV UNITS PP",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0018",
+     "issuer_name": "ANDURIL ENGINEERING LLC",
+     "truth": "Anduril Industries, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0019",
+     "issuer_name": "ANDURIL ENGINEERING LLC",
+     "truth": "Anduril Industries, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0064",
+     "issuer_name": "CELADON TECHNOLOGY FUND VIII, LLC - SERIES B (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., COMMON STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0071",
+     "issuer_name": "DA-1125 GAINGELS FUND II (INVESTED IN DATABRICKS, INC. SERIES L PREFERRED STOCK)",
+     "truth": "Databricks, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0125",
+     "issuer_name": "DATABRICKS SER L PREF EQ PRIV",
+     "truth": "Databricks, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0155",
+     "issuer_name": "DXYZ OAI I LLC (ECONOMIC EXPOSURE TO OPENAI GLOBAL LLC, PROFIT PARTICIPATION UNITS)",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0156",
+     "issuer_name": "DXYZ SPACEX I LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 96% COMMON UNITS & STOCK EQ.;3% SERIES E, 1% SERIES C PREFERRED SHARES)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0157",
+     "issuer_name": "DXYZ SPACEX I LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 99% CLASS A COMMON STOCK AND 1% SERIES J PREFERRED STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0167",
+     "issuer_name": "GOANNA CAPITAL 26E LLC (INVESTED IN OPENAI GROUP PBC SERIES C PREFERRED STOCK)",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0184",
+     "issuer_name": "HOF CAPITAL WH STRATEGIC OPPORTUNITIES FUND, LP (INVESTED IN SPACEX, COMMON)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0185",
+     "issuer_name": "HOF CAPITAL WH STRATEGIC OPPORTUNITIES FUND, LP (INVESTED IN X.AI, CORP., PREFERRED SERIES B)",
+     "truth": "X.AI Corp",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0195",
+     "issuer_name": "MAGNITUDE ANC III, LLC (ECONOMIC EXPOSURE TO ANTHROPIC PBC. SERIES B PREFERRED SHARES)",
+     "truth": "Anthropic PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0196",
+     "issuer_name": "MCTC INVESTMENTS HOLDINGS (DELAWARE) LLC (INVESTED IN DATABRICKS, INC. SERIES L PREFERRED STOCK)",
+     "truth": "Databricks, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0197",
+     "issuer_name": "MVP OPPORTUNITY FUND VI LLC, SERIES 24G (INVESTED IN SPACEX, COMMON)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0198",
+     "issuer_name": "MVP OPPORTUNITY FUND VI LLC, SERIES 24G (INVESTED IN X.AI, CORP., PREFERRED SERIES C)",
+     "truth": "X.AI Corp",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0199",
+     "issuer_name": "MWAM VC SPACEX-II, LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 55% CLASS A COMMON STOCK AND 45% CLASS C COMMON STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0200",
+     "issuer_name": "MWAM VC SPACEX-II, LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 55% CLASS A COMMON STOCK AND 45% CLASS C COMMON STOCK) ",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0210",
+     "issuer_name": "OPENAI FOUNDATION",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0252",
+     "issuer_name": "SC JAL, LLC (INVESTED IN SPACEX, COMMON)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0253",
+     "issuer_name": "SC JAL, LLC (INVESTED IN X.AI, CORP., PREFERRED SERIES B)",
+     "truth": "X.AI Corp",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0257",
+     "issuer_name": "SNOWPOINT GROWTH 2.6, LLC (INVESTED IN SPACE EXPLORATION TECHNOLOGIES CORP. CLASS B COMMON STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0258",
+     "issuer_name": "SNOWPOINT GROWTH 2.6, LLC (INVESTED IN X.AI CORP. SERIES E PREFERRED STOCK)",
+     "truth": "X.AI Corp",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0263",
+     "issuer_name": "SPACE EXPLORATION TECHNOLOGICS",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0287",
+     "issuer_name": "TIGER GLOBAL PIP 12-1, LLC (INVESTED IN DATABRICKS, INC., PREFERRED SERIES G)",
+     "truth": "Databricks, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    }
+   ]
+  },
+  {
+   "threshold": 0.95,
+   "tp": 113,
+   "fp": 0,
+   "fn": 27,
+   "precision": 1.0,
+   "recall": 0.8071,
+   "f1": 0.8933,
+   "resolved": 113,
+   "errors": [
+    {
+     "id": "g0017",
+     "issuer_name": "AESTAS LLC DBA OPENAI LLC EV UNITS PP",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0018",
+     "issuer_name": "ANDURIL ENGINEERING LLC",
+     "truth": "Anduril Industries, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0019",
+     "issuer_name": "ANDURIL ENGINEERING LLC",
+     "truth": "Anduril Industries, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0058",
+     "issuer_name": "ANTHROPICS TECHNOLOGY LTD.",
+     "truth": "Anthropic PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0064",
+     "issuer_name": "CELADON TECHNOLOGY FUND VIII, LLC - SERIES B (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., COMMON STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0071",
+     "issuer_name": "DA-1125 GAINGELS FUND II (INVESTED IN DATABRICKS, INC. SERIES L PREFERRED STOCK)",
+     "truth": "Databricks, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0125",
+     "issuer_name": "DATABRICKS SER L PREF EQ PRIV",
+     "truth": "Databricks, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0155",
+     "issuer_name": "DXYZ OAI I LLC (ECONOMIC EXPOSURE TO OPENAI GLOBAL LLC, PROFIT PARTICIPATION UNITS)",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0156",
+     "issuer_name": "DXYZ SPACEX I LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 96% COMMON UNITS & STOCK EQ.;3% SERIES E, 1% SERIES C PREFERRED SHARES)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0157",
+     "issuer_name": "DXYZ SPACEX I LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 99% CLASS A COMMON STOCK AND 1% SERIES J PREFERRED STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0167",
+     "issuer_name": "GOANNA CAPITAL 26E LLC (INVESTED IN OPENAI GROUP PBC SERIES C PREFERRED STOCK)",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0184",
+     "issuer_name": "HOF CAPITAL WH STRATEGIC OPPORTUNITIES FUND, LP (INVESTED IN SPACEX, COMMON)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0185",
+     "issuer_name": "HOF CAPITAL WH STRATEGIC OPPORTUNITIES FUND, LP (INVESTED IN X.AI, CORP., PREFERRED SERIES B)",
+     "truth": "X.AI Corp",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0195",
+     "issuer_name": "MAGNITUDE ANC III, LLC (ECONOMIC EXPOSURE TO ANTHROPIC PBC. SERIES B PREFERRED SHARES)",
+     "truth": "Anthropic PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0196",
+     "issuer_name": "MCTC INVESTMENTS HOLDINGS (DELAWARE) LLC (INVESTED IN DATABRICKS, INC. SERIES L PREFERRED STOCK)",
+     "truth": "Databricks, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0197",
+     "issuer_name": "MVP OPPORTUNITY FUND VI LLC, SERIES 24G (INVESTED IN SPACEX, COMMON)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0198",
+     "issuer_name": "MVP OPPORTUNITY FUND VI LLC, SERIES 24G (INVESTED IN X.AI, CORP., PREFERRED SERIES C)",
+     "truth": "X.AI Corp",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0199",
+     "issuer_name": "MWAM VC SPACEX-II, LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 55% CLASS A COMMON STOCK AND 45% CLASS C COMMON STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0200",
+     "issuer_name": "MWAM VC SPACEX-II, LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 55% CLASS A COMMON STOCK AND 45% CLASS C COMMON STOCK) ",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0210",
+     "issuer_name": "OPENAI FOUNDATION",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0232",
+     "issuer_name": "OPENAIR.COM",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0252",
+     "issuer_name": "SC JAL, LLC (INVESTED IN SPACEX, COMMON)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0253",
+     "issuer_name": "SC JAL, LLC (INVESTED IN X.AI, CORP., PREFERRED SERIES B)",
+     "truth": "X.AI Corp",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0257",
+     "issuer_name": "SNOWPOINT GROWTH 2.6, LLC (INVESTED IN SPACE EXPLORATION TECHNOLOGIES CORP. CLASS B COMMON STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0258",
+     "issuer_name": "SNOWPOINT GROWTH 2.6, LLC (INVESTED IN X.AI CORP. SERIES E PREFERRED STOCK)",
+     "truth": "X.AI Corp",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0263",
+     "issuer_name": "SPACE EXPLORATION TECHNOLOGICS",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0287",
+     "issuer_name": "TIGER GLOBAL PIP 12-1, LLC (INVESTED IN DATABRICKS, INC., PREFERRED SERIES G)",
+     "truth": "Databricks, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    }
+   ]
+  },
+  {
+   "threshold": 0.99,
+   "tp": 109,
+   "fp": 0,
+   "fn": 31,
+   "precision": 1.0,
+   "recall": 0.7786,
+   "f1": 0.8755,
+   "resolved": 109,
+   "errors": [
+    {
+     "id": "g0017",
+     "issuer_name": "AESTAS LLC DBA OPENAI LLC EV UNITS PP",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0018",
+     "issuer_name": "ANDURIL ENGINEERING LLC",
+     "truth": "Anduril Industries, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0019",
+     "issuer_name": "ANDURIL ENGINEERING LLC",
+     "truth": "Anduril Industries, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0058",
+     "issuer_name": "ANTHROPICS TECHNOLOGY LTD.",
+     "truth": "Anthropic PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0064",
+     "issuer_name": "CELADON TECHNOLOGY FUND VIII, LLC - SERIES B (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., COMMON STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0071",
+     "issuer_name": "DA-1125 GAINGELS FUND II (INVESTED IN DATABRICKS, INC. SERIES L PREFERRED STOCK)",
+     "truth": "Databricks, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0125",
+     "issuer_name": "DATABRICKS SER L PREF EQ PRIV",
+     "truth": "Databricks, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0155",
+     "issuer_name": "DXYZ OAI I LLC (ECONOMIC EXPOSURE TO OPENAI GLOBAL LLC, PROFIT PARTICIPATION UNITS)",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0156",
+     "issuer_name": "DXYZ SPACEX I LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 96% COMMON UNITS & STOCK EQ.;3% SERIES E, 1% SERIES C PREFERRED SHARES)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0157",
+     "issuer_name": "DXYZ SPACEX I LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 99% CLASS A COMMON STOCK AND 1% SERIES J PREFERRED STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0158",
+     "issuer_name": "DXYZ SPACEX I LLC (SPACE EXPLORATION TECH CORP 99% CLASS A COMMON STOCK & 1% SERIES J PREF STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0167",
+     "issuer_name": "GOANNA CAPITAL 26E LLC (INVESTED IN OPENAI GROUP PBC SERIES C PREFERRED STOCK)",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0184",
+     "issuer_name": "HOF CAPITAL WH STRATEGIC OPPORTUNITIES FUND, LP (INVESTED IN SPACEX, COMMON)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0185",
+     "issuer_name": "HOF CAPITAL WH STRATEGIC OPPORTUNITIES FUND, LP (INVESTED IN X.AI, CORP., PREFERRED SERIES B)",
+     "truth": "X.AI Corp",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0195",
+     "issuer_name": "MAGNITUDE ANC III, LLC (ECONOMIC EXPOSURE TO ANTHROPIC PBC. SERIES B PREFERRED SHARES)",
+     "truth": "Anthropic PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0196",
+     "issuer_name": "MCTC INVESTMENTS HOLDINGS (DELAWARE) LLC (INVESTED IN DATABRICKS, INC. SERIES L PREFERRED STOCK)",
+     "truth": "Databricks, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0197",
+     "issuer_name": "MVP OPPORTUNITY FUND VI LLC, SERIES 24G (INVESTED IN SPACEX, COMMON)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0198",
+     "issuer_name": "MVP OPPORTUNITY FUND VI LLC, SERIES 24G (INVESTED IN X.AI, CORP., PREFERRED SERIES C)",
+     "truth": "X.AI Corp",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0199",
+     "issuer_name": "MWAM VC SPACEX-II, LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 55% CLASS A COMMON STOCK AND 45% CLASS C COMMON STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0200",
+     "issuer_name": "MWAM VC SPACEX-II, LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 55% CLASS A COMMON STOCK AND 45% CLASS C COMMON STOCK) ",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0201",
+     "issuer_name": "MWAM VC SPACEX-II, LLC (SPACE EXPLORATION TECH CORP 55% CLASS A COM STOCK & 45% CLASS C COM STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0210",
+     "issuer_name": "OPENAI FOUNDATION",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0232",
+     "issuer_name": "OPENAIR.COM",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0252",
+     "issuer_name": "SC JAL, LLC (INVESTED IN SPACEX, COMMON)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0253",
+     "issuer_name": "SC JAL, LLC (INVESTED IN X.AI, CORP., PREFERRED SERIES B)",
+     "truth": "X.AI Corp",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0257",
+     "issuer_name": "SNOWPOINT GROWTH 2.6, LLC (INVESTED IN SPACE EXPLORATION TECHNOLOGIES CORP. CLASS B COMMON STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0258",
+     "issuer_name": "SNOWPOINT GROWTH 2.6, LLC (INVESTED IN X.AI CORP. SERIES E PREFERRED STOCK)",
+     "truth": "X.AI Corp",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0263",
+     "issuer_name": "SPACE EXPLORATION TECHNOLOGICS",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0286",
+     "issuer_name": "STUDIO TYPE ONE SOUL II LLC (OPENAI)",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0287",
+     "issuer_name": "TIGER GLOBAL PIP 12-1, LLC (INVESTED IN DATABRICKS, INC., PREFERRED SERIES G)",
+     "truth": "Databricks, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0288",
+     "issuer_name": "U FIRST CAPITAL FUND III LLC (SPACEX)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    }
+   ]
+  },
+  {
+   "threshold": 1.0,
+   "tp": 109,
+   "fp": 0,
+   "fn": 31,
+   "precision": 1.0,
+   "recall": 0.7786,
+   "f1": 0.8755,
+   "resolved": 109,
+   "errors": [
+    {
+     "id": "g0017",
+     "issuer_name": "AESTAS LLC DBA OPENAI LLC EV UNITS PP",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0018",
+     "issuer_name": "ANDURIL ENGINEERING LLC",
+     "truth": "Anduril Industries, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0019",
+     "issuer_name": "ANDURIL ENGINEERING LLC",
+     "truth": "Anduril Industries, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0058",
+     "issuer_name": "ANTHROPICS TECHNOLOGY LTD.",
+     "truth": "Anthropic PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0064",
+     "issuer_name": "CELADON TECHNOLOGY FUND VIII, LLC - SERIES B (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., COMMON STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0071",
+     "issuer_name": "DA-1125 GAINGELS FUND II (INVESTED IN DATABRICKS, INC. SERIES L PREFERRED STOCK)",
+     "truth": "Databricks, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0125",
+     "issuer_name": "DATABRICKS SER L PREF EQ PRIV",
+     "truth": "Databricks, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0155",
+     "issuer_name": "DXYZ OAI I LLC (ECONOMIC EXPOSURE TO OPENAI GLOBAL LLC, PROFIT PARTICIPATION UNITS)",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0156",
+     "issuer_name": "DXYZ SPACEX I LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 96% COMMON UNITS & STOCK EQ.;3% SERIES E, 1% SERIES C PREFERRED SHARES)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0157",
+     "issuer_name": "DXYZ SPACEX I LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 99% CLASS A COMMON STOCK AND 1% SERIES J PREFERRED STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0158",
+     "issuer_name": "DXYZ SPACEX I LLC (SPACE EXPLORATION TECH CORP 99% CLASS A COMMON STOCK & 1% SERIES J PREF STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0167",
+     "issuer_name": "GOANNA CAPITAL 26E LLC (INVESTED IN OPENAI GROUP PBC SERIES C PREFERRED STOCK)",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0184",
+     "issuer_name": "HOF CAPITAL WH STRATEGIC OPPORTUNITIES FUND, LP (INVESTED IN SPACEX, COMMON)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0185",
+     "issuer_name": "HOF CAPITAL WH STRATEGIC OPPORTUNITIES FUND, LP (INVESTED IN X.AI, CORP., PREFERRED SERIES B)",
+     "truth": "X.AI Corp",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0195",
+     "issuer_name": "MAGNITUDE ANC III, LLC (ECONOMIC EXPOSURE TO ANTHROPIC PBC. SERIES B PREFERRED SHARES)",
+     "truth": "Anthropic PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0196",
+     "issuer_name": "MCTC INVESTMENTS HOLDINGS (DELAWARE) LLC (INVESTED IN DATABRICKS, INC. SERIES L PREFERRED STOCK)",
+     "truth": "Databricks, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0197",
+     "issuer_name": "MVP OPPORTUNITY FUND VI LLC, SERIES 24G (INVESTED IN SPACEX, COMMON)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0198",
+     "issuer_name": "MVP OPPORTUNITY FUND VI LLC, SERIES 24G (INVESTED IN X.AI, CORP., PREFERRED SERIES C)",
+     "truth": "X.AI Corp",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0199",
+     "issuer_name": "MWAM VC SPACEX-II, LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 55% CLASS A COMMON STOCK AND 45% CLASS C COMMON STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0200",
+     "issuer_name": "MWAM VC SPACEX-II, LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 55% CLASS A COMMON STOCK AND 45% CLASS C COMMON STOCK) ",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0201",
+     "issuer_name": "MWAM VC SPACEX-II, LLC (SPACE EXPLORATION TECH CORP 55% CLASS A COM STOCK & 45% CLASS C COM STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0210",
+     "issuer_name": "OPENAI FOUNDATION",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0232",
+     "issuer_name": "OPENAIR.COM",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0252",
+     "issuer_name": "SC JAL, LLC (INVESTED IN SPACEX, COMMON)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0253",
+     "issuer_name": "SC JAL, LLC (INVESTED IN X.AI, CORP., PREFERRED SERIES B)",
+     "truth": "X.AI Corp",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0257",
+     "issuer_name": "SNOWPOINT GROWTH 2.6, LLC (INVESTED IN SPACE EXPLORATION TECHNOLOGIES CORP. CLASS B COMMON STOCK)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0258",
+     "issuer_name": "SNOWPOINT GROWTH 2.6, LLC (INVESTED IN X.AI CORP. SERIES E PREFERRED STOCK)",
+     "truth": "X.AI Corp",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0263",
+     "issuer_name": "SPACE EXPLORATION TECHNOLOGICS",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0286",
+     "issuer_name": "STUDIO TYPE ONE SOUL II LLC (OPENAI)",
+     "truth": "OpenAI Group PBC",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0287",
+     "issuer_name": "TIGER GLOBAL PIP 12-1, LLC (INVESTED IN DATABRICKS, INC., PREFERRED SERIES G)",
+     "truth": "Databricks, Inc.",
+     "predicted": null,
+     "kind": "false_negative"
+    },
+    {
+     "id": "g0288",
+     "issuer_name": "U FIRST CAPITAL FUND III LLC (SPACEX)",
+     "truth": "Space Exploration Technologies Corp.",
+     "predicted": null,
+     "kind": "false_negative"
+    }
+   ]
+  }
+ ]
+}
