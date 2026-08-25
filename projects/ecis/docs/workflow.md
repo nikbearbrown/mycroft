@@ -6,7 +6,7 @@ ECIS is a pipeline plus three feedback loops. Transcripts go in; scored, calibra
 
 ## Big picture:
 
-
+<img src="architecture/ecis_system_architecture.png" alt="ECIS system architecture" width="100%"/>
 
 ---
 
