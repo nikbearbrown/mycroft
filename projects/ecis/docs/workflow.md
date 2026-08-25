@@ -27,8 +27,6 @@ Every chunk is scored by:
 - **Keyword reader** — regex taxonomy of raised / lowered / maintained phrases (microseconds).
 - **FinBERT** — financial sentiment mapped to a guidance direction (batched).
 
-These two votes are cheap. They decide whether the LLM is worth calling.
-
 ### 4. Escalation (orchestration agent)
 
 
