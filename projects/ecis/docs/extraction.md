@@ -71,13 +71,14 @@ Extracts ORG names, dollar amounts, percentages, dates/periods, and financial me
 ### Models
 
 
-| Alias     | Default tag                 | Notes                                               |
-| --------- | --------------------------- | --------------------------------------------------- |
-| `llama`   | `llama3.1:8b-instruct-q8_0` | Stronger calibration; better on explicit numbers    |
-| `mistral` | `mistral:7b-instruct`       | Better on hedged language; JSON sometimes truncates |
+| Alias     | Default tag                      | Notes                                               |
+| --------- | -------------------------------- | --------------------------------------------------- |
+| `llama`   | `llama3.1:8b-instruct-q8_0`      | Stronger calibration; better on explicit numbers    |
+| `mistral` | `mistral:7b-instruct`            | Better on hedged language; JSON sometimes truncates |
+| `qwen`    | `qwen2.5:14b-instruct-q4_K_M`    | 14B peer extractor; same JSON-close reminder as Mistral |
 
 
-`--model both` runs the pipeline twice and stamps `llm_model` on each signal. Mistral prompts add an explicit “close every brace” reminder and retry if `{` / `}` counts do not match.
+`--model both` runs Llama and Mistral. `--model all` runs all three. Each signal is stamped with `llm_model`. Mistral and Qwen prompts add an explicit “close every brace” reminder and retry if `{` / `}` counts do not match.
 
 ### Technique stack
 
@@ -124,4 +125,4 @@ Stops the same sentence in prepared remarks and Q&A from counting twice.
 
 ## Logging:
 
-`log_signal` appends to `signals.db`. Pre-registration: no updates, no deletes. `llm_model` is stored so Llama and Mistral can be scored separately.
+`log_signal` appends to `signals.db`. Pre-registration: no updates, no deletes. `llm_model` is stored so Llama, Mistral, and Qwen can be scored separately.
