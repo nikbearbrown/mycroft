@@ -9,8 +9,8 @@ How ECIS fetches transcripts and what happens to them on disk. Runtime files are
 | [flow.md](flow.md)                                                | Ingest → clean → chunk → embed               |
 | [architecture/](architecture/)                                    | Data-flow diagram                            |
 | [layer.md](layer.md)                                              | Sources, preprocessing, embeddings, registry |
-| `[src/ecis/db/README.md](../src/ecis/db/README.md)`               | SQLite databases and tables                  |
-| `[src/ecis/embedding/README.md](../src/ecis/embedding/README.md)` | ChromaDB collections                         |
+| [src/ecis/db/README.md](../src/ecis/db/README.md)                 | SQLite databases and tables                  |
+| [src/ecis/embedding/README.md](../src/ecis/embedding/README.md)   | ChromaDB collections                         |
 
 
 Code: `src/ecis/ingestion/`, `src/ecis/preprocessing/`, `src/ecis/embedding/`, `src/ecis/db/`.
