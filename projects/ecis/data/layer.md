@@ -14,7 +14,8 @@ Turns filings into labelled chunks with embeddings. Direction (raised / lowered 
 
 - Fetch: [README.md](README.md). 
 - Flow: [flow.md](flow.md). 
-- Databases: `[src/ecis/db/README.md](../src/ecis/db/README.md)`. Vectors: `[src/ecis/embedding/README.md](../src/ecis/embedding/README.md)`.
+- Databases: [src/ecis/db/README.md](../src/ecis/db/README.md).
+- Vectors: [src/ecis/embedding/README.md](../src/ecis/embedding/README.md).
 
 ---
 
