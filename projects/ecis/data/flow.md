@@ -1,6 +1,9 @@
 # Data flow
 
-How a filing becomes chunks, embeddings, and database rows. Extraction and scoring sit after this path: `[docs/workflow.md](../docs/workflow.md)`.
+How a filing becomes chunks, embeddings, and database rows. Read more: [docs/workflow.md](../docs/workflow.md).
+
+<img src="architecture/ecis_data_flow_architecture.png" alt="ECIS system architecture" width="100%"/>
+
 
 ## Stages:
 
@@ -22,8 +25,8 @@ How a filing becomes chunks, embeddings, and database rows. Extraction and scori
 
 Each chunk keeps ticker, transcript date, source path, section, speaker, chunk index, and character offsets. The pipeline prefers EDGAR `period_of_report` / FMP transcript date over the filename date when metadata exists.
 
-SQLite: `[src/ecis/db/README.md](../src/ecis/db/README.md)`. 
+SQLite: [src/ecis/db/README.md](../src/ecis/db/README.md). 
 
-Chroma: `[src/ecis/embedding/README.md](../src/ecis/embedding/README.md)`. 
+Chroma: [src/ecis/embedding/README.md](../src/ecis/embedding/README.md). 
 
-Extraction: `[docs/extraction.md](../docs/extraction.md)`.
+Extraction: [docs/extraction.md](../docs/extraction.md).
