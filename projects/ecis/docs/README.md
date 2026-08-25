@@ -15,8 +15,8 @@ The pages below are the map of that system. If this is your first time here, sta
 | 6   | [scoring-and-feedback.md](scoring-and-feedback.md)              | Outcomes, Scorecard metrics, watchdog, learning graph, HITL                                                           |
 | 7   | [interfaces.md](interfaces.md)                                  | Streamlit dashboard and FastAPI                                                                                       |
 | 8   | [models-and-colab.md](models-and-colab.md)                      | Llama vs Mistral, Ollama, Colab notebooks                                                                             |
-| —   | [src/ecis/db/README.md](../src/ecis/db/README.md)               | SQLite databases and tables                                                                                           |
-| —   | [src/ecis/embedding/README.md](../src/ecis/embedding/README.md) | ChromaDB collections                                                                                                  |
+| 9   | [src/ecis/db/README.md](../src/ecis/db/README.md)               | SQLite databases and tables                                                                                           |
+| 10   | [src/ecis/embedding/README.md](../src/ecis/embedding/README.md)| ChromaDB collections                                                                                                  |
 
 
 
@@ -29,7 +29,7 @@ The pages below are the map of that system. If this is your first time here, sta
 | Folder                         | Contents                                                                                                                   |
 | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
 | [architecture/](architecture/) | [System](architecture/ecis_system_architecture.png) and [data flow](architecture/ecis_data_flow_architecture.png) diagrams |
-| [artifacts/](artifacts/)       | Claude artifacts and other generated reference files                                                                       |
+| [artifacts/](artifacts/)       | Artifacts and other reference files                                                                       |
 
 
 
