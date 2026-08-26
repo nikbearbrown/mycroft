@@ -1,5 +1,5 @@
 ---
-version: "0.2.0"
+version: "0.3.0"
 name: ai_company_signals
 description: |
   Unified signal table for vendor intelligence. Ingests from 4 live sources
@@ -13,6 +13,10 @@ description: |
   divergence, logged in logs/RUN_LOG.md#2026-08-22. This version also documents
   the entity-verification layer added to the collectors after 782 wrong-entity
   rows were found in the table.
+
+  v0.3.0 (2026-08-26) upgrades the common-word-name residual risk from hypothetical
+  to observed (Scale AI), and records a limit of the new brief-evaluation harness:
+  grounding checks cannot catch wrong-entity signals that are already in the corpus.
 
 table_type: PostgreSQL
 location: data/verified/ai_company_signals/
@@ -302,11 +306,32 @@ data_quality_notes:
     The purge removed rows that FAILED the check — it does not prove the surviving
     rows are correct.
   - |
-    RESIDUAL RISK — common-word names. Vendors named Adept, Writer, Notion, Glean,
-    Modal, and Replicate can still admit unrelated text, because requiring a longer
-    alias would drop legitimate coverage. Documented in collector/entity_filter.py.
-    For these, the LLM about_company screen is the only remaining defence, and it
-    fails open.
+    LIMIT OF THE BRIEF EVALUATION HARNESS. evaluation/eval_runner.py (added
+    2026-08-26) checks that every date and dollar figure in a brief traces to a
+    COLLECTED SIGNAL. A wrong-entity signal already in the corpus therefore PASSES
+    grounding — the figure is real, it simply belongs to a different company. The
+    Scale AI claims below were not caught by grounding for exactly this reason.
+    Grounding checks cannot detect this class of error; only entity verification at
+    ingest can. Do not treat a clean eval run as evidence that a brief's signals
+    belong to the right company.
+  - |
+    RESIDUAL RISK — common-word names. CONFIRMED IN PRODUCTION 2026-08-26, no longer
+    hypothetical. Vendors named Adept, Writer, Notion, Glean, Modal, Replicate and
+    Scale AI can still admit unrelated text, because requiring a longer alias would
+    drop legitimate coverage (collector/entity_filter.py). For these the LLM
+    about_company screen is the only remaining defence, and it fails open.
+
+    Observed instance: a Scale AI brief captured in evaluation/labeled_briefs.csv
+    attributes to Scale AI "a Rs 170 Cr raise by Elevate Education", "a $2.2 million
+    raise by SambaNova", and "a $900m credit facility to scale AI data centers" —
+    two other companies' funding rounds, plus "scale AI" matched as an ordinary verb
+    phrase. Its COMPETITIVE POSITION names Ecolab (water treatment) as a competitor.
+    Scale AI's seed entry carries aliases ["Scale AI", "ScaleAI"] and no
+    exclude_entities or exclude_terms — the deterministic filter had nothing to
+    reject on. Contamination is therefore reaching finished briefs, not only the
+    signal table.
+    Mitigation not yet applied: populate exclude_entities/exclude_terms for
+    common-word vendors.
   - |
     COVERAGE FIGURES ARE STALE. Per-source signal counts recorded at Phase 1
     (2026-07-09) predate the 782-row purge. Do not cite them; recount before use.
