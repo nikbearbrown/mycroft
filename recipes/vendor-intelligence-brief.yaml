@@ -8,7 +8,7 @@ description: |
 
 status: DRAFT          # 2 gates still open; SPECIFIED requires zero
 todos_open: 2
-recipe_version: 0.2.0
+recipe_version: 0.3.0
 last_gate: "signal-validation, 2026-08-22, logs/RUN_LOG.md#2026-08-22 (Muskan Khandelwal)"
 attestation: null
 
@@ -77,7 +77,104 @@ phase_gates:
       Evidence: Sign-off comment in RUN_LOG.md entry linking to brief artifact.
     owner: "Procurement owner (TBD)"
 
+evaluation:
+  harness: evaluation/eval_runner.py
+  added: "2026-08-26 (platform commit 2b44793)"
+  principle: |
+    Deterministic checks against the evidence actually collected for the company,
+    rather than asking another LLM whether the brief looks right. From the harness
+    docstring: where a rule can be written down, write the rule instead of trusting
+    a model to judge. This maps onto the verification stack — FAIL is layer 1
+    (conformance, halts), WARN is layer 2 (audit, reports for human judgment).
+
+  severities:
+    FAIL: "A contract the brief must satisfy. A FAIL is a real defect."
+    WARN: |
+      A heuristic grounding check. These can flag legitimate aggregates the model
+      derived from tool output rather than copying from a headline, so they need a
+      human glance, not a red light.
+
+  checks:
+    - name: check_structure
+      severity: FAIL
+      tests: "All six sections present (5 dimensions + EXECUTIVE SUMMARY)."
+    - name: check_score_fidelity
+      severity: FAIL
+      tests: |
+        The N/100 in FINANCIAL HEALTH must equal compute_financial_health()'s
+        rubric score. Regression test for the class of bug where the LLM invents
+        its own number instead of reporting the computed one. Also fails when the
+        brief states a score at all but the rubric has no data to compute one.
+    - name: check_unknown_discipline
+      severity: FAIL
+      tests: |
+        A dimension with no evidence must say UNKNOWN, not write prose anyway.
+        Catches the failure mode where a data source is down and the model fills
+        the gap with confident-sounding generalities.
+    - name: check_filler
+      severity: FAIL
+      tests: |
+        None of 11 banned phrases ("well positioned", "cutting-edge", "leading
+        provider", "at the forefront", ...). If a phrase would be true of any AI
+        vendor, it carries no procurement signal.
+    - name: check_date_grounding
+      severity: WARN
+      tests: "Every explicit ISO date in the brief traces to a collected signal."
+    - name: check_amount_grounding
+      severity: WARN
+      tests: |
+        Every dollar figure traces to a collected headline. Normalizes units, so
+        $1.2B and $1200M compare equal.
+
+  known_limit: |
+    The grounding checks verify that a claim traces to a COLLECTED SIGNAL. A
+    wrong-entity signal already in the corpus therefore PASSES grounding — the
+    figure is real, it just belongs to another company. Grounding cannot catch
+    that class; only entity verification upstream can. See the Scale AI entry
+    under known_issues.
+
+  human_accuracy_set:
+    file: evaluation/labeled_briefs.csv
+    rows: 6
+    status: |
+      UNLABELED. The `accurate` column is empty in every row — claims have been
+      queued (via eval_runner.py --emit-labels) but no human has marked any y/n.
+      No accuracy rate exists for this system and none may be quoted (P3).
+
+  unit_tests:
+    file: evaluation/test_eval_runner.py
+    count: 17
+    ci: |
+      .github/workflows/test.yml (renamed "API Health Check" -> "Tests") runs
+      `python -m unittest discover -s evaluation -v` on push/PR to main.
+      Fixture-based, so no database, AWS or Neo4j credentials are needed.
+      The full eval, which generates real briefs, requires a live environment and
+      is run manually: `python evaluation/eval_runner.py`.
+
 known_issues:
+  - |
+    [BLOCKER] Wrong-entity claims are reaching finished briefs, not just the signal
+    table. A Scale AI brief captured 2026-08-26 in evaluation/labeled_briefs.csv
+    attributes to Scale AI: "a Rs 170 Cr raise by Elevate Education", "a $2.2 million
+    raise by SambaNova", and "a $900m credit facility to scale AI data centers" —
+    two other companies' funding rounds plus "scale AI" used as an ordinary verb
+    phrase. Its COMPETITIVE POSITION names Ecolab (water treatment) as a competitor.
+    Scale AI carries aliases ["Scale AI", "ScaleAI"] and NO exclude_entities or
+    exclude_terms. This is the documented common-word-name residual risk, observed
+    in a real brief four days after the Signal validation gate was cleared. The gate
+    remains cleared — its clearance was explicitly batch-level and named this risk —
+    but the risk is now confirmed rather than theoretical.
+    Likely fix: populate exclude_entities/exclude_terms for common-word vendors.
+  - |
+    [BLOCKER] No accuracy rate exists. evaluation/labeled_briefs.csv has 6 queued
+    claims and an empty `accurate` column — the machine half of brief evaluation
+    runs, the human half has not started. Do not quote an accuracy figure.
+  - |
+    [DEFECT] README known-issues drift in the platform repo. README.md (commit
+    2b44793) states that briefs write prose for COMPETITIVE POSITION when Neo4j is
+    unreachable and that the "fix pending". The fix landed in the NEXT commit
+    (0fa8a10, _enforce_unknown_sections in agents/supervisor.py). The README has
+    not been updated.
   - |
     [RESOLVED 2026-08-22] Zero human signal validation. Closed at the batch level by
     the entity audit + purge; see the Signal validation gate above. Per-signal human
@@ -110,6 +207,20 @@ architecture:
     from the environment and takes no kwargs; flushing is get_client().flush(), not a
     handler method — see agents/llm.py). Supervisor decides next agent based on collected signals.
     Final synthesis stage aggregates all agent outputs into the 6-section brief.
+
+  unknown_enforcement: |
+    Added 2026-08-26 (platform commit 0fa8a10, agents/supervisor.py).
+    Two layers, because a prompt is a request and not a guarantee:
+    (1) _dimensions_without_evidence() computes the no-data list BEFORE synthesis and
+        names those sections in the prompt, so the model is told which dimensions are
+        empty rather than left to infer it from empty analyses;
+    (2) _enforce_unknown_sections() rewrites those sections to the literal string
+        "UNKNOWN - no data collected" AFTER generation, leaving the model's own
+        wording alone if it already said UNKNOWN.
+    Reason on the record: when the Neo4j graph went offline the model filled
+    COMPETITIVE POSITION with "a prominent player in the AI development space"
+    instead of admitting it had nothing. Enforcement makes the honest answer
+    structural instead of hoped-for.
 
   data_sources:
     - name: "EDGAR (10-K, 10-Q, 8-K filings)"

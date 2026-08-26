@@ -191,6 +191,102 @@ workflow changes.
     open on API error, so signals admitted during a Groq outage carry only the
     deterministic check.
   - [BLOCKER] Groq token limit at company #33 of 50 — Phase 3 batch job still blocked.
-  - The platform-repo changes above are **uncommitted** in that repo. Mycroft now
+  - ~~The platform-repo changes above are **uncommitted** in that repo. Mycroft now
     documents work that has no commit hash to cite; commit there to complete the
-    provenance chain (P3).
+    provenance chain (P3).~~
+    **CLOSED 2026-08-26:** committed as `5edd72c` "Updates after testing"
+    (10 files, +1291/-92) in MuskanKhandelwal/AI-Vendor-Intelligence-Platform.
+    The provenance chain is complete; everything in this entry cites that hash.
+
+## 2026-08-26 -- Brief evaluation harness + UNKNOWN enforcement; wrong-entity claims found in a finished brief
+
+- **Recipe:** vendor-intelligence-brief v0.2.0 -> v0.3.0 (stays DRAFT).
+- **Inputs:** Two new commits in MuskanKhandelwal/AI-Vendor-Intelligence-Platform,
+  branch `main`, tree clean:
+  - `2b44793` "Evaluation" (2026-08-26) — `evaluation/eval_runner.py` (323L),
+    `evaluation/labeled_briefs.csv`, README known-issues rewrite.
+  - `0fa8a10` "Test workflows" (2026-08-26) — `_enforce_unknown_sections` in
+    `agents/supervisor.py`, `evaluation/test_eval_runner.py` (17 tests), CI wiring.
+- **Commands:** Read both commits and the working files; counted checks, banned
+  phrases, tests and CSV rows from source; updated the recipe, the signal schema, and
+  this log; ran `node scripts/conformance.mjs` and `npm run verify`.
+
+- **What was added upstream.** A deterministic evaluation harness for generated briefs,
+  with two severities. FAIL: `check_structure` (all six sections present),
+  `check_score_fidelity` (the brief's N/100 must equal `compute_financial_health()`'s
+  rubric — the regression test for an LLM inventing its own number),
+  `check_unknown_discipline` (a dimension with no evidence must say UNKNOWN),
+  `check_filler` (11 banned generic phrases). WARN: `check_date_grounding` and
+  `check_amount_grounding` (every date and dollar figure must trace to a collected
+  signal; WARN not FAIL because legitimate aggregates derived from tool output would
+  otherwise show as red).
+  The harness's stated principle — *where a rule can be written down, write the rule
+  instead of trusting a model to judge* — is the verification stack arrived at
+  independently: FAIL is layer 1 (conformance, halts), WARN is layer 2 (audit, reports
+  for a human).
+
+- **UNKNOWN enforcement.** `agents/supervisor.py` now computes the no-data dimension
+  list before synthesis and names those sections in the prompt, then rewrites them to
+  "UNKNOWN - no data collected" after generation. Reason on the record: when the Neo4j
+  graph went offline the model filled COMPETITIVE POSITION with "a prominent player in
+  the AI development space" rather than admitting it had nothing. Per the source
+  comment, a prompt is a request, not a guarantee — this makes the honest answer
+  structural. This is P1 enforced in code: the machine stops the pipeline from
+  proceeding past a gap because no failure was detected.
+
+- **CI.** `.github/workflows/test.yml` renamed "API Health Check" -> "Tests"; runs
+  `python -m unittest discover -s evaluation -v` on push/PR to main. Fixture-based, so
+  no database, AWS or Neo4j credentials. The full eval that generates real briefs needs
+  a live environment and stays manual.
+
+- **[BLOCKER] Wrong-entity claims found in a finished brief.** `labeled_briefs.csv`
+  captures a real Scale AI brief attributing to Scale AI: "a Rs 170 Cr raise by Elevate
+  Education", "a $2.2 million raise by SambaNova", and "a $900m credit facility to scale
+  AI data centers" — two other companies' funding rounds, plus "scale AI" matched as an
+  ordinary verb phrase. Its COMPETITIVE POSITION names Ecolab (water treatment) as a
+  competitor. Scale AI's seed entry carries aliases ["Scale AI", "ScaleAI"] and no
+  `exclude_entities` or `exclude_terms`, so the deterministic filter had nothing to
+  reject on.
+  - *Effect on the gate:* **Signal validation stays CLEARED.** Its clearance on
+    2026-08-22 was explicitly batch-level and named common-word names as residual risk;
+    this is that risk confirmed, not a new one concealed. Decision by Muskan Khandelwal,
+    2026-08-26. `last_gate` and `todos_open` unchanged.
+  - *What changed:* the risk is no longer hypothetical, and it is now known to reach
+    finished briefs rather than stopping at the signal table.
+  - *Not yet applied:* populate `exclude_entities`/`exclude_terms` for common-word
+    vendors (Adept, Writer, Notion, Glean, Modal, Replicate, Scale AI).
+
+- **[LIMIT] Grounding checks cannot catch this class.** `check_date_grounding` and
+  `check_amount_grounding` verify that a claim traces to a *collected signal*. A
+  wrong-entity signal already in the corpus passes — the figure is real, it just belongs
+  to another company. This is why the Scale AI claims were not flagged. A clean eval run
+  is not evidence that a brief's signals belong to the right company.
+
+- **[DEFECT] README drift in the platform repo.** `README.md` (commit `2b44793`) states
+  that briefs write prose for COMPETITIVE POSITION when Neo4j is unreachable and that
+  the fix is "pending". The fix landed in the very next commit (`0fa8a10`). The README
+  has not been updated — a P6 mismatch between stated intent and shipped code. Not fixed
+  here: this log governs Mycroft, and the file lives in the other repo.
+
+- **Outputs:**
+  - `recipes/vendor-intelligence-brief.yaml` v0.3.0 — new `evaluation:` section (6
+    checks with severities, the harness limit, the human accuracy set, 17 tests, CI),
+    new `architecture.unknown_enforcement`, three issues added
+  - `data/verified/ai_company_signals-schema.yaml` v0.3.0 — residual risk upgraded to
+    CONFIRMED with the Scale AI instance; new note on the grounding-check limit
+  - Amended the 2026-08-22 entry: its open provenance issue is closed by `5edd72c`
+  - This entry
+- **Result:** Mycroft records the machine half of brief evaluation. Recipe stays
+  **DRAFT** — no gate closed this round, `todos_open` still 2, no attestation.
+- **Open issues:**
+  - [BLOCKER] No accuracy rate exists. `labeled_briefs.csv` has 6 queued claims and an
+    empty `accurate` column — the machine half runs, the human half has not started.
+    No accuracy figure may be quoted for this system (P3).
+  - [BLOCKER] Common-word vendors still lack exclusion lists (above).
+  - [GATE OPEN] Supervisor routing review (Phase 2) — no Langfuse trace reviewed.
+  - [GATE OPEN] Brief approval (Phase 2) — no procurement owner review process.
+  - [BLOCKER] Per-source signal counts still stale (pre-purge). Recount before citing.
+  - [BLOCKER] Groq token limit at company #33 of 50 — Phase 3 batch job still blocked.
+  - [OPEN] `eval_runner.py` is not wired to any Mycroft phase gate. It reports; nothing
+    yet requires it to pass before a brief ships. Deliberate for now — a gate is a hard
+    stop and needs a named owner.
