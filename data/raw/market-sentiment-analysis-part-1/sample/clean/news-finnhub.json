@@ -1,0 +1,81 @@
+{
+  "_fixture": {
+    "synthetic": true,
+    "frozen_at": "2026-08-27T14:30:00+00:00",
+    "fixture_set": "sample/clean",
+    "recipe": "recipes/market-sentiment-analysis-part-1.md",
+    "manifest": "data/raw/market-sentiment-analysis-part-1/sample/fixture-manifest.json",
+    "note": "Synthetic fixture. Ticker FAKE / Fake Industries Inc. does not exist; no headline here was published anywhere. Never cite as evidence."
+  },
+  "source_name": "Finnhub company-news",
+  "source_type": "http_json",
+  "source_url_or_path": "https://finnhub.io/api/v1/company-news?symbol=FAKE&from=2026-08-25&to=2026-08-27&token=${FINNHUB_API_KEY}",
+  "fetched_at": "2026-08-27T14:30:00+00:00",
+  "sample_mode": true,
+  "live_call_performed": false,
+  "window": {
+    "from": "2026-08-25",
+    "to": "2026-08-27"
+  },
+  "record_count": 5,
+  "record_count_basis": "records[] entries, each one Finnhub article object",
+  "records": [
+    {
+      "id": 900001,
+      "category": "company",
+      "datetime": 1787832300,
+      "headline": "Fake Industries shares surge as quarterly results beat expectations",
+      "image": "https://example.invalid/img/900001.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Wire",
+      "summary": "Fake Industries reported a strong quarter, and the stock saw a sharp gain in early trading.",
+      "url": "https://example.invalid/news/900001"
+    },
+    {
+      "id": 900002,
+      "category": "company",
+      "datetime": 1787822100,
+      "headline": "Analysts upgrade Fake Industries on strong data-centre growth",
+      "image": "https://example.invalid/img/900002.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Wire",
+      "summary": "Two desks raised targets, citing growth in the data-centre segment and improving profit outlook.",
+      "url": "https://example.invalid/news/900002"
+    },
+    {
+      "id": 900003,
+      "category": "company",
+      "datetime": 1787776800,
+      "headline": "Fake Industries volume rises ahead of investor day",
+      "image": "https://example.invalid/img/900003.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Daily",
+      "summary": "Trading volume continued to rise as the company prepares for its scheduled investor day.",
+      "url": "https://example.invalid/news/900003"
+    },
+    {
+      "id": 900004,
+      "category": "company",
+      "datetime": 1787749200,
+      "headline": "Fake Industries margins decline as input costs weigh",
+      "image": "https://example.invalid/img/900004.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Daily",
+      "summary": "Gross margin showed a decline quarter over quarter, and one analyst flagged a weak cost outlook.",
+      "url": "https://example.invalid/news/900004"
+    },
+    {
+      "id": 900005,
+      "category": "company",
+      "datetime": 1787682000,
+      "headline": "Fake Industries flat in quiet session",
+      "image": "https://example.invalid/img/900005.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Wire",
+      "summary": "The stock closed little changed in a session with no company-specific catalyst.",
+      "url": "https://example.invalid/news/900005"
+    }
+  ],
+  "rejects": [],
+  "errors": []
+}

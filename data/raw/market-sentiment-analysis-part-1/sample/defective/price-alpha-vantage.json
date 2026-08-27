@@ -1,0 +1,93 @@
+{
+  "_fixture": {
+    "synthetic": true,
+    "defects_injected": true,
+    "frozen_at": "2026-08-27T14:30:00+00:00",
+    "fixture_set": "sample/defective",
+    "recipe": "recipes/market-sentiment-analysis-part-1.md",
+    "manifest": "data/raw/market-sentiment-analysis-part-1/sample/fixture-manifest.json",
+    "note": "Synthetic fixture with DELIBERATE DEFECTS. Every defect is catalogued in the manifest by id and locator. Never cite as evidence; never promote to data/verified/.",
+    "defect_ids": ["D01", "D02", "D03", "D04"]
+  },
+  "source_name": "Alpha Vantage GLOBAL_QUOTE",
+  "source_type": "http_json",
+  "source_url_or_path": "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=FAKE&apikey=${ALPHA_VANTAGE_API_KEY}",
+  "fetched_at": "2026-08-27T14:30:00+00:00",
+  "sample_mode": true,
+  "live_call_performed": false,
+  "record_count": 5,
+  "record_count_basis": "records[] entries, each one Alpha Vantage response body keyed \"Global Quote\"",
+  "records": [
+    {
+      "Global Quote": {
+        "01. symbol": "FAKE",
+        "02. open": "100.0000",
+        "03. high": "103.5000",
+        "04. low": "99.5000",
+        "05. price": "102.0000",
+        "06. volume": "12000000",
+        "07. latest trading day": "2026-08-27",
+        "08. previous close": "100.0000",
+        "09. change": "2.0000",
+        "10. change percent": "2.0000%"
+      }
+    },
+    {
+      "Global Quote": {
+        "01. symbol": "FAKEB",
+        "02. open": "50.0000",
+        "03. high": "52.0000",
+        "04. low": "49.0000",
+        "06. volume": "3000000",
+        "07. latest trading day": "2026-08-27",
+        "08. previous close": "50.0000",
+        "09. change": "1.0000",
+        "10. change percent": "2.0000%"
+      }
+    },
+    {
+      "Global Quote": {
+        "01. symbol": "FAKEC",
+        "02. open": "75.0000",
+        "03. high": "76.0000",
+        "04. low": "74.0000",
+        "05. price": "75.5000",
+        "06. volume": "1500000",
+        "07. latest trading day": "2026-08-27",
+        "08. previous close": "75.0000",
+        "09. change": "0.5000",
+        "10. change percent": "N/A"
+      }
+    },
+    {
+      "Global Quote": {
+        "01. symbol": "FAKED",
+        "02. open": "20.0000",
+        "03. high": "21.0000",
+        "04. low": "19.5000",
+        "05. price": "20.5000",
+        "06. volume": "800000",
+        "07. latest trading day": "2024-03-15",
+        "08. previous close": "20.0000",
+        "09. change": "0.5000",
+        "10. change percent": "2.5000%"
+      }
+    },
+    {
+      "Global Quote": {
+        "01. symbol": "FAKE",
+        "02. open": "100.0000",
+        "03. high": "103.5000",
+        "04. low": "99.5000",
+        "05. price": "102.0000",
+        "06. volume": "12000000",
+        "07. latest trading day": "2026-08-27",
+        "08. previous close": "100.0000",
+        "09. change": "2.0000",
+        "10. change percent": "2.0000%"
+      }
+    }
+  ],
+  "rejects": [],
+  "errors": []
+}
