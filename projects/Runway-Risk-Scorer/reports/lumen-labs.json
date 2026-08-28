@@ -1,0 +1,43 @@
+{
+  "company_id": "lumen-labs",
+  "run_date": "2026-08-27",
+  "signals_used": 2,
+  "signals_dropped_unvalidated": 0,
+  "gate": "HALT-AWAITING-HUMAN",
+  "metrics": {
+    "total_raised_usd": 12000000.0,
+    "months_since_last_raise": 55,
+    "funding_stage_trend": [
+      "Series A"
+    ],
+    "distress_indicator_count": 0,
+    "signal_freshness_days": 1690,
+    "recent_window_days": 365,
+    "signals_recent_window": 0,
+    "signals_prior_window": 0,
+    "signal_velocity_delta": 0
+  },
+  "provenance": {
+    "total_raised": [
+      {
+        "signal_id": "22222222-2222-2222-2222-222222222221",
+        "source_url": "https://example.com/lumen-series-a",
+        "value": "$12M"
+      }
+    ],
+    "months_since_last_raise": {
+      "signal_id": "22222222-2222-2222-2222-222222222221",
+      "source_url": "https://example.com/lumen-series-a",
+      "date": "2022-01-10"
+    },
+    "funding_stage": [
+      {
+        "signal_id": "22222222-2222-2222-2222-222222222222",
+        "stage": "Series A",
+        "date": "2022-01-10"
+      }
+    ],
+    "distress": [],
+    "parse_notes": []
+  }
+}
