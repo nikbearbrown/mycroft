@@ -1,0 +1,25 @@
+{
+  "schema_version": "0.1.0",
+  "classification": "SYNTHETIC_HISTORICAL_COMPARISON",
+  "entity": "Northstar Software Sample",
+  "question": "Which EBITDA variance categories recurred or changed across the sample periods?",
+  "materiality_amount": "10000.00",
+  "materiality_status": "DEMO_UNAPPROVED",
+  "periods": [
+    {
+      "period": "2026-01",
+      "run_log": "logs/mycroft-finance-investigator-sample-2026-01.json",
+      "verified_dir": "data/verified/mycroft-finance-investigator-history/2026-01"
+    },
+    {
+      "period": "2026-02",
+      "run_log": "logs/mycroft-finance-investigator-sample-2026-02.json",
+      "verified_dir": "data/verified/mycroft-finance-investigator"
+    },
+    {
+      "period": "2026-03",
+      "run_log": "logs/mycroft-finance-investigator-sample-2026-03.json",
+      "verified_dir": "data/verified/mycroft-finance-investigator-history/2026-03"
+    }
+  ]
+}

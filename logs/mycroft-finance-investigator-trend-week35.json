@@ -1,0 +1,304 @@
+{
+  "workflow": "mycroft-finance-investigator-trend",
+  "run_id": "week35-trend",
+  "schema_version": "0.1.0",
+  "classification": "HISTORICAL_COMPARISON_NOT_FORECAST",
+  "source_classification": "SYNTHETIC_HISTORICAL_COMPARISON",
+  "plan": "projects/Mycroft-Finance-Investigator/config/sample-trend.json",
+  "plan_sha256": "cf4c740e591bd9d1a77e418fea1c541f11fe1bb7d756aaac99d0055891593c09",
+  "entity": "Northstar Software Sample",
+  "question": "Which EBITDA variance categories recurred or changed across the sample periods?",
+  "materiality_amount": "10000.00",
+  "materiality_status": "DEMO_UNAPPROVED",
+  "period_count": 3,
+  "periods": [
+    {
+      "period": "2026-01",
+      "source_run_id": "sample-2026-01",
+      "run_log": "logs/mycroft-finance-investigator-sample-2026-01.json",
+      "run_log_sha256": "0a274dd901d55f87558a202b780147f0ff758bf875b232ca212f956887d3d1d5",
+      "verified_dir": "data/verified/mycroft-finance-investigator-history/2026-01",
+      "verified_source_hashes": {
+        "account_mapping.csv": "c45ba1275b8daa38b6827e7257170a9ea34b255033be5128c4c6e74e51d1a839",
+        "budget.csv": "f2a6de1ee3fa367c1b7d16657184308a4a8ece2af50199246e83526145a15304",
+        "actuals.csv": "007f5786115fbf94af981f8604fc2a6dffcfd26da6c2a473bfafa8104eaae6fc",
+        "ledger.csv": "55ecf3a9064375b53b00d5d21888a318adb3a74b4e25635ea0b76bb28a57fc1d",
+        "customers.csv": "bd94e40093870334aa276bd05504d094a8d9766cce06d77528702cb995623ba9",
+        "headcount.csv": "05497113cdb1d7346a5adfbc1eeabbcf07c94e4c940772f9161f2de415099b9e"
+      },
+      "budget_ebitda": "344000.00",
+      "actual_ebitda": "261000.00",
+      "variance": "-83000.00",
+      "actual_change_from_previous": null,
+      "movement": "FIRST_PERIOD",
+      "human_gate": "OPEN"
+    },
+    {
+      "period": "2026-02",
+      "source_run_id": "sample-2026-02",
+      "run_log": "logs/mycroft-finance-investigator-sample-2026-02.json",
+      "run_log_sha256": "41cfa60e7f28f47b3ef2484213155bdd90fa236f1789d6b306899d870ced4869",
+      "verified_dir": "data/verified/mycroft-finance-investigator",
+      "verified_source_hashes": {
+        "account_mapping.csv": "c45ba1275b8daa38b6827e7257170a9ea34b255033be5128c4c6e74e51d1a839",
+        "budget.csv": "de05edd74e10eab58406d8378cc603699e4f1b34d38fdfa6bb0c7d4bd719dc79",
+        "actuals.csv": "389b724554635514fddb6bfbb0356744780dd21465f9795f7158626bab994015",
+        "ledger.csv": "3dddbc583608426447ca799360bf58bb00be8b86962ef2677107feebc9a3a05d",
+        "customers.csv": "4deba1e908e005d30fdd69fe564b71891f1a545d5010fa5a9e176eb9bc1b8b03",
+        "headcount.csv": "8938672e39fc1d0135b2ee961ce81036d0f141daab823ffed0bcc81c6550fb24"
+      },
+      "budget_ebitda": "350000.00",
+      "actual_ebitda": "230000.00",
+      "variance": "-120000.00",
+      "actual_change_from_previous": "-31000.00",
+      "movement": "DETERIORATED",
+      "human_gate": "OPEN"
+    },
+    {
+      "period": "2026-03",
+      "source_run_id": "sample-2026-03",
+      "run_log": "logs/mycroft-finance-investigator-sample-2026-03.json",
+      "run_log_sha256": "8f6546e63c4d91b3d89ddd398f54e8b7e305b831a5d44595b3efdd748677253c",
+      "verified_dir": "data/verified/mycroft-finance-investigator-history/2026-03",
+      "verified_source_hashes": {
+        "account_mapping.csv": "c45ba1275b8daa38b6827e7257170a9ea34b255033be5128c4c6e74e51d1a839",
+        "budget.csv": "41e8484e0b1c1aab87a41138e9ee62dd858584550cb6849afb81688941ef9bfd",
+        "actuals.csv": "31d6adc59f2532ba7e0d285ea522e2017444ffb2eac0be0837fd9d59027fb085",
+        "ledger.csv": "72987794e2b79b35b5c2e2499c7e598fbdbcb39bd4cc9f364470b795edc02c71",
+        "customers.csv": "029cef3ea65cf380146099c5b4a6ea0ea181d55b4053c5b5b31c140a349c1676",
+        "headcount.csv": "016e0c5cff768221d555f149e6df1e8bdb7fee6316466a293d64f64446ed744e"
+      },
+      "budget_ebitda": "360000.00",
+      "actual_ebitda": "265000.00",
+      "variance": "-95000.00",
+      "actual_change_from_previous": "35000.00",
+      "movement": "IMPROVED",
+      "human_gate": "OPEN"
+    }
+  ],
+  "category_trends": [
+    {
+      "category": "revenue",
+      "periods": [
+        {
+          "period": "2026-01",
+          "performance_impact": "-50000.00",
+          "material_adverse": true,
+          "material_favorable": false,
+          "evidence": [
+            "logs/mycroft-finance-investigator-sample-2026-01.json#run_id=sample-2026-01",
+            "data/verified/mycroft-finance-investigator-history/2026-01/budget.csv:account=4000",
+            "data/verified/mycroft-finance-investigator-history/2026-01/actuals.csv:account=4000",
+            "data/verified/mycroft-finance-investigator-history/2026-01/account_mapping.csv:account=4000",
+            "data/verified/mycroft-finance-investigator-history/2026-01/budget.csv:account=4010",
+            "data/verified/mycroft-finance-investigator-history/2026-01/actuals.csv:account=4010",
+            "data/verified/mycroft-finance-investigator-history/2026-01/account_mapping.csv:account=4010"
+          ]
+        },
+        {
+          "period": "2026-02",
+          "performance_impact": "-90000.00",
+          "material_adverse": true,
+          "material_favorable": false,
+          "evidence": [
+            "logs/mycroft-finance-investigator-sample-2026-02.json#run_id=sample-2026-02",
+            "data/verified/mycroft-finance-investigator/budget.csv:account=4000",
+            "data/verified/mycroft-finance-investigator/actuals.csv:account=4000",
+            "data/verified/mycroft-finance-investigator/account_mapping.csv:account=4000",
+            "data/verified/mycroft-finance-investigator/budget.csv:account=4010",
+            "data/verified/mycroft-finance-investigator/actuals.csv:account=4010",
+            "data/verified/mycroft-finance-investigator/account_mapping.csv:account=4010"
+          ]
+        },
+        {
+          "period": "2026-03",
+          "performance_impact": "-60000.00",
+          "material_adverse": true,
+          "material_favorable": false,
+          "evidence": [
+            "logs/mycroft-finance-investigator-sample-2026-03.json#run_id=sample-2026-03",
+            "data/verified/mycroft-finance-investigator-history/2026-03/budget.csv:account=4000",
+            "data/verified/mycroft-finance-investigator-history/2026-03/actuals.csv:account=4000",
+            "data/verified/mycroft-finance-investigator-history/2026-03/account_mapping.csv:account=4000",
+            "data/verified/mycroft-finance-investigator-history/2026-03/budget.csv:account=4010",
+            "data/verified/mycroft-finance-investigator-history/2026-03/actuals.csv:account=4010",
+            "data/verified/mycroft-finance-investigator-history/2026-03/account_mapping.csv:account=4010"
+          ]
+        }
+      ],
+      "material_adverse_count": 3,
+      "material_favorable_count": 0,
+      "recurring_material_adverse": true
+    },
+    {
+      "category": "cogs",
+      "periods": [
+        {
+          "period": "2026-01",
+          "performance_impact": "-30000.00",
+          "material_adverse": true,
+          "material_favorable": false,
+          "evidence": [
+            "logs/mycroft-finance-investigator-sample-2026-01.json#run_id=sample-2026-01",
+            "data/verified/mycroft-finance-investigator-history/2026-01/budget.csv:account=5000",
+            "data/verified/mycroft-finance-investigator-history/2026-01/actuals.csv:account=5000",
+            "data/verified/mycroft-finance-investigator-history/2026-01/account_mapping.csv:account=5000"
+          ]
+        },
+        {
+          "period": "2026-02",
+          "performance_impact": "-35000.00",
+          "material_adverse": true,
+          "material_favorable": false,
+          "evidence": [
+            "logs/mycroft-finance-investigator-sample-2026-02.json#run_id=sample-2026-02",
+            "data/verified/mycroft-finance-investigator/budget.csv:account=5000",
+            "data/verified/mycroft-finance-investigator/actuals.csv:account=5000",
+            "data/verified/mycroft-finance-investigator/account_mapping.csv:account=5000"
+          ]
+        },
+        {
+          "period": "2026-03",
+          "performance_impact": "-35000.00",
+          "material_adverse": true,
+          "material_favorable": false,
+          "evidence": [
+            "logs/mycroft-finance-investigator-sample-2026-03.json#run_id=sample-2026-03",
+            "data/verified/mycroft-finance-investigator-history/2026-03/budget.csv:account=5000",
+            "data/verified/mycroft-finance-investigator-history/2026-03/actuals.csv:account=5000",
+            "data/verified/mycroft-finance-investigator-history/2026-03/account_mapping.csv:account=5000"
+          ]
+        }
+      ],
+      "material_adverse_count": 3,
+      "material_favorable_count": 0,
+      "recurring_material_adverse": true
+    },
+    {
+      "category": "payroll",
+      "periods": [
+        {
+          "period": "2026-01",
+          "performance_impact": "8000.00",
+          "material_adverse": false,
+          "material_favorable": false,
+          "evidence": [
+            "logs/mycroft-finance-investigator-sample-2026-01.json#run_id=sample-2026-01",
+            "data/verified/mycroft-finance-investigator-history/2026-01/budget.csv:account=6000",
+            "data/verified/mycroft-finance-investigator-history/2026-01/actuals.csv:account=6000",
+            "data/verified/mycroft-finance-investigator-history/2026-01/account_mapping.csv:account=6000"
+          ]
+        },
+        {
+          "period": "2026-02",
+          "performance_impact": "20000.00",
+          "material_adverse": false,
+          "material_favorable": true,
+          "evidence": [
+            "logs/mycroft-finance-investigator-sample-2026-02.json#run_id=sample-2026-02",
+            "data/verified/mycroft-finance-investigator/budget.csv:account=6000",
+            "data/verified/mycroft-finance-investigator/actuals.csv:account=6000",
+            "data/verified/mycroft-finance-investigator/account_mapping.csv:account=6000"
+          ]
+        },
+        {
+          "period": "2026-03",
+          "performance_impact": "10000.00",
+          "material_adverse": false,
+          "material_favorable": true,
+          "evidence": [
+            "logs/mycroft-finance-investigator-sample-2026-03.json#run_id=sample-2026-03",
+            "data/verified/mycroft-finance-investigator-history/2026-03/budget.csv:account=6000",
+            "data/verified/mycroft-finance-investigator-history/2026-03/actuals.csv:account=6000",
+            "data/verified/mycroft-finance-investigator-history/2026-03/account_mapping.csv:account=6000"
+          ]
+        }
+      ],
+      "material_adverse_count": 0,
+      "material_favorable_count": 2,
+      "recurring_material_adverse": false
+    },
+    {
+      "category": "opex",
+      "periods": [
+        {
+          "period": "2026-01",
+          "performance_impact": "-11000.00",
+          "material_adverse": true,
+          "material_favorable": false,
+          "evidence": [
+            "logs/mycroft-finance-investigator-sample-2026-01.json#run_id=sample-2026-01",
+            "data/verified/mycroft-finance-investigator-history/2026-01/budget.csv:account=6100",
+            "data/verified/mycroft-finance-investigator-history/2026-01/actuals.csv:account=6100",
+            "data/verified/mycroft-finance-investigator-history/2026-01/account_mapping.csv:account=6100",
+            "data/verified/mycroft-finance-investigator-history/2026-01/budget.csv:account=6200",
+            "data/verified/mycroft-finance-investigator-history/2026-01/actuals.csv:account=6200",
+            "data/verified/mycroft-finance-investigator-history/2026-01/account_mapping.csv:account=6200",
+            "data/verified/mycroft-finance-investigator-history/2026-01/budget.csv:account=6300",
+            "data/verified/mycroft-finance-investigator-history/2026-01/actuals.csv:account=6300",
+            "data/verified/mycroft-finance-investigator-history/2026-01/account_mapping.csv:account=6300"
+          ]
+        },
+        {
+          "period": "2026-02",
+          "performance_impact": "-15000.00",
+          "material_adverse": true,
+          "material_favorable": false,
+          "evidence": [
+            "logs/mycroft-finance-investigator-sample-2026-02.json#run_id=sample-2026-02",
+            "data/verified/mycroft-finance-investigator/budget.csv:account=6100",
+            "data/verified/mycroft-finance-investigator/actuals.csv:account=6100",
+            "data/verified/mycroft-finance-investigator/account_mapping.csv:account=6100",
+            "data/verified/mycroft-finance-investigator/budget.csv:account=6200",
+            "data/verified/mycroft-finance-investigator/actuals.csv:account=6200",
+            "data/verified/mycroft-finance-investigator/account_mapping.csv:account=6200",
+            "data/verified/mycroft-finance-investigator/budget.csv:account=6300",
+            "data/verified/mycroft-finance-investigator/actuals.csv:account=6300",
+            "data/verified/mycroft-finance-investigator/account_mapping.csv:account=6300"
+          ]
+        },
+        {
+          "period": "2026-03",
+          "performance_impact": "-10000.00",
+          "material_adverse": true,
+          "material_favorable": false,
+          "evidence": [
+            "logs/mycroft-finance-investigator-sample-2026-03.json#run_id=sample-2026-03",
+            "data/verified/mycroft-finance-investigator-history/2026-03/budget.csv:account=6100",
+            "data/verified/mycroft-finance-investigator-history/2026-03/actuals.csv:account=6100",
+            "data/verified/mycroft-finance-investigator-history/2026-03/account_mapping.csv:account=6100",
+            "data/verified/mycroft-finance-investigator-history/2026-03/budget.csv:account=6200",
+            "data/verified/mycroft-finance-investigator-history/2026-03/actuals.csv:account=6200",
+            "data/verified/mycroft-finance-investigator-history/2026-03/account_mapping.csv:account=6200",
+            "data/verified/mycroft-finance-investigator-history/2026-03/budget.csv:account=6300",
+            "data/verified/mycroft-finance-investigator-history/2026-03/actuals.csv:account=6300",
+            "data/verified/mycroft-finance-investigator-history/2026-03/account_mapping.csv:account=6300"
+          ]
+        }
+      ],
+      "material_adverse_count": 3,
+      "material_favorable_count": 0,
+      "recurring_material_adverse": true
+    }
+  ],
+  "verified_findings": {
+    "recurring_material_adverse_categories": [
+      "revenue",
+      "cogs",
+      "opex"
+    ],
+    "definition": "Material adverse in at least two included periods."
+  },
+  "causal_explanation": null,
+  "forecast": null,
+  "recommendation": null,
+  "human_gate": {
+    "status": "OPEN",
+    "required": [
+      "Approve or replace the demo materiality threshold",
+      "Assess causal explanations using additional business evidence",
+      "Determine whether the history is adequate for a decision",
+      "Approve or block distribution"
+    ]
+  }
+}

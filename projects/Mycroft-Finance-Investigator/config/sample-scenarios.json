@@ -1,0 +1,64 @@
+{
+  "schema_version": "0.1.0",
+  "title": "Synthetic monthly performance sensitivity exercises",
+  "classification": "SYNTHETIC_EXERCISE_ASSUMPTIONS",
+  "baseline_run_id": "sample-2026-02",
+  "scenarios": [
+    {
+      "id": "revenue-recovery-5pct",
+      "name": "Revenue recovery exercise",
+      "purpose": "Show the arithmetic EBITDA sensitivity if actual revenue were 5% higher than the verified sample baseline.",
+      "assumptions": [
+        {
+          "category": "revenue",
+          "method": "PERCENT_OF_ACTUAL",
+          "value": "5.00",
+          "reasoning": "Illustrative sensitivity only; it is not a sales forecast.",
+          "source": "Unapproved sample exercise"
+        }
+      ]
+    },
+    {
+      "id": "cogs-reduction-20000",
+      "name": "COGS reduction exercise",
+      "purpose": "Show the arithmetic EBITDA sensitivity if sample COGS were 20000 lower than the verified actual baseline.",
+      "assumptions": [
+        {
+          "category": "cogs",
+          "method": "AMOUNT",
+          "value": "-20000.00",
+          "reasoning": "Illustrative cost sensitivity only; no action or feasibility is implied.",
+          "source": "Unapproved sample exercise"
+        }
+      ]
+    },
+    {
+      "id": "balanced-operating-exercise",
+      "name": "Balanced operating exercise",
+      "purpose": "Show a combined sensitivity across revenue, payroll, and operating expenses without selecting it as a preferred case.",
+      "assumptions": [
+        {
+          "category": "revenue",
+          "method": "PERCENT_OF_ACTUAL",
+          "value": "3.00",
+          "reasoning": "Illustrative revenue sensitivity, not a probability-weighted estimate.",
+          "source": "Unapproved sample exercise"
+        },
+        {
+          "category": "payroll",
+          "method": "AMOUNT",
+          "value": "10000.00",
+          "reasoning": "Illustrative incremental payroll cost, not an approved hiring plan.",
+          "source": "Unapproved sample exercise"
+        },
+        {
+          "category": "opex",
+          "method": "AMOUNT",
+          "value": "-5000.00",
+          "reasoning": "Illustrative operating-cost sensitivity, not a committed saving.",
+          "source": "Unapproved sample exercise"
+        }
+      ]
+    }
+  ]
+}
