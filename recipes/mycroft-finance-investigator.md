@@ -78,9 +78,12 @@ causal explanation, adequacy, and distribution.
     human-readable views.
 11. Recompute the manifest, review-view, and packaged-artifact checksums before
     handoff.
-12. Produce a run-bound review request with causal commentary blank and the
+12. Compare ordered historical runs only after verifying each run, scope, and
+    source hash; report EBITDA movement and recurring material categories
+    without causation, forecast, or recommendation.
+13. Produce a run-bound review request with causal commentary blank and the
    human gate open.
-13. Accept only a named human decision whose causal claims cite evidence from
+14. Accept only a named human decision whose causal claims cite evidence from
    that exact run; record it as an append-only gate artifact.
 
 ## Implementation Map
@@ -94,6 +97,7 @@ causal explanation, adequacy, and distribution.
 | Adversarial evaluation | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/evaluation.py` |
 | Scenario sensitivities | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/scenario.py` |
 | Audit-bundle handoff | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/bundle.py` |
+| Historical comparison | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/trend.py` |
 | Log and report rendering | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/reporting.py` |
 | Local orchestration | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/cli.py` |
 | Conformance and behavior tests | `projects/Mycroft-Finance-Investigator/tests/` |
@@ -150,6 +154,17 @@ counts, and SHA-256 hashes. The review view must disclose that checksums are not
 signatures, list every open human gate, and report
 `BLOCKED_PENDING_HUMAN_REVIEW` while any gate remains open.
 
+### Historical Comparison
+
+Paths: `logs/mycroft-finance-investigator-trend-[RUN_ID].json` and
+`reports/generated/mycroft-finance-investigator-trend-[RUN_ID].md`.
+
+Required fields: ordered source periods and run IDs, exact run-log and verified
+source hashes, per-period budget/actual/variance EBITDA, change from the prior
+period, category impacts and recurrence counts,
+`HISTORICAL_COMPARISON_NOT_FORECAST`, null causal explanation, forecast, and
+recommendation, plus an open human gate.
+
 ## Stop Conditions
 
 - Stop if provenance is missing or ambiguous.
@@ -171,6 +186,11 @@ signatures, list every open human gate, and report
 - Stop if a packaged manifest, review view, artifact size, or artifact hash
   changes after packaging.
 - Stop before presenting a checksum as a human signature or attestation.
+- Stop if historical periods are duplicated, unordered, or do not match their
+  source-run entity and period.
+- Stop if a verified historical source hash or recomputed EBITDA differs from
+  its source run.
+- Stop before treating recurrence as causation, forecast, or recommendation.
 - Stop if a reviewer is unnamed or identifies as an agent.
 - Stop if a causal explanation cites evidence absent from the source run.
 - Stop if an approval lacks an accepted materiality decision or an
@@ -197,6 +217,9 @@ python3 -m mycroft_finance_investigator.cli bundle \
   --output-dir ../../reports/generated/mycroft-finance-investigator-audit-week34
 python3 -m mycroft_finance_investigator.cli verify-bundle \
   --bundle-dir ../../reports/generated/mycroft-finance-investigator-audit-week34
+python3 -m mycroft_finance_investigator.cli trend \
+  --output-log ../../logs/mycroft-finance-investigator-trend-week35.json \
+  --output-report ../../reports/generated/mycroft-finance-investigator-trend-week35.md
 ```
 
 Do not promote this recipe from `DRAFT` until both TODOs have the evidence

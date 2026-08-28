@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mycroft-finance-investigator-trend-plan.schema.json",
+  "title": "Finance Investigator Historical Comparison Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "classification",
+    "entity",
+    "question",
+    "materiality_amount",
+    "materiality_status",
+    "periods"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "classification": {"const": "SYNTHETIC_HISTORICAL_COMPARISON"},
+    "entity": {"type": "string", "minLength": 1},
+    "question": {"type": "string", "minLength": 1},
+    "materiality_amount": {
+      "type": "string",
+      "pattern": "^[0-9]+(?:\\.[0-9]+)?$"
+    },
+    "materiality_status": {"const": "DEMO_UNAPPROVED"},
+    "periods": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["period", "run_log", "verified_dir"],
+        "properties": {
+          "period": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-(?:0[1-9]|1[0-2])$"
+          },
+          "run_log": {"type": "string", "minLength": 1},
+          "verified_dir": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}
