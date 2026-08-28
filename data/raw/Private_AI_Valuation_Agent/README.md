@@ -13,6 +13,23 @@ possible because fund fiscal quarter-ends are staggered across the calendar.
 
 ## Status
 
+**Week 5 complete — a local LLM was measured against the matcher and not adopted.** An 8B
+model (`llama3.1:8b`, Q4_K_M, local) given the same evidence **costs 5.1 points of
+precision**: it fixed one holding and broke fourteen, every break a resemblance promoted to a
+company — `HYPERSCALE DATA INC` to Scale AI, a Fidelity internal security code to X.AI. Its
+confidence was 1.000 on 315 of 322 answers, and 12 of the 15 answers that disagree with the
+label came back at 0.95 or above, so it cannot even be used to triage a review queue. 3.2 s per call, zero failures. Full working in
+[`docs/entity_resolution.md`](docs/entity_resolution.md) §9.
+
+| System | Precision | Recall | F1 |
+|---|---|---|---|
+| **Deterministic matcher v1** | **0.9959** | **1.0000** | **0.9979** |
+| + LLM in the review band | 0.9449 | 1.0000 | 0.9717 |
+| LLM alone | 0.9447 | 0.9958 | 0.9696 |
+
+`plan.md` wrote the rule for this case — *"if there is no lift, keep the deterministic matcher
+and say so"* — so that is what happens.
+
 **Week 4 complete — golden set labelled, attested in part, and the matcher baseline
 measured.** 322 labelled issuer strings covering 7,276 holdings, in
 [`tests/fixtures/golden_set_v1.json`](tests/fixtures/golden_set_v1.json). A human has
@@ -108,7 +125,11 @@ python -m scripts.build_golden_candidates    # the golden-set sampling frame
 python -m scripts.label_golden_set           # frame -> labelled fixture
 python -m scripts.score_matcher              # precision, recall, threshold sweep
 
-pytest -q                                    # 89 regression tests
+python -m scripts.run_adjudication --check   # is a local model reachable
+python -m scripts.run_adjudication --run     # call it, cache every reply
+python -m scripts.run_adjudication --score   # lift and throughput, from the cache
+
+pytest -q                                    # 136 regression tests, none needing a GPU
 ```
 
 Every step is idempotent; the safe recovery from any failure is to run it again.
@@ -148,6 +169,7 @@ scripts/                  reconcile · check_fund_complexes · verify_week1_mark
 src/ingest/               download_bulk · universe (frozen patterns) · build_parquet
 src/db/                   schema.sql · connect · load
 src/resolve/              normalize (names, share classes) · match (matcher v1)
+                          adjudicate (matcher v2, four policies) · llm (Ollama + stub)
 src/{marks,graphs,signal}/   Weeks 7-11
 tests/                    regression tests; fixtures/golden_set_v1.json is the ground truth
 data/parquet/<qtr>/   private_holdings · universe_holdings · reconciliation.json

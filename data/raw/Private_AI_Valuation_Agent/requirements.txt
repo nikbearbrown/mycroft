@@ -8,10 +8,21 @@ pytest==8.3.4
 # Week 3-4 (deterministic matching)
 rapidfuzz==3.11.0
 
-# Week 5-6 (resolution graph) — install when you get there
+# Week 5 (local LLM adjudication) — no new Python dependency.
+#
+# plan.md pins `ollama==0.4.5`. src/resolve/llm.py talks to the same HTTP API
+# with `requests`, which is already pinned above, because the surface needed is
+# one POST to one endpoint. It also lets OLLAMA_HOST point at another machine
+# without a code change. The runtime dependency is external:
+#
+#   winget install --id Ollama.Ollama --scope user
+#   ollama pull llama3.1:8b        # 4.9 GB, 8.0B params, Q4_K_M
+#
+# Set OLLAMA_MODEL / OLLAMA_HOST to override the defaults.
+
+# Week 6 (resolution graph) — install when you get there
 # langgraph==0.2.60
 # langgraph-checkpoint-postgres==2.0.9
-# ollama==0.4.5
 
 # Week 11 (commentary)
 # groq==0.15.0

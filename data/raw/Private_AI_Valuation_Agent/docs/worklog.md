@@ -4,7 +4,147 @@ Newest first.
 
 ---
 
-## 2026-08-23 (latest) — Week 4 video figures, and two counting errors they exposed
+## 2026-08-28 (latest) — Week 5 figures, and the two numbers they caught
+
+**Done**
+- Wrote `scripts/make_week5_figures.py` and generated five SVG/PNG figures, one per visual beat
+  of the narration: the prompt as it reached the model, the scoreboard, three failures in the
+  model's own words, a 322-dot confidence grid, and every row the veto policy sees. Every number
+  is read from `docs/_adjudication_metrics.json` and `docs/_adjudication_results.json` at build
+  time and dumped to `docs/_figdata_week5.json` before anything is drawn.
+- Both QA passes: `npm run audit:layout` reports **0 errors on all five**, and each PNG was read
+  and checked for substance. Copied to the week 5 video folder under `pantry/` with a README.
+
+**Two factual errors the figures caught, both now corrected**
+- **Confidence: "308 of 322" was wrong; it is 315.** And "nine of the fourteen wrong answers at
+  0.95 or above" was wrong twice over: 12 of the **15** answers that disagree with their label
+  came back at 0.95+, or 11 of the **14** band-policy breaks if that is the intended denominator.
+  Both original numbers were typed by hand. The dot figure computes its counts from the cached
+  replies and disagreed with the prose, which is the only reason this surfaced.
+  `scripts/run_adjudication.py` now emits a `confidence` block into the metrics artifact, and
+  `test_the_confidence_prose_is_read_from_the_artifact` recomputes it from the cache. Corrected
+  in `docs/entity_resolution.md` §9.4, `README.md`, this worklog, the RUN_LOG and the narration
+  script.
+- **The model was offered 11 candidate companies, not 7.** The figure's count came from
+  `user.count("
+- ")`, which matches nothing (the block is indented, not bulleted) and fell
+  through to a hand-typed `or 7`. Seven is the universe; the list also carries four watchlist
+  companies — and Scale AI and X.AI, the two names the model most often promotes to, are both
+  watchlist. A fallback that hides a failed measurement is worse than no fallback.
+
+**Decisions**
+- Red marks the deterministic matcher in the scoreboard (it is the primary series and the system
+  that ships) and the model's answers in the failure and confidence figures (they are the
+  subject). `DESIGN.md` forbids red as a danger colour, so this needed stating rather than
+  assuming.
+- The confidence figure is a dot grid rather than a histogram. The model used three values in the
+  whole run, so a histogram would be one tall bar; the grid shows the wrong answers sitting
+  *inside* the full-confidence block, which is the actual finding.
+- The veto figure names the trailing-space duplicate. Two of its four rows are the same string
+  filed twice, and without that note they truncate identically — the same defect week 4's tie
+  figure had to fix.
+
+**Open**
+- Inter does not resolve in the renderer and falls back to monospace, so every non-title label
+  renders mono. Week 4's figures do the same, so this is consistent rather than new, but it is
+  not what `DESIGN.md` specifies.
+
+---
+
+## 2026-08-28 (later) — Week 5 narration script
+
+**Done**
+- Wrote `docs/video_script_week5.md` — 306 spoken words, six beats, no file names, matching the
+  format of weeks 1, 2 and 4. Word count and timings computed from the file, not estimated.
+
+**Decisions**
+- The script leads with the negative result and does not soften it. The Notes section carries
+  three guardrails against overclaiming in the opposite direction: don't call the model useless
+  (it is mis-scoped, not incapable), don't imply a larger model would also fail (none was tried),
+  and **don't quote the hard-subset score** — every LLM policy scores a perfect 1.0000 there
+  because that subset excludes the negatives, which is the only place the model does damage.
+  That number is true and misleading at once, which is exactly the kind of figure a video
+  invites.
+- The strongest beat is the confidence finding, not the precision gap: 1.000 confidence on 315
+  of 322 answers, with 12 of the 15 disagreeing answers at 0.95 or above. It is also the finding
+  that constrains Week 6, so it earns the on-camera beat.
+
+**Open**
+- No figures for this week yet; the shot directions describe them but nothing has been rendered,
+  so neither figure QA pass has been run.
+
+---
+
+## 2026-08-28 — Week 5: the LLM was measured and not adopted
+
+**Deliverable:** matcher v2 with measured precision, recall and throughput against the
+baseline — `docs/entity_resolution.md` §9, `docs/_adjudication_metrics.json`, and every raw
+model reply in `docs/_adjudication_results.json`.
+
+**Verdict: keep the deterministic matcher.** `plan.md` wrote the instruction for this case
+— *"if there is no lift, keep the deterministic matcher and say so"* — and there is no lift.
+
+**Setup.** Installed Ollama 0.33.1 and `llama3.1:8b` (8.0B, Q4_K_M, 5.3 GB, 100% on an RTX
+4070 Laptop). 322 calls, temperature 0, fixed seed, JSON-Schema-constrained decoding,
+**zero failures**. The model saw issuer name, title, filer and the candidate list — exactly
+what the plan specifies — and deliberately no price, since the deterministic matcher does not
+get price either. A test asserts the label never reaches the prompt.
+
+**Measured, 322 strings, macro**
+
+| System | Precision | Recall | F1 | Lift |
+|---|---|---|---|---|
+| Deterministic matcher v1 | 0.9959 | 1.0000 | 0.9979 | — |
+| + LLM in the review band | 0.9449 | 1.0000 | 0.9717 | **−0.0262** |
+| + LLM overruling everything | 0.9447 | 0.9958 | 0.9696 | −0.0283 |
+| LLM alone | 0.9447 | 0.9958 | 0.9696 | −0.0283 |
+
+Per holding that is 1 wrongly-included holding becoming **196**.
+
+**How it fails: it promotes resemblances.** Of the 85 strings it saw, it fixed 1 and broke 14,
+and all fourteen are the same move — the matcher had resolved nothing and the model named a
+company anyway. `HYPERSCALE DATA INC` → Scale AI, on the invented ground that it *"is the
+parent company of Scale AI"*. A `SCALED AGILE` term loan → Scale AI. `COHERE TECHNOLOGIES` →
+Cerebras. And `XAI3-FT5O.AF`, a **Fidelity internal security code**, → X.AI. Two replies
+contradict themselves outright: the reason says *"do not match any of the candidate
+companies"* while the company field names Scale AI.
+
+**Confidence is unusable.** 1.000 on 315 of 322 answers, and only three distinct values in
+the entire run. Twelve of the fifteen answers that disagree with their label came back at 0.95
+or higher (eleven of the fourteen band-policy breaks). Week 6's review queue cannot triage on
+it, and a test pins that. *(Corrected 2026-08-28 from "308" and "nine of the fourteen" —
+see the entry below.)*
+
+**The hard subset lied, and that is a methodology finding.** Every LLM policy scores 1.0000
+precision on the 144-string hard subset. That subset was defined in Week 4 to exclude labels
+decided by the name — which excludes the `E0` negatives, which is the only place the model
+does damage. A subset built to test one system is not automatically the right lens for the
+next one.
+
+**A fourth policy, and an honest account of it.** Every break was a *promotion*; the single fix
+was a *demotion* — the matcher had claimed OpenAI for `OPEN BAY AUTOS AI INC.`, a used-car
+marketplace, and the model withdrew it. So `POLICY_VETO` lets the model only withdraw a weak
+claim, never create one. It scores 1.0000/1.0000. **That number should not be believed:** it is
+consulted on 4 of 322 strings, vetoes one, and is right about the other three by declining to
+act. It was also designed after reading the failures, so this golden set motivated it and
+cannot validate it. Decisively, those four strings are *the same four Week 4 already routes to
+a human*, so it saves no human effort. Retained, measured, **off by default**.
+
+**Throughput.** 3.236 s mean per call, 196.9 tokens/s, 2.4 s cold load. Against the shipped
+universe layer (231 distinct pairs): LLM-alone 12.5 min, band policy 16 s, veto policy 10 s.
+Note the band policy consults 26.4% of the golden set but only 2.2% of the corpus — the golden
+set over-samples near-miss negatives by design, so quoting its consult rate as an operating
+cost would overstate the bill tenfold. Cost is not why this was declined; negative accuracy is.
+
+**One dependency deviation.** `plan.md` pins `ollama==0.4.5`; `src/resolve/llm.py` uses
+`requests`, already pinned, against the same HTTP API. One POST to one endpoint does not need
+a wrapper package, and `OLLAMA_HOST` can now point anywhere.
+
+Suite is **136 passing**, all of it stub-backed — no test needs a GPU or a 5 GB model.
+
+---
+
+## 2026-08-23 — Week 4 video figures, and two counting errors they exposed
 
 Four figures generated for the week 4 narration, one per beat: the spelling spread, the
 scoreboard plus the dot that hid 85 holdings, the OpenAir reversal, and the four-way tie at

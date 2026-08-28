@@ -353,6 +353,10 @@ def build(verbose: bool = True) -> dict:
                 "period_first": entry["facts"]["period_first"],
                 "period_last": entry["facts"]["period_last"],
                 "asset_cats": entry["facts"]["asset_cats"],
+                # Week 5 needs the filer: plan.md's adjudication prompt is
+                # (issuer name, title, filer, candidates). Carried on the
+                # fixture so the prompt does not have to join back to the frame.
+                "filer_families": entry["facts"]["family_names"],
                 "price_min": entry["facts"]["price_min"],
                 "price_max": entry["facts"]["price_max"],
                 "example_accession": entry["facts"]["example_accession"],

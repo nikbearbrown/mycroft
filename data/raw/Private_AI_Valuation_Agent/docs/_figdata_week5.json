@@ -1,0 +1,1848 @@
+{
+ "run": {
+  "at": "2026-08-28T14:59:24+00:00",
+  "host": "http://localhost:11434",
+  "machine": "Windows AMD64",
+  "model": "llama3.1:8b",
+  "digest": "46e0c10c039e0191",
+  "parameter_size": "8.0B",
+  "quantization": "Q4_K_M",
+  "family": "llama",
+  "warm_seconds": 2.4,
+  "entries_adjudicated": 322,
+  "wall_seconds": 1042.2,
+  "temperature": 0,
+  "seed": 7,
+  "schema_constrained": true
+ },
+ "throughput": {
+  "calls_measured": 322,
+  "errors": 0,
+  "mean_seconds_per_call": 3.236,
+  "median_seconds_per_call": 3.205,
+  "slowest_seconds": 3.669,
+  "tokens_total": 205214,
+  "tokens_per_second": 196.9,
+  "warm_seconds": 2.4,
+  "golden_set_strings": 322,
+  "strings_consulted_under_band_policy": 85,
+  "band_policy_consult_rate": 0.264,
+  "seconds_for_full_golden_set_llm_only": 1042.1,
+  "seconds_for_full_golden_set_band_policy": 275.1
+ },
+ "prompt_example": {
+  "issuer_name": "HYPERSCALE DATA INC",
+  "issuer_title": "HYPERSCALE DATA INC - SERIES F EXCH PREFERRED",
+  "filer": "Vanguard",
+  "candidates": 11,
+  "answer": "Scale AI, Inc.",
+  "truth": "NOT_IN_UNIVERSE",
+  "system_chars": 1482,
+  "prompt_tokens": 583
+ },
+ "scoreboard": {
+  "B_matcher_v1": {
+   "macro": {
+    "tp": 240,
+    "fp": 1,
+    "fn": 0,
+    "precision": 0.9959,
+    "recall": 1.0,
+    "f1": 0.9979
+   },
+   "micro": {
+    "tp": 5935,
+    "fp": 1,
+    "fn": 0,
+    "precision": 0.9998,
+    "recall": 1.0,
+    "f1": 0.9999
+   }
+  },
+  "C_v2_band": {
+   "macro": {
+    "tp": 240,
+    "fp": 14,
+    "fn": 0,
+    "precision": 0.9449,
+    "recall": 1.0,
+    "f1": 0.9717
+   },
+   "micro": {
+    "tp": 5935,
+    "fp": 196,
+    "fn": 0,
+    "precision": 0.968,
+    "recall": 1.0,
+    "f1": 0.9838
+   }
+  },
+  "E_llm_only": {
+   "macro": {
+    "tp": 239,
+    "fp": 14,
+    "fn": 1,
+    "precision": 0.9447,
+    "recall": 0.9958,
+    "f1": 0.9696
+   },
+   "micro": {
+    "tp": 5930,
+    "fp": 196,
+    "fn": 5,
+    "precision": 0.968,
+    "recall": 0.9992,
+    "f1": 0.9833
+   }
+  },
+  "F_v2_veto": {
+   "macro": {
+    "tp": 240,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0
+   },
+   "micro": {
+    "tp": 5935,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0
+   }
+  }
+ },
+ "lift": {
+  "C_v2_band": {
+   "precision": -0.051,
+   "recall": 0.0,
+   "f1": -0.0262
+  },
+  "D_v2_all": {
+   "precision": -0.0512,
+   "recall": -0.0042,
+   "f1": -0.0283
+  },
+  "E_llm_only": {
+   "precision": -0.0512,
+   "recall": -0.0042,
+   "f1": -0.0283
+  },
+  "F_v2_veto": {
+   "precision": 0.0041,
+   "recall": 0.0,
+   "f1": 0.0021
+  }
+ },
+ "failures": [
+  {
+   "id": "g0191",
+   "issuer_name": "HYPERSCALE DATA INC",
+   "issuer_title": "HYPERSCALE DATA INC - SERIES F EXCH PREFERRED",
+   "truth": "NOT_IN_UNIVERSE",
+   "said": "Scale AI, Inc.",
+   "confidence": 0.95,
+   "reason": "The issuer name is HYPERSCALE DATA INC, which is the parent company of Scale AI, Inc.",
+   "holdings": 1
+  },
+  {
+   "id": "g0254",
+   "issuer_name": "SCALED AGILE INC. 2021 UNITRANCHE TERM LOAN",
+   "issuer_title": "SCALED AGILE INC. 2021 UNITRANCHE TERM LOAN",
+   "truth": "NOT_IN_UNIVERSE",
+   "said": "Scale AI, Inc.",
+   "confidence": 1.0,
+   "reason": "The issuer name and title match the name of Scale AI, Inc.",
+   "holdings": 32
+  },
+  {
+   "id": "g0320",
+   "issuer_name": "XAI3-FT5O.AF",
+   "issuer_title": "XAI3-FT5O.AF",
+   "truth": "NOT_IN_UNIVERSE",
+   "said": "X.AI Corp",
+   "confidence": 1.0,
+   "reason": "The issuer name and title are identical, and match the name of one of the candidate companies.",
+   "holdings": 8
+  }
+ ],
+ "band_changes": {
+  "consulted": 85,
+  "changed": 15,
+  "fixed": 1,
+  "broke": 14,
+  "promotions": 14
+ },
+ "dots": [
+  {
+   "id": "g0001",
+   "confidence": 1.0,
+   "state": "disagrees"
+  },
+  {
+   "id": "g0002",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0003",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0004",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0005",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0006",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0007",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0008",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0009",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0010",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0011",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0012",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0013",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0014",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0015",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0016",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0017",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0018",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0019",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0020",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0021",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0022",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0023",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0024",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0025",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0026",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0027",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0028",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0029",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0030",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0031",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0032",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0033",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0034",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0035",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0036",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0037",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0038",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0039",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0040",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0041",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0042",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0043",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0044",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0045",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0046",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0047",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0048",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0049",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0050",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0051",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0052",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0053",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0054",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0055",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0056",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0057",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0058",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0059",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0060",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0061",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0062",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0063",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0064",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0065",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0066",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0067",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0068",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0069",
+   "confidence": 1.0,
+   "state": "disagrees"
+  },
+  {
+   "id": "g0070",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0071",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0072",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0073",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0074",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0075",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0076",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0077",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0078",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0079",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0080",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0081",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0082",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0083",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0084",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0085",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0086",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0087",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0088",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0089",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0090",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0091",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0092",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0093",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0094",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0095",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0096",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0097",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0098",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0099",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0100",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0101",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0102",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0103",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0104",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0105",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0106",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0107",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0108",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0109",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0110",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0111",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0112",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0113",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0114",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0115",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0116",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0117",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0118",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0119",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0120",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0121",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0122",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0123",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0124",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0125",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0126",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0127",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0128",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0129",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0130",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0131",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0132",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0133",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0134",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0135",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0136",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0137",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0138",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0139",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0140",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0141",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0142",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0143",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0144",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0145",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0146",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0147",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0148",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0149",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0150",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0151",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0152",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0153",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0154",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0155",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0156",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0157",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0158",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0159",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0160",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0161",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0162",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0163",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0164",
+   "confidence": 1.0,
+   "state": "unlabelled"
+  },
+  {
+   "id": "g0165",
+   "confidence": 1.0,
+   "state": "unlabelled"
+  },
+  {
+   "id": "g0166",
+   "confidence": 1.0,
+   "state": "unlabelled"
+  },
+  {
+   "id": "g0167",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0168",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0169",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0170",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0171",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0172",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0173",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0174",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0175",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0176",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0177",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0178",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0179",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0180",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0181",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0182",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0183",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0184",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0185",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0186",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0190",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0193",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0194",
+   "confidence": 1.0,
+   "state": "disagrees"
+  },
+  {
+   "id": "g0195",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0196",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0197",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0198",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0199",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0200",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0201",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0202",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0203",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0204",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0205",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0206",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0207",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0208",
+   "confidence": 1.0,
+   "state": "disagrees"
+  },
+  {
+   "id": "g0209",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0210",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0211",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0212",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0213",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0214",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0215",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0216",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0217",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0218",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0219",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0220",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0221",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0222",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0223",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0224",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0225",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0226",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0227",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0228",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0229",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0230",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0231",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0232",
+   "confidence": 1.0,
+   "state": "disagrees"
+  },
+  {
+   "id": "g0233",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0234",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0235",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0236",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0237",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0238",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0239",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0240",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0241",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0242",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0243",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0244",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0245",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0246",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0247",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0248",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0249",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0250",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0251",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0252",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0253",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0254",
+   "confidence": 1.0,
+   "state": "disagrees"
+  },
+  {
+   "id": "g0257",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0258",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0259",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0260",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0261",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0262",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0263",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0264",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0265",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0266",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0267",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0268",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0269",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0270",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0271",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0272",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0273",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0274",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0275",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0276",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0277",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0278",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0279",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0280",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0281",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0282",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0283",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0284",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0285",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0286",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0287",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0288",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0289",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0290",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0291",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0292",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0293",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0294",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0295",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0296",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0297",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0298",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0299",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0300",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0301",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0302",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0303",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0304",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0305",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0306",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0307",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0308",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0309",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0310",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0311",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0312",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0313",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0314",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0315",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0316",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0317",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0318",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0319",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0320",
+   "confidence": 1.0,
+   "state": "disagrees"
+  },
+  {
+   "id": "g0321",
+   "confidence": 1.0,
+   "state": "disagrees"
+  },
+  {
+   "id": "g0322",
+   "confidence": 1.0,
+   "state": "agrees"
+  },
+  {
+   "id": "g0187",
+   "confidence": 0.95,
+   "state": "disagrees"
+  },
+  {
+   "id": "g0188",
+   "confidence": 0.95,
+   "state": "disagrees"
+  },
+  {
+   "id": "g0191",
+   "confidence": 0.95,
+   "state": "disagrees"
+  },
+  {
+   "id": "g0192",
+   "confidence": 0.95,
+   "state": "disagrees"
+  },
+  {
+   "id": "g0189",
+   "confidence": 0.0,
+   "state": "disagrees"
+  },
+  {
+   "id": "g0255",
+   "confidence": 0.0,
+   "state": "disagrees"
+  },
+  {
+   "id": "g0256",
+   "confidence": 0.0,
+   "state": "disagrees"
+  }
+ ],
+ "confidence": {
+  "total": 322,
+  "at_full": 315,
+  "disagrees": 15,
+  "disagrees_at_95_plus": 12,
+  "unlabelled": 3,
+  "distinct_values": [
+   1.0,
+   0.95,
+   0.0
+  ]
+ },
+ "veto_rows": [
+  {
+   "issuer_name": "OPEN BAY AUTOS AI INC.",
+   "claimed": "OpenAI Group PBC",
+   "score": 0.8,
+   "model_said": null,
+   "truth": "NOT_IN_UNIVERSE",
+   "vetoed": true,
+   "claim_right": false,
+   "holdings": 1,
+   "note": ""
+  },
+  {
+   "issuer_name": "DXYZ SPACEX I LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 99% CLASS A COMMON STOCK AND 1% SERIES J PREFERRED STOCK)",
+   "claimed": "Space Exploration Technologies Corp.",
+   "score": 0.8,
+   "model_said": "Space Exploration Technologies Corp.",
+   "truth": "Space Exploration Technologies Corp.",
+   "vetoed": false,
+   "claim_right": true,
+   "holdings": 7,
+   "note": ""
+  },
+  {
+   "issuer_name": "MWAM VC SPACEX-II, LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 55% CLASS A COMMON STOCK AND 45% CLASS C COMMON STOCK)",
+   "claimed": "Space Exploration Technologies Corp.",
+   "score": 0.8,
+   "model_said": "Space Exploration Technologies Corp.",
+   "truth": "Space Exploration Technologies Corp.",
+   "vetoed": false,
+   "claim_right": true,
+   "holdings": 8,
+   "note": ""
+  },
+  {
+   "issuer_name": "MWAM VC SPACEX-II, LLC (ECONOMIC EXPOSURE TO SPACE EXPLORATION TECHNOLOGIES CORP., 55% CLASS A COMMON STOCK AND 45% CLASS C COMMON STOCK) ",
+   "claimed": "Space Exploration Technologies Corp.",
+   "score": 0.8,
+   "model_said": "Space Exploration Technologies Corp.",
+   "truth": "Space Exploration Technologies Corp.",
+   "vetoed": false,
+   "claim_right": true,
+   "holdings": 1,
+   "note": "trailing space in the filed name"
+  }
+ ]
+}
