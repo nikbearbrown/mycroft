@@ -51,6 +51,13 @@ The bundle checksum proves integrity, not identity or adequacy. The generated
 review view keeps the recipe `DRAFT`, reports
 `BLOCKED_PENDING_HUMAN_REVIEW`, and leaves human attestation null.
 
+The historical comparison is implemented in
+`mycroft_finance_investigator/trend.py`. It accepts only ordered, unique periods
+whose completed investigation logs and verified source hashes agree. It
+recomputes EBITDA and category impacts, identifies recurrence using the
+explicit demo threshold, and retains the source run and row references. It
+cannot generate causation, forecasts, recommendations, or approval.
+
 The investigator must never convert a numerical variance into a causal claim.
 Its output may identify which customer, account, or department records move
 with the variance, but the reason for that movement remains owner-required.
@@ -67,3 +74,7 @@ and does not promote the recipe.
 The committed scenario plan is also synthetic and unapproved. Its values exist
 to test arithmetic and disclosure behavior, not to represent a forecast or a
 preferred business action.
+
+The January-to-March history is synthetic and exists only to test historical
+comparison controls. A repeated numerical pattern is not evidence of a
+business cause or a prediction of a later period.

@@ -15,6 +15,7 @@ from .finance import FinanceData, FinanceEngine
 from .reporting import write_human_report, write_machine_log
 from .review import record_review_decision, write_review_request
 from .scenario import run_scenarios, write_scenario_artifacts
+from .trend import run_trend, write_trend_artifacts
 from .validation import validate_finance_pack
 
 
@@ -27,6 +28,7 @@ DEFAULT_CONFIG = PROJECT_ROOT / "config/sample-investigation.json"
 DEFAULT_RUN_LOG = REPO_ROOT / "logs/mycroft-finance-investigator-sample-2026-02.json"
 DEFAULT_EVALUATION_CASES = PROJECT_ROOT / "evaluations/cases.json"
 DEFAULT_SCENARIO_PLAN = PROJECT_ROOT / "config/sample-scenarios.json"
+DEFAULT_TREND_PLAN = PROJECT_ROOT / "config/sample-trend.json"
 
 
 def _run_id() -> str:
@@ -135,6 +137,13 @@ def build_parser() -> argparse.ArgumentParser:
     scenario.add_argument("--run-id", default="week33-scenarios")
     scenario.add_argument("--output-log", type=Path, required=True)
     scenario.add_argument("--output-report", type=Path, required=True)
+    trend = subparsers.add_parser(
+        "trend", help="compare verified monthly investigations"
+    )
+    trend.add_argument("--plan", type=Path, default=DEFAULT_TREND_PLAN)
+    trend.add_argument("--run-id", default="week35-trend")
+    trend.add_argument("--output-log", type=Path, required=True)
+    trend.add_argument("--output-report", type=Path, required=True)
     bundle = subparsers.add_parser(
         "bundle", help="package an immutable reviewer handoff"
     )
@@ -196,6 +205,20 @@ def main() -> None:
         print(f"scenarios rendered: {payload['scenario_count']}")
         print(f"machine decision pack: {args.output_log}")
         print(f"human decision pack: {args.output_report}")
+    if args.command == "trend":
+        payload = run_trend(args.plan, args.run_id)
+        write_trend_artifacts(payload, args.output_log, args.output_report)
+        print(f"historical periods compared: {payload['period_count']}")
+        print(
+            "recurring material adverse categories: "
+            + ", ".join(
+                payload["verified_findings"][
+                    "recurring_material_adverse_categories"
+                ]
+            )
+        )
+        print(f"machine comparison: {args.output_log}")
+        print(f"human comparison: {args.output_report}")
     if args.command == "bundle":
         payload = build_audit_bundle(args.bundle_id, args.output_dir)
         print(f"audit bundle: {args.output_dir}")

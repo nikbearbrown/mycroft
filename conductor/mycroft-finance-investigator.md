@@ -92,7 +92,21 @@ demo-only materiality amount.
 - On failure: Stop without overwriting an earlier bundle. A checksum is never a
   human signature or attestation.
 
-### Step 9 — Human Finance Review
+### Step 9 — Compare Verified Historical Runs
+
+- Labor: AI with human-owned materiality and interpretation [PA] [IJ]
+- AI task: Verify every source run and verified-file hash, recompute each
+  period, compare historical EBITDA, and flag categories that meet the explicit
+  adverse threshold in at least two periods.
+- Human task: Approve or replace materiality and decide whether the historical
+  pattern is adequate and meaningful. Recurrence alone cannot establish cause.
+- Handoff condition: Periods are unique and ordered, entity and period scope
+  match, all hashes and recomputed values agree, and causation, forecast, and
+  recommendation remain blank.
+- On failure: Stop on scope, hash, or calculation mismatch; never fill a gap
+  with a prediction or generated explanation.
+
+### Step 10 — Human Finance Review
 
 - Labor: Human [IJ] [EI]
 - AI task: Produce a run-bound review request and validate the completed file
@@ -116,12 +130,15 @@ demo-only materiality amount.
 - Scenario assumptions and arithmetic retain exact lineage
 - Sensitivities are never presented as forecasts or recommendations
 - Complete evidence package is immutable and independently hash-verifiable
+- Historical runs retain exact scope, calculation, and source-hash lineage
+- Recurring variance is never presented as cause, forecast, or recommendation
 - No generated causal commentary
 - Named human release decision
 
 ## Current Sample
 
 - Raw input: `data/raw/mycroft-finance-investigator/`
+- Historical inputs: `data/raw/mycroft-finance-investigator-history/`
 - Classification: synthetic sample
 - Permitted use: calculation, validation, orchestration, testing, and
   demonstration

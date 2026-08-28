@@ -22,11 +22,16 @@ Generated audits and reports should sit beside the data they inspect and use
 | Dataset | Raw Source | Raw Location | Verified Location | Gate | Owner |
 |---|---|---|---|---|---|
 | `monthly-performance-sample` | Locally created synthetic budget, actual, ledger, customer, headcount, mapping, and provenance records | `data/raw/mycroft-finance-investigator/` | `data/verified/mycroft-finance-investigator/` | Provenance, schema, single-period/entity scope, account mapping, actuals-to-ledger reconciliation, customer-to-revenue reconciliation, headcount-to-payroll reconciliation, human materiality, and named human release review | Finance reviewer (TBD) |
+| `monthly-performance-history-sample` | Locally created synthetic January and March packs combined with the existing February sample | `data/raw/mycroft-finance-investigator-history/` | `data/verified/mycroft-finance-investigator-history/` | Every month passes the single-period controls; comparison additionally requires ordered unique periods, one entity, exact run-log/source hashes, recomputed EBITDA agreement, human materiality, interpretation, and release review | Finance reviewer (TBD) |
 
 The included finance pack is synthetic and may support software verification
 only. Validation can establish structural conformance and control-total
 reconciliation. It cannot approve the demo materiality amount, a causal
 explanation, or distribution.
+
+Historical comparison may establish exact numerical movement and recurrence
+under an explicit threshold. It cannot establish causation, predict another
+period, recommend action, or clear a human gate.
 
 ## Rules
 
