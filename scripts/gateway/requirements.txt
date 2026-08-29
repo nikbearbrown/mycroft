@@ -1,0 +1,4 @@
+# Sprint 1 (logbook) needs nothing but the standard library at runtime.
+# Deliberate: the logbook must drop into any repo without pulling deps.
+# Provider SDKs arrive in Sprint 2, and only the ones actually used.
+pytest>=8.0
