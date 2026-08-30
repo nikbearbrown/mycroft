@@ -10,6 +10,8 @@ from typing import Any
 
 from ecis.config.settings import settings
 from ecis.db.init_db import get_connection
+from ecis.extraction.chunk_quality import score_chunk
+from ecis.extraction.speaker_roles import classify_speaker, speaker_weight
 from ecis.schemas.signal import (
     GuidanceDirection,
     SectionLabel,
@@ -88,6 +90,12 @@ def triangulate_chunk(
     total_weight = sum(weights.get(k, 0.0) for k in ["keyword", "finbert", "llm", "agreement"])
     raw_confidence = min(direction_scores[best_direction] / total_weight, 1.0)
 
+    role = classify_speaker(chunk.get("speaker", ""))
+    spk_w = speaker_weight(chunk.get("speaker", ""), role)
+    quality = score_chunk(chunk)
+    quality_score = quality["chunk_quality"]
+    raw_confidence = min(raw_confidence * spk_w * quality_score, 1.0)
+
     supporting_quote = ""
     reasoning_trace = ""
     if llm_result and llm_result.get("direction") == best_direction:
@@ -112,6 +120,9 @@ def triangulate_chunk(
             supporting_quote=supporting_quote,
             section_label=SectionLabel(chunk.get("section_label", "prepared_remarks")),
             speaker=chunk.get("speaker", ""),
+            speaker_role=role,
+            speaker_weight=spk_w,
+            chunk_quality=quality_score,
             transcript_date=date.fromisoformat(chunk.get("transcript_date", str(date.today()))),
             chunk_index=chunk.get("chunk_index", 0),
             character_offsets=(chunk.get("char_start", 0), max(chunk.get("char_end", 1), 1)),
@@ -140,11 +151,12 @@ def log_signal(signal: SignalRecord) -> int:
         """INSERT INTO signals
            (ticker, direction, confidence_raw, confidence_calibrated,
             source_method, supporting_quote, section_label, speaker,
+            speaker_role, speaker_weight, chunk_quality, trend,
             transcript_date, chunk_index, char_start, char_end,
             reasoning_trace, ner_entities, self_consistency_votes,
             verification_status, llm_model, content_hash, retry_count,
             provenance, raw_llm_output, low_confidence)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
         (
             signal.ticker,
             signal.direction.value,
@@ -154,6 +166,10 @@ def log_signal(signal: SignalRecord) -> int:
             signal.supporting_quote,
             signal.section_label.value,
             signal.speaker,
+            signal.speaker_role,
+            signal.speaker_weight,
+            signal.chunk_quality,
+            signal.trend,
             str(signal.transcript_date),
             signal.chunk_index,
             signal.character_offsets[0],

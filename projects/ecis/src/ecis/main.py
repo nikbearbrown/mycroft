@@ -56,7 +56,7 @@ def cmd_preprocess(tickers: list[str]) -> None:
     from ecis.embedding.embedder import embed_and_store_from_file
 
     for ticker in tickers:
-        print(f"\n--- Processing {ticker} ---")
+        print(f"\nProcessing {ticker}")
         cleaned = clean_all(ticker)
         print(f"  Cleaned: {len(cleaned)} files")
 
@@ -182,6 +182,8 @@ def main() -> None:
                         help="Run orchestration learning graph (tune escalation thresholds)")
     parser.add_argument("--vindicate", action="store_true",
                         help="Aggregate conflict vindications and update reader weights")
+    parser.add_argument("--link-trends", action="store_true",
+                        help="Write retrospective trend labels onto logged signals")
     parser.add_argument("--migrate-tickers", action="store_true",
                         help="Populate ticker registry from existing directories")
     parser.add_argument("--list-tickers", action="store_true",
@@ -273,6 +275,15 @@ def main() -> None:
         print(f"  Weights: {result['proposed_weights']}")
         return
 
+    if args.link_trends:
+        from ecis.extraction.temporal_linking import link_trends
+        ticker = tickers[0] if tickers else None
+        result = link_trends(ticker=ticker)
+        print("Temporal linking")
+        print(f"  Labelled: {result['labelled']}")
+        print(f"  By trend: {result['by_trend']}")
+        return
+
     if args.batch:
         if not tickers:
             parser.error("--batch requires --ticker")
@@ -337,7 +348,7 @@ def main() -> None:
     all_commands = [
         args.init_db, args.ingest, args.preprocess, args.extract,
         args.batch, args.resolve_outcomes, args.score, args.recalibrate,
-        args.watchdog, args.learn, args.vindicate, args.migrate_tickers,
+        args.watchdog, args.learn, args.vindicate, args.link_trends, args.migrate_tickers,
         args.list_tickers, args.dashboard, args.api,
         args.approve is not None, args.reject is not None,
     ]

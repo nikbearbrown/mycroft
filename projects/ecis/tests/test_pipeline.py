@@ -50,7 +50,8 @@ class TestDatabaseInit:
             "source_method", "supporting_quote", "section_label",
             "transcript_date", "chunk_index", "char_start", "char_end",
             "created_at", "llm_model", "content_hash", "retry_count",
-            "low_confidence",
+            "low_confidence", "speaker_role", "speaker_weight",
+            "chunk_quality", "trend",
         }
         assert expected.issubset(columns)
 
