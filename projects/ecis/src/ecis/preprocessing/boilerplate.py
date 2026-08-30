@@ -27,7 +27,9 @@ _BOILERPLATE_TOKEN_RE = re.compile(
     r"forward[- ]looking|safe\s+harbo(?:u)?r|sec\s+filing|form\s+8-k|"
     r"materially\s+differ|no\s+obligation\s+to\s+update|"
     r"non[- ]gaap|reconciliation|cautionary\s+statement|"
-    r"risk\s+factors|private\s+securities\s+litigation"
+    r"risk\s+factors|private\s+securities\s+litigation|"
+    r"ladies\s+and\s+gentlemen|this\s+call\s+is\s+being\s+recorded|"
+    r"please\s+stand\s+by|turn\s+the\s+call\s+over"
     r")\b"
 )
 
