@@ -359,8 +359,9 @@ with tab1:
         display_cols = [
             "signal_id", "ticker", "direction", "confidence_raw",
             "confidence_calibrated", "source_method", "section_label",
-            "speaker", "transcript_date", "llm_model", "low_confidence",
-            "retry_count", "supporting_quote",
+            "speaker", "speaker_role", "transcript_date", "llm_model",
+            "low_confidence", "chunk_quality", "trend", "retry_count",
+            "supporting_quote",
         ]
         available = [c for c in display_cols if c in df.columns]
         st.dataframe(df[available], use_container_width=True, height=420)
@@ -476,6 +477,17 @@ with tab3:
             "`--model mistral`, `--model qwen`, `--model both`, or `--model all`, "
             "then resolve outcomes."
         )
+
+    try:
+        from ecis.scoring.scorer import score_by_trend
+
+        trend_scores = score_by_trend()
+    except Exception:
+        trend_scores = []
+    labelled = [t for t in trend_scores if t.get("n_samples") and t.get("trend") != "unlabelled"]
+    if labelled:
+        st.subheader("By trend")
+        st.dataframe(pd.DataFrame(labelled), use_container_width=True)
 
     registry = get_ticker_registry()
     if not registry.empty:

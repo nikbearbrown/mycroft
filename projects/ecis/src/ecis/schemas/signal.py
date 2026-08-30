@@ -47,6 +47,10 @@ class SignalRecord(BaseModel):
     quote_embedding: Optional[list[float]] = None
     section_label: SectionLabel
     speaker: str = ""
+    speaker_role: Optional[str] = None
+    speaker_weight: Optional[float] = Field(default=None, ge=0.0, le=1.0)
+    chunk_quality: Optional[float] = Field(default=None, ge=0.0, le=1.0)
+    trend: Optional[str] = None
     transcript_date: date
     chunk_index: int = Field(..., ge=0)
     character_offsets: tuple[int, int]

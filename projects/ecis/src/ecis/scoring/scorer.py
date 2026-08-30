@@ -26,7 +26,7 @@ def _fetch_scored_data(
     conn_s = get_connection("signals")
     conn_o = get_connection("outcomes")
 
-    query = "SELECT signal_id, ticker, direction, confidence_raw, source_method, llm_model, low_confidence FROM signals"
+    query = "SELECT signal_id, ticker, direction, confidence_raw, source_method, llm_model, low_confidence, trend FROM signals"
     params: list[Any] = []
     conditions = []
 
@@ -43,7 +43,7 @@ def _fetch_scored_data(
     try:
         signals = conn_s.execute(query, params).fetchall()
     except Exception:
-        query = query.replace(", llm_model, low_confidence", "")
+        query = query.replace(", llm_model, low_confidence, trend", "")
         signals = conn_s.execute(query, params).fetchall()
     conn_s.close()
 
@@ -65,6 +65,7 @@ def _fetch_scored_data(
                     "confidence": sig["confidence_raw"],
                     "source_method": sig["source_method"],
                     "llm_model": sig["llm_model"] if "llm_model" in sig.keys() else None,
+                    "trend": sig["trend"] if "trend" in sig.keys() else None,
                     "horizon_days": out["horizon_days"],
                     "correct": out["correct"],
                     "excess_return": out["excess_return"],
@@ -186,6 +187,46 @@ def score_by_llm_model(
     return results
 
 
+def score_by_trend(
+    ticker: str | None = None,
+    horizon: int | None = None,
+) -> list[dict[str, Any]]:
+    """Score signals grouped by retrospective trend label."""
+    data = _fetch_scored_data(ticker=ticker)
+    if horizon:
+        data = [d for d in data if d["horizon_days"] == horizon]
+
+    groups: dict[str, list[dict[str, Any]]] = {}
+    for row in data:
+        label = row.get("trend") or "unlabelled"
+        groups.setdefault(label, []).append(row)
+
+    results = []
+    for label, rows in sorted(groups.items()):
+        confidences = [d["confidence"] for d in rows]
+        outcomes = [d["correct"] for d in rows]
+        bs = brier_score(confidences, outcomes)
+        base_rate = sum(outcomes) / len(outcomes) if outcomes else 0.0
+        ref_brier = base_rate * (1 - base_rate)
+        ss = skill_score(bs, ref_brier)
+        ece, _ = expected_calibration_error(confidences, outcomes)
+        excess = [d["excess_return"] for d in rows if d.get("excess_return") is not None]
+        ir = None
+        if len(excess) >= 2:
+            std = float(np.std(excess))
+            if std > 0:
+                ir = round(float(np.mean(excess) / std), 6)
+        results.append({
+            "trend": label,
+            "n_samples": len(rows),
+            "brier": round(bs, 6),
+            "skill_score": round(ss, 6),
+            "ece": ece,
+            "information_ratio": ir,
+        })
+    return results
+
+
 def print_scorecard(ticker: str | None = None, horizon: int | None = None) -> None:
     """Print a formatted scoring report."""
     results = score_all_readers(ticker=ticker, horizon=horizon)
@@ -206,5 +247,18 @@ def print_scorecard(ticker: str | None = None, horizon: int | None = None) -> No
             f"{r['brier']:>8.4f} {r['skill_score']:>8.4f} {r['ece']:>8.4f} "
             f"{murphy.get('reliability', 0):>8.4f} {murphy.get('resolution', 0):>8.4f}"
         )
+
+    trends = score_by_trend(ticker=ticker, horizon=horizon)
+    labelled = [t for t in trends if t["n_samples"] > 0 and t["trend"] != "unlabelled"]
+    if labelled:
+        print(f"  {'Trend':<22} {'N':>6} {'Brier':>8} {'Skill':>8} {'IR':>8}")
+        print(f"  {'-'*22} {'-'*6} {'-'*8} {'-'*8} {'-'*8}")
+        for t in labelled:
+            ir = t.get("information_ratio")
+            ir_s = f"{ir:>8.4f}" if ir is not None else f"{'n/a':>8}"
+            print(
+                f"  {t['trend']:<22} {t['n_samples']:>6} "
+                f"{t['brier']:>8.4f} {t['skill_score']:>8.4f} {ir_s}"
+            )
 
     print(f"{'='*70}\n")

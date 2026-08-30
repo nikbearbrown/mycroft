@@ -76,6 +76,8 @@ class TestSignalRecord:
         assert signal.content_hash is None
         assert signal.retry_count == 0
         assert signal.low_confidence is False
+        assert signal.speaker_role is None
+        assert signal.trend is None
 
     def test_calibrated_confidence_bounds(self):
         signal = SignalRecord(**self._valid_kwargs(confidence_calibrated=0.9))
