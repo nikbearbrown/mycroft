@@ -234,7 +234,7 @@ def get_scorecard(
 ):
     """Full scoring report: readers, models, recent agent activity, pending HITL."""
     from ecis.db.init_db import get_connection
-    from ecis.scoring.scorer import score_all_readers, score_by_llm_model
+    from ecis.scoring.scorer import score_all_readers, score_by_llm_model, score_by_trend
 
     readers = score_all_readers(ticker=ticker, horizon=horizon)
     for r in readers:
@@ -254,6 +254,7 @@ def get_scorecard(
     return {
         "readers": readers,
         "by_model": score_by_llm_model(ticker=ticker, horizon=horizon),
+        "by_trend": score_by_trend(ticker=ticker, horizon=horizon),
         "reader_weights": [dict(r) for r in weights],
         "pending_approvals": [dict(r) for r in pending],
         "recent_agent_activity": [dict(r) for r in actions],

@@ -18,6 +18,10 @@ CREATE TABLE IF NOT EXISTS signals (
     supporting_quote TEXT    NOT NULL,
     section_label    TEXT    NOT NULL,
     speaker          TEXT    DEFAULT '',
+    speaker_role     TEXT,
+    speaker_weight   REAL,
+    chunk_quality    REAL,
+    trend            TEXT,
     transcript_date  TEXT    NOT NULL,
     chunk_index      INTEGER NOT NULL,
     char_start       INTEGER NOT NULL,
@@ -221,6 +225,10 @@ def migrate_schema(conn: sqlite3.Connection, name: str) -> None:
             _ensure_column(conn, "signals", "provenance", "provenance TEXT")
             _ensure_column(conn, "signals", "raw_llm_output", "raw_llm_output TEXT")
             _ensure_column(conn, "signals", "low_confidence", "low_confidence INTEGER NOT NULL DEFAULT 0")
+            _ensure_column(conn, "signals", "speaker_role", "speaker_role TEXT")
+            _ensure_column(conn, "signals", "speaker_weight", "speaker_weight REAL")
+            _ensure_column(conn, "signals", "chunk_quality", "chunk_quality REAL")
+            _ensure_column(conn, "signals", "trend", "trend TEXT")
             conn.commit()
         except sqlite3.OperationalError:
             pass

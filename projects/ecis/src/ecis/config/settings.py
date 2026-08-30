@@ -53,6 +53,21 @@ class _Settings:
     min_chunk_tokens: int = int(os.getenv("MIN_CHUNK_TOKENS", "20"))
     max_boilerplate_ratio: float = float(os.getenv("MAX_BOILERPLATE_RATIO", "0.8"))
     min_scorecard_confidence: float = float(os.getenv("MIN_SCORECARD_CONFIDENCE", "0.35"))
+    speaker_role_weights: dict[str, float] = {
+        "cfo": float(os.getenv("SPEAKER_WEIGHT_CFO", "1.0")),
+        "ceo": float(os.getenv("SPEAKER_WEIGHT_CEO", "0.8")),
+        "coo": float(os.getenv("SPEAKER_WEIGHT_COO", "0.7")),
+        "ir": float(os.getenv("SPEAKER_WEIGHT_IR", "0.6")),
+        "analyst": float(os.getenv("SPEAKER_WEIGHT_ANALYST", "0.3")),
+        "operator": float(os.getenv("SPEAKER_WEIGHT_OPERATOR", "0.0")),
+        "unknown": float(os.getenv("SPEAKER_WEIGHT_UNKNOWN", "0.8")),
+    }
+    chunk_quality_weights: dict[str, float] = {
+        "boilerplate": 0.40,
+        "token_count": 0.20,
+        "completeness": 0.20,
+        "speaker_transitions": 0.20,
+    }
     llm_json_max_retries: int = int(os.getenv("LLM_JSON_MAX_RETRIES", "3"))
     llm_json_retry_base_delay: float = float(os.getenv("LLM_JSON_RETRY_BASE_DELAY", "0.5"))
 
