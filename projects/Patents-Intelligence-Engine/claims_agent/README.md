@@ -13,20 +13,21 @@ classified**, verified by hand against the raw text:
 - US-11197952-B2 — 17 claims — all correct
 - US-10265458-B2 — 20 claims — all correct
 
-## Known limitation
+## Multi-dependency detection
 
-The multi-dependency detection heuristic (flagging claims that might
-depend on more than one other claim, e.g. "claim 1 or 2") is currently
-too eager — it triggers on any "or" appearing anywhere in a claim's
-text, not specifically in the dependency reference. This produced one
-confirmed false positive during stress-testing (Claim 5 of
-US-11197952-B2, flagged because of "bumps or projections" language
-elsewhere in the claim, unrelated to its actual single dependency on
-Claim 3).
+An earlier version of the multi-dependency check flagged any claim
+containing the word "or" anywhere in its text, which produced a false
+positive during stress-testing (Claim 5 of US-11197952-B2, flagged
+because of "bumps or projections" language unrelated to its actual
+single dependency on Claim 3).
 
-The underlying split/classify logic is correct. This heuristic needs a
-narrower regex that only looks for multiple "claim N" references, not
-any "or" in the claim body.
+`flag_multi_dependency()` replaces that with a narrower pattern that
+only matches a genuine multi-claim reference directly after the word
+"claim(s)" — e.g. "claim 1 or 2", "claims 1-3", "claims 1 and 2".
+Verified against the real false-positive case (correctly returns
+`False`) and two synthetic genuine cases (correctly returns `True`).
+Re-running the stress test against all 4 real patents now shows zero
+false-positive flags.
 
 ## Not built yet
 

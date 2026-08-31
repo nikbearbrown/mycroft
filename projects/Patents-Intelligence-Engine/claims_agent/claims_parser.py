@@ -15,7 +15,8 @@ class Claim:
     number: int
     text: str
     is_independent: bool
-    references: Optional[int]  # claim number this depends on, if dependent
+    references: Optional[int]  # first claim number this depends on, if dependent
+    all_references: List[int]  # every claim number found in a dependency reference
 
 
 # Claims are numbered at the start of a line/segment, e.g. "1. A semiconductor..."
@@ -27,8 +28,20 @@ CLAIM_SPLIT_PATTERN = re.compile(
 )
 
 # A dependent claim typically references another claim by number, e.g.
-# "The substrate of claim 1, wherein..." — this catches "claim N" or "claims N"
+# "The substrate of claim 1, wherein..." — this catches "claim N" or "claims N".
+# findall (not search) so every reference is captured, not just the first.
 DEPENDENCY_PATTERN = re.compile(r"claim[s]?\s+(\d+)", re.IGNORECASE)
+
+# A genuine multi-dependency reference names more than one claim number
+# directly adjacent to the word "claim(s)" — e.g. "claim 1 or 2",
+# "claims 1-3", "claims 1 and 2". This is intentionally narrow: it does
+# NOT flag every "or" in the claim body (that was the earlier bug — see
+# README "Known limitation"). It only looks inside a short window right
+# after the word "claim(s)".
+MULTI_DEPENDENCY_PATTERN = re.compile(
+    r"claim[s]?\s+\d+\s*(?:,|or|and|-|to)\s*\d+",
+    re.IGNORECASE,
+)
 
 
 def split_claims(raw_claims_text: str) -> List[Claim]:
@@ -36,11 +49,10 @@ def split_claims(raw_claims_text: str) -> List[Claim]:
     Split raw claims text into a list of Claim objects.
 
     NOTE: this regex-based split is a first pass, not a guaranteed-correct
-    parser. Real claims text has known irregularities (multi-level
-    dependencies, claims referencing ranges like "claims 1-3", OCR
-    artifacts in older filings) that this does not yet handle. Every
-    result should be spot-checked against the raw text before trusting
-    it for classification downstream.
+    parser. Real claims text has known irregularities (OCR artifacts in
+    older filings, unusual formatting) that this does not yet handle.
+    Every result should be spot-checked against the raw text before
+    trusting it for classification downstream.
     """
     if not raw_claims_text or not raw_claims_text.strip():
         return []
@@ -52,18 +64,31 @@ def split_claims(raw_claims_text: str) -> List[Claim]:
         number = int(number_str)
         body = body.strip()
 
-        dep_match = DEPENDENCY_PATTERN.search(body)
-        is_independent = dep_match is None
-        references = int(dep_match.group(1)) if dep_match else None
+        all_refs = [int(n) for n in DEPENDENCY_PATTERN.findall(body)]
+        is_independent = len(all_refs) == 0
+        first_reference = all_refs[0] if all_refs else None
 
         claims.append(Claim(
             number=number,
             text=body,
             is_independent=is_independent,
-            references=references,
+            references=first_reference,
+            all_references=all_refs,
         ))
 
     return claims
+
+
+def flag_multi_dependency(claim: Claim) -> bool:
+    """
+    Returns True only if the claim text contains a genuine multi-claim
+    reference pattern (e.g. "claim 1 or 2", "claims 1-3") — not just any
+    "or" appearing somewhere in the claim body. This replaces the earlier,
+    over-eager heuristic that produced a confirmed false positive.
+    """
+    if claim.is_independent:
+        return False
+    return bool(MULTI_DEPENDENCY_PATTERN.search(claim.text))
 
 
 def summarize(claims: List[Claim]) -> dict:
