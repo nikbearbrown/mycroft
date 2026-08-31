@@ -1,0 +1,85 @@
+{
+  "_fixture": {
+    "synthetic": true,
+    "frozen_at": "2026-08-27T14:30:00+00:00",
+    "fixture_set": "sample/clean",
+    "recipe": "recipes/market-sentiment-analysis-part-1.md",
+    "manifest": "data/raw/market-sentiment-analysis-part-1/sample/fixture-manifest.json",
+    "note": "Synthetic fixture. No post, author, or score here corresponds to a real Reddit submission. Never cite as evidence."
+  },
+  "source_name": "Reddit r/wallstreetbets search",
+  "source_type": "http_json",
+  "source_url_or_path": "https://api.reddit.com/r/wallstreetbets/search.json?q=FAKE&sort=new&limit=50&t=day",
+  "fetched_at": "2026-08-27T14:30:00+00:00",
+  "sample_mode": true,
+  "live_call_performed": false,
+  "record_count": 4,
+  "record_count_basis": "records[0].data.children[] entries, each one Reddit t3 submission",
+  "records": [
+    {
+      "kind": "Listing",
+      "data": {
+        "children": [
+          {
+            "kind": "t3",
+            "data": {
+              "id": "sy0001",
+              "title": "FAKE calls printing after the earnings beat",
+              "selftext": "Held through the print and the calls are up big. Still bullish here.",
+              "score": 412,
+              "num_comments": 87,
+              "created_utc": 1787828400,
+              "permalink": "/r/wallstreetbets/comments/sy0001/",
+              "author": "synthetic_user_01",
+              "subreddit": "wallstreetbets"
+            }
+          },
+          {
+            "kind": "t3",
+            "data": {
+              "id": "sy0002",
+              "title": "Loading up on FAKE, this thing is going to the moon 🚀",
+              "selftext": "Rocket fuel. Adding more on any dip, long dated.",
+              "score": 288,
+              "num_comments": 64,
+              "created_utc": 1787797800,
+              "permalink": "/r/wallstreetbets/comments/sy0002/",
+              "author": "synthetic_user_02",
+              "subreddit": "wallstreetbets"
+            }
+          },
+          {
+            "kind": "t3",
+            "data": {
+              "id": "sy0003",
+              "title": "Bought FAKE puts before the margin news",
+              "selftext": "Margins are going to dump. Bearish and staying short.",
+              "score": 143,
+              "num_comments": 51,
+              "created_utc": 1787782200,
+              "permalink": "/r/wallstreetbets/comments/sy0003/",
+              "author": "synthetic_user_03",
+              "subreddit": "wallstreetbets"
+            }
+          },
+          {
+            "kind": "t3",
+            "data": {
+              "id": "sy0004",
+              "title": "Anyone else holding FAKE through the investor day?",
+              "selftext": "No position change, just watching what they guide.",
+              "score": 76,
+              "num_comments": 22,
+              "created_utc": 1787762700,
+              "permalink": "/r/wallstreetbets/comments/sy0004/",
+              "author": "synthetic_user_04",
+              "subreddit": "wallstreetbets"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "rejects": [],
+  "errors": []
+}

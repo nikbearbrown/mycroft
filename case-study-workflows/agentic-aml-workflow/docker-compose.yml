@@ -1,0 +1,99 @@
+# docker-compose.yml
+# Agentic AML Compliance Workflow — Local Development Stack
+#
+# Services:
+#   postgres  — audit log, escalation queue, human review queue
+#   redis     — optional context store for high-volume deployments
+#   api       — the FastAPI pipeline service
+#
+# Quick start:
+#   export ANTHROPIC_API_KEY=sk-ant-...
+#   docker compose up
+#
+# The API will be available at http://localhost:8000
+# API docs (auto-generated): http://localhost:8000/docs
+#
+# IMPORTANT: Change all passwords before any non-local deployment.
+
+version: "3.9"
+
+services:
+  # ────────────────────────────────────────────────────────────
+  # PostgreSQL
+  # Used for: audit log (append-only), escalation queue,
+  #           human review queue, workflow state
+  # ────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: aml_pipeline
+      POSTGRES_USER: pipeline
+      POSTGRES_PASSWORD: dev_password_change_in_prod
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pipeline -d aml_pipeline"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ────────────────────────────────────────────────────────────
+  # Redis
+  # Used for: context store TTL (optional — switch to PostgreSQL
+  # for workflow recovery across process restarts)
+  # ────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  # ────────────────────────────────────────────────────────────
+  # AML Pipeline API
+  # ────────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      # LLM
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      LLM_MODEL: claude-sonnet-4-6
+      LLM_PROVIDER: anthropic
+
+      # Database
+      DATABASE_URL: postgresql://pipeline:dev_password_change_in_prod@postgres:5432/aml_pipeline
+      REDIS_URL: redis://redis:6379/0
+
+      # Data sources (stubs in dev — flip to False when adapters are ready)
+      GLEIF_API_KEY: ${GLEIF_API_KEY:-}       # Optional — public API works without key
+      KYC_SYSTEM_URL: ${KYC_SYSTEM_URL:-}
+      KYC_API_KEY: ${KYC_API_KEY:-}
+      TX_HISTORY_URL: ${TX_HISTORY_URL:-}
+      TX_HISTORY_API_KEY: ${TX_HISTORY_API_KEY:-}
+      OFAC_LOCAL_LIST_PATH: /app/data/ofac_sdn.xml
+      OFAC_STALENESS_HOURS: "24"
+
+      # Taxonomy
+      TAXONOMY_PATH: /app/aml_taxonomy.json
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./data:/app/data:ro     # Mount OFAC local list and other data files
+    restart: on-failure
+
+volumes:
+  postgres_data:

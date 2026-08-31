@@ -1,0 +1,28 @@
+# Agentic AML Compliance Workflow — Python Dependencies
+# Install: pip install -r requirements.txt
+
+# ── Core pipeline ────────────────────────────────────────────
+pydantic>=2.0.0            # Data validation and schemas
+httpx>=0.27.0              # HTTP client (GLEIF API, data source adapters)
+python-dotenv>=1.0.0       # Load .env file at startup
+
+# ── API layer ────────────────────────────────────────────────
+fastapi>=0.110.0           # Web framework
+uvicorn[standard]>=0.29.0  # ASGI server
+
+# ── LLM providers — install only what you use ────────────────
+anthropic>=0.25.0          # Anthropic Claude  (ANTHROPIC_API_KEY)
+openai>=1.0.0              # OpenAI GPT-4o     (OPENAI_API_KEY)
+                           # Also used for openai_compatible endpoints (Azure, Groq, Ollama)
+google-generativeai>=0.8.0 # Google Gemini     (GEMINI_API_KEY)
+
+# ── Database (for production implementations) ────────────────
+psycopg2-binary>=2.9.9     # PostgreSQL driver (audit log, review queue)
+# asyncpg>=0.29.0          # Async PostgreSQL driver (optional, for high-throughput)
+
+# ── Caching (optional) ───────────────────────────────────────
+redis>=5.0.0               # Redis client (optional context store)
+
+# ── Testing ──────────────────────────────────────────────────
+pytest>=8.0.0
+pytest-asyncio>=0.23.0

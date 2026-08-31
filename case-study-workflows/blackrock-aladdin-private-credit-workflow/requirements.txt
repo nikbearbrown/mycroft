@@ -1,0 +1,11 @@
+# Core — required regardless of which LLM provider you use
+fastapi>=0.115
+uvicorn>=0.32
+python-dotenv>=1.0
+
+# LLM providers — you only need the ONE package matching the provider you
+# actually use (set via the PROVIDER env var). Installing all three is fine
+# too; lazy imports inside each provider class mean unused ones never load.
+anthropic>=0.40      # if PROVIDER=claude
+openai>=1.55         # if PROVIDER=openai
+google-genai>=0.3    # if PROVIDER=gemini

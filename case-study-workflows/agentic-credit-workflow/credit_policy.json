@@ -1,0 +1,111 @@
+{
+  "_comment": "JPMorgan-style commercial credit policy thresholds. These are illustrative reference defaults — your institution's credit policy and risk committee define the actual values. Search [DEV] in policy_loader.py to find where these are consumed.",
+
+  "policy_version": "1.0.0",
+
+  "approval_tiers": {
+    "_comment": "[DEV] Define your institution's approval authority thresholds here. These determine which approval workflow is triggered in approval_routing.py.",
+    "senior_credit_officer": {
+      "max_loan_amount_usd": 25000000,
+      "applies_to_risk_tiers": ["LOW", "MEDIUM"]
+    },
+    "credit_committee": {
+      "max_loan_amount_usd": 150000000,
+      "applies_to_risk_tiers": ["LOW", "MEDIUM", "HIGH"]
+    },
+    "executive_credit_committee": {
+      "max_loan_amount_usd": null,
+      "applies_to_risk_tiers": ["HIGH", "WATCH_LIST"]
+    }
+  },
+
+  "ratio_thresholds": {
+    "_comment": "[DEV] Thresholds vary by industry. Add industries as needed. Confirm all values with your credit risk team before production use. Two ratios from the case study Step 5 list are not yet defined here — quick_ratio_min (needs inventory field in schemas.py) and gross_margin_min (needs cost_of_goods_sold or gross_profit field in schemas.py). Once those fields are added to FinancialStatements, add their thresholds to each industry block below following the same pattern as dscr_min.",
+    "INDUSTRIAL_MANUFACTURING": {
+      "leverage_ratio_max": 3.5,
+      "interest_coverage_min": 3.0,
+      "dscr_min": 1.25,
+      "current_ratio_min": 1.5
+    },
+    "TECHNOLOGY": {
+      "leverage_ratio_max": 4.5,
+      "interest_coverage_min": 4.0,
+      "dscr_min": 1.35,
+      "current_ratio_min": 1.8
+    },
+    "REAL_ESTATE": {
+      "leverage_ratio_max": 6.0,
+      "interest_coverage_min": 1.8,
+      "dscr_min": 1.20,
+      "current_ratio_min": 1.2
+    },
+    "HEALTHCARE": {
+      "leverage_ratio_max": 4.0,
+      "interest_coverage_min": 3.0,
+      "dscr_min": 1.30,
+      "current_ratio_min": 1.5
+    },
+    "RETAIL": {
+      "leverage_ratio_max": 3.0,
+      "interest_coverage_min": 2.5,
+      "dscr_min": 1.20,
+      "current_ratio_min": 1.4
+    },
+    "ENERGY": {
+      "leverage_ratio_max": 4.0,
+      "interest_coverage_min": 2.5,
+      "dscr_min": 1.25,
+      "current_ratio_min": 1.3
+    },
+    "FINANCIAL_SERVICES": {
+      "leverage_ratio_max": 8.0,
+      "interest_coverage_min": 2.0,
+      "dscr_min": 1.15,
+      "current_ratio_min": 1.1
+    },
+    "OTHER": {
+      "leverage_ratio_max": 3.5,
+      "interest_coverage_min": 3.0,
+      "dscr_min": 1.25,
+      "current_ratio_min": 1.5
+    }
+  },
+
+  "kyc_policy": {
+    "_comment": "[DEV] Define review cycle lengths per risk tier. These determine when the KYC Agent flags a stale review.",
+    "review_cycle_months": {
+      "LOW": 36,
+      "MEDIUM": 18,
+      "HIGH": 12,
+      "ENHANCED_DUE_DILIGENCE": 6
+    },
+    "foreign_subsidiary_edd_required": true
+  },
+
+  "osint_policy": {
+    "_comment": "[DEV] Define which OSINT severity levels are credit-blocking vs. disclosure-only.",
+    "blocking_severities": ["HIGH"],
+    "disclosure_required_severities": ["MEDIUM", "LOW"],
+    "auto_clear_severities": ["NONE"]
+  },
+
+  "macro_overlay": {
+    "_comment": "[DEV] Plain-text overlay injected into the Reasoning Agent prompt. Update manually when your credit committee issues a sector-specific caution or macro view. Not a live data feed — a deliberate, human-set signal reviewed alongside the credit policy. Set to null or empty string to disable.",
+    "global": "Current macro environment: moderate rate volatility, selective caution on highly leveraged structures. Monitor input cost pressures in manufacturing and retail sectors (tariff-driven, Q2 2026 forward). No broad credit freeze — sector-specific awareness only.",
+    "INDUSTRIAL_MANUFACTURING": "Elevated caution: tariff-driven raw material and component cost volatility may compress EBITDA margins in Q2–Q3 2026. Require explicit management commentary on hedging strategy and supplier contract terms before approval.",
+    "RETAIL": "Elevated caution: consumer discretionary spend softening in Q2 2026. Require updated 12-month cash flow forecast with downside scenario before approval.",
+    "TECHNOLOGY": null,
+    "REAL_ESTATE": null,
+    "HEALTHCARE": null,
+    "ENERGY": null,
+    "FINANCIAL_SERVICES": null,
+    "OTHER": null
+  },
+
+  "covenant_guidelines": {
+    "_comment": "[DEV] Covenant headroom percentages — how much buffer above policy minimum the covenant should be set at. Adjust per your institution's structuring standards.",
+    "dscr_covenant_headroom_pct": 0.10,
+    "leverage_covenant_headroom_pct": 0.15,
+    "interest_coverage_covenant_headroom_pct": 0.20
+  }
+}
