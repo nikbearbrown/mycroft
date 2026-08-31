@@ -9,7 +9,7 @@ similar) — this script searches by base number since we don't know the
 exact kind-code suffix, rather than guessing it.
 """
 from google.cloud import bigquery
-from claims_parser import split_claims, summarize
+from claims_parser import split_claims, summarize, flag_multi_dependency
 
 client = bigquery.Client(project="patent-intelligence-system")
 
@@ -54,9 +54,7 @@ for base_number in candidate_numbers:
 
     for c in claims:
         status = "INDEPENDENT" if c.is_independent else f"DEPENDENT on claim {c.references}"
-        multi_ref_hint = ""
-        if not c.is_independent and (" or " in c.text[:150].lower() or "-" in c.text[:80]):
-            multi_ref_hint = "  [POSSIBLE MULTI-DEPENDENCY — CHECK MANUALLY]"
+        multi_ref_hint = "  [POSSIBLE MULTI-DEPENDENCY]" if flag_multi_dependency(c) else ""
         print(f"Claim {c.number} — {status}{multi_ref_hint}")
 
     print()
