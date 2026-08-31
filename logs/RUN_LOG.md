@@ -151,3 +151,12 @@ workflow changes.
 - **Outputs:** Updated `scripts/regulatory-intel/workflow.dev.json` (`Normalize Data` node); `scripts/regulatory-intel/B2-VERIFICATION.md`.
 - **Result:** B2 closed for the Federal Register mislabeling (157-item complaint from `FINDINGS.md`). The 21 "Unknown Source" Google News fallthrough is explicitly left open — no reliable signal exists there (no `dc:creator` on Google News items; some headlines don't contain any of the matched keywords).
 - **Open issues:** 21 Unknown Source (Google News fallthrough, no clear fix path), B3 (Google News URL unwrap, confirmed bigger scrape-based task).
+
+## 2026-08-30 -- Investigated "Unknown Source" Google News fallthrough (partial fix)
+
+- **Recipe:** Project 29 regulatory intelligence hardening, follow-up investigation after the B2 fix.
+- **Inputs:** live Google News feeds (FINRA + Investment Advisor searches); `scripts/regulatory-intel/workflow.dev.json`.
+- **Commands / actions:** Pulled all 18 real items (live, 2026-08-30) currently falling through to `'Unknown Source'` and read every title. Found ~half use a synonym the classifier didn't check for ("adviser"/"advisor" alone, "RIA" acronym, "broker-dealer", "Reg BI"); added those as feed-agnostic secondary keywords in `identifySource()`. Verified against the real extracted node function run against all 5 live feeds: Unknown Source count 18 -> 8, zero unexpected reclassifications of already-correct items.
+- **Outputs:** Updated `scripts/regulatory-intel/workflow.dev.json` (`Normalize Data` node); `scripts/regulatory-intel/UNKNOWN-SOURCE-INVESTIGATION.md`.
+- **Result:** Partial, honest fix — 10/18 recovered. The remaining 8 are genuinely unclassifiable from title alone (generic overview pieces with no named regulator, or one item that's a different regulator entirely — the UK FCA, correctly left as Unknown Source since this pipeline doesn't track it).
+- **Open issues:** The remaining 8 would need real content/NLP analysis to close, at a materially higher false-positive risk — left open per the explicitly-flagged tradeoff before starting. B3 (Google News URL unwrap) still open.
