@@ -297,8 +297,10 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE regulatory_feeds\nSET \n  email_sent = TRUE,\n  email_sent_at = NOW()\nWHERE \n  (urgency_score > 7 OR impact_level IN ('Critical', 'High'))\n  AND email_sent = FALSE;",
-        "options": {}
+        "query": "UPDATE regulatory_feeds\nSET \n  email_sent = TRUE,\n  email_sent_at = NOW()\nWHERE \n  id = ANY($1::int[])\n  AND email_sent = FALSE;",
+        "options": {
+          "queryReplacement": "={{ [$(\"High Priority Filter\").all().map(i => i.json.id)] }}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
