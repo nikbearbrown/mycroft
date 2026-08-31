@@ -1,0 +1,11 @@
+# Agentic Credit Memo Pipeline — Python Dependencies
+# [DEV] Remove unused LLM providers. anthropic is required for the default config.
+
+pydantic>=2.0.0
+httpx>=0.27.0
+python-dotenv>=1.0.0
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+anthropic>=0.25.0          # Default LLM provider
+# openai>=1.0.0            # [DEV] Uncomment if switching to OpenAI
+# google-generativeai>=0.8.0  # [DEV] Uncomment if switching to Gemini
