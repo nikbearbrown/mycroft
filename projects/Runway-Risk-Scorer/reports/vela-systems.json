@@ -1,0 +1,43 @@
+{
+  "company_id": "vela-systems",
+  "run_date": "2026-08-27",
+  "signals_used": 3,
+  "signals_dropped_unvalidated": 0,
+  "gate": "HALT-AWAITING-HUMAN",
+  "metrics": {
+    "total_raised_usd": 120000000.0,
+    "months_since_last_raise": 2,
+    "funding_stage_trend": [
+      "Series C"
+    ],
+    "distress_indicator_count": 0,
+    "signal_freshness_days": 43,
+    "recent_window_days": 365,
+    "signals_recent_window": 3,
+    "signals_prior_window": 0,
+    "signal_velocity_delta": 3
+  },
+  "provenance": {
+    "total_raised": [
+      {
+        "signal_id": "33333333-3333-3333-3333-333333333331",
+        "source_url": "https://example.com/vela-series-c",
+        "value": "$120M"
+      }
+    ],
+    "months_since_last_raise": {
+      "signal_id": "33333333-3333-3333-3333-333333333331",
+      "source_url": "https://example.com/vela-series-c",
+      "date": "2026-06-01"
+    },
+    "funding_stage": [
+      {
+        "signal_id": "33333333-3333-3333-3333-333333333332",
+        "stage": "Series C",
+        "date": "2026-06-01"
+      }
+    ],
+    "distress": [],
+    "parse_notes": []
+  }
+}
