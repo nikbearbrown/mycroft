@@ -98,195 +98,56 @@ workflow changes.
   - Phase 2: Generate `signals-validation-audit.md` (spot-check 10 signals, assess quality).
   - Phase 3: Solve Groq token limit (upgrade tier or secondary provider for news classification).
 
-## 2026-07-13 -- Add AI-Vendor-Intelligence project exercises
+## 2026-07-24 -- Project 29 regulatory workflow: Layer-1 hardening pass (working copy)
 
-> Logged retroactively on 2026-08-22. Commit `d2039bc` changed artifacts without a
-> RUN_LOG entry, which the logging rule requires; this entry backfills the record and
-> is not a contemporaneous account.
-
-- **Recipe:** vendor-intelligence-brief (supporting course material, not a recipe run).
-- **Inputs:** Mycroft chapters 2-5; the vendor intelligence platform as worked example.
-- **Commands:** None — authored content, no scripts run.
-- **Outputs:** `projects/AI-Vendor-Intelligence/` — four exercise files for chapters
-  2-1, 3, 4, and 5 (859 lines total), committed as `d2039bc`.
-- **Result:** Chapter exercises available; recipe status unchanged (DRAFT).
-- **Open issues:** Exercises were written against recipe v0.1.0 and the pre-purge
-  signal counts. They may cite coverage figures corrected on 2026-08-22 — review them
-  against recipe v0.2.0 before use.
-
-## 2026-08-22 -- Entity verification: signal validation gate cleared, schema drift corrected
-
-- **Recipe:** vendor-intelligence-brief v0.1.0 -> v0.2.0 (stays DRAFT).
-- **Inputs:** Uncommitted work in the sibling repo
-  `~/Documents/AI-Vendor-Intelligence-Platform`
-  (github.com/MuskanKhandelwal/AI-Vendor-Intelligence-Platform, branch `main`):
-  new `collector/entity_filter.py`, `collector/audit_entities.py`,
-  `collector/backfill_edgar_summaries.py`; modified `collector/{arxiv,news,edgar}_collector.py`,
-  `collector/db.py`, `collector/seed_companies.json`, `agents/llm.py`.
-  Backup artifacts `backups/wrong_entity_signals_20260807T*.json`.
-- **Commands:**
-  - Read the platform diff and the authoritative DDL at `collector/db.py:16-38`.
-  - Counted the purged rows directly from the backup JSON (not estimated).
-  - Rewrote `data/verified/ai_company_signals-schema.yaml` to v0.2.0.
-  - Updated `recipes/vendor-intelligence-brief.yaml` to v0.2.0 and closed gate 1.
-  - Updated `DATA_CONTRACT.md`; verified with `node scripts/conformance.mjs`.
-
-- **The defect that prompted this.** Signals were collected by name search alone, and
-  a company name is not a unique identifier. Namesake organisations were stored as the
-  tracked vendor and became citable evidence in procurement briefs. Observed harm,
-  per the platform's own source comments: a **$28M Department of War contract awarded
-  to Cohere Technologies (wireless RF) raised the AI vendor Cohere's Financial Health
-  score by 25 points**; quantum-physics papers matched on the stemmed word "coherence"
-  were counted as its technology momentum; Cohere Health (health insurance) executive
-  changes were filed under the AI vendor. arXiv was worst — the old `all:"{name}"`
-  query searched full text including bibliographies against a stemmed index, and
-  **85% of collected papers were unrelated to the vendor they were filed under**.
-
-- **[GATE CLEARED] Signal validation (Phase 2)** — Muskan Khandelwal, 2026-08-22.
-  - *Evidence:* `collector/audit_entities.py` run 2026-08-07 purged **782 rows** --
-    650 `research_paper`, 49 `other`, 34 `negative`, 17 `product_launch`,
-    16 `partnership`, 12 `regulatory`, 2 `executive_change`, 2 `funding` (sums to
-    782). Most affected: Writer (52), OpenAI (49), Cohere (46), Anthropic (43),
-    Modal (43), Mistral (41). All rows backed up to
-    `backups/wrong_entity_signals_20260807T010057Z.json` (780) and
-    `...T010153Z.json` (2) before deletion; nothing was destroyed.
-  - *Scope of the clearance:* **batch level, not per signal.** The gate's original
-    wording asked for human validation of >= 50% of individual signals. What was done
-    is broader in coverage and shallower in depth — every name-searched row was
-    machine-checked and the failures purged. There is no per-row human sign-off, and
-    the `validated_by` column that wording assumed does not exist in the DDL.
-  - *What it does not establish:* removing rows that failed the check says nothing
-    about whether the survivors are right.
-
-- **[DEFECT] Schema drift (P6), corrected.** `ai_company_signals-schema.yaml` v0.1.0
-  described columns that do not exist. Corrected against `collector/db.py:16`:
-  `signal_id`/UUID -> `id`/SERIAL, `company_id` -> `company_name`,
-  `signal_title` -> `headline`, `signal_value` -> `summary`, `score` ->
-  `importance_score`, `occurred_date` -> `signal_date`, `ingested_at` -> `created_at`;
-  `source_type` removed (no such column — source is inferred from `raw_data` keys);
-  `ticker`, `raw_data`, `langfuse_trace_id` added. The four validation columns
-  (`validated_by`, `validation_note`, `validation_date`, `used_in_brief`) are not in
-  the DDL and were moved to a labelled `planned_fields` block rather than deleted.
-
-- **[DEFECT] Schema file never passed conformance.** v0.1.0 ended with a stray `---`
-  document separator, so `yaml.safe_load` — the exact check `scripts/conformance.mjs`
-  runs — raised `expected a single document in the stream`. The file had been carried
-  since 2026-07-09 as if it were valid. Separator removed; the file now parses.
-
-- **Outputs:**
-  - `data/verified/ai_company_signals-schema.yaml` v0.2.0 (real DDL; new
-    `entity_verification` section; entity audit registered under `audit_checks`)
-  - `recipes/vendor-intelligence-brief.yaml` v0.2.0 (gate 1 `[CLEARED]`,
-    `todos_open` 3 -> 2, arXiv/News/EDGAR source entries corrected, Langfuse v3 noted)
-  - `DATA_CONTRACT.md` (gate row now partially cleared; two rules added)
-  - This entry
-- **Result:** Mycroft's record now matches the running system. Recipe stays **DRAFT** —
-  SPECIFIED requires zero open TODOs and two gates are still open. No attestation.
+- **Context:** Inherited n8n "Financial Regulatory Intelligence System" (orig. Darshan Rajopadhye). Goal: "noise generator -> signal provider" in 4 layers; this pass = Layer 1 (hardening) + unambiguous detection bugs. Original workflow JSON is quarantined Tier 3 and left untouched.
+- **Inputs:** `data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Regulatory_Scanning_Agent/Mycroft - Financial Regulatory Intelligence System.json` (read-only ref) + `docs/mycroft-main/n8n_Workflows/Regulatory_Scanning_Agent/{README,DATABASE_SETUP,proposal}.md`.
+- **Commands / actions:**
+  - Created working copy `scripts/regulatory-intel/workflow.dev.json` (byte-identical seed; source of truth for edits — user copies node-by-node into a hand-built n8n workflow).
+  - Local DB: created `mycroft_intelligence` on Postgres.app `localhost:5431` with `regulatory_feeds` (schema + indexes incl. unique `(title, DATE(published))` + `updated_at` trigger); widened `source`/`source_feed` to `TEXT`; loaded 7 sample rows. User's live n8n run reached 337 rows.
+  - Applied fixes to workflow.dev.json (validated JSON after each): A1 local report path; A2 parameterized INSERT ($1..$14, jsonb via JSON.stringify+::jsonb) and removed now-redundant `Prepare Data` node; A3 per-feed retry+continueRegularOutput+alwaysOutputData on all 5 RSS nodes; A4 decode-then-escape `esc()` in Generate HTML Report; A5 `settings.timezone=America/New_York`; A6 robust new-insert detection (`Number.isInteger(id) && title`); B1 dropped the `content isNotEmpty` filter (recovers title-only items); B4 aligned report high-priority threshold `>7`->`>6`.
+  - Verified: parameterized insert exercised via `pg` driver with nasty inputs (apostrophes/backslash/>255 char/RFC-822 date) in rolled-back txns; ON CONFLICT dedup returns 0 rows on duplicate. Live feed-health probe: all 5 feeds HTTP 200; Federal Register feed = 73/140 items with empty description (quantifies the B1 signal loss).
+- **Outputs:** `scripts/regulatory-intel/workflow.dev.json` (8 fixes), `scripts/regulatory-intel/reports/.gitignore`; local `mycroft_intelligence` DB. Helper/mutation scripts kept in session scratchpad (not committed).
+- **Result:** Insert path now robust (no more VARCHAR/quote/backslash/timeout failure class); one dead feed no longer halts the run; empty-content SEC/agency items recovered. Original workflow untouched.
 - **Open issues:**
-  - [GATE OPEN] Supervisor routing review (Phase 2) — no Langfuse trace reviewed or logged.
-  - [GATE OPEN] Brief approval (Phase 2) — no procurement owner review process.
-  - [BLOCKER] All per-source signal counts are stale (pre-purge). Recount before citing.
-  - [RESIDUAL RISK] Common-word vendor names (Adept, Writer, Notion, Glean, Modal,
-    Replicate) can still admit unrelated text; the LLM `about_company` backstop fails
-    open on API error, so signals admitted during a Groq outage carry only the
-    deterministic check.
-  - [BLOCKER] Groq token limit at company #33 of 50 — Phase 3 batch job still blocked.
-  - ~~The platform-repo changes above are **uncommitted** in that repo. Mycroft now
-    documents work that has no commit hash to cite; commit there to complete the
-    provenance chain (P3).~~
-    **CLOSED 2026-08-26:** committed as `5edd72c` "Updates after testing"
-    (10 files, +1291/-92) in MuskanKhandelwal/AI-Vendor-Intelligence-Platform.
-    The provenance chain is complete; everything in this entry cites that hash.
+  - `Generate Email` node still has unescaped HTML + dead `>7` var; SMTP nodes hardcode `therrshan@gmail.com` — kept OFF during testing.
+  - Remaining fixes: A7 (scope "Mark email sent" UPDATE to current-run ids), B2 (source mislabel — all Federal Register items tagged "…Securities"), B3 (Google News URL unwrap); optional rename of default-named "Code in JavaScript" node.
+  - C1: keyword scorer (Node 10, baseline-5 compression + misfires) intentionally UNCHANGED — it is the Layer-2 benchmark baseline. Freeze baseline on the post-B1 pipeline.
+  - Provenance note: shipped n8n credential pointed at abandoned remote DB `157.230.84.79:5433`; project now runs local per-developer (localhost:5431), consistent with DATABASE_SETUP.md.
 
-## 2026-08-26 -- Brief evaluation harness + UNKNOWN enforcement; wrong-entity claims found in a finished brief
+## 2026-08-30 -- Project 29 regulatory workflow: A7 fix (scope Mark-email-sent update to run ids)
 
-- **Recipe:** vendor-intelligence-brief v0.2.0 -> v0.3.0 (stays DRAFT).
-- **Inputs:** Two new commits in MuskanKhandelwal/AI-Vendor-Intelligence-Platform,
-  branch `main`, tree clean:
-  - `2b44793` "Evaluation" (2026-08-26) — `evaluation/eval_runner.py` (323L),
-    `evaluation/labeled_briefs.csv`, README known-issues rewrite.
-  - `0fa8a10` "Test workflows" (2026-08-26) — `_enforce_unknown_sections` in
-    `agents/supervisor.py`, `evaluation/test_eval_runner.py` (17 tests), CI wiring.
-- **Commands:** Read both commits and the working files; counted checks, banned
-  phrases, tests and CSV rows from source; updated the recipe, the signal schema, and
-  this log; ran `node scripts/conformance.mjs` and `npm run verify`.
+- **Recipe:** Project 29 regulatory intelligence hardening (Layer 1), follow-up to 2026-07-24 entry.
+- **Inputs:** `scripts/regulatory-intel/workflow.dev.json`; local `mycroft_intelligence` DB @ `localhost:5431` (already running, not started for this task).
+- **Commands / actions:**
+  - Read the "Mark email sent" Postgres node: it ran `UPDATE regulatory_feeds SET email_sent=TRUE ... WHERE (urgency_score > 7 OR impact_level IN ('Critical','High')) AND email_sent = FALSE` — a blanket condition over the whole table, unscoped to the current run, and using a stale `>7` threshold (the "High Priority Filter" node upstream actually gates on `>6`, so the two conditions had already drifted apart).
+  - Traced the node graph: `Insert data into DB` (`RETURNING *`, so `id` is present) -> `Code in JavaScript` -> `If2` -> `High Priority Filter` -> `Generate Email` -> `If` -> `Send Email Alert` -> `Mark email sent`. Every downstream node already carries the exact row ids that went into this run's email; the old query ignored them and re-derived its own (drifted) match condition.
+  - Fixed: query now scopes to `WHERE id = ANY($1::int[]) AND email_sent = FALSE`, with `queryReplacement` = `$("High Priority Filter").all().map(i => i.json.id)`.
+  - Verified in a rolled-back transaction against the local DB: seeded rows 3/4/5 match the old blanket condition (urgency_score/impact_level) and have `email_sent = FALSE`; ran the new query with an id list that excludes them (`[1,2,999999]`) — rows 3/4/5 were correctly left untouched, proving the old query would have silently marked them "sent" without them ever being emailed.
+  - Ran `node scripts/conformance.mjs scripts/regulatory-intel/workflow.dev.json` — valid JSON.
+- **Outputs:** Updated `scripts/regulatory-intel/workflow.dev.json` (`Mark email sent` node).
+- **Result:** A7 closed. Mark-email-sent is now idempotent and scoped to the actual run, independent of any future drift between the alert-gate threshold and the report threshold.
+- **Open issues:** B2 (source classifier — 21 Unknown Source + 157 lumped as "Federal Register - Securities"; read `Regulatory_QA/crud.py` first) and B3 (Google News URL unwrap) remain open. B3 is more involved than a regex fix: live-checked the FINRA/Investment-Advisor feeds today and confirmed modern Google News RSS links are `news.google.com/rss/articles/<opaque-id>?oc=5` with no `url=` query param, so the existing `extractRealUrl()` regex never matches; unwrapping now requires following the redirect page (JS-rendered, not a plain 302 to the article) or scraping — a separate, larger task. Per copy-paste working model, next step is telling the user which single node (`Mark email sent`) changed so they can update it in their hand-built n8n workflow.
 
-- **What was added upstream.** A deterministic evaluation harness for generated briefs,
-  with two severities. FAIL: `check_structure` (all six sections present),
-  `check_score_fidelity` (the brief's N/100 must equal `compute_financial_health()`'s
-  rubric — the regression test for an LLM inventing its own number),
-  `check_unknown_discipline` (a dimension with no evidence must say UNKNOWN),
-  `check_filler` (11 banned generic phrases). WARN: `check_date_grounding` and
-  `check_amount_grounding` (every date and dollar figure must trace to a collected
-  signal; WARN not FAIL because legitimate aggregates derived from tool output would
-  otherwise show as red).
-  The harness's stated principle — *where a rule can be written down, write the rule
-  instead of trusting a model to judge* — is the verification stack arrived at
-  independently: FAIL is layer 1 (conformance, halts), WARN is layer 2 (audit, reports
-  for a human).
+## 2026-08-30 -- A7 addendum: measured the real drift (12 live rows), not just a rolled-back synthetic test
 
-- **UNKNOWN enforcement.** `agents/supervisor.py` now computes the no-data dimension
-  list before synthesis and names those sections in the prompt, then rewrites them to
-  "UNKNOWN - no data collected" after generation. Reason on the record: when the Neo4j
-  graph went offline the model filled COMPETITIVE POSITION with "a prominent player in
-  the AI development space" rather than admitting it had nothing. Per the source
-  comment, a prompt is a request, not a guarantee — this makes the honest answer
-  structural. This is P1 enforced in code: the machine stops the pipeline from
-  proceeding past a gap because no failure was detected.
+- **Recipe:** Same as above (A7 fix), additional verification.
+- **Inputs:** local `mycroft_intelligence` DB @ `localhost:5431` (already running).
+- **Commands:** Read `Keyword Analysis & Urgency Scoring`'s `determineImpactLevel()` — confirmed `impact_level` can reach `'High'`/`'Critical'` from an enforcement/fraud keyword hit alone, independent of `urgency_score`, which is exactly why the old "Mark email sent" query's `impact_level IN ('Critical','High')` clause could diverge from "High Priority Filter"'s `urgency_score > 6` gate. Queried the live table for rows matching that exact divergence (`impact_level IN ('Critical','High') AND urgency_score <= 6 AND email_sent = FALSE`).
+- **Outputs:** `scripts/regulatory-intel/A7-VERIFICATION.md` — full 12-row result + honest caveats (live/growing count, forward-looking claim only, some rows are known C1-class noise).
+- **Result:** 12 real rows (as of today), including genuine SEC/FINRA enforcement actions (e.g. "SEC Charges 21 Individuals With Alleged Wide-Reaching Insider Trading Scheme"), that "High Priority Filter" would never place in an email but that the old query would have silently flipped to `email_sent = TRUE`. Confirms A7 was a real, currently-latent bug, not a hypothetical edge case.
+- **Open issues:** none new; B2/B3 remain open per the earlier entry.
 
-- **CI.** `.github/workflows/test.yml` renamed "API Health Check" -> "Tests"; runs
-  `python -m unittest discover -s evaluation -v` on push/PR to main. Fixture-based, so
-  no database, AWS or Neo4j credentials. The full eval that generates real briefs needs
-  a live environment and stays manual.
+## 2026-08-30 -- Project 29 regulatory workflow: B2 fix (source classification)
 
-- **[BLOCKER] Wrong-entity claims found in a finished brief.** `labeled_briefs.csv`
-  captures a real Scale AI brief attributing to Scale AI: "a Rs 170 Cr raise by Elevate
-  Education", "a $2.2 million raise by SambaNova", and "a $900m credit facility to scale
-  AI data centers" — two other companies' funding rounds, plus "scale AI" matched as an
-  ordinary verb phrase. Its COMPETITIVE POSITION names Ecolab (water treatment) as a
-  competitor. Scale AI's seed entry carries aliases ["Scale AI", "ScaleAI"] and no
-  `exclude_entities` or `exclude_terms`, so the deterministic filter had nothing to
-  reject on.
-  - *Effect on the gate:* **Signal validation stays CLEARED.** Its clearance on
-    2026-08-22 was explicitly batch-level and named common-word names as residual risk;
-    this is that risk confirmed, not a new one concealed. Decision by Muskan Khandelwal,
-    2026-08-26. `last_gate` and `todos_open` unchanged.
-  - *What changed:* the risk is no longer hypothetical, and it is now known to reach
-    finished briefs rather than stopping at the signal table.
-  - *Not yet applied:* populate `exclude_entities`/`exclude_terms` for common-word
-    vendors (Adept, Writer, Notion, Glean, Modal, Replicate, Scale AI).
-
-- **[LIMIT] Grounding checks cannot catch this class.** `check_date_grounding` and
-  `check_amount_grounding` verify that a claim traces to a *collected signal*. A
-  wrong-entity signal already in the corpus passes — the figure is real, it just belongs
-  to another company. This is why the Scale AI claims were not flagged. A clean eval run
-  is not evidence that a brief's signals belong to the right company.
-
-- **[DEFECT] README drift in the platform repo.** `README.md` (commit `2b44793`) states
-  that briefs write prose for COMPETITIVE POSITION when Neo4j is unreachable and that
-  the fix is "pending". The fix landed in the very next commit (`0fa8a10`). The README
-  has not been updated — a P6 mismatch between stated intent and shipped code. Not fixed
-  here: this log governs Mycroft, and the file lives in the other repo.
-
-- **Outputs:**
-  - `recipes/vendor-intelligence-brief.yaml` v0.3.0 — new `evaluation:` section (6
-    checks with severities, the harness limit, the human accuracy set, 17 tests, CI),
-    new `architecture.unknown_enforcement`, three issues added
-  - `data/verified/ai_company_signals-schema.yaml` v0.3.0 — residual risk upgraded to
-    CONFIRMED with the Scale AI instance; new note on the grounding-check limit
-  - Amended the 2026-08-22 entry: its open provenance issue is closed by `5edd72c`
-  - This entry
-- **Result:** Mycroft records the machine half of brief evaluation. Recipe stays
-  **DRAFT** — no gate closed this round, `todos_open` still 2, no attestation.
-- **Open issues:**
-  - [BLOCKER] No accuracy rate exists. `labeled_briefs.csv` has 6 queued claims and an
-    empty `accurate` column — the machine half runs, the human half has not started.
-    No accuracy figure may be quoted for this system (P3).
-  - [BLOCKER] Common-word vendors still lack exclusion lists (above).
-  - [GATE OPEN] Supervisor routing review (Phase 2) — no Langfuse trace reviewed.
-  - [GATE OPEN] Brief approval (Phase 2) — no procurement owner review process.
-  - [BLOCKER] Per-source signal counts still stale (pre-purge). Recount before citing.
-  - [BLOCKER] Groq token limit at company #33 of 50 — Phase 3 batch job still blocked.
-  - [OPEN] `eval_runner.py` is not wired to any Mycroft phase gate. It reports; nothing
-    yet requires it to pass before a brief ships. Deliberate for now — a gate is a hard
-    stop and needs a named owner.
+- **Recipe:** Project 29 regulatory intelligence hardening (Layer 1), follow-up to the 2026-07-24 and 2026-08-30 (A7) entries.
+- **Inputs:** `scripts/regulatory-intel/workflow.dev.json` (`Normalize Data` node); live RSS feeds (all 5); `Regulatory_QA/backend/app/crud.py` (read to confirm no hardcoded `source_feed` value list — it does exact-match/GROUP BY passthrough, so new labels are safe).
+- **Commands / actions:**
+  - Read `identifySource()`: every `federalregister.gov` item defaulted to `'Federal Register - Securities'` unless a CFTC heuristic matched (`link.includes('commodity-futures')` or `title.includes('cftc')`).
+  - Live-checked the actual CFTC Regulations RSS feed and the "securities+investment" term-search feed: Federal Register document permalinks never embed the agency slug, and CFTC titles rarely say "CFTC" literally — so the CFTC heuristic is dead code for real CFTC items. Confirmed the term-search feed pulls in unrelated agencies (FCC, EEOC, DOT-Maritime) verbatim in `dc:creator`.
+  - Fixed: `identifySource()` now reads `dc:creator` (the actual issuing agency, always present and reliable on Federal Register items) — SEC/CFTC/FINRA map to their existing labels; any other named agency gets `Federal Register - <agency name>` instead of a blanket false "Securities" label.
+  - Verified live: extracted old vs. new `identifySource()` into a standalone script, ran both against all 5 live feeds. Result: CFTC feed 12/12 reclassified (100% were wrong), term-search feed 83/146 reclassified, SEC/FINRA/Investment-Advisor feeds 0 changed (no regression).
+  - Ran `node scripts/conformance.mjs scripts/regulatory-intel/workflow.dev.json` — valid JSON.
+- **Outputs:** Updated `scripts/regulatory-intel/workflow.dev.json` (`Normalize Data` node); `scripts/regulatory-intel/B2-VERIFICATION.md`.
+- **Result:** B2 closed for the Federal Register mislabeling (157-item complaint from `FINDINGS.md`). The 21 "Unknown Source" Google News fallthrough is explicitly left open — no reliable signal exists there (no `dc:creator` on Google News items; some headlines don't contain any of the matched keywords).
+- **Open issues:** 21 Unknown Source (Google News fallthrough, no clear fix path), B3 (Google News URL unwrap, confirmed bigger scrape-based task).
