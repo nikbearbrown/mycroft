@@ -1,0 +1,25 @@
+# Recurring form of grader-job.yaml. Daily is enough — grading is bounded by
+# trading days, not wall-clock. Idempotent (ON CONFLICT DO UPDATE), so re-runs
+# just refine previously-"insufficient time elapsed" rows once more days pass.
+apiVersion: batch/v1
+kind: CronJob
+metadata: { name: outcome-grader, namespace: fes }
+spec:
+  schedule: "30 21 * * *" # 21:30 UTC — after US market close
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: outcome-grader
+              image: finance-event-signals-outcome-grader:latest
+              imagePullPolicy: IfNotPresent
+              envFrom: [{ configMapRef: { name: fes-env } }]
+              env:
+                - { name: GRADER_HOLDING_DAYS, value: "1" }
+                - { name: GRADER_MOVE_THRESHOLD_PCT, value: "0.5" }

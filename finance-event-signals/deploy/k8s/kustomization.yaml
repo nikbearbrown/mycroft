@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: fes
+
+resources:
+  - namespace.yaml
+  - infra.yaml
+  - observability.yaml
+  - pipeline.yaml
+  - hpa.yaml
+  - grader-cronjob.yaml
+
+# _config/ is copied from the canonical sources (otel/, deploy/postgres/) by
+# `make k8s-sync`; `make verify` fails if they drift. kustomize can't read files
+# outside its own directory, so the copy is the workaround.
+configMapGenerator:
+  - name: postgres-initdb
+    files:
+      - _config/001_init.sql
+      - _config/002_signals.sql
+      - _config/003_outcomes.sql
+  - name: otel-config
+    files:
+      - collector-config.yaml=_config/collector-config.yaml
+  - name: prometheus-config
+    files:
+      - prometheus.yml=_config/prometheus.yml
+  - name: grafana-datasources
+    files:
+      - grafana-datasources.yaml=_config/grafana-datasources.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true

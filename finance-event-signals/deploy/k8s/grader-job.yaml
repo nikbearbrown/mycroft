@@ -1,0 +1,19 @@
+# One-shot run of the grader (kubectl apply -f, then delete+reapply to rerun).
+# The recurring form is a CronJob — see grader-cronjob.yaml, added once this
+# one-shot run is verified.
+apiVersion: batch/v1
+kind: Job
+metadata: { name: outcome-grader-run, namespace: fes }
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: outcome-grader
+          image: finance-event-signals-outcome-grader:latest
+          imagePullPolicy: IfNotPresent
+          envFrom: [{ configMapRef: { name: fes-env } }]
+          env:
+            - { name: GRADER_HOLDING_DAYS, value: "1" }
+            - { name: GRADER_MOVE_THRESHOLD_PCT, value: "0.5" }
