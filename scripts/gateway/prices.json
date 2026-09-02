@@ -1,6 +1,36 @@
 {
-  "version": "UNSET",
+  "version": "2026-09-02",
   "currency": "USD",
   "unit": "per_1k_tokens",
-  "models": {}
+  "_source": "https://console.groq.com/docs/models -- read 2026-09-02",
+  "_units_note": "Groq quotes per MILLION tokens; this table is per THOUSAND. Every figure below is the published per-1M price divided by 1000.",
+
+  "models": {
+    "groq:openai/gpt-oss-20b": {
+      "input_per_1k": 0.000075,
+      "output_per_1k": 0.0003,
+      "basis": "list_price",
+      "source": "https://console.groq.com/docs/models",
+      "read_on": "2026-09-02",
+      "published_per_1m": {"input": 0.075, "output": 0.30}
+    },
+
+    "groq:openai/gpt-oss-120b": {
+      "input_per_1k": 0.00015,
+      "output_per_1k": 0.0006,
+      "basis": "list_price",
+      "source": "https://console.groq.com/docs/models",
+      "read_on": "2026-09-02",
+      "published_per_1m": {"input": 0.15, "output": 0.60}
+    },
+
+    "groq:qwen/qwen3.6-27b": {
+      "input_per_1k": 0.0006,
+      "output_per_1k": 0.003,
+      "basis": "list_price",
+      "source": "https://console.groq.com/docs/models",
+      "read_on": "2026-09-02",
+      "published_per_1m": {"input": 0.60, "output": 3.00}
+    }
+  }
 }
