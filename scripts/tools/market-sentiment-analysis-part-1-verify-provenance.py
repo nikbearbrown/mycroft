@@ -271,7 +271,9 @@ def emit(data: Any, output_path: str | None = None) -> None:
     if output_path:
         path = Path(output_path)
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text + '\n', encoding='utf-8')
+        # newline='\n' is required: on Windows write_text would translate to CRLF, which
+        # changes every artifact's SHA-256 by platform and breaks the provenance trace.
+        path.write_text(text + '\n', encoding='utf-8', newline='\n')
     print(text)
 
 

@@ -1,0 +1,127 @@
+{
+  "_provenance": {
+    "fixture_set": "defective",
+    "ingested_by": "scripts/ingest/market-sentiment-analysis-part-1-ingest-inputs.py",
+    "manifest_declared_rows": 6,
+    "manifest_declared_rows_basis": "data.children[] submissions",
+    "recipe": "recipes/market-sentiment-analysis-part-1.md",
+    "run_id": "sample-001",
+    "source_path": "data/raw/market-sentiment-analysis-part-1/sample/defective/reddit-wallstreetbets.json",
+    "source_sha256": "291b99b9b2d3b6a21d0d1b3d4a2a3fbf078a098d3545eef3cb244aa82b5bf477",
+    "transport_only": "Records are verbatim. This step does not recount, dedupe, drop, or coerce."
+  },
+  "classification": "ingest",
+  "fetched_at": "2026-08-27T14:30:00+00:00",
+  "live_call_performed": false,
+  "node": "Ingest declared inputs",
+  "records": [
+    {
+      "data": {
+        "children": [
+          {
+            "data": {
+              "author": "synthetic_user_01",
+              "created_utc": 1787828400,
+              "id": "sy0001",
+              "num_comments": 87,
+              "permalink": "/r/wallstreetbets/comments/sy0001/",
+              "score": 412,
+              "selftext": "Held through the print and the calls are up big. Still bullish here.",
+              "subreddit": "wallstreetbets",
+              "title": "FAKE calls printing after the earnings beat"
+            },
+            "kind": "t3"
+          },
+          {
+            "data": {
+              "author": "synthetic_user_01",
+              "created_utc": 1787828400,
+              "id": "sy0001",
+              "num_comments": 87,
+              "permalink": "/r/wallstreetbets/comments/sy0001/",
+              "score": 412,
+              "selftext": "Same submission id served twice by the search endpoint.",
+              "subreddit": "wallstreetbets",
+              "title": "FAKE calls printing after the earnings beat (crosspost)"
+            },
+            "kind": "t3"
+          },
+          {
+            "data": {
+              "author": "synthetic_user_05",
+              "created_utc": 1787797800,
+              "id": "sy0012",
+              "num_comments": 9,
+              "permalink": "/r/wallstreetbets/comments/sy0012/",
+              "score": 55,
+              "selftext": "Post body with no title field, so there is nothing to score for sentiment.",
+              "subreddit": "wallstreetbets"
+            },
+            "kind": "t3"
+          },
+          {
+            "data": "FAKE to the moon - this child arrived with data as a string instead of an object",
+            "kind": "t3"
+          },
+          {
+            "data": {
+              "author": "synthetic_user_06",
+              "created_utc": 1710523200,
+              "id": "sy0014",
+              "num_comments": 4,
+              "permalink": "/r/wallstreetbets/comments/sy0014/",
+              "score": 31,
+              "selftext": "Submission is far outside the t=day collection window.",
+              "subreddit": "wallstreetbets",
+              "title": "Old FAKE puts thread from last year"
+            },
+            "kind": "t3"
+          },
+          {
+            "data": {
+              "author": "synthetic_user_07",
+              "created_utc": 1787782200,
+              "id": "sy0015",
+              "num_comments": 17,
+              "permalink": "/r/wallstreetbets/comments/sy0015/",
+              "score": "many",
+              "selftext": "Bullish, but the score arrived as a word instead of an integer.",
+              "subreddit": "wallstreetbets",
+              "title": "FAKE rocket thread, score field is text"
+            },
+            "kind": "t3"
+          }
+        ]
+      },
+      "kind": "Listing"
+    }
+  ],
+  "recount_note": "Deliberately absent. Recounting and comparing against source_declared_record_count is step 3 (validate-data-shape).",
+  "recount_performed": false,
+  "rejects": [],
+  "sample_mode": true,
+  "source_declared_record_count": 6,
+  "source_declared_record_count_basis": "records[0].data.children[] entries, each one Reddit t3 submission",
+  "source_errors": [],
+  "source_fixture_block": {
+    "defect_ids": [
+      "D13",
+      "D14",
+      "D15",
+      "D16",
+      "D17"
+    ],
+    "defects_injected": true,
+    "fixture_set": "sample/defective",
+    "frozen_at": "2026-08-27T14:30:00+00:00",
+    "manifest": "data/raw/market-sentiment-analysis-part-1/sample/fixture-manifest.json",
+    "note": "Synthetic fixture with DELIBERATE DEFECTS. Every defect is catalogued in the manifest by id and locator. Never cite as evidence; never promote to data/verified/.",
+    "recipe": "recipes/market-sentiment-analysis-part-1.md",
+    "synthetic": true
+  },
+  "source_name": "Reddit r/wallstreetbets search",
+  "source_type": "http_json",
+  "source_url_or_path": "https://api.reddit.com/r/wallstreetbets/search.json?q=FAKE&sort=new&limit=50&t=day",
+  "stream": "reddit",
+  "workflow": "Market Sentiment Analysis - Part 1"
+}
