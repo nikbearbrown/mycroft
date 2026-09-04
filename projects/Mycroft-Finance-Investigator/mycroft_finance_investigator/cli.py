@@ -12,6 +12,7 @@ from .agent import InvestigationAgent
 from .bundle import build_audit_bundle, verify_audit_bundle
 from .evaluation import run_evaluation, write_evaluation_artifacts
 from .finance import FinanceData, FinanceEngine
+from .orchestration import run_orchestration, write_orchestration_artifacts
 from .reporting import write_human_report, write_machine_log
 from .review import record_review_decision, write_review_request
 from .scenario import run_scenarios, write_scenario_artifacts
@@ -29,6 +30,8 @@ DEFAULT_RUN_LOG = REPO_ROOT / "logs/mycroft-finance-investigator-sample-2026-02.
 DEFAULT_EVALUATION_CASES = PROJECT_ROOT / "evaluations/cases.json"
 DEFAULT_SCENARIO_PLAN = PROJECT_ROOT / "config/sample-scenarios.json"
 DEFAULT_TREND_PLAN = PROJECT_ROOT / "config/sample-trend.json"
+DEFAULT_ROUTING_PLAN = PROJECT_ROOT / "config/sample-routing.json"
+DEFAULT_TREND_LOG = REPO_ROOT / "logs/mycroft-finance-investigator-trend-week35.json"
 
 
 def _run_id() -> str:
@@ -144,6 +147,14 @@ def build_parser() -> argparse.ArgumentParser:
     trend.add_argument("--run-id", default="week35-trend")
     trend.add_argument("--output-log", type=Path, required=True)
     trend.add_argument("--output-report", type=Path, required=True)
+    orchestrate = subparsers.add_parser(
+        "orchestrate", help="route recurring evidence gaps to specialists"
+    )
+    orchestrate.add_argument("--plan", type=Path, default=DEFAULT_ROUTING_PLAN)
+    orchestrate.add_argument("--trend-log", type=Path, default=DEFAULT_TREND_LOG)
+    orchestrate.add_argument("--run-id", default="week36-routing")
+    orchestrate.add_argument("--output-log", type=Path, required=True)
+    orchestrate.add_argument("--output-report", type=Path, required=True)
     bundle = subparsers.add_parser(
         "bundle", help="package an immutable reviewer handoff"
     )
@@ -219,6 +230,16 @@ def main() -> None:
         )
         print(f"machine comparison: {args.output_log}")
         print(f"human comparison: {args.output_report}")
+    if args.command == "orchestrate":
+        payload = run_orchestration(args.plan, args.trend_log, args.run_id)
+        write_orchestration_artifacts(payload, args.output_log, args.output_report)
+        print(f"specialist tasks: {len(payload['tasks'])}")
+        print(
+            f"delegations: {payload['supervisor']['delegations_used']} / "
+            f"{payload['supervisor']['max_delegations']}"
+        )
+        print(f"machine routing trace: {args.output_log}")
+        print(f"human evidence queue: {args.output_report}")
     if args.command == "bundle":
         payload = build_audit_bundle(args.bundle_id, args.output_dir)
         print(f"audit bundle: {args.output_dir}")

@@ -106,7 +106,21 @@ demo-only materiality amount.
 - On failure: Stop on scope, hash, or calculation mismatch; never fill a gap
   with a prediction or generated explanation.
 
-### Step 10 — Human Finance Review
+### Step 10 — Route Evidence Gaps to Specialists
+
+- Labor: Supervisor AI and scoped specialist AIs [PA] [TO]
+- AI task: Verify the trend and source-run chain, rank recurring adverse
+  categories by cumulative material impact, then route each task to its fixed
+  revenue, cost, or workforce specialist. Record every handoff and result hash.
+- Human task: Judge whether collected calculation and correlated-driver
+  evidence is adequate and provide any missing operational evidence.
+- Handoff condition: The lineage specialist ran first, every task stayed within
+  specialist scope, the delegation limit was respected, and causal explanation
+  and recommendation remain null.
+- On failure: Stop on a hash, scope, recomputation, or delegation-budget
+  violation. Never return a partial queue as complete.
+
+### Step 11 — Human Finance Review
 
 - Labor: Human [IJ] [EI]
 - AI task: Produce a run-bound review request and validate the completed file
@@ -132,6 +146,8 @@ demo-only materiality amount.
 - Complete evidence package is immutable and independently hash-verifiable
 - Historical runs retain exact scope, calculation, and source-hash lineage
 - Recurring variance is never presented as cause, forecast, or recommendation
+- Specialist scope, delegation budget, and handoff trace are machine-enforced
+- Correlated driver records are never promoted to causal evidence
 - No generated causal commentary
 - Named human release decision
 

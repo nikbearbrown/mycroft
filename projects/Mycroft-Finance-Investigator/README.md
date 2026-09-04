@@ -9,7 +9,7 @@ The application explains the **mathematical bridge**, not business causation.
 Current-period causal commentary remains owner-required and blank until a named
 human approves it.
 
-## Weeks 1–8 implemented
+## Weeks 1–9 implemented
 
 - **Week 1:** synthetic SaaS finance data, machine-readable schemas, provenance,
   raw-to-verified validation, and reconciliation checks.
@@ -28,6 +28,9 @@ human approves it.
 - **Week 8:** hash-verified comparison of three monthly investigations,
   month-over-month EBITDA movement, recurring material variance detection, and
   separate machine and human-review trend reports.
+- **Week 9:** a constrained supervisor that verifies the source chain, ranks
+  recurring evidence gaps, delegates them to scoped finance specialists, and
+  records every handoff without generating causal conclusions.
 
 ## Quick start
 
@@ -67,6 +70,9 @@ python3 -m mycroft_finance_investigator.cli scenario \
 python3 -m mycroft_finance_investigator.cli trend \
   --output-log ../../logs/mycroft-finance-investigator-trend-week35.json \
   --output-report ../../reports/generated/mycroft-finance-investigator-trend-week35.md
+python3 -m mycroft_finance_investigator.cli orchestrate \
+  --output-log ../../logs/mycroft-finance-investigator-routing-week36.json \
+  --output-report ../../reports/generated/mycroft-finance-investigator-routing-week36.md
 python3 -m mycroft_finance_investigator.cli bundle \
   --bundle-id mycroft-finance-investigator-week34 \
   --output-dir ../../reports/generated/mycroft-finance-investigator-audit-week34
@@ -120,6 +126,13 @@ that were materially adverse in at least two periods. Its output is labeled
 `HISTORICAL_COMPARISON_NOT_FORECAST`; causal explanation, forecast,
 recommendation, and distribution approval remain unset.
 
+The orchestration command turns recurring categories into a prioritized
+evidence-gap queue. A lineage specialist runs first; revenue, cost, and
+workforce specialists have fixed category scopes and collect only deterministic
+calculations or correlated records. A delegation limit is a hard stop, every
+specialist result has a stable fingerprint, and all causal or approval work
+remains with a human.
+
 ## Amount convention
 
 Revenue and cost inputs are stored as non-negative amounts. Category mapping
@@ -151,6 +164,8 @@ single investigator (observe -> plan -> tool -> evidence)
         +--> immutable audit bundle + integrity verification
         |
         +--> hash-verified multi-month trend comparison
+        |
+        +--> supervisor -> scoped evidence specialists
         |
         +--> structured machine log
         +--> human review report

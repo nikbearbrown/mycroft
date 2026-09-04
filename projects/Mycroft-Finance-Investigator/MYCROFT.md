@@ -58,6 +58,15 @@ recomputes EBITDA and category impacts, identifies recurrence using the
 explicit demo threshold, and retains the source run and row references. It
 cannot generate causation, forecasts, recommendations, or approval.
 
+The evidence-gap supervisor is implemented in
+`mycroft_finance_investigator/orchestration.py`. It verifies the trend and each
+source run before routing work. A lineage specialist always executes first;
+fixed revenue, cost, and workforce scopes prevent arbitrary reassignment. The
+supervisor ranks only recurring adverse categories, enforces a delegation
+budget, fingerprints every specialist result, and retains the full handoff
+trace. Specialist evidence is calculation or correlation evidence—not approved
+causal support.
+
 The investigator must never convert a numerical variance into a causal claim.
 Its output may identify which customer, account, or department records move
 with the variance, but the reason for that movement remains owner-required.
