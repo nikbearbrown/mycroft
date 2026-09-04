@@ -1,0 +1,11 @@
+# Scoped deliberately: this recipe's fixtures and run artifacts only.
+#
+# core.autocrlf=true stores LF and checks out CRLF on Windows, which makes a file's
+# SHA-256 platform-dependent. This pipeline hashes source bytes to build a provenance
+# trace an auditor can re-verify, so a hash that changes with the checkout platform is
+# not usable evidence. Pinning these paths to LF makes the working tree match the blob
+# on every OS.
+#
+# Nothing outside these paths is affected.
+data/raw/market-sentiment-analysis-part-1/** text eol=lf
+data/verified/market-sentiment-analysis-part-1/** text eol=lf

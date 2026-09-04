@@ -1,0 +1,99 @@
+{
+  "_provenance": {
+    "fixture_set": "defective",
+    "raw_input": "data/raw/market-sentiment-analysis-part-1/runs/sample-001-defective/reddit-wallstreetbets.json",
+    "run_id": "sample-001",
+    "source_envelope": {
+      "fetched_at": "2026-08-27T14:30:00+00:00",
+      "sample_mode": true,
+      "source_name": "Reddit r/wallstreetbets search",
+      "source_path": "data/raw/market-sentiment-analysis-part-1/sample/defective/reddit-wallstreetbets.json",
+      "source_sha256": "291b99b9b2d3b6a21d0d1b3d4a2a3fbf078a098d3545eef3cb244aa82b5bf477",
+      "source_type": "http_json"
+    },
+    "validated_by": "scripts/gigo/market-sentiment-analysis-part-1-validate-data-shape.py"
+  },
+  "classification": "gigo",
+  "duplicates_deferred_to_step_4": true,
+  "freshness_deferred_to_step_4": true,
+  "node": "Validate data shape",
+  "record_count": 4,
+  "record_count_basis": "rows that passed shape validation and were promoted",
+  "records": [
+    {
+      "author": "synthetic_user_01",
+      "created_utc": 1787828400,
+      "id": "sy0001",
+      "num_comments": 87,
+      "permalink": "/r/wallstreetbets/comments/sy0001/",
+      "score": 412,
+      "selftext": "Held through the print and the calls are up big. Still bullish here.",
+      "subreddit": "wallstreetbets",
+      "title": "FAKE calls printing after the earnings beat"
+    },
+    {
+      "author": "synthetic_user_01",
+      "created_utc": 1787828400,
+      "id": "sy0001",
+      "num_comments": 87,
+      "permalink": "/r/wallstreetbets/comments/sy0001/",
+      "score": 412,
+      "selftext": "Same submission id served twice by the search endpoint.",
+      "subreddit": "wallstreetbets",
+      "title": "FAKE calls printing after the earnings beat (crosspost)"
+    },
+    {
+      "author": "synthetic_user_06",
+      "created_utc": 1710523200,
+      "id": "sy0014",
+      "num_comments": 4,
+      "permalink": "/r/wallstreetbets/comments/sy0014/",
+      "score": 31,
+      "selftext": "Submission is far outside the t=day collection window.",
+      "subreddit": "wallstreetbets",
+      "title": "Old FAKE puts thread from last year"
+    },
+    {
+      "author": "synthetic_user_07",
+      "created_utc": 1787782200,
+      "id": "sy0015",
+      "num_comments": 17,
+      "permalink": "/r/wallstreetbets/comments/sy0015/",
+      "score": "many",
+      "selftext": "Bullish, but the score arrived as a word instead of an integer.",
+      "subreddit": "wallstreetbets",
+      "title": "FAKE rocket thread, score field is text"
+    }
+  ],
+  "required_fields": [
+    "id",
+    "title",
+    "created_utc",
+    "score"
+  ],
+  "schema_source": "data/raw/market-sentiment-analysis-part-1/sample/fixture-manifest.json",
+  "schema_version": "1.0.0",
+  "shape_validation": {
+    "count_matches_declared": true,
+    "malformed_rows": [
+      {
+        "detail": "expected an object, got str",
+        "locator": "records[0].data.children[3].data"
+      }
+    ],
+    "missing_fields": [
+      {
+        "field": "title",
+        "locator": "records[0].data.children[2].data",
+        "reason": "key_absent"
+      }
+    ],
+    "rows_promoted": 4,
+    "rows_seen": 6,
+    "rows_withheld": 2,
+    "source_declared_record_count": 6
+  },
+  "stream": "reddit",
+  "types_deferred_to_step_4": "Type violations are not checked here. This step has no declared field for them, so per fixture-manifest.json they surface in step 4 flags.",
+  "workflow": "Market Sentiment Analysis - Part 1"
+}

@@ -1,0 +1,100 @@
+{
+  "_provenance": {
+    "fixture_set": "clean",
+    "raw_input": "data/raw/market-sentiment-analysis-part-1/runs/sample-001-clean/news-finnhub.json",
+    "run_id": "sample-001",
+    "source_envelope": {
+      "fetched_at": "2026-08-27T14:30:00+00:00",
+      "sample_mode": true,
+      "source_name": "Finnhub company-news",
+      "source_path": "data/raw/market-sentiment-analysis-part-1/sample/clean/news-finnhub.json",
+      "source_sha256": "441291ec39aed12cf4377c1b3b8e17ec3d369816d4aea67559077ef7b36de9e4",
+      "source_type": "http_json"
+    },
+    "validated_by": "scripts/gigo/market-sentiment-analysis-part-1-validate-data-shape.py"
+  },
+  "classification": "gigo",
+  "duplicates_deferred_to_step_4": true,
+  "freshness_deferred_to_step_4": true,
+  "node": "Validate data shape",
+  "record_count": 5,
+  "record_count_basis": "rows that passed shape validation and were promoted",
+  "records": [
+    {
+      "category": "company",
+      "datetime": 1787832300,
+      "headline": "Fake Industries shares surge as quarterly results beat expectations",
+      "id": 900001,
+      "image": "https://example.invalid/img/900001.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Wire",
+      "summary": "Fake Industries reported a strong quarter, and the stock saw a sharp gain in early trading.",
+      "url": "https://example.invalid/news/900001"
+    },
+    {
+      "category": "company",
+      "datetime": 1787822100,
+      "headline": "Analysts upgrade Fake Industries on strong data-centre growth",
+      "id": 900002,
+      "image": "https://example.invalid/img/900002.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Wire",
+      "summary": "Two desks raised targets, citing growth in the data-centre segment and improving profit outlook.",
+      "url": "https://example.invalid/news/900002"
+    },
+    {
+      "category": "company",
+      "datetime": 1787776800,
+      "headline": "Fake Industries volume rises ahead of investor day",
+      "id": 900003,
+      "image": "https://example.invalid/img/900003.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Daily",
+      "summary": "Trading volume continued to rise as the company prepares for its scheduled investor day.",
+      "url": "https://example.invalid/news/900003"
+    },
+    {
+      "category": "company",
+      "datetime": 1787749200,
+      "headline": "Fake Industries margins decline as input costs weigh",
+      "id": 900004,
+      "image": "https://example.invalid/img/900004.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Daily",
+      "summary": "Gross margin showed a decline quarter over quarter, and one analyst flagged a weak cost outlook.",
+      "url": "https://example.invalid/news/900004"
+    },
+    {
+      "category": "company",
+      "datetime": 1787682000,
+      "headline": "Fake Industries flat in quiet session",
+      "id": 900005,
+      "image": "https://example.invalid/img/900005.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Wire",
+      "summary": "The stock closed little changed in a session with no company-specific catalyst.",
+      "url": "https://example.invalid/news/900005"
+    }
+  ],
+  "required_fields": [
+    "id",
+    "datetime",
+    "headline",
+    "source",
+    "url"
+  ],
+  "schema_source": "data/raw/market-sentiment-analysis-part-1/sample/fixture-manifest.json",
+  "schema_version": "1.0.0",
+  "shape_validation": {
+    "count_matches_declared": true,
+    "malformed_rows": [],
+    "missing_fields": [],
+    "rows_promoted": 5,
+    "rows_seen": 5,
+    "rows_withheld": 0,
+    "source_declared_record_count": 5
+  },
+  "stream": "news",
+  "types_deferred_to_step_4": "Type violations are not checked here. This step has no declared field for them, so per fixture-manifest.json they surface in step 4 flags.",
+  "workflow": "Market Sentiment Analysis - Part 1"
+}
