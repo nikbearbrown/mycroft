@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  gatekeeper:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount local data directory for persistent ChromaDB storage and testing corpus
+      - ./data:/code/data
+      - ./chroma_db:/code/chroma_db
