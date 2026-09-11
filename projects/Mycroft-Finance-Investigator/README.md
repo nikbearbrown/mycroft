@@ -9,7 +9,7 @@ The application explains the **mathematical bridge**, not business causation.
 Current-period causal commentary remains owner-required and blank until a named
 human approves it.
 
-## Weeks 1–9 implemented
+## Weeks 1–10 implemented
 
 - **Week 1:** synthetic SaaS finance data, machine-readable schemas, provenance,
   raw-to-verified validation, and reconciliation checks.
@@ -31,6 +31,9 @@ human approves it.
 - **Week 9:** a constrained supervisor that verifies the source chain, ranks
   recurring evidence gaps, delegates them to scoped finance specialists, and
   records every handoff without generating causal conclusions.
+- **Week 10:** an exact specialist replay and review-follow-up loop that
+  classifies evidence as verified, unsupported, or open and writes an
+  append-only closure pack without pretending a synthetic exercise is approval.
 
 ## Quick start
 
@@ -73,6 +76,9 @@ python3 -m mycroft_finance_investigator.cli trend \
 python3 -m mycroft_finance_investigator.cli orchestrate \
   --output-log ../../logs/mycroft-finance-investigator-routing-week36.json \
   --output-report ../../reports/generated/mycroft-finance-investigator-routing-week36.md
+python3 -m mycroft_finance_investigator.cli follow-up \
+  --output-log ../../logs/mycroft-finance-investigator-follow-up-week37.json \
+  --output-report ../../reports/generated/mycroft-finance-investigator-follow-up-week37.md
 python3 -m mycroft_finance_investigator.cli bundle \
   --bundle-id mycroft-finance-investigator-week34 \
   --output-dir ../../reports/generated/mycroft-finance-investigator-audit-week34
@@ -133,6 +139,13 @@ calculations or correlated records. A delegation limit is a hard stop, every
 specialist result has a stable fingerprint, and all causal or approval work
 remains with a human.
 
+The follow-up command binds a synthetic review exercise to the exact Week 36
+orchestration hash, verifies the routing plan and trend hashes, and replays all
+specialist results. It can verify an unchanged evidence set, reject a causal
+claim when only calculation or correlated records are cited, or keep a request
+open when a required source is absent. Outputs are append-only and remain
+`BLOCKED_PENDING_HUMAN_REVIEW`.
+
 ## Amount convention
 
 Revenue and cost inputs are stored as non-negative amounts. Category mapping
@@ -166,6 +179,9 @@ single investigator (observe -> plan -> tool -> evidence)
         +--> hash-verified multi-month trend comparison
         |
         +--> supervisor -> scoped evidence specialists
+        |                         |
+        |                         v
+        +<-- exact replay + review-driven follow-up
         |
         +--> structured machine log
         +--> human review report

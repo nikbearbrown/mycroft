@@ -120,7 +120,21 @@ demo-only materiality amount.
 - On failure: Stop on a hash, scope, recomputation, or delegation-budget
   violation. Never return a partial queue as complete.
 
-### Step 11 — Human Finance Review
+### Step 11 — Replay Review Follow-ups
+
+- Labor: AI replay with human-owned interpretation [PA] [TO] [IJ]
+- AI task: Bind a follow-up request to the exact orchestration hash, recheck its
+  upstream plan and trend, replay every specialist result, and classify each
+  request as verified evidence, unsupported claim, or open evidence need.
+- Human task: Inspect the classifications, supply approved causal evidence, and
+  decide whether remaining gaps are acceptable.
+- Handoff condition: Every source task is addressed once, all result
+  fingerprints replay exactly, citations exist in the assigned task, outputs
+  are append-only, and the gate remains open.
+- On failure: Stop on any hash, inventory, fingerprint, citation, or overwrite
+  failure. Never call an exact evidence replay a verified business cause.
+
+### Step 12 — Human Finance Review
 
 - Labor: Human [IJ] [EI]
 - AI task: Produce a run-bound review request and validate the completed file
@@ -148,6 +162,8 @@ demo-only materiality amount.
 - Recurring variance is never presented as cause, forecast, or recommendation
 - Specialist scope, delegation budget, and handoff trace are machine-enforced
 - Correlated driver records are never promoted to causal evidence
+- Review follow-ups are run-bound, exactly replayed, and append-only
+- Verified evidence integrity is never presented as verified business cause
 - No generated causal commentary
 - Named human release decision
 

@@ -84,9 +84,12 @@ causal explanation, adequacy, and distribution.
 13. Have a constrained supervisor verify lineage, prioritize recurring evidence
     gaps, and delegate collection to fixed-scope finance specialists while
     retaining every handoff and respecting a hard delegation limit.
-14. Produce a run-bound review request with causal commentary blank and the
+14. Bind each review follow-up to the exact orchestration artifact, replay all
+    specialist results, and classify requested work as verified evidence,
+    unsupported causal claim, or open evidence request.
+15. Produce a run-bound review request with causal commentary blank and the
    human gate open.
-15. Accept only a named human decision whose causal claims cite evidence from
+16. Accept only a named human decision whose causal claims cite evidence from
    that exact run; record it as an append-only gate artifact.
 
 ## Implementation Map
@@ -102,6 +105,7 @@ causal explanation, adequacy, and distribution.
 | Audit-bundle handoff | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/bundle.py` |
 | Historical comparison | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/trend.py` |
 | Specialist routing | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/orchestration.py` |
+| Review-driven replay | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/reinvestigation.py` |
 | Log and report rendering | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/reporting.py` |
 | Local orchestration | `projects/Mycroft-Finance-Investigator/mycroft_finance_investigator/cli.py` |
 | Conformance and behavior tests | `projects/Mycroft-Finance-Investigator/tests/` |
@@ -180,6 +184,17 @@ specialist identity, specialist-result fingerprint, evidence kinds, explicit
 missing evidence, complete handoff trace, null causal explanation and
 recommendation, and an open human gate.
 
+### Re-investigation Closure Pack
+
+Paths: `logs/mycroft-finance-investigator-follow-up-[RUN_ID].json` and
+`reports/generated/mycroft-finance-investigator-follow-up-[RUN_ID].md`.
+
+Required fields: exact source-orchestration and follow-up-request hashes,
+specialist replay status, one follow-up per source task, before/after status,
+known evidence citations, explicit remaining gaps, verified/unsupported/open
+counts, null accepted causation and recommendation, append-only output behavior,
+`BLOCKED_PENDING_HUMAN_REVIEW`, and an open human gate.
+
 ## Stop Conditions
 
 - Stop if provenance is missing or ambiguous.
@@ -211,6 +226,13 @@ recommendation, and an open human gate.
 - Stop rather than exceed the supervisor delegation budget or emit a partial
   queue as complete.
 - Stop before treating correlated driver records as causal evidence.
+- Stop if a follow-up request does not bind to the exact orchestration hash or
+  address every source task exactly once.
+- Stop if the routing plan, trend log, task inventory, or specialist result
+  fingerprint changes during replay.
+- Stop if a follow-up cites evidence absent from its specialist task.
+- Stop rather than overwrite a follow-up log or human closure report.
+- Stop before interpreting a verified replay as verification of business cause.
 - Stop if a reviewer is unnamed or identifies as an agent.
 - Stop if a causal explanation cites evidence absent from the source run.
 - Stop if an approval lacks an accepted materiality decision or an
@@ -243,6 +265,9 @@ python3 -m mycroft_finance_investigator.cli trend \
 python3 -m mycroft_finance_investigator.cli orchestrate \
   --output-log ../../logs/mycroft-finance-investigator-routing-week36.json \
   --output-report ../../reports/generated/mycroft-finance-investigator-routing-week36.md
+python3 -m mycroft_finance_investigator.cli follow-up \
+  --output-log ../../logs/mycroft-finance-investigator-follow-up-week37.json \
+  --output-report ../../reports/generated/mycroft-finance-investigator-follow-up-week37.md
 ```
 
 Do not promote this recipe from `DRAFT` until both TODOs have the evidence

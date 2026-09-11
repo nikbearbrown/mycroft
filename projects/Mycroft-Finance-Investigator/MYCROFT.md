@@ -67,6 +67,15 @@ budget, fingerprints every specialist result, and retains the full handoff
 trace. Specialist evidence is calculation or correlation evidence—not approved
 causal support.
 
+The review-driven replay is implemented in
+`mycroft_finance_investigator/reinvestigation.py`. A follow-up request is bound
+to the exact orchestration SHA-256 and must address each specialist task once.
+The engine rechecks the routing-plan and trend hashes, replays every specialist,
+and stops if any result fingerprint changes. It separates exact evidence replay
+from causal support: a verified replay does not verify a business explanation.
+The committed request is explicitly synthetic, all outputs are append-only, and
+the human gate remains open.
+
 The investigator must never convert a numerical variance into a causal claim.
 Its output may identify which customer, account, or department records move
 with the variance, but the reason for that movement remains owner-required.

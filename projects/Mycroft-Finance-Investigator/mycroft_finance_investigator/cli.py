@@ -14,6 +14,7 @@ from .evaluation import run_evaluation, write_evaluation_artifacts
 from .finance import FinanceData, FinanceEngine
 from .orchestration import run_orchestration, write_orchestration_artifacts
 from .reporting import write_human_report, write_machine_log
+from .reinvestigation import run_reinvestigation, write_reinvestigation_artifacts
 from .review import record_review_decision, write_review_request
 from .scenario import run_scenarios, write_scenario_artifacts
 from .trend import run_trend, write_trend_artifacts
@@ -32,6 +33,8 @@ DEFAULT_SCENARIO_PLAN = PROJECT_ROOT / "config/sample-scenarios.json"
 DEFAULT_TREND_PLAN = PROJECT_ROOT / "config/sample-trend.json"
 DEFAULT_ROUTING_PLAN = PROJECT_ROOT / "config/sample-routing.json"
 DEFAULT_TREND_LOG = REPO_ROOT / "logs/mycroft-finance-investigator-trend-week35.json"
+DEFAULT_ROUTING_LOG = REPO_ROOT / "logs/mycroft-finance-investigator-routing-week36.json"
+DEFAULT_FOLLOW_UP_REQUEST = PROJECT_ROOT / "config/sample-follow-up-request.json"
 
 
 def _run_id() -> str:
@@ -155,6 +158,14 @@ def build_parser() -> argparse.ArgumentParser:
     orchestrate.add_argument("--run-id", default="week36-routing")
     orchestrate.add_argument("--output-log", type=Path, required=True)
     orchestrate.add_argument("--output-report", type=Path, required=True)
+    follow_up = subparsers.add_parser(
+        "follow-up", help="replay and classify requested specialist follow-ups"
+    )
+    follow_up.add_argument("--request", type=Path, default=DEFAULT_FOLLOW_UP_REQUEST)
+    follow_up.add_argument("--source-log", type=Path, default=DEFAULT_ROUTING_LOG)
+    follow_up.add_argument("--run-id", default="week37-follow-up")
+    follow_up.add_argument("--output-log", type=Path, required=True)
+    follow_up.add_argument("--output-report", type=Path, required=True)
     bundle = subparsers.add_parser(
         "bundle", help="package an immutable reviewer handoff"
     )
@@ -240,6 +251,20 @@ def main() -> None:
         )
         print(f"machine routing trace: {args.output_log}")
         print(f"human evidence queue: {args.output_report}")
+    if args.command == "follow-up":
+        payload = run_reinvestigation(args.request, args.source_log, args.run_id)
+        write_reinvestigation_artifacts(
+            payload, args.output_log, args.output_report
+        )
+        print(f"replay status: {payload['replay']['status']}")
+        print(
+            "follow-up outcomes: "
+            f"{payload['summary']['verified_count']} verified, "
+            f"{payload['summary']['unsupported_count']} unsupported, "
+            f"{payload['summary']['open_count']} open"
+        )
+        print(f"machine closure log: {args.output_log}")
+        print(f"human closure report: {args.output_report}")
     if args.command == "bundle":
         payload = build_audit_bundle(args.bundle_id, args.output_dir)
         print(f"audit bundle: {args.output_dir}")
