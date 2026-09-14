@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mycroft-finance-investigator-review-decision.schema.json",
+  "title": "Mycroft Finance Investigator Human Review Decision",
+  "type": "object",
+  "required": [
+    "run_id",
+    "reviewer",
+    "reviewed_at",
+    "decision",
+    "materiality",
+    "causal_explanations",
+    "tested",
+    "did_not_test",
+    "distribution_scope"
+  ],
+  "properties": {
+    "run_id": {"type": "string", "minLength": 1},
+    "reviewer": {
+      "type": "object",
+      "required": ["name", "role"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "role": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "reviewed_at": {"type": "string", "format": "date-time"},
+    "decision": {
+      "enum": ["APPROVE", "REQUEST_CHANGES", "BLOCK"]
+    },
+    "materiality": {
+      "type": "object",
+      "required": ["decision", "amount", "reasoning"],
+      "properties": {
+        "decision": {"enum": ["APPROVE_DEMO", "REPLACE", "REJECT"]},
+        "amount": {"type": ["string", "number"]},
+        "reasoning": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "causal_explanations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["finding_statement", "explanation", "evidence"],
+        "properties": {
+          "finding_statement": {"type": "string", "minLength": 1},
+          "explanation": {"type": "string", "minLength": 1},
+          "evidence": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "minLength": 1}
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "tested": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "did_not_test": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "distribution_scope": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}
