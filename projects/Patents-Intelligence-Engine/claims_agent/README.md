@@ -37,8 +37,9 @@ Two things that make this manageable:
   same query against the same patent is free. All of our test scripts
   reuse the same known set of patents for this reason — check
   `test_connection.py`, `test_real_parse.py`, `test_multi_dependent.py`,
-  `test_broader_domains.py`, and `test_lineage_agent.py` for the
-  specific publication numbers already paid for and cached.
+  `test_broader_domains.py`, `test_lineage_agent.py`, and
+  `test_lineage_broader.py` for the specific publication numbers
+  already paid for and cached.
 
 A smaller, cheaper-looking table
 (`patents-public-data.uspto_oce_claims.patent_claims_fulltext`, ~29 GB
@@ -94,9 +95,9 @@ are actually drafted, or it could be a real bias in the classifier
 toward "narrow/defensive" as a safer-sounding default. Worth watching
 as more patents are tested, not yet concluded either way.
 
-## Lineage Agent — backward citations (first build)
+## Lineage Agent — backward citations
 
-`lineage_agent.py` traces a patent's citation lineage. The first build
+`lineage_agent.py` traces a patent's citation lineage. It currently
 covers **backward citations only** — what a patent cites — since
 that's a direct field (`citation`, a `REPEATED RECORD`) on the same
 row already being queried for claims text, genuinely cheap with no
@@ -118,6 +119,17 @@ data (`US-10822628-B2`, 12 real citations: 1 real patent citation, 11
 real academic-paper citations, confirmed by hand against the raw
 `npl_text` values).
 
+**Broadened to 2 more real patents** (`test_lineage_broader.py`),
+chosen for a genuinely different citation profile than the original:
+`US-11983488-B1` (OpenAI) came back with 20 citations, 18 of them real
+patents — the inverse of the original NPL-heavy patent — including
+real non-US publication numbers (`CN-103154936-A`, `WO-2022015730-A1`),
+confirming the parser handles international formats correctly without
+having been specifically designed to. `US-2024160902-A1` (Shopify)
+came back with just 3 citations, the smallest count tested so far.
+A genuine zero-citation patent was not found and tested — this remains
+untried.
+
 Also observed but not yet acted on: the `category` field sometimes
 contains comma-separated values (e.g. `"APP,APP"`, `"SEA,SEA"`) rather
 than a single code — worth understanding before using `category` for
@@ -130,7 +142,7 @@ anything downstream.
 | `claims_parser.py` split/classify | 7 real patents, 82 claims total, verified by hand | High — every claim correct, including a real formatting-variant fix |
 | `flag_multi_dependency` | Original 4 patents; one confirmed false-positive found and fixed | High, after the fix |
 | `claim_classifier.py` scope reading | 8 real independent claims across 4 patents, 4 domains (semiconductor, mechanical, robotics, medical device) | Moderate — every result was well-reasoned with specific, checkable caveats, but the "always narrow/defensive" pattern is an open question |
-| `lineage_agent.py` backward citations | 1 real patent, 12 real citation entries, verified by hand against raw data | Moderate — the field-access pattern and the empty-string bug are both confirmed fixed, but only tested against one patent so far |
+| `lineage_agent.py` backward citations | 3 real patents, citation counts from 3 to 20, including 2 non-US formats, verified by hand | Moderate-high — the field-access pattern, the empty-string fix, and international format handling are all confirmed correct across a real range; a genuine zero-citation case is still untested |
 
 ## Files
 
@@ -148,10 +160,11 @@ anything downstream.
 - `test_claims_agent.py` — real end-to-end test of the full `ClaimsAgent` class
 - `test_lineage_agent.py` — first real test of `LineageAgent`, including the field-access verification that found the empty-string bug
 - `inspect_all_citations.py` — the investigation that confirmed the empty-string fix was correct, not just coincidentally unchanged
+- `test_lineage_broader.py` — broadened `LineageAgent` testing to 2 more real patents with different citation profiles and international formats
 
 ## Not built yet
 
 - Wiring `ClaimsAgent` and `LineageAgent` into whatever will actually call them in production (a CLI, a batch job, etc. — currently they're classes with test scripts, not a deployed service)
 - Forward citations in the Lineage Agent (who cites this patent) — deliberately deferred, real query cost untested
 - Explaining the "always narrow/defensive" pattern in classifier results — more real patents needed before concluding whether it's a real signal or a classifier bias
-- Testing `LineageAgent` against more than one real patent — only verified against a single, NPL-heavy patent so far
+- A genuine zero-citation patent — not yet found and tested, so `LineageAgent`'s behavior on an empty citation list is unverified
