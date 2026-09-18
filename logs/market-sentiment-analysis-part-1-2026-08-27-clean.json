@@ -1,0 +1,415 @@
+{
+  "artifact_hashes": {
+    "data/verified/market-sentiment-analysis-part-1/runs/sample-001-clean/sample-001-clean-audit.md": "615bd9e49bb2b23209d0b6d9b3d34098f69d10b2200557c3c8d2ed516c568414",
+    "reports/generated/market-sentiment-analysis-part-1-2026-08-27-clean.md": "8b8aef9af405cd2d713bd0b7772f9f50a919b2513646fb21333df9d4074c0dc6"
+  },
+  "duplicates": [],
+  "flags": {
+    "quality": [],
+    "scoring": [
+      {
+        "action": "[TODO: DEFINE] - the weights, thresholds and keyword lists need a named human.",
+        "flag": "scoring_params_unattributed",
+        "scoring_params_version": "1.0.0",
+        "why": "the weights, thresholds and keyword lists have no recorded author"
+      },
+      {
+        "branch": "redditMentions > 20 (high social activity findings)",
+        "flag": "untested_threshold_path",
+        "rows_available": 4,
+        "stream": "reddit",
+        "why": "a branch in the original that this corpus cannot exercise"
+      },
+      {
+        "flag": "ticker_not_derived_from_question",
+        "note": "The source workflow derives the ticker from a parsed question and defaults to 'SPY' when none is found, which silently turns a ticker-less question into an SPY analysis. This recipe has no question-parsing step, so that default cannot fire here -- and no question is scored either.",
+        "ticker_source": "price row field '01. symbol'",
+        "ticker_used": "FAKE",
+        "why": "no question-parsing step exists in this recipe, so the ticker comes from the price rows"
+      }
+    ]
+  },
+  "gate_decisions": [
+    {
+      "blocking_findings": [],
+      "cleared_at": null,
+      "cleared_by": null,
+      "evidence_observed": "24 declared sources present and hashed",
+      "gate": 1,
+      "handoff_condition": "All required source paths present or marked with a typed TODO.",
+      "human_capacity": "[TO]",
+      "name": "Source gate",
+      "note": null,
+      "status": "evidence recorded; awaiting a named human"
+    },
+    {
+      "blocking_findings": [],
+      "cleared_at": null,
+      "cleared_by": null,
+      "evidence_observed": "envelope declares mode='sample', fixture_set='clean', frozen_clock=2026-08-27T14:30:00+00:00",
+      "gate": 2,
+      "handoff_condition": "The run declares sample mode or an approved live mode before ingest.",
+      "human_capacity": "[PF]",
+      "name": "Scope gate",
+      "note": null,
+      "status": "evidence recorded; awaiting a named human"
+    },
+    {
+      "blocking_findings": [],
+      "cleared_at": null,
+      "cleared_by": null,
+      "evidence_observed": "6 verified artifact(s) written; 0 JSON file(s) failed to parse",
+      "gate": 3,
+      "handoff_condition": "Every raw and verified JSON output parses before downstream scripts run.",
+      "human_capacity": "[PA]",
+      "name": "Data-shape gate",
+      "note": null,
+      "status": "evidence recorded; awaiting a named human"
+    },
+    {
+      "blocking_findings": [],
+      "cleared_at": null,
+      "cleared_by": null,
+      "evidence_observed": "6 of 6 step scripts exist",
+      "gate": 4,
+      "handoff_condition": "Every step script exists or is represented by a typed development TODO.",
+      "human_capacity": "[IJ]",
+      "name": "Script-readiness gate",
+      "note": "This gate as written is satisfiable by doing nothing: it passes if the script exists OR if the [TODO: DEV] text is still in the recipe. Both are currently true.",
+      "status": "evidence recorded; awaiting a named human"
+    },
+    {
+      "blocking_findings": [
+        "no approval record on disk"
+      ],
+      "cleared_at": null,
+      "cleared_by": null,
+      "evidence_observed": "approval record absent at logs/gate-decisions/market-sentiment-analysis-part-1-approval.json; no live call, external write, or model call was performed",
+      "gate": 5,
+      "handoff_condition": "Live calls, external writes, credentials, or model calls require an approval record.",
+      "human_capacity": "[EI]",
+      "name": "Approval gate",
+      "note": null,
+      "status": "evidence recorded; awaiting a named human"
+    },
+    {
+      "blocking_findings": [],
+      "cleared_at": null,
+      "cleared_by": null,
+      "evidence_observed": "agent log and human report written by this step; section and field coverage listed below",
+      "gate": 6,
+      "handoff_condition": "Agent log and human report are written with the required fields and sections.",
+      "human_capacity": "[TO]",
+      "name": "Report gate",
+      "note": null,
+      "status": "evidence recorded; awaiting a named human"
+    }
+  ],
+  "generated_at": "2026-09-17T20:37:47.277840+00:00",
+  "mode": "sample",
+  "raw_output_paths": [
+    "data/raw/market-sentiment-analysis-part-1/runs/sample-001-clean/news-finnhub.json",
+    "data/raw/market-sentiment-analysis-part-1/runs/sample-001-clean/price-alpha-vantage.json",
+    "data/raw/market-sentiment-analysis-part-1/runs/sample-001-clean/reddit-wallstreetbets.json"
+  ],
+  "records_seen": {
+    "by_stream": {
+      "news": 5,
+      "price": 1,
+      "reddit": 4
+    },
+    "total_rows_promoted": 10,
+    "total_rows_seen": 10
+  },
+  "rejects": [],
+  "report_path": "reports/generated/market-sentiment-analysis-part-1-2026-08-27-clean.md",
+  "run_id": "sample-001",
+  "source_files": [
+    {
+      "exists": true,
+      "path": "recipes/market-sentiment-analysis-part-1.md",
+      "role": "recipe under test - authoritative for intent (P6)",
+      "sha256": "14bb8f811a02a9f5acc8849ee5a348968a62d27fa177de541a3c6309024849da",
+      "size_bytes": 18458
+    },
+    {
+      "exists": true,
+      "path": "conductor/market-sentiment-analysis-part-1.md",
+      "role": "conductor flow",
+      "sha256": "02681428081972d103e1b5f8fd90d86d103070fb59d122777769a188245083ef",
+      "size_bytes": 1942
+    },
+    {
+      "exists": true,
+      "path": "data/raw/market-sentiment-analysis-part-1/run-envelope.json",
+      "role": "run control file - declares mode and the frozen clock",
+      "sha256": "33828ed47a8c38fce5d6a3b48260939a9ff744661355eca5ec2d4ba06f56aa93",
+      "size_bytes": 1480
+    },
+    {
+      "exists": true,
+      "path": "data/raw/market-sentiment-analysis-part-1/sample/fixture-manifest.json",
+      "role": "fixture manifest - schema and defect catalogue",
+      "sha256": "7ee88528523d57800bbebd58ceb393718f8afce728e8a517b204bb6546f52095",
+      "size_bytes": 15824
+    },
+    {
+      "exists": true,
+      "path": "data/raw/market-sentiment-analysis-part-1/sample/FIXTURE_MANIFEST.md",
+      "role": "fixture manifest, human view (P5)",
+      "sha256": "7033d7e4fd68306b5ad36c61034bd94481eaeb5b4f078a42a39d5c26c44adcb8",
+      "size_bytes": 9306
+    },
+    {
+      "exists": true,
+      "path": "data/raw/market-sentiment-analysis-part-1/sample/clean/news-finnhub.json",
+      "role": "source fixture - news stream",
+      "sha256": "441291ec39aed12cf4377c1b3b8e17ec3d369816d4aea67559077ef7b36de9e4",
+      "size_bytes": 3180
+    },
+    {
+      "exists": true,
+      "path": "data/raw/market-sentiment-analysis-part-1/sample/clean/price-alpha-vantage.json",
+      "role": "source fixture - price stream",
+      "sha256": "a7d3c58fdf0a388bc67eed6403ec44437462a6297bb88bcddb78b868e185e2be",
+      "size_bytes": 1320
+    },
+    {
+      "exists": true,
+      "path": "data/raw/market-sentiment-analysis-part-1/sample/clean/reddit-wallstreetbets.json",
+      "role": "source fixture - reddit stream",
+      "sha256": "6df0b3e31e6f08afe4394c89b2bea38c06947480558ebf693580b6d3806e17a4",
+      "size_bytes": 3088
+    },
+    {
+      "exists": true,
+      "path": "data/raw/market-sentiment-analysis-part-1/runs/sample-001-clean/news-finnhub.json",
+      "role": "step-2 raw output",
+      "sha256": "3f50bf072a20e622ee340b1caa36ffe0b403129481f42febc601338e50ddeb45",
+      "size_bytes": 4070
+    },
+    {
+      "exists": true,
+      "path": "data/raw/market-sentiment-analysis-part-1/runs/sample-001-clean/price-alpha-vantage.json",
+      "role": "step-2 raw output",
+      "sha256": "ceb9c6f531462079b9e773140d9d62ff3142fce066fe30926aa61106b0f3acc5",
+      "size_bytes": 2284
+    },
+    {
+      "exists": true,
+      "path": "data/raw/market-sentiment-analysis-part-1/runs/sample-001-clean/reddit-wallstreetbets.json",
+      "role": "step-2 raw output",
+      "sha256": "b067b3b61d694e14fcf8f91b9ab1db9505f444146dac6479c7a9163dce642e15",
+      "size_bytes": 4074
+    },
+    {
+      "exists": true,
+      "path": "data/verified/market-sentiment-analysis-part-1/runs/sample-001-clean/news-finnhub.json",
+      "role": "verified output (step 3 or 4)",
+      "sha256": "0426c978df6dc6ac3d4a4419cef4be7b0d8eccb4bc62d63601784aae520428e9",
+      "size_bytes": 3942
+    },
+    {
+      "exists": true,
+      "path": "data/verified/market-sentiment-analysis-part-1/runs/sample-001-clean/price-alpha-vantage.json",
+      "role": "verified output (step 3 or 4)",
+      "sha256": "7b36b2220877b9e841382c1db4a0f75a151929f4b468d93f8caffae4228547fa",
+      "size_bytes": 2093
+    },
+    {
+      "exists": true,
+      "path": "data/verified/market-sentiment-analysis-part-1/runs/sample-001-clean/quality-checked/news-finnhub.json",
+      "role": "verified output (step 3 or 4)",
+      "sha256": "9f34975eddd7fd8c1b45b303b61f7e6a3e755d7ef5dce374d9a9b579a4531c17",
+      "size_bytes": 3882
+    },
+    {
+      "exists": true,
+      "path": "data/verified/market-sentiment-analysis-part-1/runs/sample-001-clean/quality-checked/price-alpha-vantage.json",
+      "role": "verified output (step 3 or 4)",
+      "sha256": "a983e5e65fc688f32b6d479066d41bab364c51e748518c625dd64b61122e3dd6",
+      "size_bytes": 2127
+    },
+    {
+      "exists": true,
+      "path": "data/verified/market-sentiment-analysis-part-1/runs/sample-001-clean/quality-checked/reddit-wallstreetbets.json",
+      "role": "verified output (step 3 or 4)",
+      "sha256": "a7f06bd4857a79cea738a825c516383d927417ed3f465fe675d4caf40e200889",
+      "size_bytes": 3335
+    },
+    {
+      "exists": true,
+      "path": "data/verified/market-sentiment-analysis-part-1/runs/sample-001-clean/reddit-wallstreetbets.json",
+      "role": "verified output (step 3 or 4)",
+      "sha256": "4bc69f0b35ba5e38b50cc510d5d081551aec86d1074571a0c551cf9031b0f1af",
+      "size_bytes": 3355
+    },
+    {
+      "exists": true,
+      "path": "logs/market-sentiment-analysis-part-1/runs/sample-001-clean/sentiment-scores.json",
+      "role": "step-5 sentiment scores",
+      "sha256": "3bdfdce2a9a3ffefdb9228e0503e33f389ca3677e72301bbbebf2dc16ba10703",
+      "size_bytes": 10232
+    },
+    {
+      "exists": true,
+      "path": "scripts/tools/market-sentiment-analysis-part-1-verify-provenance.py",
+      "role": "step script",
+      "sha256": "718a29747223925cb6e5df32a0f743a9d16f20474a5d55d00a70db2aad9ab1bc",
+      "size_bytes": 14917
+    },
+    {
+      "exists": true,
+      "path": "scripts/ingest/market-sentiment-analysis-part-1-ingest-inputs.py",
+      "role": "step script",
+      "sha256": "f558f93393a1177ef5398b4cfefeeb520b89c356a16cba76349e3e0e8790332c",
+      "size_bytes": 19391
+    },
+    {
+      "exists": true,
+      "path": "scripts/gigo/market-sentiment-analysis-part-1-validate-data-shape.py",
+      "role": "step script",
+      "sha256": "bc83ad6ad643d1dd1447fcd23b610ddf88b119f3a4ca30d91ee8ae8caceed523",
+      "size_bytes": 25366
+    },
+    {
+      "exists": true,
+      "path": "scripts/gigo/market-sentiment-analysis-part-1-transform-quality-check.py",
+      "role": "step script",
+      "sha256": "2cc69f0e1f81ee867df341596c4a797cc710a841fe3b19706cda0d49ce324a4a",
+      "size_bytes": 29924
+    },
+    {
+      "exists": true,
+      "path": "scripts/tools/market-sentiment-analysis-part-1-run-approved-tools.py",
+      "role": "step script",
+      "sha256": "edb664608bbd2b214e5308057e7ad0ada62e2f81caa9bec6a41557d1fff4a624",
+      "size_bytes": 35675
+    },
+    {
+      "exists": true,
+      "path": "scripts/tools/market-sentiment-analysis-part-1-produce-human-report.py",
+      "role": "step script",
+      "sha256": "3e65b2eb4117ced449a32caafcee4f9223983cb98a0a1758793d7e9ed39df613",
+      "size_bytes": 48835
+    }
+  ],
+  "steps_completed": [
+    {
+      "name": "Verify provenance",
+      "script": "scripts/tools/market-sentiment-analysis-part-1-verify-provenance.py",
+      "step": 1
+    },
+    {
+      "name": "Ingest declared inputs",
+      "script": "scripts/ingest/market-sentiment-analysis-part-1-ingest-inputs.py",
+      "step": 2
+    },
+    {
+      "name": "Validate data shape",
+      "script": "scripts/gigo/market-sentiment-analysis-part-1-validate-data-shape.py",
+      "step": 3
+    },
+    {
+      "name": "Transform and quality check",
+      "script": "scripts/gigo/market-sentiment-analysis-part-1-transform-quality-check.py",
+      "step": 4
+    },
+    {
+      "name": "Run approved tools",
+      "script": "scripts/tools/market-sentiment-analysis-part-1-run-approved-tools.py",
+      "step": 5
+    },
+    {
+      "name": "Produce human report",
+      "script": "scripts/tools/market-sentiment-analysis-part-1-produce-human-report.py",
+      "step": 6
+    }
+  ],
+  "stop_conditions": [
+    "gate 5 (Approval gate): no approval record on disk"
+  ],
+  "todo_items": [
+    {
+      "closed_by": "human",
+      "detail": "The weights (price .4 / news .3 / social .3), the label thresholds (65/55/45/35) and both keyword lists appear in the source workflow with no derivation, backtest, or author. They are reproduced, not endorsed.",
+      "evidence_required": "the values, in the recipe, with one sentence of reasoning",
+      "item": "scoring_params v1.0.0 constants are unattributed",
+      "status": "OPEN",
+      "type": "DEFINE"
+    },
+    {
+      "closed_by": "human",
+      "detail": "Step 5 rendered three live-call handoffs with approved_for_live_action=false. Each needs a logged gate decision and a named approver before it runs.",
+      "evidence_required": "a logged gate decision (this is a gate, not a checkbox)",
+      "item": "Gate 5 approval for the model, Slack, and email calls",
+      "status": "OPEN",
+      "type": "APPROVE"
+    },
+    {
+      "closed_by": "human",
+      "detail": "fixture-manifest.json declares required fields, identity keys and freshness windows but no value types. Step 4 carries a step-scoped TYPE_CONTRACT table as the closure; it is not a promoted schema and belongs in DATA_CONTRACT.md.",
+      "evidence_required": "the type contract, in DATA_CONTRACT.md, with a named owner",
+      "item": "No type contract exists in the declared schema",
+      "status": "OPEN",
+      "type": "DEFINE"
+    },
+    {
+      "closed_by": "human",
+      "detail": "Its declared fields are record_count, required_fields_present, missing_fields, parse_errors, schema_version. A wrong-typed value is none of them, so D02/D11/D17 surface in step 4 flags instead. The recipe should add type_errors to step 3 or state that type checking belongs to step 4.",
+      "evidence_required": "a recipe amendment",
+      "item": "Step 3's output contract has no field for a type violation",
+      "status": "OPEN",
+      "type": "DEFECT"
+    },
+    {
+      "closed_by": "human",
+      "detail": "The recipe names the reader as \"domain lead or human boss\". This report is written for the stricter reader a compliance or audit reviewer represents, and carries per-score trace chains and artifact hashes accordingly. The recipe line was not edited -- that is a recipe change and out of scope.",
+      "evidence_required": "all three: exact columns/sections, reader role, decision enabled",
+      "item": "Report reader mismatch",
+      "status": "OPEN",
+      "type": "DEFECT"
+    },
+    {
+      "closed_by": "human",
+      "detail": "reports/templates/market-sentiment-analysis-part-1.md cites logs/market-sentiment-analysis-part-1/[RUN_ID].json; the recipe Output Contract and the gate-6 test cite logs/market-sentiment-analysis-part-1-[DATE].json. The recipe governs; the template is wrong and untouched.",
+      "evidence_required": "a template correction",
+      "item": "reports/templates/ contradicts the recipe on the log path",
+      "status": "OPEN",
+      "type": "DEFECT"
+    },
+    {
+      "closed_by": "human",
+      "detail": "Each passes if its artifact exists OR if the typed TODO text is still present in the recipe. A gate with no failure path is not a gate.",
+      "evidence_required": "a recipe amendment tightening both tests",
+      "item": "Gates 4 and 5 are satisfiable by doing nothing",
+      "status": "OPEN",
+      "type": "DEFECT"
+    },
+    {
+      "closed_by": "AI, after gate 5",
+      "detail": "Step 2 stops in live mode. Real fetchers need credentials from the environment (ALPHA_VANTAGE_API_KEY, FINNHUB_API_KEY, REDDIT_USER_AGENT) plus 401/403/429/timeout/empty-200 handling that the fixture corpus explicitly does not cover.",
+      "evidence_required": "script exists + conformance passes + handoff condition met",
+      "item": "Live mode is unimplemented",
+      "status": "OPEN",
+      "type": "DEV"
+    },
+    {
+      "closed_by": "human",
+      "detail": "The recipe carries no status/todos_open/last_gate/attestation/recipe_version block, so its lifecycle stage cannot be stated. The six [TODO: DEV] markers also still stand even though all six scripts now exist.",
+      "evidence_required": "the frontmatter block, in the recipe",
+      "item": "Recipe lifecycle frontmatter is absent",
+      "status": "OPEN",
+      "type": "DEV"
+    }
+  ],
+  "verified_output_paths": [
+    "data/verified/market-sentiment-analysis-part-1/runs/sample-001-clean/news-finnhub.json",
+    "data/verified/market-sentiment-analysis-part-1/runs/sample-001-clean/price-alpha-vantage.json",
+    "data/verified/market-sentiment-analysis-part-1/runs/sample-001-clean/quality-checked/news-finnhub.json",
+    "data/verified/market-sentiment-analysis-part-1/runs/sample-001-clean/quality-checked/price-alpha-vantage.json",
+    "data/verified/market-sentiment-analysis-part-1/runs/sample-001-clean/quality-checked/reddit-wallstreetbets.json",
+    "data/verified/market-sentiment-analysis-part-1/runs/sample-001-clean/reddit-wallstreetbets.json"
+  ],
+  "workflow": "Market Sentiment Analysis - Part 1"
+}
