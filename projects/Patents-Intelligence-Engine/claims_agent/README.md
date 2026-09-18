@@ -122,18 +122,44 @@ real academic-paper citations, confirmed by hand against the raw
 **Broadened to 2 more real patents** (`test_lineage_broader.py`),
 chosen for a genuinely different citation profile than the original:
 `US-11983488-B1` (OpenAI) came back with 20 citations, 18 of them real
-patents — the inverse of the original NPL-heavy patent — including
-real non-US publication numbers (`CN-103154936-A`, `WO-2022015730-A1`),
-confirming the parser handles international formats correctly without
-having been specifically designed to. `US-2024160902-A1` (Shopify)
-came back with just 3 citations, the smallest count tested so far.
-A genuine zero-citation patent was not found and tested — this remains
-untried.
+patents, including real non-US publication numbers
+(`CN-103154936-A`, `WO-2022015730-A1`), confirming the parser handles
+international formats correctly without having been specifically
+designed to. `US-2024160902-A1` (Shopify) came back with just 3
+citations, the smallest count tested so far. A genuine zero-citation
+patent was not found and tested — this remains untried.
 
 Also observed but not yet acted on: the `category` field sometimes
 contains comma-separated values (e.g. `"APP,APP"`, `"SEA,SEA"`) rather
 than a single code — worth understanding before using `category` for
 anything downstream.
+
+## Patent reader CLI — the two agents wired together
+
+`patent_reader.py` is a real, callable interface that wires
+`ClaimsAgent` and `LineageAgent` together for the first time. Given a
+publication number, it pulls the row once, runs both agents, and
+prints a combined structural + lineage (+ optional classification)
+reading.
+
+```bash
+.venv/bin/python patent_reader.py US-11791319-B2
+.venv/bin/python patent_reader.py US-11791319-B2 --no-classify  # free, no Claude API call
+```
+
+Verified against two real patents through this interface:
+`US-10822628-B2` (structural-only, matched the already-verified
+7/2/5 claim split and 12-citation lineage exactly) and
+`US-11197952-B2` (full pipeline including classification — correctly
+handled a real 242-citation patent, the largest tested so far, with
+227 real patent citations and 15 NPL, spanning US, JP, EP, WO, GB,
+CN, and DE publication formats).
+
+One real, honest quirk observed in that 242-citation patent:
+`US-RE31855-E` and `US-RE31855-F1` both appear as separate citation
+entries — likely two real records for the same reissued patent under
+different kind codes, not a parser bug, but worth knowing this kind
+of near-duplicate can occur in real citation data.
 
 ## What's tested, and how confident to be in each part
 
@@ -141,8 +167,9 @@ anything downstream.
 |---|---|---|
 | `claims_parser.py` split/classify | 7 real patents, 82 claims total, verified by hand | High — every claim correct, including a real formatting-variant fix |
 | `flag_multi_dependency` | Original 4 patents; one confirmed false-positive found and fixed | High, after the fix |
-| `claim_classifier.py` scope reading | 8 real independent claims across 4 patents, 4 domains (semiconductor, mechanical, robotics, medical device) | Moderate — every result was well-reasoned with specific, checkable caveats, but the "always narrow/defensive" pattern is an open question |
-| `lineage_agent.py` backward citations | 3 real patents, citation counts from 3 to 20, including 2 non-US formats, verified by hand | Moderate-high — the field-access pattern, the empty-string fix, and international format handling are all confirmed correct across a real range; a genuine zero-citation case is still untested |
+| `claim_classifier.py` scope reading | 9 real independent claims across 5 patents, 4 domains | Moderate — every result was well-reasoned with specific, checkable caveats, but the "always narrow/defensive" pattern is an open question |
+| `lineage_agent.py` backward citations | 4 real patents, citation counts from 3 to 242, including 7 distinct jurisdiction formats, verified by hand | High — the field-access pattern, the empty-string fix, and international format handling are all confirmed correct across a genuinely wide real range; a zero-citation case is still untested |
+| `patent_reader.py` combined CLI | 2 real patents, both structural-only and full-pipeline modes | Moderate-high — the wiring is confirmed correct and matches independently-verified agent output exactly |
 
 ## Files
 
@@ -150,6 +177,7 @@ anything downstream.
 - `claim_classifier.py` — Claude-based protection-scope classification
 - `claims_agent.py` — the real `ClaimsAgent` class wiring both together
 - `lineage_agent.py` — the real `LineageAgent` class, backward citations only so far
+- `patent_reader.py` — the real, callable CLI wiring `ClaimsAgent` and `LineageAgent` together
 - `test_connection.py` — verifies BigQuery access end-to-end
 - `test_real_parse.py` — pulls and parses one real patent's full claims text
 - `test_multi_dependent.py` — stress test against 3 more real patents, exact-match queries only
@@ -164,7 +192,7 @@ anything downstream.
 
 ## Not built yet
 
-- Wiring `ClaimsAgent` and `LineageAgent` into whatever will actually call them in production (a CLI, a batch job, etc. — currently they're classes with test scripts, not a deployed service)
 - Forward citations in the Lineage Agent (who cites this patent) — deliberately deferred, real query cost untested
 - Explaining the "always narrow/defensive" pattern in classifier results — more real patents needed before concluding whether it's a real signal or a classifier bias
-- A genuine zero-citation patent — not yet found and tested, so `LineageAgent`'s behavior on an empty citation list is unverified
+- A genuine zero-citation patent — not yet found and tested, so behavior on an empty citation list is unverified
+- `patent_reader.py` is a CLI script, not yet wrapped into any larger production service (batch job, API endpoint, etc.)
