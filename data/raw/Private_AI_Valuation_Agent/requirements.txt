@@ -20,9 +20,17 @@ rapidfuzz==3.11.0
 #
 # Set OLLAMA_MODEL / OLLAMA_HOST to override the defaults.
 
-# Week 6 (resolution graph) — install when you get there
-# langgraph==0.2.60
-# langgraph-checkpoint-postgres==2.0.9
+# Week 6 (resolution graph and human review queue) — installed
+langgraph==0.2.60
+langgraph-checkpoint-postgres==2.0.9
+#
+# langgraph-checkpoint-postgres pulls in psycopg 3 (plus psycopg-pool), which
+# now sits alongside psycopg2-binary. The two are not interchangeable and both
+# are needed: the checkpointer is written against psycopg 3, and every query in
+# src/db and src/graphs is psycopg2. Nothing shares a connection across the two
+# drivers — the graph takes a psycopg2 connection and the checkpointer opens its
+# own from the same URL.
+psycopg[binary]==3.3.5
 
 # Week 11 (commentary)
 # groq==0.15.0

@@ -13,6 +13,111 @@ possible because fund fiscal quarter-ends are staggered across the calendar.
 
 ## Status
 
+**Week 8 complete — four measurements, and two of them contradict the plan's own
+expectations.** `docs/findings.md` is generated from the panel; every figure traces to a filed
+holding.
+
+| | measured | plan.md expected |
+|---|---|---|
+| Consecutive observations unchanged | **25.0%** | 30–40% |
+| Same-date spread across managers, median | **10.8%** | "they mostly don't disagree" |
+| A new price level reaching half its holders | **30 days** | not quantified |
+| Cerebras Level 3 → Level 1 event study | **not runnable** | "free, clean, no additional data" |
+
+**Marks move more often than the thesis assumed** — 75% of consecutive observations change,
+and the result survives treating any move under 1% as flat (29.6%). It varies enormously by
+company: Anthropic and OpenAI re-mark at nearly every observation, X.AI and SpaceX carry
+forward a third to a half of the time.
+
+**Managers on the same date disagree by a median of 10.8%, but 92 of 130 same-date groups
+contain more than one price level** — so the disagreement is mostly about which round has been
+reflected, not what a round is worth. That is propagation seen side-on, and the propagation
+measurement confirms it: **half the eventual holders of a new level report it within a month,
+and for the largest events — Databricks at $190.00 across 20 managers, OpenAI at $687.6869
+across 12 — half of them report it on the same period end.**
+
+**The Cerebras event study cannot be run, for two structural reasons** rather than an
+oversight: the private layer is filtered to Level 3, so Level 1 rows never entered the
+database; and the Level 1 observation's period end is in unpublished 2026Q3. The measurable
+Level 3 run-up is reported instead: $21.46 to $100.26, +367%.
+
+**The harness is built and tested anyway**, so the study runs itself when the archive catches
+up. Scanning all fourteen quarters at every fair value level found 10,566 non-Level-3 rows and
+**zero genuine Level 1 observations** — 10,126 of them are false positives, every one of the
+7,175 Level 1 rows being **Coherent Corp** caught by the `%COHERE%` canary. That is a finding
+in its own right: the Level 3 filter had been doing double duty as a *precision* filter, and
+the public lane must route through the matcher rather than the frozen name patterns.
+
+**Week 7 complete — the marks panel is built, and the split detector caught a real split
+before it entered a price series.** `price_per_share = value_usd / balance`, computed once
+per security, fund and period end: **5,479 marks** over 232 securities, 55 period ends and
+861 company/manager/period rows. Every filed holding reconciles — 5,806 = 28 rejected in
+Week 6 + 72 superseded by amendments + 5,706 aggregated into marks. Nothing is dropped for
+being awkward.
+
+| | marks |
+|---|---|
+| Priced | 5,185 |
+| Unpriced on purpose | 294 |
+| Blocked from any change series | 305 |
+| Re-marked against the prior period | 3,067 |
+| Carried forward unchanged | 1,019 |
+
+**Six of `plan.md`'s seven end-to-end checks pass and the seventh is unreachable, not
+failed.** The Anthropic Fidelity position reproduces to the cent from accession
+`0000035402-26-003406` (46,814 shares, $12,131,380, $259.14); **ten** manager families agree
+at $259.14 where the plan expected four; Perplexity's 695 → 58 is flagged and quarantined;
+SpaceX's 10x is recorded as a unit artifact with no price published; World Labs Series C and
+C Prime stay apart. The ~$589 pair sits in 2026Q3, which the SEC has not published.
+
+**All three suspected splits are adjudicated** by Om Mali on 2026-09-11, and the share count
+settled every one. Perplexity is a real 10:1 split — five T. Rowe Price funds show the share
+count multiplied by exactly ten with the value unchanged to the cent. Anthropic is not: ARK
+holds 89,078 shares in all thirteen periods and the 4.02 rise reverses the next quarter.
+SpaceX is not: share counts constant while value doubles exactly.
+
+One case is worth the detail. ARK's Perplexity step reads **11.93** because a 10:1 split and a
+16% markdown fell in the same period. The adjudicated factor is **10**; dividing by 11.93 would
+erase a real price move, which is why the panel records the adjudicated factor separately from
+the detected ratio.
+
+**The split rule was wrong and is now corrected.** Week 6 used an absolute window that
+missed `plan.md`'s own verification case — a ratio of 11.93 against a window of ±0.02 around
+12. Both the queue trigger and the detector now share one relative 1% rule under a cap of 20.
+Read [`docs/marks_panel.md`](docs/marks_panel.md).
+
+**Week 6 complete — the review queue was built, run, and worked to empty. Every one of the
+5,806 universe holdings now carries a resolution decision.** A LangGraph graph with a
+Postgres checkpointer resolves what it can and stops at what it cannot, holding the paused
+state in the database rather than in a process.
+
+| | holdings | share |
+|---|---|---|
+| Decided without a human | **4,537** | 78.1% |
+| Decided by a human | **1,269** | 21.9% |
+| Undecided | **0** | — |
+
+42 paused cards collapsed to **8 actual questions**, answered in seven commands by Om Mali on
+2026-09-04. One answer retires a whole group: X.AI alone reached the queue under 24 spellings,
+and the answer is recorded against the company so a 25th spelling never asks again.
+
+Two things the queue caught on its own. The 28 `%COHERE%` canary holdings that Week 4 logged
+as contaminating the universe layer arrived as the only `unresolved` trigger and are now
+formally rejected. And **a genuine 10:1 stock split** in Perplexity — share count 6,081 →
+60,810 with the dollar value unchanged at $4,228,994 — caught before it could enter a price
+series as a 90% crash. The SpaceX and Anthropic steps that looked similar are *not* splits,
+and §10.8 says why for each.
+
+Every decision is now a regression test: a later matcher change that would overturn a human
+answer fails a test instead of silently winning. The working is in
+[`docs/entity_resolution.md`](docs/entity_resolution.md) §10.
+
+These numbers are from **Supabase Postgres 17.6**, the project's own database. The queue
+was first built against a local stand-in while Supabase was unreachable, and re-running it
+on the real server reproduced every count exactly — same 231 questions, same 189
+auto-accepts, same 8 open questions — with no state migrated. That is what a deterministic
+graph is for.
+
 **Week 5 complete — a local LLM was measured against the matcher and not adopted.** An 8B
 model (`llama3.1:8b`, Q4_K_M, local) given the same evidence **costs 5.1 points of
 precision**: it fixed one holding and broke fourteen, every break a resemblance promoted to a
@@ -129,7 +234,29 @@ python -m scripts.run_adjudication --check   # is a local model reachable
 python -m scripts.run_adjudication --run     # call it, cache every reply
 python -m scripts.run_adjudication --score   # lift and throughput, from the cache
 
-pytest -q                                    # 136 regression tests, none needing a GPU
+python -m scripts.review_queue --run         # resolve what can be resolved; pause the rest
+python -m scripts.review_queue --status      # what was decided, and by what method
+python -m scripts.review_queue --report      # the queue as Markdown, for a human
+python -m scripts.review_queue --list        # what is waiting
+python -m scripts.review_queue --show 3      # one review card in full
+python -m scripts.review_queue --decide 3 \
+    --verdict company --company "Databricks, Inc." \
+    --reviewer "<your name>" --rationale "<why>"
+python -m scripts.review_queue --export-fixture   # decisions -> regression tests
+
+python -m scripts.build_marks --build        # securities, marks, split detector
+python -m scripts.build_marks --verify       # plan.md's end-to-end checks
+python -m scripts.build_marks --panel        # company / manager / period
+python -m scripts.build_marks --report       # docs/marks_panel.md, for a human
+
+python -m scripts.analyze --run              # the four Week 8 measurements
+python -m scripts.analyze --findings         # docs/findings.md, for a human
+
+pytest -q                                    # 189 regression tests, none needing a GPU
+                                             # 11 of them need a Postgres and skip loudly
+                                             # without one; REVIEW_TEST_DB_URL points them
+                                             # at a server, and DATABASE_SETUP.md has a
+                                             # no-administrator local cluster recipe
 ```
 
 Every step is idempotent; the safe recovery from any failure is to run it again.
@@ -161,16 +288,25 @@ path is for.
 
 ```
 docs/feasibility.md       Week 1 verification, findings, and open risks
-docs/entity_resolution.md Week 4 — normalisation, the matcher, measured metrics
+docs/entity_resolution.md normalisation, the matcher, the LLM measurement, the queue
+docs/review_queue.md      generated — the questions waiting on a human
+docs/marks_panel.md       generated — the price panel, and what is quarantined
+docs/findings.md          generated — re-mark, dispersion, propagation, Cerebras
 docs/worklog.md           dated log — what was done, decided, blocked
-DATABASE_SETUP.md         connection string, schema, idempotency, disk
+DATABASE_SETUP.md         connection string, schema, a local cluster, idempotency, disk
 scripts/                  reconcile · check_fund_complexes · verify_week1_marks
                           build_golden_candidates · label_golden_set · score_matcher
+                          run_adjudication · review_queue (the reviewer's view)
+                          build_marks (the panel, the detector, the checks)
+                          analyze (the four measurements, the findings report)
 src/ingest/               download_bulk · universe (frozen patterns) · build_parquet
-src/db/                   schema.sql · connect · load
+src/db/                   schema.sql · connect · load · seed (companies)
 src/resolve/              normalize (names, share classes) · match (matcher v1)
                           adjudicate (matcher v2, four policies) · llm (Ollama + stub)
-src/{marks,graphs,signal}/   Weeks 7-11
+src/graphs/               resolve_graph — the review queue, checkpointed to Postgres
+src/marks/                build (securities, marks) · splits (the detector)
+                          verify (plan.md's end-to-end checks)
+src/signal/               findings — re-mark, dispersion, propagation, Cerebras
 tests/                    regression tests; fixtures/golden_set_v1.json is the ground truth
 data/parquet/<qtr>/   private_holdings · universe_holdings · reconciliation.json
 plan.md               the full project plan and 12-week schedule

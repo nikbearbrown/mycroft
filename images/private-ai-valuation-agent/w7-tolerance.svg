@@ -1,0 +1,32 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="figtitle figdesc" font-family="'Inter', sans-serif">
+  <title id="figtitle">The window was too narrow to catch its own test case</title>
+  <desc id="figdesc">A number line around 12 showing that an absolute window of plus or minus 0.02 excludes a ratio of 11.93, while a relative window of 1 percent, plus or minus 0.12, includes it.</desc>
+  <rect width="700" height="420" fill="#FFFFFF"/>
+  <text x="40" y="42" font-size="20" font-family="'EB Garamond', Georgia, serif" fill="#2a1a0e">The window was too narrow to catch its own test case</text>
+  <text x="40" y="64" font-size="13" fill="#545454">plan.md requires that Perplexity's 695 to 58 step be flagged. That ratio is 11.93.</text>
+  <line x1="70" y1="176" x2="630" y2="176" stroke="#2a1a0e" stroke-width="1"/>
+  <line x1="70.0" y1="176" x2="70.0" y2="182" stroke="#D4D4D4" stroke-width="1"/>
+  <text x="70.0" y="196" font-size="11" fill="#545454" font-family="'JetBrains Mono', monospace" text-anchor="middle">11.6</text>
+  <line x1="210.0" y1="176" x2="210.0" y2="182" stroke="#D4D4D4" stroke-width="1"/>
+  <text x="210.00000000000063" y="196" font-size="11" fill="#545454" font-family="'JetBrains Mono', monospace" text-anchor="middle">11.8</text>
+  <line x1="350.0" y1="176" x2="350.0" y2="182" stroke="#D4D4D4" stroke-width="1"/>
+  <text x="350.0" y="196" font-size="11" fill="#545454" font-family="'JetBrains Mono', monospace" text-anchor="middle">12</text>
+  <line x1="490.0" y1="176" x2="490.0" y2="182" stroke="#D4D4D4" stroke-width="1"/>
+  <text x="489.9999999999993" y="196" font-size="11" fill="#545454" font-family="'JetBrains Mono', monospace" text-anchor="middle">12.2</text>
+  <line x1="630.0" y1="176" x2="630.0" y2="182" stroke="#D4D4D4" stroke-width="1"/>
+  <text x="630.0" y="196" font-size="11" fill="#545454" font-family="'JetBrains Mono', monospace" text-anchor="middle">12.4</text>
+  <rect x="336.0" y="136" width="28.0" height="32" fill="#545454"/>
+  <text x="350.0" y="128" font-size="12" fill="#545454" font-family="'Inter', sans-serif" text-anchor="middle">absolute ±0.02</text>
+  <text x="350.0" y="114" font-size="11" fill="#545454" font-family="'Inter', sans-serif" text-anchor="middle">Week 6's window</text>
+  <rect x="266.0" y="214" width="168.0" height="30" fill="none" stroke="#C8860E" stroke-width="2"/>
+  <text x="350.0" y="262" font-size="12" fill="#C8860E" font-family="'Inter', sans-serif" text-anchor="middle">relative 1%, so ±0.12</text>
+  <line x1="301.0" y1="132" x2="301.0" y2="248" stroke="#C8102E" stroke-width="2"/>
+  <circle cx="301.0" cy="176" r="5" fill="#C8102E"/>
+  <text x="292.9999999999999" y="124" font-size="15" fill="#C8102E" font-family="'JetBrains Mono', monospace" text-anchor="end">11.93</text>
+  <text x="292.9999999999999" y="140" font-size="11" fill="#C8102E" font-family="'Inter', sans-serif" text-anchor="end">Perplexity</text>
+  <line x1="40" y1="300" x2="660" y2="300" stroke="#D4D4D4" stroke-width="1"/>
+  <text x="40" y="324" font-size="13" fill="#2a1a0e" font-family="'Inter', sans-serif">The absolute window missed it by a factor of three. It looked right only because</text>
+  <text x="40" y="342" font-size="13" fill="#2a1a0e" font-family="'Inter', sans-serif">the other Perplexity step lands on exactly 10.000.</text>
+  <text x="40" y="368" font-size="11" fill="#545454" font-family="'Inter', sans-serif">Both windows sit under the same cap of 20, which is what keeps a 348x placeholder out.</text>
+  <text x="40" y="402" font-size="10" fill="#545454" font-family="'JetBrains Mono', monospace">src/marks/splits.py · one rule, imported by the queue trigger and the detector</text>
+</svg>

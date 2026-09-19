@@ -1,0 +1,436 @@
+{
+ "holdings": 5806,
+ "decided": 5806,
+ "by_method": [
+  {
+   "method": "alias",
+   "holdings": 2760,
+   "questions": 97
+  },
+  {
+   "method": "lei",
+   "holdings": 1681,
+   "questions": 68
+  },
+  {
+   "method": "human",
+   "holdings": 1269,
+   "questions": 42
+  },
+  {
+   "method": "fuzzy",
+   "holdings": 57,
+   "questions": 8
+  },
+  {
+   "method": "spv",
+   "holdings": 39,
+   "questions": 16
+  }
+ ],
+ "by_trigger": [
+  {
+   "trigger": "auto",
+   "holdings": 4537
+  },
+  {
+   "trigger": "split",
+   "holdings": 925
+  },
+  {
+   "trigger": "new_company",
+   "holdings": 300
+  },
+  {
+   "trigger": "unresolved",
+   "holdings": 28
+  },
+  {
+   "trigger": "band",
+   "holdings": 16
+  }
+ ],
+ "questions_total": 231,
+ "human_holdings": 1269,
+ "auto_holdings": 4537,
+ "review_groups": [
+  {
+   "trigger": "split",
+   "verdict": "company",
+   "company": "Space Exploration Technologies Corp.",
+   "cards": 6,
+   "holdings": 894
+  },
+  {
+   "trigger": "new_company",
+   "verdict": "company",
+   "company": "X.AI Corp",
+   "cards": 24,
+   "holdings": 278
+  },
+  {
+   "trigger": "unresolved",
+   "verdict": "not_in_universe",
+   "company": "(none)",
+   "cards": 2,
+   "holdings": 28
+  },
+  {
+   "trigger": "split",
+   "verdict": "company",
+   "company": "Perplexity AI, Inc.",
+   "cards": 2,
+   "holdings": 18
+  },
+  {
+   "trigger": "new_company",
+   "verdict": "company",
+   "company": "Groq, Inc.",
+   "cards": 3,
+   "holdings": 16
+  },
+  {
+   "trigger": "band",
+   "verdict": "company",
+   "company": "Space Exploration Technologies Corp.",
+   "cards": 3,
+   "holdings": 16
+  },
+  {
+   "trigger": "split",
+   "verdict": "company",
+   "company": "Anthropic PBC",
+   "cards": 1,
+   "holdings": 13
+  },
+  {
+   "trigger": "new_company",
+   "verdict": "company",
+   "company": "Perplexity AI, Inc.",
+   "cards": 1,
+   "holdings": 6
+  }
+ ],
+ "review_rows": 45,
+ "review_cards": 42,
+ "company_level_keys": 3,
+ "reviewer": "Om Mali",
+ "xai_spellings": [
+  {
+   "name": "X.AI HOLDINGS CORP",
+   "title": "X.AI HOLDINGS CORP SER C PC PP",
+   "holdings": 79
+  },
+  {
+   "name": "X.AI HOLDINGS CORP",
+   "title": "X.AI HOLDINGS CORP CLASS A P/P",
+   "holdings": 64
+  },
+  {
+   "name": "X.AI HOLDINGS CORP",
+   "title": "X.AI HOLDINGS CORP SER B PC PP",
+   "holdings": 27
+  },
+  {
+   "name": "X.AI Holdings Corp.",
+   "title": "X.AI Holdings Corp.",
+   "holdings": 18
+  },
+  {
+   "name": "X.AI, CORP.",
+   "title": "X.AI, CORP.",
+   "holdings": 12
+  },
+  {
+   "name": "x.AI, Inc.",
+   "title": "x.AI, Inc., Series C, Class E",
+   "holdings": 12
+  },
+  {
+   "name": "X.AI CORP.",
+   "title": "X.AI CORP.",
+   "holdings": 6
+  },
+  {
+   "name": "X.AI HOLDINGS CLASS A COMMON",
+   "title": "X.AI HOLDINGS CLASS A COMMON",
+   "holdings": 6
+  },
+  {
+   "name": "X.AI HOLDINGS CORP., CLASS C",
+   "title": "X.AI HOLDINGS CORP., CLASS C",
+   "holdings": 6
+  },
+  {
+   "name": "X.AI, HOLDINGS CORP. CLASS B",
+   "title": "X.AI, HOLDINGS CORP. CLASS B",
+   "holdings": 6
+  },
+  {
+   "name": "X.AI HOLDINGS CORP",
+   "title": "X.AI HOLDINGS CORP SER E PC PP",
+   "holdings": 5
+  },
+  {
+   "name": "X.AI HOLDINGS PREF E",
+   "title": "X.AI HOLDINGS PREF E",
+   "holdings": 5
+  },
+  {
+   "name": "X.AI, CORP. PREFERRED SERIES B   /",
+   "title": "X.AI, CORP. PREFERRED SERIES B   /",
+   "holdings": 5
+  },
+  {
+   "name": "X.AI HOLDINGS CORP SERIES C PREF E",
+   "title": "X.AI HOLDINGS CORP SERIES C PREF E",
+   "holdings": 4
+  },
+  {
+   "name": "x.AI, Inc.",
+   "title": "x.AI, Inc., Series C",
+   "holdings": 4
+  },
+  {
+   "name": "X.AI Corp SER E CVT PFD PP",
+   "title": "X.AI CORP SER E CVT PFD PP",
+   "holdings": 3
+  },
+  {
+   "name": "X.Ai Holdings Corp.",
+   "title": "x.AI, Inc., Series C, Class E",
+   "holdings": 3
+  },
+  {
+   "name": "X.AI, CORP. PERFERRED SERIES C   /",
+   "title": "X.AI, CORP. PERFERRED SERIES C   /",
+   "holdings": 3
+  },
+  {
+   "name": "HOF CAPITAL WH STRATEGIC OPPORTUNITIES FUND, LP (INVESTED IN X.AI, CORP., PREFERRED SERIES B)",
+   "title": "HOF CAPITAL WH STRATEGIC OPPORTUNITIES FUND, LP (INVESTED IN X.AI, CORP., PREFERRED SERIES B)",
+   "holdings": 2
+  },
+  {
+   "name": "MVP OPPORTUNITY FUND VI LLC, SERIES 24G (INVESTED IN X.AI, Corp., PREFERRED SERIES C)",
+   "title": "MVP OPPORTUNITY FUND VI LLC, SERIES 24G (INVESTED IN X.AI, Corp., PREFERRED SERIES C)",
+   "holdings": 2
+  },
+  {
+   "name": "SC JAL, LLC (INVESTED IN X.AI, CORP., PREFERRED SERIES B)",
+   "title": "SC JAL, LLC (INVESTED IN X.AI, CORP., PREFERRED SERIES B)",
+   "holdings": 2
+  },
+  {
+   "name": "X.AI HOLDINGS Corp SER C CVT PFD PP",
+   "title": "X.AI CORP SER C CVT PFD PP",
+   "holdings": 2
+  },
+  {
+   "name": "Snowpoint Growth 2.6, LLC (invested in X.AI Corp. Series E Preferred Stock)",
+   "title": "Snowpoint Growth 2.6, LLC (invested in X.AI Corp. Series E Preferred Stock)",
+   "holdings": 1
+  },
+  {
+   "name": "X.AI Corp SER C CVT PFD PP",
+   "title": "X.AI CORP SER C CVT PFD PP",
+   "holdings": 1
+  }
+ ],
+ "perplexity": [
+  {
+   "period_end": "2025-12-31",
+   "balance": 6081.0,
+   "value_usd": 4228993.75,
+   "price": 695.4438003617826
+  },
+  {
+   "period_end": "2026-03-31",
+   "balance": 60810.0,
+   "value_usd": 4228993.75,
+   "price": 69.54438003617825
+  }
+ ],
+ "perplexity_all": [
+  {
+   "period_end": "2025-12-31",
+   "balance": 78267.0,
+   "value_usd": 54430299.89,
+   "holdings": 5
+  },
+  {
+   "period_end": "2026-03-31",
+   "balance": 782670.0,
+   "value_usd": 54430299.89,
+   "holdings": 5
+  }
+ ],
+ "spacex_same_day": [
+  {
+   "period_end": "2023-10-31",
+   "asset_category": "EC",
+   "price": 81.0,
+   "holdings": 16
+  },
+  {
+   "period_end": "2023-10-31",
+   "asset_category": "EP",
+   "price": 810.0,
+   "holdings": 15
+  }
+ ],
+ "anthropic_step": [
+  {
+   "period_end": "2023-10-31",
+   "price": 12.18
+  },
+  {
+   "period_end": "2024-01-31",
+   "price": 48.940000000000005
+  }
+ ],
+ "anthropic_series": [
+  {
+   "period_end": "2023-04-28",
+   "price": 11.787404970924358
+  },
+  {
+   "period_end": "2023-07-31",
+   "price": 13.66
+  },
+  {
+   "period_end": "2023-10-31",
+   "price": 12.18
+  },
+  {
+   "period_end": "2024-01-31",
+   "price": 48.940000000000005
+  },
+  {
+   "period_end": "2024-03-31",
+   "price": 30.004500057296376
+  },
+  {
+   "period_end": "2024-04-30",
+   "price": 30.0045
+  },
+  {
+   "period_end": "2024-05-31",
+   "price": 30.0
+  },
+  {
+   "period_end": "2024-06-30",
+   "price": 30.0
+  },
+  {
+   "period_end": "2024-07-31",
+   "price": 30.0
+  },
+  {
+   "period_end": "2024-08-31",
+   "price": 30.0
+  },
+  {
+   "period_end": "2024-09-30",
+   "price": 32.25
+  },
+  {
+   "period_end": "2024-10-31",
+   "price": 35.43
+  },
+  {
+   "period_end": "2024-11-30",
+   "price": 37.440000000000005
+  },
+  {
+   "period_end": "2024-12-31",
+   "price": 37.440000000000005
+  },
+  {
+   "period_end": "2025-01-31",
+   "price": 58.5
+  },
+  {
+   "period_end": "2025-02-28",
+   "price": 58.540000000000006
+  },
+  {
+   "period_end": "2025-03-31",
+   "price": 58.54
+  },
+  {
+   "period_end": "2025-04-30",
+   "price": 56.089999999999996
+  },
+  {
+   "period_end": "2025-05-31",
+   "price": 66.35000000000001
+  },
+  {
+   "period_end": "2025-06-30",
+   "price": 70.58
+  },
+  {
+   "period_end": "2025-07-31",
+   "price": 154.15
+  },
+  {
+   "period_end": "2025-08-31",
+   "price": 148.08
+  },
+  {
+   "period_end": "2025-09-30",
+   "price": 148.29
+  },
+  {
+   "period_end": "2025-10-31",
+   "price": 148.29000000000002
+  },
+  {
+   "period_end": "2025-11-28",
+   "price": 203.35999999999999
+  },
+  {
+   "period_end": "2025-11-30",
+   "price": 148.28
+  },
+  {
+   "period_end": "2025-12-31",
+   "price": 254.43
+  },
+  {
+   "period_end": "2026-01-30",
+   "price": 154.81799995509553
+  },
+  {
+   "period_end": "2026-01-31",
+   "price": 273.73
+  },
+  {
+   "period_end": "2026-02-27",
+   "price": 259.14
+  },
+  {
+   "period_end": "2026-02-28",
+   "price": 273.72
+  },
+  {
+   "period_end": "2026-03-31",
+   "price": 347.31
+  },
+  {
+   "period_end": "2026-04-30",
+   "price": 388.19
+  }
+ ],
+ "rejected": [
+  {
+   "issuer_name": "COHERE TECHNOLOGIES, INC. PREFERRED SERIES D-1   /",
+   "holdings": 14
+  },
+  {
+   "issuer_name": "COHERE TECHNOLOGIES, INC. PREFERRED SERIES D-2   /",
+   "holdings": 14
+  }
+ ]
+}

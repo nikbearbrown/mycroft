@@ -1,0 +1,32 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="figtitle figdesc" font-family="'Inter', sans-serif">
+  <title id="figtitle">The share count settles it, and the ratio does not</title>
+  <desc id="figdesc">Three price steps of similar size. The share count distinguishes them: Perplexity's multiplies by ten while the value holds, which is a split; Anthropic's and SpaceX's never move, which makes their steps repricings.</desc>
+  <rect width="700" height="420" fill="#FFFFFF"/>
+  <text x="40" y="42" font-size="20" font-family="'EB Garamond', Georgia, serif" fill="#2a1a0e">The share count settles it, and the ratio does not</text>
+  <text x="40" y="64" font-size="13" fill="#545454">Same question asked of three companies, answered by one column</text>
+  <text x="40" y="100" font-size="11" fill="#545454" font-family="'Inter', sans-serif" font-weight="700" letter-spacing="0.06em">COMPANY</text>
+  <text x="200" y="100" font-size="11" fill="#545454" font-family="'Inter', sans-serif" font-weight="700" letter-spacing="0.06em">SHARES</text>
+  <text x="390" y="100" font-size="11" fill="#545454" font-family="'Inter', sans-serif" font-weight="700" letter-spacing="0.06em">VALUE</text>
+  <line x1="40" y1="110" x2="660" y2="110" stroke="#2a1a0e" stroke-width="1"/>
+  <text x="40" y="136" font-size="14" fill="#2a1a0e" font-family="'Inter', sans-serif">Perplexity</text>
+  <text x="40" y="153" font-size="12" fill="#C8102E" font-family="'JetBrains Mono', monospace">a real 10:1 split</text>
+  <text x="200" y="136" font-size="11" fill="#C8102E" font-family="'JetBrains Mono', monospace">19,395 → 193,950</text>
+  <text x="390" y="136" font-size="11" fill="#C8102E" font-family="'JetBrains Mono', monospace">13,488,132.50 → 13,488,132.50</text>
+  <text x="200" y="153" font-size="10" fill="#545454" font-family="'Inter', sans-serif">ten times the shares, the same dollars</text>
+  <line x1="40" y1="165" x2="660" y2="165" stroke="#D4D4D4" stroke-width="1"/>
+  <text x="40" y="186" font-size="14" fill="#2a1a0e" font-family="'Inter', sans-serif">Anthropic</text>
+  <text x="40" y="203" font-size="12" fill="#545454" font-family="'JetBrains Mono', monospace">not a split</text>
+  <text x="200" y="186" font-size="11" fill="#545454" font-family="'JetBrains Mono', monospace">89,078 → 89,078</text>
+  <text x="390" y="186" font-size="11" fill="#545454" font-family="'JetBrains Mono', monospace">1,084,970.04 → 4,359,477.32</text>
+  <text x="200" y="203" font-size="10" fill="#545454" font-family="'Inter', sans-serif">share count never moves, and the step reverses next quarter</text>
+  <line x1="40" y1="215" x2="660" y2="215" stroke="#D4D4D4" stroke-width="1"/>
+  <text x="40" y="236" font-size="14" fill="#2a1a0e" font-family="'Inter', sans-serif">SpaceX</text>
+  <text x="40" y="253" font-size="12" fill="#545454" font-family="'JetBrains Mono', monospace">not a split</text>
+  <text x="200" y="236" font-size="11" fill="#545454" font-family="'JetBrains Mono', monospace">22,368 → 22,368</text>
+  <text x="390" y="236" font-size="11" fill="#545454" font-family="'JetBrains Mono', monospace">4,742,016.00 → 9,484,032.00</text>
+  <text x="200" y="253" font-size="10" fill="#545454" font-family="'Inter', sans-serif">share count never moves, the value doubles exactly</text>
+  <line x1="40" y1="265" x2="660" y2="265" stroke="#D4D4D4" stroke-width="1"/>
+  <text x="40" y="302" font-size="13" fill="#2a1a0e" font-family="'Inter', sans-serif">A split moves the share count and leaves the value alone.</text>
+  <text x="40" y="320" font-size="13" fill="#2a1a0e" font-family="'Inter', sans-serif">A repricing does the opposite. The ratio alone cannot tell them apart.</text>
+  <text x="40" y="402" font-size="10" fill="#545454" font-family="'JetBrains Mono', monospace">Source: marks · one representative fund per adjudicated group, chosen by the data</text>
+</svg>

@@ -1,0 +1,30 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="figtitle figdesc" font-family="'Inter', sans-serif">
+  <title id="figtitle">25.0% unchanged, against an expected 30 to 40</title>
+  <desc id="figdesc">A bar showing that 3,060 of 4,079 consecutive observations moved and 1,019 did not, with the plan's expected band marked, followed by a sensitivity ladder.</desc>
+  <rect width="700" height="420" fill="#FFFFFF"/>
+  <text x="40" y="42" font-size="20" font-family="'EB Garamond', Georgia, serif" fill="#2a1a0e">25.0% unchanged, against an expected 30 to 40</text>
+  <text x="40" y="64" font-size="13" fill="#545454">4,079 consecutive observations, after every guard</text>
+  <rect x="40" y="104" width="465.1" height="44" fill="#C8102E"/>
+  <rect x="505.1" y="104" width="154.9" height="44" fill="#2a1a0e"/>
+  <text x="54" y="133" font-size="17" fill="#FFFFFF" font-family="'JetBrains Mono', monospace">3,060 moved</text>
+  <text x="646" y="133" font-size="17" fill="#FFFFFF" font-family="'JetBrains Mono', monospace" text-anchor="end">1,019</text>
+  <text x="40" y="166" font-size="12" fill="#C8102E" font-family="'Inter', sans-serif">75.0% moved</text>
+  <text x="660" y="166" font-size="12" fill="#2a1a0e" font-family="'Inter', sans-serif" text-anchor="end">25.0% unchanged</text>
+  <rect x="412.0" y="90" width="62.0" height="72" fill="none" stroke="#C8860E" stroke-width="2" stroke-dasharray="4 3"/>
+  <text x="443.0" y="82" font-size="11" fill="#C8860E" font-family="'Inter', sans-serif" text-anchor="middle">where plan.md expected the line</text>
+  <text x="40" y="216" font-size="11" fill="#545454" font-family="'Inter', sans-serif" font-weight="700" letter-spacing="0.06em">IF WE CALL THIS UNCHANGED</text>
+  <text x="660" y="216" font-size="11" fill="#545454" font-family="'Inter', sans-serif" text-anchor="end" font-weight="700" letter-spacing="0.06em">SHARE</text>
+  <line x1="40" y1="226" x2="660" y2="226" stroke="#2a1a0e" stroke-width="1"/>
+  <text x="40" y="250" font-size="12" fill="#C8102E" font-family="'Inter', sans-serif">exactly equal — the rule used</text>
+  <rect x="398" y="240" width="50.0" height="12" fill="#C8102E"/>
+  <text x="660" y="250" font-size="13" fill="#C8102E" font-family="'JetBrains Mono', monospace" text-anchor="end">25.0%</text>
+  <text x="40" y="276" font-size="12" fill="#2a1a0e" font-family="'Inter', sans-serif">any move under 0.1%</text>
+  <rect x="398" y="266" width="52.6" height="12" fill="#2a1a0e"/>
+  <text x="660" y="276" font-size="13" fill="#2a1a0e" font-family="'JetBrains Mono', monospace" text-anchor="end">26.3%</text>
+  <text x="40" y="302" font-size="12" fill="#2a1a0e" font-family="'Inter', sans-serif">any move under 1%</text>
+  <rect x="398" y="292" width="59.2" height="12" fill="#2a1a0e"/>
+  <text x="660" y="302" font-size="13" fill="#2a1a0e" font-family="'JetBrains Mono', monospace" text-anchor="end">29.6%</text>
+  <line x1="40" y1="324" x2="660" y2="324" stroke="#D4D4D4" stroke-width="1"/>
+  <text x="40" y="348" font-size="13" fill="#2a1a0e" font-family="'Inter', sans-serif">Even the most generous reading stays below the plan's band.</text>
+  <text x="40" y="402" font-size="10" fill="#545454" font-family="'JetBrains Mono', monospace">Source: marks, guarded — no blocked mark, no incomplete run</text>
+</svg>

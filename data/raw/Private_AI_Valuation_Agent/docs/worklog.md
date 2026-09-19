@@ -4,7 +4,520 @@ Newest first.
 
 ---
 
-## 2026-08-28 (latest) — Week 5 figures, and the two numbers they caught
+## 2026-09-18 (latest) — Week 8 figures and the video deliverable
+
+Five figures built from `docs/_figdata_week8.json`, plus a 3:00 narration script and a README,
+delivered to the week's video folder. Both QA passes run: layout audit **0/15 flagged**, and
+every PNG read for substance.
+
+**Four defects the accuracy pass caught in the drawing code** — each one a hand-typed value
+standing in for a measured one:
+- a subtitle hard-coded "Nine managers" when the Anthropic window holds **8 managers, 11 marks**;
+- the red/grey split in that window hard-coded at `price > 220`, now the same single-linkage
+  level clustering `src/signal/findings.py` uses;
+- the dispersion highlight hard-coded at `spread >= 0.4`, now the measured p90;
+- the propagation figure claimed **"the biggest events are the fastest"**, which the data does
+  not support — events with 10+ managers have a median 27 days to half against 30 for the rest,
+  and 12 of 28 smaller events land at zero days against 3 of 9 large ones. Replaced with counts
+  that hold: 15 of 37 at zero days, slowest 92.
+
+**Open**
+- **Milestone PR 1 and PR 2 still not opened** — git is the user's.
+
+---
+
+## 2026-09-18 (earlier) — The Cerebras harness: everything except the data
+
+**Chosen route:** wait for the SEC to publish 2026Q3 rather than fetching the filings from
+EDGAR. So the work was to build every other step now, and make the study run itself the day
+the archive catches up.
+
+**Done**
+- `public_observations` — a separate table for universe-company holdings at any fair value
+  level other than 3. **Not** a widening of `PRIVATE_FILTER`: 5,806 rows reconcile against
+  `raw_holdings` as a Level 3 layer, and loosening it in place would have silently redefined
+  the re-mark rate, the dispersion and the panel.
+- `src/ingest/public_marks.py` — scans the raw zips directly, because the Parquet layer was
+  itself built with the Level 3 filter and a Level 1 row cannot be recovered from it.
+- `src/signal/event_study.py` — derives the Level 3 → Level 1 crossing from the data,
+  computes the discount path, and reports *why* it cannot run when it cannot.
+- `tests/test_event_study.py` — 8 tests that inject a synthetic Level 1 observation and
+  assert the arithmetic the report will print. A harness nobody will exercise for two months
+  has to be proven now, or the silence in November is ambiguous.
+- Findings §5 rewritten from the scan. Suite: **197 passed**.
+
+**The scan changed what I thought I knew, twice**
+- Week 8 concluded "no Level 1 rows exist" from probing Cerebras in two quarters. Scanning
+  **all fourteen** at every level returned **10,566 non-Level-3 rows**, which looked like a
+  contradiction.
+- It was not. **10,126 of them are false positives** — every one of the 7,175 Level 1 rows is
+  **Coherent Corp**, ticker COHR, caught by the deliberate `%COHERE%` canary planted in Week
+  4. 186 more are the right company and the wrong instrument (`X.AI LLC TL 1L BANKDEBT`,
+  `X.AI LLC/X.AI CO ISSUER 144A`, priced near $1.00 because they price per $100 of face).
+  **254 are genuine, and none is Level 1.**
+- So the conclusion survives, and is now measured across fourteen quarters instead of
+  inferred from two.
+
+**The finding I did not expect**
+- **The Level 3 filter was doing double duty as a precision filter.** Remove it and the frozen
+  Week 2 name patterns match the entire public market: one public company alone produced 7,175
+  rows. Any future use of the public lane must route through the matcher and the review queue,
+  not the patterns. The canary earned its keep a second time.
+
+**Open**
+- The study unblocks when `2026q3_nport.zip` is published — roughly November 2026 on this
+  route — then `python -m src.ingest.public_marks 2026q3` and the report fills itself in.
+- The three-pile classifier in `scan_quality` is approximate: a few Level 2 LLC co-issuer
+  notes still land in the candidate pile. The conclusion does not depend on it, because no
+  candidate is Level 1 under any classification.
+- **Milestone PR 2 still not opened** — git is the user's.
+
+---
+
+## 2026-09-17 (earlier) — Week 8: dispersion, propagation, and a study that cannot be run
+
+**Deliverable:** `docs/findings.md` with re-mark frequency, dispersion, propagation lag and the
+Cerebras result — `src/signal/findings.py`, `scripts/analyze.py`, `tests/test_findings.py`.
+
+**The four measurements**
+- **Re-mark frequency: 25.0% of 4,079 consecutive observations are unchanged**, against
+  `plan.md`'s expected 30–40%. Marks move *more* often than the thesis assumed. Robust: the
+  share only reaches 29.6% if any move under 1% is treated as flat. Enormous variation by
+  company — Anthropic 2.2% unchanged, OpenAI 1.1%, Groq 0%, against X.AI 48.5% and SpaceX
+  37.4%. A single headline rate for "private marks" would hide that.
+- **Same-date dispersion: 130 groups of 3+ managers, median spread 10.8%**, p90 40.5%, widest
+  111.9%. 35 of 130 agree within 1%. But **92 of 130 contain more than one price level**, so
+  the disagreement is mostly about which round is reflected.
+- **Propagation: 37 events, median 30 days from the first manager to half the adopters**, 90
+  days to all. The biggest events propagate fastest: Databricks at 190.00 across 20 managers
+  and OpenAI at 687.6869 across 12 both reach half their holders in **0 days** — the same
+  period end. Anthropic's 259.14 takes 27 days to half and 89 to all.
+- **Cerebras: the event study cannot be run.** Two structural reasons, not an oversight.
+
+**The Cerebras finding, which is a negative result about the data**
+- `plan.md` calls it "a free, clean, private-mark-to-public-price event study with no
+  additional data collection". It is not free. (1) The private layer is filtered to
+  `FAIR_VALUE_LEVEL = '3'`, so Level 1 rows never entered Postgres — all 5,806 `raw_holdings`
+  rows are Level 3. (2) The Level 1 observation's period end is 2026-05-29, which is in
+  unpublished 2026Q3; the archive ends 2026-04-30.
+- Probed the raw zips directly with no fair-value filter: **22 Cerebras row groups in 2026Q2
+  and 10 in 2026Q1, all Level 3.** So the earliest possible Level 1 period end is after the
+  archive ends.
+- Reported instead: the Level 3 run-up, $21.46 → $100.26 across 19 period ends, +367%, with
+  the last step 89.02 → 100.26. The report explicitly **declines** to compare against
+  `plan.md`'s $236.99, because that number is in a plan document and not in any filing this
+  project has ingested.
+
+**Four defects found in my own measurements, each caught by reading the output**
+- **Dispersion compared different securities.** The first version reported spreads of 31,983%
+  and 1,098%. Those were SpaceX preferred against SpaceX common (a 10x filing convention) and
+  one Coatue mark of `OPENAI GLOBAL, LLC` carrying **150,000,000 units at $1.5072** — an LLC
+  interest priced per dollar of commitment, not a share. Now computed within (company, class
+  kind) with scale outliers set aside and named. The Coatue row also pins the long-standing
+  "$1.00 OpenAI" open issue to a single holding.
+- **The window was a radius, not a span.** ±45 days is a 90-day span, and over 90 days
+  Databricks genuinely moved 28.32 → 60.00. Calling that manager disagreement is nonsense. Now
+  a 31-day forward span, matching `plan.md`'s own 4/30-to-5/31 example.
+- **Propagation conflated staleness with slow propagation.** First-to-last gave lags of 427 and
+  396 days on Databricks levels — managers still carrying a 2023 level in late 2024. The
+  headline is now first-to-half, with first-to-last kept beside it and labelled.
+- **A division by zero on an empty panel**, found by a test with no prior prices. A first run
+  is a legitimate state.
+
+**Also: a bare `%` inside an SQL comment** broke a parameterised query — psycopg2 scans
+comments for placeholders too.
+
+**Not claimed**
+- Within-level agreement is **not** reported as a finding anywhere: it is bounded by the 2%
+  clustering threshold by construction, so quoting it would restate a definition.
+- Same-date dispersion still mixes disagreement with update timing; the level decomposition
+  narrows that but does not remove it.
+
+**Open**
+- **Milestone PR 2 is not opened** — git is the user's.
+- The `$1.00` OpenAI row is now identified but still priced in the panel; excluding it is a
+  universe/parser change, not a findings change.
+- Carried: Week 3's live EDGAR path (which is what the Cerebras study needs), non-USD currency
+  guarded but unexercised, 314 of 322 golden-set labels unattested, the 28 `%COHERE%` holdings
+  still inside the shipped universe layer, **milestone PR 1 still not opened**.
+
+---
+
+## 2026-09-11 (earlier) — Week 7 figures and narration, and four corrections they forced
+
+**Done**
+- `scripts/make_week7_figures.py` and five SVG/PNG figures, one per visual beat: the panel and
+  its reconciliation, the tolerance window that missed its own test case, the share counts that
+  separate a split from a repricing, ratio against factor, and `plan.md`'s seven checks. Every
+  number is queried from the panel at build time into `docs/_figdata_week7.json`.
+- Both QA passes: `npm run audit:layout` **0 errors on all five**, and each PNG read for
+  substance. 3:00 narration script (458 spoken words, measured) and a README written to
+  `D:\study_other
+ew_humanitarians\humanitarians-youtubeellows\om-mali6-09-11-Building-the-marks-panel-and-the-split-detector`.
+
+**Four things the figures caught**
+- **A verification check failed because a human answered it.** `perplexity_split_blocked`
+  required `NOT split_adjudicated`, so the Week 7 adjudication made it fail — it was asserting
+  the pre-review state rather than the rule `plan.md` states. Corrected to require flagged and
+  blocked, and to report the adjudication state. The figure's title also hardcoded "0 fail"
+  while its own table showed one, so it now counts.
+- **The evidence figure quoted a different fund than the RUN_LOG.** It ordered by position size
+  ascending and picked the smallest SpaceX holding; the log cites the largest. Now deterministic
+  and largest-first, so the figure and the written record quote the same row.
+- **A rounding was doing part of an argument.** $4,228,993.75 rendered as $4,228,994 beside the
+  words "the same dollars". Values now carry two decimals.
+- **Red was used as a warning colour**, which `brutalist/DESIGN.md` forbids — red is the primary
+  series, never danger. The two wrong choices in the factor figure are now secondary and red
+  marks the answer the figure is about.
+
+**Open**
+- Unchanged from Week 7's close: non-USD currency guarded but unexercised; Week 3's live EDGAR
+  path; 314 of 322 golden-set labels unattested; the 28 `%COHERE%` holdings still inside the
+  shipped universe layer; **milestone PR 1 still not opened**.
+
+---
+
+## 2026-09-11 (later) — Week 7 closed: the split factor is recorded
+
+**Done**
+- The Perplexity adjudication was re-run with `--factor 10`. All **7** split marks now carry
+  `split_factor = 10.00` and stay blocked awaiting the Week 8 adjustment; the 4 `not_a_split`
+  marks carry no factor, correctly, and are back in the change series.
+- `docs/marks_panel.md` regenerated. The quarantine table now shows the distinction the week
+  turned on, in one row: ratio **11.9300**, factor **10.0000**. A reader can see that the
+  number to divide by is not the number the detector measured.
+
+**Week 7 is complete.** 5,479 marks, coverage reconciling exactly, the detector's three
+questions answered by a named human, 176 tests, and no open items of its own.
+
+**Open (carried, none from Week 7)**
+- Non-USD currency is guarded but unexercised: all 5,806 holdings are USD.
+- Week 3's live EDGAR path; 314 of 322 golden-set labels unattested; the 28 `%COHERE%`
+  holdings still inside the shipped universe layer; **milestone PR 1 still not opened**.
+
+---
+
+## 2026-09-11 (earlier) — Week 7 splits adjudicated, and a defect that cost a re-run
+
+**Done**
+- Om Mali adjudicated all three suspected-split questions, covering 11 marks. Blocks lifted
+  for Anthropic and SpaceX; Perplexity's 7 marks stay blocked awaiting the Week 8 adjustment.
+  `series_flagged` is now 0 — nothing is left open.
+- `adjudicate()` moved out of the CLI into `src/marks/splits.py` so it can be tested, with
+  three new tests. Suite: **176 passed**.
+- `docs/marks_panel.md` regenerated: the quarantine table now shows the verdict, the factor
+  and how many marks remain blocked.
+
+**The evidence, and the share count settled all three**
+- **Perplexity — a real 10:1 split.** Five T. Rowe Price funds across PFD:D-1 and PFD:E-1
+  show the share count multiplied by exactly ten with the dollar value **unchanged to the
+  cent**: 19,395 → 193,950 at $13,488,132.50; 40,949 → 409,490 at $28,477,728.17; 10,496 →
+  104,960; 6,081 → 60,810; 1,346 → 13,460; 98 → 980.
+- **And the 11.93 case is a composite.** ARK's Perplexity common went 6,081 → 60,810 shares
+  (×10) while the value fell $4,226,522.43 → $3,542,758.43. So 11.93 = a 10:1 split **and** a
+  16% markdown in one period. Week 8 divides by 10; adjusting by 11.93 would erase a real
+  price move, which is the mirror image of the mistake the detector exists to prevent.
+- **Anthropic — not a split.** ARK holds **89,078 shares in every one of thirteen periods**;
+  only the value moves. The 4.02 rise to $48.94 **reverses to $30.00** the next quarter, and
+  a split never reverses.
+- **SpaceX — not a split.** Neuberger Berman's share counts are constant at 22,368 and 3,428
+  while value doubles exactly ($4,742,016 → $9,484,032 and $7,267,360 → $14,534,720). A 2x
+  repricing that continues to $526.59 the following quarter.
+
+**Defect — mine, and it cost the reviewer a repeat**
+- `--factor` was accepted on the command line and **never written to the database**. Two
+  edits I believed were saved were lost when a patch script asserted and exited before its
+  write, so the `split_factor = %(factor)s` assignment and the guard that requires a factor
+  both went missing. psycopg2 ignores an unused named parameter without complaint, so the
+  command succeeded, printed a confirmation, and recorded a null factor.
+- The verdicts, reviewers and rationales all landed correctly; only the factor is missing.
+  One re-run of the Perplexity command fills it.
+- **Fixed at the cause, not the symptom.** The logic now lives in
+  `src/marks/splits.py::adjudicate()` rather than in the CLI, and
+  `test_a_split_verdict_must_carry_a_factor` and
+  `test_a_confirmed_split_records_its_factor_and_stays_blocked` would both have failed on the
+  broken version. A guard that only exists in a script is a guard nothing tests.
+
+**Open**
+- **`split_factor` is null on Perplexity's 7 marks** pending one re-run. Week 8 needs that
+  number and must not fall back to the detected ratio.
+- Non-USD currency remains guarded but unexercised: all 5,806 holdings are USD.
+- Carried: Week 3's live EDGAR path, 314 of 322 golden-set labels unattested, the 28
+  `%COHERE%` holdings still inside the shipped universe layer, **milestone PR 1 still open**.
+
+---
+
+## 2026-09-10 (earlier) — Week 7: the marks panel and the split detector
+
+**Deliverable:** the per-company/manager/period mark panel with splits caught and
+quarantined — `src/marks/{build,splits,verify}.py`, `scripts/build_marks.py`,
+`docs/marks_panel.md`, and the `marks` / `security_map` tables.
+
+**Done**
+- **5,479 marks** over 232 securities, 55 period ends, 861 company/manager/period rows.
+  5,185 priced; 294 unpriced on purpose; 305 blocked from change series.
+- **Coverage reconciles exactly**: 5,806 holdings = 28 rejected in Week 6 + 72 superseded by
+  amendments + 5,706 aggregated into marks. A test asserts it.
+- Split detector, two tiers: 11 marks `split_suspected` and blocked; 124 large moves routed
+  for a look and deliberately **not** blocked; 101 marks flagged as sitting in a series that
+  breaks somewhere.
+- Re-mark against carry-forward, which Week 8 needs: **3,067 re-marked, 1,019 carried
+  forward, 1,099 first observations.** A carry-forward and a zero delta are recorded as
+  different facts.
+- `--adjudicate` records a human verdict on a suspected split. `not_a_split` lifts the block;
+  `split` **keeps** it, because applying a factor is Week 8's work under its own gate.
+- `tests/test_marks.py` — 19 tests, one synthetic hazard per real defect. Suite: **173 passed**.
+
+**The correction that matters**
+- **The split rule missed `plan.md`'s own verification case.** Week 6 used an absolute ±0.02
+  window; Perplexity's 695 → 58 is a ratio of **11.93**, which that window misses by a factor
+  of three. It looked right only because the other Perplexity step lands on exactly 10.000.
+  The rule is now a **relative 1% window under the same cap of 20**, defined once in
+  `src/marks/splits.py` and imported by the Week 6 queue trigger so the two can never
+  disagree. It still excludes X.AI's 2.064x repricing (44 occurrences) and still excludes the
+  348x `$1.00` placeholder artifact — by the cap, which was always the part that mattered.
+
+**Three things the data forced, all logged as deviations**
+- **Amendments supersede.** All 16 `NPORT-P/A` filings restate a (fund, period) that already
+  had an original, so the panel's own uniqueness constraint would otherwise have rejected the
+  second and the survivor would have been an accident of insert order. The amendment wins;
+  72 original holdings never become marks.
+- **One security arrives on several lines, and sometimes those lines are not one security.**
+  189 line groups inside a single filing share an issuer name and title; 464 rows. Summing is
+  right for 151 of them. For the rest the lines disagree on price — SpaceX common and
+  preferred filed under an identical title, ten times apart — so the mark is recorded
+  **blended with no price**, keeping what the lines said. 6 marks.
+- **`asset_category` is part of a security's identity**, not decoration: it is the only thing
+  separating SpaceX common from preferred inside one filing. But three Databricks titles say
+  "Series I" and are filed EC by one manager and EP by another — one security, two tags — so
+  the category lives in `security_map` rather than in the security's key.
+
+**A rule I wrote too strong, then narrowed**
+- The first detector blocked every mark of a security whose series broke anywhere. That cost
+  90 further marks, including all of ARK's Anthropic series, for a break that a change between
+  two other periods never crosses. `plan.md`'s invariant is per mark. Now the series is
+  *flagged* and only the step is *blocked* — different claims, different columns.
+
+**Open**
+- **3 split questions need a human**: Perplexity (a real 10:1 split by the Week 6 evidence),
+  Anthropic 4.0181 (a repricing by the same evidence), SpaceX 2.0000. Nothing adjudicated
+  itself; `split_adjudicated` is false on all 11 marks.
+- Non-USD currency is guarded but untested by the data: all 5,806 holdings are USD.
+- `plan.md`'s ~$589 check is unreachable from bulk and says so rather than passing quietly.
+- Carried: Week 3's live EDGAR path, 314 of 322 golden-set labels unattested, the 28
+  `%COHERE%` holdings still inside the shipped universe layer, **milestone PR 1 still open**.
+
+---
+
+## 2026-09-04 (earlier) — Week 6 figures and narration, and a count they corrected
+
+**Done**
+- `scripts/make_week6_figures.py` and five SVG/PNG figures, one per visual beat: the funnel, the
+  24-spellings collapse, the graph and its checkpointer, the three price steps, and the closing
+  scoreboard. Every number is queried from Postgres at build time and dumped to
+  `docs/_figdata_week6.json` before anything is drawn.
+- Both QA passes: `npm run audit:layout` **0 errors on all five**, and each PNG read for
+  substance. 3:00 narration script (441 spoken words, measured) and a README written to
+  `D:\study_other
+ew_humanitarians\humanitarians-youtubeellows\om-mali6-09-04-Building-the-human-review-queue`.
+
+**A count the figures corrected**
+- The Week 6 write-up said "all four `split` triggers" and "wrong three times out of four".
+  Counted from `review_decisions`: **three** split-triggered questions (9 cards, 925 holdings),
+  so it is **two times out of three**. Fixed in `docs/entity_resolution.md` §10.8, this worklog
+  and `logs/RUN_LOG.md`. Same failure mode as Week 5's confidence numbers — a count typed by
+  hand instead of queried, caught only because a figure was generated from the source data.
+- Perplexity's unchanged value is **$4,228,993.75**, not $4,228,994; an earlier query had
+  rounded it with `::numeric(14,0)` before the number reached a decision rationale. The figure
+  now shows it to the cent, which strengthens the point rather than weakening it.
+
+**Defects found in the accuracy pass, which the layout pass cannot see**
+- The graph diagram stacked `accept` and `interrupt()` vertically under `triage`, so it read as
+  a sequence — as though every holding were accepted and then interrupted. Redrawn as an
+  explicit fork with "one or the other, never both" on it.
+- The X.AI list showed three rows reading identically, because three of the 24 spellings share
+  one issuer name and differ only in the security title. Titles added. This is the third week
+  running that a figure has needed this same fix.
+- The collapse figure's subtitle ran off the right edge; the audit does not catch that, because
+  the text element's own box is inside the canvas.
+
+**Defects found in the script, not the figures**
+- `psycopg2` interpolates `%` even when the parameter tuple is empty, so `LIKE '%D-1%'` raised
+  `IndexError`. Fixed by passing `None` rather than `()` when there is nothing to bind.
+- A holding was selected with `value_usd = 4228994`, which matched nothing. Replaced with a
+  subquery that picks the smallest position by value, scoped to the same two periods — data
+  choosing the row instead of a typed constant.
+
+---
+
+## 2026-09-04 (earlier) — Week 6 gate cleared: the queue is empty
+
+**Done**
+- Om Mali answered all 8 review questions in seven commands. **1,269 holdings decided by a
+  human; 5,806 of 5,806 (100%) now carry a resolution decision.**
+- `review_decisions` holds 45 rows for 42 cards — the three `new_company` answers each also
+  wrote a company-level key, so a new X.AI spelling next quarter resolves without asking.
+- Exported to `tests/fixtures/review_decisions_v1.json` (45 decisions). The regression test
+  that had been skipping now runs and passes. Suite: **154 passed, 0 skipped**.
+- `docs/review_queue.md` regenerated and now reports an empty queue.
+
+**What the answers hand to Week 7 — and they do not point the same way**
+- **SpaceX, 894 holdings: not a split.** Filing-unit artifact; same fund reports common at
+  81.00 and preferred at 810.00 on the same date. Do not adjust.
+- **Perplexity, 18 holdings: a real 10:1 split.** 6,081 → 60,810 shares with value identical
+  at $4,228,994. Adjust. This is `plan.md`'s own verification case, caught before it entered
+  a series as a 90% price crash.
+- **Anthropic, 13 holdings: a repricing**, consistent with the verified staircase. The 4.0181
+  ratio near 4 is coincidence. Do not adjust.
+- A split detector that treats all three the same way will be wrong two times out of three.
+
+**Also settled**
+- The 28 `%COHERE%` canary holdings are formally `not_in_universe` on a written ground. They
+  stay in `raw_holdings` (append-only); removing them from the universe layer is a
+  universe-version change.
+
+**Open**
+- Nothing in Week 6. `securities` is empty because Week 7 fills it; `match_decisions.security_id`
+  stays null until then.
+- Carried: Week 3's live EDGAR path, the 16 `NPORT-P/A` amendments, 314 of 322 golden-set
+  labels unattested, and **milestone PR 1 still not opened**.
+
+---
+
+## 2026-09-04 (later) — Supabase reachable; the queue re-run on the real database
+
+**Done**
+- Connected to Supabase again: `db.<ref>.supabase.co` resolves, **to an IPv6 address only**.
+  That was the cause all along — the retired IPv4 direct host — and it works from a machine
+  with IPv6 egress. Not a paused project.
+- Applied the Week 6 schema there (`companies`, `securities`, `review_decisions`,
+  `match_decisions`, plus the four LangGraph checkpoint tables), seeded 11 companies, and
+  re-ran the queue against the project's own 5,806-holding universe layer.
+
+**Result: identical, on a different server, with nothing migrated**
+- 231 questions · 189 auto-accepted · **4,537 holdings decided (78.1%)** · 42 paused ·
+  **1,269 waiting (21.9%)** · alias 2,760 / LEI 1,681 / fuzzy 57 / SPV 39 · the same 8
+  questions. Every figure matches the local run to the row.
+- This is the reproducibility claim in §10.7 being cashed rather than asserted. The local
+  cluster was a stand-in, not a fork of the truth.
+
+**Retired**
+- The local Postgres 17.2 cluster is stopped. `DATABASE_SETUP.md` keeps the recipe: it is
+  still the right answer when the network or the project is unavailable, and it needs no
+  administrator.
+
+**Open**
+- Unchanged and still the only blocking item: **the 8 questions need a named human**, and
+  1,269 holdings (894 of them the SpaceX split) are blocked behind them. `review_decisions`
+  is empty; the exported fixture has 0 rows.
+
+---
+
+## 2026-09-04 (earlier) — the local cluster died, and the queue proved itself
+
+**Done**
+- Corrected `DATABASE_SETUP.md`: the local-cluster recipe now writes `port` and
+  `listen_addresses` into `postgresql.conf` rather than passing them with `-o`, and
+  redirects `pg_ctl`'s output so the server does not die with the shell that launched it.
+
+**What happened**
+- The stand-in cluster was started from a long-running foreground command. When that command
+  was terminated the server went with it (`terminated by exception 0xC0000142`). A status
+  report written minutes earlier said it was running; it was not, and that was corrected.
+- **Restarting it restored everything**: 5,806 holdings, 4,537 `match_decisions`, 231
+  checkpoint threads, the same 42 paused reviews behind the same 8 questions.
+
+**Why it is worth logging**
+- `test_a_paused_review_survives_a_new_process` asserts a paused review survives a *process*
+  exiting. This was a server crash and a cold restart with WAL replay — a stronger claim than
+  the test makes, arrived at by accident. The queue is durable in the way the week claimed.
+
+---
+
+## 2026-09-03 (later) — Week 6: the resolution graph and the review queue
+
+**Deliverable:** a resumable review queue with decisions persisted, reused and turned into
+regression tests — `src/graphs/resolve_graph.py`, `scripts/review_queue.py`,
+`docs/entity_resolution.md` §10, and the generated `docs/review_queue.md`.
+
+**Done**
+- LangGraph graph: `candidates -> recall -> triage -> (accept | review) -> persist`, with
+  `interrupt()` on the review branch and a `langgraph-checkpoint-postgres` checkpointer, so a
+  paused review lives in Postgres and not in a process.
+- Four triggers, from `plan.md`: `split`, `unresolved`, `band`, `new_company`.
+- Two new tables. `review_decisions` is keyed by the **question**; `match_decisions` keeps
+  `unique (raw_id)` and is the per-holding audit trail. Also `companies` (seeded, 11 rows) and
+  an empty `securities` for Week 7.
+- Reviewer's view as a CLI: `--run --status --list --show --decide --decide-company --report
+  --export-fixture`. `--report` writes the queue as Markdown for a person to read (P5).
+- `tests/test_review_queue.py`, 16 passing + 1 skipped. Suite total **153 passed, 1 skipped**.
+
+**Result against the real universe layer**
+- 231 distinct questions over 5,806 holdings. **4,537 holdings (78.1%) decided with no human**
+  — alias 2,760, LEI 1,681, fuzzy 57, SPV 39. **1,269 (21.9%) waiting.**
+- 42 paused cards behind only **8 real questions**. X.AI reaches the queue under 24 spellings.
+- **The queue found the 28 `%COHERE%` canary holdings on its own.** Week 4 logged them as
+  contaminating the shipped universe layer; nothing was added to make the queue look for them.
+  The card shows the disagreement plainly: matcher says nothing, frozen pattern says
+  `Cohere Inc. [FALSE POSITIVE]`.
+
+**Decisions**
+- **The unit of work is a question, not a holding.** `plan.md` asks for both `unique (raw_id)`
+  and "keyed so the same ambiguity is never presented twice", which one table cannot do: 5,806
+  holdings are 231 pairs, so a holding-keyed queue would ask about Databricks 85 times. Two
+  tables, both invariants intact. Logged as a `plan.md` conflict.
+- **`new_company` is answered against the company, not the string.** Otherwise X.AI is 24
+  identical questions. `--decide-company` applies one answer, one reviewer, one rationale to
+  every paused spelling at once.
+- **Model confidence is not a trigger, and the adjudicator stays off by default.** Week 5
+  measured confidence at 1.000 on 315 of 322 answers including 12 of the 15 wrong ones.
+  Sorting this queue by it would put the wrong rows at the bottom.
+- **A split is asked even at 1.00 matcher confidence.** SpaceX, 894 holdings, still asked,
+  because `plan.md` says a suspected split is never auto-adjusted.
+- **Nothing was decided on the user's behalf.** A decision needs a named reviewer and a
+  rationale, and naming a company outside `companies` is rejected — admitting a company is a
+  universe-version decision at the Week 1 gate, not a review-prompt decision.
+
+**Defects found and fixed**
+- **The split trigger's tolerance was proportional (2% of the ratio) and wrong.** At a ratio of
+  348 that is a window of ±7, so it flagged three OpenAI questions at 348x, 320x and 306x as
+  "near-integer". Those are the `$1.00` placeholder rows carried since Week 2, not splits. Now
+  an absolute ±0.02 with the ratio capped at 20: flagged questions fell 19 → 9, and the
+  survivors are SpaceX and Perplexity at exactly 10.0000 and Anthropic at 4.0181. A test pins
+  both what the rule catches and what it must not.
+- **`match_decisions.decision_key` had a foreign key to `review_decisions`.** It rejected every
+  auto-accepted holding — exactly the rows that never needed a reviewer. The key is a grouping
+  identity, not a reference; FK dropped, index kept.
+- **The review card broke when redirected.** Windows hands Python a cp1252 stdout, which encoded
+  the card's em dashes as bytes that are not valid UTF-8, so piping it to a file produced
+  something `grep` called binary and refused to print. The card is a human artifact; the CLI now
+  forces UTF-8 on stdout.
+- **The first band test asserted the wrong side of the boundary.** `DXYZ SpaceX I LLC` scores
+  0.90 exactly and is therefore accepted, not reviewed. Replaced with the Week 4 blended-class
+  MWAM string, which scores 0.80, and added a test that pins the band's ceiling as exclusive.
+
+**Blocker — the user's, not the pipeline's**
+- **The project's Supabase instance is unreachable.** `DATABASE_URL` names
+  `db.<ref>.supabase.co`, which no longer resolves: a paused free-tier project, or the retired
+  IPv4 direct host (the pooler host in `DATABASE_SETUP.md` §1 does resolve). Week 6 ran instead
+  against a **local Postgres 17.2** cluster, `initdb`-ed into the scratchpad with no admin
+  rights and loaded from the Parquet layer — which reproduced the documented counts exactly:
+  5,806 holdings, 14 quarters, 1 null price, 64 SPVs. Documented in `DATABASE_SETUP.md`.
+
+**Open**
+- **8 questions, 1,269 holdings, waiting on a named human.** 894 of them are the SpaceX split.
+  `review_decisions` is empty and the exported fixture has 0 rows, so
+  `test_every_exported_human_decision_is_still_honoured` skips rather than passes.
+- The 42 paused threads are in the local cluster. They need **re-running, not migrating**, once
+  the real database is reachable; the graph is deterministic and reproduces the same 8 questions.
+- `securities` is created and empty; `match_decisions.security_id` is null until Week 7.
+- The split trigger does not catch the `$1.00` OpenAI placeholder. Different defect, still open.
+- Carried unchanged: Week 3's live EDGAR path, the 16 `NPORT-P/A` amendments, 314 of 322
+  golden-set labels unattested, and **milestone PR 1 still not opened**.
+
+---
+
+## 2026-08-28 (later) — Week 5 figures, and the two numbers they caught
 
 **Done**
 - Wrote `scripts/make_week5_figures.py` and generated five SVG/PNG figures, one per visual beat

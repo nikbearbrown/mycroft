@@ -132,3 +132,74 @@ $589.0095 Anthropic repricing verified by hand in Week 1 (period ends 5/29 and 5
 late July) sits in 2026Q3, which the SEC has not published — `2026q3_nport.zip` returns
 HTTP 404. Reaching the current period needs the Week 3 live-EDGAR path. Bulk alone is
 structurally about two months further behind than the quarter label suggests.
+
+## When Supabase is not reachable — a local cluster
+
+**Hit on 2026-09-03 and it stopped Week 6 until it was worked around.** The
+`DATABASE_URL` in `.env` points at `db.<project-ref>.supabase.co`, the *direct* host, and
+that name no longer resolves:
+
+```
+could not translate host name "db.<ref>.supabase.co" to address:
+Name or service not known
+```
+
+Two things can produce that, and they need different fixes from a human:
+
+1. **The project is paused.** Supabase pauses free-tier projects after a period of
+   inactivity, and a paused project's DNS goes away with it. Un-pause it in the dashboard.
+2. **The direct host is IPv4-only-unavailable.** Supabase now serves direct connections
+   over IPv6; the IPv4 path is the **pooler** host, which is what section 1 above tells you
+   to use. `aws-0-<region>.pooler.supabase.com` resolves from this machine; the `db.*` host
+   does not. Re-copy the URI from Project Settings → Database → Connection string → URI.
+
+Either way it is a credential change, so it is yours and not the pipeline's.
+
+### The workaround, which is also the better development setup
+
+Every table and every graph in this project is addressed by URL, so any Postgres 17 will
+do. A cluster owned by your user account, needing no administrator and no service:
+
+```bash
+PG="/c/Program Files/PostgreSQL/17/bin"
+DATA="$TMPDIR/pgdata"        # anywhere writable; it is disposable
+
+echo postgres > "$TMPDIR/pwfile"
+"$PG/initdb.exe" -D "$DATA" -U postgres --pwfile="$TMPDIR/pwfile" -E UTF8 --locale=C
+
+# Put the port in the config file rather than passing -o "-p 55432 ...".
+printf "\nport = 55432\nlisten_addresses = '127.0.0.1'\n" >> "$DATA/postgresql.conf"
+
+# Redirect pg_ctl's own output, or it holds the pipe open and the shell waits.
+"$PG/pg_ctl.exe" -D "$DATA" -l "$TMPDIR/pg.log" start > /dev/null 2>&1
+```
+
+Two things learned the hard way, both worth keeping:
+
+- **Do not start it from a shell that might be killed.** The first attempt passed the port
+  with `-o` from a long-running foreground command; when that command was terminated, the
+  server went with it and the log recorded
+  `server process was terminated by exception 0xC0000142` (a failed child-process
+  initialisation, which is what a torn-down session looks like from inside Postgres).
+  Putting the settings in `postgresql.conf` and redirecting `pg_ctl`'s output means the
+  server outlives the shell that launched it.
+- **Nothing was lost when it died.** The data directory is on disk. Restarting replayed WAL
+  and came back with all of it: 5,806 holdings, 4,537 `match_decisions`, 231 checkpoint
+  threads, the same 42 paused reviews. That is the review queue's durability claim being
+  tested by accident rather than by a test.
+
+Then point one command at it without touching `.env` — `load_dotenv` does not override a
+variable that is already in the environment, so an inline assignment wins:
+
+```bash
+DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:55432/postgres" \
+  python -m src.db.load --all
+```
+
+Rebuilding the whole universe layer from the local Parquet took under a minute and
+reproduced the documented counts exactly: 5,806 holdings across 14 quarters, 1 null price,
+64 SPVs. The wide private layer never needed Postgres, which is the reason that split
+exists.
+
+Stop it with `pg_ctl -D "$DATA" stop`. Nothing in the repository depends on it running;
+the Week 6 tests skip themselves when no server answers.
