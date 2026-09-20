@@ -1,0 +1,13 @@
+{
+  "name": "mycroft-thesisguard-brief",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dhrumil Shah's 4K, three-minute Mycroft ThesisGuard evidence review film.",
+  "scripts": {
+    "sync": "powershell -ExecutionPolicy Bypass -File ./scripts/sync-to-remotion.ps1",
+    "render:4k": "powershell -ExecutionPolicy Bypass -File ./scripts/render-4k.ps1",
+    "check": "powershell -ExecutionPolicy Bypass -File ./scripts/check-video.ps1 -VideoPath ./output/mycroft-thesisguard-brief-4k.mp4",
+    "qc:stills": "powershell -ExecutionPolicy Bypass -File ./scripts/qc-stills.ps1 -VideoPath ./output/mycroft-thesisguard-brief-4k.mp4"
+  },
+  "license": "UNLICENSED"
+}

@@ -1,0 +1,801 @@
+{
+ "metadata": {
+  "title": "Mycroft ThesisGuard: Evidence Over Emotion",
+  "slug": "mycroft-thesisguard-brief",
+  "topic": "AGENTIC AI · EVIDENCE REVIEW",
+  "purpose": "A ~3-minute Claude-branded brief on Mycroft ThesisGuard, in the house ai-explainer grammar.",
+  "register": "Direct, second-person, evidence-led",
+  "audience": "Practitioners and reviewers evaluating agentic finance workflows",
+  "author": "Dhrumil Shah",
+  "brand": "claude-hai",
+  "engine": "kokoro",
+  "voice_kokoro": "af_bella",
+  "palette": "claude",
+  "style_preset": "claude",
+  "ground": "#FAF9F5",
+  "folderLabel": "@HumanitariansAI",
+  "aspect_ratio": "16:9",
+  "fps": 24,
+  "source_status": "Every figure spoken (184,138 rows; 120 tickers; 127,858/26,880/27,600 split; ROC AUC 0.5158; Brier 0.2466; moderate drift; 120 reports; 600 trace events; 0 automated decisions) is copied from the recorded Cell 25 output and the Implementation Report Outcomes table. Nothing is invented.",
+  "financial_disclaimer": "Educational research and model output; not personalized financial advice or an investment recommendation.",
+  "planned_word_count": 479,
+  "planned_duration_estimate_s": 233.6
+ },
+ "beats": [
+  {
+   "beat_id": "B00",
+   "act": "1 - Cold open / executive summary",
+   "narration_text": "Hi, I'm Dhrumil Shah. I built Mycroft ThesisGuard, an evidence-first review layer for investment research. In the next three minutes: what it does, what the numbers actually showed, and where it refuses to answer.",
+   "voice": "af_bella",
+   "engine": "kokoro",
+   "estimated_duration_s": 16.6,
+   "new_visual_element": "Claude composer cold open: the greeting, the ask typed in, the answer lines.",
+   "shot": {
+    "type": "REMOTION",
+    "source": "own",
+    "motion": "kinetic",
+    "show": [
+     {
+      "at": "Hi, I'm Dhrumil Shah",
+      "event": "Serif greeting resolves above the composer."
+     },
+     {
+      "at": "evidence-first review layer",
+      "event": "The ask finishes typing; send button arms."
+     },
+     {
+      "at": "where it refuses to answer",
+      "event": "Answer lines resolve beneath the card."
+     }
+    ],
+    "remotion": {
+     "pattern": "ClaudeComposerAsk",
+     "props": {
+      "greeting": "Hi, Dhrumil",
+      "topic": "AGENTIC AI · EVIDENCE REVIEW",
+      "segment": "Mycroft ThesisGuard",
+      "command": "My investment thesis is drifting. Before I trust any model — how do I check whether the original reason still holds?",
+      "runningText": "reviewing the evidence…",
+      "output": [
+       "Validate the data → engineer causal features → evaluate honestly",
+       "Monitor drift → review the evidence → a human decides",
+       "No source, no verdict."
+      ],
+      "folderLabel": "@HumanitariansAI",
+      "modelLabel": "Fable 5",
+      "effortLabel": "High"
+     },
+     "rendered": {
+      "out": "media/B00.mp4",
+      "at": ""
+     }
+    }
+   },
+   "audio_file": "mp3/beat-B00.mp3",
+   "actual_duration_s": 13.97
+  },
+  {
+   "beat_id": "B01",
+   "act": "2 - The problem",
+   "narration_text": "Investors buy for a reason. Then the facts move, and the reason quietly gets rewritten. A growth story becomes a value story. Nobody logs the change. That is thesis drift.",
+   "voice": "af_bella",
+   "engine": "kokoro",
+   "estimated_duration_s": 14.6,
+   "new_visual_element": "The drift sequence: the original reason silently replaced.",
+   "shot": {
+    "type": "REMOTION",
+    "source": "own",
+    "motion": "kinetic",
+    "show": [
+     {
+      "at": "start",
+      "event": "Headline lands, then the idea assembles one element at a time."
+     }
+    ],
+    "remotion": {
+     "pattern": "MycroftBrief",
+     "props": {
+      "variant": "chain",
+      "headline": "Thesis Drift.",
+      "subtitle": "the reason changes and nobody writes it down",
+      "kicker": "THE POSITION STAYS. THE REASON QUIETLY MOVES",
+      "items": [
+       {
+        "label": "original reason"
+       },
+       {
+        "label": "facts move"
+       },
+       {
+        "label": "story rewritten"
+       },
+       {
+        "label": "no record",
+        "accent": true
+       }
+      ],
+      "perRow": 3
+     },
+     "rendered": {
+      "out": "media/B01.mp4",
+      "at": ""
+     }
+    }
+   },
+   "audio_file": "mp3/beat-B01.mp3",
+   "actual_duration_s": 11.73
+  },
+  {
+   "beat_id": "B02",
+   "act": "3 - What it is not",
+   "narration_text": "So this is not a buy-or-sell engine. It is a review layer. It asks one question: is your original thesis still supported by the evidence?",
+   "voice": "af_bella",
+   "engine": "kokoro",
+   "estimated_duration_s": 12.2,
+   "new_visual_element": "Reframe: from prediction to review.",
+   "shot": {
+    "type": "REMOTION",
+    "source": "own",
+    "motion": "kinetic",
+    "show": [
+     {
+      "at": "start",
+      "event": "Headline lands, then the idea assembles one element at a time."
+     }
+    ],
+    "remotion": {
+     "pattern": "MycroftBrief",
+     "props": {
+      "variant": "contrast",
+      "headline": "Not A Predictor.",
+      "subtitle": "decision support, never a recommendation",
+      "kicker": "EDUCATIONAL RESEARCH OUTPUT — NOT INVESTMENT ADVICE",
+      "weakLabel": "NOT THIS",
+      "weakText": "“What should I buy?”",
+      "strongLabel": "THIS",
+      "strongText": "“Is the original thesis still supported?”"
+     },
+     "rendered": {
+      "out": "media/B02.mp4",
+      "at": ""
+     }
+    }
+   },
+   "audio_file": "mp3/beat-B02.mp3",
+   "actual_duration_s": 8.9
+  },
+  {
+   "beat_id": "B03",
+   "act": "4 - Validated data",
+   "narration_text": "Start with validated market data. One hundred eighty-four thousand rows. One hundred twenty tickers. Every price checked before a model ever sees it.",
+   "voice": "af_bella",
+   "engine": "kokoro",
+   "estimated_duration_s": 11.2,
+   "new_visual_element": "The cleaned dataset, stated as figures from the recorded run.",
+   "shot": {
+    "type": "REMOTION",
+    "source": "own",
+    "motion": "kinetic",
+    "show": [
+     {
+      "at": "start",
+      "event": "Headline lands, then the idea assembles one element at a time."
+     }
+    ],
+    "remotion": {
+     "pattern": "MycroftBrief",
+     "props": {
+      "variant": "stats",
+      "headline": "Check It First.",
+      "subtitle": "validated before any model sees it",
+      "kicker": "SOURCE: CELL 25 RECORDED RUN · REPORT OUTCOMES TABLE",
+      "items": [
+       {
+        "label": "184,138",
+        "sub": "clean rows retained"
+       },
+       {
+        "label": "120",
+        "sub": "tickers and companies"
+       },
+       {
+        "label": "0",
+        "sub": "prices forward-filled",
+        "accent": true
+       }
+      ],
+      "perRow": 3
+     },
+     "rendered": {
+      "out": "media/B03.mp4",
+      "at": ""
+     }
+    }
+   },
+   "audio_file": "mp3/beat-B03.mp3",
+   "actual_duration_s": 9.45
+  },
+  {
+   "beat_id": "B04",
+   "act": "5 - Causal features",
+   "narration_text": "Then features that only use what was knowable at the time. Returns. Volatility. Drawdowns. Sector-relative moves. No future data leaks backward into the inputs.",
+   "voice": "af_bella",
+   "engine": "kokoro",
+   "estimated_duration_s": 11.7,
+   "new_visual_element": "The feature taxonomy, bounded by the present-time rule.",
+   "shot": {
+    "type": "REMOTION",
+    "source": "own",
+    "motion": "kinetic",
+    "show": [
+     {
+      "at": "start",
+      "event": "Headline lands, then the idea assembles one element at a time."
+     }
+    ],
+    "remotion": {
+     "pattern": "MycroftBrief",
+     "props": {
+      "variant": "grid",
+      "headline": "Only What Was Knowable.",
+      "subtitle": "every input observable at prediction time",
+      "kicker": "NO FUTURE INFORMATION IN THE FEATURES",
+      "items": [
+       {
+        "label": "returns"
+       },
+       {
+        "label": "volatility"
+       },
+       {
+        "label": "drawdowns"
+       },
+       {
+        "label": "volume"
+       },
+       {
+        "label": "sector-relative"
+       },
+       {
+        "label": "no lookahead",
+        "accent": true
+       }
+      ],
+      "perRow": 3
+     }
+    }
+   },
+   "audio_file": "mp3/beat-B04.mp3",
+   "actual_duration_s": 11.26
+  },
+  {
+   "beat_id": "B05",
+   "act": "6 - Leakage-aware split",
+   "narration_text": "Split it by time, never at random. Seventy percent to train, fifteen to validate, fifteen held back. Labels that cross a boundary get purged.",
+   "voice": "af_bella",
+   "engine": "kokoro",
+   "estimated_duration_s": 11.7,
+   "new_visual_element": "The chronological split with purged boundaries.",
+   "shot": {
+    "type": "REMOTION",
+    "source": "own",
+    "motion": "kinetic",
+    "show": [
+     {
+      "at": "start",
+      "event": "Headline lands, then the idea assembles one element at a time."
+     }
+    ],
+    "remotion": {
+     "pattern": "MycroftBrief",
+     "props": {
+      "variant": "stats",
+      "headline": "Split By Time.",
+      "subtitle": "random shuffling would leak the future",
+      "kicker": "FIVE-DAY LABELS PURGED AT EVERY BOUNDARY",
+      "items": [
+       {
+        "label": "127,858",
+        "sub": "train"
+       },
+       {
+        "label": "26,880",
+        "sub": "validate"
+       },
+       {
+        "label": "27,600",
+        "sub": "held back",
+        "accent": true
+       }
+      ],
+      "perRow": 3
+     }
+    }
+   },
+   "audio_file": "mp3/beat-B05.mp3",
+   "actual_duration_s": 9.58
+  },
+  {
+   "beat_id": "B06",
+   "act": "7 - The model line-up",
+   "narration_text": "Five models compete. And the plain baseline is allowed to win, because complexity should have to earn its place.",
+   "voice": "af_bella",
+   "engine": "kokoro",
+   "estimated_duration_s": 9.3,
+   "new_visual_element": "Five candidates with the baseline highlighted as a legitimate winner.",
+   "shot": {
+    "type": "REMOTION",
+    "source": "own",
+    "motion": "kinetic",
+    "show": [
+     {
+      "at": "start",
+      "event": "Headline lands, then the idea assembles one element at a time."
+     }
+    ],
+    "remotion": {
+     "pattern": "MycroftBrief",
+     "props": {
+      "variant": "grid",
+      "headline": "Let The Baseline Win.",
+      "subtitle": "complexity has to beat the simple reference",
+      "kicker": "SELECTED ON VALIDATION — THE TEST SET STAYS SEALED",
+      "items": [
+       {
+        "label": "prior baseline",
+        "accent": true
+       },
+       {
+        "label": "logistic regression"
+       },
+       {
+        "label": "random forest"
+       },
+       {
+        "label": "extra trees"
+       },
+       {
+        "label": "gradient boosting"
+       }
+      ],
+      "perRow": 3
+     }
+    }
+   },
+   "audio_file": "mp3/beat-B06.mp3",
+   "actual_duration_s": 6.55
+  },
+  {
+   "beat_id": "B07",
+   "act": "8 - The honest result",
+   "narration_text": "Logistic regression won. Holdout ROC AUC: zero point five one five eight. Barely above a coin flip. That is the finding, not a failure. Short-horizon price direction was not reliably predictable from this data.",
+   "voice": "af_bella",
+   "engine": "kokoro",
+   "estimated_duration_s": 16.6,
+   "new_visual_element": "The real holdout scorecard, stated plainly.",
+   "shot": {
+    "type": "REMOTION",
+    "source": "own",
+    "motion": "kinetic",
+    "show": [
+     {
+      "at": "start",
+      "event": "Headline lands, then the idea assembles one element at a time."
+     }
+    ],
+    "remotion": {
+     "pattern": "MycroftBrief",
+     "props": {
+      "variant": "stats",
+      "headline": "Barely Above Chance.",
+      "subtitle": "and that is the result worth reporting",
+      "kicker": "A HONEST NULL RESULT IS STILL A RESULT",
+      "items": [
+       {
+        "label": "0.5158",
+        "sub": "holdout ROC AUC",
+        "accent": true
+       },
+       {
+        "label": "0.2466",
+        "sub": "holdout Brier score"
+       },
+       {
+        "label": "0.50",
+        "sub": "random ranking"
+       }
+      ],
+      "perRow": 3
+     }
+    }
+   },
+   "audio_file": "mp3/beat-B07.mp3",
+   "actual_duration_s": 14.81
+  },
+  {
+   "beat_id": "B08",
+   "act": "9 - Drift as a signal",
+   "narration_text": "Feature drift came back moderate. Don't bury a number like that. Treat uncertainty as a governance signal, not a footnote you hope nobody reads.",
+   "voice": "af_bella",
+   "engine": "kokoro",
+   "estimated_duration_s": 11.7,
+   "new_visual_element": "Drift surfaced to the workflow rather than hidden.",
+   "shot": {
+    "type": "REMOTION",
+    "source": "own",
+    "motion": "kinetic",
+    "show": [
+     {
+      "at": "start",
+      "event": "Headline lands, then the idea assembles one element at a time."
+     }
+    ],
+    "remotion": {
+     "pattern": "MycroftBrief",
+     "props": {
+      "variant": "contrast",
+      "headline": "Surface The Drift.",
+      "subtitle": "PSI and Kolmogorov-Smirnov, reported not hidden",
+      "kicker": "MODERATE GLOBAL DRIFT — SURFACED TO THE REVIEW QUEUE",
+      "weakLabel": "THE EASY MOVE",
+      "weakText": "“Ship it, the score looks fine.”",
+      "strongLabel": "THE HONEST MOVE",
+      "strongText": "“Conditions moved. Trust this less.”"
+     }
+    }
+   },
+   "audio_file": "mp3/beat-B08.mp3",
+   "actual_duration_s": 8.81
+  },
+  {
+   "beat_id": "B08b",
+   "act": "9b - What it refuses to infer",
+   "narration_text": "Here's the part I care about most. The bias agent will not diagnose your psychology from a price chart. Confirmation bias, sunk-cost thinking, overconfidence: real risks, but prices are not evidence of them. So it says so, and names what is missing.",
+   "voice": "af_bella",
+   "engine": "kokoro",
+   "estimated_duration_s": 20.5,
+   "new_visual_element": "The bias agent declining to infer, and listing the evidence it would need.",
+   "shot": {
+    "type": "REMOTION",
+    "source": "own",
+    "motion": "kinetic",
+    "show": [
+     {
+      "at": "start",
+      "event": "Headline lands, then the idea assembles one element at a time."
+     }
+    ],
+    "remotion": {
+     "pattern": "MycroftBrief",
+     "props": {
+      "variant": "contrast",
+      "headline": "It Refuses To Guess.",
+      "subtitle": "the bias assessment is withheld, on purpose",
+      "kicker": "STATUS: NOT_ASSESSED · MISSING EVIDENCE NAMED",
+      "weakLabel": "WHAT A LESSER SYSTEM DOES",
+      "weakText": "“You are showing confirmation bias.”",
+      "strongLabel": "WHAT THIS ONE DOES",
+      "strongText": "“No decision history. I cannot assess that.”"
+     }
+    }
+   },
+   "audio_file": "mp3/beat-B08b.mp3",
+   "actual_duration_s": 16.75
+  },
+  {
+   "beat_id": "B09",
+   "act": "10 - The five agents",
+   "narration_text": "Then five agents review each company. Capture the thesis. Retrieve the evidence. Detect contradiction. Check for bias. And hand the decision to a human.",
+   "voice": "af_bella",
+   "engine": "kokoro",
+   "estimated_duration_s": 11.7,
+   "new_visual_element": "The five-stage agent chain ending at the human gate.",
+   "shot": {
+    "type": "REMOTION",
+    "source": "own",
+    "motion": "kinetic",
+    "show": [
+     {
+      "at": "start",
+      "event": "Headline lands, then the idea assembles one element at a time."
+     }
+    ],
+    "remotion": {
+     "pattern": "MycroftBrief",
+     "props": {
+      "variant": "chain",
+      "headline": "Five Agents, One Gate.",
+      "subtitle": "automation organizes; it does not decide",
+      "kicker": "EVERY STAGE LEAVES A TRACE EVENT",
+      "items": [
+       {
+        "label": "capture"
+       },
+       {
+        "label": "retrieve"
+       },
+       {
+        "label": "contradict"
+       },
+       {
+        "label": "bias check"
+       },
+       {
+        "label": "human gate",
+        "accent": true
+       }
+      ],
+      "perRow": 3
+     }
+    }
+   },
+   "audio_file": "mp3/beat-B09.mp3",
+   "actual_duration_s": 10.5
+  },
+  {
+   "beat_id": "B10",
+   "act": "11 - The human gate",
+   "narration_text": "One hundred twenty reports. Six hundred trace events. Zero automated decisions. The gate is the point: the system organizes evidence, it does not act.",
+   "voice": "af_bella",
+   "engine": "kokoro",
+   "estimated_duration_s": 11.7,
+   "new_visual_element": "The run's agent output, with the zero as the focal figure.",
+   "shot": {
+    "type": "REMOTION",
+    "source": "own",
+    "motion": "kinetic",
+    "show": [
+     {
+      "at": "start",
+      "event": "Headline lands, then the idea assembles one element at a time."
+     }
+    ],
+    "remotion": {
+     "pattern": "MycroftBrief",
+     "props": {
+      "variant": "stats",
+      "headline": "Zero Automated Decisions.",
+      "subtitle": "accountability stays with a person",
+      "kicker": "MAINTAIN · REVISE · WATCHLIST · RETIRE — ALL HUMAN",
+      "items": [
+       {
+        "label": "120",
+        "sub": "thesis-health reports"
+       },
+       {
+        "label": "600",
+        "sub": "agent trace events"
+       },
+       {
+        "label": "0",
+        "sub": "decisions automated",
+        "accent": true
+       }
+      ],
+      "perRow": 3
+     }
+    }
+   },
+   "audio_file": "mp3/beat-B10.mp3",
+   "actual_duration_s": 10.56
+  },
+  {
+   "beat_id": "B10b",
+   "act": "11b - Make it inspectable",
+   "narration_text": "None of this helps if you cannot look at it. So the analysis renders out: model diagnostics, calibration, feature importance, drift charts, evidence timelines, sector and risk maps. Not to decorate the result, but to make it challengeable.",
+   "voice": "af_bella",
+   "engine": "kokoro",
+   "estimated_duration_s": 18.5,
+   "new_visual_element": "The visualization layer framed as inspection, not decoration.",
+   "shot": {
+    "type": "REMOTION",
+    "source": "own",
+    "motion": "kinetic",
+    "show": [
+     {
+      "at": "start",
+      "event": "Headline lands, then the idea assembles one element at a time."
+     }
+    ],
+    "remotion": {
+     "pattern": "MycroftBrief",
+     "props": {
+      "variant": "grid",
+      "headline": "Make It Inspectable.",
+      "subtitle": "visuals you can argue with, not decoration",
+      "kicker": "EVIDENCE YOU CAN CHALLENGE BEATS A NUMBER YOU CANNOT",
+      "items": [
+       {
+        "label": "diagnostics"
+       },
+       {
+        "label": "calibration"
+       },
+       {
+        "label": "importance"
+       },
+       {
+        "label": "drift charts"
+       },
+       {
+        "label": "evidence timeline"
+       },
+       {
+        "label": "challengeable",
+        "accent": true
+       }
+      ],
+      "perRow": 3
+     }
+    }
+   },
+   "audio_file": "mp3/beat-B10b.mp3",
+   "actual_duration_s": 15.38
+  },
+  {
+   "beat_id": "B11",
+   "act": "12 - The evidence boundary",
+   "narration_text": "And where evidence is missing, it stops. No thesis on file, no filings, no decision history, so it returns a placeholder, not a verdict.",
+   "voice": "af_bella",
+   "engine": "kokoro",
+   "estimated_duration_s": 11.7,
+   "new_visual_element": "Available market data versus the evidence that was never supplied.",
+   "shot": {
+    "type": "REMOTION",
+    "source": "own",
+    "motion": "kinetic",
+    "show": [
+     {
+      "at": "start",
+      "event": "Headline lands, then the idea assembles one element at a time."
+     }
+    ],
+    "remotion": {
+     "pattern": "MycroftBrief",
+     "props": {
+      "variant": "contrast",
+      "headline": "No Source, No Verdict.",
+      "subtitle": "the limit is the feature",
+      "kicker": "INSUFFICIENT EVIDENCE → HUMAN REVIEW REQUIRED",
+      "weakLabel": "WHAT PRICES CANNOT TELL YOU",
+      "weakText": "“Why does this investor hold it?”",
+      "strongLabel": "WHAT IT RETURNS INSTEAD",
+      "strongText": "needs_human_input · not_assessed"
+     }
+    }
+   },
+   "audio_file": "mp3/beat-B11.mp3",
+   "actual_duration_s": 9.26
+  },
+  {
+   "beat_id": "B12",
+   "act": "13 - The loop",
+   "narration_text": "So the loop is: validate the data, engineer causal features, split by time, evaluate honestly, monitor drift, review the evidence, then a person decides.",
+   "voice": "af_bella",
+   "engine": "kokoro",
+   "estimated_duration_s": 11.7,
+   "new_visual_element": "The whole pipeline assembled as one connected chain.",
+   "shot": {
+    "type": "REMOTION",
+    "source": "own",
+    "motion": "kinetic",
+    "show": [
+     {
+      "at": "start",
+      "event": "Headline lands, then the idea assembles one element at a time."
+     }
+    ],
+    "remotion": {
+     "pattern": "MycroftBrief",
+     "props": {
+      "variant": "chain",
+      "headline": "The Whole Loop.",
+      "subtitle": "one connected, auditable path",
+      "kicker": "EVERY STAGE LEAVES AN ARTIFACT YOU CAN CHECK",
+      "items": [
+       {
+        "label": "validate"
+       },
+       {
+        "label": "engineer"
+       },
+       {
+        "label": "split"
+       },
+       {
+        "label": "evaluate"
+       },
+       {
+        "label": "monitor"
+       },
+       {
+        "label": "human decides",
+        "accent": true
+       }
+      ],
+      "perRow": 3
+     }
+    }
+   },
+   "audio_file": "mp3/beat-B12.mp3",
+   "actual_duration_s": 10.41
+  },
+  {
+   "beat_id": "B12b",
+   "act": "13b - Your turn",
+   "narration_text": "You can run this on your own thinking today, without any of my code. Write down the claim. Write down what would change your mind. Date your evidence. And when you cannot find a source, stop, and say so.",
+   "voice": "af_bella",
+   "engine": "kokoro",
+   "estimated_duration_s": 19.0,
+   "new_visual_element": "The reusable four-step discipline, addressed to the viewer.",
+   "shot": {
+    "type": "REMOTION",
+    "source": "own",
+    "motion": "kinetic",
+    "show": [
+     {
+      "at": "start",
+      "event": "Headline lands, then the idea assembles one element at a time."
+     }
+    ],
+    "remotion": {
+     "pattern": "MycroftBrief",
+     "props": {
+      "variant": "chain",
+      "headline": "Try This Yourself.",
+      "subtitle": "the discipline transfers without the code",
+      "kicker": "WRITE THE CLAIM · NAME THE DISCONFIRMER · DATE THE EVIDENCE",
+      "items": [
+       {
+        "label": "state the claim"
+       },
+       {
+        "label": "name what would change it"
+       },
+       {
+        "label": "date your evidence"
+       },
+       {
+        "label": "no source? stop.",
+        "accent": true
+       }
+      ],
+      "perRow": 3
+     }
+    }
+   },
+   "audio_file": "mp3/beat-B12b.mp3",
+   "actual_duration_s": 11.67
+  },
+  {
+   "beat_id": "B13",
+   "act": "14 - Close",
+   "narration_text": "The strongest result here isn't a trading signal. It's a system that shows its evidence, names its uncertainty, and leaves the judgment where it belongs. Mycroft ThesisGuard.",
+   "voice": "af_bella",
+   "engine": "kokoro",
+   "estimated_duration_s": 13.2,
+   "new_visual_element": "Title restate with the channel handle.",
+   "shot": {
+    "type": "REMOTION",
+    "source": "own",
+    "motion": "kinetic",
+    "show": [
+     {
+      "at": "Mycroft ThesisGuard",
+      "event": "Poster title restates with a terracotta period."
+     }
+    ],
+    "remotion": {
+     "pattern": "ClaudeTitleOutro",
+     "props": {
+      "title": "Mycroft ThesisGuard.",
+      "handle": "@HumanitariansAI",
+      "subline": "evidence over emotion · Dhrumil Shah"
+     }
+    }
+   },
+   "audio_file": "mp3/beat-B13.mp3",
+   "actual_duration_s": 11.43
+  }
+ ]
+}
