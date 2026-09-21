@@ -1,0 +1,371 @@
+1
+00:00:00,300 --> 00:00:02,318
+Hi, I am Dhrumil Shah, and this video is
+
+2
+00:00:02,358 --> 00:00:04,188
+about Phase 3 of my Mycroft project,
+
+3
+00:00:04,228 --> 00:00:06,199
+where I expanded the system by building
+
+4
+00:00:06,239 --> 00:00:07,836
+a modular multi-agent financial
+
+5
+00:00:07,876 --> 00:00:09,567
+analytics architecture for market
+
+6
+00:00:09,607 --> 00:00:11,531
+structure analysis, anomaly detection,
+
+7
+00:00:11,571 --> 00:00:13,215
+peer benchmarking, tail-risk and
+
+8
+00:00:13,255 --> 00:00:14,992
+liquidity analysis, and prediction
+
+9
+00:00:15,032 --> 00:00:15,740
+reliability.
+
+10
+00:00:16,533 --> 00:00:18,510
+Phase 3 begins with a reusable agent
+
+11
+00:00:18,550 --> 00:00:20,477
+framework. AgentConfig holds shared
+
+12
+00:00:20,517 --> 00:00:21,888
+settings and thresholds.
+
+13
+00:00:21,928 --> 00:00:24,107
+SharedContext is a namespaced blackboard
+
+14
+00:00:24,147 --> 00:00:26,174
+where agents publish and require each
+
+15
+00:00:26,214 --> 00:00:27,132
+other's output.
+
+16
+00:00:27,172 --> 00:00:29,199
+BaseAgent adds validation, timing and
+
+17
+00:00:29,239 --> 00:00:30,813
+error isolation, AgentResult
+
+18
+00:00:30,853 --> 00:00:32,829
+standardises results, and AgentEvent
+
+19
+00:00:32,869 --> 00:00:34,493
+keeps every action traceable.
+
+20
+00:00:35,300 --> 00:00:37,491
+All agents read the same validated data.
+
+21
+00:00:37,531 --> 00:00:39,469
+MycroftData holds the cleaned price
+
+22
+00:00:39,509 --> 00:00:41,396
+panel, returns and close matrices,
+
+23
+00:00:41,436 --> 00:00:43,272
+metadata, Phase 1 predictions and
+
+24
+00:00:43,312 --> 00:00:45,352
+optional Phase 2 regime labels, after
+
+25
+00:00:45,392 --> 00:00:47,380
+schema checks and duplicate removal.
+
+26
+00:00:48,200 --> 00:00:50,072
+Agent one measures how tightly the 120
+
+27
+00:00:50,112 --> 00:00:51,165
+names move together:
+
+28
+00:00:51,205 --> 00:00:53,032
+average pairwise correlation, and the
+
+29
+00:00:53,072 --> 00:00:55,035
+share of variance explained by the first
+
+30
+00:00:55,075 --> 00:00:56,811
+principal component, over sixty-day
+
+31
+00:00:56,851 --> 00:00:58,313
+windows ranked with expanding
+
+32
+00:00:58,353 --> 00:01:00,089
+percentiles so nothing looks ahead.
+
+33
+00:01:00,129 --> 00:01:02,046
+Twelve stress windows were flagged, and
+
+34
+00:01:02,086 --> 00:01:03,640
+the latest window reads normal.
+
+35
+00:01:04,433 --> 00:01:06,157
+Agent two scans returns, volume,
+
+36
+00:01:06,197 --> 00:01:08,264
+overnight gaps and intraday range using
+
+37
+00:01:08,304 --> 00:01:10,126
+rolling modified z-scores built on
+
+38
+00:01:10,166 --> 00:01:11,253
+medians, not means.
+
+39
+00:01:11,293 --> 00:01:13,360
+Each event is split into market, sector
+
+40
+00:01:13,400 --> 00:01:15,369
+and company components, then labelled
+
+41
+00:01:15,409 --> 00:01:16,986
+idiosyncratic, sector-wide or
+
+42
+00:01:17,026 --> 00:01:17,770
+market-wide.
+
+43
+00:01:17,810 --> 00:01:19,827
+It found nine thousand six hundred and
+
+44
+00:01:19,867 --> 00:01:20,905
+thirty-six events.
+
+45
+00:01:21,700 --> 00:01:23,607
+Agent three ranks every name inside its
+
+46
+00:01:23,647 --> 00:01:25,419
+own industry cohort, falling back to
+
+47
+00:01:25,459 --> 00:01:27,185
+sector or the whole universe when a
+
+48
+00:01:27,225 --> 00:01:28,816
+cohort is too small, then scores
+
+49
+00:01:28,856 --> 00:01:30,627
+relative strength and flags laggards
+
+50
+00:01:30,667 --> 00:01:32,484
+that have decoupled from their peers.
+
+51
+00:01:33,300 --> 00:01:35,035
+Agent four quantifies downside:
+
+52
+00:01:35,075 --> 00:01:36,963
+historical value at risk, expected
+
+53
+00:01:37,003 --> 00:01:39,195
+shortfall, maximum drawdown and recovery
+
+54
+00:01:39,235 --> 00:01:40,919
+time, plus Amihud illiquidity.
+
+55
+00:01:40,959 --> 00:01:42,897
+Documented thresholds assign a risk
+
+56
+00:01:42,937 --> 00:01:44,977
+tier, and the worst component decides
+
+57
+00:01:45,017 --> 00:01:45,332
+it.
+
+58
+00:01:46,133 --> 00:01:47,872
+Agent five retrains nothing.
+
+59
+00:01:47,912 --> 00:01:49,706
+It takes the existing holdout
+
+60
+00:01:49,746 --> 00:01:52,040
+predictions and asks where they can be
+
+61
+00:01:52,080 --> 00:01:54,374
+trusted, segmenting by sector, regime,
+
+62
+00:01:54,414 --> 00:01:56,486
+volatility quintile and risk tier.
+
+63
+00:01:56,526 --> 00:01:58,765
+Every segment gets a ticker-clustered
+
+64
+00:01:58,805 --> 00:02:00,710
+bootstrap interval and a label:
+
+65
+00:02:00,750 --> 00:02:02,877
+reliable, uncertain, unreliable, or
+
+66
+00:02:02,917 --> 00:02:04,211
+insufficient sample.
+
+67
+00:02:04,251 --> 00:02:06,045
+Overall is 0.516, while bull,
+
+68
+00:02:06,085 --> 00:02:08,101
+high-volatility days reach 0.774.
+
+69
+00:02:08,900 --> 00:02:10,716
+The orchestrator runs three stages:
+
+70
+00:02:10,756 --> 00:02:12,714
+market structure first, then the three
+
+71
+00:02:12,754 --> 00:02:14,665
+independent analysts, then prediction
+
+72
+00:02:14,705 --> 00:02:16,569
+reliability, which consumes the risk
+
+73
+00:02:16,609 --> 00:02:18,567
+tiers. A failed agent degrades the run
+
+74
+00:02:18,607 --> 00:02:19,852
+instead of stopping it.
+
+75
+00:02:20,667 --> 00:02:22,694
+Every verdict merges into one review
+
+76
+00:02:22,734 --> 00:02:24,760
+queue: anomaly flag, cohort outlier,
+
+77
+00:02:24,800 --> 00:02:27,034
+risk tier, model trust, market state and
+
+78
+00:02:27,074 --> 00:02:28,171
+a review priority.
+
+79
+00:02:28,211 --> 00:02:30,393
+Human decision and rationale stay empty
+
+80
+00:02:30,433 --> 00:02:32,615
+by design. This is educational research
+
+81
+00:02:32,655 --> 00:02:34,578
+output, not personalised financial
+
+82
+00:02:34,618 --> 00:02:35,147
+advice.
+
+83
+00:02:35,967 --> 00:02:37,773
+A validation suite checks schema,
+
+84
+00:02:37,813 --> 00:02:39,768
+duplicates, prices, agent execution,
+
+85
+00:02:39,808 --> 00:02:41,764
+output ranges, risk mathematics, AUC
+
+86
+00:02:41,804 --> 00:02:43,810
+bounds and inter-agent communication.
+
+87
+00:02:43,850 --> 00:02:45,606
+Thirty-three checks, all passed.
+
+88
+00:02:45,646 --> 00:02:47,751
+Phase 3 expands Mycroft into a modular,
+
+89
+00:02:47,791 --> 00:02:49,946
+explainable multi-agent analytics system
+
+90
+00:02:49,986 --> 00:02:51,742
+where specialised agents produce
+
+91
+00:02:51,782 --> 00:02:53,788
+structured evidence for human review.
+
+92
+00:02:53,828 --> 00:02:54,836
+I'm Dhrumil Shah.
+
+93
+00:02:54,876 --> 00:02:56,183
+Thank you for watching.
