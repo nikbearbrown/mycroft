@@ -1,0 +1,339 @@
+1
+00:00:00,300 --> 00:00:02,326
+Hi, I am Dhrumil Shah, and this video is
+
+2
+00:00:02,366 --> 00:00:04,157
+about how I extended Mycroft with a
+
+3
+00:00:04,197 --> 00:00:06,177
+Phase 2 pipeline that stress-tests nine
+
+4
+00:00:06,217 --> 00:00:07,914
+machine-learning models and three
+
+5
+00:00:07,954 --> 00:00:09,792
+ensembles on 120 stocks, with purged
+
+6
+00:00:09,832 --> 00:00:11,577
+walk-forward validation and market
+
+7
+00:00:11,617 --> 00:00:12,140
+regimes.
+
+8
+00:00:12,933 --> 00:00:14,737
+Can daily price and volume data predict
+
+9
+00:00:14,777 --> 00:00:16,624
+whether a stock rises over the next five
+
+10
+00:00:16,664 --> 00:00:17,352
+trading days?
+
+11
+00:00:17,392 --> 00:00:18,853
+The signal is tiny, so the real
+
+12
+00:00:18,893 --> 00:00:20,525
+challenge is measuring it honestly.
+
+13
+00:00:21,333 --> 00:00:23,993
+Phase 2 builds on Phase 1's 184,138 rows
+
+14
+00:00:24,033 --> 00:00:25,404
+across 120 tickers.
+
+15
+00:00:25,444 --> 00:00:27,858
+Phase 1's five review agents stay in
+
+16
+00:00:27,898 --> 00:00:30,250
+place; Phase 2 focuses on the model
+
+17
+00:00:30,290 --> 00:00:31,661
+layer beneath them.
+
+18
+00:00:32,467 --> 00:00:34,919
+I added 18 new causal features, such as
+
+19
+00:00:34,959 --> 00:00:37,006
+60-day momentum, MACD, Bollinger
+
+20
+00:00:37,046 --> 00:00:39,556
+position, ATR, distance to 52-week highs
+
+21
+00:00:39,596 --> 00:00:41,932
+and lows, volume trends, and relative
+
+22
+00:00:41,972 --> 00:00:43,961
+strength. The model now sees 44
+
+23
+00:00:44,001 --> 00:00:44,715
+features.
+
+24
+00:00:45,533 --> 00:00:47,472
+A MarketRegimeDetector runs KMeans on
+
+25
+00:00:47,512 --> 00:00:49,500
+market momentum and volatility, fitted
+
+26
+00:00:49,540 --> 00:00:51,479
+on training dates only, to label each
+
+27
+00:00:51,519 --> 00:00:53,313
+day bull or bear, with high or low
+
+28
+00:00:53,353 --> 00:00:54,037
+volatility.
+
+29
+00:00:54,833 --> 00:00:57,348
+Labels are purged and embargoed to block
+
+30
+00:00:57,388 --> 00:00:59,670
+leakage. Four expanding walk-forward
+
+31
+00:00:59,710 --> 00:01:02,108
+folds handle validation, and the final
+
+32
+00:01:02,148 --> 00:01:04,314
+27,600 rows, from March 2025, stay
+
+33
+00:01:04,354 --> 00:01:05,881
+untouched as a holdout.
+
+34
+00:01:06,700 --> 00:01:08,298
+Nine models compete:
+
+35
+00:01:08,338 --> 00:01:10,824
+logistic regression, a linear SVM
+
+36
+00:01:10,864 --> 00:01:13,827
+trained with SGD, Naive Bayes, LDA, KNN,
+
+37
+00:01:13,867 --> 00:01:16,693
+AdaBoost, histogram gradient boosting,
+
+38
+00:01:16,733 --> 00:01:18,468
+LightGBM, and XGBoost.
+
+39
+00:01:19,267 --> 00:01:22,278
+Across the folds, the linear SVM ranked
+
+40
+00:01:22,318 --> 00:01:24,974
+first, at a mean ROC-AUC of 0.513.
+
+41
+00:01:25,014 --> 00:01:27,103
+Every model sits near 0.5:
+
+42
+00:01:27,143 --> 00:01:29,019
+this is a hard problem.
+
+43
+00:01:29,833 --> 00:01:31,547
+From out-of-fold predictions only, I
+
+44
+00:01:31,587 --> 00:01:32,688
+built three ensembles:
+
+45
+00:01:32,728 --> 00:01:34,529
+a soft vote, a skill-weighted average,
+
+46
+00:01:34,569 --> 00:01:36,152
+and a stacked logistic-regression
+
+47
+00:01:36,192 --> 00:01:36,897
+meta-learner.
+
+48
+00:01:37,700 --> 00:01:40,409
+With selection fixed in advance, the
+
+49
+00:01:40,449 --> 00:01:43,364
+linear SVM scored 0.521 on the holdout,
+
+50
+00:01:43,404 --> 00:01:46,250
+with a 95% bootstrap interval of 0.510
+
+51
+00:01:46,290 --> 00:01:49,068
+to 0.533. Logistic regression reached
+
+52
+00:01:49,108 --> 00:01:52,023
+0.5335, but picked after the fact among
+
+53
+00:01:52,063 --> 00:01:54,772
+twelve, it is optimistically biased.
+
+54
+00:01:55,567 --> 00:01:57,712
+Calibration cut the selected model's
+
+55
+00:01:57,752 --> 00:01:59,952
+expected calibration error from about
+
+56
+00:01:59,992 --> 00:02:01,974
+0.037 to under 0.03, and the ROC,
+
+57
+00:02:02,014 --> 00:02:04,378
+precision-recall, and reliability curves
+
+58
+00:02:04,418 --> 00:02:05,799
+show the full picture.
+
+59
+00:02:06,600 --> 00:02:07,784
+Regime matters:
+
+60
+00:02:07,824 --> 00:02:10,362
+in the bull, high-volatility regime,
+
+61
+00:02:10,402 --> 00:02:12,940
+holdout ROC-AUC reached 0.62, but on
+
+62
+00:02:12,980 --> 00:02:14,616
+only 720 observations.
+
+63
+00:02:14,656 --> 00:02:17,129
+In the largest regime, bull and low
+
+64
+00:02:17,169 --> 00:02:19,771
+volatility, it was 0.497, essentially
+
+65
+00:02:19,811 --> 00:02:20,480
+random.
+
+66
+00:02:21,300 --> 00:02:22,194
+Three more views:
+
+67
+00:02:22,234 --> 00:02:23,840
+new-feature correlations with the
+
+68
+00:02:23,880 --> 00:02:25,620
+target, probability distributions by
+
+69
+00:02:25,660 --> 00:02:27,488
+outcome, and consensus accuracy as the
+
+70
+00:02:27,528 --> 00:02:28,556
+top models disagree.
+
+71
+00:02:29,367 --> 00:02:30,637
+The automated verdict:
+
+72
+00:02:30,677 --> 00:02:32,854
+the confidence interval excludes 0.5, so
+
+73
+00:02:32,894 --> 00:02:34,869
+there is weak but measurable ranking
+
+74
+00:02:34,909 --> 00:02:36,582
+signal. Modest, but honest and
+
+75
+00:02:36,622 --> 00:02:37,439
+reproducible.
+
+76
+00:02:38,233 --> 00:02:40,350
+Every model, metric, regime label, and
+
+77
+00:02:40,390 --> 00:02:42,608
+figure is saved to disk, so the analysis
+
+78
+00:02:42,648 --> 00:02:44,097
+can be audited and rerun.
+
+79
+00:02:44,900 --> 00:02:46,641
+This extension of Mycroft shows how
+
+80
+00:02:46,681 --> 00:02:48,148
+feature engineering, rigorous
+
+81
+00:02:48,188 --> 00:02:50,066
+validation, ensembles, and calibration
+
+82
+00:02:50,106 --> 00:02:51,985
+turn raw market data into evidence you
+
+83
+00:02:52,025 --> 00:02:53,629
+can trust, even when it is weak.
+
+84
+00:02:53,669 --> 00:02:54,588
+I'm Dhrumil Shah.
+
+85
+00:02:54,628 --> 00:02:55,684
+Thanks for watching.
