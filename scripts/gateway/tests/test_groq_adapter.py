@@ -1,7 +1,7 @@
 import pytest
 
 from gateway.adapters.base import ProviderError
-from gateway.adapters.groq import GroqAdapter
+from gateway.adapters.groq import GroqAdapter, strip_reasoning
 
 
 class StubUsage:
@@ -104,3 +104,40 @@ def test_unexpected_response_shape_is_reported():
 def test_no_key_and_no_client_is_refused():
     with pytest.raises(ValueError, match="api_key"):
         GroqAdapter()
+
+
+def test_inline_reasoning_is_stripped_from_the_answer():
+    """qwen returns <think>...</think> inline; only the answer is kept.
+
+    Shape taken from the real strong-tier response on 2026-09-10.
+    """
+    raw_text = (
+        "<think>\nHere's a thinking process:\n\n"
+        "1.  **Analyze User Input:**\n   - Constraint: \"exactly one word\"\n"
+        "</think>\n\nok"
+    )
+    stub = StubClient(response=StubResponse(raw_text, StubUsage(17, 181)))
+    adapter = GroqAdapter(client=stub)
+
+    resp = adapter.complete(model="qwen/qwen3.6-27b", prompt="q", max_tokens=256)
+
+    assert resp.text == "ok"
+    # The reasoning was still billed, so the cost must still count it.
+    assert resp.tokens_out == 181
+
+
+def test_reasoning_cut_off_before_the_answer_leaves_no_answer():
+    """An unclosed <think> means truncation mid-reasoning: there is no answer."""
+    stub = StubClient(response=StubResponse("<think>\nstill thinking about",
+                                            StubUsage(17, 256)))
+    adapter = GroqAdapter(client=stub)
+
+    resp = adapter.complete(model="qwen/qwen3.6-27b", prompt="q", max_tokens=256)
+
+    assert resp.text == ""
+
+
+def test_text_without_reasoning_is_unchanged():
+    assert strip_reasoning("positive") == "positive"
+    assert strip_reasoning("  ok  ") == "ok"
+    assert strip_reasoning("<THINK>case varies</THINK>neutral") == "neutral"

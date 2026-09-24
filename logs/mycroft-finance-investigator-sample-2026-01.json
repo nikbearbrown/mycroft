@@ -1,0 +1,498 @@
+{
+  "workflow": "mycroft-finance-investigator",
+  "run_id": "sample-2026-01",
+  "recipe_version": "0.1.0",
+  "mode": "synthetic_sample",
+  "config": {
+    "entity": "Northstar Software Sample",
+    "period": "2026-01",
+    "question": "Why did actual EBITDA differ from budget?",
+    "materiality_amount": "10000.00",
+    "materiality_status": "DEMO_UNAPPROVED",
+    "max_agent_steps": 20
+  },
+  "validation": {
+    "status": "CONFORMANT_SAMPLE",
+    "source_directory": "../../data/raw/mycroft-finance-investigator-history/2026-01",
+    "verified_directory": "../../data/verified/mycroft-finance-investigator-history/2026-01",
+    "source_hashes": {
+      "account_mapping.csv": "c45ba1275b8daa38b6827e7257170a9ea34b255033be5128c4c6e74e51d1a839",
+      "budget.csv": "f2a6de1ee3fa367c1b7d16657184308a4a8ece2af50199246e83526145a15304",
+      "actuals.csv": "007f5786115fbf94af981f8604fc2a6dffcfd26da6c2a473bfafa8104eaae6fc",
+      "ledger.csv": "55ecf3a9064375b53b00d5d21888a318adb3a74b4e25635ea0b76bb28a57fc1d",
+      "customers.csv": "bd94e40093870334aa276bd05504d094a8d9766cce06d77528702cb995623ba9",
+      "headcount.csv": "05497113cdb1d7346a5adfbc1eeabbcf07c94e4c940772f9161f2de415099b9e"
+    },
+    "row_counts": {
+      "account_mapping.csv": 7,
+      "budget.csv": 8,
+      "actuals.csv": 8,
+      "ledger.csv": 14,
+      "customers.csv": 4,
+      "headcount.csv": 2
+    },
+    "checks": [
+      {
+        "name": "Account mapping coverage",
+        "observed": "All budget, actual, and ledger accounts mapped"
+      },
+      {
+        "name": "Scope",
+        "observed": "One period (2026-01) and one entity (Northstar Software Sample)"
+      },
+      {
+        "name": "Actuals-to-ledger control total",
+        "observed": "Reconciled at 1579000.00"
+      },
+      {
+        "name": "Customer revenue drivers",
+        "observed": "Budget 970000.00; actual 920000.00; reconciled"
+      },
+      {
+        "name": "Headcount cost drivers",
+        "observed": "Budget 310000.00; actual 302000.00; reconciled"
+      }
+    ],
+    "adequacy": "PENDING_HUMAN_REVIEW"
+  },
+  "investigation": {
+    "question": "Why did actual EBITDA differ from budget?",
+    "status": "COMPLETED_PENDING_HUMAN_REVIEW",
+    "agent": {
+      "name": "monthly-performance-investigator",
+      "policy": "local-evidence-driven-v0.1",
+      "steps": 5
+    },
+    "findings": [
+      {
+        "kind": "VERIFIED_CALCULATION",
+        "statement": "Actual EBITDA was 261000.00 versus budget 344000.00, a variance of -83000.00.",
+        "performance_impact": "-83000.00",
+        "evidence": [
+          "category:revenue",
+          "category:cogs",
+          "category:payroll",
+          "category:opex"
+        ]
+      },
+      {
+        "kind": "VERIFIED_CALCULATION",
+        "statement": "Revenue contributed EBITDA performance impact -50000.00 from actual 920000.00 versus budget 970000.00.",
+        "performance_impact": "-50000.00",
+        "evidence": [
+          "budget.csv:account=4000",
+          "actuals.csv:account=4000",
+          "account_mapping.csv:account=4000",
+          "budget.csv:account=4010",
+          "actuals.csv:account=4010",
+          "account_mapping.csv:account=4010"
+        ]
+      },
+      {
+        "kind": "VERIFIED_CALCULATION",
+        "statement": "Cogs contributed EBITDA performance impact -30000.00 from actual 205000.00 versus budget 175000.00.",
+        "performance_impact": "-30000.00",
+        "evidence": [
+          "budget.csv:account=5000",
+          "actuals.csv:account=5000",
+          "account_mapping.csv:account=5000"
+        ]
+      },
+      {
+        "kind": "VERIFIED_CALCULATION",
+        "statement": "Payroll contributed EBITDA performance impact 8000.00 from actual 302000.00 versus budget 310000.00.",
+        "performance_impact": "8000.00",
+        "evidence": [
+          "budget.csv:account=6000",
+          "actuals.csv:account=6000",
+          "account_mapping.csv:account=6000"
+        ]
+      },
+      {
+        "kind": "VERIFIED_CALCULATION",
+        "statement": "Opex contributed EBITDA performance impact -11000.00 from actual 152000.00 versus budget 141000.00.",
+        "performance_impact": "-11000.00",
+        "evidence": [
+          "budget.csv:account=6100",
+          "actuals.csv:account=6100",
+          "account_mapping.csv:account=6100",
+          "budget.csv:account=6200",
+          "actuals.csv:account=6200",
+          "account_mapping.csv:account=6200",
+          "budget.csv:account=6300",
+          "actuals.csv:account=6300",
+          "account_mapping.csv:account=6300"
+        ]
+      },
+      {
+        "kind": "VERIFIED_CALCULATION",
+        "statement": "Subscription Revenue had actual 735000.00 versus budget 780000.00; EBITDA performance impact -45000.00.",
+        "performance_impact": "-45000.00",
+        "evidence": [
+          "budget.csv:account=4000",
+          "actuals.csv:account=4000",
+          "account_mapping.csv:account=4000",
+          "ledger.csv:transaction_id=JAN-TXN-001",
+          "ledger.csv:transaction_id=JAN-TXN-002"
+        ]
+      },
+      {
+        "kind": "VERIFIED_CALCULATION",
+        "statement": "Cloud Hosting had actual 205000.00 versus budget 175000.00; EBITDA performance impact -30000.00.",
+        "performance_impact": "-30000.00",
+        "evidence": [
+          "budget.csv:account=5000",
+          "actuals.csv:account=5000",
+          "account_mapping.csv:account=5000",
+          "ledger.csv:transaction_id=JAN-TXN-005",
+          "ledger.csv:transaction_id=JAN-TXN-006"
+        ]
+      },
+      {
+        "kind": "INVESTIGATION_PROMPT",
+        "statement": "4 revenue driver records were attached for owner review; no causal conclusion was generated.",
+        "performance_impact": null,
+        "evidence": [
+          "customers.csv:customer_id=CUST-ENT-A",
+          "customers.csv:customer_id=CUST-ENT-B",
+          "customers.csv:customer_id=CUST-MID-C",
+          "customers.csv:customer_id=CUST-SMB-COHORT"
+        ]
+      }
+    ],
+    "evidence": [
+      "account_mapping.csv:account=4000",
+      "account_mapping.csv:account=4010",
+      "account_mapping.csv:account=5000",
+      "account_mapping.csv:account=6000",
+      "account_mapping.csv:account=6100",
+      "account_mapping.csv:account=6200",
+      "account_mapping.csv:account=6300",
+      "actuals.csv:account=4000",
+      "actuals.csv:account=4010",
+      "actuals.csv:account=5000",
+      "actuals.csv:account=6000",
+      "actuals.csv:account=6100",
+      "actuals.csv:account=6200",
+      "actuals.csv:account=6300",
+      "budget.csv:account=4000",
+      "budget.csv:account=4010",
+      "budget.csv:account=5000",
+      "budget.csv:account=6000",
+      "budget.csv:account=6100",
+      "budget.csv:account=6200",
+      "budget.csv:account=6300",
+      "category:cogs",
+      "category:opex",
+      "category:payroll",
+      "category:revenue",
+      "customers.csv:customer_id=CUST-ENT-A",
+      "customers.csv:customer_id=CUST-ENT-B",
+      "customers.csv:customer_id=CUST-MID-C",
+      "customers.csv:customer_id=CUST-SMB-COHORT",
+      "ledger.csv:transaction_id=JAN-TXN-001",
+      "ledger.csv:transaction_id=JAN-TXN-002",
+      "ledger.csv:transaction_id=JAN-TXN-005",
+      "ledger.csv:transaction_id=JAN-TXN-006"
+    ],
+    "trace": [
+      {
+        "step": 1,
+        "tool": "scan_material_variances",
+        "arguments": {
+          "threshold": "10000.00"
+        },
+        "reason": "Begin with a reconciled EBITDA bridge and materiality scan",
+        "observation": {
+          "ebitda": {
+            "level": "metric",
+            "key": "ebitda",
+            "label": "EBITDA",
+            "category": "ebitda",
+            "budget": "344000.00",
+            "actual": "261000.00",
+            "variance": "-83000.00",
+            "performance_impact": "-83000.00",
+            "favorable": false,
+            "evidence": [
+              "category:revenue",
+              "category:cogs",
+              "category:payroll",
+              "category:opex"
+            ]
+          },
+          "category_bridge": [
+            {
+              "level": "category",
+              "key": "revenue",
+              "label": "Revenue",
+              "category": "revenue",
+              "budget": "970000.00",
+              "actual": "920000.00",
+              "variance": "-50000.00",
+              "performance_impact": "-50000.00",
+              "favorable": false,
+              "evidence": [
+                "budget.csv:account=4000",
+                "actuals.csv:account=4000",
+                "account_mapping.csv:account=4000",
+                "budget.csv:account=4010",
+                "actuals.csv:account=4010",
+                "account_mapping.csv:account=4010"
+              ]
+            },
+            {
+              "level": "category",
+              "key": "cogs",
+              "label": "Cogs",
+              "category": "cogs",
+              "budget": "175000.00",
+              "actual": "205000.00",
+              "variance": "30000.00",
+              "performance_impact": "-30000.00",
+              "favorable": false,
+              "evidence": [
+                "budget.csv:account=5000",
+                "actuals.csv:account=5000",
+                "account_mapping.csv:account=5000"
+              ]
+            },
+            {
+              "level": "category",
+              "key": "payroll",
+              "label": "Payroll",
+              "category": "payroll",
+              "budget": "310000.00",
+              "actual": "302000.00",
+              "variance": "-8000.00",
+              "performance_impact": "8000.00",
+              "favorable": true,
+              "evidence": [
+                "budget.csv:account=6000",
+                "actuals.csv:account=6000",
+                "account_mapping.csv:account=6000"
+              ]
+            },
+            {
+              "level": "category",
+              "key": "opex",
+              "label": "Opex",
+              "category": "opex",
+              "budget": "141000.00",
+              "actual": "152000.00",
+              "variance": "11000.00",
+              "performance_impact": "-11000.00",
+              "favorable": false,
+              "evidence": [
+                "budget.csv:account=6100",
+                "actuals.csv:account=6100",
+                "account_mapping.csv:account=6100",
+                "budget.csv:account=6200",
+                "actuals.csv:account=6200",
+                "account_mapping.csv:account=6200",
+                "budget.csv:account=6300",
+                "actuals.csv:account=6300",
+                "account_mapping.csv:account=6300"
+              ]
+            }
+          ],
+          "material_categories": [
+            {
+              "level": "category",
+              "key": "revenue",
+              "label": "Revenue",
+              "category": "revenue",
+              "budget": "970000.00",
+              "actual": "920000.00",
+              "variance": "-50000.00",
+              "performance_impact": "-50000.00",
+              "favorable": false,
+              "evidence": [
+                "budget.csv:account=4000",
+                "actuals.csv:account=4000",
+                "account_mapping.csv:account=4000",
+                "budget.csv:account=4010",
+                "actuals.csv:account=4010",
+                "account_mapping.csv:account=4010"
+              ]
+            },
+            {
+              "level": "category",
+              "key": "cogs",
+              "label": "Cogs",
+              "category": "cogs",
+              "budget": "175000.00",
+              "actual": "205000.00",
+              "variance": "30000.00",
+              "performance_impact": "-30000.00",
+              "favorable": false,
+              "evidence": [
+                "budget.csv:account=5000",
+                "actuals.csv:account=5000",
+                "account_mapping.csv:account=5000"
+              ]
+            },
+            {
+              "level": "category",
+              "key": "opex",
+              "label": "Opex",
+              "category": "opex",
+              "budget": "141000.00",
+              "actual": "152000.00",
+              "variance": "11000.00",
+              "performance_impact": "-11000.00",
+              "favorable": false,
+              "evidence": [
+                "budget.csv:account=6100",
+                "actuals.csv:account=6100",
+                "account_mapping.csv:account=6100",
+                "budget.csv:account=6200",
+                "actuals.csv:account=6200",
+                "account_mapping.csv:account=6200",
+                "budget.csv:account=6300",
+                "actuals.csv:account=6300",
+                "account_mapping.csv:account=6300"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "step": 2,
+        "tool": "analyze_category",
+        "arguments": {
+          "category": "revenue",
+          "threshold": "10000.00"
+        },
+        "reason": "revenue has performance impact -50000.00, above the configured threshold",
+        "observation": {
+          "category": "revenue",
+          "material_accounts": [
+            {
+              "level": "account",
+              "key": "4000",
+              "label": "Subscription Revenue",
+              "category": "revenue",
+              "budget": "780000.00",
+              "actual": "735000.00",
+              "variance": "-45000.00",
+              "performance_impact": "-45000.00",
+              "favorable": false,
+              "evidence": [
+                "budget.csv:account=4000",
+                "actuals.csv:account=4000",
+                "account_mapping.csv:account=4000",
+                "ledger.csv:transaction_id=JAN-TXN-001",
+                "ledger.csv:transaction_id=JAN-TXN-002"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "step": 3,
+        "tool": "analyze_category",
+        "arguments": {
+          "category": "cogs",
+          "threshold": "10000.00"
+        },
+        "reason": "cogs has performance impact -30000.00, above the configured threshold",
+        "observation": {
+          "category": "cogs",
+          "material_accounts": [
+            {
+              "level": "account",
+              "key": "5000",
+              "label": "Cloud Hosting",
+              "category": "cogs",
+              "budget": "175000.00",
+              "actual": "205000.00",
+              "variance": "30000.00",
+              "performance_impact": "-30000.00",
+              "favorable": false,
+              "evidence": [
+                "budget.csv:account=5000",
+                "actuals.csv:account=5000",
+                "account_mapping.csv:account=5000",
+                "ledger.csv:transaction_id=JAN-TXN-005",
+                "ledger.csv:transaction_id=JAN-TXN-006"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "step": 4,
+        "tool": "analyze_category",
+        "arguments": {
+          "category": "opex",
+          "threshold": "10000.00"
+        },
+        "reason": "opex has performance impact -11000.00, above the configured threshold",
+        "observation": {
+          "category": "opex",
+          "material_accounts": []
+        }
+      },
+      {
+        "step": 5,
+        "tool": "inspect_driver_records",
+        "arguments": {
+          "category": "revenue"
+        },
+        "reason": "revenue has a verified operational driver dataset",
+        "observation": {
+          "category": "revenue",
+          "driver_records": [
+            {
+              "customer_id": "CUST-ENT-A",
+              "segment": "Enterprise",
+              "budget_revenue": "290000.00",
+              "actual_revenue": "285000.00",
+              "status": "active",
+              "variance": "-5000.00",
+              "evidence": "customers.csv:customer_id=CUST-ENT-A"
+            },
+            {
+              "customer_id": "CUST-ENT-B",
+              "segment": "Enterprise",
+              "budget_revenue": "250000.00",
+              "actual_revenue": "235000.00",
+              "status": "active",
+              "variance": "-15000.00",
+              "evidence": "customers.csv:customer_id=CUST-ENT-B"
+            },
+            {
+              "customer_id": "CUST-MID-C",
+              "segment": "Mid-Market",
+              "budget_revenue": "190000.00",
+              "actual_revenue": "180000.00",
+              "status": "active",
+              "variance": "-10000.00",
+              "evidence": "customers.csv:customer_id=CUST-MID-C"
+            },
+            {
+              "customer_id": "CUST-SMB-COHORT",
+              "segment": "SMB",
+              "budget_revenue": "240000.00",
+              "actual_revenue": "220000.00",
+              "status": "active",
+              "variance": "-20000.00",
+              "evidence": "customers.csv:customer_id=CUST-SMB-COHORT"
+            }
+          ],
+          "boundary": "Records are correlated inputs, not approved causal explanations."
+        }
+      }
+    ],
+    "current_explanation": null,
+    "human_gate": {
+      "status": "OPEN",
+      "required": [
+        "Approve or replace the demo materiality threshold",
+        "Supply and evidence current-period causal explanations",
+        "Approve or block distribution"
+      ]
+    }
+  }
+}

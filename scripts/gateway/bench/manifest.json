@@ -1,0 +1,31 @@
+{
+  "frozen_on": "2026-09-10",
+  "policy_version": "0.1.0",
+  "fixture_count": 24,
+  "files": {
+    "contradiction_detection.jsonl": {
+      "sha256": "9035b8fdbd1b2bff1c3aa310d81230637ee9816e5ccc8e90472226639b9ecfe5",
+      "count": 4
+    },
+    "rag_answer.jsonl": {
+      "sha256": "4b7fc3d18ef9e94cc030817eedfd369d9f72d922cc7db2f3186e12d6500d0528",
+      "count": 4
+    },
+    "sentiment_classification.jsonl": {
+      "sha256": "32b51a40cefe24e188b42944f1adaa8a58e3c199c28be20d894e9338eb37d467",
+      "count": 4
+    },
+    "structured_extraction.jsonl": {
+      "sha256": "0a378b586cf710396c767d3f87fdcd4c0eb577dec979e73195d23ec51316c19e",
+      "count": 4
+    },
+    "summarization.jsonl": {
+      "sha256": "457e5db40b47944f5f96d3d12c06ca811bd35464fee6b82674eee9a595559025",
+      "count": 4
+    },
+    "topic_classification.jsonl": {
+      "sha256": "c207af5b0bbaa5e01486daae1cea91a52e5e8d4007b50be296ccedcefeff4bb7",
+      "count": 4
+    }
+  }
+}
