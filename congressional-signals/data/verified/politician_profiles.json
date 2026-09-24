@@ -1,0 +1,1986 @@
+{
+  "generated_at": "2026-06-19T15:54:02.274797Z",
+  "total_politicians": 25,
+  "profiles": {
+    "Ann Wagner": {
+      "bcr": 0.75,
+      "total_trades": 20,
+      "overall_alpha": null,
+      "overall_win": null,
+      "priced_buys": 0,
+      "best_sector": null,
+      "sector_alpha": {}
+    },
+    "April McClain Delaney": {
+      "bcr": 0.534,
+      "total_trades": 236,
+      "overall_alpha": -3.0587,
+      "overall_win": 33.9,
+      "priced_buys": 118,
+      "best_sector": "general",
+      "sector_alpha": {
+        "general": {
+          "avg_alpha": -3.0587,
+          "win_rate": 33.9,
+          "n": 118,
+          "tickers": [
+            "BJ",
+            "BRO",
+            "CDW",
+            "CHRW",
+            "CLH",
+            "CNM",
+            "EME",
+            "ENTG",
+            "FLT",
+            "IDXX",
+            "ITT",
+            "JLL",
+            "LH",
+            "LYV",
+            "MKL",
+            "MLM",
+            "MORN",
+            "NDAQ",
+            "PAYX",
+            "PKG",
+            "PTC",
+            "ROL",
+            "SGI",
+            "STE",
+            "TDG",
+            "TECH",
+            "TSCO",
+            "VIK"
+          ]
+        }
+      }
+    },
+    "Bob Latta": {
+      "bcr": 1.0,
+      "total_trades": 15,
+      "overall_alpha": -1.5902,
+      "overall_win": 35.7,
+      "priced_buys": 14,
+      "best_sector": "general",
+      "sector_alpha": {
+        "general": {
+          "avg_alpha": -1.5902,
+          "win_rate": 35.7,
+          "n": 14,
+          "tickers": [
+            "FMAO"
+          ]
+        }
+      }
+    },
+    "Buddy Carter": {
+      "bcr": 0.3,
+      "total_trades": 10,
+      "overall_alpha": null,
+      "overall_win": null,
+      "priced_buys": 0,
+      "best_sector": null,
+      "sector_alpha": {}
+    },
+    "Chip Roy": {
+      "bcr": 0.2,
+      "total_trades": 10,
+      "overall_alpha": -7.2294,
+      "overall_win": 0.0,
+      "priced_buys": 2,
+      "best_sector": null,
+      "sector_alpha": {
+        "general": {
+          "avg_alpha": -7.2294,
+          "win_rate": 0.0,
+          "n": 2,
+          "tickers": [
+            "AESI"
+          ]
+        }
+      }
+    },
+    "Christian Menefee": {
+      "bcr": 0.0,
+      "total_trades": 6,
+      "overall_alpha": null,
+      "overall_win": null,
+      "priced_buys": 0,
+      "best_sector": null,
+      "sector_alpha": {}
+    },
+    "Dave McCormick": {
+      "bcr": 0.867,
+      "total_trades": 315,
+      "overall_alpha": 5.2538,
+      "overall_win": 86.8,
+      "priced_buys": 38,
+      "best_sector": "general",
+      "sector_alpha": {
+        "energy": {
+          "avg_alpha": 11.0924,
+          "win_rate": 100.0,
+          "n": 1,
+          "tickers": [
+            "PSX"
+          ]
+        },
+        "financials": {
+          "avg_alpha": 1.4088,
+          "win_rate": 100.0,
+          "n": 7,
+          "tickers": [
+            "GS"
+          ]
+        },
+        "general": {
+          "avg_alpha": 5.9564,
+          "win_rate": 83.3,
+          "n": 30,
+          "tickers": [
+            "ARCC",
+            "ATH",
+            "BITB",
+            "CG",
+            "GIS",
+            "KBH",
+            "MCD",
+            "OXY"
+          ]
+        }
+      }
+    },
+    "Debbie Dingell": {
+      "bcr": 0.632,
+      "total_trades": 25,
+      "overall_alpha": 5.5861,
+      "overall_win": 80.0,
+      "priced_buys": 5,
+      "best_sector": "general",
+      "sector_alpha": {
+        "consumer": {
+          "avg_alpha": 7.5667,
+          "win_rate": 100.0,
+          "n": 1,
+          "tickers": [
+            "WMT"
+          ]
+        },
+        "general": {
+          "avg_alpha": 5.0737,
+          "win_rate": 66.7,
+          "n": 3,
+          "tickers": [
+            "DIS",
+            "FNMA",
+            "PTA"
+          ]
+        },
+        "healthcare": {
+          "avg_alpha": 5.1429,
+          "win_rate": 100.0,
+          "n": 1,
+          "tickers": [
+            "MDT"
+          ]
+        }
+      }
+    },
+    "Gil Cisneros": {
+      "bcr": 0.617,
+      "total_trades": 750,
+      "overall_alpha": 0.1046,
+      "overall_win": 44.2,
+      "priced_buys": 423,
+      "best_sector": "cybersecurity",
+      "sector_alpha": {
+        "ai_cloud": {
+          "avg_alpha": -2.0221,
+          "win_rate": 25.0,
+          "n": 8,
+          "tickers": [
+            "GOOGL",
+            "META",
+            "MSFT",
+            "ORCL"
+          ]
+        },
+        "consumer": {
+          "avg_alpha": -0.1386,
+          "win_rate": 50.0,
+          "n": 16,
+          "tickers": [
+            "AMZN",
+            "BKNG",
+            "COST",
+            "DECK",
+            "HD",
+            "LULU"
+          ]
+        },
+        "cybersecurity": {
+          "avg_alpha": 21.5093,
+          "win_rate": 85.7,
+          "n": 7,
+          "tickers": [
+            "CRWD",
+            "DDOG",
+            "FTNT",
+            "NET",
+            "PANW"
+          ]
+        },
+        "defense": {
+          "avg_alpha": 7.1839,
+          "win_rate": 75.0,
+          "n": 4,
+          "tickers": [
+            "BA",
+            "GD",
+            "LMT",
+            "RTX"
+          ]
+        },
+        "energy": {
+          "avg_alpha": 6.0112,
+          "win_rate": 100.0,
+          "n": 5,
+          "tickers": [
+            "COP",
+            "CVX",
+            "EOG",
+            "XOM"
+          ]
+        },
+        "financials": {
+          "avg_alpha": 1.5859,
+          "win_rate": 66.7,
+          "n": 3,
+          "tickers": [
+            "JPM",
+            "MS",
+            "SCHW"
+          ]
+        },
+        "general": {
+          "avg_alpha": -1.287,
+          "win_rate": 40.5,
+          "n": 348,
+          "tickers": [
+            "AAPL",
+            "ACN",
+            "ADBE",
+            "AEIS",
+            "AGIO",
+            "AJG",
+            "AJINY",
+            "ALIZY",
+            "ALKT",
+            "AMCR",
+            "AME",
+            "ANET",
+            "APO",
+            "APP",
+            "ARE",
+            "ARMK",
+            "ARQT",
+            "ASML",
+            "ATRC",
+            "AVNT",
+            "AZN",
+            "AZO",
+            "AZTA",
+            "BABA",
+            "BBIO",
+            "BCRX",
+            "BCS",
+            "BE",
+            "BIIB",
+            "BKR",
+            "BMY",
+            "BOOT",
+            "BR",
+            "BRK/B",
+            "BRO",
+            "BXP",
+            "CAG",
+            "CAT",
+            "CATY",
+            "CB",
+            "CBOE",
+            "CCJ",
+            "CDRE",
+            "CENT",
+            "CF",
+            "CHTR",
+            "CI",
+            "CLX",
+            "CMCSA",
+            "CME",
+            "CMG",
+            "COCO",
+            "COF",
+            "COHR",
+            "COIN",
+            "COO",
+            "CP",
+            "CPB",
+            "CSCO",
+            "CSGP",
+            "CSWI",
+            "CTRA",
+            "CTSH",
+            "CVNA",
+            "DASH",
+            "DBSDY",
+            "DD",
+            "DHI",
+            "DIS",
+            "DOW",
+            "DPZ",
+            "EFX",
+            "EPAC",
+            "EPAM",
+            "EQT",
+            "ERIE",
+            "ETN",
+            "EXE",
+            "FBK",
+            "FCX",
+            "FDS",
+            "FDX",
+            "FICO",
+            "FINMY",
+            "FIS",
+            "FISV",
+            "FN",
+            "FNV",
+            "FOXA",
+            "FSLR",
+            "FSS",
+            "FWRG",
+            "GBCI",
+            "GDDY",
+            "GE",
+            "GEN",
+            "GEV",
+            "GIL",
+            "GIS",
+            "GLW",
+            "GMED",
+            "GPN",
+            "GTES",
+            "HAL",
+            "HALO",
+            "HESAY",
+            "HLI",
+            "HON",
+            "HOOD",
+            "HST",
+            "IBDRY",
+            "IBM",
+            "IDA",
+            "IFF",
+            "ILMN",
+            "INVH",
+            "IP",
+            "IRT",
+            "ISRG",
+            "IT",
+            "ITT",
+            "IVZ",
+            "JKHY",
+            "KEY",
+            "KMI",
+            "KVUE",
+            "LB",
+            "LEN",
+            "LGN",
+            "LGND",
+            "LIN",
+            "LITE",
+            "LPLA",
+            "LYB",
+            "MA",
+            "MCK",
+            "MDB",
+            "MELI",
+            "MHVIY",
+            "MIAX",
+            "MOS",
+            "MTB",
+            "MTSI",
+            "MUFG",
+            "NFLX",
+            "NHI",
+            "NOVT",
+            "NTDOY",
+            "NWE",
+            "NWSA",
+            "OKE",
+            "OMC",
+            "OXY",
+            "PATK",
+            "PAYC",
+            "PAYX",
+            "PEAK",
+            "PG",
+            "PGR",
+            "PLTR",
+            "PRIM",
+            "PRU",
+            "PSKY",
+            "PTC",
+            "PWR",
+            "PYPL",
+            "RACE",
+            "RARE",
+            "RBC",
+            "RBLX",
+            "RE",
+            "REG",
+            "REGN",
+            "RHP",
+            "RNMBY",
+            "ROP",
+            "RSNHF",
+            "RVTY",
+            "SAN",
+            "SARO",
+            "SBAC",
+            "SBGSY",
+            "SHAK",
+            "SKY",
+            "SMFKY",
+            "SMNEY",
+            "SMTC",
+            "SONY",
+            "SPOT",
+            "SQ",
+            "ST",
+            "STE",
+            "STLD",
+            "STZ",
+            "SUPN",
+            "SWKS",
+            "SYK",
+            "TAP",
+            "TCEHY",
+            "TDG",
+            "TEL",
+            "TNDM",
+            "TRGP",
+            "TRMB",
+            "TSLA",
+            "TTD",
+            "TXRH",
+            "TYL",
+            "UAL",
+            "UBER",
+            "UFPI",
+            "UPS",
+            "VCYT",
+            "VICI",
+            "VLTO",
+            "VRSK",
+            "VRSN",
+            "VRT",
+            "VZ",
+            "W",
+            "WAT",
+            "WBD",
+            "WDAY",
+            "WMB",
+            "WPM",
+            "WWE",
+            "XIACF",
+            "ZTS"
+          ]
+        },
+        "healthcare": {
+          "avg_alpha": 1.6714,
+          "win_rate": 38.5,
+          "n": 13,
+          "tickers": [
+            "ABT",
+            "BSX",
+            "LLY",
+            "MRK",
+            "PFE",
+            "UNH"
+          ]
+        },
+        "semiconductor": {
+          "avg_alpha": 14.4569,
+          "win_rate": 78.9,
+          "n": 19,
+          "tickers": [
+            "AMD",
+            "AVGO",
+            "INTC",
+            "MU",
+            "NVDA",
+            "NXPI",
+            "SNDK",
+            "TSM"
+          ]
+        }
+      }
+    },
+    "Greg Stanton": {
+      "bcr": 0.497,
+      "total_trades": 189,
+      "overall_alpha": 0.3622,
+      "overall_win": 53.8,
+      "priced_buys": 93,
+      "best_sector": "financials",
+      "sector_alpha": {
+        "ai_cloud": {
+          "avg_alpha": -0.1148,
+          "win_rate": 16.7,
+          "n": 6,
+          "tickers": [
+            "CRM",
+            "GOOGL",
+            "META",
+            "MSFT",
+            "ORCL"
+          ]
+        },
+        "consumer": {
+          "avg_alpha": -0.3716,
+          "win_rate": 60.0,
+          "n": 5,
+          "tickers": [
+            "AMZN",
+            "COST",
+            "HD",
+            "NKE",
+            "WMT"
+          ]
+        },
+        "energy": {
+          "avg_alpha": -6.4158,
+          "win_rate": 0.0,
+          "n": 3,
+          "tickers": [
+            "COP",
+            "CVX",
+            "XOM"
+          ]
+        },
+        "financials": {
+          "avg_alpha": 6.9699,
+          "win_rate": 100.0,
+          "n": 7,
+          "tickers": [
+            "BAC",
+            "BLK",
+            "C",
+            "GS",
+            "JPM",
+            "MS",
+            "WFC"
+          ]
+        },
+        "general": {
+          "avg_alpha": -0.0073,
+          "win_rate": 56.4,
+          "n": 55,
+          "tickers": [
+            "AAPL",
+            "ACN",
+            "ADBE",
+            "ADI",
+            "AMGN",
+            "AXON",
+            "AXP",
+            "BALL",
+            "BDX",
+            "BMY",
+            "BRK/B",
+            "CAT",
+            "CB",
+            "CMCSA",
+            "CSCO",
+            "DE",
+            "DHR",
+            "DIS",
+            "GILD",
+            "HWM",
+            "IBM",
+            "INTU",
+            "ISRG",
+            "J",
+            "KO",
+            "LIN",
+            "LOW",
+            "MA",
+            "MCD",
+            "MDLZ",
+            "MMM",
+            "MRSH",
+            "NEE",
+            "NFLX",
+            "NOW",
+            "PEP",
+            "PG",
+            "PGR",
+            "PH",
+            "PLD",
+            "PM",
+            "SBUX",
+            "SPGI",
+            "SYK",
+            "T",
+            "TDY",
+            "TJX",
+            "TMO",
+            "TMUS",
+            "TSLA",
+            "UNP",
+            "UPS",
+            "V",
+            "VRTX",
+            "VZ",
+            "ZTS"
+          ]
+        },
+        "healthcare": {
+          "avg_alpha": -0.9142,
+          "win_rate": 33.3,
+          "n": 9,
+          "tickers": [
+            "ABBV",
+            "ABT",
+            "ELV",
+            "JNJ",
+            "LLY",
+            "MDT",
+            "MRK",
+            "PFE",
+            "UNH"
+          ]
+        },
+        "semiconductor": {
+          "avg_alpha": 1.9146,
+          "win_rate": 62.5,
+          "n": 8,
+          "tickers": [
+            "AMAT",
+            "AMD",
+            "AVGO",
+            "INTC",
+            "LRCX",
+            "NVDA",
+            "QCOM",
+            "TXN"
+          ]
+        }
+      }
+    },
+    "Jake Auchincloss": {
+      "bcr": 0.0,
+      "total_trades": 9,
+      "overall_alpha": null,
+      "overall_win": null,
+      "priced_buys": 0,
+      "best_sector": null,
+      "sector_alpha": {}
+    },
+    "Jefferson Shreve": {
+      "bcr": 0.322,
+      "total_trades": 632,
+      "overall_alpha": -0.3334,
+      "overall_win": 41.1,
+      "priced_buys": 192,
+      "best_sector": "semiconductor",
+      "sector_alpha": {
+        "ai_cloud": {
+          "avg_alpha": 2.6707,
+          "win_rate": 40.0,
+          "n": 5,
+          "tickers": [
+            "CRM",
+            "MSFT",
+            "ORCL"
+          ]
+        },
+        "consumer": {
+          "avg_alpha": -4.4012,
+          "win_rate": 14.3,
+          "n": 7,
+          "tickers": [
+            "BKNG",
+            "HD",
+            "LULU",
+            "TGT",
+            "WMT"
+          ]
+        },
+        "cybersecurity": {
+          "avg_alpha": -7.6918,
+          "win_rate": 0.0,
+          "n": 1,
+          "tickers": [
+            "PANW"
+          ]
+        },
+        "defense": {
+          "avg_alpha": -0.9857,
+          "win_rate": 50.0,
+          "n": 2,
+          "tickers": [
+            "LMT",
+            "RTX"
+          ]
+        },
+        "energy": {
+          "avg_alpha": -4.8626,
+          "win_rate": 0.0,
+          "n": 7,
+          "tickers": [
+            "COP",
+            "CVX",
+            "PSX",
+            "SLB",
+            "XOM"
+          ]
+        },
+        "financials": {
+          "avg_alpha": 3.252,
+          "win_rate": 57.1,
+          "n": 7,
+          "tickers": [
+            "BAC",
+            "BLK",
+            "GS",
+            "JPM",
+            "WFC"
+          ]
+        },
+        "general": {
+          "avg_alpha": -0.3572,
+          "win_rate": 39.9,
+          "n": 138,
+          "tickers": [
+            "A",
+            "AAPL",
+            "ACGL",
+            "ADBE",
+            "ADI",
+            "ADSK",
+            "AEO",
+            "AIG",
+            "AKAM",
+            "ALB",
+            "AMGN",
+            "ANET",
+            "AON",
+            "APD",
+            "APP",
+            "APTV",
+            "ARES",
+            "AWK",
+            "AXON",
+            "AXP",
+            "BALL",
+            "BC",
+            "BKE",
+            "BMO",
+            "BUSE",
+            "CAT",
+            "CBOE",
+            "CCI",
+            "CCL",
+            "CEG",
+            "CG",
+            "CI",
+            "CMCSA",
+            "CMG",
+            "CNC",
+            "COIN",
+            "CRL",
+            "CSGP",
+            "CSX",
+            "CTAS",
+            "CZR",
+            "DG",
+            "DIS",
+            "DVN",
+            "DXCM",
+            "ECL",
+            "EPAM",
+            "EW",
+            "EXPO",
+            "FBIN",
+            "FIS",
+            "GE",
+            "GILD",
+            "HAL",
+            "HEI",
+            "HIW",
+            "HNI",
+            "HOG",
+            "HOMB",
+            "HRI",
+            "HUBB",
+            "IDXX",
+            "INTU",
+            "ISRG",
+            "LEN",
+            "LFUS",
+            "LGIH",
+            "LIN",
+            "LOW",
+            "MCD",
+            "MPC",
+            "MSTR",
+            "MTCH",
+            "NEE",
+            "NEM",
+            "NFLX",
+            "NSC",
+            "NUE",
+            "NVT",
+            "OXY",
+            "PEP",
+            "PHM",
+            "PLD",
+            "PRU",
+            "PUK",
+            "PWR",
+            "PYPL",
+            "RGLD",
+            "ROST",
+            "RPD",
+            "SHW",
+            "SNDR",
+            "SNPS",
+            "SPGI",
+            "SPOT",
+            "SQ",
+            "STAG",
+            "SYK",
+            "TDG",
+            "TJX",
+            "TT",
+            "TTD",
+            "UBER",
+            "UCBI",
+            "UNP",
+            "UPS",
+            "VICR",
+            "VLO",
+            "VRTX",
+            "VST",
+            "WDAY",
+            "WDC",
+            "WY",
+            "ZTS"
+          ]
+        },
+        "healthcare": {
+          "avg_alpha": -17.1775,
+          "win_rate": 12.5,
+          "n": 8,
+          "tickers": [
+            "ABBV",
+            "ELV",
+            "JNJ",
+            "MRK",
+            "PFE",
+            "UNH"
+          ]
+        },
+        "semiconductor": {
+          "avg_alpha": 9.4766,
+          "win_rate": 88.2,
+          "n": 17,
+          "tickers": [
+            "AMAT",
+            "AMD",
+            "AVGO",
+            "INTC",
+            "LRCX",
+            "MRVL",
+            "NVDA",
+            "QCOM",
+            "TXN"
+          ]
+        }
+      }
+    },
+    "Jim Banks": {
+      "bcr": 0.333,
+      "total_trades": 6,
+      "overall_alpha": -8.0921,
+      "overall_win": 0.0,
+      "priced_buys": 2,
+      "best_sector": null,
+      "sector_alpha": {
+        "general": {
+          "avg_alpha": -8.0921,
+          "win_rate": 0.0,
+          "n": 2,
+          "tickers": [
+            "SBUX",
+            "YUM"
+          ]
+        }
+      }
+    },
+    "Josh Gottheimer": {
+      "bcr": 0.373,
+      "total_trades": 750,
+      "overall_alpha": 0.4832,
+      "overall_win": 52.5,
+      "priced_buys": 238,
+      "best_sector": "healthcare",
+      "sector_alpha": {
+        "ai_cloud": {
+          "avg_alpha": -1.9078,
+          "win_rate": 40.0,
+          "n": 25,
+          "tickers": [
+            "CRM",
+            "GOOGL",
+            "META",
+            "MSFT"
+          ]
+        },
+        "consumer": {
+          "avg_alpha": 3.1359,
+          "win_rate": 63.6,
+          "n": 11,
+          "tickers": [
+            "BKNG",
+            "HD",
+            "WMT"
+          ]
+        },
+        "cybersecurity": {
+          "avg_alpha": 2.5989,
+          "win_rate": 100.0,
+          "n": 1,
+          "tickers": [
+            "NET",
+            "PANW"
+          ]
+        },
+        "defense": {
+          "avg_alpha": 4.2754,
+          "win_rate": 100.0,
+          "n": 2,
+          "tickers": [
+            "NOC",
+            "RTX"
+          ]
+        },
+        "energy": {
+          "avg_alpha": -9.1884,
+          "win_rate": 0.0,
+          "n": 2,
+          "tickers": [
+            "XOM"
+          ]
+        },
+        "financials": {
+          "avg_alpha": 2.1014,
+          "win_rate": 50.0,
+          "n": 2,
+          "tickers": [
+            "GS",
+            "SCHW"
+          ]
+        },
+        "general": {
+          "avg_alpha": 0.4076,
+          "win_rate": 51.4,
+          "n": 175,
+          "tickers": [
+            "AAPL",
+            "ABEV",
+            "ADI",
+            "ALGM",
+            "APD",
+            "APP",
+            "ASML",
+            "ATRC",
+            "BABA",
+            "BRK/B",
+            "BX",
+            "CB",
+            "CBZ",
+            "CDRE",
+            "CHRD",
+            "CLPBY",
+            "CMI",
+            "CRNX",
+            "CSWI",
+            "CVLT",
+            "CVNA",
+            "D",
+            "DASH",
+            "DHI",
+            "DSCSY",
+            "EPAC",
+            "FCX",
+            "FISV",
+            "FLYW",
+            "FN",
+            "FNA",
+            "FSS",
+            "FWRG",
+            "GBOOY",
+            "GEV",
+            "GILD",
+            "GLW",
+            "GMAB",
+            "GTES",
+            "HDB",
+            "IBM",
+            "ICE",
+            "IFNNY",
+            "INSM",
+            "INTA",
+            "IRT",
+            "ISRG",
+            "KKR",
+            "KO",
+            "LITE",
+            "LNG",
+            "LZB",
+            "MA",
+            "MCD",
+            "MELI",
+            "MFC",
+            "MMM",
+            "MNST",
+            "MTHRY",
+            "NICE",
+            "NOW",
+            "NSRGY",
+            "NTES",
+            "NTRA",
+            "PAR",
+            "PPBI",
+            "PYPL",
+            "RHHBY",
+            "SBUX",
+            "SE",
+            "SHEL",
+            "SHOP",
+            "SNDR",
+            "SNOW",
+            "SPOT",
+            "SQ",
+            "SSMXY",
+            "TCBI",
+            "TEL",
+            "THR",
+            "TLK",
+            "TMO",
+            "TNDM",
+            "TPH",
+            "TSLA",
+            "TTNDY",
+            "TWLO",
+            "UBER",
+            "UNICY",
+            "UNP",
+            "USPH",
+            "V",
+            "VRT",
+            "XNGSY"
+          ]
+        },
+        "healthcare": {
+          "avg_alpha": 4.0708,
+          "win_rate": 68.8,
+          "n": 16,
+          "tickers": [
+            "ABBV",
+            "ABT",
+            "JNJ",
+            "LLY",
+            "MRK",
+            "UNH"
+          ]
+        },
+        "semiconductor": {
+          "avg_alpha": -1.3136,
+          "win_rate": 75.0,
+          "n": 4,
+          "tickers": [
+            "AMD",
+            "AVGO",
+            "MU",
+            "NVDA",
+            "SNDK"
+          ]
+        }
+      }
+    },
+    "Kelly Morrison": {
+      "bcr": 0.413,
+      "total_trades": 113,
+      "overall_alpha": 9.2445,
+      "overall_win": 90.0,
+      "priced_buys": 10,
+      "best_sector": "semiconductor",
+      "sector_alpha": {
+        "ai_cloud": {
+          "avg_alpha": 9.8279,
+          "win_rate": 100.0,
+          "n": 5,
+          "tickers": [
+            "META"
+          ]
+        },
+        "consumer": {
+          "avg_alpha": -10.0793,
+          "win_rate": 0.0,
+          "n": 1,
+          "tickers": [
+            "TGT"
+          ]
+        },
+        "semiconductor": {
+          "avg_alpha": 13.346,
+          "win_rate": 100.0,
+          "n": 4,
+          "tickers": [
+            "AVGO"
+          ]
+        }
+      }
+    },
+    "Kevin Hern": {
+      "bcr": 0.672,
+      "total_trades": 196,
+      "overall_alpha": -0.9618,
+      "overall_win": 37.1,
+      "priced_buys": 105,
+      "best_sector": "healthcare",
+      "sector_alpha": {
+        "consumer": {
+          "avg_alpha": -0.7306,
+          "win_rate": 16.7,
+          "n": 12,
+          "tickers": [
+            "COST",
+            "HD"
+          ]
+        },
+        "defense": {
+          "avg_alpha": 2.3536,
+          "win_rate": 55.6,
+          "n": 9,
+          "tickers": [
+            "LMT",
+            "RTX"
+          ]
+        },
+        "energy": {
+          "avg_alpha": -0.3185,
+          "win_rate": 42.9,
+          "n": 7,
+          "tickers": [
+            "XOM"
+          ]
+        },
+        "financials": {
+          "avg_alpha": 0.1667,
+          "win_rate": 40.0,
+          "n": 5,
+          "tickers": [
+            "GS",
+            "JPM"
+          ]
+        },
+        "general": {
+          "avg_alpha": -2.3768,
+          "win_rate": 35.7,
+          "n": 56,
+          "tickers": [
+            "ACN",
+            "AGCO",
+            "ARGO",
+            "BNPQY",
+            "CB",
+            "DVN",
+            "EMR",
+            "FSEN",
+            "INRE",
+            "LIN",
+            "MCD",
+            "MMP",
+            "MRSH",
+            "NEE",
+            "OKE",
+            "PXD",
+            "ROK",
+            "RY",
+            "TD",
+            "WMB"
+          ]
+        },
+        "healthcare": {
+          "avg_alpha": 2.5169,
+          "win_rate": 50.0,
+          "n": 10,
+          "tickers": [
+            "JNJ",
+            "UNH"
+          ]
+        },
+        "semiconductor": {
+          "avg_alpha": -0.6785,
+          "win_rate": 33.3,
+          "n": 6,
+          "tickers": [
+            "TXN"
+          ]
+        }
+      }
+    },
+    "Lloyd Doggett": {
+      "bcr": 1.0,
+      "total_trades": 64,
+      "overall_alpha": -1.1959,
+      "overall_win": 34.4,
+      "priced_buys": 61,
+      "best_sector": "consumer",
+      "sector_alpha": {
+        "consumer": {
+          "avg_alpha": 0.5576,
+          "win_rate": 45.5,
+          "n": 11,
+          "tickers": [
+            "HD"
+          ]
+        },
+        "general": {
+          "avg_alpha": -1.9443,
+          "win_rate": 30.0,
+          "n": 40,
+          "tickers": [
+            "IBM",
+            "KO",
+            "PG",
+            "PPG"
+          ]
+        },
+        "healthcare": {
+          "avg_alpha": -0.1314,
+          "win_rate": 40.0,
+          "n": 10,
+          "tickers": [
+            "JNJ"
+          ]
+        }
+      }
+    },
+    "Maria Elvira Salazar": {
+      "bcr": 0.909,
+      "total_trades": 55,
+      "overall_alpha": 2.2236,
+      "overall_win": 53.8,
+      "priced_buys": 39,
+      "best_sector": "general",
+      "sector_alpha": {
+        "ai_cloud": {
+          "avg_alpha": -0.5711,
+          "win_rate": 0.0,
+          "n": 2,
+          "tickers": [
+            "CRM",
+            "MSFT"
+          ]
+        },
+        "defense": {
+          "avg_alpha": -10.1419,
+          "win_rate": 0.0,
+          "n": 2,
+          "tickers": [
+            "BA"
+          ]
+        },
+        "financials": {
+          "avg_alpha": -3.091,
+          "win_rate": 50.0,
+          "n": 4,
+          "tickers": [
+            "C",
+            "GS"
+          ]
+        },
+        "general": {
+          "avg_alpha": 1.8098,
+          "win_rate": 57.1,
+          "n": 28,
+          "tickers": [
+            "AMGN",
+            "AR",
+            "CARR",
+            "CSCO",
+            "DTM",
+            "FDX",
+            "GE",
+            "GLW",
+            "HON",
+            "NFE",
+            "NVR",
+            "OXY",
+            "PTON",
+            "RH",
+            "SHW",
+            "ULTA",
+            "URI",
+            "VG",
+            "WHR"
+          ]
+        },
+        "healthcare": {
+          "avg_alpha": 7.4491,
+          "win_rate": 100.0,
+          "n": 2,
+          "tickers": [
+            "UNH"
+          ]
+        },
+        "semiconductor": {
+          "avg_alpha": 54.9404,
+          "win_rate": 100.0,
+          "n": 1,
+          "tickers": [
+            "MRVL"
+          ]
+        }
+      }
+    },
+    "Michael McCaul": {
+      "bcr": 0.543,
+      "total_trades": 750,
+      "overall_alpha": -1.9144,
+      "overall_win": 35.4,
+      "priced_buys": 243,
+      "best_sector": "semiconductor",
+      "sector_alpha": {
+        "ai_cloud": {
+          "avg_alpha": -5.1675,
+          "win_rate": 33.3,
+          "n": 9,
+          "tickers": [
+            "GOOGL",
+            "META",
+            "MSFT",
+            "ORCL"
+          ]
+        },
+        "general": {
+          "avg_alpha": -1.9338,
+          "win_rate": 35.0,
+          "n": 226,
+          "tickers": [
+            "ADSK",
+            "AJG",
+            "ALH",
+            "ALLY",
+            "ARE",
+            "ARTFX",
+            "ATR",
+            "BAX",
+            "CELFX",
+            "CMCSA",
+            "CNM",
+            "CSL",
+            "DFAI",
+            "DFCEX",
+            "DFIC",
+            "DHR",
+            "DLTR",
+            "DXCM",
+            "EL",
+            "ENTG",
+            "EQH",
+            "EQT",
+            "FCN",
+            "FFRHX",
+            "FICO",
+            "GEV",
+            "GPC",
+            "GPN",
+            "HLI",
+            "HLMIX",
+            "HURN",
+            "HWM",
+            "IBM",
+            "IFF",
+            "INTU",
+            "IVV",
+            "KEYS",
+            "LDNXF",
+            "LEN",
+            "LPX",
+            "MA",
+            "MELI",
+            "MSA",
+            "MWA",
+            "NFG",
+            "NFLX",
+            "NOW",
+            "NSIT",
+            "NWHVX",
+            "OMF",
+            "P",
+            "PAYX",
+            "PEAK",
+            "PLXS",
+            "PRI",
+            "PSTG",
+            "RDDT",
+            "SAP",
+            "SMNEY",
+            "SPGI",
+            "SPOT",
+            "ST",
+            "SWK",
+            "TAXI",
+            "TER",
+            "VEA",
+            "VOO",
+            "VTEB",
+            "VTI",
+            "VVV",
+            "VWLUX",
+            "WDAY",
+            "WTM"
+          ]
+        },
+        "healthcare": {
+          "avg_alpha": 2.1517,
+          "win_rate": 60.0,
+          "n": 5,
+          "tickers": [
+            "ABT",
+            "BSX",
+            "CVS",
+            "HUM",
+            "UNH"
+          ]
+        },
+        "semiconductor": {
+          "avg_alpha": 2.5302,
+          "win_rate": 33.3,
+          "n": 3,
+          "tickers": [
+            "AVGO"
+          ]
+        }
+      }
+    },
+    "Ro Khanna": {
+      "bcr": 0.601,
+      "total_trades": 750,
+      "overall_alpha": 0.9265,
+      "overall_win": 51.5,
+      "priced_buys": 427,
+      "best_sector": "cybersecurity",
+      "sector_alpha": {
+        "ai_cloud": {
+          "avg_alpha": 10.7227,
+          "win_rate": 63.6,
+          "n": 11,
+          "tickers": [
+            "CRM",
+            "GOOGL",
+            "META",
+            "ORCL"
+          ]
+        },
+        "consumer": {
+          "avg_alpha": -3.0469,
+          "win_rate": 56.2,
+          "n": 16,
+          "tickers": [
+            "AMZN",
+            "BKNG",
+            "DECK",
+            "HD",
+            "LULU",
+            "NKE"
+          ]
+        },
+        "cybersecurity": {
+          "avg_alpha": 27.4777,
+          "win_rate": 100.0,
+          "n": 6,
+          "tickers": [
+            "CRWD",
+            "DDOG",
+            "FTNT",
+            "PANW"
+          ]
+        },
+        "financials": {
+          "avg_alpha": -1.901,
+          "win_rate": 53.3,
+          "n": 15,
+          "tickers": [
+            "BAC",
+            "C",
+            "JPM",
+            "MS",
+            "SCHW",
+            "WFC"
+          ]
+        },
+        "general": {
+          "avg_alpha": 0.0722,
+          "win_rate": 49.4,
+          "n": 348,
+          "tickers": [
+            "A",
+            "ABNB",
+            "ACI",
+            "ACN",
+            "ADBE",
+            "ADI",
+            "ADP",
+            "ADSK",
+            "AFL",
+            "AIG",
+            "AJG",
+            "ALGN",
+            "AMCR",
+            "AME",
+            "AMP",
+            "AMT",
+            "ANET",
+            "AOS",
+            "APD",
+            "APO",
+            "APP",
+            "APTV",
+            "ARE",
+            "ARES",
+            "AVY",
+            "AXP",
+            "AZN",
+            "AZO",
+            "BALL",
+            "BBY",
+            "BDX",
+            "BEN",
+            "BK",
+            "BLDR",
+            "BMO",
+            "BMY",
+            "BR",
+            "BRK/B",
+            "BRO",
+            "BX",
+            "BXP",
+            "CARR",
+            "CBRE",
+            "CCEP",
+            "CCI",
+            "CCL",
+            "CDNS",
+            "CDW",
+            "CEG",
+            "CHTR",
+            "CIEN",
+            "CMG",
+            "COF",
+            "COHR",
+            "COO",
+            "CPRT",
+            "CRH",
+            "CRL",
+            "CSCO",
+            "CSGP",
+            "CTAS",
+            "CTSH",
+            "CTVA",
+            "CVNA",
+            "DASH",
+            "DD",
+            "DELL",
+            "DHI",
+            "DHR",
+            "DIS",
+            "DOW",
+            "DXCM",
+            "EBAY",
+            "ECL",
+            "EFX",
+            "EL",
+            "EMR",
+            "EPAM",
+            "ESS",
+            "EW",
+            "F",
+            "FAST",
+            "FDS",
+            "FDX",
+            "FHN",
+            "FICO",
+            "FISV",
+            "FITB",
+            "FLT",
+            "FTV",
+            "GDDY",
+            "GEHC",
+            "GM",
+            "GPC",
+            "GPN",
+            "GRMN",
+            "GSKPX",
+            "GWW",
+            "HBAN",
+            "HIG",
+            "HLT",
+            "HON",
+            "HOOD",
+            "HPQ",
+            "HSIC",
+            "IBKR",
+            "IBM",
+            "ICE",
+            "IDXX",
+            "IFF",
+            "INCY",
+            "INTU",
+            "INVH",
+            "IP",
+            "IQV",
+            "IR",
+            "ISRG",
+            "IT",
+            "ITW",
+            "IVZ",
+            "KDP",
+            "KEY",
+            "KEYS",
+            "KHC",
+            "KKR",
+            "KMB",
+            "KO",
+            "LEN",
+            "LII",
+            "LIN",
+            "LITE",
+            "LOW",
+            "LUV",
+            "LW",
+            "LYB",
+            "MA",
+            "MAS",
+            "MCD",
+            "MCHP",
+            "MCO",
+            "MDLZ",
+            "MET",
+            "MLM",
+            "MOS",
+            "MRNA",
+            "MRSH",
+            "MSCI",
+            "MSI",
+            "NCR",
+            "NDAQ",
+            "NEE",
+            "NGG",
+            "NOW",
+            "NTIOF",
+            "NVO",
+            "ORLY",
+            "OTIS",
+            "PAYX",
+            "PCAR",
+            "PEAK",
+            "PEP",
+            "PG",
+            "PGR",
+            "PLD",
+            "PM",
+            "PNC",
+            "PODD",
+            "POOL",
+            "PPG",
+            "PRU",
+            "PYPL",
+            "RCI",
+            "REGN",
+            "RIO",
+            "RJF",
+            "RMD",
+            "ROK",
+            "ROL",
+            "ROP",
+            "ROST",
+            "RVTY",
+            "SBAC",
+            "SBUX",
+            "SHEL",
+            "SHW",
+            "SMFKY",
+            "SNPS",
+            "SOLV",
+            "SPGI",
+            "SQ",
+            "STT",
+            "STX",
+            "SWK",
+            "SYK",
+            "T",
+            "TECH",
+            "TFC",
+            "TJX",
+            "TMO",
+            "TSCO",
+            "TSLA",
+            "TTD",
+            "TTE",
+            "TYL",
+            "UAL",
+            "UNP",
+            "UPS",
+            "URI",
+            "USB",
+            "V",
+            "VICI",
+            "VMC",
+            "VRSK",
+            "VRSN",
+            "VRT",
+            "VRTX",
+            "VST",
+            "WAT",
+            "WBD",
+            "WDAY",
+            "WDC",
+            "WM",
+            "WRB",
+            "WY",
+            "XSP",
+            "XYL",
+            "YUM",
+            "ZBRA",
+            "ZTS"
+          ]
+        },
+        "healthcare": {
+          "avg_alpha": -1.0748,
+          "win_rate": 58.8,
+          "n": 17,
+          "tickers": [
+            "ABT",
+            "BSX",
+            "CVS",
+            "ELV",
+            "HUM",
+            "JNJ",
+            "MRK",
+            "PFE",
+            "UNH"
+          ]
+        },
+        "semiconductor": {
+          "avg_alpha": 13.0854,
+          "win_rate": 57.1,
+          "n": 14,
+          "tickers": [
+            "AMAT",
+            "AMD",
+            "AVGO",
+            "INTC",
+            "LRCX",
+            "NVDA",
+            "NXPI",
+            "ON",
+            "QCOM",
+            "SNDK"
+          ]
+        }
+      }
+    },
+    "Suzan DelBene": {
+      "bcr": 0.431,
+      "total_trades": 174,
+      "overall_alpha": -0.3242,
+      "overall_win": 0.0,
+      "priced_buys": 1,
+      "best_sector": null,
+      "sector_alpha": {
+        "general": {
+          "avg_alpha": -0.3242,
+          "win_rate": 0.0,
+          "n": 1,
+          "tickers": [
+            "FPAFY"
+          ]
+        }
+      }
+    },
+    "Tim Moore": {
+      "bcr": 0.74,
+      "total_trades": 235,
+      "overall_alpha": 4.2531,
+      "overall_win": 67.3,
+      "priced_buys": 147,
+      "best_sector": "general",
+      "sector_alpha": {
+        "financials": {
+          "avg_alpha": 0.8219,
+          "win_rate": 100.0,
+          "n": 1,
+          "tickers": [
+            "BLK"
+          ]
+        },
+        "general": {
+          "avg_alpha": 3.8783,
+          "win_rate": 66.4,
+          "n": 143,
+          "tickers": [
+            "AAL",
+            "AAPL",
+            "BKR",
+            "CBRL",
+            "CNC",
+            "COIN",
+            "DASH",
+            "DNUT",
+            "F",
+            "GNPX",
+            "HOG",
+            "HY",
+            "IHG",
+            "LGIH",
+            "MSTY",
+            "QYLD",
+            "RYCEY",
+            "SMCI",
+            "SMCY",
+            "SMCYY",
+            "SMPL",
+            "T",
+            "TNA",
+            "TQQQ",
+            "TZA",
+            "USFD",
+            "V",
+            "VZ"
+          ]
+        },
+        "healthcare": {
+          "avg_alpha": 26.037,
+          "win_rate": 100.0,
+          "n": 2,
+          "tickers": [
+            "UNH"
+          ]
+        },
+        "semiconductor": {
+          "avg_alpha": 17.7051,
+          "win_rate": 100.0,
+          "n": 1,
+          "tickers": [
+            "INTC"
+          ]
+        }
+      }
+    },
+    "Tim Walberg": {
+      "bcr": 0.875,
+      "total_trades": 16,
+      "overall_alpha": null,
+      "overall_win": null,
+      "priced_buys": 0,
+      "best_sector": null,
+      "sector_alpha": {}
+    },
+    "Tina Smith": {
+      "bcr": 0.235,
+      "total_trades": 17,
+      "overall_alpha": 14.475,
+      "overall_win": 100.0,
+      "priced_buys": 4,
+      "best_sector": "general",
+      "sector_alpha": {
+        "general": {
+          "avg_alpha": 14.475,
+          "win_rate": 100.0,
+          "n": 4,
+          "tickers": [
+            "AORT",
+            "TCMD"
+          ]
+        }
+      }
+    },
+    "Tony Wied": {
+      "bcr": 0.439,
+      "total_trades": 66,
+      "overall_alpha": -1.6753,
+      "overall_win": 56.5,
+      "priced_buys": 23,
+      "best_sector": "semiconductor",
+      "sector_alpha": {
+        "ai_cloud": {
+          "avg_alpha": 4.3991,
+          "win_rate": 100.0,
+          "n": 2,
+          "tickers": [
+            "CRM",
+            "MSFT"
+          ]
+        },
+        "financials": {
+          "avg_alpha": 1.6114,
+          "win_rate": 100.0,
+          "n": 1,
+          "tickers": [
+            "SCHW"
+          ]
+        },
+        "general": {
+          "avg_alpha": -4.1851,
+          "win_rate": 41.2,
+          "n": 17,
+          "tickers": [
+            "ADBE",
+            "ANET",
+            "DIS",
+            "FIHBX",
+            "FIVE",
+            "HUBS",
+            "KNSL",
+            "LCII",
+            "LH",
+            "NOW",
+            "RH",
+            "SQ",
+            "TTD",
+            "V"
+          ]
+        },
+        "semiconductor": {
+          "avg_alpha": 7.4017,
+          "win_rate": 100.0,
+          "n": 3,
+          "tickers": [
+            "AMD",
+            "LRCX",
+            "MU"
+          ]
+        }
+      }
+    }
+  }
+}
