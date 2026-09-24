@@ -1,0 +1,230 @@
+{
+  "run_id": "2026-09-24T140037",
+  "run_on": "2026-09-24",
+  "policy_version": "0.2.0",
+  "tiers_version": "0.4.0",
+  "prices_version": "2026-09-17",
+  "fixtures_frozen_on": "2026-09-24",
+  "a_tier": "cheap",
+  "b_tier": "mid",
+  "judge_tier": "strong",
+  "judge_max_tokens": 256,
+  "summary": {
+    "comparisons": 4,
+    "counts": {
+      "a": 0,
+      "b": 0,
+      "inconsistent": 1,
+      "tie": 3,
+      "unparsed": 0
+    },
+    "decided": 3,
+    "cost_usd": 0.001679,
+    "kind": "model_judgment",
+    "note": "verdicts are model judgments, not ground truth; Sprint 6 measures how far they agree with a human"
+  },
+  "answers_cost_usd": 0.0005870999999999999,
+  "skipped": [],
+  "rows": [
+    {
+      "id": "rag-001",
+      "task_type": "rag_answer",
+      "difficulty": "easy",
+      "a": {
+        "tier": "cheap",
+        "text": "A dividend is a payment a company makes to its shareholders, usually in cash, out of its profits. [0]",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 4.755e-05,
+        "latency_ms": 1136,
+        "request_id": "b82e32ae4468481bba935cee7544d8fe"
+      },
+      "b": {
+        "tier": "mid",
+        "text": "A dividend is a payment that a company makes to its shareholders\u2014typically in cash\u2014and it comes out of the company\u2019s profits.\u202f[0]",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 8.429999999999999e-05,
+        "latency_ms": 765,
+        "request_id": "c52af2ec0d3049c6b0fd70c95d0fafc0"
+      },
+      "answers_cost_usd": 0.00013184999999999998,
+      "fixture_id": "rag-001",
+      "a_label": "cheap",
+      "b_label": "mid",
+      "result": "inconsistent",
+      "votes": [
+        {
+          "order": "ab",
+          "verdict": "a",
+          "raw": "FIRST",
+          "request_id": "c2a662667a9c4e998db0318f0639e39f",
+          "cost_usd": 0.00018800000000000002,
+          "latency_ms": 197
+        },
+        {
+          "order": "ba",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "e5346aeeb773452c8c8061d5a41c4dfc",
+          "cost_usd": 0.000192,
+          "latency_ms": 450
+        }
+      ],
+      "cost_usd": 0.00038,
+      "judged_by": "qwen/qwen3.8-27b",
+      "judged_at": "2026-09-24T18:00:40.441191+00:00",
+      "kind": "model_judgment"
+    },
+    {
+      "id": "rag-002",
+      "task_type": "rag_answer",
+      "difficulty": "easy",
+      "a": {
+        "tier": "cheap",
+        "text": "A bond's coupon rate is the annual interest it pays, expressed as a percentage of its face value. [1]",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 4.0425e-05,
+        "latency_ms": 268,
+        "request_id": "127f3502e86b4d959c33a3d44e64b7f9"
+      },
+      "b": {
+        "tier": "mid",
+        "text": "A bond\u2019s coupon rate is the annual interest it pays, expressed as a percentage of the bond\u2019s face (par) value.\u202f[1]",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 9.884999999999999e-05,
+        "latency_ms": 422,
+        "request_id": "b97a8d5f50e740749748767112a7cf05"
+      },
+      "answers_cost_usd": 0.00013927499999999998,
+      "fixture_id": "rag-002",
+      "a_label": "cheap",
+      "b_label": "mid",
+      "result": "tie",
+      "votes": [
+        {
+          "order": "ab",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "5d3914cf5eef418284b8d4eef04d40bc",
+          "cost_usd": 0.00019600000000000002,
+          "latency_ms": 287
+        },
+        {
+          "order": "ba",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "d6ba493ce96345388ea6f7eac85e944c",
+          "cost_usd": 0.00019600000000000002,
+          "latency_ms": 169
+        }
+      ],
+      "cost_usd": 0.00039200000000000004,
+      "judged_by": "qwen/qwen3.8-27b",
+      "judged_at": "2026-09-24T18:01:16.590067+00:00",
+      "kind": "model_judgment"
+    },
+    {
+      "id": "rag-003",
+      "task_type": "rag_answer",
+      "difficulty": "hard",
+      "a": {
+        "tier": "cheap",
+        "text": "No. A higher P/E ratio can signal either expectations of strong future growth or that the stock is overvalued, and on its own it doesn\u2019t determine whether a stock is good or bad. [1]",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 6.014999999999999e-05,
+        "latency_ms": 769,
+        "request_id": "4f2ac4c8aa9a423ebc9621503d18fb98"
+      },
+      "b": {
+        "tier": "mid",
+        "text": "No. A higher price\u2011to\u2011earnings ratio isn\u2019t automatically better. While a high P/E can reflect investors\u2019 expectations of strong future growth, it can also simply mean the stock is overvalued, and on its own the ratio doesn\u2019t tell you which is the case\u202f[1]. (The ratio is calculated as share price divided by earnings per share\u202f[0].)",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 0.00013829999999999997,
+        "latency_ms": 494,
+        "request_id": "7ff26ba7619b466891886275263249ef"
+      },
+      "answers_cost_usd": 0.00019844999999999997,
+      "fixture_id": "rag-003",
+      "a_label": "cheap",
+      "b_label": "mid",
+      "result": "tie",
+      "votes": [
+        {
+          "order": "ab",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "b59801e19ce445d7999fe81e33d12283",
+          "cost_usd": 0.00026080000000000005,
+          "latency_ms": 182
+        },
+        {
+          "order": "ba",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "8ea61669d3474d728cf70d20c838538d",
+          "cost_usd": 0.00026080000000000005,
+          "latency_ms": 523
+        }
+      ],
+      "cost_usd": 0.0005216000000000001,
+      "judged_by": "qwen/qwen3.8-27b",
+      "judged_at": "2026-09-24T18:01:53.560195+00:00",
+      "kind": "model_judgment"
+    },
+    {
+      "id": "rag-004",
+      "task_type": "rag_answer",
+      "difficulty": "hard",
+      "a": {
+        "tier": "cheap",
+        "text": "When market interest rates rise, the prices of existing bonds fall so that their yield matches newly issued bonds. [1]",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 4.1775e-05,
+        "latency_ms": 283,
+        "request_id": "7687ec71bcc1435c891480e148a02382"
+      },
+      "b": {
+        "tier": "mid",
+        "text": "When market interest rates rise, the prices of existing bonds fall so that their yields align with those of newly issued bonds.\u202f[1]",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 7.575e-05,
+        "latency_ms": 738,
+        "request_id": "f564483d133a4202a10ed72c29d16fca"
+      },
+      "answers_cost_usd": 0.000117525,
+      "fixture_id": "rag-004",
+      "a_label": "cheap",
+      "b_label": "mid",
+      "result": "tie",
+      "votes": [
+        {
+          "order": "ab",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "b4bfb49d6b8640c9a914d6637dd8582f",
+          "cost_usd": 0.0001928,
+          "latency_ms": 141
+        },
+        {
+          "order": "ba",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "e914844a86544900b7ea28b38ab91d88",
+          "cost_usd": 0.0001928,
+          "latency_ms": 725
+        }
+      ],
+      "cost_usd": 0.0003856,
+      "judged_by": "qwen/qwen3.8-27b",
+      "judged_at": "2026-09-24T18:02:30.450401+00:00",
+      "kind": "model_judgment"
+    }
+  ]
+}

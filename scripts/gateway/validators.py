@@ -28,6 +28,18 @@ NUMBER = re.compile(r"-?\d[\d,]*(?:\.\d+)?")
 CITATION = re.compile(r"\[(\d+)\]")
 FENCE = re.compile(r"```(?:json)?\s*(.*?)```", re.DOTALL)
 
+# Models sometimes cite with fullwidth brackets -- 【0】 instead of [0] -- even
+# though the prompt shows the ASCII form. The citation is right and only the
+# glyph differs, so rejecting it escalates a correct answer to a dearer tier
+# over punctuation. Seen on 3 of 8 answers in the 2026-09-24 judge run, all
+# from the mid tier. Widening the check is the fix; the prompt already asks
+# for [0] and asking harder did not stop it.
+FULLWIDTH_BRACKETS = str.maketrans({
+    "【": "[", "】": "]",
+    "［": "[", "］": "]",
+    "〔": "[", "〕": "]",
+})
+
 
 class UnknownValidator(KeyError):
     """Raised when policy names a validator this module does not implement."""
@@ -140,7 +152,7 @@ def _numbers_grounded(text: str, *, input_text: str = "", **_) -> dict[str, Any]
 
 def _cites_context(text: str, *, context: list[str] | None = None, **_) -> dict[str, Any]:
     passages = context or []
-    cited = [int(n) for n in CITATION.findall(text)]
+    cited = [int(n) for n in CITATION.findall(text.translate(FULLWIDTH_BRACKETS))]
     if not cited:
         return {"passed": False, "reason": "no_citation"}
     valid = [c for c in cited if 0 <= c < len(passages)]

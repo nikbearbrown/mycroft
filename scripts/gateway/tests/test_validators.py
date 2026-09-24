@@ -145,6 +145,27 @@ def test_an_answer_with_no_citation_fails():
     assert (result["passed"], result["reason"]) == (False, "no_citation")
 
 
+# -- fullwidth citation brackets (2026-09-24 judge run) ------------------
+
+def test_a_citation_in_fullwidth_brackets_still_counts():
+    """The mid tier wrote 【0】 and was failed for having no citation at all."""
+    result = run("cites_context", "A dividend is paid out of profits. 【0】",
+                 context=PASSAGES)
+    assert result["passed"]
+    assert result["cited"] == [0]
+
+
+def test_ascii_and_fullwidth_citations_are_counted_together():
+    result = run("cites_context", "Profits 【0】, and interest [1].", context=PASSAGES)
+    assert result["cited"] == [0, 1]
+
+
+def test_a_fullwidth_citation_out_of_range_is_still_out_of_range():
+    """Widening the brackets must not widen what counts as a valid passage."""
+    result = run("cites_context", "The answer is no 【7】", context=PASSAGES)
+    assert (result["passed"], result["reason"]) == (False, "citation_out_of_range")
+
+
 # -- wiring --------------------------------------------------------------
 
 def test_an_unknown_validator_raises():

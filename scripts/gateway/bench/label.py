@@ -4,6 +4,11 @@ Shows each fixture's task definition, its input, and its drafted expected
 answer, then asks you to confirm or correct the answer and to set the
 expected tier -- the cheapest tier you expect to get it right.
 
+For a json task it also asks for acceptable answers per field. The key check
+can only see that a field is present, not that its value is right, so these
+are what make extraction gradeable (Sprint 5). Nothing is saved until you
+have seen a summary of it and confirmed.
+
 Deliberately NOT shown: the router's decision for the fixture, or a tier you
 gave it earlier. Either would anchor your judgment.
 
@@ -59,28 +64,71 @@ def save(fixtures: list[dict[str, Any]], fixtures_dir: Path = fx.FIXTURES_DIR) -
         (fixtures_dir / name).write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def _split(text: str) -> list[str]:
+    return [part.strip() for part in text.split(",") if part.strip()]
+
+
+def _ask_json_expected(exp: dict[str, Any]) -> dict[str, Any]:
+    """Required keys, then the acceptable answers per key. Confirmed before it returns.
+
+    The instructions are printed above the prompt, never on the input line --
+    an input line that explains itself invites you to type the explanation back.
+    """
+    while True:
+        print(f"  Required keys are: {', '.join(exp['required_keys'])}")
+        print("  Press Enter to keep them, or type a replacement comma-separated list.")
+        got = input("  keys> ").strip()
+        keys = _split(got) if got else list(exp["required_keys"])
+
+        print("\n  Now the acceptable answers for each field: every wording you would")
+        print("  accept as right, comma-separated. Press Enter to leave a field blank")
+        print("  (blank means only its presence is checked, not its value).")
+        print("  Example, for a field holding a direction:  up, above, higher, raise")
+        values = {k: list(v) for k, v in (exp.get("values") or {}).items() if k in keys}
+        for key in keys:
+            if values.get(key):
+                print(f"    {key} currently: {', '.join(values[key])}")
+            got = input(f"    {key}> ").strip()
+            if got:
+                values[key] = _split(got)
+
+        updated = {**exp, "required_keys": keys}
+        if values:
+            updated["values"] = values
+        else:
+            updated.pop("values", None)
+
+        print("\n  To be saved:")
+        print(f"    required_keys: {', '.join(keys)}")
+        for key in keys:
+            accepted = values.get(key)
+            shown = ", ".join(accepted) if accepted else "(blank -- value not checked)"
+            print(f"    {key}: {shown}")
+        if input("  Correct? [y/N] ").strip().lower() in ("y", "yes"):
+            return updated
+        print("  Starting this fixture's answer over.\n")
+
+
 def _ask_expected(fixture: dict[str, Any], rule: dict[str, Any]) -> dict[str, Any] | None:
     """Confirm or correct the drafted answer. None means keep it."""
     exp = fixture["expected"]
     if rule["output"] in ("label", "verdict"):
         while True:
-            got = input(f"  Expected label [{exp['label']}] -- Enter to keep, "
-                        f"or one of {', '.join(rule['labels'])}: ").strip()
+            print(f"  Expected answer is: {exp['label']}")
+            print(f"  Press Enter to keep it, or type one of: {', '.join(rule['labels'])}")
+            got = input("  answer> ").strip()
             if not got:
                 return None
             if got in rule["labels"]:
                 return {**exp, "label": got}
             print("    not a valid label")
     if rule["output"] == "json":
-        got = input(f"  Required keys [{', '.join(exp['required_keys'])}] -- "
-                    f"Enter to keep, or a comma-separated list: ").strip()
-        if not got:
-            return None
-        return {**exp, "required_keys": [k.strip() for k in got.split(",") if k.strip()]}
+        return _ask_json_expected(exp)
     if rule["validator"] == "cites_context":
         while True:
-            got = input(f"  Passage that answers it [{exp['cite']}] -- Enter to keep, "
-                        f"or a passage number: ").strip()
+            print(f"  Passage that answers it: {exp['cite']}")
+            print("  Press Enter to keep it, or type a passage number.")
+            got = input("  passage> ").strip()
             if not got:
                 return None
             if got.isdigit() and int(got) < len(fixture["context"]):
@@ -107,7 +155,7 @@ def main() -> int:
     fixtures = fx.validate(fx.load(), policy)
 
     if args.ids:
-        wanted = [i.strip() for i in args.ids.split(",") if i.strip()]
+        wanted = _split(args.ids)
         unknown = sorted(set(wanted) - {f["id"] for f in fixtures})
         if unknown:
             print(f"Unknown fixture id(s): {', '.join(unknown)}. Nothing changed.")
@@ -144,8 +192,9 @@ def main() -> int:
 
         tier = ""
         while tier not in policy.tier_order and tier not in ("q", "s"):
-            tier = input(f"  Cheapest tier that gets this right "
-                         f"({'/'.join(policy.tier_order)}), s=skip, q=quit: ").strip().lower()
+            print(f"\n  Cheapest tier that gets this right: "
+                  f"{', '.join(policy.tier_order)} -- or s to skip, q to quit.")
+            tier = input("  tier> ").strip().lower()
         if tier == "q":
             break
         if tier == "s":
