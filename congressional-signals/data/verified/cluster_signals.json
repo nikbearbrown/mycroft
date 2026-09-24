@@ -1,0 +1,7336 @@
+{
+  "generated_at": "2026-06-26T15:44:09.568465Z",
+  "params": {
+    "window_days": 30,
+    "min_politicians": 2
+  },
+  "total_clusters": 425,
+  "clusters": [
+    {
+      "ticker": "SNDK",
+      "asset_name": "SANDISK CORP",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": 82.9666,
+      "max_alpha": 90.9553,
+      "avg_spy": 8.8009,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "MU",
+      "asset_name": "Micron Technology Inc",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "John Fetterman"
+      ],
+      "anchor_date": "2026-04-03",
+      "window_days": 30,
+      "avg_alpha": 74.4994,
+      "max_alpha": 74.4994,
+      "avg_spy": 9.1138,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "DDOG",
+      "asset_name": "Datadog Inc",
+      "sector": "cybersecurity",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": 68.9381,
+      "max_alpha": 75.1788,
+      "avg_spy": 8.8009,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "MRVL",
+      "asset_name": "Marvell Technology Inc",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Byron Donalds",
+        "Maria Elvira Salazar"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 54.9404,
+      "max_alpha": 54.9404,
+      "avg_spy": -1.8761,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "TTD",
+      "asset_name": "The Trade Desk Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Byron Donalds",
+        "Jefferson Shreve"
+      ],
+      "anchor_date": "2025-04-14",
+      "window_days": 30,
+      "avg_alpha": 53.715,
+      "max_alpha": 53.715,
+      "avg_spy": 8.9906,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "MU",
+      "asset_name": "Micron Technology Inc",
+      "sector": "semiconductor",
+      "cluster_size": 3,
+      "politicians": [
+        "Gil Cisneros",
+        "John Fetterman",
+        "Tony Wied"
+      ],
+      "anchor_date": "2026-03-12",
+      "window_days": 30,
+      "avg_alpha": 38.0061,
+      "max_alpha": 74.4994,
+      "avg_spy": 5.7021,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "TTD",
+      "asset_name": "The Trade Desk Inc",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Byron Donalds",
+        "Jefferson Shreve",
+        "Tony Wied"
+      ],
+      "anchor_date": "2025-04-08",
+      "window_days": 30,
+      "avg_alpha": 36.1095,
+      "max_alpha": 53.715,
+      "avg_spy": 11.4019,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "NFLX",
+      "asset_name": "Netflix Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-02-04",
+      "window_days": 30,
+      "avg_alpha": 28.4253,
+      "max_alpha": 28.4253,
+      "avg_spy": -2.786,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "HUM",
+      "asset_name": "Humana Inc",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 28.3385,
+      "max_alpha": 36.0736,
+      "avg_spy": -0.9758,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "IBM",
+      "asset_name": "International Business Machines Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 27.1226,
+      "max_alpha": 28.2249,
+      "avg_spy": -0.6756,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "MU",
+      "asset_name": "Micron Technology Inc",
+      "sector": "semiconductor",
+      "cluster_size": 3,
+      "politicians": [
+        "Gil Cisneros",
+        "John Fetterman",
+        "Tony Wied"
+      ],
+      "anchor_date": "2026-03-10",
+      "window_days": 30,
+      "avg_alpha": 26.6478,
+      "max_alpha": 74.4994,
+      "avg_spy": 4.0272,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "CSCO",
+      "asset_name": "Cisco Systems Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Maria Elvira Salazar",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-22",
+      "window_days": 30,
+      "avg_alpha": 25.3108,
+      "max_alpha": 29.2459,
+      "avg_spy": 3.2022,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "APP",
+      "asset_name": "APPLOVIN CORP",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-04-11",
+      "window_days": 30,
+      "avg_alpha": 23.3892,
+      "max_alpha": 25.7488,
+      "avg_spy": 5.93,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "CSCO",
+      "asset_name": "Cisco Systems Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Maria Elvira Salazar",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": 22.0385,
+      "max_alpha": 29.2459,
+      "avg_spy": 6.0566,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "PANW",
+      "asset_name": "Palo Alto Networks Inc",
+      "sector": "cybersecurity",
+      "cluster_size": 3,
+      "politicians": [
+        "Gil Cisneros",
+        "Josh Gottheimer",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 21.0964,
+      "max_alpha": 26.1904,
+      "avg_spy": -0.9758,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "LLY",
+      "asset_name": "Eli Lilly and Co",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Byron Donalds",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 19.7971,
+      "max_alpha": 19.7971,
+      "avg_spy": -1.8761,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "AMD",
+      "asset_name": "Advanced Micro Devices Inc",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-13",
+      "window_days": 30,
+      "avg_alpha": 19.1941,
+      "max_alpha": 27.685,
+      "avg_spy": 0.6417,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "T",
+      "asset_name": "AT&T Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Tim Moore"
+      ],
+      "anchor_date": "2026-01-26",
+      "window_days": 30,
+      "avg_alpha": 18.788,
+      "max_alpha": 18.788,
+      "avg_spy": 0.0606,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "WDAY",
+      "asset_name": "Workday Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 18.0321,
+      "max_alpha": 20.2471,
+      "avg_spy": -1.4259,
+      "win_rate": 100.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 4,
+      "politicians": [
+        "Bill Keating",
+        "Cleo Fields",
+        "John Fetterman",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-17",
+      "window_days": 30,
+      "avg_alpha": 17.3559,
+      "max_alpha": 17.3559,
+      "avg_spy": 8.4879,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "Cleo Fields",
+        "John Fetterman",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-03",
+      "window_days": 30,
+      "avg_alpha": 17.3559,
+      "max_alpha": 17.3559,
+      "avg_spy": 8.4879,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": 17.3559,
+      "max_alpha": 17.3559,
+      "avg_spy": 8.4879,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "PANW",
+      "asset_name": "Palo Alto Networks Inc",
+      "sector": "cybersecurity",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-13",
+      "window_days": 30,
+      "avg_alpha": 16.0024,
+      "max_alpha": 16.0024,
+      "avg_spy": -0.0754,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "ENTG",
+      "asset_name": "Entegris Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "April McClain Delaney",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-03-12",
+      "window_days": 30,
+      "avg_alpha": 15.8401,
+      "max_alpha": 20.7502,
+      "avg_spy": 4.5649,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "AMD",
+      "asset_name": "Advanced Micro Devices Inc",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Tony Wied"
+      ],
+      "anchor_date": "2025-04-08",
+      "window_days": 30,
+      "avg_alpha": 15.7943,
+      "max_alpha": 16.2213,
+      "avg_spy": 10.5981,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "AMD",
+      "asset_name": "Advanced Micro Devices Inc",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2026-02-25",
+      "window_days": 30,
+      "avg_alpha": 15.7622,
+      "max_alpha": 15.7622,
+      "avg_spy": 0.6773,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "SNDK",
+      "asset_name": "SANDISK CORP",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-13",
+      "window_days": 30,
+      "avg_alpha": 15.4731,
+      "max_alpha": 15.4731,
+      "avg_spy": -0.0754,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "UNH",
+      "asset_name": "Unitedhealth Group Inc",
+      "sector": "healthcare",
+      "cluster_size": 4,
+      "politicians": [
+        "Chuck Fleischmann",
+        "Gil Cisneros",
+        "Rich McCormick",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-23",
+      "window_days": 30,
+      "avg_alpha": 15.258,
+      "max_alpha": 15.3204,
+      "avg_spy": 8.6444,
+      "win_rate": 100.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "UNH",
+      "asset_name": "Unitedhealth Group Inc",
+      "sector": "healthcare",
+      "cluster_size": 3,
+      "politicians": [
+        "Gil Cisneros",
+        "Rich McCormick",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": 15.258,
+      "max_alpha": 15.3204,
+      "avg_spy": 8.6444,
+      "win_rate": 100.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "URI",
+      "asset_name": "United Rentals Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Maria Elvira Salazar",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 15.0096,
+      "max_alpha": 16.2455,
+      "avg_spy": -0.9758,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "JNJ",
+      "asset_name": "Johnson & Johnson",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Lloyd Doggett",
+        "Rich McCormick"
+      ],
+      "anchor_date": "2025-12-10",
+      "window_days": 30,
+      "avg_alpha": 14.9844,
+      "max_alpha": 14.9844,
+      "avg_spy": -0.2225,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "AVGO",
+      "asset_name": "Broadcom Inc",
+      "sector": "semiconductor",
+      "cluster_size": 3,
+      "politicians": [
+        "Byron Donalds",
+        "Jefferson Shreve",
+        "Kelly Morrison"
+      ],
+      "anchor_date": "2025-04-14",
+      "window_days": 30,
+      "avg_alpha": 14.907,
+      "max_alpha": 21.1507,
+      "avg_spy": 6.0349,
+      "win_rate": 100.0,
+      "priced_trades": 5
+    },
+    {
+      "ticker": "ARE",
+      "asset_name": "Alexandria Real Estate Equities Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 14.8776,
+      "max_alpha": 17.4522,
+      "avg_spy": -0.9758,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "AMD",
+      "asset_name": "Advanced Micro Devices Inc",
+      "sector": "semiconductor",
+      "cluster_size": 3,
+      "politicians": [
+        "Gil Cisneros",
+        "Josh Gottheimer",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 14.7954,
+      "max_alpha": 27.685,
+      "avg_spy": 0.0122,
+      "win_rate": 100.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "HOOD",
+      "asset_name": "Robinhood Markets Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 14.6315,
+      "max_alpha": 15.8409,
+      "avg_spy": -0.6756,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2025-10-01",
+      "window_days": 30,
+      "avg_alpha": 14.3642,
+      "max_alpha": 14.3642,
+      "avg_spy": 3.0677,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "PANW",
+      "asset_name": "Palo Alto Networks Inc",
+      "sector": "cybersecurity",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": 14.1686,
+      "max_alpha": 15.9986,
+      "avg_spy": 8.6965,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "URI",
+      "asset_name": "United Rentals Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Maria Elvira Salazar",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-22",
+      "window_days": 30,
+      "avg_alpha": 14.1131,
+      "max_alpha": 16.2455,
+      "avg_spy": 0.9632,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "UNH",
+      "asset_name": "Unitedhealth Group Inc",
+      "sector": "healthcare",
+      "cluster_size": 5,
+      "politicians": [
+        "Chuck Fleischmann",
+        "Gil Cisneros",
+        "Josh Gottheimer",
+        "Rich McCormick",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-17",
+      "window_days": 30,
+      "avg_alpha": 13.2339,
+      "max_alpha": 15.3204,
+      "avg_spy": 7.893,
+      "win_rate": 100.0,
+      "priced_trades": 5
+    },
+    {
+      "ticker": "IDXX",
+      "asset_name": "IDEXX Laboratories Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "April McClain Delaney",
+        "Jefferson Shreve"
+      ],
+      "anchor_date": "2025-04-03",
+      "window_days": 30,
+      "avg_alpha": 13.0923,
+      "max_alpha": 16.9009,
+      "avg_spy": 7.2957,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "APP",
+      "asset_name": "APPLOVIN CORP",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": 12.8765,
+      "max_alpha": 15.0944,
+      "avg_spy": 8.8009,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2025-12-22",
+      "window_days": 30,
+      "avg_alpha": 12.7512,
+      "max_alpha": 12.7512,
+      "avg_spy": -0.2225,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "GS",
+      "asset_name": "The Goldman Sachs Group Inc",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Bill Keating",
+        "Jefferson Shreve"
+      ],
+      "anchor_date": "2025-03-24",
+      "window_days": 30,
+      "avg_alpha": 12.3634,
+      "max_alpha": 12.3634,
+      "avg_spy": 8.9906,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "DHR",
+      "asset_name": "Danaher Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 12.3449,
+      "max_alpha": 13.3522,
+      "avg_spy": -0.6756,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "FITB",
+      "asset_name": "Fifth Third Bancorp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Mark Warner",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-01",
+      "window_days": 30,
+      "avg_alpha": 12.2442,
+      "max_alpha": 12.2442,
+      "avg_spy": -0.0754,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "META",
+      "asset_name": "Meta Platforms Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "Josh Gottheimer",
+        "Kelly Morrison",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2025-04-10",
+      "window_days": 30,
+      "avg_alpha": 12.1294,
+      "max_alpha": 15.0705,
+      "avg_spy": 8.1663,
+      "win_rate": 100.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "META",
+      "asset_name": "Meta Platforms Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Kelly Morrison"
+      ],
+      "anchor_date": "2025-04-11",
+      "window_days": 30,
+      "avg_alpha": 12.1294,
+      "max_alpha": 15.0705,
+      "avg_spy": 8.1663,
+      "win_rate": 100.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "PAYX",
+      "asset_name": "Paychex Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 11.9611,
+      "max_alpha": 12.7533,
+      "avg_spy": -0.9758,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "WFC",
+      "asset_name": "Wells Fargo & Co",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Mark Warner",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-01",
+      "window_days": 30,
+      "avg_alpha": 11.9141,
+      "max_alpha": 11.9141,
+      "avg_spy": -0.0754,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "WFC",
+      "asset_name": "Wells Fargo & Co",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Ro Khanna",
+        "Tim Walberg"
+      ],
+      "anchor_date": "2026-05-13",
+      "window_days": 30,
+      "avg_alpha": 11.9141,
+      "max_alpha": 11.9141,
+      "avg_spy": -0.0754,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "KO",
+      "asset_name": "The Coca-Cola Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Bill Keating",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-02-11",
+      "window_days": 30,
+      "avg_alpha": 11.8911,
+      "max_alpha": 11.8911,
+      "avg_spy": -8.9029,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "JNJ",
+      "asset_name": "Johnson & Johnson",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Kevin Hern",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2024-07-04",
+      "window_days": 30,
+      "avg_alpha": 11.7337,
+      "max_alpha": 16.0295,
+      "avg_spy": -2.7264,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "AMZN",
+      "asset_name": "Amazon.com Inc",
+      "sector": "consumer",
+      "cluster_size": 3,
+      "politicians": [
+        "David Taylor",
+        "Gil Cisneros",
+        "John Fetterman"
+      ],
+      "anchor_date": "2026-03-09",
+      "window_days": 30,
+      "avg_alpha": 11.2341,
+      "max_alpha": 14.1314,
+      "avg_spy": 4.8956,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "CMG",
+      "asset_name": "Chipotle Mexican Grill Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Byron Donalds",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2025-11-19",
+      "window_days": 30,
+      "avg_alpha": 10.9092,
+      "max_alpha": 10.9092,
+      "avg_spy": 2.2708,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "BAC",
+      "asset_name": "Bank of America Corp",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Ro Khanna",
+        "Tim Walberg"
+      ],
+      "anchor_date": "2026-05-13",
+      "window_days": 30,
+      "avg_alpha": 10.649,
+      "max_alpha": 10.649,
+      "avg_spy": -0.0754,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "GEV",
+      "asset_name": "GE VERNOVA INC",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2026-02-16",
+      "window_days": 30,
+      "avg_alpha": 10.5446,
+      "max_alpha": 11.0201,
+      "avg_spy": 0.9535,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2025-10-13",
+      "window_days": 30,
+      "avg_alpha": 10.3905,
+      "max_alpha": 14.3642,
+      "avg_spy": 1.9855,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "TSLA",
+      "asset_name": "Tesla Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Greg Stanton",
+        "Sheldon Whitehouse"
+      ],
+      "anchor_date": "2023-10-17",
+      "window_days": 30,
+      "avg_alpha": 10.0493,
+      "max_alpha": 10.0493,
+      "avg_spy": 6.076,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "AMZN",
+      "asset_name": "Amazon.com Inc",
+      "sector": "consumer",
+      "cluster_size": 3,
+      "politicians": [
+        "Gil Cisneros",
+        "John Fetterman",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-03",
+      "window_days": 30,
+      "avg_alpha": 9.6953,
+      "max_alpha": 14.1314,
+      "avg_spy": 8.6444,
+      "win_rate": 100.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "AMZN",
+      "asset_name": "Amazon.com Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": 9.6953,
+      "max_alpha": 14.1314,
+      "avg_spy": 8.6444,
+      "win_rate": 100.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "AMZN",
+      "asset_name": "Amazon.com Inc",
+      "sector": "consumer",
+      "cluster_size": 3,
+      "politicians": [
+        "Gil Cisneros",
+        "John Fetterman",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-10",
+      "window_days": 30,
+      "avg_alpha": 9.4236,
+      "max_alpha": 14.1314,
+      "avg_spy": 7.051,
+      "win_rate": 100.0,
+      "priced_trades": 5
+    },
+    {
+      "ticker": "ORCL",
+      "asset_name": "Oracle Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-12",
+      "window_days": 30,
+      "avg_alpha": 9.2117,
+      "max_alpha": 33.649,
+      "avg_spy": 5.3891,
+      "win_rate": 50.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 4,
+      "politicians": [
+        "David Taylor",
+        "Gil Cisneros",
+        "Lloyd Doggett",
+        "Rich McCormick"
+      ],
+      "anchor_date": "2025-12-10",
+      "window_days": 30,
+      "avg_alpha": 8.9943,
+      "max_alpha": 12.7512,
+      "avg_spy": 1.0241,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 3,
+      "politicians": [
+        "David Taylor",
+        "Gil Cisneros",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2025-12-16",
+      "window_days": 30,
+      "avg_alpha": 8.9943,
+      "max_alpha": 12.7512,
+      "avg_spy": 1.0241,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "NVDA",
+      "asset_name": "NVIDIA Corporation",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": 8.801,
+      "max_alpha": 9.076,
+      "avg_spy": 8.8009,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "F",
+      "asset_name": "Ford Motor Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Julie Johnson",
+        "Tim Moore"
+      ],
+      "anchor_date": "2025-02-17",
+      "window_days": 30,
+      "avg_alpha": 8.7085,
+      "max_alpha": 17.7664,
+      "avg_spy": -5.4217,
+      "win_rate": 100.0,
+      "priced_trades": 9
+    },
+    {
+      "ticker": "JNJ",
+      "asset_name": "Johnson & Johnson",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-02-11",
+      "window_days": 30,
+      "avg_alpha": 8.565,
+      "max_alpha": 14.1323,
+      "avg_spy": -7.1369,
+      "win_rate": 75.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "AMZN",
+      "asset_name": "Amazon.com Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2026-02-03",
+      "window_days": 30,
+      "avg_alpha": 8.5543,
+      "max_alpha": 8.5543,
+      "avg_spy": -2.9806,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "AMZN",
+      "asset_name": "Amazon.com Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2026-02-16",
+      "window_days": 30,
+      "avg_alpha": 8.4456,
+      "max_alpha": 8.5543,
+      "avg_spy": -1.1517,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "AMZN",
+      "asset_name": "Amazon.com Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2026-02-23",
+      "window_days": 30,
+      "avg_alpha": 8.3368,
+      "max_alpha": 8.3368,
+      "avg_spy": 0.6773,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "GLW",
+      "asset_name": "Corning Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Maria Elvira Salazar"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": 8.1347,
+      "max_alpha": 10.1448,
+      "avg_spy": 6.2653,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "ABT",
+      "asset_name": "Abbott Laboratories",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Thomas Kean Jr"
+      ],
+      "anchor_date": "2025-01-23",
+      "window_days": 30,
+      "avg_alpha": 7.7237,
+      "max_alpha": 7.7237,
+      "avg_spy": -8.9029,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "RVTY",
+      "asset_name": "Revvity Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 7.4168,
+      "max_alpha": 8.6219,
+      "avg_spy": -0.9758,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "NVDA",
+      "asset_name": "NVIDIA Corporation",
+      "sector": "semiconductor",
+      "cluster_size": 3,
+      "politicians": [
+        "Cleo Fields",
+        "Jefferson Shreve",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-06-23",
+      "window_days": 30,
+      "avg_alpha": 7.3182,
+      "max_alpha": 12.7821,
+      "avg_spy": 4.0637,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "ACN",
+      "asset_name": "Accenture PLC",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Mark Warner",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-01",
+      "window_days": 30,
+      "avg_alpha": 7.1131,
+      "max_alpha": 7.1131,
+      "avg_spy": -0.0754,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "NFLX",
+      "asset_name": "Netflix Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Byron Donalds",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-03-12",
+      "window_days": 30,
+      "avg_alpha": 6.9345,
+      "max_alpha": 6.9345,
+      "avg_spy": 2.2904,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-08",
+      "window_days": 30,
+      "avg_alpha": 6.7962,
+      "max_alpha": 6.7962,
+      "avg_spy": -0.0754,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-13",
+      "window_days": 30,
+      "avg_alpha": 6.7962,
+      "max_alpha": 6.7962,
+      "avg_spy": -0.0754,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "IFF",
+      "asset_name": "International Flavors & Fragrances Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2025-12-10",
+      "window_days": 30,
+      "avg_alpha": 6.5811,
+      "max_alpha": 8.082,
+      "avg_spy": 1.7572,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "Cleo Fields",
+        "Julie Johnson",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2025-10-31",
+      "window_days": 30,
+      "avg_alpha": 6.4168,
+      "max_alpha": 6.4168,
+      "avg_spy": 0.9034,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "Cleo Fields",
+        "Julie Johnson",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2025-11-11",
+      "window_days": 30,
+      "avg_alpha": 6.4168,
+      "max_alpha": 6.4168,
+      "avg_spy": 0.9034,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Julie Johnson"
+      ],
+      "anchor_date": "2025-11-17",
+      "window_days": 30,
+      "avg_alpha": 6.2786,
+      "max_alpha": 6.2786,
+      "avg_spy": 2.2708,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2025-12-16",
+      "window_days": 30,
+      "avg_alpha": 6.2786,
+      "max_alpha": 6.2786,
+      "avg_spy": 2.2708,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "ANET",
+      "asset_name": "Arista Networks Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Byron Donalds",
+        "Jefferson Shreve"
+      ],
+      "anchor_date": "2025-04-15",
+      "window_days": 30,
+      "avg_alpha": 6.2353,
+      "max_alpha": 6.2353,
+      "avg_spy": 6.1665,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "GS",
+      "asset_name": "The Goldman Sachs Group Inc",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Julie Johnson"
+      ],
+      "anchor_date": "2025-01-15",
+      "window_days": 30,
+      "avg_alpha": 6.1617,
+      "max_alpha": 6.1617,
+      "avg_spy": 2.8543,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "AAPL",
+      "asset_name": "Apple Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Tim Moore"
+      ],
+      "anchor_date": "2025-07-02",
+      "window_days": 30,
+      "avg_alpha": 6.1599,
+      "max_alpha": 6.1599,
+      "avg_spy": 1.8152,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "AAPL",
+      "asset_name": "Apple Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Tim Moore"
+      ],
+      "anchor_date": "2025-07-10",
+      "window_days": 30,
+      "avg_alpha": 6.1599,
+      "max_alpha": 6.1599,
+      "avg_spy": 1.8152,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "TSCO",
+      "asset_name": "Tractor Supply Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "April McClain Delaney",
+        "Chuck Fleischmann"
+      ],
+      "anchor_date": "2025-05-15",
+      "window_days": 30,
+      "avg_alpha": 6.1591,
+      "max_alpha": 6.1591,
+      "avg_spy": 5.2171,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "IDXX",
+      "asset_name": "IDEXX Laboratories Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "April McClain Delaney",
+        "Jefferson Shreve"
+      ],
+      "anchor_date": "2025-04-14",
+      "window_days": 30,
+      "avg_alpha": 6.0663,
+      "max_alpha": 16.9009,
+      "avg_spy": 6.3617,
+      "win_rate": 100.0,
+      "priced_trades": 6
+    },
+    {
+      "ticker": "EL",
+      "asset_name": "The Estee Lauder Cos Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 6.0008,
+      "max_alpha": 6.2418,
+      "avg_spy": -1.4259,
+      "win_rate": 100.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "UNH",
+      "asset_name": "Unitedhealth Group Inc",
+      "sector": "healthcare",
+      "cluster_size": 3,
+      "politicians": [
+        "Gil Cisneros",
+        "Maria Elvira Salazar",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 5.9662,
+      "max_alpha": 7.4491,
+      "avg_spy": -1.4259,
+      "win_rate": 100.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "GS",
+      "asset_name": "The Goldman Sachs Group Inc",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Kevin Hern"
+      ],
+      "anchor_date": "2025-04-14",
+      "window_days": 30,
+      "avg_alpha": 5.7896,
+      "max_alpha": 12.3634,
+      "avg_spy": 5.296,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "CARR",
+      "asset_name": "Carrier Global Corp",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Maria Elvira Salazar",
+        "Rick Larsen",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-16",
+      "window_days": 30,
+      "avg_alpha": 5.6889,
+      "max_alpha": 6.445,
+      "avg_spy": -0.9758,
+      "win_rate": 100.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "CARR",
+      "asset_name": "Carrier Global Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Maria Elvira Salazar",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 5.6889,
+      "max_alpha": 6.445,
+      "avg_spy": -0.9758,
+      "win_rate": 100.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "AVGO",
+      "asset_name": "Broadcom Inc",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Byron Donalds",
+        "Kelly Morrison"
+      ],
+      "anchor_date": "2025-04-15",
+      "window_days": 30,
+      "avg_alpha": 5.5415,
+      "max_alpha": 5.5415,
+      "avg_spy": 1.6014,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "AVGO",
+      "asset_name": "Broadcom Inc",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Kelly Morrison"
+      ],
+      "anchor_date": "2025-05-14",
+      "window_days": 30,
+      "avg_alpha": 5.5415,
+      "max_alpha": 5.5415,
+      "avg_spy": 1.6014,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Kevin Hern",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2023-07-11",
+      "window_days": 30,
+      "avg_alpha": 5.4912,
+      "max_alpha": 6.1176,
+      "avg_spy": -0.3199,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "VRSN",
+      "asset_name": "Verisign Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-10",
+      "window_days": 30,
+      "avg_alpha": 5.3659,
+      "max_alpha": 12.4278,
+      "avg_spy": 4.5826,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "JNJ",
+      "asset_name": "Johnson & Johnson",
+      "sector": "healthcare",
+      "cluster_size": 3,
+      "politicians": [
+        "Josh Gottheimer",
+        "Lloyd Doggett",
+        "Virginia Foxx"
+      ],
+      "anchor_date": "2025-01-07",
+      "window_days": 30,
+      "avg_alpha": 5.2852,
+      "max_alpha": 5.7128,
+      "avg_spy": 2.3839,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "JNJ",
+      "asset_name": "Johnson & Johnson",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2025-01-09",
+      "window_days": 30,
+      "avg_alpha": 5.2852,
+      "max_alpha": 5.7128,
+      "avg_spy": 2.3839,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "WMT",
+      "asset_name": "Walmart Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Debbie Dingell",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-03-07",
+      "window_days": 30,
+      "avg_alpha": 5.2587,
+      "max_alpha": 7.5667,
+      "avg_spy": -3.2004,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 3,
+      "politicians": [
+        "David Taylor",
+        "Gil Cisneros",
+        "Rich McCormick"
+      ],
+      "anchor_date": "2025-11-19",
+      "window_days": 30,
+      "avg_alpha": 5.2374,
+      "max_alpha": 5.2374,
+      "avg_spy": 2.2708,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "LRCX",
+      "asset_name": "Lam Research Corp",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-23",
+      "window_days": 30,
+      "avg_alpha": 5.1502,
+      "max_alpha": 5.1502,
+      "avg_spy": 8.4879,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "LIN",
+      "asset_name": "Linde PLC",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Thomas Kean Jr"
+      ],
+      "anchor_date": "2026-02-16",
+      "window_days": 30,
+      "avg_alpha": 4.8956,
+      "max_alpha": 4.8956,
+      "avg_spy": -2.9806,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "BKNG",
+      "asset_name": "Booking Holdings Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-04-11",
+      "window_days": 30,
+      "avg_alpha": 4.839,
+      "max_alpha": 4.903,
+      "avg_spy": 5.8512,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "AVGO",
+      "asset_name": "Broadcom Inc",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-07-17",
+      "window_days": 30,
+      "avg_alpha": 4.4915,
+      "max_alpha": 4.4915,
+      "avg_spy": 2.4521,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "JPM",
+      "asset_name": "JPMorgan Chase & Co",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Greg Stanton",
+        "Kevin Hern"
+      ],
+      "anchor_date": "2023-11-09",
+      "window_days": 30,
+      "avg_alpha": 4.4683,
+      "max_alpha": 5.1504,
+      "avg_spy": 4.7879,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "CB",
+      "asset_name": "Chubb Ltd",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Bill Keating",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2026-02-16",
+      "window_days": 30,
+      "avg_alpha": 4.211,
+      "max_alpha": 4.211,
+      "avg_spy": -2.9806,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "TTD",
+      "asset_name": "The Trade Desk Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": 4.1791,
+      "max_alpha": 4.8615,
+      "avg_spy": 8.8009,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "PGR",
+      "asset_name": "The Progressive Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-08",
+      "window_days": 30,
+      "avg_alpha": 4.0683,
+      "max_alpha": 4.0683,
+      "avg_spy": -0.0754,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "BX",
+      "asset_name": "Blackstone Group Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "John Fetterman",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2024-11-07",
+      "window_days": 30,
+      "avg_alpha": 4.0209,
+      "max_alpha": 4.0209,
+      "avg_spy": 2.0483,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "SPGI",
+      "asset_name": "S&P Global Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 3.9693,
+      "max_alpha": 5.3919,
+      "avg_spy": -1.516,
+      "win_rate": 100.0,
+      "priced_trades": 5
+    },
+    {
+      "ticker": "IDXX",
+      "asset_name": "IDEXX Laboratories Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "April McClain Delaney",
+        "Jefferson Shreve"
+      ],
+      "anchor_date": "2025-05-05",
+      "window_days": 30,
+      "avg_alpha": 3.8994,
+      "max_alpha": 4.7274,
+      "avg_spy": 5.8359,
+      "win_rate": 100.0,
+      "priced_trades": 5
+    },
+    {
+      "ticker": "DHR",
+      "asset_name": "Danaher Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Thomas Kean Jr"
+      ],
+      "anchor_date": "2025-10-13",
+      "window_days": 30,
+      "avg_alpha": 3.8836,
+      "max_alpha": 3.8836,
+      "avg_spy": 3.0677,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "JPM",
+      "asset_name": "JPMorgan Chase & Co",
+      "sector": "financials",
+      "cluster_size": 3,
+      "politicians": [
+        "Bill Keating",
+        "John Fetterman",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-13",
+      "window_days": 30,
+      "avg_alpha": 3.8639,
+      "max_alpha": 3.8639,
+      "avg_spy": -0.0754,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "INTU",
+      "asset_name": "Intuit Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": 3.821,
+      "max_alpha": 4.3684,
+      "avg_spy": 8.5477,
+      "win_rate": 100.0,
+      "priced_trades": 6
+    },
+    {
+      "ticker": "UNH",
+      "asset_name": "Unitedhealth Group Inc",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Rich McCormick"
+      ],
+      "anchor_date": "2025-12-10",
+      "window_days": 30,
+      "avg_alpha": 3.5102,
+      "max_alpha": 3.5102,
+      "avg_spy": 1.2436,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "ABT",
+      "asset_name": "Abbott Laboratories",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Thomas Kean Jr"
+      ],
+      "anchor_date": "2024-08-16",
+      "window_days": 30,
+      "avg_alpha": 3.4758,
+      "max_alpha": 3.4758,
+      "avg_spy": 1.3891,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 4,
+      "politicians": [
+        "Bill Keating",
+        "Josh Gottheimer",
+        "Thomas Kean Jr",
+        "Tony Wied"
+      ],
+      "anchor_date": "2025-02-20",
+      "window_days": 30,
+      "avg_alpha": 3.3215,
+      "max_alpha": 3.4919,
+      "avg_spy": -11.0087,
+      "win_rate": 100.0,
+      "priced_trades": 5
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "Bill Keating",
+        "Josh Gottheimer",
+        "Tony Wied"
+      ],
+      "anchor_date": "2025-02-26",
+      "window_days": 30,
+      "avg_alpha": 3.3215,
+      "max_alpha": 3.4919,
+      "avg_spy": -11.0087,
+      "win_rate": 100.0,
+      "priced_trades": 5
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Tony Wied"
+      ],
+      "anchor_date": "2025-03-07",
+      "window_days": 30,
+      "avg_alpha": 3.3215,
+      "max_alpha": 3.4919,
+      "avg_spy": -11.0087,
+      "win_rate": 100.0,
+      "priced_trades": 5
+    },
+    {
+      "ticker": "TXN",
+      "asset_name": "Texas Instruments Inc",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Greg Stanton",
+        "Kevin Hern"
+      ],
+      "anchor_date": "2023-11-09",
+      "window_days": 30,
+      "avg_alpha": 3.2089,
+      "max_alpha": 3.5282,
+      "avg_spy": 3.4185,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "STE",
+      "asset_name": "Steris PLC",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "April McClain Delaney",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2026-05-07",
+      "window_days": 30,
+      "avg_alpha": 3.0932,
+      "max_alpha": 5.3637,
+      "avg_spy": -0.9787,
+      "win_rate": 66.7,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 3,
+      "politicians": [
+        "Kevin Hern",
+        "Lloyd Doggett",
+        "Sheldon Whitehouse"
+      ],
+      "anchor_date": "2024-07-04",
+      "window_days": 30,
+      "avg_alpha": 3.0558,
+      "max_alpha": 9.8966,
+      "avg_spy": -2.5133,
+      "win_rate": 33.3,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "NVDA",
+      "asset_name": "NVIDIA Corporation",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Dwight Evans",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2025-12-16",
+      "window_days": 30,
+      "avg_alpha": 2.979,
+      "max_alpha": 2.979,
+      "avg_spy": 2.2708,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Mark Warner"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": 2.7834,
+      "max_alpha": 2.7834,
+      "avg_spy": 8.4879,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "HOG",
+      "asset_name": "Harley-Davidson Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Tim Moore"
+      ],
+      "anchor_date": "2025-04-14",
+      "window_days": 30,
+      "avg_alpha": 2.7386,
+      "max_alpha": 3.0801,
+      "avg_spy": 9.6626,
+      "win_rate": 100.0,
+      "priced_trades": 5
+    },
+    {
+      "ticker": "MU",
+      "asset_name": "Micron Technology Inc",
+      "sector": "semiconductor",
+      "cluster_size": 3,
+      "politicians": [
+        "Cleo Fields",
+        "Gil Cisneros",
+        "Tony Wied"
+      ],
+      "anchor_date": "2026-02-25",
+      "window_days": 30,
+      "avg_alpha": 2.722,
+      "max_alpha": 3.9311,
+      "avg_spy": 1.4838,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 5,
+      "politicians": [
+        "Cleo Fields",
+        "Gil Cisneros",
+        "John Fetterman",
+        "Josh Gottheimer",
+        "Rich McCormick"
+      ],
+      "anchor_date": "2026-03-18",
+      "window_days": 30,
+      "avg_alpha": 2.4499,
+      "max_alpha": 2.7834,
+      "avg_spy": 8.6965,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 5,
+      "politicians": [
+        "Gil Cisneros",
+        "John Fetterman",
+        "Josh Gottheimer",
+        "Mark Warner",
+        "Rich McCormick"
+      ],
+      "anchor_date": "2026-04-03",
+      "window_days": 30,
+      "avg_alpha": 2.4499,
+      "max_alpha": 2.7834,
+      "avg_spy": 8.6965,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 4,
+      "politicians": [
+        "Gil Cisneros",
+        "Josh Gottheimer",
+        "Mark Warner",
+        "Rich McCormick"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": 2.4499,
+      "max_alpha": 2.7834,
+      "avg_spy": 8.6965,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "T",
+      "asset_name": "AT&T Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Greg Stanton",
+        "Virginia Foxx"
+      ],
+      "anchor_date": "2023-11-09",
+      "window_days": 30,
+      "avg_alpha": 2.1774,
+      "max_alpha": 2.1774,
+      "avg_spy": 6.076,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "LIN",
+      "asset_name": "Linde PLC",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Bill Keating",
+        "Kevin Hern"
+      ],
+      "anchor_date": "2023-07-13",
+      "window_days": 30,
+      "avg_alpha": 2.1106,
+      "max_alpha": 2.1106,
+      "avg_spy": -0.8697,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "SCHW",
+      "asset_name": "Schwab (Charles) Corp",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Tony Wied"
+      ],
+      "anchor_date": "2026-02-16",
+      "window_days": 30,
+      "avg_alpha": 2.0612,
+      "max_alpha": 2.5111,
+      "avg_spy": -0.3451,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "NVDA",
+      "asset_name": "NVIDIA Corporation",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-07-02",
+      "window_days": 30,
+      "avg_alpha": 1.8543,
+      "max_alpha": 1.8543,
+      "avg_spy": 2.4521,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "NVDA",
+      "asset_name": "NVIDIA Corporation",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-07-17",
+      "window_days": 30,
+      "avg_alpha": 1.8543,
+      "max_alpha": 1.8543,
+      "avg_spy": 2.4521,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 5,
+      "politicians": [
+        "Cleo Fields",
+        "David Taylor",
+        "Gil Cisneros",
+        "John Fetterman",
+        "Rich McCormick"
+      ],
+      "anchor_date": "2026-03-09",
+      "window_days": 30,
+      "avg_alpha": 1.783,
+      "max_alpha": 1.783,
+      "avg_spy": 9.1138,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "GS",
+      "asset_name": "The Goldman Sachs Group Inc",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Maria Elvira Salazar"
+      ],
+      "anchor_date": "2026-04-22",
+      "window_days": 30,
+      "avg_alpha": 1.7794,
+      "max_alpha": 1.7794,
+      "avg_spy": 4.841,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "RTX",
+      "asset_name": "RTX Corp",
+      "sector": "defense",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Julie Johnson"
+      ],
+      "anchor_date": "2025-03-10",
+      "window_days": 30,
+      "avg_alpha": 1.7691,
+      "max_alpha": 1.7691,
+      "avg_spy": -1.8391,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "CRM",
+      "asset_name": "salesforce.com Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Maria Elvira Salazar",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 1.751,
+      "max_alpha": 4.0823,
+      "avg_spy": -0.9758,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "WMT",
+      "asset_name": "Walmart Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Debbie Dingell",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-04-03",
+      "window_days": 30,
+      "avg_alpha": 1.7106,
+      "max_alpha": 7.5667,
+      "avg_spy": 5.6626,
+      "win_rate": 33.3,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "NVDA",
+      "asset_name": "NVIDIA Corporation",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "John McGuire"
+      ],
+      "anchor_date": "2026-02-11",
+      "window_days": 30,
+      "avg_alpha": 1.6676,
+      "max_alpha": 1.6676,
+      "avg_spy": -2.9806,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "BR",
+      "asset_name": "Broadridge Financial Solutions Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 1.5006,
+      "max_alpha": 2.1945,
+      "avg_spy": -0.9758,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "NEE",
+      "asset_name": "NextEra Energy Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Greg Stanton",
+        "Kevin Hern"
+      ],
+      "anchor_date": "2023-10-13",
+      "window_days": 30,
+      "avg_alpha": 1.4972,
+      "max_alpha": 3.9127,
+      "avg_spy": 4.0936,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "GS",
+      "asset_name": "The Goldman Sachs Group Inc",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Dave McCormick",
+        "Maria Elvira Salazar"
+      ],
+      "anchor_date": "2026-03-25",
+      "window_days": 30,
+      "avg_alpha": 1.4911,
+      "max_alpha": 1.7794,
+      "avg_spy": 7.8397,
+      "win_rate": 100.0,
+      "priced_trades": 9
+    },
+    {
+      "ticker": "F",
+      "asset_name": "Ford Motor Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Julie Johnson",
+        "Tim Moore"
+      ],
+      "anchor_date": "2025-03-12",
+      "window_days": 30,
+      "avg_alpha": 1.4622,
+      "max_alpha": 1.4622,
+      "avg_spy": -4.1734,
+      "win_rate": 100.0,
+      "priced_trades": 5
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "David Taylor",
+        "John McGuire",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-01-22",
+      "window_days": 30,
+      "avg_alpha": 1.4454,
+      "max_alpha": 1.4454,
+      "avg_spy": -2.786,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "David Taylor",
+        "John McGuire",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-02-03",
+      "window_days": 30,
+      "avg_alpha": 1.4454,
+      "max_alpha": 1.4454,
+      "avg_spy": -2.786,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "David Taylor",
+        "John McGuire",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-02-11",
+      "window_days": 30,
+      "avg_alpha": 1.4454,
+      "max_alpha": 1.4454,
+      "avg_spy": -2.786,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-02-12",
+      "window_days": 30,
+      "avg_alpha": 1.4454,
+      "max_alpha": 1.4454,
+      "avg_spy": -2.786,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "WDAY",
+      "asset_name": "Workday Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": 1.3645,
+      "max_alpha": 4.576,
+      "avg_spy": 8.8009,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "PGR",
+      "asset_name": "The Progressive Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2026-02-03",
+      "window_days": 30,
+      "avg_alpha": 1.3378,
+      "max_alpha": 1.3378,
+      "avg_spy": -2.9806,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "PGR",
+      "asset_name": "The Progressive Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2026-02-16",
+      "window_days": 30,
+      "avg_alpha": 1.3378,
+      "max_alpha": 1.3378,
+      "avg_spy": -2.9806,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "FISV",
+      "asset_name": "Fiserv Inc",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Byron Donalds",
+        "Josh Gottheimer",
+        "Thomas Kean Jr"
+      ],
+      "anchor_date": "2025-04-15",
+      "window_days": 30,
+      "avg_alpha": 1.3369,
+      "max_alpha": 1.3369,
+      "avg_spy": 1.1076,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "FISV",
+      "asset_name": "Fiserv Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Thomas Kean Jr"
+      ],
+      "anchor_date": "2025-05-15",
+      "window_days": 30,
+      "avg_alpha": 1.3369,
+      "max_alpha": 1.3369,
+      "avg_spy": 1.1076,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "V",
+      "asset_name": "Visa Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-08",
+      "window_days": 30,
+      "avg_alpha": 1.3086,
+      "max_alpha": 1.3086,
+      "avg_spy": -0.0754,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "VZ",
+      "asset_name": "Verizon Communications Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Greg Stanton",
+        "Sheldon Whitehouse"
+      ],
+      "anchor_date": "2023-10-17",
+      "window_days": 30,
+      "avg_alpha": 1.3075,
+      "max_alpha": 1.3075,
+      "avg_spy": 6.076,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "SPGI",
+      "asset_name": "S&P Global Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Greg Stanton",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2023-10-14",
+      "window_days": 30,
+      "avg_alpha": 1.3019,
+      "max_alpha": 1.3019,
+      "avg_spy": 6.076,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "ACN",
+      "asset_name": "Accenture PLC",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Greg Stanton",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2023-10-14",
+      "window_days": 30,
+      "avg_alpha": 1.2469,
+      "max_alpha": 1.2469,
+      "avg_spy": 6.076,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Greg Stanton",
+        "Kevin Hern"
+      ],
+      "anchor_date": "2023-10-13",
+      "window_days": 30,
+      "avg_alpha": 1.2153,
+      "max_alpha": 8.0944,
+      "avg_spy": 3.4328,
+      "win_rate": 33.3,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "ADSK",
+      "asset_name": "AUTODESK Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": 1.1991,
+      "max_alpha": 3.3652,
+      "avg_spy": 8.5118,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "BLK",
+      "asset_name": "Blackrock Inc",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Tim Moore"
+      ],
+      "anchor_date": "2025-04-15",
+      "window_days": 30,
+      "avg_alpha": 1.1638,
+      "max_alpha": 1.5057,
+      "avg_spy": 7.9985,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2024-10-11",
+      "window_days": 30,
+      "avg_alpha": 0.9232,
+      "max_alpha": 6.5141,
+      "avg_spy": 2.6296,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "IBM",
+      "asset_name": "International Business Machines Corp",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Dwight Evans",
+        "Josh Gottheimer",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2025-04-07",
+      "window_days": 30,
+      "avg_alpha": 0.9008,
+      "max_alpha": 0.9645,
+      "avg_spy": 8.4745,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "IBM",
+      "asset_name": "International Business Machines Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Dwight Evans",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-04-11",
+      "window_days": 30,
+      "avg_alpha": 0.8371,
+      "max_alpha": 0.8371,
+      "avg_spy": 5.6935,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "FDX",
+      "asset_name": "FedEx Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Maria Elvira Salazar",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-22",
+      "window_days": 30,
+      "avg_alpha": 0.7746,
+      "max_alpha": 7.7306,
+      "avg_spy": 3.2022,
+      "win_rate": 33.3,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "BLK",
+      "asset_name": "Blackrock Inc",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Tim Moore"
+      ],
+      "anchor_date": "2025-04-14",
+      "window_days": 30,
+      "avg_alpha": 0.6671,
+      "max_alpha": 1.5057,
+      "avg_spy": 8.3292,
+      "win_rate": 66.7,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "Cleo Fields",
+        "Jefferson Shreve",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-06-12",
+      "window_days": 30,
+      "avg_alpha": 0.4773,
+      "max_alpha": 1.5094,
+      "avg_spy": 4.2894,
+      "win_rate": 66.7,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "SHW",
+      "asset_name": "The Sherwin-Williams Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Maria Elvira Salazar",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 0.3253,
+      "max_alpha": 0.4918,
+      "avg_spy": -1.2759,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "CSGP",
+      "asset_name": "CoStar Group Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Bill Keating",
+        "Jefferson Shreve"
+      ],
+      "anchor_date": "2025-02-26",
+      "window_days": 30,
+      "avg_alpha": 0.3249,
+      "max_alpha": 0.3249,
+      "avg_spy": -1.8391,
+      "win_rate": 100.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "MA",
+      "asset_name": "Mastercard Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2026-04-12",
+      "window_days": 30,
+      "avg_alpha": 0.3012,
+      "max_alpha": 0.3012,
+      "avg_spy": -1.8761,
+      "win_rate": 100.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "LIN",
+      "asset_name": "Linde PLC",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Greg Stanton",
+        "Kevin Hern"
+      ],
+      "anchor_date": "2023-10-13",
+      "window_days": 30,
+      "avg_alpha": 0.2853,
+      "max_alpha": 3.6974,
+      "avg_spy": 4.0936,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "ADP",
+      "asset_name": "Automatic Data Processing Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Rich McCormick",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": 0.1745,
+      "max_alpha": 0.1745,
+      "avg_spy": 8.4879,
+      "win_rate": 100.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "MA",
+      "asset_name": "Mastercard Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": 0.1718,
+      "max_alpha": 0.3012,
+      "avg_spy": -1.1558,
+      "win_rate": 60.0,
+      "priced_trades": 5
+    },
+    {
+      "ticker": "HLI",
+      "asset_name": "Houlihan Lokey Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-03-12",
+      "window_days": 30,
+      "avg_alpha": 0.1672,
+      "max_alpha": 6.0459,
+      "avg_spy": 5.7021,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Kevin Hern",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2025-01-09",
+      "window_days": 30,
+      "avg_alpha": 0.1423,
+      "max_alpha": 3.2957,
+      "avg_spy": 2.483,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "NOW",
+      "asset_name": "ServiceNow Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Tony Wied"
+      ],
+      "anchor_date": "2025-11-11",
+      "window_days": 30,
+      "avg_alpha": 0.0731,
+      "max_alpha": 0.2573,
+      "avg_spy": 1.1832,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "LIN",
+      "asset_name": "Linde PLC",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Ro Khanna",
+        "Thomas Kean Jr"
+      ],
+      "anchor_date": "2026-04-14",
+      "window_days": 30,
+      "avg_alpha": -0.0413,
+      "max_alpha": -0.0413,
+      "avg_spy": -0.0754,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "LEN",
+      "asset_name": "Lennar Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2025-12-10",
+      "window_days": 30,
+      "avg_alpha": -0.0918,
+      "max_alpha": 1.7098,
+      "avg_spy": 1.7572,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "PG",
+      "asset_name": "The Procter & Gamble Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2025-03-11",
+      "window_days": 30,
+      "avg_alpha": -0.1686,
+      "max_alpha": -0.1686,
+      "avg_spy": -5.3536,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "CI",
+      "asset_name": "Cigna Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Julie Johnson"
+      ],
+      "anchor_date": "2025-02-13",
+      "window_days": 30,
+      "avg_alpha": -0.2088,
+      "max_alpha": -0.2088,
+      "avg_spy": -1.8391,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Kevin Hern",
+        "Sheldon Whitehouse"
+      ],
+      "anchor_date": "2024-07-16",
+      "window_days": 30,
+      "avg_alpha": -0.3646,
+      "max_alpha": -0.3646,
+      "avg_spy": -2.0872,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "FSS",
+      "asset_name": "Federal Signal Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2026-03-10",
+      "window_days": 30,
+      "avg_alpha": -0.3804,
+      "max_alpha": 5.2513,
+      "avg_spy": 4.8929,
+      "win_rate": 33.3,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "DASH",
+      "asset_name": "DoorDash Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": -0.4792,
+      "max_alpha": 2.5541,
+      "avg_spy": -1.576,
+      "win_rate": 16.7,
+      "priced_trades": 6
+    },
+    {
+      "ticker": "ACN",
+      "asset_name": "Accenture PLC",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Greg Stanton",
+        "Kevin Hern"
+      ],
+      "anchor_date": "2023-11-09",
+      "window_days": 30,
+      "avg_alpha": -0.5119,
+      "max_alpha": 1.2469,
+      "avg_spy": 4.0829,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "BRO",
+      "asset_name": "Brown & Brown Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "April McClain Delaney",
+        "Byron Donalds"
+      ],
+      "anchor_date": "2025-11-05",
+      "window_days": 30,
+      "avg_alpha": -0.516,
+      "max_alpha": -0.516,
+      "avg_spy": 1.1969,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "John McGuire",
+        "Maria Elvira Salazar",
+        "Mark Warner"
+      ],
+      "anchor_date": "2026-05-01",
+      "window_days": 30,
+      "avg_alpha": -0.5617,
+      "max_alpha": -0.5617,
+      "avg_spy": -1.8761,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "John McGuire",
+        "Josh Gottheimer",
+        "Maria Elvira Salazar"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": -0.5617,
+      "max_alpha": -0.5617,
+      "avg_spy": -1.8761,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "CMG",
+      "asset_name": "Chipotle Mexican Grill Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Byron Donalds",
+        "Jefferson Shreve"
+      ],
+      "anchor_date": "2025-04-15",
+      "window_days": 30,
+      "avg_alpha": -0.5752,
+      "max_alpha": -0.5752,
+      "avg_spy": 6.1665,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "IBM",
+      "asset_name": "International Business Machines Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2024-10-11",
+      "window_days": 30,
+      "avg_alpha": -0.6816,
+      "max_alpha": 10.2246,
+      "avg_spy": 2.6296,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "META",
+      "asset_name": "Meta Platforms Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2026-02-04",
+      "window_days": 30,
+      "avg_alpha": -0.7024,
+      "max_alpha": -0.7024,
+      "avg_spy": -2.9806,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "BRO",
+      "asset_name": "Brown & Brown Inc",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "April McClain Delaney",
+        "Byron Donalds",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2025-11-19",
+      "window_days": 30,
+      "avg_alpha": -1.1214,
+      "max_alpha": 1.5347,
+      "avg_spy": 1.7582,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "ETN",
+      "asset_name": "Eaton Corp PLC",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2025-12-16",
+      "window_days": 30,
+      "avg_alpha": -1.2009,
+      "max_alpha": -1.2009,
+      "avg_spy": 2.2708,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "ADBE",
+      "asset_name": "Adobe Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": -1.4602,
+      "max_alpha": -0.7548,
+      "avg_spy": -0.6756,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "JNJ",
+      "asset_name": "Johnson & Johnson",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Kevin Hern",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2024-04-10",
+      "window_days": 30,
+      "avg_alpha": -1.5397,
+      "max_alpha": -1.5002,
+      "avg_spy": 3.1642,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Kevin Hern",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2023-10-06",
+      "window_days": 30,
+      "avg_alpha": -1.5649,
+      "max_alpha": -0.2461,
+      "avg_spy": 1.8071,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "KO",
+      "asset_name": "The Coca-Cola Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Greg Stanton",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2023-11-07",
+      "window_days": 30,
+      "avg_alpha": -1.5697,
+      "max_alpha": -1.3287,
+      "avg_spy": 5.4755,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Jefferson Shreve"
+      ],
+      "anchor_date": "2025-06-23",
+      "window_days": 30,
+      "avg_alpha": -1.5868,
+      "max_alpha": -1.5868,
+      "avg_spy": 5.6753,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "BX",
+      "asset_name": "Blackstone Group Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Mark Warner",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -1.63,
+      "max_alpha": -1.63,
+      "avg_spy": 8.4879,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "PYPL",
+      "asset_name": "PayPal Holdings Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Byron Donalds",
+        "Jefferson Shreve"
+      ],
+      "anchor_date": "2025-04-15",
+      "window_days": 30,
+      "avg_alpha": -1.6547,
+      "max_alpha": -1.6547,
+      "avg_spy": 6.1665,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "ARE",
+      "asset_name": "Alexandria Real Estate Equities Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -1.6606,
+      "max_alpha": 0.0064,
+      "avg_spy": 8.5238,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Kevin Hern",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2024-04-10",
+      "window_days": 30,
+      "avg_alpha": -2.0571,
+      "max_alpha": -1.8431,
+      "avg_spy": 3.7832,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "IT",
+      "asset_name": "Gartner Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -2.1144,
+      "max_alpha": -1.3064,
+      "avg_spy": 8.8009,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "HON",
+      "asset_name": "Honeywell International Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Maria Elvira Salazar",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-22",
+      "window_days": 30,
+      "avg_alpha": -2.1613,
+      "max_alpha": -0.6574,
+      "avg_spy": 2.3828,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "UNP",
+      "asset_name": "Union Pacific Corp",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Jefferson Shreve",
+        "Josh Gottheimer",
+        "Julie Johnson"
+      ],
+      "anchor_date": "2025-02-11",
+      "window_days": 30,
+      "avg_alpha": -2.1979,
+      "max_alpha": 3.9976,
+      "avg_spy": -7.5812,
+      "win_rate": 33.3,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "Bill Keating",
+        "Byron Donalds",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2024-11-06",
+      "window_days": 30,
+      "avg_alpha": -2.2769,
+      "max_alpha": -2.2769,
+      "avg_spy": -2.2816,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Byron Donalds",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2024-11-14",
+      "window_days": 30,
+      "avg_alpha": -2.2769,
+      "max_alpha": -2.2769,
+      "avg_spy": -2.2816,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "FIS",
+      "asset_name": "Fidelity National Information Services Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Julie Johnson"
+      ],
+      "anchor_date": "2025-05-09",
+      "window_days": 30,
+      "avg_alpha": -2.4774,
+      "max_alpha": -2.4774,
+      "avg_spy": 6.1665,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "INTU",
+      "asset_name": "Intuit Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-12",
+      "window_days": 30,
+      "avg_alpha": -2.4816,
+      "max_alpha": 4.3684,
+      "avg_spy": 6.9834,
+      "win_rate": 75.0,
+      "priced_trades": 8
+    },
+    {
+      "ticker": "TDG",
+      "asset_name": "TransDigm Group Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "April McClain Delaney",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -2.482,
+      "max_alpha": -1.0769,
+      "avg_spy": 2.199,
+      "win_rate": 0.0,
+      "priced_trades": 6
+    },
+    {
+      "ticker": "ADSK",
+      "asset_name": "AUTODESK Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Byron Donalds",
+        "Jefferson Shreve"
+      ],
+      "anchor_date": "2025-04-15",
+      "window_days": 30,
+      "avg_alpha": -2.5558,
+      "max_alpha": -2.5558,
+      "avg_spy": 6.1665,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "META",
+      "asset_name": "Meta Platforms Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "Cleo Fields",
+        "Gil Cisneros",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-02-16",
+      "window_days": 30,
+      "avg_alpha": -2.5739,
+      "max_alpha": -0.7024,
+      "avg_spy": 0.5334,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "WMT",
+      "asset_name": "Walmart Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-04-11",
+      "window_days": 30,
+      "avg_alpha": -2.6086,
+      "max_alpha": -1.2174,
+      "avg_spy": 5.8512,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Kevin Hern",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2024-01-09",
+      "window_days": 30,
+      "avg_alpha": -2.6204,
+      "max_alpha": -0.0937,
+      "avg_spy": 4.7806,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "DASH",
+      "asset_name": "DoorDash Inc",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Byron Donalds",
+        "Josh Gottheimer",
+        "Tim Moore"
+      ],
+      "anchor_date": "2025-03-26",
+      "window_days": 30,
+      "avg_alpha": -2.6401,
+      "max_alpha": -1.2655,
+      "avg_spy": 7.7621,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "DASH",
+      "asset_name": "DoorDash Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Tim Moore"
+      ],
+      "anchor_date": "2025-04-11",
+      "window_days": 30,
+      "avg_alpha": -2.6401,
+      "max_alpha": -1.2655,
+      "avg_spy": 7.7621,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "PG",
+      "asset_name": "The Procter & Gamble Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Rich McCormick"
+      ],
+      "anchor_date": "2025-12-10",
+      "window_days": 30,
+      "avg_alpha": -2.6702,
+      "max_alpha": -2.6702,
+      "avg_spy": 2.2708,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "C",
+      "asset_name": "Citigroup Inc",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Maria Elvira Salazar",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-22",
+      "window_days": 30,
+      "avg_alpha": -2.6892,
+      "max_alpha": 7.8554,
+      "avg_spy": 3.2022,
+      "win_rate": 33.3,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "UNH",
+      "asset_name": "Unitedhealth Group Inc",
+      "sector": "healthcare",
+      "cluster_size": 3,
+      "politicians": [
+        "Greg Stanton",
+        "Kevin Hern",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2023-10-13",
+      "window_days": 30,
+      "avg_alpha": -2.7528,
+      "max_alpha": -1.7757,
+      "avg_spy": 4.0936,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "ADSK",
+      "asset_name": "AUTODESK Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-12",
+      "window_days": 30,
+      "avg_alpha": -2.8187,
+      "max_alpha": 3.3652,
+      "avg_spy": 6.9565,
+      "win_rate": 75.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "NOW",
+      "asset_name": "ServiceNow Inc",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Chuck Fleischmann",
+        "Josh Gottheimer",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-03-23",
+      "window_days": 30,
+      "avg_alpha": -2.8334,
+      "max_alpha": 1.2957,
+      "avg_spy": 8.5238,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "NOW",
+      "asset_name": "ServiceNow Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -2.8334,
+      "max_alpha": 1.2957,
+      "avg_spy": 8.5238,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "MDLZ",
+      "asset_name": "Mondelez International Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Greg Stanton",
+        "Rick Larsen"
+      ],
+      "anchor_date": "2023-10-12",
+      "window_days": 30,
+      "avg_alpha": -2.9574,
+      "max_alpha": -2.9574,
+      "avg_spy": 6.076,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "V",
+      "asset_name": "Visa Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Tony Wied"
+      ],
+      "anchor_date": "2026-02-23",
+      "window_days": 30,
+      "avg_alpha": -2.9886,
+      "max_alpha": -2.9886,
+      "avg_spy": 2.2904,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "V",
+      "asset_name": "Visa Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Tony Wied"
+      ],
+      "anchor_date": "2026-03-09",
+      "window_days": 30,
+      "avg_alpha": -2.9886,
+      "max_alpha": -2.9886,
+      "avg_spy": 2.2904,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "INTC",
+      "asset_name": "Intel Corp",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Dwight Evans",
+        "Jefferson Shreve"
+      ],
+      "anchor_date": "2025-04-14",
+      "window_days": 30,
+      "avg_alpha": -3.0329,
+      "max_alpha": -3.0329,
+      "avg_spy": 8.9906,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "OXY",
+      "asset_name": "Occidental Petroleum Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Dave McCormick",
+        "Jefferson Shreve"
+      ],
+      "anchor_date": "2025-02-09",
+      "window_days": 30,
+      "avg_alpha": -3.157,
+      "max_alpha": 6.9017,
+      "avg_spy": -4.6522,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "NDAQ",
+      "asset_name": "Nasdaq Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "April McClain Delaney",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-07",
+      "window_days": 30,
+      "avg_alpha": -3.1712,
+      "max_alpha": -2.7486,
+      "avg_spy": 0.3703,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "OTIS",
+      "asset_name": "Otis Worldwide Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Bill Keating",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-13",
+      "window_days": 30,
+      "avg_alpha": -3.1786,
+      "max_alpha": -3.1786,
+      "avg_spy": -0.0754,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "FSS",
+      "asset_name": "Federal Signal Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2026-03-17",
+      "window_days": 30,
+      "avg_alpha": -3.1963,
+      "max_alpha": -1.9029,
+      "avg_spy": 7.0008,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "GPN",
+      "asset_name": "GLOBAL PAYMENTS Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -3.2522,
+      "max_alpha": -2.8293,
+      "avg_spy": 8.5118,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "AVGO",
+      "asset_name": "Broadcom Inc",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2025-10-01",
+      "window_days": 30,
+      "avg_alpha": -3.4826,
+      "max_alpha": -3.4826,
+      "avg_spy": 3.0677,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "META",
+      "asset_name": "Meta Platforms Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-02-25",
+      "window_days": 30,
+      "avg_alpha": -3.5096,
+      "max_alpha": -3.5096,
+      "avg_spy": 2.2904,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "UNH",
+      "asset_name": "Unitedhealth Group Inc",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Greg Stanton",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2023-10-14",
+      "window_days": 30,
+      "avg_alpha": -3.7299,
+      "max_alpha": -3.7299,
+      "avg_spy": 6.076,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "LH",
+      "asset_name": "Laboratory Corp of America Holdings",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "April McClain Delaney",
+        "Tony Wied"
+      ],
+      "anchor_date": "2026-03-11",
+      "window_days": 30,
+      "avg_alpha": -3.8456,
+      "max_alpha": -3.0435,
+      "avg_spy": 1.2549,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2025-03-10",
+      "window_days": 30,
+      "avg_alpha": -3.8678,
+      "max_alpha": -2.6997,
+      "avg_spy": 4.7081,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "KO",
+      "asset_name": "The Coca-Cola Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Lloyd Doggett",
+        "Sheldon Whitehouse"
+      ],
+      "anchor_date": "2024-11-06",
+      "window_days": 30,
+      "avg_alpha": -3.9296,
+      "max_alpha": -3.9296,
+      "avg_spy": 2.8374,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "V",
+      "asset_name": "Visa Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Ro Khanna",
+        "Tony Wied"
+      ],
+      "anchor_date": "2026-03-12",
+      "window_days": 30,
+      "avg_alpha": -4.0353,
+      "max_alpha": -2.9886,
+      "avg_spy": 5.3891,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "TSM",
+      "asset_name": "Taiwan Semiconductor Manufacturing Co Ltd",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2026-02-04",
+      "window_days": 30,
+      "avg_alpha": -4.0707,
+      "max_alpha": -4.0707,
+      "avg_spy": -2.9806,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "ETN",
+      "asset_name": "Eaton Corp PLC",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2026-02-03",
+      "window_days": 30,
+      "avg_alpha": -4.1063,
+      "max_alpha": -4.1063,
+      "avg_spy": -2.9806,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "BRO",
+      "asset_name": "Brown & Brown Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "April McClain Delaney",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2025-12-09",
+      "window_days": 30,
+      "avg_alpha": -4.1651,
+      "max_alpha": 1.5347,
+      "avg_spy": -0.1465,
+      "win_rate": 25.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "CRM",
+      "asset_name": "salesforce.com Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Jefferson Shreve"
+      ],
+      "anchor_date": "2025-06-23",
+      "window_days": 30,
+      "avg_alpha": -4.2289,
+      "max_alpha": -4.2289,
+      "avg_spy": 5.6753,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "META",
+      "asset_name": "Meta Platforms Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": -4.2462,
+      "max_alpha": -1.8911,
+      "avg_spy": -0.9758,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "MELI",
+      "asset_name": "MercadoLibre Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-02-16",
+      "window_days": 30,
+      "avg_alpha": -4.3525,
+      "max_alpha": 3.3025,
+      "avg_spy": -0.3451,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "JNJ",
+      "asset_name": "Johnson & Johnson",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Greg Stanton",
+        "Kevin Hern"
+      ],
+      "anchor_date": "2023-10-13",
+      "window_days": 30,
+      "avg_alpha": -4.3602,
+      "max_alpha": -0.4888,
+      "avg_spy": 4.0936,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "ABT",
+      "asset_name": "Abbott Laboratories",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Rich McCormick"
+      ],
+      "anchor_date": "2025-12-10",
+      "window_days": 30,
+      "avg_alpha": -4.4025,
+      "max_alpha": -4.4025,
+      "avg_spy": 2.2708,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "CMCSA",
+      "asset_name": "Comcast Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-02-12",
+      "window_days": 30,
+      "avg_alpha": -4.4764,
+      "max_alpha": -2.4308,
+      "avg_spy": -2.8833,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "PG",
+      "asset_name": "The Procter & Gamble Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2026-02-23",
+      "window_days": 30,
+      "avg_alpha": -4.6461,
+      "max_alpha": -4.6461,
+      "avg_spy": -2.195,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "LLY",
+      "asset_name": "Eli Lilly and Co",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Greg Stanton",
+        "Sheldon Whitehouse"
+      ],
+      "anchor_date": "2023-10-17",
+      "window_days": 30,
+      "avg_alpha": -4.751,
+      "max_alpha": -4.751,
+      "avg_spy": 6.076,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "XOM",
+      "asset_name": "Exxon Mobil Corp",
+      "sector": "energy",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2026-03-10",
+      "window_days": 30,
+      "avg_alpha": -4.7964,
+      "max_alpha": 3.9875,
+      "avg_spy": 3.4842,
+      "win_rate": 33.3,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "AVGO",
+      "asset_name": "Broadcom Inc",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2026-01-13",
+      "window_days": 30,
+      "avg_alpha": -4.8084,
+      "max_alpha": -4.8084,
+      "avg_spy": -1.8017,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2025-04-07",
+      "window_days": 30,
+      "avg_alpha": -4.8282,
+      "max_alpha": -4.6205,
+      "avg_spy": 10.123,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "MMM",
+      "asset_name": "3M Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Julie Johnson"
+      ],
+      "anchor_date": "2025-04-15",
+      "window_days": 30,
+      "avg_alpha": -4.9552,
+      "max_alpha": -4.9552,
+      "avg_spy": 1.1076,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "MMM",
+      "asset_name": "3M Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Julie Johnson"
+      ],
+      "anchor_date": "2025-05-15",
+      "window_days": 30,
+      "avg_alpha": -4.9552,
+      "max_alpha": -4.9552,
+      "avg_spy": 1.1076,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "V",
+      "asset_name": "Visa Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -5.082,
+      "max_alpha": -5.082,
+      "avg_spy": 8.4879,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "AVGO",
+      "asset_name": "Broadcom Inc",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-03-07",
+      "window_days": 30,
+      "avg_alpha": -5.1065,
+      "max_alpha": 2.5224,
+      "avg_spy": -6.9204,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "UNP",
+      "asset_name": "Union Pacific Corp",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Jefferson Shreve",
+        "Josh Gottheimer",
+        "Julie Johnson"
+      ],
+      "anchor_date": "2025-03-07",
+      "window_days": 30,
+      "avg_alpha": -5.2957,
+      "max_alpha": -2.4582,
+      "avg_spy": -6.9204,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "CVNA",
+      "asset_name": "Carvana Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": -5.3093,
+      "max_alpha": -3.2579,
+      "avg_spy": -0.6756,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "JPM",
+      "asset_name": "JPMorgan Chase & Co",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Jefferson Shreve"
+      ],
+      "anchor_date": "2025-12-16",
+      "window_days": 30,
+      "avg_alpha": -5.3525,
+      "max_alpha": -3.8221,
+      "avg_spy": 1.7794,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "Bill Keating",
+        "Byron Donalds",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2024-11-06",
+      "window_days": 30,
+      "avg_alpha": -5.3899,
+      "max_alpha": -5.3899,
+      "avg_spy": 2.0483,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Byron Donalds",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2024-11-07",
+      "window_days": 30,
+      "avg_alpha": -5.3899,
+      "max_alpha": -5.3899,
+      "avg_spy": 2.0483,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "KO",
+      "asset_name": "The Coca-Cola Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Lloyd Doggett",
+        "Sheldon Whitehouse"
+      ],
+      "anchor_date": "2024-01-09",
+      "window_days": 30,
+      "avg_alpha": -5.4407,
+      "max_alpha": -5.4407,
+      "avg_spy": 5.1574,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "IBM",
+      "asset_name": "International Business Machines Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2025-12-16",
+      "window_days": 30,
+      "avg_alpha": -5.4703,
+      "max_alpha": -1.7845,
+      "avg_spy": 0.6293,
+      "win_rate": 0.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "CRM",
+      "asset_name": "salesforce.com Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "David Taylor",
+        "Jefferson Shreve",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-06-03",
+      "window_days": 30,
+      "avg_alpha": -5.492,
+      "max_alpha": -4.2289,
+      "avg_spy": 4.6358,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "CRM",
+      "asset_name": "salesforce.com Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "David Taylor",
+        "Jefferson Shreve",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-06-12",
+      "window_days": 30,
+      "avg_alpha": -5.492,
+      "max_alpha": -4.2289,
+      "avg_spy": 4.6358,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-05-09",
+      "window_days": 30,
+      "avg_alpha": -5.5598,
+      "max_alpha": -4.2634,
+      "avg_spy": 3.637,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "STE",
+      "asset_name": "Steris PLC",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "April McClain Delaney",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2026-03-10",
+      "window_days": 30,
+      "avg_alpha": -5.7079,
+      "max_alpha": 0.0747,
+      "avg_spy": 3.5094,
+      "win_rate": 33.3,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "MRSH",
+      "asset_name": "Marsh & McLennan Companies Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Greg Stanton",
+        "Kevin Hern"
+      ],
+      "anchor_date": "2023-11-09",
+      "window_days": 30,
+      "avg_alpha": -5.878,
+      "max_alpha": -4.5582,
+      "avg_spy": 4.0829,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "GDDY",
+      "asset_name": "GoDaddy Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": -5.8882,
+      "max_alpha": -5.3533,
+      "avg_spy": -0.9758,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "KO",
+      "asset_name": "The Coca-Cola Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Lloyd Doggett",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -6.005,
+      "max_alpha": 0.5228,
+      "avg_spy": 6.5699,
+      "win_rate": 25.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "TTD",
+      "asset_name": "The Trade Desk Inc",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna",
+        "Tony Wied"
+      ],
+      "anchor_date": "2026-03-12",
+      "window_days": 30,
+      "avg_alpha": -6.0641,
+      "max_alpha": 4.8615,
+      "avg_spy": 6.6307,
+      "win_rate": 66.7,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "BRO",
+      "asset_name": "Brown & Brown Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "April McClain Delaney",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2025-12-16",
+      "window_days": 30,
+      "avg_alpha": -6.0651,
+      "max_alpha": -3.7775,
+      "avg_spy": -0.6105,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "T",
+      "asset_name": "AT&T Inc",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "David Taylor",
+        "Ro Khanna",
+        "Tim Moore"
+      ],
+      "anchor_date": "2026-05-13",
+      "window_days": 30,
+      "avg_alpha": -6.0887,
+      "max_alpha": -6.0887,
+      "avg_spy": -0.0754,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "FDS",
+      "asset_name": "FactSet Research Systems Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -6.2946,
+      "max_alpha": -3.7624,
+      "avg_spy": 8.8009,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "Cleo Fields",
+        "Gil Cisneros",
+        "Rich McCormick"
+      ],
+      "anchor_date": "2025-12-10",
+      "window_days": 30,
+      "avg_alpha": -6.4124,
+      "max_alpha": -6.4124,
+      "avg_spy": 2.2708,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2025-12-16",
+      "window_days": 30,
+      "avg_alpha": -6.4124,
+      "max_alpha": -6.4124,
+      "avg_spy": 2.2708,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "META",
+      "asset_name": "Meta Platforms Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "John McGuire",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-13",
+      "window_days": 30,
+      "avg_alpha": -6.6012,
+      "max_alpha": -6.6012,
+      "avg_spy": -0.0754,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "JNJ",
+      "asset_name": "Johnson & Johnson",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Kevin Hern",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2023-10-06",
+      "window_days": 30,
+      "avg_alpha": -6.7135,
+      "max_alpha": -5.1954,
+      "avg_spy": 1.6551,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "IBM",
+      "asset_name": "International Business Machines Corp",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "David Taylor",
+        "Gil Cisneros",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2026-01-05",
+      "window_days": 30,
+      "avg_alpha": -6.9449,
+      "max_alpha": -1.7845,
+      "avg_spy": -1.0121,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "ROL",
+      "asset_name": "ROLLINS Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "April McClain Delaney",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-11",
+      "window_days": 30,
+      "avg_alpha": -6.9627,
+      "max_alpha": -4.0361,
+      "avg_spy": 3.9627,
+      "win_rate": 0.0,
+      "priced_trades": 5
+    },
+    {
+      "ticker": "JNJ",
+      "asset_name": "Johnson & Johnson",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2025-03-10",
+      "window_days": 30,
+      "avg_alpha": -7.4787,
+      "max_alpha": -6.8204,
+      "avg_spy": 4.7081,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "FN",
+      "asset_name": "FABRINET",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -7.6471,
+      "max_alpha": -7.2947,
+      "avg_spy": 8.8009,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "SCHW",
+      "asset_name": "Schwab (Charles) Corp",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Ro Khanna",
+        "Tony Wied"
+      ],
+      "anchor_date": "2026-03-12",
+      "window_days": 30,
+      "avg_alpha": -7.7264,
+      "max_alpha": 1.6114,
+      "avg_spy": 5.3891,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "META",
+      "asset_name": "Meta Platforms Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2025-12-04",
+      "window_days": 30,
+      "avg_alpha": -7.8023,
+      "max_alpha": -7.8023,
+      "avg_spy": 2.2708,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "META",
+      "asset_name": "Meta Platforms Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Rick Larsen"
+      ],
+      "anchor_date": "2025-12-16",
+      "window_days": 30,
+      "avg_alpha": -7.8023,
+      "max_alpha": -7.8023,
+      "avg_spy": 2.2708,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "PG",
+      "asset_name": "The Procter & Gamble Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -7.8998,
+      "max_alpha": -7.8998,
+      "avg_spy": 8.4879,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "SPGI",
+      "asset_name": "S&P Global Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -7.9406,
+      "max_alpha": -7.4283,
+      "avg_spy": 8.5418,
+      "win_rate": 0.0,
+      "priced_trades": 8
+    },
+    {
+      "ticker": "XOM",
+      "asset_name": "Exxon Mobil Corp",
+      "sector": "energy",
+      "cluster_size": 2,
+      "politicians": [
+        "Greg Stanton",
+        "Kevin Hern"
+      ],
+      "anchor_date": "2023-10-13",
+      "window_days": 30,
+      "avg_alpha": -8.0926,
+      "max_alpha": -7.6814,
+      "avg_spy": 4.0936,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "UNP",
+      "asset_name": "Union Pacific Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Julie Johnson"
+      ],
+      "anchor_date": "2025-03-10",
+      "window_days": 30,
+      "avg_alpha": -8.1331,
+      "max_alpha": -8.1331,
+      "avg_spy": -1.8391,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "ADI",
+      "asset_name": "Analog Devices Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-13",
+      "window_days": 30,
+      "avg_alpha": -8.1941,
+      "max_alpha": -8.1941,
+      "avg_spy": -0.0754,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "AAPL",
+      "asset_name": "Apple Inc",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Cleo Fields",
+        "Gil Cisneros",
+        "Rich McCormick"
+      ],
+      "anchor_date": "2025-11-20",
+      "window_days": 30,
+      "avg_alpha": -8.2429,
+      "max_alpha": -8.2429,
+      "avg_spy": 2.2708,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "AAPL",
+      "asset_name": "Apple Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Rich McCormick"
+      ],
+      "anchor_date": "2025-12-10",
+      "window_days": 30,
+      "avg_alpha": -8.2429,
+      "max_alpha": -8.2429,
+      "avg_spy": 2.2708,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "WDAY",
+      "asset_name": "Workday Inc",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Gil Cisneros",
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-12",
+      "window_days": 30,
+      "avg_alpha": -8.5291,
+      "max_alpha": 4.576,
+      "avg_spy": 5.5456,
+      "win_rate": 25.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "IBM",
+      "asset_name": "International Business Machines Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2024-10-04",
+      "window_days": 30,
+      "avg_alpha": -8.5335,
+      "max_alpha": -7.5154,
+      "avg_spy": 0.5488,
+      "win_rate": 0.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "JNJ",
+      "asset_name": "Johnson & Johnson",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Kevin Hern",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2024-01-09",
+      "window_days": 30,
+      "avg_alpha": -8.5403,
+      "max_alpha": -8.3932,
+      "avg_spy": 4.8748,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "TGT",
+      "asset_name": "Target Corp",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Kelly Morrison"
+      ],
+      "anchor_date": "2025-04-07",
+      "window_days": 30,
+      "avg_alpha": -8.6374,
+      "max_alpha": -7.1956,
+      "avg_spy": 10.123,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "AXP",
+      "asset_name": "American Express Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Ro Khanna",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2026-04-05",
+      "window_days": 30,
+      "avg_alpha": -9.0355,
+      "max_alpha": -9.0355,
+      "avg_spy": 8.4879,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "TYL",
+      "asset_name": "Tyler Technologies Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -9.1651,
+      "max_alpha": -8.2098,
+      "avg_spy": 8.8009,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "NFLX",
+      "asset_name": "Netflix Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2025-11-20",
+      "window_days": 30,
+      "avg_alpha": -9.1652,
+      "max_alpha": -9.1652,
+      "avg_spy": 2.2708,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "NFLX",
+      "asset_name": "Netflix Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2025-12-10",
+      "window_days": 30,
+      "avg_alpha": -9.1652,
+      "max_alpha": -9.1652,
+      "avg_spy": 2.2708,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "NFLX",
+      "asset_name": "Netflix Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2025-12-16",
+      "window_days": 30,
+      "avg_alpha": -9.1652,
+      "max_alpha": -9.1652,
+      "avg_spy": 2.2708,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "MA",
+      "asset_name": "Mastercard Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2026-04-10",
+      "window_days": 30,
+      "avg_alpha": -9.1974,
+      "max_alpha": -9.1974,
+      "avg_spy": 8.5597,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "PPG",
+      "asset_name": "PPG Industries Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Lloyd Doggett",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -9.2311,
+      "max_alpha": -8.5699,
+      "avg_spy": 8.8009,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "GPC",
+      "asset_name": "Genuine Parts Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-12",
+      "window_days": 30,
+      "avg_alpha": -9.257,
+      "max_alpha": -1.8232,
+      "avg_spy": 6.9565,
+      "win_rate": 0.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "APD",
+      "asset_name": "Air Products and Chemicals Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -9.2705,
+      "max_alpha": -9.2705,
+      "avg_spy": 8.4879,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "MA",
+      "asset_name": "Mastercard Inc",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -9.4964,
+      "max_alpha": -9.1974,
+      "avg_spy": 8.5358,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "NEE",
+      "asset_name": "NextEra Energy Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Rick Larsen",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-16",
+      "window_days": 30,
+      "avg_alpha": -9.5309,
+      "max_alpha": -9.5309,
+      "avg_spy": -0.0754,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "ABT",
+      "asset_name": "Abbott Laboratories",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Thomas Kean Jr"
+      ],
+      "anchor_date": "2026-02-20",
+      "window_days": 30,
+      "avg_alpha": -9.5403,
+      "max_alpha": -9.5403,
+      "avg_spy": 2.2904,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "IBM",
+      "asset_name": "International Business Machines Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -9.5817,
+      "max_alpha": -8.2602,
+      "avg_spy": 8.5238,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "PYPL",
+      "asset_name": "PayPal Holdings Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Byron Donalds",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -9.8146,
+      "max_alpha": -9.8146,
+      "avg_spy": 8.4879,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "PYPL",
+      "asset_name": "PayPal Holdings Inc",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Byron Donalds",
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -9.93,
+      "max_alpha": -9.8146,
+      "avg_spy": 8.6965,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "AMZN",
+      "asset_name": "Amazon.com Inc",
+      "sector": "consumer",
+      "cluster_size": 3,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna",
+        "Tim Walberg"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": -9.9996,
+      "max_alpha": -9.3139,
+      "avg_spy": -1.2759,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "MELI",
+      "asset_name": "MercadoLibre Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-02-12",
+      "window_days": 30,
+      "avg_alpha": -10.1441,
+      "max_alpha": 3.3025,
+      "avg_spy": -1.8096,
+      "win_rate": 20.0,
+      "priced_trades": 5
+    },
+    {
+      "ticker": "NVDA",
+      "asset_name": "NVIDIA Corporation",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "John McGuire",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-13",
+      "window_days": 30,
+      "avg_alpha": -10.2063,
+      "max_alpha": -10.2063,
+      "avg_spy": -0.0754,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "JNJ",
+      "asset_name": "Johnson & Johnson",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2025-04-07",
+      "window_days": 30,
+      "avg_alpha": -10.4969,
+      "max_alpha": -6.8204,
+      "avg_spy": 10.123,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "LIN",
+      "asset_name": "Linde PLC",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Ro Khanna",
+        "Thomas Kean Jr"
+      ],
+      "anchor_date": "2026-03-18",
+      "window_days": 30,
+      "avg_alpha": -10.5026,
+      "max_alpha": -10.5026,
+      "avg_spy": 8.4879,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "LIN",
+      "asset_name": "Linde PLC",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Ro Khanna",
+        "Thomas Kean Jr"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -10.5026,
+      "max_alpha": -10.5026,
+      "avg_spy": 8.4879,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "FISV",
+      "asset_name": "Fiserv Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -10.6405,
+      "max_alpha": -10.1365,
+      "avg_spy": 8.8009,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "ORCL",
+      "asset_name": "Oracle Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-02-16",
+      "window_days": 30,
+      "avg_alpha": -10.6639,
+      "max_alpha": -1.5405,
+      "avg_spy": 0.5334,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "IBM",
+      "asset_name": "International Business Machines Corp",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Lloyd Doggett",
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -10.8445,
+      "max_alpha": -8.2602,
+      "avg_spy": 8.7205,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "TTD",
+      "asset_name": "The Trade Desk Inc",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Byron Donalds",
+        "Gil Cisneros",
+        "Tony Wied"
+      ],
+      "anchor_date": "2026-03-09",
+      "window_days": 30,
+      "avg_alpha": -10.8445,
+      "max_alpha": 4.8615,
+      "avg_spy": 5.7021,
+      "win_rate": 50.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "CEG",
+      "asset_name": "CONSTELLATION ENE CORP",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Mark Warner",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-01",
+      "window_days": 30,
+      "avg_alpha": -11.0749,
+      "max_alpha": -11.0749,
+      "avg_spy": -0.0754,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "ROL",
+      "asset_name": "ROLLINS Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "April McClain Delaney",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -11.3527,
+      "max_alpha": -10.7043,
+      "avg_spy": 8.8009,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "AMZN",
+      "asset_name": "Amazon.com Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Ro Khanna",
+        "Tim Walberg"
+      ],
+      "anchor_date": "2026-05-13",
+      "window_days": 30,
+      "avg_alpha": -11.3709,
+      "max_alpha": -11.3709,
+      "avg_spy": -0.0754,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "MRK",
+      "asset_name": "Merck & Co Inc",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Julie Johnson"
+      ],
+      "anchor_date": "2025-02-13",
+      "window_days": 30,
+      "avg_alpha": -11.405,
+      "max_alpha": -11.405,
+      "avg_spy": -1.8391,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "PGR",
+      "asset_name": "The Progressive Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -11.4297,
+      "max_alpha": -11.4297,
+      "avg_spy": 8.4879,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "MRK",
+      "asset_name": "Merck & Co Inc",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-17",
+      "window_days": 30,
+      "avg_alpha": -11.4702,
+      "max_alpha": -5.2415,
+      "avg_spy": 6.6878,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "NOW",
+      "asset_name": "ServiceNow Inc",
+      "sector": "general",
+      "cluster_size": 4,
+      "politicians": [
+        "Chuck Fleischmann",
+        "Josh Gottheimer",
+        "Michael McCaul",
+        "Tony Wied"
+      ],
+      "anchor_date": "2026-03-12",
+      "window_days": 30,
+      "avg_alpha": -11.4955,
+      "max_alpha": 1.2957,
+      "avg_spy": 6.446,
+      "win_rate": 33.3,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "ACN",
+      "asset_name": "Accenture PLC",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Mark Warner",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -11.5035,
+      "max_alpha": -11.5035,
+      "avg_spy": 8.4879,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "GPC",
+      "asset_name": "Genuine Parts Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -11.735,
+      "max_alpha": -11.1548,
+      "avg_spy": 8.5118,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "MELI",
+      "asset_name": "MercadoLibre Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-03-12",
+      "window_days": 30,
+      "avg_alpha": -11.7356,
+      "max_alpha": 3.3025,
+      "avg_spy": 7.1309,
+      "win_rate": 25.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "WDAY",
+      "asset_name": "Workday Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-02-12",
+      "window_days": 30,
+      "avg_alpha": -11.77,
+      "max_alpha": -4.8161,
+      "avg_spy": -0.2965,
+      "win_rate": 0.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "VRSK",
+      "asset_name": "VERISK ANALYTICS Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-10",
+      "window_days": 30,
+      "avg_alpha": -11.9541,
+      "max_alpha": -7.0358,
+      "avg_spy": 4.5826,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "FICO",
+      "asset_name": "Fair Isaac Corporation",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-03-12",
+      "window_days": 30,
+      "avg_alpha": -11.9767,
+      "max_alpha": -6.004,
+      "avg_spy": 5.7021,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "IBM",
+      "asset_name": "International Business Machines Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Gil Cisneros"
+      ],
+      "anchor_date": "2026-01-13",
+      "window_days": 30,
+      "avg_alpha": -12.1053,
+      "max_alpha": -12.1053,
+      "avg_spy": -1.8017,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "ACN",
+      "asset_name": "Accenture PLC",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Chuck Fleischmann",
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-23",
+      "window_days": 30,
+      "avg_alpha": -12.7516,
+      "max_alpha": -11.5035,
+      "avg_spy": 8.6965,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "ACN",
+      "asset_name": "Accenture PLC",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Gil Cisneros",
+        "Mark Warner",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -12.7516,
+      "max_alpha": -11.5035,
+      "avg_spy": 8.6965,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "EFX",
+      "asset_name": "Equifax Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -12.7879,
+      "max_alpha": -11.8249,
+      "avg_spy": 8.8009,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "AMCR",
+      "asset_name": "Amcor PLC",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Ro Khanna",
+        "Thomas Kean Jr"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -12.8701,
+      "max_alpha": -12.8701,
+      "avg_spy": 8.4879,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "TTD",
+      "asset_name": "The Trade Desk Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Byron Donalds",
+        "Tony Wied"
+      ],
+      "anchor_date": "2025-04-15",
+      "window_days": 30,
+      "avg_alpha": -13.4173,
+      "max_alpha": -13.4173,
+      "avg_spy": 1.1076,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "WDAY",
+      "asset_name": "Workday Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-02-16",
+      "window_days": 30,
+      "avg_alpha": -14.088,
+      "max_alpha": -5.4185,
+      "avg_spy": 0.5334,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "MLM",
+      "asset_name": "Martin Marietta Materials Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "April McClain Delaney",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -14.3294,
+      "max_alpha": -14.1026,
+      "avg_spy": 8.8009,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "ADBE",
+      "asset_name": "Adobe Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Chuck Fleischmann",
+        "Jefferson Shreve"
+      ],
+      "anchor_date": "2025-02-14",
+      "window_days": 30,
+      "avg_alpha": -14.351,
+      "max_alpha": -14.351,
+      "avg_spy": -1.8391,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "GILD",
+      "asset_name": "Gilead Sciences Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-04-11",
+      "window_days": 30,
+      "avg_alpha": -14.3965,
+      "max_alpha": -12.1781,
+      "avg_spy": 7.3421,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 4,
+      "politicians": [
+        "David Taylor",
+        "Lloyd Doggett",
+        "Rich McCormick",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-23",
+      "window_days": 30,
+      "avg_alpha": -14.8422,
+      "max_alpha": -14.6796,
+      "avg_spy": 8.8009,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 4,
+      "politicians": [
+        "David Taylor",
+        "Lloyd Doggett",
+        "Rich McCormick",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -14.8422,
+      "max_alpha": -14.6796,
+      "avg_spy": 8.8009,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "HD",
+      "asset_name": "The Home Depot Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -15.0048,
+      "max_alpha": -15.0048,
+      "avg_spy": 8.4879,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "WDAY",
+      "asset_name": "Workday Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-01-13",
+      "window_days": 30,
+      "avg_alpha": -15.416,
+      "max_alpha": -4.8161,
+      "avg_spy": -2.2938,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "LITE",
+      "asset_name": "Lumentum Holdings Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": -15.5559,
+      "max_alpha": -15.5559,
+      "avg_spy": -1.8761,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "BKNG",
+      "asset_name": "Booking Holdings Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -15.9848,
+      "max_alpha": -14.5298,
+      "avg_spy": 8.8009,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "TTD",
+      "asset_name": "The Trade Desk Inc",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Byron Donalds",
+        "Gil Cisneros",
+        "Tony Wied"
+      ],
+      "anchor_date": "2026-02-16",
+      "window_days": 30,
+      "avg_alpha": -16.1631,
+      "max_alpha": -5.7757,
+      "avg_spy": -0.3451,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "AJG",
+      "asset_name": "Arthur J. Gallagher & Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -16.43,
+      "max_alpha": -15.434,
+      "avg_spy": 8.5238,
+      "win_rate": 0.0,
+      "priced_trades": 6
+    },
+    {
+      "ticker": "MELI",
+      "asset_name": "MercadoLibre Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -16.7483,
+      "max_alpha": -16.5328,
+      "avg_spy": 8.7444,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "JNJ",
+      "asset_name": "Johnson & Johnson",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Lloyd Doggett",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -17.0829,
+      "max_alpha": -16.7718,
+      "avg_spy": 8.8009,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "FISV",
+      "asset_name": "Fiserv Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Byron Donalds",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-04-11",
+      "window_days": 30,
+      "avg_alpha": -17.2578,
+      "max_alpha": -17.2578,
+      "avg_spy": 5.6935,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "BSX",
+      "asset_name": "Boston Scientific Corp",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-10",
+      "window_days": 30,
+      "avg_alpha": -18.0161,
+      "max_alpha": -13.0844,
+      "avg_spy": 5.8844,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "DHR",
+      "asset_name": "Danaher Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -19.0448,
+      "max_alpha": -18.2902,
+      "avg_spy": 8.5238,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "WFC",
+      "asset_name": "Wells Fargo & Co",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Mark Warner",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -20.0521,
+      "max_alpha": -20.0521,
+      "avg_spy": 8.4879,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "ABT",
+      "asset_name": "Abbott Laboratories",
+      "sector": "healthcare",
+      "cluster_size": 3,
+      "politicians": [
+        "Michael McCaul",
+        "Rich McCormick",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-12",
+      "window_days": 30,
+      "avg_alpha": -20.4372,
+      "max_alpha": -9.5403,
+      "avg_spy": 6.4221,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "BSX",
+      "asset_name": "Boston Scientific Corp",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-09",
+      "window_days": 30,
+      "avg_alpha": -20.7481,
+      "max_alpha": -20.482,
+      "avg_spy": 8.5118,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "CSGP",
+      "asset_name": "CoStar Group Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -22.0194,
+      "max_alpha": -20.6798,
+      "avg_spy": 8.6965,
+      "win_rate": 0.0,
+      "priced_trades": 3
+    },
+    {
+      "ticker": "CTSH",
+      "asset_name": "Cognizant Technology Solutions Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -22.7916,
+      "max_alpha": -21.1906,
+      "avg_spy": 8.8009,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "INTU",
+      "asset_name": "Intuit Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-05-11",
+      "window_days": 30,
+      "avg_alpha": -25.2985,
+      "max_alpha": -23.2277,
+      "avg_spy": -1.4259,
+      "win_rate": 0.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "ABT",
+      "asset_name": "Abbott Laboratories",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Rich McCormick",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -25.8857,
+      "max_alpha": -25.8857,
+      "avg_spy": 8.4879,
+      "win_rate": 0.0,
+      "priced_trades": 2
+    },
+    {
+      "ticker": "UNH",
+      "asset_name": "Unitedhealth Group Inc",
+      "sector": "healthcare",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "John McGuire"
+      ],
+      "anchor_date": "2025-05-09",
+      "window_days": 30,
+      "avg_alpha": -26.5059,
+      "max_alpha": -26.5059,
+      "avg_spy": 6.1665,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "NOW",
+      "asset_name": "ServiceNow Inc",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Byron Donalds",
+        "Chuck Fleischmann",
+        "Tony Wied"
+      ],
+      "anchor_date": "2026-03-09",
+      "window_days": 30,
+      "avg_alpha": -28.8196,
+      "max_alpha": -28.8196,
+      "avg_spy": 2.2904,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "ORCL",
+      "asset_name": "Oracle Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2025-10-01",
+      "window_days": 30,
+      "avg_alpha": -29.372,
+      "max_alpha": -29.372,
+      "avg_spy": 3.0677,
+      "win_rate": 0.0,
+      "priced_trades": 1
+    },
+    {
+      "ticker": "TSCO",
+      "asset_name": "Tractor Supply Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "April McClain Delaney",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-11",
+      "window_days": 30,
+      "avg_alpha": -35.0632,
+      "max_alpha": -9.7123,
+      "avg_spy": 7.3133,
+      "win_rate": 0.0,
+      "priced_trades": 5
+    },
+    {
+      "ticker": "TSCO",
+      "asset_name": "Tractor Supply Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "April McClain Delaney",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": -41.4009,
+      "max_alpha": -41.3319,
+      "avg_spy": 8.9573,
+      "win_rate": 0.0,
+      "priced_trades": 4
+    },
+    {
+      "ticker": "AAPL",
+      "asset_name": "Apple Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Rich McCormick"
+      ],
+      "anchor_date": "2025-11-13",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "AAPL",
+      "asset_name": "Apple Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "David Taylor"
+      ],
+      "anchor_date": "2026-02-03",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "AAPL",
+      "asset_name": "Apple Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Ed Case"
+      ],
+      "anchor_date": "2026-02-25",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "AAPL",
+      "asset_name": "Apple Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Ed Case",
+        "Mark Warner"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "AAPL",
+      "asset_name": "Apple Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "John McGuire",
+        "Mark Warner"
+      ],
+      "anchor_date": "2026-05-01",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "AAPL",
+      "asset_name": "Apple Inc",
+      "sector": "general",
+      "cluster_size": 4,
+      "politicians": [
+        "Cleo Fields",
+        "Ed Case",
+        "John McGuire",
+        "Tim Walberg"
+      ],
+      "anchor_date": "2026-05-14",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "AAPL",
+      "asset_name": "Apple Inc",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Cleo Fields",
+        "Ed Case",
+        "Tim Walberg"
+      ],
+      "anchor_date": "2026-06-01",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "AAPL",
+      "asset_name": "Apple Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Tim Walberg"
+      ],
+      "anchor_date": "2026-06-04",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "AEP",
+      "asset_name": "American Electric Power Co Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Rick Larsen"
+      ],
+      "anchor_date": "2025-10-08",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "AMZN",
+      "asset_name": "Amazon.com Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Thomas Kean Jr"
+      ],
+      "anchor_date": "2025-03-14",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "AMZN",
+      "asset_name": "Amazon.com Inc",
+      "sector": "consumer",
+      "cluster_size": 3,
+      "politicians": [
+        "Byron Donalds",
+        "David Taylor",
+        "Dwight Evans"
+      ],
+      "anchor_date": "2025-04-04",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "AMZN",
+      "asset_name": "Amazon.com Inc",
+      "sector": "consumer",
+      "cluster_size": 3,
+      "politicians": [
+        "Byron Donalds",
+        "Dwight Evans",
+        "Thomas Kean Jr"
+      ],
+      "anchor_date": "2025-04-15",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "AMZN",
+      "asset_name": "Amazon.com Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Dwight Evans",
+        "Thomas Kean Jr"
+      ],
+      "anchor_date": "2025-04-18",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "AMZN",
+      "asset_name": "Amazon.com Inc",
+      "sector": "consumer",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Thomas Kean Jr"
+      ],
+      "anchor_date": "2025-06-18",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "AVGO",
+      "asset_name": "Broadcom Inc",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2026-02-03",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "AVGO",
+      "asset_name": "Broadcom Inc",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2026-03-04",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "BRK/B",
+      "asset_name": "Berkshire Hathaway Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Rich McCormick"
+      ],
+      "anchor_date": "2025-12-10",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "CEG",
+      "asset_name": "CONSTELLATION ENE CORP",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Julie Johnson",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2025-03-06",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "CEG",
+      "asset_name": "CONSTELLATION ENE CORP",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Julie Johnson",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2025-03-13",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "CSWI",
+      "asset_name": "CSW INDUSTRIALS INC",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2025-12-16",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "ETN",
+      "asset_name": "Eaton Corp PLC",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Julie Johnson"
+      ],
+      "anchor_date": "2025-03-13",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Dwight Evans",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2025-04-18",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "Cleo Fields",
+        "John Fetterman",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2025-06-09",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2025-06-13",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2025-08-04",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Julie Johnson"
+      ],
+      "anchor_date": "2025-11-13",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2026-02-04",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 4,
+      "politicians": [
+        "Bill Keating",
+        "Cleo Fields",
+        "David Taylor",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2026-02-25",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 4,
+      "politicians": [
+        "Bill Keating",
+        "David Taylor",
+        "John Fetterman",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2026-03-04",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "GOOGL",
+      "asset_name": "Alphabet Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 4,
+      "politicians": [
+        "Bill Keating",
+        "Cleo Fields",
+        "David Taylor",
+        "John Fetterman"
+      ],
+      "anchor_date": "2026-03-09",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "GS",
+      "asset_name": "The Goldman Sachs Group Inc",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Rick Larsen",
+        "Sheldon Whitehouse"
+      ],
+      "anchor_date": "2024-07-16",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "GS",
+      "asset_name": "The Goldman Sachs Group Inc",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Bill Keating",
+        "Julie Johnson"
+      ],
+      "anchor_date": "2025-03-13",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "JPM",
+      "asset_name": "JPMorgan Chase & Co",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Bill Keating",
+        "David Taylor"
+      ],
+      "anchor_date": "2025-03-24",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "JPM",
+      "asset_name": "JPMorgan Chase & Co",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Bill Keating",
+        "John Fetterman"
+      ],
+      "anchor_date": "2026-05-15",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "LRCX",
+      "asset_name": "Lam Research Corp",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "David Taylor"
+      ],
+      "anchor_date": "2026-02-25",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "META",
+      "asset_name": "Meta Platforms Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "John McGuire"
+      ],
+      "anchor_date": "2025-07-02",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "META",
+      "asset_name": "Meta Platforms Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 3,
+      "politicians": [
+        "Cleo Fields",
+        "John McGuire",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2025-07-11",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "META",
+      "asset_name": "Meta Platforms Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Shelley Moore Capito"
+      ],
+      "anchor_date": "2025-08-04",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "META",
+      "asset_name": "Meta Platforms Inc",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "Rick Larsen"
+      ],
+      "anchor_date": "2026-01-15",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "Cleo Fields",
+        "David Taylor"
+      ],
+      "anchor_date": "2026-02-23",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "MSFT",
+      "asset_name": "Microsoft Corp",
+      "sector": "ai_cloud",
+      "cluster_size": 2,
+      "politicians": [
+        "John McGuire",
+        "Josh Gottheimer"
+      ],
+      "anchor_date": "2026-05-14",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "NVDA",
+      "asset_name": "NVIDIA Corporation",
+      "sector": "semiconductor",
+      "cluster_size": 2,
+      "politicians": [
+        "Byron Donalds",
+        "Tom Suozzi"
+      ],
+      "anchor_date": "2024-11-13",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "PEAK",
+      "asset_name": "Healthpeak Properties Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Michael McCaul"
+      ],
+      "anchor_date": "2026-02-16",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "PEAK",
+      "asset_name": "Healthpeak Properties Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Michael McCaul",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-03-12",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "PEP",
+      "asset_name": "PepsiCo Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Bill Keating",
+        "Julie Johnson"
+      ],
+      "anchor_date": "2025-02-13",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "PG",
+      "asset_name": "The Procter & Gamble Co",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Lloyd Doggett"
+      ],
+      "anchor_date": "2026-05-08",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "PGR",
+      "asset_name": "The Progressive Corp",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Byron Donalds",
+        "David Taylor"
+      ],
+      "anchor_date": "2025-11-19",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "SQ",
+      "asset_name": "Block Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Josh Gottheimer",
+        "Tony Wied"
+      ],
+      "anchor_date": "2025-03-07",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "SQ",
+      "asset_name": "Block Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Jefferson Shreve",
+        "Tony Wied"
+      ],
+      "anchor_date": "2025-03-17",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "SQ",
+      "asset_name": "Block Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "Gil Cisneros",
+        "Ro Khanna"
+      ],
+      "anchor_date": "2026-04-08",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "T",
+      "asset_name": "AT&T Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Tim Moore"
+      ],
+      "anchor_date": "2026-05-20",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "T",
+      "asset_name": "AT&T Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Tim Moore"
+      ],
+      "anchor_date": "2026-05-29",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "T",
+      "asset_name": "AT&T Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Tim Moore"
+      ],
+      "anchor_date": "2026-06-08",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "V",
+      "asset_name": "Visa Inc",
+      "sector": "general",
+      "cluster_size": 3,
+      "politicians": [
+        "Byron Donalds",
+        "David Taylor",
+        "Rich McCormick"
+      ],
+      "anchor_date": "2025-11-19",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "V",
+      "asset_name": "Visa Inc",
+      "sector": "general",
+      "cluster_size": 2,
+      "politicians": [
+        "David Taylor",
+        "Rich McCormick"
+      ],
+      "anchor_date": "2025-12-08",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    },
+    {
+      "ticker": "WFC",
+      "asset_name": "Wells Fargo & Co",
+      "sector": "financials",
+      "cluster_size": 2,
+      "politicians": [
+        "Bill Keating",
+        "Julie Johnson"
+      ],
+      "anchor_date": "2025-02-26",
+      "window_days": 30,
+      "avg_alpha": null,
+      "max_alpha": null,
+      "avg_spy": null,
+      "win_rate": null,
+      "priced_trades": 0
+    }
+  ]
+}

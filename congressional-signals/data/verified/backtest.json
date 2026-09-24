@@ -1,0 +1,57 @@
+{
+  "source": "enriched_trades.csv",
+  "window_days": 30,
+  "tier_thresholds": {
+    "STRONG": 2.0,
+    "WATCH": 1.0
+  },
+  "note": "Tiers assigned from entry-time signal_score (cluster_size x max BCR) only; no look-ahead.",
+  "results": {
+    "STRONG": {
+      "n": 815,
+      "avg_return": 2.47,
+      "avg_spy": 2.24,
+      "avg_alpha": 0.23,
+      "win_rate": 50.3,
+      "median_alpha": 0.05
+    },
+    "WATCH": {
+      "n": 1212,
+      "avg_return": 3.14,
+      "avg_spy": 2.61,
+      "avg_alpha": 0.54,
+      "win_rate": 50.6,
+      "median_alpha": 0.1
+    },
+    "SKIP": {
+      "n": 132,
+      "avg_return": 1.96,
+      "avg_spy": 2.0,
+      "avg_alpha": -0.04,
+      "win_rate": 44.7,
+      "median_alpha": -1.8
+    },
+    "SOLO": {
+      "n": 3003,
+      "avg_return": 1.81,
+      "avg_spy": 1.86,
+      "avg_alpha": -0.05,
+      "win_rate": 44.9,
+      "median_alpha": -0.67
+    },
+    "ALL BUYS (copy everything)": {
+      "n": 5162,
+      "avg_return": 2.23,
+      "avg_spy": 2.1,
+      "avg_alpha": 0.13,
+      "win_rate": 47.1,
+      "median_alpha": -0.45
+    }
+  },
+  "strong_equity_10k": {
+    "start": 10000,
+    "strategy_end": 10247.0,
+    "spy_end": 10224.0
+  },
+  "alpha_monotone": false
+}
