@@ -1,5 +1,5 @@
 ---
-version: "0.1.0"
+version: "0.3.0"
 name: ai_company_signals
 description: |
   Unified signal table for vendor intelligence. Ingests from 4 live sources
@@ -7,167 +7,346 @@ description: |
   the verified layer. Each signal is a fact (funding, product launch, research,
   news mention) with a score and source URL for citation.
 
+  v0.2.0 (2026-08-22) corrects the field names to match the live PostgreSQL DDL.
+  v0.1.0 described columns that do not exist (signal_id/UUID, company_id,
+  signal_title, score, occurred_date, source_type) — a P6 recipe-vs-truth
+  divergence, logged in logs/RUN_LOG.md#2026-08-22. This version also documents
+  the entity-verification layer added to the collectors after 782 wrong-entity
+  rows were found in the table.
+
+  v0.3.0 (2026-08-26) upgrades the common-word-name residual risk from hypothetical
+  to observed (Scale AI), and records a limit of the new brief-evaluation harness:
+  grounding checks cannot catch wrong-entity signals that are already in the corpus.
+
 table_type: PostgreSQL
 location: data/verified/ai_company_signals/
-canonical_source: User's production PostgreSQL database
+canonical_source: |
+  Production PostgreSQL database (external).
+  Authoritative DDL: collector/db.py:16-38 in the AI-Vendor-Intelligence-Platform
+  repository (github.com/MuskanKhandelwal/AI-Vendor-Intelligence-Platform).
+  This schema file is a description of that DDL, not its source.
 
 schema:
   fields:
-    - name: signal_id
-      type: UUID
+    - name: id
+      type: integer (SERIAL)
       nullable: false
       unique: true
-      description: Primary key, unique per signal
+      description: Primary key, auto-incrementing. Machine-assigned.
 
-    - name: company_id
-      type: string
+    - name: company_name
+      type: text
       nullable: false
-      description: Target company (e.g., "cohere", "anthropic")
+      description: |
+        Target company as named in collector/seed_companies.json (e.g. "Cohere",
+        "Anthropic"). NOT a unique identifier — see entity_verification below.
+        A name alone is what allowed 782 wrong-entity rows into this table.
       index: true
 
+    - name: ticker
+      type: text
+      nullable: true
+      description: Stock ticker for public companies; null for private vendors.
+
     - name: signal_type
-      type: enum
+      type: text
       nullable: false
-      values:
-        - "funding_round"
-        - "funding_stage"
+      observed_values:
+        - "funding"
         - "executive_change"
         - "product_launch"
         - "partnership"
-        - "layoff"
-        - "security_issue"
+        - "negative"
+        - "reputational"
+        - "regulatory"
+        - "annual_filing"
         - "github_activity"
         - "github_release"
         - "research_paper"
-        - "news_mention"
-        - "regulatory_filing"
-        - "headcount"
-      description: Category of signal
-      index: true
-
-    - name: signal_title
-      type: text
-      nullable: false
-      description: Human-readable signal (e.g., "Series D funding round", "CTO departure")
-
-    - name: signal_value
-      type: text
-      nullable: true
-      description: Quantitative or qualitative value (e.g., "$50M", "positive", "3 researchers")
-
-    - name: score
-      type: numeric (0-100)
-      nullable: false
+        - "other"
       description: |
-        Confidence or magnitude score (0-100).
-        For events: 1-100 by confidence in occurrence.
-        For measurements: 1-100 by recent significance.
-        Must not be invented; grounded in source signal.
-      validation_rule: 0 <= score <= 100
-
-    - name: source_type
-      type: enum
-      nullable: false
-      values:
-        - "EDGAR"
-        - "GitHub"
-        - "ArXiv"
-        - "News"
-        - "News_RSS"
-        - "News_Scrape"
-      description: Which ingest pipeline produced this signal
+        Category of signal. Free TEXT in the DDL, not a database enum — the
+        values above are what the collectors emit, not a constraint the database
+        enforces. The news collector's LLM classifier chooses from a fixed list
+        (see collector/news_collector.py CLASSIFICATION_PROMPT); that choice is a
+        model judgment, not a fact.
       index: true
 
-    - name: source_url
-      type: URL
-      nullable: false
-      description: Full resolvable URL for citation (SEC EDGAR link, GitHub URL, ArXiv PDF, news article)
-      validation_rule: Must be HTTP(S), must resolve on spot-check
-
-    - name: occurred_date
+    - name: signal_date
       type: date
       nullable: true
-      description: When signal occurred (funding date, publication date, news date, release date)
-      validation_rule: occurred_date <= today
+      description: When the signal occurred (filing date, publication date, news date).
+      validation_rule: signal_date <= today
 
-    - name: ingested_at
+    - name: headline
+      type: text
+      nullable: true
+      description: |
+        Human-readable signal title (paper title, news headline, filing description).
+        Truncated to 200 chars by the collectors.
+
+    - name: summary
+      type: text
+      nullable: true
+      description: |
+        One-line explanation of why the signal matters to an enterprise evaluating
+        this vendor. LLM-generated — a judgment, not a fact.
+        EDGAR summaries are grounded in an excerpt of the actual filing text; when
+        no text is extractable the prompt passes the sentinel "No description
+        available" and instructs the model to stay generic rather than invent
+        detail (collector/edgar_collector.py).
+
+    - name: source_url
+      type: text
+      nullable: true
+      description: Full resolvable URL for citation (SEC EDGAR link, GitHub URL, ArXiv abstract, news article).
+      validation_rule: Must be HTTP(S); must resolve on spot-check
+
+    - name: importance_score
+      type: integer (0-100)
+      nullable: true
+      description: |
+        Magnitude/importance score. For news signals this is assigned by the LLM
+        classifier and is a judgment, not a measurement. Must not be invented by
+        any downstream consumer; it is grounded in the source signal only as far
+        as the classifier is.
+      validation_rule: "database CHECK (importance_score BETWEEN 0 AND 100)"
+
+    - name: raw_data
+      type: JSONB
+      nullable: true
+      description: |
+        Source-specific payload. Also the de facto source discriminator — there is
+        no source_type column; the pipeline that produced a row is inferred from
+        which keys are present (see collector/audit_entities.py _source_of).
+      documented_keys:
+        - key: arxiv_id
+          source: ArXiv
+          description: Marks the row as arXiv-derived (name-searched, collision-prone)
+        - key: authors
+          source: ArXiv
+          description: First 5 author names
+        - key: affiliations
+          source: ArXiv
+          description: |
+            Author affiliations when arXiv supplies them (optional in the schema).
+            Strongest available evidence that a paper really is the company's.
+        - key: primary_category
+          source: ArXiv
+          description: arXiv primary category, used by the AI-relevance gate
+        - key: categories
+          source: ArXiv
+          description: Full arXiv category list; fallback when primary is absent
+        - key: feed_title
+          source: News
+          description: Marks the row as news-derived (name-searched, collision-prone)
+        - key: original_title
+          source: News
+          description: Headline as it appeared in the RSS feed before classification
+        - key: github_org
+          source: GitHub
+          description: |
+            Keyed to an org, not a name — structurally immune to name collisions,
+            so GitHub rows are skipped by the entity audit
+        - key: summary_before_backfill
+          source: EDGAR
+          description: |
+            Prior summary text preserved when collector/backfill_edgar_summaries.py
+            rewrote a row in place. Nothing is deleted by the backfill.
+
+    - name: langfuse_trace_id
+      type: text
+      nullable: true
+      description: |
+        Langfuse trace for the LLM call that produced summary/classification.
+        The provenance link from a stored judgment back to the call that made it (P3).
+
+    - name: created_at
       type: timestamp
       nullable: false
       default: "now()"
-      description: When signal was added to this table (machine-populated, not editable)
+      description: When the signal was written to this table (machine-populated).
 
-    - name: validated_by
-      type: string (user ID or email)
-      nullable: true
-      default: null
-      description: |
-        Human who validated this signal as trustworthy.
-        Null = not yet validated (signal is in raw tier, not verified).
-        Populated by Signal Validation gate (Phase 2).
-
-    - name: validation_note
-      type: text
-      nullable: true
-      description: |
-        Why signal was trusted or rejected.
-        Examples: "EDGAR filing confirmed", "GitHub URL dead as of 2026-07-09 — rejected"
-
-    - name: validation_date
-      type: date
-      nullable: true
-      description: Date validation occurred (populated by gate, null if unvalidated)
-
-    - name: used_in_brief
-      type: boolean
-      nullable: false
-      default: false
-      description: |
-        Set to true by brief generation if signal was included in final brief output.
-        Enables audit: "which signals actually made it into the brief?"
+  planned_fields:
+    note: |
+      NOT PRESENT IN THE LIVE DDL. These are Phase 2 design, carried here so the
+      design is not lost — they are not columns and must not be queried. Listing
+      them among real fields is what v0.1.0 did wrong.
+    fields:
+      - name: validated_by
+        type: string (user ID or email)
+        description: Human who validated this signal. Null = not yet human-reviewed.
+      - name: validation_note
+        type: text
+        description: Why the signal was trusted or rejected.
+      - name: validation_date
+        type: date
+        description: Date validation occurred.
+      - name: used_in_brief
+        type: boolean
+        description: |
+          Set by brief generation if the signal reached the final brief. Would
+          enable the audit "which signals actually made it into the brief?"
 
   indexes:
-    - (company_id, signal_type)
-    - (source_type, occurred_date)
-    - (validated_by)  # Find all signals I validated
-    - (used_in_brief)  # Audit trail
+    - "(company_name, signal_type)  # idx_company_signal"
+    - "(signal_date DESC)           # idx_signal_date"
+    - "(importance_score DESC)      # idx_importance"
+
+entity_verification:
+  problem: |
+    A seed company name is not a unique identifier. Namesake organisations were
+    collected and stored as the tracked vendor, then cited as sourced evidence in
+    procurement briefs. Observed harm (collector/entity_filter.py, audit_entities.py):
+      - A $28M Department of War contract awarded to Cohere Technologies (wireless
+        RF) raised the AI vendor Cohere's Financial Health score by 25 points.
+      - Quantum-physics papers matched on the stemmed word "coherence" were counted
+        as the AI vendor's technology momentum.
+      - Executive changes at Cohere Health (health insurance) were filed under the
+        AI vendor.
+    arXiv was the worst source: the previous all:"{name}" query searched full text
+    including bibliographies against a stemmed index. 85% of collected papers were
+    unrelated to the vendor they were filed under (collector/arxiv_collector.py).
+
+  deterministic_check:
+    script: collector/entity_filter.py
+    function: check_entity(company, *texts)
+    config: collector/seed_companies.json
+    config_coverage: |
+      50 companies; 23 carry aliases, 1 carries exclude_entities, 3 carry
+      exclude_terms (counted 2026-08-22). Coverage is partial by design — the
+      lists were written against observed collisions, not pre-emptively.
+    keys:
+      - key: aliases
+        description: Accepted surface forms. At least one must appear as a whole word. Defaults to [name].
+      - key: exclude_entities
+        description: Names of colliding organisations. Any whole-word match rejects the signal.
+      - key: exclude_terms
+        description: Subject-matter terms belonging to a colliding entity's domain. Any match rejects.
+    order: |
+      Exclusions are tested BEFORE the name check, because "Cohere Health" contains
+      "Cohere" and would otherwise pass.
+    bias: |
+      Precision over recall. A dropped signal is a visible gap that confidence
+      scoring already flags; a wrong-entity signal is a false claim presented as
+      sourced fact.
+    upstream: |
+      news_query() also injects -"phrase" exclusions into the Google News RSS query,
+      keeping colliding organisations out of the feed entirely.
+
+  arxiv_category_gate:
+    script: collector/arxiv_collector.py
+    search: 'ti:"{name}" OR abs:"{name}"  (was all:"{name}")'
+    allowed_prefixes: ["cs."]
+    allowed_categories: ["stat.ML", "eess.AS", "eess.IV"]
+    description: |
+      Papers must sit in an AI/CS-relevant category AND name the company as a whole
+      word. This is what keeps astro-ph, math and quant-ph papers out.
+
+  llm_screen:
+    script: collector/news_collector.py
+    field: about_company (boolean, first field of the classification response)
+    status: JUDGMENT — a model call, not a deterministic check (P8)
+    description: |
+      Second line of defence for common-word vendor names. Set false when the
+      headline is about a different organisation sharing the name, or uses the
+      name as an ordinary word. Instructed to prefer false when uncertain.
+    fail_mode: |
+      Fails OPEN — on Groq API error or unparseable JSON the collector defaults
+      about_company to true, on the stated grounds that the deterministic filter
+      has already vetted the headline. Any signal admitted during an API outage
+      therefore carries only the deterministic check, not the LLM screen.
 
 validation_rules:
   conformance:
-    - "score must be 0-100"
+    - "importance_score must be 0-100 (enforced by database CHECK)"
     - "source_url must be HTTP(S) and resolvable"
-    - "occurred_date must be <= today"
-    - "signal_type must be one of the enum values"
+    - "signal_date must be <= today"
+    - "name-searched signals (arxiv_id / feed_title / original_title in raw_data) must pass check_entity"
+    - "arXiv signals must sit in an allowed category (cs.*, stat.ML, eess.AS, eess.IV)"
 
   before_entering_verified_layer:
-    - "validated_by must be non-null (gated by Signal Validation gate, Phase 2)"
-    - "validation_note must explain why trusted"
+    - "Signal must pass entity verification (cleared as a gate 2026-08-22)"
     - "source_url must pass spot-check (resolvable as of validation date)"
+    - |
+      NOT YET ENFORCED: per-signal human sign-off. The validated_by/validation_note
+      columns do not exist in the DDL, so this condition is currently met at the
+      batch level (an audited, purged table) rather than per row.
 
   before_brief_generation:
-    - All signals used in brief must have validated_by != null
-    - All signals used in brief must have source_url that was recently checked (within 7 days)
+    - "All signals used in the brief must carry a resolvable source_url"
+    - |
+      NOT YET ENFORCED: used_in_brief tracking. Without that column, the audit
+      "which signals actually made it into the brief?" cannot be run from the table.
 
 audit_checks:
-  - "Count signals by signal_type and source_type (detect missing ingests)"
-  - "Find signals with null validated_by (signals not yet reviewed)"
+  - check: Entity contamination audit
+    script: collector/audit_entities.py
+    modes: |
+      Dry run by default (report only); --apply deletes the offending rows;
+      --company NAME limits the scope.
+    scope: |
+      Only name-searched rows. GitHub rows (keyed to github_org) and EDGAR rows
+      (keyed to CIK) cannot be name collisions and are skipped.
+    artifact: "backups/wrong_entity_signals_<UTC timestamp>.json — written before any delete"
+    last_run: |
+      2026-08-07. Purged 782 rows across two runs: 650 research_paper, 49 other,
+      34 negative, 17 product_launch, 16 partnership, 12 regulatory,
+      2 executive_change, 2 funding (sums to 782). Most-affected companies:
+      Writer (52), OpenAI (49), Cohere (46), Anthropic (43), Modal (43), Mistral (41).
+  - "Count signals by signal_type and by inferred source (detect missing ingests)"
   - "Find signals with dead source_url (broken citations)"
-  - "Compare used_in_brief = true with brief output JSON (ensure audit accuracy)"
+  - "Compare brief output JSON against the signals it cites (no used_in_brief column to audit against)"
 
 data_quality_notes:
+  - |
+    ENTITY CONTAMINATION (found and remediated 2026-08-07). 782 rows about namesake
+    organisations had been stored as tracked vendors and were citable as evidence.
+    They were purged and backed up. Collectors now verify entity before insert.
+    The purge removed rows that FAILED the check — it does not prove the surviving
+    rows are correct.
+  - |
+    LIMIT OF THE BRIEF EVALUATION HARNESS. evaluation/eval_runner.py (added
+    2026-08-26) checks that every date and dollar figure in a brief traces to a
+    COLLECTED SIGNAL. A wrong-entity signal already in the corpus therefore PASSES
+    grounding — the figure is real, it simply belongs to a different company. The
+    Scale AI claims below were not caught by grounding for exactly this reason.
+    Grounding checks cannot detect this class of error; only entity verification at
+    ingest can. Do not treat a clean eval run as evidence that a brief's signals
+    belong to the right company.
+  - |
+    RESIDUAL RISK — common-word names. CONFIRMED IN PRODUCTION 2026-08-26, no longer
+    hypothetical. Vendors named Adept, Writer, Notion, Glean, Modal, Replicate and
+    Scale AI can still admit unrelated text, because requiring a longer alias would
+    drop legitimate coverage (collector/entity_filter.py). For these the LLM
+    about_company screen is the only remaining defence, and it fails open.
+
+    Observed instance: a Scale AI brief captured in evaluation/labeled_briefs.csv
+    attributes to Scale AI "a Rs 170 Cr raise by Elevate Education", "a $2.2 million
+    raise by SambaNova", and "a $900m credit facility to scale AI data centers" —
+    two other companies' funding rounds, plus "scale AI" matched as an ordinary verb
+    phrase. Its COMPETITIVE POSITION names Ecolab (water treatment) as a competitor.
+    Scale AI's seed entry carries aliases ["Scale AI", "ScaleAI"] and no
+    exclude_entities or exclude_terms — the deterministic filter had nothing to
+    reject on. Contamination is therefore reaching finished briefs, not only the
+    signal table.
+    Mitigation not yet applied: populate exclude_entities/exclude_terms for
+    common-word vendors.
+  - |
+    COVERAGE FIGURES ARE STALE. Per-source signal counts recorded at Phase 1
+    (2026-07-09) predate the 782-row purge. Do not cite them; recount before use.
   - |
     GitHub activity signals may have delays (API lag, cache staleness).
     Refresh cadence: weekly (not real-time).
   - |
-    News signals depend on RSS feed discovery and keyword/LLM classification accuracy.
-    Classified sentiments are judgments, not facts; tag as such.
+    News signal_type, importance_score, one-line summary, and about_company are all
+    LLM classifications. They are judgments, not facts; tag them as such downstream (P8).
   - |
     ArXiv signals are publication-date-based, not announcement-date.
     Lag between work completion and publication: typically 1-6 months.
   - |
-    EDGAR signals are sourced from SEC EDGAR API (quarterly filings lag behind announcements).
-    For breaking news, see News source instead.
+    EDGAR signals are sourced from the SEC EDGAR API (quarterly filings lag behind
+    announcements). For breaking news, see the News source instead.
   - |
-    Executive changes from News source may have delays (press release lag).
-    Confirm via EDGAR or company press release when possible.
-
----
+    Executive changes from the News source may have delays (press release lag).
+    Confirm via EDGAR or a company press release when possible.

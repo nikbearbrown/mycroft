@@ -1,0 +1,29 @@
+# CPU-based HPA on the agent (the pipeline's most expensive stage). Needs
+# metrics-server in the cluster. A backfill drives CPU up -> replicas scale out;
+# consumer-group rebalancing spreads the events.validated partitions across pods.
+#
+# Scaling on Kafka consumer lag instead of CPU is the "right" signal — that needs
+# KEDA (a ScaledObject with a `kafka` trigger). Left as a documented next step;
+# CPU is a faithful proxy at this scale because the deterministic graph is
+# CPU-bound and the Anthropic path is latency-bound (lag would be the better
+# trigger there).
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata: { name: enrichment-svc, namespace: fes }
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: enrichment-svc
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target: { type: Utilization, averageUtilization: 60 }
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 30
+    scaleDown:
+      stabilizationWindowSeconds: 120

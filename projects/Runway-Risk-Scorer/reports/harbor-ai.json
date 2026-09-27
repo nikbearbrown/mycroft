@@ -1,0 +1,50 @@
+{
+  "company_id": "harbor-ai",
+  "run_date": "2026-08-27",
+  "signals_used": 3,
+  "signals_dropped_unvalidated": 0,
+  "gate": "HALT-AWAITING-HUMAN",
+  "metrics": {
+    "total_raised_usd": 45000000.0,
+    "months_since_last_raise": 29,
+    "funding_stage_trend": [
+      "Series B"
+    ],
+    "distress_indicator_count": 1,
+    "signal_freshness_days": 99,
+    "recent_window_days": 365,
+    "signals_recent_window": 1,
+    "signals_prior_window": 0,
+    "signal_velocity_delta": 1
+  },
+  "provenance": {
+    "total_raised": [
+      {
+        "signal_id": "11111111-1111-1111-1111-111111111111",
+        "source_url": "https://example.com/harbor-series-b",
+        "value": "$45M"
+      }
+    ],
+    "months_since_last_raise": {
+      "signal_id": "11111111-1111-1111-1111-111111111111",
+      "source_url": "https://example.com/harbor-series-b",
+      "date": "2024-03-12"
+    },
+    "funding_stage": [
+      {
+        "signal_id": "11111111-1111-1111-1111-111111111112",
+        "stage": "Series B",
+        "date": "2024-03-12"
+      }
+    ],
+    "distress": [
+      {
+        "signal_id": "11111111-1111-1111-1111-111111111113",
+        "type": "layoff",
+        "title": "20% staff reduction",
+        "source_url": "https://example.com/harbor-layoff"
+      }
+    ],
+    "parse_notes": []
+  }
+}

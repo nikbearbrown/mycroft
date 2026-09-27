@@ -1,0 +1,102 @@
+{
+  "_provenance": {
+    "fixture_set": "clean",
+    "ingested_by": "scripts/ingest/market-sentiment-analysis-part-1-ingest-inputs.py",
+    "manifest_declared_rows": 4,
+    "manifest_declared_rows_basis": "data.children[] submissions",
+    "recipe": "recipes/market-sentiment-analysis-part-1.md",
+    "run_id": "sample-001",
+    "source_path": "data/raw/market-sentiment-analysis-part-1/sample/clean/reddit-wallstreetbets.json",
+    "source_sha256": "6df0b3e31e6f08afe4394c89b2bea38c06947480558ebf693580b6d3806e17a4",
+    "transport_only": "Records are verbatim. This step does not recount, dedupe, drop, or coerce."
+  },
+  "classification": "ingest",
+  "fetched_at": "2026-08-27T14:30:00+00:00",
+  "live_call_performed": false,
+  "node": "Ingest declared inputs",
+  "records": [
+    {
+      "data": {
+        "children": [
+          {
+            "data": {
+              "author": "synthetic_user_01",
+              "created_utc": 1787828400,
+              "id": "sy0001",
+              "num_comments": 87,
+              "permalink": "/r/wallstreetbets/comments/sy0001/",
+              "score": 412,
+              "selftext": "Held through the print and the calls are up big. Still bullish here.",
+              "subreddit": "wallstreetbets",
+              "title": "FAKE calls printing after the earnings beat"
+            },
+            "kind": "t3"
+          },
+          {
+            "data": {
+              "author": "synthetic_user_02",
+              "created_utc": 1787797800,
+              "id": "sy0002",
+              "num_comments": 64,
+              "permalink": "/r/wallstreetbets/comments/sy0002/",
+              "score": 288,
+              "selftext": "Rocket fuel. Adding more on any dip, long dated.",
+              "subreddit": "wallstreetbets",
+              "title": "Loading up on FAKE, this thing is going to the moon \ud83d\ude80"
+            },
+            "kind": "t3"
+          },
+          {
+            "data": {
+              "author": "synthetic_user_03",
+              "created_utc": 1787782200,
+              "id": "sy0003",
+              "num_comments": 51,
+              "permalink": "/r/wallstreetbets/comments/sy0003/",
+              "score": 143,
+              "selftext": "Margins are going to dump. Bearish and staying short.",
+              "subreddit": "wallstreetbets",
+              "title": "Bought FAKE puts before the margin news"
+            },
+            "kind": "t3"
+          },
+          {
+            "data": {
+              "author": "synthetic_user_04",
+              "created_utc": 1787762700,
+              "id": "sy0004",
+              "num_comments": 22,
+              "permalink": "/r/wallstreetbets/comments/sy0004/",
+              "score": 76,
+              "selftext": "No position change, just watching what they guide.",
+              "subreddit": "wallstreetbets",
+              "title": "Anyone else holding FAKE through the investor day?"
+            },
+            "kind": "t3"
+          }
+        ]
+      },
+      "kind": "Listing"
+    }
+  ],
+  "recount_note": "Deliberately absent. Recounting and comparing against source_declared_record_count is step 3 (validate-data-shape).",
+  "recount_performed": false,
+  "rejects": [],
+  "sample_mode": true,
+  "source_declared_record_count": 4,
+  "source_declared_record_count_basis": "records[0].data.children[] entries, each one Reddit t3 submission",
+  "source_errors": [],
+  "source_fixture_block": {
+    "fixture_set": "sample/clean",
+    "frozen_at": "2026-08-27T14:30:00+00:00",
+    "manifest": "data/raw/market-sentiment-analysis-part-1/sample/fixture-manifest.json",
+    "note": "Synthetic fixture. No post, author, or score here corresponds to a real Reddit submission. Never cite as evidence.",
+    "recipe": "recipes/market-sentiment-analysis-part-1.md",
+    "synthetic": true
+  },
+  "source_name": "Reddit r/wallstreetbets search",
+  "source_type": "http_json",
+  "source_url_or_path": "https://api.reddit.com/r/wallstreetbets/search.json?q=FAKE&sort=new&limit=50&t=day",
+  "stream": "reddit",
+  "workflow": "Market Sentiment Analysis - Part 1"
+}

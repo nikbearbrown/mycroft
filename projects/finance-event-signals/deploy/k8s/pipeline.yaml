@@ -1,0 +1,180 @@
+# The pipeline. Images are the ones `docker compose build` produces —
+# `kind load docker-image finance-event-signals-<svc>:latest` before applying.
+---
+apiVersion: v1
+kind: ConfigMap
+metadata: { name: fes-env, namespace: fes }
+data:
+  KAFKA_BROKERS: redpanda:9092
+  REDIS_ADDR: redis:6379
+  POSTGRES_DSN: postgres://fes:fes@postgres:5432/fes?sslmode=disable
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+---
+apiVersion: v1
+kind: Secret
+metadata: { name: fes-secrets, namespace: fes }
+type: Opaque
+stringData:
+  ANTHROPIC_API_KEY: ""
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: ingest-gateway, namespace: fes }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: ingest-gateway } }
+  template:
+    metadata: { labels: { app: ingest-gateway } }
+    spec:
+      containers:
+        - name: ingest-gateway
+          image: finance-event-signals-ingest-gateway:latest
+          imagePullPolicy: IfNotPresent
+          envFrom: [{ configMapRef: { name: fes-env } }]
+          env:
+            - { name: OTEL_SERVICE_NAME, value: ingest-gateway }
+            - { name: EDGAR_USER_AGENT, value: "finance-event-signals k8s@example.com" }
+            - { name: POLL_INTERVAL_SECONDS, value: "60" }
+            - { name: EDGAR_FTS_LOOKBACK_DAYS, value: "1" }
+            - { name: TOPIC_RAW, value: events.raw }
+            - { name: GRPC_ADDR, value: ":9091" }
+          resources:
+            requests: { cpu: 25m, memory: 32Mi }
+            limits: { cpu: 250m, memory: 128Mi }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: validation-svc, namespace: fes }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: validation-svc } }
+  template:
+    metadata: { labels: { app: validation-svc } }
+    spec:
+      containers:
+        - name: validation-svc
+          image: finance-event-signals-validation-svc:latest
+          imagePullPolicy: IfNotPresent
+          envFrom: [{ configMapRef: { name: fes-env } }]
+          env:
+            - { name: OTEL_SERVICE_NAME, value: validation-svc }
+            - { name: TOPIC_IN, value: events.raw }
+            - { name: TOPIC_VALIDATED, value: events.validated }
+            - { name: TOPIC_DEADLETTER, value: events.deadletter }
+            - { name: GROUP_ID, value: validation-svc }
+            - { name: FRESHNESS_DAYS, value: "7" }
+            - { name: TICKERS_PATH, value: /app/data/company_tickers.json }
+          resources:
+            requests: { cpu: 25m, memory: 48Mi }
+            limits: { cpu: 250m, memory: 128Mi }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: enrichment-svc, namespace: fes }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: enrichment-svc } }
+  template:
+    metadata: { labels: { app: enrichment-svc } }
+    spec:
+      containers:
+        - name: enrichment-svc
+          image: finance-event-signals-enrichment-svc:latest
+          imagePullPolicy: IfNotPresent
+          envFrom: [{ configMapRef: { name: fes-env } }]
+          env:
+            - { name: OTEL_SERVICE_NAME, value: enrichment-svc }
+            - { name: TOPIC_IN, value: events.validated }
+            - { name: TOPIC_OUT, value: events.enriched }
+            - { name: GROUP_ID, value: enrichment-svc }
+            - { name: LLM_PROVIDER, value: deterministic }
+            - { name: ENRICH_SELF_CONSISTENCY_PASSES, value: "2" }
+            - name: ANTHROPIC_API_KEY
+              valueFrom: { secretKeyRef: { name: fes-secrets, key: ANTHROPIC_API_KEY } }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: "1", memory: 512Mi }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: persistence-svc, namespace: fes }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: persistence-svc } }
+  template:
+    metadata: { labels: { app: persistence-svc } }
+    spec:
+      containers:
+        - name: persistence-svc
+          image: finance-event-signals-persistence-svc:latest
+          imagePullPolicy: IfNotPresent
+          envFrom: [{ configMapRef: { name: fes-env } }]
+          env:
+            - { name: OTEL_SERVICE_NAME, value: persistence-svc }
+            - { name: TOPIC_IN, value: events.enriched }
+            - { name: GROUP_ID, value: persistence-svc }
+          resources:
+            requests: { cpu: 25m, memory: 48Mi }
+            limits: { cpu: 250m, memory: 128Mi }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: query-api, namespace: fes }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: query-api } }
+  template:
+    metadata: { labels: { app: query-api } }
+    spec:
+      containers:
+        - name: query-api
+          image: finance-event-signals-query-api:latest
+          imagePullPolicy: IfNotPresent
+          envFrom: [{ configMapRef: { name: fes-env } }]
+          env:
+            - { name: OTEL_SERVICE_NAME, value: query-api }
+            - { name: TOPIC_ACTIONABLE, value: events.actionable }
+            - { name: GRPC_ADDR, value: ":9090" }
+            - { name: HTTP_ADDR, value: ":8080" }
+          ports:
+            - { containerPort: 8080, name: http }
+            - { containerPort: 9090, name: grpc }
+          readinessProbe:
+            httpGet: { path: /healthz, port: 8080 }
+            periodSeconds: 5
+          resources:
+            requests: { cpu: 25m, memory: 48Mi }
+            limits: { cpu: 250m, memory: 128Mi }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: query-api, namespace: fes }
+spec:
+  selector: { app: query-api }
+  ports:
+    - { name: http, port: 8080, targetPort: 8080 }
+    - { name: grpc, port: 9090, targetPort: 9090 }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: dashboard, namespace: fes }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: dashboard } }
+  template:
+    metadata: { labels: { app: dashboard } }
+    spec:
+      containers:
+        - name: dashboard
+          image: finance-event-signals-dashboard:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - { name: QUERY_API, value: http://query-api:8080 }
+          ports: [{ containerPort: 8501 }]
+---
+apiVersion: v1
+kind: Service
+metadata: { name: dashboard, namespace: fes }
+spec:
+  selector: { app: dashboard }
+  ports: [{ port: 8501, targetPort: 8501 }]

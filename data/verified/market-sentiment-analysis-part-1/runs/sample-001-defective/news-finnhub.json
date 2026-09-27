@@ -1,0 +1,116 @@
+{
+  "_provenance": {
+    "fixture_set": "defective",
+    "raw_input": "data/raw/market-sentiment-analysis-part-1/runs/sample-001-defective/news-finnhub.json",
+    "run_id": "sample-001",
+    "source_envelope": {
+      "fetched_at": "2026-08-27T14:30:00+00:00",
+      "sample_mode": true,
+      "source_name": "Finnhub company-news",
+      "source_path": "data/raw/market-sentiment-analysis-part-1/sample/defective/news-finnhub.json",
+      "source_sha256": "c7dd6641a29e8dee26efd45fed186c473c01977ef769f4192eb402ba4cb052e9",
+      "source_type": "http_json"
+    },
+    "validated_by": "scripts/gigo/market-sentiment-analysis-part-1-validate-data-shape.py"
+  },
+  "classification": "gigo",
+  "duplicates_deferred_to_step_4": true,
+  "freshness_deferred_to_step_4": true,
+  "node": "Validate data shape",
+  "record_count": 5,
+  "record_count_basis": "rows that passed shape validation and were promoted",
+  "records": [
+    {
+      "category": "company",
+      "datetime": 1787832300,
+      "headline": "Fake Industries shares surge as quarterly results beat expectations",
+      "id": 900001,
+      "image": "https://example.invalid/img/900001.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Wire",
+      "summary": "Fake Industries reported a strong quarter, and the stock saw a sharp gain in early trading.",
+      "url": "https://example.invalid/news/900001"
+    },
+    {
+      "category": "company",
+      "datetime": 1787832900,
+      "headline": "Fake Industries shares surge as quarterly results beat expectations",
+      "id": 900011,
+      "image": "https://example.invalid/img/900011.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Aggregator",
+      "summary": "Syndicated copy of the earnings story carried by a second outlet.",
+      "url": "https://example.invalid/news/900011"
+    },
+    {
+      "category": "company",
+      "datetime": 1787832300,
+      "headline": "Fake Industries shares surge as quarterly results beat expectations",
+      "id": 900001,
+      "image": "https://example.invalid/img/900001.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Wire",
+      "summary": "Fake Industries reported a strong quarter, and the stock saw a sharp gain in early trading.",
+      "url": "https://example.invalid/news/900001"
+    },
+    {
+      "category": "company",
+      "datetime": 1710507600,
+      "headline": "Fake Industries announces prior-year restructuring",
+      "id": 900016,
+      "image": "https://example.invalid/img/900016.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Wire",
+      "summary": "Item dated well outside the declared two-day collection window.",
+      "url": "https://example.invalid/news/900016"
+    },
+    {
+      "category": "company",
+      "datetime": "yesterday",
+      "headline": "Fake Industries item carries a non-numeric timestamp",
+      "id": 900017,
+      "image": "https://example.invalid/img/900017.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Aggregator",
+      "summary": "The datetime field is a free-text string where an epoch integer is required.",
+      "url": "https://example.invalid/news/900017"
+    }
+  ],
+  "required_fields": [
+    "id",
+    "datetime",
+    "headline",
+    "source",
+    "url"
+  ],
+  "schema_source": "data/raw/market-sentiment-analysis-part-1/sample/fixture-manifest.json",
+  "schema_version": "1.0.0",
+  "shape_validation": {
+    "count_matches_declared": false,
+    "malformed_rows": [
+      {
+        "detail": "expected an object, got list",
+        "locator": "records[5]"
+      }
+    ],
+    "missing_fields": [
+      {
+        "field": "headline",
+        "locator": "records[3]",
+        "reason": "key_absent"
+      },
+      {
+        "field": "url",
+        "locator": "records[4]",
+        "reason": "present_but_null"
+      }
+    ],
+    "rows_promoted": 5,
+    "rows_seen": 8,
+    "rows_withheld": 3,
+    "source_declared_record_count": 7
+  },
+  "stream": "news",
+  "types_deferred_to_step_4": "Type violations are not checked here. This step has no declared field for them, so per fixture-manifest.json they surface in step 4 flags.",
+  "workflow": "Market Sentiment Analysis - Part 1"
+}

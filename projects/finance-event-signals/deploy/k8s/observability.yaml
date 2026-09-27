@@ -1,0 +1,115 @@
+# jaeger + otel-collector + prometheus + grafana. Configs come from ConfigMaps
+# (kustomization generates them from otel/*).
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: jaeger, namespace: fes }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: jaeger } }
+  template:
+    metadata: { labels: { app: jaeger } }
+    spec:
+      containers:
+        - name: jaeger
+          image: jaegertracing/all-in-one:1.62.0
+          env: [{ name: COLLECTOR_OTLP_ENABLED, value: "true" }]
+          ports:
+            - { containerPort: 16686, name: ui }
+            - { containerPort: 4317, name: otlp-grpc }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: jaeger, namespace: fes }
+spec:
+  selector: { app: jaeger }
+  ports:
+    - { name: ui, port: 16686, targetPort: 16686 }
+    - { name: otlp-grpc, port: 4317, targetPort: 4317 }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: otel-collector, namespace: fes }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: otel-collector } }
+  template:
+    metadata: { labels: { app: otel-collector } }
+    spec:
+      containers:
+        - name: collector
+          image: otel/opentelemetry-collector-contrib:0.109.0
+          args: ["--config=/etc/otel/collector-config.yaml"]
+          ports:
+            - { containerPort: 4317, name: otlp-grpc }
+            - { containerPort: 8889, name: prom }
+          volumeMounts:
+            - { name: cfg, mountPath: /etc/otel }
+      volumes:
+        - name: cfg
+          configMap: { name: otel-config }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: otel-collector, namespace: fes }
+spec:
+  selector: { app: otel-collector }
+  ports:
+    - { name: otlp-grpc, port: 4317, targetPort: 4317 }
+    - { name: prom, port: 8889, targetPort: 8889 }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: prometheus, namespace: fes }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: prometheus } }
+  template:
+    metadata: { labels: { app: prometheus } }
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus:v2.55.0
+          ports: [{ containerPort: 9090 }]
+          volumeMounts:
+            - { name: cfg, mountPath: /etc/prometheus }
+      volumes:
+        - name: cfg
+          configMap: { name: prometheus-config }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: prometheus, namespace: fes }
+spec:
+  selector: { app: prometheus }
+  ports: [{ port: 9090, targetPort: 9090 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: grafana, namespace: fes }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: grafana } }
+  template:
+    metadata: { labels: { app: grafana } }
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:11.3.0
+          env:
+            - { name: GF_AUTH_ANONYMOUS_ENABLED, value: "true" }
+            - { name: GF_AUTH_ANONYMOUS_ORG_ROLE, value: Admin }
+            - { name: GF_AUTH_DISABLE_LOGIN_FORM, value: "true" }
+          ports: [{ containerPort: 3000 }]
+          volumeMounts:
+            - { name: ds, mountPath: /etc/grafana/provisioning/datasources }
+      volumes:
+        - name: ds
+          configMap: { name: grafana-datasources }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: grafana, namespace: fes }
+spec:
+  selector: { app: grafana }
+  ports: [{ port: 3000, targetPort: 3000 }]

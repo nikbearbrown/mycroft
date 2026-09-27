@@ -1,0 +1,104 @@
+{
+  "_fixture": {
+    "synthetic": true,
+    "defects_injected": true,
+    "frozen_at": "2026-08-27T14:30:00+00:00",
+    "fixture_set": "sample/defective",
+    "recipe": "recipes/market-sentiment-analysis-part-1.md",
+    "manifest": "data/raw/market-sentiment-analysis-part-1/sample/fixture-manifest.json",
+    "note": "Synthetic fixture with DELIBERATE DEFECTS. Every defect is catalogued in the manifest by id and locator. Never cite as evidence; never promote to data/verified/.",
+    "defect_ids": ["D13", "D14", "D15", "D16", "D17"]
+  },
+  "source_name": "Reddit r/wallstreetbets search",
+  "source_type": "http_json",
+  "source_url_or_path": "https://api.reddit.com/r/wallstreetbets/search.json?q=FAKE&sort=new&limit=50&t=day",
+  "fetched_at": "2026-08-27T14:30:00+00:00",
+  "sample_mode": true,
+  "live_call_performed": false,
+  "record_count": 6,
+  "record_count_basis": "records[0].data.children[] entries, each one Reddit t3 submission",
+  "records": [
+    {
+      "kind": "Listing",
+      "data": {
+        "children": [
+          {
+            "kind": "t3",
+            "data": {
+              "id": "sy0001",
+              "title": "FAKE calls printing after the earnings beat",
+              "selftext": "Held through the print and the calls are up big. Still bullish here.",
+              "score": 412,
+              "num_comments": 87,
+              "created_utc": 1787828400,
+              "permalink": "/r/wallstreetbets/comments/sy0001/",
+              "author": "synthetic_user_01",
+              "subreddit": "wallstreetbets"
+            }
+          },
+          {
+            "kind": "t3",
+            "data": {
+              "id": "sy0001",
+              "title": "FAKE calls printing after the earnings beat (crosspost)",
+              "selftext": "Same submission id served twice by the search endpoint.",
+              "score": 412,
+              "num_comments": 87,
+              "created_utc": 1787828400,
+              "permalink": "/r/wallstreetbets/comments/sy0001/",
+              "author": "synthetic_user_01",
+              "subreddit": "wallstreetbets"
+            }
+          },
+          {
+            "kind": "t3",
+            "data": {
+              "id": "sy0012",
+              "selftext": "Post body with no title field, so there is nothing to score for sentiment.",
+              "score": 55,
+              "num_comments": 9,
+              "created_utc": 1787797800,
+              "permalink": "/r/wallstreetbets/comments/sy0012/",
+              "author": "synthetic_user_05",
+              "subreddit": "wallstreetbets"
+            }
+          },
+          {
+            "kind": "t3",
+            "data": "FAKE to the moon - this child arrived with data as a string instead of an object"
+          },
+          {
+            "kind": "t3",
+            "data": {
+              "id": "sy0014",
+              "title": "Old FAKE puts thread from last year",
+              "selftext": "Submission is far outside the t=day collection window.",
+              "score": 31,
+              "num_comments": 4,
+              "created_utc": 1710523200,
+              "permalink": "/r/wallstreetbets/comments/sy0014/",
+              "author": "synthetic_user_06",
+              "subreddit": "wallstreetbets"
+            }
+          },
+          {
+            "kind": "t3",
+            "data": {
+              "id": "sy0015",
+              "title": "FAKE rocket thread, score field is text",
+              "selftext": "Bullish, but the score arrived as a word instead of an integer.",
+              "score": "many",
+              "num_comments": 17,
+              "created_utc": 1787782200,
+              "permalink": "/r/wallstreetbets/comments/sy0015/",
+              "author": "synthetic_user_07",
+              "subreddit": "wallstreetbets"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "rejects": [],
+  "errors": []
+}

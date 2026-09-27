@@ -1,0 +1,48 @@
+{
+  "version": "0.3.0",
+  "updated": "2026-09-02",
+  "_note": "Policy maps task types to tier NAMES, never to models. Swapping a model is a change here plus a version bump.",
+
+  "tiers": {
+    "cheap": {
+      "provider": "groq",
+      "model": "openai/gpt-oss-20b",
+      "credential_env": "GROQ_API_KEY",
+      "context_limit": 131072,
+      "capabilities": ["text"],
+      "_limits_source": "https://console.groq.com/docs/models -- read 2026-09-02",
+      "status": "evidenced",
+      "evidence": "Publicly priced at $0.075/$0.30 per 1M. Chosen over llama-3.1-8b-instant, which the repo evidences but Groq does not publicly price."
+    },
+
+    "mid": {
+      "provider": "groq",
+      "model": "openai/gpt-oss-120b",
+      "credential_env": "GROQ_API_KEY",
+      "context_limit": 131072,
+      "capabilities": ["text"],
+      "_limits_source": "https://console.groq.com/docs/models -- read 2026-09-02",
+      "status": "evidenced",
+      "evidence": "Publicly priced at $0.15/$0.60 per 1M. Exactly 2x the cheap tier."
+    },
+
+    "strong": {
+      "provider": "groq",
+      "model": "qwen/qwen3.6-27b",
+      "credential_env": "GROQ_API_KEY",
+      "context_limit": 131072,
+      "capabilities": ["text"],
+      "_limits_source": "https://console.groq.com/docs/models -- read 2026-09-02",
+      "status": "evidenced",
+      "evidence": "Publicly priced at $0.60/$3.00 per 1M -- roughly 9x the cheap tier, giving the router real headroom. Replaces the provisional Ollama tier, whose $0 marginal cost made cost comparisons degenerate."
+    }
+  },
+
+  "pins": {
+    "_note": "Task types that must NEVER be routed. Enforced from Sprint 3.",
+    "embedding": {
+      "reason": "Embeddings are only meaningful against the model that built the index. Routing them corrupts the vector space silently.",
+      "model": "UNSET"
+    }
+  }
+}

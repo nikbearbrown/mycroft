@@ -1,0 +1,21 @@
+{
+  "_fixture": {
+    "synthetic": true,
+    "defects_injected": true,
+    "note": "DELIBERATELY UNPARSEABLE. Extension is .json.broken so that the gate-3 test (find -name \"*.json\") and scripts/conformance.mjs both skip it; a truncated .json here would fail gate 3 permanently. Exercises the parse_errors path of step 3.",
+    "defect_ids": ["D18"]
+  },
+  "source_name": "Finnhub company-news",
+  "fetched_at": "2026-08-27T14:30:00+00:00",
+  "record_count": 2,
+  "records": [
+    {
+      "id": 900021,
+      "headline": "Fake Industries truncated payload",
+      "datetime": 1787832300,
+      "url": "https://example.invalid/news/900021"
+    },
+    {
+      "id": 900022,
+      "headline": "Fake Industries second row, cut off mid-object",
+      "datetime": 178783

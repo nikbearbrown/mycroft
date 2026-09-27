@@ -1,0 +1,12 @@
+python-dotenv==1.1.0
+pyyaml==6.0.2
+pydantic>=2.11.3
+requests>=2.32.3
+beautifulsoup4==4.13.4
+yfinance==0.2.54
+sentence-transformers==4.1.0
+spacy==3.8.7
+chromadb==1.0.7
+langgraph>=0.4.7
+langgraph-checkpoint-sqlite==2.0.6
+ollama==0.5.1

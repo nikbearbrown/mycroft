@@ -1,0 +1,25 @@
+{
+  "company_id": "orphan-co",
+  "run_date": "2026-08-27",
+  "signals_used": 0,
+  "signals_dropped_unvalidated": 1,
+  "gate": "HALT-AWAITING-HUMAN",
+  "metrics": {
+    "total_raised_usd": null,
+    "months_since_last_raise": null,
+    "funding_stage_trend": [],
+    "distress_indicator_count": 0,
+    "signal_freshness_days": null,
+    "recent_window_days": 365,
+    "signals_recent_window": 0,
+    "signals_prior_window": 0,
+    "signal_velocity_delta": 0
+  },
+  "provenance": {
+    "total_raised": [],
+    "months_since_last_raise": null,
+    "funding_stage": [],
+    "distress": [],
+    "parse_notes": []
+  }
+}

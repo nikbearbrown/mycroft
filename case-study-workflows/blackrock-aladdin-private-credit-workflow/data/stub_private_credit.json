@@ -1,0 +1,28 @@
+[
+  {
+    "fund_id": "FUND-001",
+    "asset_id": "ASSET-001",
+    "borrower_name": "Example Industrial Holdings",
+    "committed_capital": 50000000,
+    "invested_capital": 42000000,
+    "current_value": 61000000,
+    "prior_period_value": 58000000,
+    "debt_outstanding": 28000000,
+    "ebitda": 9500000,
+    "interest_expense": 2100000,
+    "vintage_year": 2021
+  },
+  {
+    "fund_id": "FUND-002",
+    "asset_id": "ASSET-002",
+    "borrower_name": "Riverside Distribution Partners",
+    "committed_capital": 30000000,
+    "invested_capital": 27000000,
+    "current_value": 19000000,
+    "prior_period_value": 23000000,
+    "debt_outstanding": 24000000,
+    "ebitda": 3200000,
+    "interest_expense": 2800000,
+    "vintage_year": 2019
+  }
+]

@@ -1,0 +1,36 @@
+{
+  "_meta": {
+    "warning": "FABRICATED DATA. No real Klarna customers, payments, or account records anywhere in this file.",
+    "why_only_four_records": "Each record exists to drive exactly one verification path. See docs/DESIGN_SPECS.md Section 6.",
+    "why_no_cust_003": "Deliberately absent. An unregistered customer_id is what drives the no_record path — the missing record IS the fixture, not an omission."
+  },
+
+  "records": {
+    "cust_001": {
+      "due_date": "2024-03-01",
+      "payment_date": "2024-02-28",
+      "amount_due": 100.00,
+      "amount_paid": 100.00,
+      "delay_reason": null,
+      "role": "Clean match — paid before the due date, amount exact. Drives the positive/auto-resolve case for both dispute types, and (paired with an ambiguous test message) low_confidence."
+    },
+
+    "cust_002": {
+      "due_date": "2024-03-01",
+      "payment_date": "2024-03-05",
+      "amount_due": 150.00,
+      "amount_paid": 120.00,
+      "delay_reason": null,
+      "role": "Mismatch on both axes, no delay flag. Drives claim_mismatch for late_fee_dispute (date wrong) and independently for refund_request (amount wrong)."
+    },
+
+    "cust_004": {
+      "due_date": "2024-03-01",
+      "payment_date": "2024-03-04",
+      "amount_due": 80.00,
+      "amount_paid": 80.00,
+      "delay_reason": "processing_delay",
+      "role": "Late payment, but the record itself flags a processing delay. Drives ambiguous_delay — the exact case Section 9 of the case study needs to exist. late_fee_dispute only; amounts match, so refund_request has no mismatch path through this record."
+    }
+  }
+}

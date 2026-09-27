@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+package fes.v1;
+
+option go_package = "github.com/finance-event-signals/proto/gen/fes/v1;fesv1";
+
+// A material-event read produced by the enrichment agent for one filing.
+// A withheld read still becomes a Signal (status = "withheld") so the review
+// queue can show that the agent looked and declined.
+message Signal {
+  string signal_id       = 1;
+  string event_key       = 2;  // SEC accession number
+  string status          = 3;  // pending_review | withheld | actionable | rejected
+  string event_type      = 4;  // material_agreement | earnings | exec_change | ...
+  string direction       = 5;  // up | down | unclear | ""
+  string magnitude       = 6;  // small | medium | large | ""
+  double confidence      = 7;
+  string rationale       = 8;
+  string withheld_reason = 9;
+  // event context (denormalized for the reviewer)
+  string ticker       = 10;
+  string company      = 11;
+  string title        = 12;
+  string url          = 13;
+  string published_at = 14;
+  string created_at   = 15;
+}
+
+message GateDecision {
+  string signal_id  = 1;
+  string reviewer   = 2;
+  string verdict    = 3;  // actionable | reject
+  string note       = 4;
+  string decided_at = 5;
+}
+
+// ---- QueryService: read signals, clear the gate --------------------------------
+
+message ListSignalsRequest {
+  string status = 1;  // filter; "" = all
+  int32  limit  = 2;  // default 50
+}
+message ListSignalsResponse { repeated Signal signals = 1; }
+
+message GetSignalRequest { string signal_id = 1; }
+
+message ClearGateRequest {
+  string signal_id = 1;
+  string reviewer  = 2;  // required — the accountable human
+  string verdict   = 3;  // required — "actionable" | "reject"
+  string note      = 4;
+}
+message ClearGateResponse {
+  Signal       signal   = 1;
+  GateDecision decision = 2;
+}
+
+service QueryService {
+  rpc ListSignals(ListSignalsRequest) returns (ListSignalsResponse);
+  rpc GetSignal(GetSignalRequest) returns (Signal);
+  rpc ClearGate(ClearGateRequest) returns (ClearGateResponse);
+}
+
+// ---- IngestService: manual / webhook event submission -------------------------
+
+message SubmitEventRequest {
+  string company        = 1;
+  string cik            = 2;
+  string form           = 3;
+  string title          = 4;
+  string url            = 5;
+  repeated string items = 6;  // 8-K item codes, e.g. "1.01"
+}
+message SubmitEventResponse {
+  string event_key = 1;
+  bool   accepted  = 2;
+  string reason    = 3;
+}
+
+service IngestService {
+  rpc SubmitEvent(SubmitEventRequest) returns (SubmitEventResponse);
+}

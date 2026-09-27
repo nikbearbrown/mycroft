@@ -1,0 +1,88 @@
+{
+  "_provenance": {
+    "fixture_set": "clean",
+    "raw_input": "data/raw/market-sentiment-analysis-part-1/runs/sample-001-clean/reddit-wallstreetbets.json",
+    "run_id": "sample-001",
+    "source_envelope": {
+      "fetched_at": "2026-08-27T14:30:00+00:00",
+      "sample_mode": true,
+      "source_name": "Reddit r/wallstreetbets search",
+      "source_path": "data/raw/market-sentiment-analysis-part-1/sample/clean/reddit-wallstreetbets.json",
+      "source_sha256": "6df0b3e31e6f08afe4394c89b2bea38c06947480558ebf693580b6d3806e17a4",
+      "source_type": "http_json"
+    },
+    "validated_by": "scripts/gigo/market-sentiment-analysis-part-1-validate-data-shape.py"
+  },
+  "classification": "gigo",
+  "duplicates_deferred_to_step_4": true,
+  "freshness_deferred_to_step_4": true,
+  "node": "Validate data shape",
+  "record_count": 4,
+  "record_count_basis": "rows that passed shape validation and were promoted",
+  "records": [
+    {
+      "author": "synthetic_user_01",
+      "created_utc": 1787828400,
+      "id": "sy0001",
+      "num_comments": 87,
+      "permalink": "/r/wallstreetbets/comments/sy0001/",
+      "score": 412,
+      "selftext": "Held through the print and the calls are up big. Still bullish here.",
+      "subreddit": "wallstreetbets",
+      "title": "FAKE calls printing after the earnings beat"
+    },
+    {
+      "author": "synthetic_user_02",
+      "created_utc": 1787797800,
+      "id": "sy0002",
+      "num_comments": 64,
+      "permalink": "/r/wallstreetbets/comments/sy0002/",
+      "score": 288,
+      "selftext": "Rocket fuel. Adding more on any dip, long dated.",
+      "subreddit": "wallstreetbets",
+      "title": "Loading up on FAKE, this thing is going to the moon \ud83d\ude80"
+    },
+    {
+      "author": "synthetic_user_03",
+      "created_utc": 1787782200,
+      "id": "sy0003",
+      "num_comments": 51,
+      "permalink": "/r/wallstreetbets/comments/sy0003/",
+      "score": 143,
+      "selftext": "Margins are going to dump. Bearish and staying short.",
+      "subreddit": "wallstreetbets",
+      "title": "Bought FAKE puts before the margin news"
+    },
+    {
+      "author": "synthetic_user_04",
+      "created_utc": 1787762700,
+      "id": "sy0004",
+      "num_comments": 22,
+      "permalink": "/r/wallstreetbets/comments/sy0004/",
+      "score": 76,
+      "selftext": "No position change, just watching what they guide.",
+      "subreddit": "wallstreetbets",
+      "title": "Anyone else holding FAKE through the investor day?"
+    }
+  ],
+  "required_fields": [
+    "id",
+    "title",
+    "created_utc",
+    "score"
+  ],
+  "schema_source": "data/raw/market-sentiment-analysis-part-1/sample/fixture-manifest.json",
+  "schema_version": "1.0.0",
+  "shape_validation": {
+    "count_matches_declared": true,
+    "malformed_rows": [],
+    "missing_fields": [],
+    "rows_promoted": 4,
+    "rows_seen": 4,
+    "rows_withheld": 0,
+    "source_declared_record_count": 4
+  },
+  "stream": "reddit",
+  "types_deferred_to_step_4": "Type violations are not checked here. This step has no declared field for them, so per fixture-manifest.json they surface in step 4 flags.",
+  "workflow": "Market Sentiment Analysis - Part 1"
+}

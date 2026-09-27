@@ -1,0 +1,246 @@
+{
+  "fixture_set": "market-sentiment-analysis-part-1 frozen sample",
+  "manifest_version": "1.0.0",
+  "frozen_at": "2026-08-27T14:30:00+00:00",
+  "recipe": "recipes/market-sentiment-analysis-part-1.md",
+  "human_view": "data/raw/market-sentiment-analysis-part-1/sample/FIXTURE_MANIFEST.md",
+  "synthetic": true,
+  "provenance": {
+    "derived_from": "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Market_Monitoring_Agent/market_sentiment.json",
+    "shapes_taken_from": [
+      "Fetch Price Data node URL -> Alpha Vantage GLOBAL_QUOTE response body keyed \"Global Quote\"",
+      "Fetch News Headlines node URL -> Finnhub company-news flat array of article objects",
+      "Fetch Reddit Mentions node URL -> Reddit search.json, data.children[] of kind t3",
+      "Aggregate & Calculate Sentiment node jsCode -> the field names the downstream step reads"
+    ],
+    "values_are_invented": true,
+    "values_note": "Payload SHAPES are copied from the source workflow. Every VALUE is synthetic. Ticker FAKE / Fake Industries Inc. does not exist, no headline was published, no Reddit post exists. Nothing here is a market observation and nothing here may be cited as evidence (P3).",
+    "no_live_call_performed": true,
+    "credentials": "URLs carry ${ALPHA_VANTAGE_API_KEY} / ${FINNHUB_API_KEY} placeholders only; no key value appears in any fixture."
+  },
+  "identity_keys": {
+    "price": ["01. symbol", "07. latest trading day"],
+    "news": ["id"],
+    "news_near_duplicate": ["headline (whitespace-normalised, case-folded)"],
+    "reddit": ["id"]
+  },
+  "duplicate_counting_rule": "A duplicate is every occurrence of an identity key beyond the first. Three rows sharing one key count as 2 duplicates, not 3 and not 1.",
+  "required_fields": {
+    "price_global_quote": ["01. symbol", "05. price", "06. volume", "07. latest trading day", "08. previous close", "10. change percent"],
+    "news_article": ["id", "datetime", "headline", "source", "url"],
+    "reddit_t3_data": ["id", "title", "created_utc", "score"],
+    "null_rule": "A field present with value null counts as missing, not as present."
+  },
+  "freshness_policy": {
+    "basis": "frozen_at, never wall-clock now() - these fixtures must not rot",
+    "news_window": "datetime within 2 days before frozen_at (matches the 2-day lookback in the source workflow Fetch News Headlines URL)",
+    "reddit_window": "created_utc within 24 hours before frozen_at (matches t=day)",
+    "price_window": "\"07. latest trading day\" within 5 calendar days of frozen_at (tolerates weekends and holidays)",
+    "stale_definition": "Any timestamp outside its window is stale and must be flagged, not silently dropped."
+  },
+  "files": [
+    { "path": "clean/price-alpha-vantage.json", "source": "price", "defects": [], "rows": 1, "rows_basis": "records[] quotes" },
+    { "path": "clean/news-finnhub.json", "source": "news", "defects": [], "rows": 5, "rows_basis": "records[] articles" },
+    { "path": "clean/reddit-wallstreetbets.json", "source": "reddit", "defects": [], "rows": 4, "rows_basis": "data.children[] submissions" },
+    { "path": "defective/price-alpha-vantage.json", "source": "price", "defects": ["D01", "D02", "D03", "D04"], "rows": 5, "rows_basis": "records[] quotes" },
+    { "path": "defective/news-finnhub.json", "source": "news", "defects": ["D05", "D06", "D07", "D08", "D09", "D10", "D11", "D12"], "rows": 8, "rows_basis": "records[] articles" },
+    { "path": "defective/reddit-wallstreetbets.json", "source": "reddit", "defects": ["D13", "D14", "D15", "D16", "D17"], "rows": 6, "rows_basis": "data.children[] submissions" },
+    { "path": "defective/news-finnhub-unparseable.json.broken", "source": "news", "defects": ["D18"], "rows": null, "rows_basis": "file does not parse; row count is undefined by design" }
+  ],
+  "defects": [
+    {
+      "id": "D01",
+      "class": "missing_required_field",
+      "file": "defective/price-alpha-vantage.json",
+      "locator": "records[1].\"Global Quote\"",
+      "field": "05. price",
+      "description": "Quote for FAKEB has no \"05. price\" key at all. The aggregate step runs parseFloat on this field, so undetected it silently becomes a price of 0.",
+      "expected_detection": { "step": 3, "output_field": "missing_fields", "expectation": "an entry naming records[1] and field \"05. price\"" },
+      "also_expected": { "step": 4, "output_field": "rejects", "expectation": "row rejected, not defaulted to 0" }
+    },
+    {
+      "id": "D02",
+      "class": "type_violation",
+      "file": "defective/price-alpha-vantage.json",
+      "locator": "records[2].\"Global Quote\".\"10. change percent\"",
+      "value": "N/A",
+      "description": "Change percent is the literal string \"N/A\" where a numeric string ending in percent is required. parseFloat yields NaN, which propagates into the price sentiment score.",
+      "expected_detection": { "step": 4, "output_field": "flags", "expectation": "type violation flagged on records[2]; must not be coerced to 0" }
+    },
+    {
+      "id": "D03",
+      "class": "stale_timestamp",
+      "file": "defective/price-alpha-vantage.json",
+      "locator": "records[3].\"Global Quote\".\"07. latest trading day\"",
+      "value": "2024-03-15",
+      "description": "Latest trading day is roughly 2.5 years before frozen_at - a stale quote presented as current.",
+      "expected_detection": { "step": 4, "output_field": "flags", "expectation": "stale flag citing the 5-calendar-day price window" }
+    },
+    {
+      "id": "D04",
+      "class": "duplicate",
+      "file": "defective/price-alpha-vantage.json",
+      "locator": "records[4] duplicates records[0]",
+      "identity_key": "FAKE / 2026-08-27",
+      "description": "The FAKE quote appears twice, byte-identical. Undetected it double-weights one ticker in the price component.",
+      "expected_detection": { "step": 4, "output_field": "duplicates", "expectation": "count 1 for the price source" }
+    },
+    {
+      "id": "D05",
+      "class": "duplicate",
+      "file": "defective/news-finnhub.json",
+      "locator": "records[1].headline duplicates records[0].headline",
+      "identity_key": "headline (near-duplicate); ids 900001 vs 900011 differ",
+      "description": "Syndicated copy of the same story from a second outlet. Distinct id and url, identical headline - the case a naive id-only dedupe misses, and it inflates the news sentiment denominator.",
+      "expected_detection": { "step": 4, "output_field": "duplicates", "expectation": "caught by the headline near-duplicate key, not by id" }
+    },
+    {
+      "id": "D06",
+      "class": "duplicate",
+      "file": "defective/news-finnhub.json",
+      "locator": "records[2] duplicates records[0]",
+      "identity_key": "id 900001",
+      "description": "Byte-identical repeat of the first article, same id. The plain identity-key duplicate.",
+      "expected_detection": { "step": 4, "output_field": "duplicates", "expectation": "caught by the id identity key" }
+    },
+    {
+      "id": "D07",
+      "class": "missing_required_field",
+      "file": "defective/news-finnhub.json",
+      "locator": "records[3]",
+      "field": "headline",
+      "description": "Article has summary and url but no headline key. The aggregate step concatenates headline and summary, so undetected it scores sentiment on the string \"undefined\".",
+      "expected_detection": { "step": 3, "output_field": "missing_fields", "expectation": "an entry naming records[3] and field \"headline\"" }
+    },
+    {
+      "id": "D08",
+      "class": "missing_required_field",
+      "file": "defective/news-finnhub.json",
+      "locator": "records[4].url",
+      "value": null,
+      "description": "url is present but null, so the claim in this row cannot be traced to a source. Tests the null_rule: present-but-null counts as missing.",
+      "expected_detection": { "step": 3, "output_field": "missing_fields", "expectation": "an entry naming records[4] and field \"url\" despite the key existing" }
+    },
+    {
+      "id": "D09",
+      "class": "malformed_row",
+      "file": "defective/news-finnhub.json",
+      "locator": "records[5]",
+      "description": "The row is a JSON array, not an object. Valid JSON, invalid record. Any .get() on it raises rather than returning a default.",
+      "expected_detection": { "step": 3, "output_field": "parse_errors", "expectation": "a structural error naming records[5]" },
+      "also_expected": { "step": 4, "output_field": "rejects", "expectation": "row rejected without aborting the whole run" }
+    },
+    {
+      "id": "D10",
+      "class": "stale_timestamp",
+      "file": "defective/news-finnhub.json",
+      "locator": "records[6].datetime",
+      "value": 1710507600,
+      "value_iso": "2024-03-15T13:00:00+00:00",
+      "description": "Article dated far outside the declared two-day collection window, yet returned inside it.",
+      "expected_detection": { "step": 4, "output_field": "flags", "expectation": "stale flag citing the 2-day news window and the declared window in the envelope" }
+    },
+    {
+      "id": "D11",
+      "class": "type_violation",
+      "file": "defective/news-finnhub.json",
+      "locator": "records[7].datetime",
+      "value": "yesterday",
+      "description": "datetime is free text where an epoch integer is required - it cannot be compared to the window at all.",
+      "expected_detection": { "step": 4, "output_field": "flags", "expectation": "type violation flagged; must not be treated as epoch 0 (1970) nor as fresh" }
+    },
+    {
+      "id": "D12",
+      "class": "count_mismatch",
+      "file": "defective/news-finnhub.json",
+      "locator": "record_count (envelope) vs len(records)",
+      "declared": 7,
+      "actual": 8,
+      "description": "Envelope under-reports its own payload by one row. Tests that the validator recounts rather than trusting the declared count - the class of defect that makes every downstream rate wrong.",
+      "expected_detection": { "step": 3, "output_field": "record_count", "expectation": "recomputed as 8, with the disagreement surfaced" },
+      "also_expected": { "step": 4, "output_field": "quality_notes", "expectation": "note recording declared 7 vs actual 8" }
+    },
+    {
+      "id": "D13",
+      "class": "duplicate",
+      "file": "defective/reddit-wallstreetbets.json",
+      "locator": "records[0].data.children[1] duplicates children[0]",
+      "identity_key": "id sy0001",
+      "description": "Same submission id served twice with a slightly different title. Undetected it double-counts one bullish post in the social component.",
+      "expected_detection": { "step": 4, "output_field": "duplicates", "expectation": "count 1 for the reddit source, keyed on id not title" }
+    },
+    {
+      "id": "D14",
+      "class": "missing_required_field",
+      "file": "defective/reddit-wallstreetbets.json",
+      "locator": "records[0].data.children[2].data",
+      "field": "title",
+      "description": "Submission has selftext but no title. The aggregate step reads post.data.title, so undetected it scores on \"undefined\".",
+      "expected_detection": { "step": 3, "output_field": "missing_fields", "expectation": "an entry naming children[2] and field \"title\"" }
+    },
+    {
+      "id": "D15",
+      "class": "malformed_row",
+      "file": "defective/reddit-wallstreetbets.json",
+      "locator": "records[0].data.children[3].data",
+      "description": "The child data is a string instead of an object. Valid JSON, invalid record. Note the string contains \"to the moon\", so a naive substring-based sentiment pass would happily score it bullish.",
+      "expected_detection": { "step": 3, "output_field": "parse_errors", "expectation": "a structural error naming children[3]" },
+      "also_expected": { "step": 4, "output_field": "rejects", "expectation": "row rejected before any sentiment keyword matching runs on it" }
+    },
+    {
+      "id": "D16",
+      "class": "stale_timestamp",
+      "file": "defective/reddit-wallstreetbets.json",
+      "locator": "records[0].data.children[4].data.created_utc",
+      "value": 1710523200,
+      "value_iso": "2024-03-15T17:20:00+00:00",
+      "description": "Submission from roughly 2.5 years before frozen_at returned by a t=day query.",
+      "expected_detection": { "step": 4, "output_field": "flags", "expectation": "stale flag citing the 24-hour reddit window" }
+    },
+    {
+      "id": "D17",
+      "class": "type_violation",
+      "file": "defective/reddit-wallstreetbets.json",
+      "locator": "records[0].data.children[5].data.score",
+      "value": "many",
+      "description": "score is the word \"many\" where an integer is required.",
+      "expected_detection": { "step": 4, "output_field": "flags", "expectation": "type violation flagged on children[5]" }
+    },
+    {
+      "id": "D18",
+      "class": "unparseable_file",
+      "file": "defective/news-finnhub-unparseable.json.broken",
+      "locator": "whole file, truncated mid-object inside records[1].datetime",
+      "description": "File is not valid JSON. The extension is .json.broken on purpose: a truncated *.json under data/raw/ would fail the gate-3 test of this recipe permanently and would also trip scripts/conformance.mjs, so the fixture would break the repo instead of testing the validator.",
+      "expected_detection": { "step": 3, "output_field": "parse_errors", "expectation": "one parse error naming the file; the step reports it and halts rather than raising an unhandled exception" },
+      "opt_in": "The validator must be pointed at this file explicitly; no *.json glob will find it."
+    }
+  ],
+  "expected_totals": {
+    "note": "Totals a test can assert against the defective set. Duplicates follow duplicate_counting_rule.",
+    "duplicates": { "price": 1, "news_by_id": 1, "news_by_headline": 2, "reddit": 1 },
+    "missing_required_field_rows": { "price": 1, "news": 2, "reddit": 1 },
+    "malformed_rows": { "price": 0, "news": 1, "reddit": 1 },
+    "stale_rows": { "price": 1, "news": 1, "reddit": 1 },
+    "type_violation_rows": { "price": 1, "news": 1, "reddit": 1 },
+    "count_mismatches": 1,
+    "unparseable_files": 1,
+    "defects_total": 18
+  },
+  "clean_invariants": [
+    "Every *.json file in the set parses.",
+    "In clean/, every required field is present and non-null on every row.",
+    "In clean/, no identity key repeats and no headline repeats.",
+    "In clean/, every timestamp falls inside its freshness window relative to frozen_at.",
+    "In clean/, the declared record_count equals the recounted row count.",
+    "No fixture contains a credential value; only ${VAR} placeholders.",
+    "No timestamp is generated from now() - the set is frozen and will not rot."
+  ],
+  "not_covered": [
+    "Wrong-entity signals: a row that is well-formed, fresh, unique and required-field-complete but belongs to a different company. This is the defect class that reached a finished brief per logs/RUN_LOG.md#2026-08-26, and no shape check can catch it. Fixture ticker FAKE is unambiguous by construction, which is exactly why this set cannot exercise it.",
+    "Upstream HTTP failure modes: 401/403 on a bad key, 429 rate limit, timeout, empty 200 body. The ingest step needs these; they are envelope-level rather than record-level and belong in a second fixture set.",
+    "Encoding defects: mojibake, lone surrogates, BOM. The source workflow JSON is itself cp1252-hostile UTF-8, so this is a live risk.",
+    "Volume: the largest defective file holds 8 rows. Nothing here tests pagination, the reddit limit=50 ceiling, or memory behaviour.",
+    "Semantic sentiment correctness: the fixtures carry positive and negative keywords so the aggregate path executes deterministically, but this manifest asserts nothing about whether the resulting score is right - that is a human adequacy judgment (P1), not a conformance check."
+  ]
+}

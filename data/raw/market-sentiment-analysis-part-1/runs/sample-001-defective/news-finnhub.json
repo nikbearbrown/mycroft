@@ -1,0 +1,132 @@
+{
+  "_provenance": {
+    "fixture_set": "defective",
+    "ingested_by": "scripts/ingest/market-sentiment-analysis-part-1-ingest-inputs.py",
+    "manifest_declared_rows": 8,
+    "manifest_declared_rows_basis": "records[] articles",
+    "recipe": "recipes/market-sentiment-analysis-part-1.md",
+    "run_id": "sample-001",
+    "source_path": "data/raw/market-sentiment-analysis-part-1/sample/defective/news-finnhub.json",
+    "source_sha256": "c7dd6641a29e8dee26efd45fed186c473c01977ef769f4192eb402ba4cb052e9",
+    "transport_only": "Records are verbatim. This step does not recount, dedupe, drop, or coerce."
+  },
+  "classification": "ingest",
+  "fetched_at": "2026-08-27T14:30:00+00:00",
+  "live_call_performed": false,
+  "node": "Ingest declared inputs",
+  "records": [
+    {
+      "category": "company",
+      "datetime": 1787832300,
+      "headline": "Fake Industries shares surge as quarterly results beat expectations",
+      "id": 900001,
+      "image": "https://example.invalid/img/900001.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Wire",
+      "summary": "Fake Industries reported a strong quarter, and the stock saw a sharp gain in early trading.",
+      "url": "https://example.invalid/news/900001"
+    },
+    {
+      "category": "company",
+      "datetime": 1787832900,
+      "headline": "Fake Industries shares surge as quarterly results beat expectations",
+      "id": 900011,
+      "image": "https://example.invalid/img/900011.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Aggregator",
+      "summary": "Syndicated copy of the earnings story carried by a second outlet.",
+      "url": "https://example.invalid/news/900011"
+    },
+    {
+      "category": "company",
+      "datetime": 1787832300,
+      "headline": "Fake Industries shares surge as quarterly results beat expectations",
+      "id": 900001,
+      "image": "https://example.invalid/img/900001.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Wire",
+      "summary": "Fake Industries reported a strong quarter, and the stock saw a sharp gain in early trading.",
+      "url": "https://example.invalid/news/900001"
+    },
+    {
+      "category": "company",
+      "datetime": 1787822100,
+      "id": 900013,
+      "image": "https://example.invalid/img/900013.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Daily",
+      "summary": "Body text arrived with no headline field on the wire record.",
+      "url": "https://example.invalid/news/900013"
+    },
+    {
+      "category": "company",
+      "datetime": 1787776800,
+      "headline": "Fake Industries schedules investor day",
+      "id": 900014,
+      "image": "https://example.invalid/img/900014.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Daily",
+      "summary": "Scheduling note with a null link, so the claim cannot be traced to a source.",
+      "url": null
+    },
+    [
+      "id",
+      900015,
+      "headline",
+      "Fake Industries row arrived as an array instead of an object"
+    ],
+    {
+      "category": "company",
+      "datetime": 1710507600,
+      "headline": "Fake Industries announces prior-year restructuring",
+      "id": 900016,
+      "image": "https://example.invalid/img/900016.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Wire",
+      "summary": "Item dated well outside the declared two-day collection window.",
+      "url": "https://example.invalid/news/900016"
+    },
+    {
+      "category": "company",
+      "datetime": "yesterday",
+      "headline": "Fake Industries item carries a non-numeric timestamp",
+      "id": 900017,
+      "image": "https://example.invalid/img/900017.jpg",
+      "related": "FAKE",
+      "source": "Synthetic Aggregator",
+      "summary": "The datetime field is a free-text string where an epoch integer is required.",
+      "url": "https://example.invalid/news/900017"
+    }
+  ],
+  "recount_note": "Deliberately absent. Recounting and comparing against source_declared_record_count is step 3 (validate-data-shape).",
+  "recount_performed": false,
+  "rejects": [],
+  "sample_mode": true,
+  "source_declared_record_count": 7,
+  "source_declared_record_count_basis": "records[] entries, each one Finnhub article object",
+  "source_errors": [],
+  "source_fixture_block": {
+    "defect_ids": [
+      "D05",
+      "D06",
+      "D07",
+      "D08",
+      "D09",
+      "D10",
+      "D11",
+      "D12"
+    ],
+    "defects_injected": true,
+    "fixture_set": "sample/defective",
+    "frozen_at": "2026-08-27T14:30:00+00:00",
+    "manifest": "data/raw/market-sentiment-analysis-part-1/sample/fixture-manifest.json",
+    "note": "Synthetic fixture with DELIBERATE DEFECTS. Every defect is catalogued in the manifest by id and locator. Never cite as evidence; never promote to data/verified/.",
+    "recipe": "recipes/market-sentiment-analysis-part-1.md",
+    "synthetic": true
+  },
+  "source_name": "Finnhub company-news",
+  "source_type": "http_json",
+  "source_url_or_path": "https://finnhub.io/api/v1/company-news?symbol=FAKE&from=2026-08-25&to=2026-08-27&token=${FINNHUB_API_KEY}",
+  "stream": "news",
+  "workflow": "Market Sentiment Analysis - Part 1"
+}

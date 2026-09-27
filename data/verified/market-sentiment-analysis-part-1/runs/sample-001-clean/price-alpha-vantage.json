@@ -1,0 +1,58 @@
+{
+  "_provenance": {
+    "fixture_set": "clean",
+    "raw_input": "data/raw/market-sentiment-analysis-part-1/runs/sample-001-clean/price-alpha-vantage.json",
+    "run_id": "sample-001",
+    "source_envelope": {
+      "fetched_at": "2026-08-27T14:30:00+00:00",
+      "sample_mode": true,
+      "source_name": "Alpha Vantage GLOBAL_QUOTE",
+      "source_path": "data/raw/market-sentiment-analysis-part-1/sample/clean/price-alpha-vantage.json",
+      "source_sha256": "a7d3c58fdf0a388bc67eed6403ec44437462a6297bb88bcddb78b868e185e2be",
+      "source_type": "http_json"
+    },
+    "validated_by": "scripts/gigo/market-sentiment-analysis-part-1-validate-data-shape.py"
+  },
+  "classification": "gigo",
+  "duplicates_deferred_to_step_4": true,
+  "freshness_deferred_to_step_4": true,
+  "node": "Validate data shape",
+  "record_count": 1,
+  "record_count_basis": "rows that passed shape validation and were promoted",
+  "records": [
+    {
+      "01. symbol": "FAKE",
+      "02. open": "100.0000",
+      "03. high": "103.5000",
+      "04. low": "99.5000",
+      "05. price": "102.0000",
+      "06. volume": "12000000",
+      "07. latest trading day": "2026-08-27",
+      "08. previous close": "100.0000",
+      "09. change": "2.0000",
+      "10. change percent": "2.0000%"
+    }
+  ],
+  "required_fields": [
+    "01. symbol",
+    "05. price",
+    "06. volume",
+    "07. latest trading day",
+    "08. previous close",
+    "10. change percent"
+  ],
+  "schema_source": "data/raw/market-sentiment-analysis-part-1/sample/fixture-manifest.json",
+  "schema_version": "1.0.0",
+  "shape_validation": {
+    "count_matches_declared": true,
+    "malformed_rows": [],
+    "missing_fields": [],
+    "rows_promoted": 1,
+    "rows_seen": 1,
+    "rows_withheld": 0,
+    "source_declared_record_count": 1
+  },
+  "stream": "price",
+  "types_deferred_to_step_4": "Type violations are not checked here. This step has no declared field for them, so per fixture-manifest.json they surface in step 4 flags.",
+  "workflow": "Market Sentiment Analysis - Part 1"
+}
