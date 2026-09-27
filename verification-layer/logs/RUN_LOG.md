@@ -4359,3 +4359,211 @@ date, recipe, inputs, commands, outputs, result, open issues.
 - **Correction to the entry above:** the docs-and-log commit was reworded after that entry was
   written (its message named a file whose name the commit-message rule excludes). It is now
   `99aec80`, not `dbf724a`; its tree is unchanged.
+
+## 2026-09-27 (continued) -- A model-call timeout, and a ledger refresh that found two wrong claims
+
+- **Recipe:** none; hardening plus a ledger refresh. Requested: refresh the stale Honest Ledger
+  entries and add the model-call timeout.
+- **Timeout (`adapters/langchain_adapter.py`):**
+  - **`MODEL_TIMEOUT_S`** (env, default 120) is the seconds a model call may receive nothing
+    before it is abandoned. It goes to ChatOllama's httpx client (`client_kwargs`) and to
+    Gemini's `timeout`.
+    - ChatOllama always streams, so for Ollama this is a **stall limit, not a cap on a call's
+      length**. A model that keeps producing tokens is not cut off.
+  - **Why 120 s:** it is above the slowest successful LLM attempt stored in
+    `web/data/accountability.db`: 85.3 s over 56 attempts (median 25.5 s, p95 60.8 s, search
+    calls included). Extraction calls ran 5 times, max 24.2 s.
+  - **On a timeout** the call raises `LangchainTimeoutError`, a subclass of
+    `LangchainConnectionError`. The existing route handlers record the run as halted with the
+    error, and the extraction path records `extraction_failed`; no server change was needed.
+    - The message says it timed out and how long it waited, and is kept separate from a
+      refused connection.
+    - Search-tool errors are caught inside the tool loop and handed to the model, so they can't
+      be mislabelled as a model timeout.
+  - **Tests:** `tests/test_model_timeout.py` (6), against a stub Ollama server on 127.0.0.1
+    driven by the real ChatOllama and httpx client:
+    - a server that never answers ends both the extraction call and the agent call with
+      `LangchainTimeoutError` (it fired at 0.31–0.33 s for a 0.3 s limit);
+    - a slow but steady stream, longer than the limit in total, still succeeds (the deliberate
+      check that it's a stall limit);
+    - a refused connection stays "unreachable";
+    - a wrapped timeout is still recognised;
+    - the limit reaches the client.
+  - `.env.example` documents the variable.
+- **Honest Ledger refresh (`web/self_report.py`):**
+  - **`no-route-tests` → RESOLVED.** `/api/compare` has had route tests since the web commit, as
+    have the stream, run-read, decision, source, audit and export routes. The entry now lists the
+    routes still without one:
+    - the plain `/api/chat`, `/api/config`, `DELETE /api/runs`, replay, contradictions,
+      `/api/self-report` and `/api/directive`.
+  - **`retry-halt-unproven` → RESOLVED, observed.** Counted from the stored runs (LangChain
+    provider, real models only; the test model `not-a-real-model` excluded):
+    - 48 agent-runs, 2026-09-22 to 2026-09-24;
+    - 13 retries (llama3.2 9, gemini-2.5-flash 4): 4 recovered on attempt 2 and 9 halted;
+    - e.g. `55df46d2` (recovered) and `da03160a` (halted).
+    - Nobody has reviewed the 9 halts individually; the entry says so.
+  - **`ollama-hangs-under-compare`: still OPEN,** retitled with the count and updated. The
+    timeout bounds a hang, but doesn't fix it; whether Ollama stays wedged after a timeout is
+    untested.
+  - **New OPEN `consistency-probe-shown-as-retry` (medium).** See the second correction below.
+- **Corrections (earlier entries unchanged):**
+  - **Four hangs, not five.** This log records hangs at the 2026-09-25 B2 + B3 entry and the
+    BP + U4 entry (one each), and two in the 2026-09-26 option 1 + B5 entry. That entry's "five
+    observations", the ledger's update and a comment written this session all said five. All
+    are corrected to four.
+  - **The 2026-09-27 B6 + U9 chat run did not retry.** That entry reports "Retrying (attempt 2)"
+    on chat run `3f1b0f89`. Its reasoning objects hold a single attempt (SUCCESS); the second
+    traced LLM call was the chat route's consistency probe, which reuses the traced adapter.
+    - The trace and the record disagree (P6). The live view labels the probe as a retry.
+    - Logged as `consistency-probe-shown-as-retry`, not fixed.
+- **Commands:**
+  - `python -m unittest discover -s tests -t .` — 459/459, Windows and WSL;
+  - `node scripts/conformance.mjs` on the changed files — all conform (4 files; `.env.example` is
+    not a type it checks).
+- **Open issues:**
+  - The probe/retry mislabel.
+  - The hang's cause, and `CROSS_AGENT_MAX_CONCURRENCY=1`, remain untried.
+  - Each model call builds a new ChatOllama (about 0.5 s of client setup, measured in the stub
+    test). Not changed here.
+  - Nothing here is committed.
+
+## 2026-09-27 (continued) -- A reference site documenting every file, and the drift it found
+
+- **Recipe:** none; documentation. Requested: a multi-page, navigable doc covering every file,
+  feature, design decision, layer and component.
+- **Decisions by the human** (asked before building, 2026-09-27):
+  - a static HTML site;
+  - hand-written explanations plus a generated inventory and a drift test;
+  - every file covered, with fixtures and archived files in grouped entries;
+  - older docs linked, not touched.
+- **Built:**
+  - **`scripts/build_docs.py`** (stdlib only) builds `docs/reference/*.html` from Markdown sources
+    in `docs/reference/src/`. It generates on every build what can be read off the code:
+    - each file's inventory (classes, functions and docstrings, constants, TypeScript exports,
+      internal imports, imported-by, third-party packages, test counts, lines);
+    - the route table from `web/server.py`;
+    - every environment-variable read with its default;
+    - the import matrix between packages;
+    - the Honest Ledger page (from `KNOWN_ISSUES`, read with `ast`);
+    - the search index.
+  - **Source is parsed, never imported.** `--check` builds in memory and writes nothing.
+  - **`tests/test_docs_coverage.py`** (11 tests). It fails when a project file (tracked, or new and
+    not ignored) has no entry, an entry matches no file, two entries claim one file, or any link
+    or anchor in the built site doesn't resolve. It also tests the renderer and globs.
+  - **Sources:**
+    - `docs/reference/src/AUTHORING.md` (format and accuracy rules);
+    - 26 narrative pages: overview, running it, layers, a run end to end, principles in the code,
+      49 design decision records, 12 feature pages, HTTP API, configuration, records and
+      statuses, glossary, Honest Ledger, file index, drift, history;
+    - 13 per-folder file pages, one entry per project file.
+  - **Assets:** `assets/site.css` uses only the six `brutalist/DESIGN.md` tokens, their dark-mode
+    values and its type stack, with no sticky header. `assets/site.js` handles the menu and
+    search (`/` to focus, arrow keys, Enter, Escape).
+  - The output is 39 pages, committed so the site opens from disk.
+- **How the entries were written:**
+  - Nine AI subagents, each given AUTHORING.md and one folder's files, drafted the per-file pages
+    and the decision records.
+  - This session wrote the narrative pages and assembled everything.
+  - It checked claims against the code and corrected three of its own before building: the
+    corrective directive doesn't say why a reply failed; the review-app button is "New compare";
+    `langfuse` must be installed even though its keys are optional.
+  - It spot-checked five facts from the subagents' pages against the code; all five matched.
+  - Accuracy of the rest is not machine-checked. Each entry names its source, and an unrecorded
+    reason is labelled a judgment.
+- **Verified:**
+  - `python scripts/build_docs.py` gives 0 problems; `tests/test_docs_coverage.py` gives 11/11.
+  - `node scripts/conformance.mjs` over the builder, test, assets and all 40 sources conforms.
+  - In the in-app browser, served from a temporary `python -m http.server` on 127.0.0.1:8765
+    (the preview tool reads only the repo-root `.claude/launch.json`, which this subsystem
+    doesn't modify):
+    - a scripted pass over all 39 pages at 1280, 768 and 375 px found no horizontal overflow
+      after two CSS fixes;
+    - every SVG label sits inside its box;
+    - search returns and selects results;
+    - the phone Menu opens and closes;
+    - the layer figure carries `role="img"`, `<title>` and `<desc>`.
+  - **Broke during testing, fixed:**
+    - the sidebar's section labels inherited the article `h2` border;
+    - long unbroken tokens (a ledger detail, file paths in a page's contents list) overflowed at
+      desktop and phone widths;
+    - a decision-anchor regex was written with a literal backspace by a shell here-doc (anchors
+      silently fell back to long slugs); caught by a direct test and rewritten;
+    - one page lost its structure when a scripted replacement assumed an entry's position;
+      caught by the build's duplicate-entry check and restored.
+  - Screenshots timed out (the app window was hidden), so the layout evidence is measurement,
+    not images.
+- **Drift found while documenting** (recorded on the site's "Drift found while documenting"
+  page; **nothing fixed here**):
+  - **Out of date:**
+    - README.md lists the archived adapters as live and a removed scripted mode;
+    - docs/SYSTEM_DESIGN.md names v1.1.0 as active and sequential agents;
+    - the Tavily comments in requirements.txt and .env.example contradict the code;
+    - `.env.example` is missing `OLLAMA_HOST`, `CROSS_AGENT_MAX_CONCURRENCY` and
+      `ACCOUNTABILITY_SECRET`.
+  - **Stale docstrings** in `core/directive.py`, `datasources/edgar.py`, `web/db.py`,
+    `web/self_report.py`, `validation/gate.py`, `validation/concept_linkage.py` and several tests.
+  - **`scripts/run_overlap_concept_live.py --help` fails** with `ModuleNotFoundError`: it imports
+    archived adapters. This was run by a subagent. `run_cross_agent_live.py` has the same imports.
+  - **`web/self_report.py`'s `load_errors` can never fire.** unittest files a failed import under
+    `loader`, not `_Failed*`; confirmed by a subagent running discovery over a broken module.
+  - **Latent defects found by reading only:**
+    - a mixed decision can clear the grade item without a grade;
+    - `DERIVED_WRONG` is double-counted;
+    - `ONE_SIDED` is broader than its label;
+    - `filings.py` doesn't catch `EOFError` on truncated gzip;
+    - replay quirks;
+    - the frontend's source-snippet request sends no token;
+    - `Assessment.tsx` doesn't handle `abstained` / `extraction_failed`;
+    - investor fixtures are labelled `"scope": "auditor"`.
+  - **Checked by hand:** a refused connection through the real ChatOllama path is wrapped as
+    `LangchainConnectionError`. The `except EnvironmentError` concern is therefore latent, not
+    observed.
+  - **Not settled:** a subagent read the review app's CSS as hiding page links below 768 px. That
+    contradicts the 2026-09-27 B6 + U9 observation of the Menu working at 375 px. The server on
+    :8000 wasn't reachable from the browser pane this time, so it wasn't re-checked. Both facts
+    are on the site.
+- **Correction to the 2026-09-27 commits entry:** it says the stream parser "doesn't accept CRLF
+  or CR line endings". It does accept them within a chunk (`push()` normalises CRLF and CR to LF).
+  It fails only when a CRLF pair is split across two chunks: the CR becomes LF, and the next
+  chunk's leading LF makes a false blank line. That is what the clean-checkout test hit. Found by
+  the frontend-tests subagent reading `stream.ts`.
+- **Outputs:**
+  - `scripts/build_docs.py`, `tests/test_docs_coverage.py`;
+  - `docs/reference/src/**` (40 sources);
+  - `docs/reference/assets/{site.css,site.js,search-index.js}`, `docs/reference/*.html`;
+  - an adapters-page note on the refused-connection check.
+- **Open issues:** everything on the drift page; the consistency-probe mislabel; the phone-menu
+  question. Nothing is committed.
+
+## 2026-09-27 (continued) -- Reference site: light by default with a theme toggle; linked from the README
+
+- **Recipe:** none; documentation. Requested: a light/dark toggle, because the dark theme was hard
+  to read; and a link to the site from the project README.
+- **Changed:**
+  - **Light by default.** The site had followed the system's `prefers-color-scheme`, so a
+    dark-mode system got the dark theme with no way out. `assets/site.css` now keeps the light
+    tokens as the default and applies DESIGN.md's dark values only under
+    `<html data-theme="dark">`.
+  - **The toggle.** A "Dark theme" toggle button (`aria-pressed`) in every page's header, handled
+    in `assets/site.js`. The choice is kept in `localStorage` as `docs-theme`. If storage is
+    refused, the toggle still works for the page.
+  - **No flash.** `scripts/build_docs.py` puts a one-line script before the stylesheet in each
+    page's `<head>`, so a saved dark choice applies before the first paint.
+  - **README.md:** a new "Documentation" section near the top links `docs/reference/index.html`.
+    It says to open the file locally (GitHub shows HTML as source), how to rebuild, and that the
+    coverage test keeps the site honest.
+  - **Doc entries updated** for the site's assets and the builder.
+- **Verified:**
+  - `python scripts/build_docs.py` gives 0 problems;
+  - `tests/test_docs_coverage.py` gives 12/12. The new test checks every page has the toggle and
+    reads the saved choice before the stylesheet.
+  - Conformance passes on the changed files.
+  - **In the in-app browser** (temporary `http.server` on 127.0.0.1:8765, stopped afterwards),
+    with the pane reporting `prefers-color-scheme: dark`:
+    - a page opened white (`rgb(255, 255, 255)`);
+    - the toggle switched it to `rgb(17, 17, 17)` with `aria-pressed="true"`;
+    - the choice carried to another page and switched back;
+    - at 1280 px the button sits in the header right of search; at 375 px it shares a row with
+      Menu; no overflow at either width.
+- **Not done:** the repository-root README (outside `verification-layer/`) was not changed. Nothing
+  is committed.
