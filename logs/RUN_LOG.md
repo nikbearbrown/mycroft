@@ -151,3 +151,265 @@ workflow changes.
 - **Outputs:** Updated `scripts/regulatory-intel/workflow.dev.json` (`Normalize Data` node); `scripts/regulatory-intel/B2-VERIFICATION.md`.
 - **Result:** B2 closed for the Federal Register mislabeling (157-item complaint from `FINDINGS.md`). The 21 "Unknown Source" Google News fallthrough is explicitly left open — no reliable signal exists there (no `dc:creator` on Google News items; some headlines don't contain any of the matched keywords).
 - **Open issues:** 21 Unknown Source (Google News fallthrough, no clear fix path), B3 (Google News URL unwrap, confirmed bigger scrape-based task).
+
+## 2026-09-02 -- Gateway Sprint 1: request logbook
+
+> Logged retroactively on 2026-09-10. Commit `b46d48e` merged these files on
+> 2026-09-02 without a RUN_LOG entry, which the logging rule requires; this
+> entry backfills the record and is not a contemporaneous account.
+
+- **Recipe:** Adaptive Model Routing & Inference Gateway (Sprint 1 of 17). No
+  recipe file yet; this builds the measurement layer routing depends on.
+- **Inputs:** None. No live calls, no fixtures, no API keys, no network.
+- **Commands:** `python -m pytest scripts/gateway/tests -q` (24 passed at merge)
+- **Outputs:** `scripts/gateway/` — `schema.py`, `prices.py`, `prices.json`,
+  `logbook.py`, `report.py`, 4 test files. Merged as `b46d48e`.
+- **Result:** Append-only logbook that separates logical requests from physical
+  attempts, so an escalated request's cost rolls up instead of averaging down.
+  Cost is frozen at log time with its price-table version. An unpriced model
+  raises instead of costing zero. The incorrect per-attempt average is kept,
+  labelled incorrect, and pinned by a test ($4.65 vs $9.30 on a two-attempt
+  escalation).
+- **Broke during testing, fixed:** The writer used `O_APPEND` with one
+  `os.write` per row, which is safe on POSIX. On Windows, concurrent appends
+  through separate handles are not atomic: the concurrency test wrote 153 of
+  200 rows and raised no error. Rows were lost silently. Fixed with a
+  process-local `threading.Lock` plus an OS file lock on a sidecar `.lock` file.
+- **Open issues:** 101 scripts under `scripts/tools|gigo|ingest/` cannot be
+  imported (hyphenated filenames, underscore imports, no `__init__.py`). Not
+  fixed; `scripts/gateway/` avoids that tree. See `scripts/gateway/FINDINGS.md`.
+
+## 2026-09-10 -- Gateway Sprint 2: model connection and first live calls
+
+> Calls 1-3 below ran on 2026-09-02 and were committed in `f8c80ee` with no
+> RUN_LOG entry; they are logged retroactively here. Calls 4-6 ran 2026-09-10.
+
+- **Recipe:** Adaptive Model Routing & Inference Gateway (Sprint 2 of 17).
+- **Gate:** First live call per tier, watched by a human.
+- **Cleared by:** Simba · 2026-09-10
+- **Inputs:** GROQ_API_KEY (free tier); `prices.json` v2026-09-02;
+  `tiers.json` v0.3.0.
+- **Commands:** `python scripts/gateway/first_live_call.py [cheap|mid|strong]`
+  (6 calls).
+- **Outputs:** `scripts/gateway/adapters/` (`base.py`, `fake.py`, `groq.py`),
+  `client.py`, `tiers.py`, `tiers.json`, `first_live_call.py`, 4 test files;
+  `logs/gateway/first-live-call.jsonl` (6 rows); `FINDINGS.md` updated.
+- **Result:** One client for all three tiers; every call, including failures,
+  writes a logbook row before returning. All three tiers live-gated on Groq:
+  `openai/gpt-oss-20b`, `openai/gpt-oss-120b`, `qwen/qwen3.6-27b`. Every
+  successful call's cost was recomputed from the price table and matched the
+  log exactly. A real 401 classified as `provider_error` with a row written and
+  no crash. Total spend $0.00138.
+- **Broke during testing, fixed:**
+  - `max_tokens=16` returned empty text: `gpt-oss` spent the whole budget on
+    reasoning. Raised to 256.
+  - `qwen3.6-27b` returned its reasoning inline in `<think>` tags ahead of the
+    answer. The response passed every gate check. Fixed with
+    `strip_reasoning()` in the adapter and an answer check in the gate script;
+    verified on a second live call.
+  - The gate script exited 0 even when it listed problems. Now exits 1.
+  - `test_the_shipped_config_loads` still asserted the Ollama tier after the
+    ladder changed. Updated.
+- **Findings:** see `scripts/gateway/FINDINGS.md` section 5. In short: observed
+  tier spreads were 1.4x and 19-26x against sticker 2x and 10x; qwen's
+  reasoning length varied 35% on an identical prompt; the strong tier used 245
+  of 256 tokens; input tokens depend on the model (78 vs 17); `ok` does not
+  mean the answer is usable.
+- **Not verified:** Groq console usage for these calls — the one check the
+  code cannot do on itself.
+- **Open issues:**
+  - GROQ_API_KEY used for these calls must be rotated before further use (it
+    was exposed outside the terminal).
+  - Groq publishes no per-token rate for the repo's evidenced Llama models;
+    tiers moved to publicly priced models. See FINDINGS.md section 4.
+  - All tiers share one provider and key: a rate limit or auth failure takes
+    out the whole ladder. Relevant to Sprint 4.
+  - `f8c80ee` committed `logs/gateway/first-live-call.jsonl.lock`, a runtime
+    lock sidecar. It should be untracked and ignored.
+
+## 2026-09-10 -- Gateway Sprint 3: task policy, router, frozen fixture set
+
+- **Recipe:** Adaptive Model Routing & Inference Gateway (Sprint 3 of 17).
+- **Gate:** Fixture labels set by a named human before any model run; set frozen.
+- **Labeled and frozen by:** Simba · 2026-09-10
+- **Inputs:** LLM node scripts under `scripts/tools/` and their recipes, as
+  evidence of what task types Mycroft performs. No live calls, no API key.
+- **Commands:** `python scripts/gateway/bench/label.py --by "Simba"` (plus
+  `--ids` relabel passes); `python scripts/gateway/bench/audit.py --freeze`;
+  `python -m pytest scripts/gateway/tests -q` (96 passed).
+- **Outputs:** `policy.json` v0.1.0 + `policy.py` (six locked task types, per-tier
+  `max_tokens`, start tier and escalation target per type); `router.py`;
+  `bench/fixtures.py`, `bench/audit.py`, `bench/label.py`; 24 fixtures in
+  `bench/fixtures/*.jsonl`; `bench/manifest.json` (frozen 2026-09-10, SHA-256
+  per file); tests `test_policy.py`, `test_router.py`, `test_fixtures.py`,
+  `test_label.py`.
+- **Result:**
+  - Six task types locked: sentiment, topic, structured extraction,
+    contradiction detection, summarization, RAG answer. Each cites evidence
+    files; a test fails if any evidence path stops existing.
+  - Router is a pure function of task type and input length (characters, not
+    tokens, since token counts depend on the model). Pinned and unknown task
+    types are refused, never defaulted. Every decision carries a one-sentence
+    explanation. The break-even rule is deliberately excluded: it is the
+    Sprint 8 "clever version" and needs measured pass rates.
+  - 24 synthetic fixtures, 4 per type (2 easy, 2 hard), fictional companies.
+    Labeler tiers: cheap 6, mid 11, strong 7. Router: cheap 8, mid 16, strong 0.
+    Router agrees with the labels on 9 of 24. The labels are predictions; this
+    is not yet a measurement.
+- **Decisions:**
+  - Fixtures are synthetic, not real as the board specified. No real request
+    corpus exists in the repo: 203 of 217 script sample payloads are generic
+    placeholders, `data/raw/market-sentiment-analysis-part-1/sample/` declares
+    itself synthetic, and the Klarna mock transactions file holds 0 records.
+    Claims are scoped to how models handle these task types, not to Mycroft's
+    traffic mix.
+  - `expected_tier` means the cheapest tier the labeler expects to get it
+    right: a judgment, not the router's rule applied by hand.
+  - Task types and routing rules share one file so they cannot disagree.
+- **Broke during testing, fixed:**
+  - The labeling tool did not show the task definition (e.g. "sentiment toward
+    the named company"). Now prints a `TASK:` line. `--redo` and `--ids` added.
+  - The first labeling session put every fixture on cheap, traps included; the
+    second used the two-question standard (trap? reasoning step?). The first
+    session's fixtures were relabeled.
+- **Findings:** see `scripts/gateway/FINDINGS.md` section 6. The simple router
+  cannot send a short input to strong. Deterministic validators catch malformed
+  answers, not wrong ones, so a misread trap returns a valid label and does not
+  escalate.
+- **Open issues:**
+  - **Answer key flagged in review, pending the labeler's decision:** `sent-001`
+    is frozen as `negative` for a headline about beating estimates and raising
+    guidance; `sent-004` is `negative` though the named company won the
+    contract; `contra-003` is `contradiction` where the draft had
+    `insufficient_evidence` (debatable). Must be resolved — unfreeze, relabel,
+    refreeze, logged — before any Sprint 7 run grades against it.
+  - The label prompt says "Expected label", which reads as a prediction of the
+    model's output. It means the correct answer; the wording should say so.
+  - Coverage is 4 of the 30 targeted per type; 26 short per type carried over.
+  - No long-input fixtures: the router's length promotion is covered by unit
+    tests only.
+  - One labeler; no agreement measure.
+  - Recommendation for Sprint 7: run every fixture on all three tiers (about a
+    cent) so the cheapest correct tier is measured rather than predicted.
+- **[BLOCKER] Wrong-entity claims found in a finished brief.** `labeled_briefs.csv`
+  captures a real Scale AI brief attributing to Scale AI: "a Rs 170 Cr raise by Elevate
+  Education", "a $2.2 million raise by SambaNova", and "a $900m credit facility to scale
+  AI data centers" — two other companies' funding rounds, plus "scale AI" matched as an
+  ordinary verb phrase. Its COMPETITIVE POSITION names Ecolab (water treatment) as a
+  competitor. Scale AI's seed entry carries aliases ["Scale AI", "ScaleAI"] and no
+  `exclude_entities` or `exclude_terms`, so the deterministic filter had nothing to
+  reject on.
+  - *Effect on the gate:* **Signal validation stays CLEARED.** Its clearance on
+    2026-08-22 was explicitly batch-level and named common-word names as residual risk;
+    this is that risk confirmed, not a new one concealed. Decision by Muskan Khandelwal,
+    2026-08-26. `last_gate` and `todos_open` unchanged.
+  - *What changed:* the risk is no longer hypothetical, and it is now known to reach
+    finished briefs rather than stopping at the signal table.
+  - *Not yet applied:* populate `exclude_entities`/`exclude_terms` for common-word
+    vendors (Adept, Writer, Notion, Glean, Modal, Replicate, Scale AI).
+
+- **[LIMIT] Grounding checks cannot catch this class.** `check_date_grounding` and
+  `check_amount_grounding` verify that a claim traces to a *collected signal*. A
+  wrong-entity signal already in the corpus passes — the figure is real, it just belongs
+  to another company. This is why the Scale AI claims were not flagged. A clean eval run
+  is not evidence that a brief's signals belong to the right company.
+
+- **[DEFECT] README drift in the platform repo.** `README.md` (commit `2b44793`) states
+  that briefs write prose for COMPETITIVE POSITION when Neo4j is unreachable and that
+  the fix is "pending". The fix landed in the very next commit (`0fa8a10`). The README
+  has not been updated — a P6 mismatch between stated intent and shipped code. Not fixed
+  here: this log governs Mycroft, and the file lives in the other repo.
+
+- **Outputs:**
+  - `recipes/vendor-intelligence-brief.yaml` v0.3.0 — new `evaluation:` section (6
+    checks with severities, the harness limit, the human accuracy set, 17 tests, CI),
+    new `architecture.unknown_enforcement`, three issues added
+  - `data/verified/ai_company_signals-schema.yaml` v0.3.0 — residual risk upgraded to
+    CONFIRMED with the Scale AI instance; new note on the grounding-check limit
+  - Amended the 2026-08-22 entry: its open provenance issue is closed by `5edd72c`
+  - This entry
+- **Result:** Mycroft records the machine half of brief evaluation. Recipe stays
+  **DRAFT** — no gate closed this round, `todos_open` still 2, no attestation.
+- **Open issues:**
+  - [BLOCKER] No accuracy rate exists. `labeled_briefs.csv` has 6 queued claims and an
+    empty `accurate` column — the machine half runs, the human half has not started.
+    No accuracy figure may be quoted for this system (P3).
+  - [BLOCKER] Common-word vendors still lack exclusion lists (above).
+  - [GATE OPEN] Supervisor routing review (Phase 2) — no Langfuse trace reviewed.
+  - [GATE OPEN] Brief approval (Phase 2) — no procurement owner review process.
+  - [BLOCKER] Per-source signal counts still stale (pre-purge). Recount before citing.
+  - [BLOCKER] Groq token limit at company #33 of 50 — Phase 3 batch job still blocked.
+  - [OPEN] `eval_runner.py` is not wired to any Mycroft phase gate. It reports; nothing
+    yet requires it to pass before a brief ships. Deliberate for now — a gate is a hard
+    stop and needs a named owner.
+## 2026-07-26 -- Implement Mycroft Finance Investigator Weeks 1-3
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); no lifecycle promotion or human gate clearance attempted.
+- **Inputs:** Local synthetic finance pack in `data/raw/mycroft-finance-investigator/` containing provenance, account mapping, budget, actuals, ledger, customer drivers, and headcount drivers for one sample entity and period.
+- **Commands:** Ran `python3 -m unittest discover -s tests -v`; ran `python3 -m mycroft_finance_investigator.cli all --run-id sample-2026-02`; parsed generated JSON; reviewed the validation audit and human report; ran targeted `node scripts/conformance.mjs`; parsed `pyproject.toml`; ran `git diff --check`; ran `npm run verify`.
+- **Outputs:** `projects/Mycroft-Finance-Investigator/`; `recipes/mycroft-finance-investigator.md`; `conductor/mycroft-finance-investigator.md`; `reports/templates/mycroft-finance-investigator.md`; `data/verified/mycroft-finance-investigator/`; `logs/mycroft-finance-investigator-sample-2026-02.json`; `reports/generated/mycroft-finance-investigator-sample-2026-02.md`; updated data contract, indexes, and current status.
+- **Result:** All 12 unit tests pass, including deliberate ledger-mismatch, unmapped-account, agent-step-limit, and complete-category-bridge checks. Validation accepted 43 synthetic rows across six datasets; account coverage, single period/entity scope, actuals-to-ledger, customer-to-revenue, and headcount-to-payroll checks reconciled. The deterministic bridge calculated sample budget EBITDA of 350000.00 and actual EBITDA of 230000.00, a -120000.00 variance. The investigator completed seven conditionally selected tool steps, retained 41 evidence references, wrote separate machine/human artifacts, and kept the human gate open. Targeted conformance and repository-wide verification pass.
+- **Open issues:** The 10000.00 materiality amount is a demo fixture, not an approved finance policy. No human has supplied or approved causal explanations or authorized distribution. The local policy demonstrates the stateful observe-plan-act contract without a hosted model; an LLM planning policy, persistent database, reviewer agent, scenario engine, and UI remain future-week work.
+
+## 2026-07-31 -- Add Finance Investigator human review gate
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); no human decision or lifecycle promotion recorded.
+- **Inputs:** Completed synthetic sample run `logs/mycroft-finance-investigator-sample-2026-02.json` and its 41 evidence references.
+- **Commands:** Ran the project unit suite; generated an open review request with `review-request`; parsed the artifact; ran targeted conformance and repository verification.
+- **Outputs:** `mycroft_finance_investigator/review.py`; `schemas/review-decision.schema.json`; review CLI commands; `logs/gate-decisions/mycroft-finance-investigator-sample-2026-02-review-request.json`; review tests and updated contracts.
+- **Result:** The review gate binds decisions to the exact run hash, rejects agent identities and unknown evidence, requires evidence-backed explanations for approval, and refuses to overwrite a recorded decision. The committed sample request is `OPEN`; it is not an approval.
+- **Open issues:** No named finance reviewer has completed the request. Demo materiality, causal adequacy, and distribution remain human decisions.
+
+## 2026-08-07 -- Add Finance Investigator adversarial evaluation
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); evaluation does not clear an adequacy or release gate.
+- **Inputs:** The committed synthetic finance pack, completed sample run, and seven explicit cases in `projects/Mycroft-Finance-Investigator/evaluations/cases.json`.
+- **Commands:** Ran the complete project unit suite; ran the `evaluate` CLI; parsed the JSON scorecard; checked that raw-source hashes were unchanged; ran targeted conformance and repository verification.
+- **Outputs:** `mycroft_finance_investigator/evaluation.py`; evaluation case/schema files; evaluation tests; `logs/mycroft-finance-investigator-evaluation-week32.json`; `reports/generated/mycroft-finance-investigator-evaluation-week32.md`; updated recipe, conductor, project documentation, and status.
+- **Result:** All seven named expectations matched: the reconciled baseline completed with the expected EBITDA, tool trace, evidence count, and open human gate; four planted reconciliation/mapping defects stopped validation; the step limit stopped the investigator; and an agent identity could not clear the human gate. Every mutation ran in a temporary copy.
+- **Open issues:** This finite synthetic case set is not model confidence or production certification. A named human still owns test adequacy, materiality, causal explanation, and distribution.
+
+## 2026-08-13 -- Add Finance Investigator scenario decision pack
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); no planning, adequacy, or release gate was cleared.
+- **Inputs:** Verified synthetic sample, exact baseline run `sample-2026-02`, and three explicitly unapproved exercises in `projects/Mycroft-Finance-Investigator/config/sample-scenarios.json`.
+- **Commands:** Ran the complete project unit suite; ran the `scenario` CLI; parsed and reconciled the machine decision pack; reviewed the human Markdown view; ran targeted conformance and repository verification.
+- **Outputs:** `mycroft_finance_investigator/scenario.py`; scenario plan/schema and tests; `logs/mycroft-finance-investigator-scenarios-week33.json`; `reports/generated/mycroft-finance-investigator-scenarios-week33.md`; updated recipe, conductor, project documentation, and status.
+- **Result:** The engine bound the plan to the exact baseline log and reproduced actual EBITDA of 230000.00. It calculated three transparent sensitivities at 275500.00, 250000.00, and 252300.00, retaining baseline records and plan references for every assumption. Outputs are labeled `SIMULATION_NOT_FORECAST`, contain no recommendation, and require a human decision.
+- **Open issues:** The sample assumptions are not approved forecasts or operating plans. A named finance owner must approve or replace assumptions, judge scenario adequacy, and own any decision, causal explanation, materiality policy, or distribution.
+
+## 2026-08-21 -- Add Finance Investigator audit-bundle handoff
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); packaging and integrity checks did not clear any human gate.
+- **Inputs:** Exact synthetic raw and verified data; baseline investigation `sample-2026-02`; open review request; Week 32 evaluation; Week 33 scenario pack; current recipe, conductor, implementation, schemas, and tests.
+- **Commands:** Rebased the feature branch onto current `origin/main` while preserving historical commit dates; ran the complete unit suite; generated the Week 34 bundle with `bundle`; independently checked it with `verify-bundle`; deliberately changed packaged files and manifest content in tests; ran targeted conformance, repository verification, and Git whitespace checks. The first root-directory `verify-bundle` invocation could not import the project package, so it was rerun from the documented project directory.
+- **Outputs:** `mycroft_finance_investigator/bundle.py`; `schemas/audit-bundle.schema.json`; bundle CLI commands and tests; `reports/generated/mycroft-finance-investigator-audit-week34/`; updated recipe, conductor, project documentation, and status.
+- **Result:** All 41 project tests pass. The bundle validates the cross-artifact run IDs and hashes before packaging 54 source, data, specification, implementation, test, machine, and human artifacts. The integrity verifier recomputes the manifest, review view, byte counts, every artifact SHA-256, and the exact inventory. Deliberate manifest, review, artifact, and extra-file modifications are rejected. The initial inventory check exposed the macOS `/var` to `/private/var` temporary-directory symlink; resolving both bundle and artifact roots fixed the false mismatch. The human view reports `BLOCKED_PENDING_HUMAN_REVIEW` and distinguishes checksums from signatures.
+- **Open issues:** No named finance reviewer has approved materiality, causation, evaluation adequacy, scenario assumptions, or distribution. The recipe remains `DRAFT`; the bundle is an integrity-preserving handoff, not production certification or attestation.
+
+## 2026-08-28 -- Add Finance Investigator multi-month trend investigation
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); historical comparison did not clear materiality, causation, adequacy, or release gates.
+- **Inputs:** Independently validated synthetic January and March finance packs, the existing February sample, their three completed investigation logs, and `projects/Mycroft-Finance-Investigator/config/sample-trend.json`.
+- **Commands:** Ran `all` separately for January and March; ran the `trend` CLI; parsed the machine comparison; reviewed the human report; ran all project tests; ran targeted conformance, repository-wide verification, and Git whitespace checks.
+- **Outputs:** `data/raw/mycroft-finance-investigator-history/`; `data/verified/mycroft-finance-investigator-history/`; January and March machine logs and human reports; `mycroft_finance_investigator/trend.py`; trend plan/schema/tests; `logs/mycroft-finance-investigator-trend-week35.json`; `reports/generated/mycroft-finance-investigator-trend-week35.md`; updated recipe, conductor, data contract, project documentation, and status.
+- **Result:** Both added monthly packs validated 43 synthetic rows across six datasets and passed mapping, single-scope, actuals-to-ledger, customer-to-revenue, and headcount-to-payroll controls. The comparison verified every source hash and recomputed actual EBITDA of 261000.00 for January, 230000.00 for February, and 265000.00 for March. It reported a -31000.00 then +35000.00 historical movement and found revenue, COGS, and operating expense materially adverse in all three sample periods under the 10000.00 demo threshold. All 49 project tests pass, including source tampering, duplicate period, entity mismatch, and period mismatch checks. Targeted conformance and repository verification pass.
+- **Open issues:** The threshold remains demo-only. Recurrence is a deterministic historical pattern, not a causal explanation, forecast, recommendation, or approved business decision. No named finance reviewer has judged the history adequate or authorized distribution; the recipe remains `DRAFT`.
+
+## 2026-09-04 -- Add Finance Investigator specialist-agent routing
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); specialist execution did not clear an adequacy or release gate.
+- **Inputs:** Exact Week 35 trend log, its three source investigation logs and verified packs, and `projects/Mycroft-Finance-Investigator/config/sample-routing.json`.
+- **Commands:** Rebased PR 17 onto current `origin/main` while preserving upstream and Finance history; ran the pre-change 49-test baseline; ran the complete project unit suite; generated the Week 36 orchestration log and human work queue; parsed the machine artifact and reviewed the Markdown report.
+- **Outputs:** `mycroft_finance_investigator/orchestration.py`; routing plan/schema/tests and CLI command; `logs/mycroft-finance-investigator-routing-week36.json`; `reports/generated/mycroft-finance-investigator-routing-week36.md`; updated recipe, conductor, project documentation, and status.
+- **Result:** The lineage specialist verified all three source-run and verified-file chains before category work. The supervisor used four of four permitted delegations and deterministically prioritized revenue (200000.00 cumulative material adverse impact), COGS (100000.00), and operating expense (36000.00). It routed revenue to the revenue specialist and both cost categories to the cost specialist, retained calculation and correlated-record evidence separately, and fingerprinted every result. All 57 project tests pass, including deliberate source tampering, category drift, specialist-scope, and delegation-limit failures.
+- **Open issues:** The work queue is not a causal analysis or recommendation. COGS and operating expense still lack operational driver records; all three tasks require an owner-supplied causal explanation. Materiality, evidence adequacy, and distribution remain open human gates.
+
+## 2026-09-10 -- Add Finance Investigator review-driven re-investigation
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); the committed follow-up is a synthetic review exercise, not a human gate decision.
+- **Inputs:** Exact Week 36 orchestration log and its recorded routing-plan, trend-log, source-task, and specialist-result hashes; `projects/Mycroft-Finance-Investigator/config/sample-follow-up-request.json`.
+- **Commands:** Ran the complete project unit suite; ran the `follow-up` CLI; parsed the machine closure log; reviewed the human before/after report; exercised hash, task-inventory, citation, and append-only failures in tests.
+- **Outputs:** `mycroft_finance_investigator/reinvestigation.py`; follow-up request/schema/tests and CLI command; `logs/mycroft-finance-investigator-follow-up-week37.json`; `reports/generated/mycroft-finance-investigator-follow-up-week37.md`; updated recipe, conductor, project documentation, and status.
+- **Result:** The engine bound the request to the exact Week 36 SHA-256, revalidated upstream plan and trend hashes, and reproduced all three specialist result fingerprints. One existing evidence set replayed exactly, one synthetic causal claim was classified unsupported because it cited calculation evidence without an approved causal evidence class, and one operational evidence request remained open. All 66 project tests pass, including deliberate orchestration tampering, unknown citation, missing task, duplicate task, and overwrite attempts.
+- **Open issues:** `VERIFIED` means evidence integrity only, not verified causation. The COGS claim is a synthetic rejection test and is not an endorsed explanation. A named finance reviewer still must inspect unresolved gaps, approve or replace materiality, supply causal evidence, judge adequacy, and authorize distribution.

@@ -27,7 +27,8 @@ def valid_config() -> dict:
 def test_the_shipped_config_loads():
     config = TierConfig.load()
     assert config.names == ["cheap", "mid", "strong"]
-    assert config.providers() == {"groq", "ollama"}
+    assert config.providers() == {"groq"}
+    assert config.provisional() == [], "all three tiers are evidenced since v0.3.0"
 
 
 def test_as_client_map_is_the_shape_the_client_wants():

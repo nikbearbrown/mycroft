@@ -1,0 +1,109 @@
+{
+  "version": "0.1.0",
+  "locked_on": "2026-09-10",
+  "_note": "The locked task-type vocabulary and the routing rule for each type, in one file so the router, the fixtures, and the validators cannot disagree about what task types exist. Changing this after the Sprint 7 baseline makes later results incomparable: any change is a version bump plus a RUN_LOG entry.",
+  "_define_note": "Budgets and promote_above_chars are human [DEFINE] choices, not measurements. Provisional: revisit against Sprint 7 truncation and escalation rates.",
+
+  "tier_order": ["cheap", "mid", "strong"],
+
+  "max_tokens_by_tier": {
+    "cheap": 512,
+    "mid": 512,
+    "strong": 1024,
+    "_reason": "Gate calls used at most 77 (cheap), 47 (mid) and 245 (strong) output tokens on a one-word answer. Strong varied 35% run to run, and 245 of 256 was 11 tokens from truncation. Real inputs make models reason longer."
+  },
+
+  "task_types": {
+    "sentiment_classification": {
+      "description": "Label a headline or post as positive, negative, or neutral toward the named company.",
+      "output": "label",
+      "labels": ["positive", "negative", "neutral"],
+      "labels_source": "scripts/tools/mycroft-finbert-sentiment-spec.py sample payload uses exactly these three labels",
+      "validator": "label_in_set",
+      "quality_check": "deterministic",
+      "start_tier": "cheap",
+      "escalate_to": "mid",
+      "promote_above_chars": 2000,
+      "evidence": [
+        "scripts/tools/social-sentiment-agent-workflow-groq-llm-sentiment.py",
+        "scripts/tools/score-ai-news-sentiment.py",
+        "scripts/tools/mycroft-finbert-sentiment-spec.py"
+      ]
+    },
+
+    "topic_classification": {
+      "description": "Assign a headline or post to exactly one topic.",
+      "output": "label",
+      "labels": ["earnings", "product", "leadership", "legal_regulatory", "funding_deals", "other"],
+      "labels_source": "defined here -- recipes name the step but not its categories; the original workflow is in quarantined data/mycroft-main",
+      "validator": "label_in_set",
+      "quality_check": "deterministic",
+      "start_tier": "cheap",
+      "escalate_to": "mid",
+      "promote_above_chars": 2000,
+      "evidence": [
+        "scripts/tools/social-sentiment-agent-workflow-groq-topic-classification.py",
+        "recipes/social-sentiment-agent-workflow.md"
+      ]
+    },
+
+    "structured_extraction": {
+      "description": "Extract named fields from an earnings-call passage as JSON (e.g. guidance signals, risk admissions).",
+      "output": "json",
+      "validator": "required_keys",
+      "quality_check": "deterministic",
+      "start_tier": "mid",
+      "escalate_to": "strong",
+      "promote_above_chars": 8000,
+      "evidence": [
+        "scripts/tools/my-workflow-7-groq-extract-guidance-signals.py",
+        "scripts/tools/my-workflow-7-groq-extract-risk-admissions.py",
+        "scripts/tools/my-workflow-7-groq-parse-transcript-sections.py",
+        "recipes/my-workflow-7.md"
+      ]
+    },
+
+    "contradiction_detection": {
+      "description": "Decide whether two statements contradict, and quote the conflicting span.",
+      "output": "verdict",
+      "labels": ["contradiction", "consistent", "insufficient_evidence"],
+      "labels_source": "defined here -- recipe names the step but not its verdict vocabulary",
+      "validator": "verdict_with_quote",
+      "quality_check": "deterministic",
+      "start_tier": "mid",
+      "escalate_to": "strong",
+      "promote_above_chars": 4000,
+      "evidence": [
+        "scripts/tools/contradiction-detection-agent-groq-analyse-contradictions.py",
+        "recipes/contradiction-detection-agent.md"
+      ]
+    },
+
+    "summarization": {
+      "description": "Summarize an earnings call or portfolio into short prose, using only figures present in the input.",
+      "output": "prose",
+      "validator": "numbers_grounded",
+      "quality_check": "offline_judge",
+      "start_tier": "mid",
+      "escalate_to": "strong",
+      "promote_above_chars": 12000,
+      "evidence": [
+        "scripts/tools/my-workflow-7-groq-generate-call-summary.py",
+        "scripts/tools/portfolio-intelligence-agent-complete-with-rag-generate-ai-summary-groq.py"
+      ]
+    },
+
+    "rag_answer": {
+      "description": "Answer a finance-literacy question from supplied context passages, citing the passage used.",
+      "output": "prose",
+      "validator": "cites_context",
+      "quality_check": "offline_judge",
+      "start_tier": "mid",
+      "escalate_to": "strong",
+      "promote_above_chars": 6000,
+      "evidence": [
+        "scripts/tools/finance-literacy-bot-rag-chatbot-groq-chat-model.py"
+      ]
+    }
+  }
+}

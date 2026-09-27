@@ -1,25 +1,50 @@
 """Groq adapter -- the first real provider.
 
-Two deliberate choices:
+Three deliberate choices:
 
 1. The SDK import is LAZY. The gateway core has no third-party runtime
    dependency, and the whole test suite runs without `groq` installed. You
    only pay for the dependency at the moment you make a real call.
 
 2. Errors are classified DEFENSIVELY, by inspecting the exception rather
-   than importing the SDK's exception classes. Those class names are not
-   verified here -- no live call has been made yet. Step 6 verifies the
-   mapping against reality; until then this is a best-effort classification,
-   and `notes` preserves the raw error text so nothing is lost.
+   than importing the SDK's exception classes. Verified against a real 401
+   on 2026-09-02: it landed as provider_error, correctly not timeout.
+   `notes` preserves the raw error text so nothing is lost.
+
+3. Inline reasoning is STRIPPED from the answer text. Groq's reasoning
+   models do not all expose reasoning the same way: openai/gpt-oss keeps it
+   out of the content field, while qwen/qwen3.6-27b returns it inline in
+   <think>...</think> tags (observed 2026-09-10). Left in, every validator
+   that checks the answer would fail on the strong tier -- making the
+   strongest model look like the worst one. Reasoning tokens are still
+   billed, so tokens_out keeps the full count and the cost stays honest.
 """
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from gateway.adapters.base import LLMResponse, ProviderError
 
 DEFAULT_TIMEOUT_S = 30.0
+
+_THINK_BLOCK = re.compile(r"<think>.*?</think>", re.DOTALL | re.IGNORECASE)
+
+
+def strip_reasoning(text: str) -> str:
+    """Return only the answer, with any inline reasoning removed.
+
+    A closed <think>...</think> block is removed. An opening tag with no
+    close means the response was cut off mid-reasoning: everything after it
+    is reasoning and there is no answer, so the result is empty -- which the
+    gate's empty-response check then catches.
+    """
+    cleaned = _THINK_BLOCK.sub("", text)
+    open_at = cleaned.lower().find("<think>")
+    if open_at != -1:
+        cleaned = cleaned[:open_at]
+    return cleaned.strip()
 
 
 class GroqAdapter:
@@ -96,7 +121,7 @@ class GroqAdapter:
             )
 
         try:
-            text = raw.choices[0].message.content or ""
+            content = raw.choices[0].message.content or ""
         except (AttributeError, IndexError) as exc:
             raise ProviderError(
                 f"unexpected response shape: {exc}",
@@ -104,10 +129,11 @@ class GroqAdapter:
             ) from exc
 
         return LLMResponse(
-            text=text,
+            text=strip_reasoning(content),
             provider=self.provider,
             model=model,
             tokens_in=int(tokens_in),
+            # Full billed count, reasoning included -- see choice 3 above.
             tokens_out=int(tokens_out),
             # The client measures wall-clock latency; the adapter does not
             # duplicate that. See client.py.

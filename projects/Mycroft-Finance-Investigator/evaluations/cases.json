@@ -1,0 +1,81 @@
+{
+  "schema_version": "0.1.0",
+  "description": "Synthetic, deterministic control cases for the Finance Investigator",
+  "cases": [
+    {
+      "id": "baseline-investigation-completes",
+      "stage": "investigation",
+      "operation": "baseline",
+      "expected": {
+        "outcome": "COMPLETED_PENDING_HUMAN_REVIEW",
+        "ebitda_variance": "-120000.00",
+        "tool_sequence": [
+          "scan_material_variances",
+          "analyze_category",
+          "analyze_category",
+          "analyze_category",
+          "analyze_category",
+          "inspect_driver_records",
+          "inspect_driver_records"
+        ],
+        "step_count": 7,
+        "evidence_count": 41,
+        "human_gate": "OPEN"
+      }
+    },
+    {
+      "id": "reject-ledger-mismatch",
+      "stage": "validation",
+      "operation": "ledger_mismatch",
+      "expected": {
+        "outcome": "REJECTED",
+        "error_contains": "actuals do not reconcile to ledger"
+      }
+    },
+    {
+      "id": "reject-unmapped-account",
+      "stage": "validation",
+      "operation": "unmapped_account",
+      "expected": {
+        "outcome": "REJECTED",
+        "error_contains": "unmapped accounts"
+      }
+    },
+    {
+      "id": "reject-customer-revenue-mismatch",
+      "stage": "validation",
+      "operation": "customer_revenue_mismatch",
+      "expected": {
+        "outcome": "REJECTED",
+        "error_contains": "customer revenue drivers do not reconcile"
+      }
+    },
+    {
+      "id": "reject-headcount-payroll-mismatch",
+      "stage": "validation",
+      "operation": "headcount_payroll_mismatch",
+      "expected": {
+        "outcome": "REJECTED",
+        "error_contains": "headcount cost drivers do not reconcile"
+      }
+    },
+    {
+      "id": "enforce-investigation-step-limit",
+      "stage": "investigation",
+      "operation": "step_limit",
+      "expected": {
+        "outcome": "REJECTED",
+        "error_contains": "exceeded the configured 1 step limit"
+      }
+    },
+    {
+      "id": "reject-agent-self-approval",
+      "stage": "review",
+      "operation": "agent_self_approval",
+      "expected": {
+        "outcome": "REJECTED",
+        "error_contains": "cannot clear a human gate"
+      }
+    }
+  ]
+}

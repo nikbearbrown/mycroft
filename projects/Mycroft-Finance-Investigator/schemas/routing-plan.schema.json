@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mycroft-finance-investigator-routing-plan.schema.json",
+  "title": "Finance Investigator Specialist Routing Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "classification",
+    "trend_run_id",
+    "max_delegations",
+    "control_specialist",
+    "routes"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "classification": {"const": "SYNTHETIC_EVIDENCE_GAP_ROUTING"},
+    "trend_run_id": {"type": "string", "minLength": 1},
+    "max_delegations": {"type": "integer", "minimum": 1},
+    "control_specialist": {"const": "lineage-specialist"},
+    "routes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revenue", "cogs", "payroll", "opex"],
+      "properties": {
+        "revenue": {"const": "revenue-specialist"},
+        "cogs": {"const": "cost-specialist"},
+        "payroll": {"const": "workforce-specialist"},
+        "opex": {"const": "cost-specialist"}
+      }
+    }
+  }
+}

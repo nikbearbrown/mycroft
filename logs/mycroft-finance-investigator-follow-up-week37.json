@@ -1,0 +1,88 @@
+{
+  "workflow": "mycroft-finance-investigator-reinvestigation",
+  "run_id": "week37-follow-up",
+  "schema_version": "0.1.0",
+  "classification": "REVIEW_FOLLOW_UP_EXERCISE_NOT_APPROVAL",
+  "source_orchestration": "logs/mycroft-finance-investigator-routing-week36.json",
+  "source_orchestration_sha256": "b7c49dedb8cd21c521ef296e81ba5d877fe686fb3846726749222b356855fa74",
+  "source_orchestration_run_id": "week36-routing",
+  "follow_up_request": "projects/Mycroft-Finance-Investigator/config/sample-follow-up-request.json",
+  "follow_up_request_sha256": "93fad75078afab1fe1cd295236e992c19f24045f3611c9b7db860030072a5654",
+  "replay": {
+    "status": "EXACT_MATCH",
+    "task_count": 3
+  },
+  "results": [
+    {
+      "request_id": "follow-up-revenue-replay",
+      "task_id": "gap-revenue",
+      "category": "revenue",
+      "action": "VERIFY_EXISTING_EVIDENCE",
+      "before_status": "EVIDENCE_COLLECTED_PENDING_OWNER",
+      "after_status": "VERIFIED",
+      "instruction": "Replay the revenue specialist and verify that its evidence set is unchanged.",
+      "claim_under_test": null,
+      "cited_evidence": [],
+      "observation": "Specialist result replayed exactly with the same evidence fingerprint.",
+      "remaining_gap": [
+        "OWNER_CAUSAL_EXPLANATION"
+      ],
+      "causal_explanation_accepted": false,
+      "source_result_sha256": "d8585bd8136329d204a36a245752a70a684a13194bc30b428872fdc1a4a9232d"
+    },
+    {
+      "request_id": "follow-up-cogs-causal-test",
+      "task_id": "gap-cogs",
+      "category": "cogs",
+      "action": "TEST_CAUSAL_CLAIM",
+      "before_status": "EVIDENCE_COLLECTED_PENDING_OWNER",
+      "after_status": "UNSUPPORTED",
+      "instruction": "Test whether the proposed COGS explanation is supported by an approved causal evidence class.",
+      "claim_under_test": "Higher cloud usage caused the COGS variance.",
+      "cited_evidence": [
+        "2026-01:ledger.csv:transaction_id=JAN-TXN-005"
+      ],
+      "observation": "The cited records establish calculations or correlation only; no approved causal evidence class is present.",
+      "remaining_gap": [
+        "APPROVED_CAUSAL_EVIDENCE",
+        "OWNER_CAUSAL_EXPLANATION"
+      ],
+      "causal_explanation_accepted": false,
+      "source_result_sha256": "a839282a5b508b6fa1a93f0feed38528fc6d65415032296c450f2f0a4edf47bd"
+    },
+    {
+      "request_id": "follow-up-opex-more-evidence",
+      "task_id": "gap-opex",
+      "category": "opex",
+      "action": "REQUEST_ADDITIONAL_EVIDENCE",
+      "before_status": "EVIDENCE_COLLECTED_PENDING_OWNER",
+      "after_status": "OPEN",
+      "instruction": "Keep the task open until an approved operational driver source is added.",
+      "claim_under_test": null,
+      "cited_evidence": [],
+      "observation": "The requested additional evidence is not in the verified layer.",
+      "remaining_gap": [
+        "OPERATIONAL_DRIVER_RECORDS",
+        "OWNER_CAUSAL_EXPLANATION"
+      ],
+      "causal_explanation_accepted": false,
+      "source_result_sha256": "51fc92683d1d63815cfb33532b5b643ad8a945fe263204c0d643710154293db6"
+    }
+  ],
+  "summary": {
+    "verified_count": 1,
+    "unsupported_count": 1,
+    "open_count": 1,
+    "closure_status": "BLOCKED_PENDING_HUMAN_REVIEW"
+  },
+  "causal_explanation": null,
+  "recommendation": null,
+  "human_gate": {
+    "status": "OPEN",
+    "required": [
+      "A named reviewer must inspect the replay and unresolved gaps",
+      "Any causal explanation needs approved causal evidence",
+      "Materiality and distribution remain human decisions"
+    ]
+  }
+}

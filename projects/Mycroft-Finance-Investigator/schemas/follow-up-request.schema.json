@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mycroft-finance-investigator-follow-up-request.schema.json",
+  "title": "Finance Investigator Synthetic Follow-up Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "classification",
+    "source_orchestration_run_id",
+    "source_orchestration_sha256",
+    "requests"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "classification": {"const": "SYNTHETIC_REVIEW_FOLLOW_UP_EXERCISE"},
+    "source_orchestration_run_id": {"type": "string", "minLength": 1},
+    "source_orchestration_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "requests": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "request_id",
+          "task_id",
+          "action",
+          "instruction",
+          "claim",
+          "cited_evidence"
+        ],
+        "properties": {
+          "request_id": {"type": "string", "minLength": 1},
+          "task_id": {"type": "string", "minLength": 1},
+          "action": {
+            "enum": [
+              "VERIFY_EXISTING_EVIDENCE",
+              "TEST_CAUSAL_CLAIM",
+              "REQUEST_ADDITIONAL_EVIDENCE"
+            ]
+          },
+          "instruction": {"type": "string", "minLength": 1},
+          "claim": {"type": ["string", "null"]},
+          "cited_evidence": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1}
+          }
+        }
+      }
+    }
+  }
+}

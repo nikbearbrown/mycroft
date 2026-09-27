@@ -1,0 +1,789 @@
+{
+  "workflow": "mycroft-finance-investigator-orchestration",
+  "run_id": "week36-routing",
+  "schema_version": "0.1.0",
+  "classification": "EVIDENCE_GAP_WORK_QUEUE_NOT_CAUSAL_ANALYSIS",
+  "routing_plan": "projects/Mycroft-Finance-Investigator/config/sample-routing.json",
+  "routing_plan_sha256": "6e89be549f2ea561d1ba8d55c67e9282b940938fce8c8dcc3c334b64b06801c1",
+  "trend_log": "logs/mycroft-finance-investigator-trend-week35.json",
+  "trend_log_sha256": "89bc76b977961ad66d6d7037d45fd1752c1ac6922627a606f36c1b3b5c28c880",
+  "trend_run_id": "week35-trend",
+  "supervisor": {
+    "policy": "deterministic-specialist-routing-v0.1",
+    "max_delegations": 4,
+    "delegations_used": 4
+  },
+  "tasks": [
+    {
+      "task_id": "gap-revenue",
+      "rank": 1,
+      "category": "revenue",
+      "specialist": "revenue-specialist",
+      "cumulative_material_adverse_impact": "200000.00",
+      "adverse_period_count": 3,
+      "rationale": "revenue was materially adverse in 3 included periods",
+      "result": {
+        "status": "EVIDENCE_COLLECTED_PENDING_OWNER",
+        "category": "revenue",
+        "specialist": "revenue-specialist",
+        "materiality_amount": "10000.00",
+        "periods": [
+          {
+            "period": "2026-01",
+            "performance_impact": "-50000.00",
+            "material_adverse": true,
+            "account_evidence": [
+              {
+                "level": "account",
+                "key": "4000",
+                "label": "Subscription Revenue",
+                "category": "revenue",
+                "budget": "780000.00",
+                "actual": "735000.00",
+                "variance": "-45000.00",
+                "performance_impact": "-45000.00",
+                "favorable": false,
+                "evidence": [
+                  "budget.csv:account=4000",
+                  "actuals.csv:account=4000",
+                  "account_mapping.csv:account=4000",
+                  "ledger.csv:transaction_id=JAN-TXN-001",
+                  "ledger.csv:transaction_id=JAN-TXN-002"
+                ]
+              },
+              {
+                "level": "account",
+                "key": "4010",
+                "label": "Services Revenue",
+                "category": "revenue",
+                "budget": "190000.00",
+                "actual": "185000.00",
+                "variance": "-5000.00",
+                "performance_impact": "-5000.00",
+                "favorable": false,
+                "evidence": [
+                  "budget.csv:account=4010",
+                  "actuals.csv:account=4010",
+                  "account_mapping.csv:account=4010",
+                  "ledger.csv:transaction_id=JAN-TXN-003",
+                  "ledger.csv:transaction_id=JAN-TXN-004"
+                ]
+              }
+            ],
+            "correlated_driver_records": [
+              {
+                "customer_id": "CUST-ENT-A",
+                "segment": "Enterprise",
+                "budget_revenue": "290000.00",
+                "actual_revenue": "285000.00",
+                "status": "active",
+                "variance": "-5000.00",
+                "evidence": "customers.csv:customer_id=CUST-ENT-A"
+              },
+              {
+                "customer_id": "CUST-ENT-B",
+                "segment": "Enterprise",
+                "budget_revenue": "250000.00",
+                "actual_revenue": "235000.00",
+                "status": "active",
+                "variance": "-15000.00",
+                "evidence": "customers.csv:customer_id=CUST-ENT-B"
+              },
+              {
+                "customer_id": "CUST-MID-C",
+                "segment": "Mid-Market",
+                "budget_revenue": "190000.00",
+                "actual_revenue": "180000.00",
+                "status": "active",
+                "variance": "-10000.00",
+                "evidence": "customers.csv:customer_id=CUST-MID-C"
+              },
+              {
+                "customer_id": "CUST-SMB-COHORT",
+                "segment": "SMB",
+                "budget_revenue": "240000.00",
+                "actual_revenue": "220000.00",
+                "status": "active",
+                "variance": "-20000.00",
+                "evidence": "customers.csv:customer_id=CUST-SMB-COHORT"
+              }
+            ]
+          },
+          {
+            "period": "2026-02",
+            "performance_impact": "-90000.00",
+            "material_adverse": true,
+            "account_evidence": [
+              {
+                "level": "account",
+                "key": "4000",
+                "label": "Subscription Revenue",
+                "category": "revenue",
+                "budget": "800000.00",
+                "actual": "720000.00",
+                "variance": "-80000.00",
+                "performance_impact": "-80000.00",
+                "favorable": false,
+                "evidence": [
+                  "budget.csv:account=4000",
+                  "actuals.csv:account=4000",
+                  "account_mapping.csv:account=4000",
+                  "ledger.csv:transaction_id=TXN-001",
+                  "ledger.csv:transaction_id=TXN-002"
+                ]
+              },
+              {
+                "level": "account",
+                "key": "4010",
+                "label": "Services Revenue",
+                "category": "revenue",
+                "budget": "200000.00",
+                "actual": "190000.00",
+                "variance": "-10000.00",
+                "performance_impact": "-10000.00",
+                "favorable": false,
+                "evidence": [
+                  "budget.csv:account=4010",
+                  "actuals.csv:account=4010",
+                  "account_mapping.csv:account=4010",
+                  "ledger.csv:transaction_id=TXN-003",
+                  "ledger.csv:transaction_id=TXN-004"
+                ]
+              }
+            ],
+            "correlated_driver_records": [
+              {
+                "customer_id": "CUST-ENT-A",
+                "segment": "Enterprise",
+                "budget_revenue": "300000.00",
+                "actual_revenue": "300000.00",
+                "status": "active",
+                "variance": "0.00",
+                "evidence": "customers.csv:customer_id=CUST-ENT-A"
+              },
+              {
+                "customer_id": "CUST-ENT-B",
+                "segment": "Enterprise",
+                "budget_revenue": "250000.00",
+                "actual_revenue": "230000.00",
+                "status": "active",
+                "variance": "-20000.00",
+                "evidence": "customers.csv:customer_id=CUST-ENT-B"
+              },
+              {
+                "customer_id": "CUST-MID-C",
+                "segment": "Mid-Market",
+                "budget_revenue": "200000.00",
+                "actual_revenue": "180000.00",
+                "status": "active",
+                "variance": "-20000.00",
+                "evidence": "customers.csv:customer_id=CUST-MID-C"
+              },
+              {
+                "customer_id": "CUST-SMB-COHORT",
+                "segment": "SMB",
+                "budget_revenue": "250000.00",
+                "actual_revenue": "200000.00",
+                "status": "active",
+                "variance": "-50000.00",
+                "evidence": "customers.csv:customer_id=CUST-SMB-COHORT"
+              }
+            ]
+          },
+          {
+            "period": "2026-03",
+            "performance_impact": "-60000.00",
+            "material_adverse": true,
+            "account_evidence": [
+              {
+                "level": "account",
+                "key": "4000",
+                "label": "Subscription Revenue",
+                "category": "revenue",
+                "budget": "820000.00",
+                "actual": "770000.00",
+                "variance": "-50000.00",
+                "performance_impact": "-50000.00",
+                "favorable": false,
+                "evidence": [
+                  "budget.csv:account=4000",
+                  "actuals.csv:account=4000",
+                  "account_mapping.csv:account=4000",
+                  "ledger.csv:transaction_id=MAR-TXN-001",
+                  "ledger.csv:transaction_id=MAR-TXN-002"
+                ]
+              },
+              {
+                "level": "account",
+                "key": "4010",
+                "label": "Services Revenue",
+                "category": "revenue",
+                "budget": "210000.00",
+                "actual": "200000.00",
+                "variance": "-10000.00",
+                "performance_impact": "-10000.00",
+                "favorable": false,
+                "evidence": [
+                  "budget.csv:account=4010",
+                  "actuals.csv:account=4010",
+                  "account_mapping.csv:account=4010",
+                  "ledger.csv:transaction_id=MAR-TXN-003",
+                  "ledger.csv:transaction_id=MAR-TXN-004"
+                ]
+              }
+            ],
+            "correlated_driver_records": [
+              {
+                "customer_id": "CUST-ENT-A",
+                "segment": "Enterprise",
+                "budget_revenue": "310000.00",
+                "actual_revenue": "300000.00",
+                "status": "active",
+                "variance": "-10000.00",
+                "evidence": "customers.csv:customer_id=CUST-ENT-A"
+              },
+              {
+                "customer_id": "CUST-ENT-B",
+                "segment": "Enterprise",
+                "budget_revenue": "260000.00",
+                "actual_revenue": "245000.00",
+                "status": "active",
+                "variance": "-15000.00",
+                "evidence": "customers.csv:customer_id=CUST-ENT-B"
+              },
+              {
+                "customer_id": "CUST-MID-C",
+                "segment": "Mid-Market",
+                "budget_revenue": "210000.00",
+                "actual_revenue": "200000.00",
+                "status": "active",
+                "variance": "-10000.00",
+                "evidence": "customers.csv:customer_id=CUST-MID-C"
+              },
+              {
+                "customer_id": "CUST-SMB-COHORT",
+                "segment": "SMB",
+                "budget_revenue": "250000.00",
+                "actual_revenue": "225000.00",
+                "status": "active",
+                "variance": "-25000.00",
+                "evidence": "customers.csv:customer_id=CUST-SMB-COHORT"
+              }
+            ]
+          }
+        ],
+        "evidence_kinds": [
+          "CORRELATED_DRIVER_RECORD",
+          "VERIFIED_CALCULATION_SOURCE"
+        ],
+        "evidence": [
+          "2026-01:account_mapping.csv:account=4000",
+          "2026-01:account_mapping.csv:account=4010",
+          "2026-01:actuals.csv:account=4000",
+          "2026-01:actuals.csv:account=4010",
+          "2026-01:budget.csv:account=4000",
+          "2026-01:budget.csv:account=4010",
+          "2026-01:customers.csv:customer_id=CUST-ENT-A",
+          "2026-01:customers.csv:customer_id=CUST-ENT-B",
+          "2026-01:customers.csv:customer_id=CUST-MID-C",
+          "2026-01:customers.csv:customer_id=CUST-SMB-COHORT",
+          "2026-01:ledger.csv:transaction_id=JAN-TXN-001",
+          "2026-01:ledger.csv:transaction_id=JAN-TXN-002",
+          "2026-01:ledger.csv:transaction_id=JAN-TXN-003",
+          "2026-01:ledger.csv:transaction_id=JAN-TXN-004",
+          "2026-02:account_mapping.csv:account=4000",
+          "2026-02:account_mapping.csv:account=4010",
+          "2026-02:actuals.csv:account=4000",
+          "2026-02:actuals.csv:account=4010",
+          "2026-02:budget.csv:account=4000",
+          "2026-02:budget.csv:account=4010",
+          "2026-02:customers.csv:customer_id=CUST-ENT-A",
+          "2026-02:customers.csv:customer_id=CUST-ENT-B",
+          "2026-02:customers.csv:customer_id=CUST-MID-C",
+          "2026-02:customers.csv:customer_id=CUST-SMB-COHORT",
+          "2026-02:ledger.csv:transaction_id=TXN-001",
+          "2026-02:ledger.csv:transaction_id=TXN-002",
+          "2026-02:ledger.csv:transaction_id=TXN-003",
+          "2026-02:ledger.csv:transaction_id=TXN-004",
+          "2026-03:account_mapping.csv:account=4000",
+          "2026-03:account_mapping.csv:account=4010",
+          "2026-03:actuals.csv:account=4000",
+          "2026-03:actuals.csv:account=4010",
+          "2026-03:budget.csv:account=4000",
+          "2026-03:budget.csv:account=4010",
+          "2026-03:customers.csv:customer_id=CUST-ENT-A",
+          "2026-03:customers.csv:customer_id=CUST-ENT-B",
+          "2026-03:customers.csv:customer_id=CUST-MID-C",
+          "2026-03:customers.csv:customer_id=CUST-SMB-COHORT",
+          "2026-03:ledger.csv:transaction_id=MAR-TXN-001",
+          "2026-03:ledger.csv:transaction_id=MAR-TXN-002",
+          "2026-03:ledger.csv:transaction_id=MAR-TXN-003",
+          "2026-03:ledger.csv:transaction_id=MAR-TXN-004"
+        ],
+        "missing_evidence": [
+          "OWNER_CAUSAL_EXPLANATION"
+        ],
+        "causal_explanation": null,
+        "recommendation": null
+      },
+      "result_sha256": "d8585bd8136329d204a36a245752a70a684a13194bc30b428872fdc1a4a9232d"
+    },
+    {
+      "task_id": "gap-cogs",
+      "rank": 2,
+      "category": "cogs",
+      "specialist": "cost-specialist",
+      "cumulative_material_adverse_impact": "100000.00",
+      "adverse_period_count": 3,
+      "rationale": "cogs was materially adverse in 3 included periods",
+      "result": {
+        "status": "EVIDENCE_COLLECTED_PENDING_OWNER",
+        "category": "cogs",
+        "specialist": "cost-specialist",
+        "materiality_amount": "10000.00",
+        "periods": [
+          {
+            "period": "2026-01",
+            "performance_impact": "-30000.00",
+            "material_adverse": true,
+            "account_evidence": [
+              {
+                "level": "account",
+                "key": "5000",
+                "label": "Cloud Hosting",
+                "category": "cogs",
+                "budget": "175000.00",
+                "actual": "205000.00",
+                "variance": "30000.00",
+                "performance_impact": "-30000.00",
+                "favorable": false,
+                "evidence": [
+                  "budget.csv:account=5000",
+                  "actuals.csv:account=5000",
+                  "account_mapping.csv:account=5000",
+                  "ledger.csv:transaction_id=JAN-TXN-005",
+                  "ledger.csv:transaction_id=JAN-TXN-006"
+                ]
+              }
+            ],
+            "correlated_driver_records": []
+          },
+          {
+            "period": "2026-02",
+            "performance_impact": "-35000.00",
+            "material_adverse": true,
+            "account_evidence": [
+              {
+                "level": "account",
+                "key": "5000",
+                "label": "Cloud Hosting",
+                "category": "cogs",
+                "budget": "180000.00",
+                "actual": "215000.00",
+                "variance": "35000.00",
+                "performance_impact": "-35000.00",
+                "favorable": false,
+                "evidence": [
+                  "budget.csv:account=5000",
+                  "actuals.csv:account=5000",
+                  "account_mapping.csv:account=5000",
+                  "ledger.csv:transaction_id=TXN-005",
+                  "ledger.csv:transaction_id=TXN-006"
+                ]
+              }
+            ],
+            "correlated_driver_records": []
+          },
+          {
+            "period": "2026-03",
+            "performance_impact": "-35000.00",
+            "material_adverse": true,
+            "account_evidence": [
+              {
+                "level": "account",
+                "key": "5000",
+                "label": "Cloud Hosting",
+                "category": "cogs",
+                "budget": "185000.00",
+                "actual": "220000.00",
+                "variance": "35000.00",
+                "performance_impact": "-35000.00",
+                "favorable": false,
+                "evidence": [
+                  "budget.csv:account=5000",
+                  "actuals.csv:account=5000",
+                  "account_mapping.csv:account=5000",
+                  "ledger.csv:transaction_id=MAR-TXN-005",
+                  "ledger.csv:transaction_id=MAR-TXN-006"
+                ]
+              }
+            ],
+            "correlated_driver_records": []
+          }
+        ],
+        "evidence_kinds": [
+          "VERIFIED_CALCULATION_SOURCE"
+        ],
+        "evidence": [
+          "2026-01:account_mapping.csv:account=5000",
+          "2026-01:actuals.csv:account=5000",
+          "2026-01:budget.csv:account=5000",
+          "2026-01:ledger.csv:transaction_id=JAN-TXN-005",
+          "2026-01:ledger.csv:transaction_id=JAN-TXN-006",
+          "2026-02:account_mapping.csv:account=5000",
+          "2026-02:actuals.csv:account=5000",
+          "2026-02:budget.csv:account=5000",
+          "2026-02:ledger.csv:transaction_id=TXN-005",
+          "2026-02:ledger.csv:transaction_id=TXN-006",
+          "2026-03:account_mapping.csv:account=5000",
+          "2026-03:actuals.csv:account=5000",
+          "2026-03:budget.csv:account=5000",
+          "2026-03:ledger.csv:transaction_id=MAR-TXN-005",
+          "2026-03:ledger.csv:transaction_id=MAR-TXN-006"
+        ],
+        "missing_evidence": [
+          "OPERATIONAL_DRIVER_RECORDS",
+          "OWNER_CAUSAL_EXPLANATION"
+        ],
+        "causal_explanation": null,
+        "recommendation": null
+      },
+      "result_sha256": "a839282a5b508b6fa1a93f0feed38528fc6d65415032296c450f2f0a4edf47bd"
+    },
+    {
+      "task_id": "gap-opex",
+      "rank": 3,
+      "category": "opex",
+      "specialist": "cost-specialist",
+      "cumulative_material_adverse_impact": "36000.00",
+      "adverse_period_count": 3,
+      "rationale": "opex was materially adverse in 3 included periods",
+      "result": {
+        "status": "EVIDENCE_COLLECTED_PENDING_OWNER",
+        "category": "opex",
+        "specialist": "cost-specialist",
+        "materiality_amount": "10000.00",
+        "periods": [
+          {
+            "period": "2026-01",
+            "performance_impact": "-11000.00",
+            "material_adverse": true,
+            "account_evidence": [
+              {
+                "level": "account",
+                "key": "6100",
+                "label": "Marketing Programs",
+                "category": "opex",
+                "budget": "75000.00",
+                "actual": "82000.00",
+                "variance": "7000.00",
+                "performance_impact": "-7000.00",
+                "favorable": false,
+                "evidence": [
+                  "budget.csv:account=6100",
+                  "actuals.csv:account=6100",
+                  "account_mapping.csv:account=6100",
+                  "ledger.csv:transaction_id=JAN-TXN-009",
+                  "ledger.csv:transaction_id=JAN-TXN-010"
+                ]
+              },
+              {
+                "level": "account",
+                "key": "6200",
+                "label": "Software Subscriptions",
+                "category": "opex",
+                "budget": "38000.00",
+                "actual": "40000.00",
+                "variance": "2000.00",
+                "performance_impact": "-2000.00",
+                "favorable": false,
+                "evidence": [
+                  "budget.csv:account=6200",
+                  "actuals.csv:account=6200",
+                  "account_mapping.csv:account=6200",
+                  "ledger.csv:transaction_id=JAN-TXN-011",
+                  "ledger.csv:transaction_id=JAN-TXN-012"
+                ]
+              },
+              {
+                "level": "account",
+                "key": "6300",
+                "label": "Professional Services",
+                "category": "opex",
+                "budget": "28000.00",
+                "actual": "30000.00",
+                "variance": "2000.00",
+                "performance_impact": "-2000.00",
+                "favorable": false,
+                "evidence": [
+                  "budget.csv:account=6300",
+                  "actuals.csv:account=6300",
+                  "account_mapping.csv:account=6300",
+                  "ledger.csv:transaction_id=JAN-TXN-013",
+                  "ledger.csv:transaction_id=JAN-TXN-014"
+                ]
+              }
+            ],
+            "correlated_driver_records": []
+          },
+          {
+            "period": "2026-02",
+            "performance_impact": "-15000.00",
+            "material_adverse": true,
+            "account_evidence": [
+              {
+                "level": "account",
+                "key": "6100",
+                "label": "Marketing Programs",
+                "category": "opex",
+                "budget": "80000.00",
+                "actual": "90000.00",
+                "variance": "10000.00",
+                "performance_impact": "-10000.00",
+                "favorable": false,
+                "evidence": [
+                  "budget.csv:account=6100",
+                  "actuals.csv:account=6100",
+                  "account_mapping.csv:account=6100",
+                  "ledger.csv:transaction_id=TXN-009",
+                  "ledger.csv:transaction_id=TXN-010"
+                ]
+              },
+              {
+                "level": "account",
+                "key": "6200",
+                "label": "Software Subscriptions",
+                "category": "opex",
+                "budget": "40000.00",
+                "actual": "42000.00",
+                "variance": "2000.00",
+                "performance_impact": "-2000.00",
+                "favorable": false,
+                "evidence": [
+                  "budget.csv:account=6200",
+                  "actuals.csv:account=6200",
+                  "account_mapping.csv:account=6200",
+                  "ledger.csv:transaction_id=TXN-011",
+                  "ledger.csv:transaction_id=TXN-012"
+                ]
+              },
+              {
+                "level": "account",
+                "key": "6300",
+                "label": "Professional Services",
+                "category": "opex",
+                "budget": "30000.00",
+                "actual": "33000.00",
+                "variance": "3000.00",
+                "performance_impact": "-3000.00",
+                "favorable": false,
+                "evidence": [
+                  "budget.csv:account=6300",
+                  "actuals.csv:account=6300",
+                  "account_mapping.csv:account=6300",
+                  "ledger.csv:transaction_id=TXN-013",
+                  "ledger.csv:transaction_id=TXN-014"
+                ]
+              }
+            ],
+            "correlated_driver_records": []
+          },
+          {
+            "period": "2026-03",
+            "performance_impact": "-10000.00",
+            "material_adverse": true,
+            "account_evidence": [
+              {
+                "level": "account",
+                "key": "6100",
+                "label": "Marketing Programs",
+                "category": "opex",
+                "budget": "82000.00",
+                "actual": "88000.00",
+                "variance": "6000.00",
+                "performance_impact": "-6000.00",
+                "favorable": false,
+                "evidence": [
+                  "budget.csv:account=6100",
+                  "actuals.csv:account=6100",
+                  "account_mapping.csv:account=6100",
+                  "ledger.csv:transaction_id=MAR-TXN-009",
+                  "ledger.csv:transaction_id=MAR-TXN-010"
+                ]
+              },
+              {
+                "level": "account",
+                "key": "6200",
+                "label": "Software Subscriptions",
+                "category": "opex",
+                "budget": "42000.00",
+                "actual": "43000.00",
+                "variance": "1000.00",
+                "performance_impact": "-1000.00",
+                "favorable": false,
+                "evidence": [
+                  "budget.csv:account=6200",
+                  "actuals.csv:account=6200",
+                  "account_mapping.csv:account=6200",
+                  "ledger.csv:transaction_id=MAR-TXN-011",
+                  "ledger.csv:transaction_id=MAR-TXN-012"
+                ]
+              },
+              {
+                "level": "account",
+                "key": "6300",
+                "label": "Professional Services",
+                "category": "opex",
+                "budget": "31000.00",
+                "actual": "34000.00",
+                "variance": "3000.00",
+                "performance_impact": "-3000.00",
+                "favorable": false,
+                "evidence": [
+                  "budget.csv:account=6300",
+                  "actuals.csv:account=6300",
+                  "account_mapping.csv:account=6300",
+                  "ledger.csv:transaction_id=MAR-TXN-013",
+                  "ledger.csv:transaction_id=MAR-TXN-014"
+                ]
+              }
+            ],
+            "correlated_driver_records": []
+          }
+        ],
+        "evidence_kinds": [
+          "VERIFIED_CALCULATION_SOURCE"
+        ],
+        "evidence": [
+          "2026-01:account_mapping.csv:account=6100",
+          "2026-01:account_mapping.csv:account=6200",
+          "2026-01:account_mapping.csv:account=6300",
+          "2026-01:actuals.csv:account=6100",
+          "2026-01:actuals.csv:account=6200",
+          "2026-01:actuals.csv:account=6300",
+          "2026-01:budget.csv:account=6100",
+          "2026-01:budget.csv:account=6200",
+          "2026-01:budget.csv:account=6300",
+          "2026-01:ledger.csv:transaction_id=JAN-TXN-009",
+          "2026-01:ledger.csv:transaction_id=JAN-TXN-010",
+          "2026-01:ledger.csv:transaction_id=JAN-TXN-011",
+          "2026-01:ledger.csv:transaction_id=JAN-TXN-012",
+          "2026-01:ledger.csv:transaction_id=JAN-TXN-013",
+          "2026-01:ledger.csv:transaction_id=JAN-TXN-014",
+          "2026-02:account_mapping.csv:account=6100",
+          "2026-02:account_mapping.csv:account=6200",
+          "2026-02:account_mapping.csv:account=6300",
+          "2026-02:actuals.csv:account=6100",
+          "2026-02:actuals.csv:account=6200",
+          "2026-02:actuals.csv:account=6300",
+          "2026-02:budget.csv:account=6100",
+          "2026-02:budget.csv:account=6200",
+          "2026-02:budget.csv:account=6300",
+          "2026-02:ledger.csv:transaction_id=TXN-009",
+          "2026-02:ledger.csv:transaction_id=TXN-010",
+          "2026-02:ledger.csv:transaction_id=TXN-011",
+          "2026-02:ledger.csv:transaction_id=TXN-012",
+          "2026-02:ledger.csv:transaction_id=TXN-013",
+          "2026-02:ledger.csv:transaction_id=TXN-014",
+          "2026-03:account_mapping.csv:account=6100",
+          "2026-03:account_mapping.csv:account=6200",
+          "2026-03:account_mapping.csv:account=6300",
+          "2026-03:actuals.csv:account=6100",
+          "2026-03:actuals.csv:account=6200",
+          "2026-03:actuals.csv:account=6300",
+          "2026-03:budget.csv:account=6100",
+          "2026-03:budget.csv:account=6200",
+          "2026-03:budget.csv:account=6300",
+          "2026-03:ledger.csv:transaction_id=MAR-TXN-009",
+          "2026-03:ledger.csv:transaction_id=MAR-TXN-010",
+          "2026-03:ledger.csv:transaction_id=MAR-TXN-011",
+          "2026-03:ledger.csv:transaction_id=MAR-TXN-012",
+          "2026-03:ledger.csv:transaction_id=MAR-TXN-013",
+          "2026-03:ledger.csv:transaction_id=MAR-TXN-014"
+        ],
+        "missing_evidence": [
+          "OPERATIONAL_DRIVER_RECORDS",
+          "OWNER_CAUSAL_EXPLANATION"
+        ],
+        "causal_explanation": null,
+        "recommendation": null
+      },
+      "result_sha256": "51fc92683d1d63815cfb33532b5b643ad8a945fe263204c0d643710154293db6"
+    }
+  ],
+  "handoffs": [
+    {
+      "sequence": 1,
+      "from": "supervisor",
+      "to": "lineage-specialist",
+      "task": "verify-source-chain",
+      "result": {
+        "status": "VERIFIED_INPUT_CHAIN",
+        "evidence": [
+          "data/verified/mycroft-finance-investigator-history/2026-01/account_mapping.csv#sha256=c45ba1275b8daa38b6827e7257170a9ea34b255033be5128c4c6e74e51d1a839",
+          "data/verified/mycroft-finance-investigator-history/2026-01/actuals.csv#sha256=007f5786115fbf94af981f8604fc2a6dffcfd26da6c2a473bfafa8104eaae6fc",
+          "data/verified/mycroft-finance-investigator-history/2026-01/budget.csv#sha256=f2a6de1ee3fa367c1b7d16657184308a4a8ece2af50199246e83526145a15304",
+          "data/verified/mycroft-finance-investigator-history/2026-01/customers.csv#sha256=bd94e40093870334aa276bd05504d094a8d9766cce06d77528702cb995623ba9",
+          "data/verified/mycroft-finance-investigator-history/2026-01/headcount.csv#sha256=05497113cdb1d7346a5adfbc1eeabbcf07c94e4c940772f9161f2de415099b9e",
+          "data/verified/mycroft-finance-investigator-history/2026-01/ledger.csv#sha256=55ecf3a9064375b53b00d5d21888a318adb3a74b4e25635ea0b76bb28a57fc1d",
+          "data/verified/mycroft-finance-investigator-history/2026-03/account_mapping.csv#sha256=c45ba1275b8daa38b6827e7257170a9ea34b255033be5128c4c6e74e51d1a839",
+          "data/verified/mycroft-finance-investigator-history/2026-03/actuals.csv#sha256=31d6adc59f2532ba7e0d285ea522e2017444ffb2eac0be0837fd9d59027fb085",
+          "data/verified/mycroft-finance-investigator-history/2026-03/budget.csv#sha256=41e8484e0b1c1aab87a41138e9ee62dd858584550cb6849afb81688941ef9bfd",
+          "data/verified/mycroft-finance-investigator-history/2026-03/customers.csv#sha256=029cef3ea65cf380146099c5b4a6ea0ea181d55b4053c5b5b31c140a349c1676",
+          "data/verified/mycroft-finance-investigator-history/2026-03/headcount.csv#sha256=016e0c5cff768221d555f149e6df1e8bdb7fee6316466a293d64f64446ed744e",
+          "data/verified/mycroft-finance-investigator-history/2026-03/ledger.csv#sha256=72987794e2b79b35b5c2e2499c7e598fbdbcb39bd4cc9f364470b795edc02c71",
+          "data/verified/mycroft-finance-investigator/account_mapping.csv#sha256=c45ba1275b8daa38b6827e7257170a9ea34b255033be5128c4c6e74e51d1a839",
+          "data/verified/mycroft-finance-investigator/actuals.csv#sha256=389b724554635514fddb6bfbb0356744780dd21465f9795f7158626bab994015",
+          "data/verified/mycroft-finance-investigator/budget.csv#sha256=de05edd74e10eab58406d8378cc603699e4f1b34d38fdfa6bb0c7d4bd719dc79",
+          "data/verified/mycroft-finance-investigator/customers.csv#sha256=4deba1e908e005d30fdd69fe564b71891f1a545d5010fa5a9e176eb9bc1b8b03",
+          "data/verified/mycroft-finance-investigator/headcount.csv#sha256=8938672e39fc1d0135b2ee961ce81036d0f141daab823ffed0bcc81c6550fb24",
+          "data/verified/mycroft-finance-investigator/ledger.csv#sha256=3dddbc583608426447ca799360bf58bb00be8b86962ef2677107feebc9a3a05d",
+          "logs/mycroft-finance-investigator-sample-2026-01.json#run_id=sample-2026-01",
+          "logs/mycroft-finance-investigator-sample-2026-02.json#run_id=sample-2026-02",
+          "logs/mycroft-finance-investigator-sample-2026-03.json#run_id=sample-2026-03"
+        ]
+      }
+    },
+    {
+      "sequence": 2,
+      "from": "supervisor",
+      "to": "revenue-specialist",
+      "task": "gap-revenue",
+      "result": {
+        "status": "EVIDENCE_COLLECTED_PENDING_OWNER",
+        "result_sha256": "d8585bd8136329d204a36a245752a70a684a13194bc30b428872fdc1a4a9232d"
+      }
+    },
+    {
+      "sequence": 3,
+      "from": "supervisor",
+      "to": "cost-specialist",
+      "task": "gap-cogs",
+      "result": {
+        "status": "EVIDENCE_COLLECTED_PENDING_OWNER",
+        "result_sha256": "a839282a5b508b6fa1a93f0feed38528fc6d65415032296c450f2f0a4edf47bd"
+      }
+    },
+    {
+      "sequence": 4,
+      "from": "supervisor",
+      "to": "cost-specialist",
+      "task": "gap-opex",
+      "result": {
+        "status": "EVIDENCE_COLLECTED_PENDING_OWNER",
+        "result_sha256": "51fc92683d1d63815cfb33532b5b643ad8a945fe263204c0d643710154293db6"
+      }
+    }
+  ],
+  "causal_explanation": null,
+  "recommendation": null,
+  "human_gate": {
+    "status": "OPEN",
+    "required": [
+      "Judge whether the routed evidence is adequate",
+      "Supply additional operational evidence for unresolved gaps",
+      "Provide and support any causal explanation",
+      "Approve or block distribution"
+    ]
+  }
+}

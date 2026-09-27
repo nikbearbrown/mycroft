@@ -1,0 +1,40 @@
+{
+  "schema_version": "0.1.0",
+  "datasets": {
+    "account_mapping.csv": {
+      "required_columns": ["account", "account_name", "category"],
+      "unique_key": ["account"],
+      "allowed_values": {
+        "category": ["revenue", "cogs", "payroll", "opex"]
+      }
+    },
+    "budget.csv": {
+      "required_columns": ["period", "entity", "department", "account", "amount"],
+      "unique_key": ["period", "entity", "department", "account"],
+      "decimal_columns": ["amount"]
+    },
+    "actuals.csv": {
+      "required_columns": ["period", "entity", "department", "account", "amount"],
+      "unique_key": ["period", "entity", "department", "account"],
+      "decimal_columns": ["amount"]
+    },
+    "ledger.csv": {
+      "required_columns": ["transaction_id", "period", "entity", "department", "account", "amount", "description"],
+      "unique_key": ["transaction_id"],
+      "decimal_columns": ["amount"]
+    },
+    "customers.csv": {
+      "required_columns": ["customer_id", "segment", "budget_revenue", "actual_revenue", "status"],
+      "unique_key": ["customer_id"],
+      "decimal_columns": ["budget_revenue", "actual_revenue"],
+      "allowed_values": {
+        "status": ["active", "churned"]
+      }
+    },
+    "headcount.csv": {
+      "required_columns": ["department", "budget_fte", "actual_fte", "budget_cost", "actual_cost"],
+      "unique_key": ["department"],
+      "decimal_columns": ["budget_fte", "actual_fte", "budget_cost", "actual_cost"]
+    }
+  }
+}

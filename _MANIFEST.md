@@ -25,7 +25,7 @@
 
 | Path | Use when |
 |------|----------|
-| `recipes/` | The operating surface — 99 recipes (monitor/pipeline + agent recipes). |
+| `recipes/` | The operating surface — 100 recipes (monitor/pipeline + agent recipes). |
 | `conductor/` | Per-recipe conductor step files — the orchestration layer. |
 | `scripts/` | Executable code (conformance, build-instructions, to-markdown, manifest-check, svg-to-png, ingest/, gigo/, tools/). |
 | `chapters/` | Manuscript — the Mycroft book. |
