@@ -13,6 +13,22 @@ Validation, was built on top of the same evidence store. This folder now holds b
 accountability mechanism (which records what one agent did) and Cross-Agent Validation
 (which compares two agents against each other). See `logs/RUN_LOG.md` for both changes.
 
+## Documentation
+
+**[The reference site](docs/reference/index.html)** documents every file, feature, layer,
+component and design decision in this folder: how a run flows end to end, the HTTP API,
+configuration, record shapes, the Honest Ledger, and a list of places where older documents
+(including parts of this README) no longer match the code.
+
+- **Open it locally.** It's static HTML: open `docs/reference/index.html` in a browser, no
+  server needed. (GitHub shows `.html` files as source, not as pages.) Light by default; the
+  header has a dark-theme toggle.
+- **Rebuild it** after changing the code or the docs: `python scripts/build_docs.py`. Its
+  sources are in `docs/reference/src/` (see `AUTHORING.md` there), and parts of it (file
+  inventories, routes, environment variables, the ledger) are generated from the code.
+- **It can't silently fall behind.** `tests/test_docs_coverage.py` fails if a file has no
+  entry or a link breaks.
+
 ## What the accountability component enforces
 
 | Snickerdoodle principle | How this code implements it |

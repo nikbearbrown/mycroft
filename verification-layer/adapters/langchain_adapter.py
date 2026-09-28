@@ -70,9 +70,44 @@ OLLAMA_HOST        = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
 CONTEXT_CHAR_LIMIT = 6_000  # same conservative limit the old ollama_adapter.py used
 _MAX_TOOL_ITERATIONS = 4  # caps tool-call round-trips so a confused model can't loop forever
 
+# Seconds a model call may go without receiving anything before it is abandoned.
+# ChatOllama always streams, so for Ollama this is a stall limit (no bytes for this
+# long), not a cap on a call's total length; for Gemini it is the request timeout.
+# Ollama stopped responding mid-compare four times with no limit at all (the Honest
+# Ledger's ollama-hangs-under-compare). 120 s is above the slowest successful LLM
+# attempt stored as of 2026-09-27 (85.3 s over 56 attempts, search calls included).
+MODEL_TIMEOUT_S = float(os.environ.get("MODEL_TIMEOUT_S", "120"))
+
 
 class LangchainConnectionError(Exception):
     """The underlying LangChain chat model (or its search tool) could not be reached."""
+
+
+class LangchainTimeoutError(LangchainConnectionError):
+    """The model sent nothing for MODEL_TIMEOUT_S seconds, so the call was abandoned."""
+
+
+def _is_timeout(exc: BaseException) -> bool:
+    """Whether exc, or anything it was raised from, is a timeout."""
+    import httpx  # a dependency of the ollama client, so present whenever ChatOllama is
+
+    seen: set[int] = set()
+    cur: BaseException | None = exc
+    while cur is not None and id(cur) not in seen:
+        if isinstance(cur, (httpx.TimeoutException, TimeoutError)):
+            return True
+        seen.add(id(cur))
+        cur = cur.__cause__ or cur.__context__
+    return False
+
+
+def _connection_error(model: str, exc: Exception, what: str = "") -> LangchainConnectionError:
+    """The error to raise for a failed model call: a timeout says so, and how long it waited."""
+    if _is_timeout(exc):
+        return LangchainTimeoutError(
+            f"Model {model!r} sent nothing for {MODEL_TIMEOUT_S:g} s, so the call was abandoned "
+            f"(MODEL_TIMEOUT_S). Original error: {type(exc).__name__}: {exc}")
+    return LangchainConnectionError(f"Cannot reach model {model!r} via LangChain{what}. Original error: {exc}")
 
 
 def _is_gemini_model(model: str) -> bool:
@@ -98,14 +133,16 @@ def _build_chat(model: str, temperature: float, seed: int | None):
         # on this path; seed is silently inapplicable here, not silently lost
         # (the caller passed it because the shared UI slider doesn't know
         # which family a model name maps to).
-        return ChatGoogleGenerativeAI(model=model, temperature=temperature, google_api_key=api_key)
+        return ChatGoogleGenerativeAI(model=model, temperature=temperature, google_api_key=api_key,
+                                      timeout=MODEL_TIMEOUT_S)
 
     from langchain_ollama import ChatOllama
 
     options: dict = {"temperature": temperature}
     if seed is not None:
         options["seed"] = seed
-    return ChatOllama(model=model, base_url=OLLAMA_HOST, **options)
+    # client_kwargs go to the ollama client's httpx client, sync and async alike.
+    return ChatOllama(model=model, base_url=OLLAMA_HOST, client_kwargs={"timeout": MODEL_TIMEOUT_S}, **options)
 
 
 def _run_async(coro):
@@ -341,7 +378,7 @@ def make_langchain_model_call(
         except EnvironmentError:
             raise
         except Exception as exc:
-            raise LangchainConnectionError(f"Cannot reach model {model!r} via LangChain. Original error: {exc}") from exc
+            raise _connection_error(model, exc) from exc
         return reply.content if isinstance(reply.content, str) else str(reply.content)
 
     return call
@@ -434,11 +471,7 @@ def make_langchain_adapter(
         except EnvironmentError:
             raise  # missing API key — a config problem, not a connection failure
         except Exception as exc:  # connection refused, model missing, search tool failure, etc.
-            raise LangchainConnectionError(
-                f"Cannot reach model {model!r} via LangChain"
-                f"{' (or its Tavily search tool)' if tools_active else ''}. "
-                f"Original error: {exc}"
-            ) from exc
+            raise _connection_error(model, exc, " (or its Tavily search tool)" if tools_active else "") from exc
 
         if not tools_active:
             return _parse_response(result.content, allow_assessment=expects_assessment(directive.version))

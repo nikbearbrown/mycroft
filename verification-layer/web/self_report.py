@@ -232,18 +232,29 @@ KNOWN_ISSUES: list[dict[str, Any]] = [
         "severity": "medium",
         "area": "Testing",
         "title": "/api/compare has no automated test",
-        "detail": "No route in web/server.py has one. Verification so far is a single manual smoke test (AAPL auditor scope, MSFT investor scope, mock provider). Not a repeatable check.",
-        "status": "OPEN",
-        "source": "status doc §3.3",
+        "detail": "No route in web/server.py had one; verification was a single manual smoke test (AAPL auditor scope, MSFT "
+                  "investor scope, mock provider). RESOLVED 2026-09-27 for /api/compare: tests/test_compare_route.py drives it "
+                  "with scripted agents, and route tests now also cover /api/compare/stream, /api/chat/stream, /api/runs reads, "
+                  "decisions, source-snippet, facts/excerpt, audit, export.md, sessions and \"/\" (test_concurrency_and_stream, "
+                  "test_trace_withholding, test_gate, test_audit, test_cutover). Still without a route test: the plain "
+                  "/api/chat, /api/config, DELETE /api/runs, replay, contradictions, /api/self-report and /api/directive.",
+        "status": "RESOLVED",
+        "source": "status doc §3.3; tests/test_compare_route.py; logs/RUN_LOG.md 2026-09-27 ledger refresh entry",
     },
     {
         "id": "retry-halt-unproven",
         "severity": "medium",
         "area": "Testing",
         "title": "ADR-07 retry/halt never observed firing on a real model",
-        "detail": "24 real agent-runs produced zero retries and zero halts. Good reliability news, but the retry/halt path's real-world correctness is unproven — it is only exercised by mock_adapter.py's scripted failures.",
-        "status": "UNVERIFIED",
-        "source": "Live test 4",
+        "detail": "24 real agent-runs produced zero retries and zero halts. Good reliability news, but the retry/halt path's real-world correctness is unproven — it is only exercised by mock_adapter.py's scripted failures. "
+                  "RESOLVED 2026-09-27, observed: counted from the stored runs (web/data/accountability.db, LangChain provider, "
+                  "real models only), 48 agent-runs from 2026-09-22 to 2026-09-24 include 13 retries (llama3.2 9, "
+                  "gemini-2.5-flash 4). 4 recovered on attempt 2 (PARSE_FAILURE then SUCCESS) and 9 halted (PARSE_FAILURE "
+                  "then HALT), each stored with its reasoning objects, e.g. MSFT 55df46d2 (recovered) and da03160a (halted). "
+                  "Counted from reasoning objects, not the step trace (see consistency-probe-shown-as-retry). Observed "
+                  "firing is not the same as judged correct in every case: nobody has reviewed the 9 halts one by one.",
+        "status": "RESOLVED",
+        "source": "Live test 4; web/data/accountability.db; logs/RUN_LOG.md 2026-09-27 ledger refresh entry",
     },
     {
         "id": "gemini-key-unconfirmed",
@@ -293,7 +304,7 @@ KNOWN_ISSUES: list[dict[str, Any]] = [
         "id": "ollama-hangs-under-compare",
         "severity": "high",
         "area": "Runtime",
-        "title": "The local model server stopped responding twice during compare runs",
+        "title": "The local model server stopped responding during compare runs (four times)",
         "detail": "Observed 2026-09-25, twice: during two-agent compare runs, Ollama stopped answering even a bare 5-token "
                   "/api/generate from outside the app, and the runs' model calls never returned (no timeout exists, so they "
                   "waited indefinitely). Both times Ollama answered immediately after this server was restarted, which dropped "
@@ -302,9 +313,14 @@ KNOWN_ISSUES: list[dict[str, Any]] = [
                   "been tried. The live view shows such a run honestly (the timer keeps counting on a step that never ends). "
                   "UPDATE 2026-09-26: two more times, both during ticker compares that now make an extra extraction call per "
                   "agent; each time a 5-token request from outside hung too, and each time Ollama answered right after the "
-                  "server restarted. Five observations, same pattern; still not a confirmed cause.",
+                  "server restarted. Five observations, same pattern; still not a confirmed cause. "
+                  "CORRECTION 2026-09-27: four, not five. The RUN_LOG records two on 2026-09-25 and two on 2026-09-26. "
+                  "UPDATE 2026-09-27: model calls now have a timeout (MODEL_TIMEOUT_S, default 120 s with nothing received), "
+                  "so a hung call ends and its run is recorded as halted with the error instead of waiting indefinitely. That "
+                  "bounds the damage; it doesn't fix the hang, whose cause is still unconfirmed. Ollama may stay wedged after a "
+                  "timeout until its connections drop, which hasn't been tested. CROSS_AGENT_MAX_CONCURRENCY=1 is still untried.",
         "status": "OPEN",
-        "source": "logs/RUN_LOG.md 2026-09-25 B2 + B3 and BP + U4 entries",
+        "source": "logs/RUN_LOG.md 2026-09-25 B2 + B3 and BP + U4 entries; 2026-09-27 ledger refresh entry; tests/test_model_timeout.py",
     },
     {
         "id": "filing-excerpt-coverage",
@@ -412,6 +428,21 @@ KNOWN_ISSUES: list[dict[str, Any]] = [
                   "refresh. \"/\" now sends Cache-Control: no-store, so this can't recur for whatever \"/\" becomes next.",
         "status": "OPEN",
         "source": "logs/RUN_LOG.md 2026-09-27 B6 + U9 entry; tests/test_cutover.py",
+    },
+    {
+        "id": "consistency-probe-shown-as-retry",
+        "severity": "medium",
+        "area": "Trace",
+        "title": "A chat run's consistency probe is traced and shown as a retry",
+        "detail": "The chat route's consistency probe (ADR-06, on by default for non-Gemini models) asks the same question "
+                  "again through the same traced adapter, so its call is recorded as \"LLM attempt 2\" and the live view "
+                  "says \"Retrying (attempt 2)\". Found 2026-09-27 on chat run 3f1b0f89: the trace has LLM attempts 1 and 2, "
+                  "while its reasoning objects hold one attempt (SUCCESS) and its consistency block holds the probe's answer. "
+                  "The RUN_LOG's 2026-09-27 B6 + U9 entry reported that as a retry; it was not. A reviewer reading the trace "
+                  "sees a retry that never happened (P6: the trace and the record disagree). Not fixed yet.",
+        "status": "OPEN",
+        "source": "web/server.py chat route (run_consistency_probe with the wrapped adapter); web/step_trace.py wrap_adapter; "
+                  "logs/RUN_LOG.md 2026-09-27 ledger refresh entry",
     },
     {
         "id": "gate-identity-self-declared",
