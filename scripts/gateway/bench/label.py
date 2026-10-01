@@ -1,24 +1,29 @@
-"""Label the fixture set, one fixture at a time.
+"""Label the fixture set: interactively, or from an answer sheet.
 
-Shows each fixture's task definition, its input, and its drafted expected
-answer, then asks you to confirm or correct the answer and to set the
-expected tier -- the cheapest tier you expect to get it right.
+Labels are human judgments -- the expected answer, and the expected tier (the
+cheapest tier you expect to get it right). Deliberately NOT shown: the
+router's decision, or a tier you gave the fixture earlier. Either would
+anchor your judgment.
 
-For a json task it also asks for acceptable answers per field. The key check
-can only see that a field is present, not that its value is right, so these
-are what make extraction gradeable (Sprint 5). Nothing is saved until you
-have seen a summary of it and confirmed.
+Two ways to work:
 
-Deliberately NOT shown: the router's decision for the fixture, or a tier you
-gave it earlier. Either would anchor your judgment.
+    # answer sheet (recommended): fixture text and your answer side by side
+    python scripts/gateway/bench/label.py --template answers.json --ids a,b,c
+    ... edit answers.json in your editor ...
+    Remove-Item scripts/gateway/bench/manifest.json
+    python scripts/gateway/bench/label.py --by "Your Name" --from answers.json
 
-Usage:
+    # one fixture at a time, in the terminal
     python scripts/gateway/bench/label.py --by "Your Name"              # unreviewed only
-    python scripts/gateway/bench/label.py --by "Your Name" --redo       # also your own labels
-    python scripts/gateway/bench/label.py --by "Your Name" --ids a,b,c  # just these fixtures
+    python scripts/gateway/bench/label.py --by "Your Name" --redo       # also your own
+    python scripts/gateway/bench/label.py --by "Your Name" --ids a,b,c  # just these
 
-Progress is saved after every fixture, so you can stop and resume.
-Refuses to run once the set is frozen (manifest.json exists).
+A json task carries acceptable answers per field. The key check can only see
+that a field is present, not that its value is right, so these are what make
+extraction gradeable (Sprint 5).
+
+Nothing is written until it validates. Writing labels refuses to run once the
+set is frozen; writing an answer sheet does not, because it only reads.
 """
 
 from __future__ import annotations
@@ -36,6 +41,17 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from gateway.bench import fixtures as fx
 from gateway.policy import Policy
 from gateway.tiers import TierConfig
+
+HOW_TO_FILL = {
+    "json": ("Fill 'values' with every wording you would accept as correct for "
+             "that field. Leave a field's list empty to check only that the "
+             "field is present. Fields are about what the speaker said -- "
+             "'direction' means which way the number goes, not sentiment."),
+    "label": "Set 'label' to one of the allowed labels listed above it.",
+    "verdict": "Set 'label' to one of the allowed labels listed above it.",
+    "text": ("Nothing to fill in here -- this answer is graded against the "
+             "input itself. Just set the tier."),
+}
 
 
 def apply_label(fixture: dict[str, Any], *, policy: Policy, tier: str, by: str,
@@ -68,11 +84,145 @@ def _split(text: str) -> list[str]:
     return [part.strip() for part in text.split(",") if part.strip()]
 
 
-def _ask_json_expected(exp: dict[str, Any]) -> dict[str, Any]:
-    """Required keys, then the acceptable answers per key. Confirmed before it returns.
+def read_sheet(path: Path) -> list[dict[str, Any]]:
+    """Load an answer sheet.
 
-    The instructions are printed above the prompt, never on the input line --
-    an input line that explains itself invites you to type the explanation back.
+    utf-8-sig, not utf-8: PowerShell's Set-Content writes a byte-order mark and
+    json.loads rejects it outright. utf-8-sig reads files with or without one.
+    """
+    return json.loads(path.read_text(encoding="utf-8-sig"))
+
+
+# ---------------------------------------------------------------- answer sheet
+
+def build_template(fixtures: list[dict[str, Any]], policy: Policy) -> list[dict[str, Any]]:
+    """An answer sheet: the fixture's own text beside the answer to fill in.
+
+    Every key starting with '_' is context for the reader and is discarded on
+    the way back in. Only 'expected' and 'tier' are read.
+    """
+    sheet = []
+    for fixture in fixtures:
+        rule = policy.rule_for(fixture["task_type"])
+        expected = copy.deepcopy(fixture["expected"])
+        entry: dict[str, Any] = {
+            "id": fixture["id"],
+            "_task": f"{fixture['task_type']} ({fixture['difficulty']})",
+            "_asks": rule["description"],
+            "_input": fixture["input"],
+        }
+        if fixture.get("notes"):
+            entry["_notes"] = fixture["notes"]
+        if fixture.get("context"):
+            entry["_passages"] = {str(n): p for n, p in enumerate(fixture["context"])}
+        if rule["output"] in ("label", "verdict"):
+            entry["_allowed_labels"] = list(rule["labels"])
+        if rule["output"] == "json":
+            values = {k: list((expected.get("values") or {}).get(k, []))
+                      for k in expected["required_keys"]}
+            expected["values"] = values
+        entry["_how_to_fill"] = HOW_TO_FILL.get(rule["output"], HOW_TO_FILL["text"])
+        entry["_tier_means"] = (f"cheapest tier you expect to get it right: "
+                                f"{', '.join(policy.tier_order)}")
+        entry["expected"] = expected
+        entry["tier"] = fixture.get("expected_tier")
+        sheet.append(entry)
+    return sheet
+
+
+def clean_expected(expected: dict[str, Any]) -> dict[str, Any]:
+    """Drop the reader's context keys and any field left blank."""
+    exp = {k: v for k, v in expected.items() if not k.startswith("_")}
+    values = exp.get("values")
+    if isinstance(values, dict):
+        kept = {}
+        for key, accepted in values.items():
+            if isinstance(accepted, list):
+                accepted = [s.strip() for s in accepted
+                            if isinstance(s, str) and s.strip()]
+            if accepted:
+                kept[key] = accepted
+        if kept:
+            exp["values"] = kept
+        else:
+            exp.pop("values", None)
+    return exp
+
+
+def label_from_sheet(sheet: list[dict[str, Any]], fixtures: list[dict[str, Any]],
+                     policy: Policy, *, by: str, on: str,
+                     confirm=input) -> tuple[int, list[str]]:
+    """Apply an edited answer sheet. Validates everything before writing anything."""
+    by_id = {f["id"]: f for f in fixtures}
+    problems = []
+    staged: list[tuple[dict[str, Any], dict[str, Any]]] = []
+
+    for entry in sheet:
+        fixture_id = entry.get("id")
+        fixture = by_id.get(fixture_id)
+        if fixture is None:
+            problems.append(f"{fixture_id!r}: no such fixture")
+            continue
+        tier = entry.get("tier")
+        if tier not in policy.tier_order:
+            problems.append(f"{fixture_id}: tier must be one of "
+                            f"{policy.tier_order}, got {tier!r}")
+            continue
+        candidate = copy.deepcopy(fixture)
+        apply_label(candidate, policy=policy, tier=tier, by=by, on=on,
+                    expected=clean_expected(entry.get("expected") or {}))
+        try:
+            fx.validate([candidate], policy)
+        except fx.FixtureError as exc:
+            problems.append(str(exc))
+            continue
+        staged.append((fixture, candidate))
+
+    if problems:
+        return 0, problems
+
+    # Count what actually differs, so a sheet applied unedited cannot look like
+    # a successful relabelling. This happened four times on 2026-10-01.
+    changed = [(f, c) for f, c in staged
+               if f["expected"] != c["expected"]
+               or f.get("expected_tier") != c["expected_tier"]]
+
+    print(f"\n{len(staged)} fixture(s) in the sheet, {len(changed)} with changes. "
+          f"Nothing is written yet.\n")
+    for fixture, candidate in staged:
+        differs = (fixture["expected"] != candidate["expected"]
+                   or fixture.get("expected_tier") != candidate["expected_tier"])
+        print("=" * 72)
+        print(f"{fixture['id']}  {'CHANGED' if differs else 'unchanged'}  --  "
+              f"{fixture['input'][:70]}"
+              f"{'...' if len(fixture['input']) > 70 else ''}")
+        print(f"  was: tier={fixture.get('expected_tier')}  "
+              f"{json.dumps(fixture['expected'], ensure_ascii=False)}")
+        print(f"  now: tier={candidate['expected_tier']}  "
+              f"{json.dumps(candidate['expected'], ensure_ascii=False)}")
+    print("=" * 72)
+
+    if not changed:
+        return 0, ["nothing in this sheet differs from the fixtures on disk -- "
+                   "the sheet was applied unedited. Nothing written."]
+
+    if confirm("\nWrite these? [y/N] ").strip().lower() not in ("y", "yes"):
+        return 0, ["cancelled -- nothing written"]
+
+    for fixture, candidate in staged:
+        fixture.clear()
+        fixture.update(candidate)
+    save(fixtures)
+    return len(changed), []
+
+
+# ---------------------------------------------------------------- interactive
+
+def _ask_json_expected(exp: dict[str, Any]) -> dict[str, Any]:
+    """Required keys, then acceptable answers per key. Confirmed before it returns.
+
+    Instructions print above the prompt, never on the input line -- an input
+    line that explains itself invites you to type the explanation back.
     """
     while True:
         print(f"  Required keys are: {', '.join(exp['required_keys'])}")
@@ -137,36 +287,8 @@ def _ask_expected(fixture: dict[str, Any], rule: dict[str, Any]) -> dict[str, An
     return None  # summarization: the answer is graded against the input itself
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description="Label fixtures one at a time.")
-    parser.add_argument("--by", required=True, help="your name, recorded as labeled_by")
-    parser.add_argument("--redo", action="store_true",
-                        help="also relabel fixtures you have already labeled")
-    parser.add_argument("--ids", default="",
-                        help="comma-separated fixture ids to (re)label, e.g. sent-004,topic-001")
-    args = parser.parse_args()
-
-    if fx.MANIFEST_PATH.exists():
-        print("The fixture set is frozen (manifest.json exists). Relabeling changes "
-              "the locked set: bump the version and log it before editing.")
-        return 1
-
-    policy = Policy.load(TierConfig.load())
-    fixtures = fx.validate(fx.load(), policy)
-
-    if args.ids:
-        wanted = _split(args.ids)
-        unknown = sorted(set(wanted) - {f["id"] for f in fixtures})
-        if unknown:
-            print(f"Unknown fixture id(s): {', '.join(unknown)}. Nothing changed.")
-            return 1
-        pending = [f for f in fixtures if f["id"] in set(wanted)]
-    else:
-        pending = [f for f in fixtures
-                   if f["labeled_by"] == fx.UNREVIEWED
-                   or (args.redo and f["labeled_by"] == args.by)]
-    today = date.today().isoformat()
-
+def label_interactively(pending: list[dict[str, Any]], fixtures: list[dict[str, Any]],
+                        policy: Policy, *, by: str, on: str) -> int:
     print(f"{len(pending)} fixture(s) to label. Type q at a tier prompt to stop; "
           f"progress is saved.")
     print("Tier = the cheapest tier you expect to get it RIGHT. "
@@ -201,8 +323,7 @@ def main() -> int:
             continue
 
         candidate = copy.deepcopy(fixture)
-        apply_label(candidate, policy=policy, tier=tier, by=args.by,
-                    on=today, expected=expected)
+        apply_label(candidate, policy=policy, tier=tier, by=by, on=on, expected=expected)
         try:
             fx.validate([candidate], policy)
         except fx.FixtureError as exc:
@@ -213,9 +334,78 @@ def main() -> int:
         save(fixtures)
         done += 1
         print("  saved.")
+    return done
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Label fixtures.")
+    parser.add_argument("--by", help="your name, recorded as labeled_by")
+    parser.add_argument("--redo", action="store_true",
+                        help="also relabel fixtures you have already labeled")
+    parser.add_argument("--ids", default="",
+                        help="comma-separated fixture ids, e.g. sent-004,topic-001")
+    parser.add_argument("--template", metavar="PATH",
+                        help="write an answer sheet to PATH and exit")
+    parser.add_argument("--from", dest="from_file", metavar="PATH",
+                        help="apply an edited answer sheet")
+    args = parser.parse_args()
+
+    policy = Policy.load(TierConfig.load())
+    fixtures = fx.validate(fx.load(), policy)
+
+    if args.ids:
+        wanted = _split(args.ids)
+        unknown = sorted(set(wanted) - {f["id"] for f in fixtures})
+        if unknown:
+            print(f"Unknown fixture id(s): {', '.join(unknown)}. Nothing changed.")
+            return 1
+        selected = [f for f in fixtures if f["id"] in set(wanted)]
+    else:
+        selected = [f for f in fixtures
+                    if f["labeled_by"] == fx.UNREVIEWED
+                    or (args.redo and args.by and f["labeled_by"] == args.by)]
+
+    # Writing an answer sheet only READS the fixtures, so a frozen set is no
+    # reason to refuse it -- the freeze check belongs below, in front of the
+    # paths that actually write labels. It sat above this branch until
+    # 2026-10-01, where it silently blocked three attempts at the answer key.
+    if args.template:
+        path = Path(args.template)
+        path.write_text(
+            json.dumps(build_template(selected, policy), indent=2, ensure_ascii=False)
+            + "\n", encoding="utf-8")
+        print(f"Wrote {len(selected)} fixture(s) to {path}.")
+        print("Edit 'expected' and 'tier' in that file, then unfreeze and run:")
+        print(f"  Remove-Item {fx.MANIFEST_PATH}")
+        print(f'  python scripts/gateway/bench/label.py --by "Your Name" '
+              f'--from {path}')
+        return 0
+
+    if fx.MANIFEST_PATH.exists():
+        print("The fixture set is frozen (manifest.json exists). Relabeling changes "
+              "the locked set: bump the version and log it before editing.")
+        return 1
+
+    if not args.by:
+        print("--by is required (your name is recorded as labeled_by).")
+        return 1
+    today = date.today().isoformat()
+
+    if args.from_file:
+        sheet = read_sheet(Path(args.from_file))
+        done, problems = label_from_sheet(sheet, fixtures, policy, by=args.by, on=today)
+        for problem in problems:
+            print(f"  {problem}")
+        if problems:
+            print("Nothing written.")
+            return 1
+        print(f"\n{done} labeled.")
+    else:
+        done = label_interactively(selected, fixtures, policy, by=args.by, on=today)
+        print(f"\n{done} labeled this session.")
 
     remaining = sum(1 for f in fixtures if f["labeled_by"] == fx.UNREVIEWED)
-    print(f"\n{done} labeled this session, {remaining} still unreviewed.")
+    print(f"{remaining} still unreviewed.")
     if remaining == 0:
         print("All reviewed. Lock the set with: "
               "python scripts/gateway/bench/audit.py --freeze")

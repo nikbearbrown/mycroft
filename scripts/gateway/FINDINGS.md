@@ -1,60 +1,64 @@
-## 9. What the first judged run showed
+## 10. What the scorer check showed
 
-Three runs on 2026-09-24 -- a 2-fixture smoke (13:29), the full 8 (13:43), and
-a 4-fixture re-run after the validator fix (14:00). 14 comparisons, 28 judging
-calls, on `summarization` and `rag_answer` only: the tasks where no answer key
-can exist. cheap wrote answer A, mid wrote answer B, strong judged, each pair
-both ways round.
+Sprint 6. 32 pairs — 8 open-ended fixtures, 4 independently generated answer
+pairs each — scored twice: once by the strong-model judge from section 9, once
+by a human who could not see which tier wrote which answer, could not see the
+judge's verdict, and was shown the two answers in a seeded random order so that
+the human's own position bias could be measured the same way the judge's was.
 
-| result | count |
-|---|---|
-| tie | 10 |
-| mid won | 1 |
-| cheap won | 0 |
-| inconsistent (verdict flipped when the answers swapped) | 3 |
-| unparsed | 0 |
+|  | picked cheap | picked mid | tie |
+|---|---|---|---|
+| human | 11 | 16 | 5 |
+| judge | 0 | 0 | 28 |
 
-**Judging costs more than answering.** An answer cost $0.000086 on average; a
-comparison cost $0.000420 in judging -- 2.4x the cost of producing the two
-answers it compares, plus two strong-tier calls of latency. That ratio is the
-argument for keeping the judge offline, and it is why a "route by judged
-quality" design would be more expensive than always using the strong model.
+Four further pairs got no verdict at all: the judge contradicted itself when the
+answers were swapped.
 
-**Three of 28 answers failed their check over a bracket glyph.** The mid tier
-wrote its citation as 【0】 rather than [0], and `cites_context` saw no
-citation at all. The answers were correct and cited the right passage. In the
-request path each one is an escalation to a dearer tier bought by punctuation
--- the same class of defect as the `verdict_with_quote` false alarms in
-section 7, found the same way: by reading what the models actually wrote.
-`cites_context` now translates fullwidth brackets before matching, and the
-out-of-range check is unchanged, so widening what counts as a bracket did not
-widen what counts as a valid passage.
+**Cohen's kappa is 0.00.** Raw agreement was 18%, which is exactly what chance
+predicts given the two distributions. Per task type: `rag_answer` 27% raw, kappa
+0.00; `summarization` 8% raw, kappa 0.00. Not weak agreement -- none.
 
-**The judge's disagreements are about degree, not direction.** All three
-inconsistent results were `tie` one way round and a winner the other. Not once
-did it pick A in one order and B in the other. And all 28 replies were a bare
-FIRST / SECOND / TIE at a 256-token budget -- nothing unparseable, no
-reasoning leaking into the verdict.
+**The judge never once picked a winner; the human picked one on 27 of 32.** A
+rater that uses a single category has no discrimination to measure, so there is
+nothing here to calibrate or tune toward. The judge is not a weak instrument for
+these tasks, it is not an instrument.
 
-**The same pair judged twice does not give the same verdict.** rag-001 came
-back `tie` at 13:29 and `inconsistent` at 13:43 and 14:00. rag-003 came back
-`b` at 13:43 and `tie` at 14:00. The models rewrite their answers each run, so
-a single sweep is one sample, not a measurement.
+**Section 9's main conclusion is withdrawn.** "On open-ended work, mid bought
+nothing measurable over cheap -- 10 ties, 1 mid win, 0 cheap wins" was a
+property of the instrument, not of the models. A human reading the same kind of
+pairs saw a difference in 27 of 32 and favoured mid 16 to 11. Section 9 stays as
+written, because the record is append-only; this section supersedes its
+conclusion.
 
-**On open prose, mid bought nothing measurable over cheap.** Ten ties, one mid
-win, no cheap win. Read this as a hypothesis with evidence behind it, not a
-result: the verdicts are model judgments no human has checked yet, the sample
-is 8 fixtures, and the answers are one or two sentences long. Sprint 6 is what
-decides whether these verdicts can be quoted at all.
+**The human showed no detectable order bias**: 13 picks for the first answer
+shown, 14 for the second. The judge flipped its verdict on 4 pairs when the
+order changed. Of the two raters, the one that cannot scale is the one whose
+judgments are stable.
+
+**Caveat, from the human's own notes.** Three notes read "more detailed", "well
+detailed", "more clearer". The mid tier writes longer answers, so some of the
+16-11 split may be a preference for thoroughness rather than for correctness.
+This is a confound to watch in Sprint 7, not a reason to discount a kappa of
+zero.
+
+**Scope.** 32 pairs over 8 distinct fixtures. Four samples of one fixture are
+four observations of the same task, not four tasks, so the effective coverage
+is 8.
 
 ### Consequences
 
-- The judge never runs in the request path, and no routing decision reads a
-  verdict. It costs more than the work it grades.
-- Sprint 6 must hand-score these same pairs blind and measure agreement. Until
-  then, no quality number from the judge belongs in a report.
-- Sprint 7 needs several runs per fixture, not one: the answers, and therefore
-  the verdicts, change between runs.
-- A check that rejects a correct answer over formatting is a cost bug, not a
-  cosmetic one. Both found so far (quote spans, citation brackets) were
-  invisible until someone read the raw answers.
+- The pairwise judge is retired as a quality measure for `summarization` and
+  `rag_answer`. No number it produced may be quoted as a quality figure.
+- Sprint 7's baseline reports judged quality for no prose task. Those two task
+  types carry cost, latency and check-pass rate only, with quality recorded as
+  unmeasured.
+- Sprint 8's ship / don't-ship decision rests on the four task types that have
+  an answer key, plus cost and latency everywhere. If that is not enough to
+  decide, the honest outcome is "undecidable on the available evidence".
+- The next cheap experiment is to remove TIE from the judge's options and force
+  a choice, then re-measure. It separates two diagnoses that look identical from
+  the outside: a judge that cannot tell these answers apart, and a judge that
+  can but takes the safe option. One prompt change, 32 pairs, about two cents.
+- Blind, independent scoring found this one week after the number was produced.
+  The same discipline applied to section 9 at the time would have caught it
+  immediately; the lesson is to run the check in the same sprint as the claim.
