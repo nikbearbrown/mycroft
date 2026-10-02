@@ -347,3 +347,158 @@ CREATE TABLE IF NOT EXISTS public_observations (
 
 CREATE INDEX IF NOT EXISTS public_obs_company_idx
     ON public_observations (company_provisional, fair_value_level);
+
+-- ================================================================ WEEK 9 ====
+-- Form D and N-CSR context: round timing, entry dates, and the exposure map.
+--
+-- The governing constraint, written here because it is a schema decision and
+-- not a style preference: **neither source may produce a valuation.** Form D
+-- reports what an issuer offered and sold. It carries no share count and no
+-- price per share, so a per-share number cannot be derived from it, and a
+-- company valuation cannot be derived from either source. plan.md's "Not
+-- supported" section is explicit about this. The tables below have no price
+-- column on purpose, and tests/test_form_d.py asserts they never gain one.
+
+-- ---------------------------------------------------------- form_d_filings --
+-- Immutable raw layer: one row per (accession, issuer) pair whose entity name
+-- matches a universe pattern. This is a NAME match and nothing more -- the
+-- candidate pool, not the join. The join is company_identity, below.
+--
+-- That distinction is the most important thing this week found. A name scan of
+-- Form D returns overwhelmingly SPVs. In 2026Q1, 85 issuer rows carry a
+-- universe company's name and 84 of them are pooled investment vehicles:
+-- "Anthropic Jan 2026 a Series of CGF2021 LLC" is a feeder raising money to buy
+-- Anthropic shares on the secondary market, and its TOTALAMOUNTSOLD is the
+-- feeder's raise. Publishing it as Anthropic's round would be a number no
+-- Anthropic filing produced.
+CREATE TABLE IF NOT EXISTS form_d_filings (
+    form_d_id            BIGSERIAL PRIMARY KEY,
+    source_quarter       TEXT NOT NULL,
+    accession            TEXT NOT NULL,
+    issuer_seq_key       TEXT NOT NULL,
+    is_primary_issuer    BOOLEAN,
+    cik                  TEXT,
+    entity_name          TEXT NOT NULL,
+    previous_names       TEXT,
+    entity_type          TEXT,
+    jurisdiction         TEXT,
+    year_of_inc          TEXT,
+    city                 TEXT,
+    state_or_country     TEXT,
+    -- submission
+    submission_type      TEXT,          -- D | D/A
+    filing_date          DATE,
+    -- offering: dates and amounts only. No price, no share count, no valuation.
+    industry_group       TEXT,
+    is_pooled_fund       BOOLEAN,       -- the filer's own declaration
+    is_amendment         BOOLEAN,
+    previous_accession   TEXT,
+    date_of_first_sale   DATE,
+    sale_yet_to_occur    BOOLEAN,
+    total_offering_amount  NUMERIC,     -- NULL where the filer wrote 'Indefinite'
+    total_amount_sold      NUMERIC,
+    total_remaining        NUMERIC,
+    offering_is_indefinite BOOLEAN,
+    is_equity_type       BOOLEAN,
+    is_debt_type         BOOLEAN,
+    minimum_investment   NUMERIC,
+    investors_already    INT,
+    -- the provisional name-pattern label. NOT a resolution decision.
+    company_provisional  TEXT,
+    -- machine triage, taken from the filer's own pooled-fund declaration
+    vehicle_class        TEXT,          -- pooled_vehicle | candidate_operating
+    ingested_at          TIMESTAMPTZ DEFAULT now(),
+    UNIQUE (accession, issuer_seq_key)
+);
+
+CREATE INDEX IF NOT EXISTS form_d_company_idx ON form_d_filings (company_provisional);
+CREATE INDEX IF NOT EXISTS form_d_cik_idx     ON form_d_filings (cik);
+CREATE INDEX IF NOT EXISTS form_d_class_idx   ON form_d_filings (vehicle_class);
+
+-- ------------------------------------------------------- company_identity --
+-- The resolved join key: which EDGAR CIK *is* a universe company. A human
+-- decides; the machine only proposes. Once a CIK is affirmed here, every Form D
+-- that CIK ever filed belongs to that company -- including filings whose entity
+-- name matches no pattern, which is the whole point of joining on identity
+-- rather than on a string.
+--
+-- verdict mirrors review_decisions so the two read the same way:
+--   operating_company  this CIK is the company itself
+--   vehicle            a fund or SPV that merely names the company
+--   not_in_universe    a different company with a colliding name
+--   unresolved         the reviewer could not tell; stays in the report
+CREATE TABLE IF NOT EXISTS company_identity (
+    cik            TEXT PRIMARY KEY,
+    entity_name    TEXT NOT NULL,
+    company_id     BIGINT REFERENCES companies (company_id),
+    verdict        TEXT NOT NULL,
+    source         TEXT,            -- form_d | edgar_submissions | manual
+    evidence       TEXT NOT NULL,   -- what the reviewer looked at
+    reviewer       TEXT NOT NULL,   -- a name. "auto" is not a reviewer.
+    decided_at     TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS identity_company_idx ON company_identity (company_id);
+CREATE INDEX IF NOT EXISTS identity_verdict_idx ON company_identity (verdict);
+
+-- --------------------------------------------------------- restricted_lots --
+-- The Reg S-X 12-12 restricted-securities footnote out of N-CSR / N-CSRS:
+-- acquisition date and, where the filer gives it, cost. N-PORT has neither.
+--
+-- Two things the filed format forces, kept as columns rather than hidden in a
+-- parser:
+--   * acquisition_date is often a RANGE ("11/15/2017-8/4/2020") because a
+--     position is built over many purchases. Storing one endpoint would invent
+--     a precision the filing does not have, so both ends are kept and
+--     acquisition_date_is_range says which case this is.
+--   * cost is frequently reported per FUND across all restricted securities
+--     rather than per position -- Baron's footnote says "See Portfolios of
+--     Investments for cost of individual securities". cost_basis_scope records
+--     which, so a fund-level total is never read as a position entry price.
+CREATE TABLE IF NOT EXISTS restricted_lots (
+    lot_id                    BIGSERIAL PRIMARY KEY,
+    cik                       TEXT NOT NULL,
+    accession                 TEXT NOT NULL,
+    form_type                 TEXT,          -- N-CSR | N-CSRS
+    filed_date                DATE,
+    report_date               DATE,
+    registrant                TEXT,
+    fund_name                 TEXT,          -- the series within the registrant
+    issuer_name_raw           TEXT NOT NULL,
+    security_class_raw        TEXT,          -- the footnote's own subheading
+    acquisition_date_first    DATE,
+    acquisition_date_last     DATE,
+    acquisition_date_raw      TEXT NOT NULL,
+    acquisition_date_is_range BOOLEAN,
+    value_usd                 NUMERIC,
+    cost_usd                  NUMERIC,
+    cost_basis_scope          TEXT,          -- position | fund_total | absent
+    pct_net_assets            NUMERIC,
+    company_provisional       TEXT,
+    source_url                TEXT,
+    ingested_at               TIMESTAMPTZ DEFAULT now(),
+    UNIQUE (accession, fund_name, issuer_name_raw, security_class_raw, acquisition_date_raw)
+);
+
+CREATE INDEX IF NOT EXISTS lots_company_idx ON restricted_lots (company_provisional);
+CREATE INDEX IF NOT EXISTS lots_cik_idx     ON restricted_lots (cik, report_date);
+
+-- ------------------------------------------------------------ ncsr_filings --
+-- What was fetched and what came back, so that "no footnote found" is
+-- distinguishable from "never looked". A parser reporting zero rows is
+-- ambiguous without this table.
+CREATE TABLE IF NOT EXISTS ncsr_filings (
+    accession        TEXT PRIMARY KEY,
+    cik              TEXT NOT NULL,
+    registrant       TEXT,
+    form_type        TEXT,
+    filed_date       DATE,
+    report_date      DATE,
+    primary_document TEXT,
+    source_url       TEXT,
+    bytes_fetched    BIGINT,
+    footnote_found   BOOLEAN,
+    lots_parsed      INT,
+    parse_note       TEXT,
+    fetched_at       TIMESTAMPTZ DEFAULT now()
+);

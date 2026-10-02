@@ -13,6 +13,41 @@ possible because fund fiscal quarter-ends are staggered across the calendar.
 
 ## Status
 
+**Week 10 complete — the dataset is queryable from an AI assistant, and the quarterly
+signal is frozen at `schema_version` 1.0.** See [`docs/mcp_server.md`](docs/mcp_server.md) and
+[`docs/signal_and_commentary.md`](docs/signal_and_commentary.md).
+
+**A read-only MCP server over stdio**, six tools, every answer token-bounded with a cursor.
+That bounding is the whole problem, not a detail: `get_marks('Databricks, Inc.')` returns
+2,151 rows, which serialise to **575,000 characters — roughly 143,000 tokens**, past most
+context windows and useless inside them, because a model handed 2,151 rows will not read them.
+Bounded, the same call is **18,000 characters**: a summary describing the *whole* result set,
+one page of rows, and a cursor. Nothing in the server writes a mark, clears a gate or records
+a decision.
+
+**A quarterly signal and a human note, deliberately distinct artifacts.** The signal is a
+contract another system parses and refuses ten field names by name — `valuation`,
+`market_cap`, `shares_outstanding`, `irr` — in two independent layers. Suppression is a value
+rather than a missing key, so a consumer can tell *"we did not publish this"* from *"there was
+nothing to publish"*.
+
+**A grounding check on generated prose is necessary and not sufficient.** The first commentary
+run passed it cleanly — every number was one the model had been handed — and still said
+*"Anduril has the lowest number of marks, at 509"* one sentence before *"Figure AI has the
+lowest number of marks, at 31"*. Both figures were real; the **ranking** was invented, and it
+contradicted itself inside a paragraph. There is now a superlative check, and a failed draft
+goes back to the model with the specific complaint, up to three times.
+
+**Week 9 complete — two more SEC sources, joined on a resolved identity rather than a name.**
+See [`docs/context.md`](docs/context.md). A name scan of 49 quarters of Form D returns 706
+issuer rows, of which **595 — 84.3% — are feeder vehicles named after a company rather than
+being it**. So the join is keyed on an EDGAR CIK a named human affirmed, which cuts 706 matches
+to **47 real filings**. The N-CSR restricted-securities footnote then supplies what N-PORT
+never carries: **249 acquisition lots, 227 with a position-level cost**, reaching back to
+January 2015. With both lanes joined, **10 of 18 fund acquisition dates fall on the exact day
+an issuer reported a first sale** — two filings made by different parties for different
+reasons, neither citing the other.
+
 **Week 8 complete — four measurements, and two of them contradict the plan's own
 expectations.** `docs/findings.md` is generated from the panel; every figure traces to a filed
 holding.
@@ -252,12 +287,65 @@ python -m scripts.build_marks --report       # docs/marks_panel.md, for a human
 python -m scripts.analyze --run              # the four Week 8 measurements
 python -m scripts.analyze --findings         # docs/findings.md, for a human
 
-pytest -q                                    # 189 regression tests, none needing a GPU
-                                             # 11 of them need a Postgres and skip loudly
-                                             # without one; REVIEW_TEST_DB_URL points them
-                                             # at a server, and DATABASE_SETUP.md has a
-                                             # no-administrator local cluster recipe
+python -m src.ingest.form_d                  # 49 quarters of Form D -> candidates
+python -m src.ingest.form_d --coverage       # what the scan holds, split by class
+python -m scripts.identity_queue --edgar     # the identity queue, with EDGAR evidence
+python -m scripts.identity_queue --affirm 0001587468     --verdict operating_company --company "Databricks, Inc."     --reviewer "<your name>" --evidence "<what you looked at>"
+python -m src.ingest.ncsr --max-registrants 30   # N-CSR footnotes (~1.2 GB fetched)
+python -m src.ingest.ncsr --coverage         # filings fetched, lots parsed, per company
+python -m scripts.context                    # docs/context.md + docs/_context.json
+
+python -m src.mcp.server --selftest          # call every tool, print response sizes
+python -m src.mcp.server                     # stdio — what an MCP client launches
+
+python -m src.graphs.quarterly_graph         # the signal + the quarterly note
+python -m src.graphs.quarterly_graph --dry-run    # no model call
+python -m scripts.schedule --show            # the platform-native scheduler command
+python -m scripts.schedule --install         # register it (asks first)
+
+pytest -q                                    # 334 regression tests, none needing a GPU
+                                             # ~40 need a Postgres, a local model or a
+                                             # reachable EDGAR, and skip loudly without
+                                             # one — so the pass/skip split depends on the
+                                             # machine. REVIEW_TEST_DB_URL points the
+                                             # database tests at a server, and
+                                             # DATABASE_SETUP.md has a no-administrator
+                                             # local cluster recipe
 ```
+
+### Querying it from an AI assistant
+
+The MCP server exposes the resolved panel over stdio, so Claude Desktop or Claude Code can
+read it without importing any of this code. Add `mcpServers` as a **top-level key** in
+`claude_desktop_config.json` — a sibling of any `preferences` key already there, not nested
+inside it. A packaged (Microsoft Store) install keeps that file under
+`%LOCALAPPDATA%\Packages\Claude_<id>\LocalCache\Roaming\Claude\`, not `%APPDATA%\Claude\`;
+[`docs/mcp_server.md`](docs/mcp_server.md) has the table.
+
+```json
+{
+  "mcpServers": {
+    "private-ai-valuations": {
+      "command": "<abs path>\.venv\Scripts\python.exe",
+      "args": ["<abs path>\src\mcp\server.py"],
+      "env": { "PYTHONIOENCODING": "utf-8" }
+    }
+  }
+}
+```
+
+**Launch the script by path, not `python -m`.** Claude Desktop does not apply a `cwd` key
+before Python resolves `-m`, so `["-m", "src.mcp.server"]` fails with
+`ModuleNotFoundError: No module named 'src'`. The script form needs no working directory.
+
+Three settings that otherwise cost an hour, and the reasons, are in
+[`docs/mcp_server.md`](docs/mcp_server.md): the interpreter must be the venv's by **absolute
+path** (a desktop client inherits no shell), `cwd` must be the project root (`.env` is read
+from there), and `PYTHONIOENCODING=utf-8` is **not optional on Windows** — stdio is the
+transport, and a cp1252 stdout turns the first em dash in a response into a dead server.
+
+Then: *"list the companies"*, *"show me Databricks' price history"*, *"what did managers price
+Anthropic at on the same date"*, *"what is still unresolved"*.
 
 Every step is idempotent; the safe recovery from any failure is to run it again.
 
@@ -292,6 +380,12 @@ docs/entity_resolution.md normalisation, the matcher, the LLM measurement, the q
 docs/review_queue.md      generated — the questions waiting on a human
 docs/marks_panel.md       generated — the price panel, and what is quarantined
 docs/findings.md          generated — re-mark, dispersion, propagation, Cerebras
+docs/context.md           generated — Form D, the N-CSR footnote, the exposure map
+docs/identity_queue.md    generated — which CIK is which company, and the evidence
+docs/mcp_server.md        the MCP server: setup, the six tools, token bounding
+docs/signal_and_commentary.md  the frozen contract, the three guards, the scheduler
+docs/quarterly_note.md    generated — the human note
+docs/_signal.json         generated — the machine signal, schema_version 1.0
 docs/worklog.md           dated log — what was done, decided, blocked
 DATABASE_SETUP.md         connection string, schema, a local cluster, idempotency, disk
 scripts/                  reconcile · check_fund_complexes · verify_week1_marks
@@ -299,17 +393,32 @@ scripts/                  reconcile · check_fund_complexes · verify_week1_mark
                           run_adjudication · review_queue (the reviewer's view)
                           build_marks (the panel, the detector, the checks)
                           analyze (the four measurements, the findings report)
+                          identity_queue (which CIK is which company)
+                          context (the exposure map and the timelines)
+                          schedule (the quarterly job, without needing n8n)
 src/ingest/               download_bulk · universe (frozen patterns) · build_parquet
+                          form_d (offering dates and amounts, joined on identity)
+                          ncsr (the Reg S-X 12-12 restricted-securities footnote)
+                          public_marks (the non-Level-3 lane)
 src/db/                   schema.sql · connect · load · seed (companies)
 src/resolve/              normalize (names, share classes) · match (matcher v1)
                           adjudicate (matcher v2, four policies) · llm (Ollama + stub)
+                          identity (which EDGAR CIK *is* a universe company)
 src/graphs/               resolve_graph — the review queue, checkpointed to Postgres
+                          quarterly_graph — per-company fan-out, then synthesis
 src/marks/                build (securities, marks) · splits (the detector)
                           verify (plan.md's end-to-end checks)
 src/signal/               findings — re-mark, dispersion, propagation, Cerebras
+                          exposure (the map, the timelines, Form D corroboration)
+                          event_study (the harness, waiting on its data)
+                          contract (schema_version 1.0, and what it refuses)
+                          commentary (the only prose an LLM writes here)
+src/mcp/                  server (six read-only tools over stdio)
+                          queries (the data layer) · paging (bounding and cursors)
+n8n/                      quarterly_digest.json — optional scheduler and digest email
 tests/                    regression tests; fixtures/golden_set_v1.json is the ground truth
 data/parquet/<qtr>/   private_holdings · universe_holdings · reconciliation.json
-plan.md               the full project plan and 12-week schedule
+plan.md               the full project plan and 11-week schedule
 ```
 
 ## Governance

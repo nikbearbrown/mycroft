@@ -720,22 +720,31 @@ distinctive analysis (propagation, the Cerebras event study), the query interfac
 * Build the per-fund exposure map and the per-company timeline.
 * Deliverable: enriched timelines with entry cost where available, plus the exposure map.
 
-**Week 10: MCP server**
+**Week 10: Interface and the signal contract**
+
+Originally two weeks, merged because they are one deliverable: both halves exist so that
+something other than this repository can consume the panel. The MCP server is the interactive
+reader; the signal is the machine-readable one. Neither is useful without the shape of the
+other, and the token-bounding work and the contract-freezing work turned out to be the same
+discipline applied to two audiences.
+
+*The server:*
 * FastMCP server with `list_companies`, `get_marks`, `compare_managers`, `get_propagation`,
   `get_fund_exposure`, `list_unresolved`.
 * Token-bounded responses with cursors; summary-first with drill-down.
 * Test from Claude Desktop end to end; document setup in the README.
-* Deliverable: a working MCP server queryable from Claude Desktop, with documented setup.
 
-**Week 11: Commentary graph, signal contract, scheduling**
+*The signal and the commentary:*
 * Quarterly analysis graph: per-company fan-out → dispersion and propagation → synthesis via Groq.
 * Prompt grounded strictly in computed numbers, with an explicit instruction to state when coverage
   is thin rather than filling the gap.
 * Freeze the JSON signal at `schema_version` 1.0 and validate.
 * Optional thin n8n workflow: quarterly trigger plus digest email, credentials in the n8n store.
-* Deliverable: a generated quarterly note, a validated `schema_version` 1.0 signal, and a scheduler.
 
-**Week 12: Documentation, catalogue, and launch**
+* Deliverable: a working MCP server queryable from Claude Desktop with documented setup, plus a
+  generated quarterly note, a validated `schema_version` 1.0 signal, and a scheduler.
+
+**Week 11: Documentation, catalogue, and launch**
 * Finalize `README.md`, `proposal.md`, `system_architecture.md`, `data_architecture.md`,
   `DATABASE_SETUP.md`, `.env.example`.
 * Complete `docs/entity_resolution.md` with final metrics and `docs/findings.md` with the full

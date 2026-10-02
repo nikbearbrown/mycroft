@@ -95,6 +95,20 @@ you ask for a quarter whose zip is gone.
 
 ## Schema
 
+The block below is the **Week 2 core**, which is what the ingest path writes. Later weeks add
+tables on top of it, all in the same `src/db/schema.sql` and all created by the same
+idempotent `python -m src.db.connect`:
+
+| Added | Tables |
+|---|---|
+| Week 6 | `companies`, `securities`, `review_decisions`, `match_decisions`, `security_map` |
+| Week 7 | `marks` (the price panel and the split quarantine) |
+| Week 8 | `public_observations` (the non-Level-3 lane) |
+| Week 9 | `form_d_filings`, `company_identity`, `restricted_lots`, `ncsr_filings` |
+
+`src/db/schema.sql` is the authoritative definition and carries the reasoning for each column
+inline; a full consolidated listing here is Week 11's job. Nothing below has changed.
+
 ```
 funds         (fund_id pk, cik, series_id, fund_name, family, first_seen, last_seen)
                 unique (cik, series_id)

@@ -4,7 +4,285 @@ Newest first.
 
 ---
 
-## 2026-09-18 (latest) — Week 8 figures and the video deliverable
+## 2026-10-02 (latest) — the schedule renumbered: 10 and 11 merged, 12 becomes 11
+
+`plan.md`'s twelve weeks are now eleven. The two weeks covering the MCP server and the signal
+contract are merged into **Week 10**, and the documentation-and-launch week becomes **Week 11**.
+
+| Was | Now |
+|---|---|
+| Week 10 — MCP server | **Week 10 — Interface and the signal contract** |
+| Week 11 — Commentary graph, signal contract, scheduling | *(merged into Week 10)* |
+| Week 12 — Documentation, catalogue, and launch | **Week 11 — Documentation, catalogue, and launch** |
+
+The merge is not only bookkeeping: both halves exist so that something other than this
+repository can consume the panel — the server is the interactive reader, the signal the
+machine-readable one — and the token-bounding work and the contract-freezing work are the same
+discipline aimed at two audiences.
+
+**Changed:** `plan.md` (the two entries merged, the last renumbered, "12-week" → "11-week"),
+`README.md`, `DATABASE_SETUP.md`, `src/graphs/quarterly_graph.py`, `scripts/schedule.py`, and
+the week labels in the two dated entries below.
+
+**Deliberately not changed:** `logs/RUN_LOG.md`. It is the governance audit trail and
+append-only (P7); its entries were accurate when written. A new entry there records this
+renumbering instead. Also unchanged: the figure filenames `w10-*` and `w11-*`, because the
+built video reels reference them by name in `pantry/` and `beat_sheet.json`, and renaming would
+break artifacts outside this repository. They are all Week 10 figures now regardless of prefix.
+
+---
+
+## 2026-10-02 (earlier) — a real MCP client connected
+
+`claude mcp list` reports **private-ai-valuations ... OK Connected** at user scope. An
+independent MCP runtime launched the server, completed the handshake and enumerated its tools;
+the user's `--selftest` answered 6 of 6 in the same session. Registration verified clean in
+`~/.claude.json` — user scope, and the misplaced `C:/WINDOWS/System32` project entry is gone.
+
+Week 10's deliverable is met: a working MCP server, queryable from a real client, documented in
+the README and in `docs/mcp_server.md`.
+
+`docs/mcp_server.md` was both understating and overstating. It said no external client had been
+exercised (now false), and it implied the in-process stdio roundtrip was sufficient evidence a
+desktop client could call the server — which three consecutive setup failures disproved.
+Rewritten, with the remaining gap stated precisely: Claude Code and Claude Desktop read
+different files, so one connecting does not prove the other.
+
+**The lesson, because it cost three rounds.** The `cwd` key, the `--cwd` flag and the default
+`--scope` are all properties of *how a client launches the server*, and none is observable from
+inside it. A test finds this class of bug only if it withholds what the real caller withholds.
+
+---
+
+## 2026-10-02 (earlier) — the MCP server launches from Claude Desktop
+
+Both setup instructions I wrote were wrong. The app reported
+`ModuleNotFoundError: No module named 'src'`, and `claude mcp add --cwd` does not exist.
+
+**Cause:** Claude Desktop does not apply the config's `cwd` key before Python resolves `-m`,
+so `args: ["-m", "src.mcp.server"]` could never have worked. **Fix:** launch
+`src/mcp/server.py` by absolute path — it puts the project root on `sys.path` itself and
+`connect.py` loads `ROOT/.env` explicitly, so it needs no working directory. Verified from
+`C:\Windows`.
+
+**The test gap is the part worth keeping.** The existing stdio test passes `cwd=ROOT` to
+`StdioServerParameters`, so it proved the server works *when something sets the working
+directory* — and the one client that matters does not. A test that supplies what the real
+caller omits cannot find this bug. Three tests added, including one that starts the server
+with no cwd and no PYTHONPATH.
+
+The doc test then failed on the documentation of its own fix: a character window ran into the
+prose quoting the broken `-m` form to warn against it. Now scoped to the JSON fence.
+
+Suite **308 passed**.
+
+---
+
+## 2026-10-02 (earlier) — Groq works, and found four defects on the way in
+
+`plan.md` pins `llama-3.3-70b-versatile`. **Groq has retired it** — a valid key returned HTTP
+404 "model does not exist or you do not have access to it". The refusal path did its job and
+recorded the error instead of inventing a note.
+
+Fixed as a class: a preference **list** resolved against the live `/models` endpoint, with
+plan.md's choice first so a substitution stays visible. Resolved to `openai/gpt-oss-120b`, and
+the signal now records the model id rather than the backend name.
+
+**Four defects that model exposed:**
+
+1. **An empty note was accepted.** It passes all three content checks trivially — nothing to
+   fabricate, nothing to rank, no placeholder. A reasoning model spent all 700 tokens on its
+   hidden channel and returned no prose, reported as "0 words" with `refused: false`.
+   `max_tokens` raised to 4,000 and `MIN_WORDS = 60` added as a fourth check.
+2. **Spelled-out numbers were unchecked.** "across sixty-one groups" was correct, and would
+   have passed identically if wrong. Added `words_to_numbers`.
+3. **`median_days_to_half` was glossed as "days to halve the price impact"** — wrong reading,
+   right number, and no mechanical check disputes it. The prompt now defines the term.
+4. **Check order was wrong.** A short draft with a fabricated figure was told only that it was
+   short. Length now runs last.
+
+Also: the `claude_desktop_config.json` path in the docs was wrong for a **packaged** install,
+where `%APPDATA%\Claude` does not exist at all. Corrected with a per-install table.
+
+Suite **305 passed**.
+
+---
+
+## 2026-10-02 (earlier) — Week 10 finished: the README item
+
+`plan.md` week 10 says "document setup in the **README**". `docs/mcp_server.md` had the setup
+in full; `README.md` did not mention the MCP server, the signal contract or the quarterly note,
+and its Status section still ended at Week 8. Fixed: Status, Running it (plus a new "Querying
+it from an AI assistant" subsection with the `claude_desktop_config.json` block) and Layout now
+cover weeks 9 through 11.
+
+`DATABASE_SETUP.md` was stale in a way that read as complete — its schema block lists only the
+Week 2 core, while the database holds 15 project tables. Added a coverage table naming what
+weeks 6 to 9 contributed, pointing at `src/db/schema.sql` as authoritative. A consolidated
+listing is Week 11's job and was not attempted.
+
+**Caught before shipping:** the README first claimed "295 regression tests ... 39 skip". Both
+numbers move with the environment — 295/39 with no model backend, 294/40 with one, because the
+no-backend test skips itself when a backend exists. It now states **334 collected**, which is
+stable, and says the split depends on the machine.
+
+---
+
+## 2026-10-02 (earlier) — Week 10: the MCP server, the signal contract, the scheduler
+
+**The server — read-only, over stdio.** Six tools, each a thin binding over
+`src/mcp/queries.py`: `list_companies`, `get_marks`, `compare_managers`, `get_propagation`,
+`get_fund_exposure`, `list_unresolved`.
+
+The hard part was not the protocol. `get_marks('Databricks, Inc.')` returns **2,151 rows**,
+which serialise to **575,000 characters — roughly 143,000 tokens**: past most context windows
+and useless inside them, because a model handed 2,151 rows will not read them. Bounded, the
+same call is **18,000 characters**. So every response is summary-first, with the summary
+describing the **whole** result set rather than the page — one computed over page one would
+say "3 managers" about a company held by thirty.
+
+**Two bounds, not one.** A row limit (50, max 200) *and* a hard ceiling on the serialised
+response (48,000 chars). Row width is not uniform — a fund-exposure row is several times a
+marks row — so a row count alone is not a size bound.
+
+**Cursors are opaque, stateless and bound to their query.** A cursor from
+`get_marks("Databricks")` reused on `get_marks("Anthropic")` is rejected, rather than silently
+returning Anthropic rows numbered from Databricks' offset.
+
+**The signal — frozen contract, commentary graph, scheduler.**
+
+- `src/signal/contract.py` — `schema_version` 1.0, `additionalProperties: false` throughout,
+  validated on the way out so no invalid signal reaches disk. **Ten field names it will never
+  carry** (`valuation`, `market_cap`, `shares_outstanding`, `irr`, …), enforced by the schema
+  *and* by an independent name scan.
+- `src/graphs/quarterly_graph.py` — a real fan-out: one branch per company, joined for
+  synthesis. One of the two places `plan.md` says a graph earns its place.
+- `src/signal/commentary.py` — the only prose an LLM writes here, grounded strictly in
+  already-computed figures with no database, no tools and no retrieval.
+- `scripts/schedule.py` + `n8n/quarterly_digest.json` — the scheduler, both halves.
+
+**The finding: a grounding check is not enough.** The first real commentary run passed
+grounding cleanly — every number in the prose was one the model had been given — and the prose
+still said *"Anduril has the lowest number of marks, at 509"* one sentence before *"Figure AI
+has the lowest number of marks, at 31"*. Both numbers were real; the **ranking** was invented,
+and it contradicted itself within a paragraph. An 8B model cannot reliably rank ten rows across
+six fields, which is exactly why `plan.md` specified a 70B model for commentary. So there is
+now a **superlative check**: a claimed extreme whose figure is not the extreme value of any
+field fails the draft. A check beats a bigger model, because it fails the same way on any model.
+
+**No model, no template.** With no backend reachable the commentary is refused with the reason
+recorded, and the signal is emitted without it. A templated paragraph carrying
+`is_model_output: true` would be indistinguishable from model output while not being any.
+
+**Open**
+- **No `GROQ_API_KEY` in this environment**, so the note was written by local Ollama
+  (`llama3.1:8b`), the documented fallback. The signal records the model, so a later Groq run
+  is a visible change rather than a silent improvement.
+- **Claude Desktop itself was not exercised** — that is a human step. What was tested is a real
+  MCP client spawning the server over stdio, the same transport the desktop app uses.
+- **Milestone PR 1 and PR 2 still not opened** — git is the user's.
+
+---
+
+## 2026-09-25 (earlier) — Week 9 complete: identities affirmed, the join live
+
+All **46 identity decisions recorded** by a named reviewer — 7 `operating_company`, 12
+`vehicle`, 27 `not_in_universe`, 0 outstanding. `x.ai, inc.` (CIK 1609052) was rejected, which
+is the one the proposer got wrong and the evidence got right.
+
+**The Form D join is live: 47 filings** — SpaceX 19, Databricks 17, X.AI 6, Groq 3, Figure AI
+1, Perplexity 1. Down from 706 name matches, which is the point.
+
+**The finding the week was actually for.** With both lanes joined on an affirmed CIK,
+**10 of 18 fund acquisition dates fall on the exact day an issuer reported a first sale**
+(56%), and 11 of 18 within a week. Databricks' 2019-10-22 $400m round is the clearest case:
+five separate registrants independently disclose acquiring Databricks stock that day. Two of
+them also file a position cost and a position value for it: Lincoln at 13.27x and Seasons
+Series Trust at 14.32x.
+
+The issuer files Form D because it sold; the fund files N-CSR because it owns. Neither cites
+the other, so the agreement is evidence rather than arithmetic.
+
+**The denominator is the method.** Only acquisitions *inside* a company's Form D filing window
+are counted. SpaceX stopped filing Form D in July 2022 and 9 of its 13 single-date acquisitions
+postdate that; measured against the nearest round they give gaps of 873, 911, 1090 and 1293
+days, each of which is the distance to the end of the archive rather than anything about a
+fund. Left in the denominator, a real 56% reads as 33%. Date ranges are excluded for the same
+reason — a position built over three years has no single acquisition date, and picking an
+endpoint would manufacture the match or the miss.
+
+**Added since the review:** `exposure.corroboration()` + 5 tests, `w9-corroborate` figure,
+`docs/context.md` §4. Suite **237 passed**; layout audit **0/20**.
+
+**Open**
+- **Milestone PR 1 and PR 2 still not opened** — git is the user's.
+- Entry dates remain a floor, not a history (latest annual + semi-annual per registrant only).
+- N-CSR coverage is the top 30 of 98 registrants holding a top-three company.
+
+---
+
+## 2026-09-25 (earlier) — Week 9: Form D, the N-CSR footnote, and the exposure map
+
+Two new sources beside the marks panel. Neither produces a price and neither can produce a
+valuation; both answer questions N-PORT structurally cannot — when a fund bought in, what it
+paid, and when an offering happened.
+
+**The week's finding: a Form D name join would have been wrong, and quantifiably so.**
+Scanning 49 quarters (2014Q1–2026Q1) for universe company names returns **706 issuer rows**.
+**595 of them — 84.3% — are self-declared pooled investment vehicles.** "Anthropic Jan 2026 a
+Series of CGF2021 LLC" is a feeder raising money to buy Anthropic shares on the secondary
+market; its `TOTALAMOUNTSOLD` is the feeder's raise. Summing those per company and calling the
+result "round timing and amounts" would have published a clean-looking table of numbers no
+universe company's filing ever produced. `plan.md` said "join on resolved issuer identity, not
+name string"; this is the number behind that sentence.
+
+**Done**
+- `src/ingest/form_d.py` — the Form D lane. Name scan → candidate pool, machine triage on the
+  filer's **own** `ISPOOLEDINVESTMENTFUNDTYPE` declaration (a filed fact, not an inference),
+  then a human. Downloads reuse `download_bulk.download`, now parameterised by base URL and
+  suffix rather than copied.
+- `src/resolve/identity.py` + `scripts/identity_queue.py` — `company_identity`, the affirmed
+  CIK→company map, with EDGAR evidence per candidate and a proposer that labels itself a
+  judgment. **46 candidate CIKs are waiting on a named reviewer**; until one is affirmed,
+  `form_d.resolved()` returns nothing and every timeline's Form D leg is empty. That is the
+  designed state, not a gap.
+- `src/ingest/ncsr.py` — the Reg S-X 12-12 restricted-securities footnote. **60 filings across
+  30 registrants, 1.17 GB fetched, 249 lots** with acquisition dates back to **2015-01-20** for
+  SpaceX. Entry dates and per-position cost that N-PORT does not carry at all.
+- `src/signal/exposure.py` + `scripts/context.py` — the per-fund exposure map (90 manager and
+  company pairs) and the per-company timeline for the top three by coverage, with the three
+  legs labelled by source and never merged.
+- `docs/context.md`, `docs/identity_queue.md`, `docs/_context.json`, `docs/_figdata_week9.json`,
+  four figures, 74 new tests. Suite: **232 passed**. No new Python dependency.
+
+**Three things the filings forced**
+- **Five filers, five layouts, one parser.** Reg S-X names the required contents, not the
+  columns. Baron, Fidelity, Lincoln and Neuberger each use a different table; **BlackRock uses
+  no table at all** — "(Acquired 10/22/19, cost $3,030,010)" inline in the Schedule of
+  Investments line. Columns are mapped by reading the header, so a sixth filer with a labelled
+  header needs no code; the inline form needed its own parser, and until it had one every
+  BlackRock filing returned zero.
+- **Acquisition dates are often ranges** ("11/15/2017-8/4/2020"). Both ends are stored.
+- **Cost is not always per position.** Baron gives one cost per fund and says so.
+  `cost_basis_scope` records `position`, `fund_total` or `absent`.
+
+**Anthropic, OpenAI, Anduril and Cerebras have filed no Form D under their own identity**
+anywhere in the published archive. Every hit on their names is a vehicle. Two explanations fit
+— reliance on the statutory Section 4(a)(2) exemption, which requires no Form D, or a form or
+quarter the archive does not carry — and filings alone cannot distinguish them, so the
+observation is reported and the cause is not.
+
+**Open**
+- **46 identity decisions** outstanding. Only the 8 proposed `operating_company` CIKs change any
+  output; the rest are `vehicle` or `not_in_universe` and already do not join.
+- Entry dates are a **floor, not a history**: only the latest annual and semi-annual per
+  registrant were fetched, so an older purchase disclosed in an older report is not in view.
+- N-CSR coverage is the top 30 registrants of 98 that hold a top-three company.
+- **Milestone PR 1 and PR 2 still not opened** — git is the user's.
+
+---
+
+## 2026-09-18 (earlier) — Week 8 figures and the video deliverable
 
 Five figures built from `docs/_figdata_week8.json`, plus a 3:00 narration script and a README,
 delivered to the week's video folder. Both QA passes run: layout audit **0/15 flagged**, and

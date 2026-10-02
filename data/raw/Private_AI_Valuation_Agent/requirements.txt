@@ -32,8 +32,22 @@ langgraph-checkpoint-postgres==2.0.9
 # own from the same URL.
 psycopg[binary]==3.3.5
 
-# Week 11 (commentary)
-# groq==0.15.0
+# Week 10 (MCP server) -- installed
+#
+# plan.md pins fastmcp==2.2.0. That release predates the 2.x tool-decorator
+# API src/mcp/server.py uses and does not resolve against the `mcp` package
+# this environment needs, so 2.11.3 is pinned instead. Logged as a deviation
+# in docs/worklog.md.
+fastmcp==2.11.3
 
-# Week 10 (MCP server)
-# fastmcp==2.2.0
+# Week 11 (commentary, signal contract) -- installed
+#
+# plan.md pins groq==0.15.0; 1.7.0 is what pip resolves today and the only
+# surface used is chat.completions.create. jsonschema validates the frozen
+# schema_version 1.0 contract in src/signal/contract.py.
+groq==1.7.0
+jsonschema==4.26.0
+#
+# The commentary backend is pluggable and Groq is preferred per plan.md.
+# Without GROQ_API_KEY the graph falls back to a local Ollama model, and with
+# neither it refuses to write a note rather than substituting a template.

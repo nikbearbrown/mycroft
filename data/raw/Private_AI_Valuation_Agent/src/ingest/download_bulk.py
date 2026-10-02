@@ -96,16 +96,23 @@ def _fetch(url: str, partial: Path, have: int) -> int:
     return done
 
 
-def download(quarter: str, attempts: int = 4) -> Path:
-    """Fetch {quarter}_nport.zip, resuming and retrying on partial downloads.
+def download(quarter: str, attempts: int = 4,
+             base: str | None = None, suffix: str = "_nport.zip") -> Path:
+    """Fetch {quarter}{suffix}, resuming and retrying on partial downloads.
 
     Retries are what make a 14-quarter run survivable: one transient reset
     partway through 5.9 GB should cost a few seconds, not the whole batch. Each
     retry resumes from what is already on disk rather than starting over.
+
+    `base` and `suffix` default to the N-PORT data sets. Week 9's Form D lane
+    passes its own pair rather than copying this function: resume, the
+    ignored-Range guard and the 4xx rule are the same problems on a different
+    URL, and a second copy would be a second place for them to be fixed.
     """
     DATA_DIR.mkdir(parents=True, exist_ok=True)
-    url = f"{BASE}/{quarter}_nport.zip"
-    target = DATA_DIR / f"{quarter}_nport.zip"
+    base = base or BASE
+    url = f"{base}/{quarter}{suffix}"
+    target = DATA_DIR / f"{quarter}{suffix}"
     partial = target.with_suffix(".zip.part")
 
     if target.exists():
