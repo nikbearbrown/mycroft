@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legislating Alpha — Congressional Trade Signals Dashboard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f4f0;
+    --bg-tertiary: #eeede9;
+    --bg-info: #E6F1FB;
+    --bg-success: #EAF3DE;
+    --bg-warning: #FAEEDA;
+    --bg-danger: #FCEBEB;
+    --text-primary: #2C2C2A;
+    --text-secondary: #5F5E5A;
+    --text-tertiary: #888780;
+    --text-info: #0C447C;
+    --text-success: #27500A;
+    --text-warning: #633806;
+    --text-danger: #791F1F;
+    --border-tertiary: rgba(0,0,0,0.12);
+    --border-secondary: rgba(0,0,0,0.22);
+    --border-warning: rgba(186,117,23,0.4);
+    --border-success: rgba(99,153,34,0.4);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-primary: #1a1a18;
+      --bg-secondary: #222220;
+      --bg-tertiary: #2a2a28;
+      --bg-info: #042C53;
+      --bg-success: #173404;
+      --bg-warning: #412402;
+      --bg-danger: #501313;
+      --text-primary: #EEEDFE;
+      --text-secondary: #B4B2A9;
+      --text-tertiary: #888780;
+      --text-info: #B5D4F4;
+      --text-success: #C0DD97;
+      --text-warning: #FAC775;
+      --text-danger: #F7C1C1;
+      --border-tertiary: rgba(255,255,255,0.10);
+      --border-secondary: rgba(255,255,255,0.20);
+      --border-warning: rgba(250,199,117,0.35);
+      --border-success: rgba(192,221,151,0.35);
+    }
+  }
+
+  body {
+    font-family: var(--font);
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    line-height: 1.6;
+    padding: 2.5rem 2rem;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  a { color: var(--text-info); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  table { border-collapse: collapse; width: 100%; }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 0 0 8px;
+  }
+
+  .note-box {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    margin-top: 8px;
+    margin-bottom: 1.75rem;
+  }
+  .note-box p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.65;
+  }
+
+  .card {
+    border: 0.5px solid var(--border-tertiary);
+    border-radius: var(--radius-lg);
+    padding: 13px 15px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<p style="font-size:11px;color:var(--text-tertiary);margin:0 0 2px;letter-spacing:0.06em;text-transform:uppercase;">Working Paper · STOCK Act Analysis · 2023–2026</p>
+<h1 style="font-size:24px;font-weight:500;margin:0 0 4px;">Legislating alpha</h1>
+<p style="font-size:13px;color:var(--text-secondary);margin:0 0 1.5rem;">Congressional stock trade disclosures as predictive signals · extending Ziobrowski et al. (2004, 2011) · <a href="https://github.com/Humanitariansai/Mycroft">Humanitariansai/Mycroft</a></p>
+
+<!-- Literature context banner -->
+<div style="display:grid;grid-template-columns:auto 1fr;gap:12px;margin-bottom:1.25rem;align-items:stretch;">
+  <div style="background:var(--bg-warning);border:0.5px solid var(--border-warning);border-radius:var(--radius-md);padding:9px 16px;display:flex;flex-direction:column;justify-content:center;">
+    <p style="font-size:11px;color:var(--text-warning);font-weight:600;margin:0 0 2px;white-space:nowrap;letter-spacing:0.03em;">Dataset in progress</p>
+    <p style="font-size:12px;color:var(--text-warning);margin:0;white-space:nowrap;">25 of 187 politicians scraped · pushing at 50</p>
+  </div>
+  <div style="background:var(--bg-secondary);border:0.5px solid var(--border-tertiary);border-radius:var(--radius-md);padding:9px 14px;">
+    <p style="font-size:12px;color:var(--text-secondary);margin:0;line-height:1.65;">
+      <strong style="color:var(--text-primary);">Literature gap this study fills:</strong>
+      Ziobrowski et al. (2004) found senators earned ~85 bps/month abnormal return (1993–1998).
+      Eggers &amp; Hainmueller (2013) showed the effect weakens with market controls.
+      Neither study uses post-STOCK Act (2012) data with per-trade SPY benchmarking —
+      this study does, covering a period of active CHIPS Act 2.0 and AI regulation drafting
+      not yet studied in the literature.
+    </p>
+  </div>
+</div>
+
+<!-- KPI row -->
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:1.5rem;">
+  <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:12px 13px;">
+    <p style="font-size:11px;color:var(--text-secondary);margin:0 0 4px;">Members scraped</p>
+    <p style="font-size:22px;font-weight:500;margin:0;line-height:1;">25</p>
+    <p style="font-size:11px;color:var(--text-tertiary);margin:3px 0 0;">of 187 total</p>
+  </div>
+  <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:12px 13px;">
+    <p style="font-size:11px;color:var(--text-secondary);margin:0 0 4px;">Total trades</p>
+    <p style="font-size:22px;font-weight:500;margin:0;line-height:1;">5,409</p>
+    <p style="font-size:11px;color:var(--text-tertiary);margin:3px 0 0;">May 2023 – Jun 2026</p>
+  </div>
+  <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:12px 13px;">
+    <p style="font-size:11px;color:var(--text-secondary);margin:0 0 4px;">Price coverage</p>
+    <p style="font-size:22px;font-weight:500;margin:0;line-height:1;">77%</p>
+    <p style="font-size:11px;color:var(--text-tertiary);margin:3px 0 0;">4,166 priced trades</p>
+  </div>
+  <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:12px 13px;">
+    <p style="font-size:11px;color:var(--text-secondary);margin:0 0 4px;">BUY alpha vs SPY</p>
+    <p style="font-size:22px;font-weight:500;margin:0;line-height:1;color:var(--text-success);">+0.24%</p>
+    <p style="font-size:11px;color:var(--text-tertiary);margin:3px 0 0;">aggregate, 30d window</p>
+  </div>
+  <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:12px 13px;">
+    <p style="font-size:11px;color:var(--text-secondary);margin:0 0 4px;">SPY 30d avg</p>
+    <p style="font-size:22px;font-weight:500;margin:0;line-height:1;color:var(--text-info);">+2.35%</p>
+    <p style="font-size:11px;color:var(--text-tertiary);margin:3px 0 0;">benchmark reference</p>
+  </div>
+</div>
+
+<!-- Aggregate performance -->
+<p class="section-title">Does Congress beat the market? — aggregate market-adjusted returns</p>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:8px;">
+
+  <div class="card">
+    <p style="font-size:11px;color:var(--text-secondary);font-weight:500;margin:0 0 10px;">BUY trades (n=2,185)</p>
+    <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+      <span style="font-size:12px;color:var(--text-secondary);">Raw 30d return</span>
+      <span style="font-size:13px;font-weight:500;">+2.57%</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+      <span style="font-size:12px;color:var(--text-secondary);">SPY same window</span>
+      <span style="font-size:13px;font-weight:500;color:var(--text-info);">+2.33%</span>
+    </div>
+    <div style="border-top:0.5px solid var(--border-tertiary);padding-top:9px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:12px;color:var(--text-secondary);">Alpha</span>
+      <span style="font-size:18px;font-weight:500;color:var(--text-success);">+0.24%</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <p style="font-size:11px;color:var(--text-secondary);font-weight:500;margin:0 0 10px;">SELL trades (n=1,965)</p>
+    <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+      <span style="font-size:12px;color:var(--text-secondary);">Raw 30d return</span>
+      <span style="font-size:13px;font-weight:500;">+2.68%</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+      <span style="font-size:12px;color:var(--text-secondary);">SPY same window</span>
+      <span style="font-size:13px;font-weight:500;color:var(--text-info);">+2.39%</span>
+    </div>
+    <div style="border-top:0.5px solid var(--border-tertiary);padding-top:9px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:12px;color:var(--text-secondary);">Alpha</span>
+      <span style="font-size:18px;font-weight:500;color:var(--text-success);">+0.29%</span>
+    </div>
+  </div>
+
+  <div style="border:2px solid #C0DD97;border-radius:var(--radius-lg);padding:13px 15px;">
+    <p style="font-size:11px;color:var(--text-secondary);font-weight:500;margin:0 0 10px;">High-signal cluster filter (n=43)</p>
+    <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+      <span style="font-size:12px;color:var(--text-secondary);">Cluster size</span>
+      <span style="font-size:12px;color:var(--text-tertiary);">≥ 2 politicians</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+      <span style="font-size:12px;color:var(--text-secondary);">BCR threshold</span>
+      <span style="font-size:12px;color:var(--text-tertiary);">&gt; 0.65 conviction</span>
+    </div>
+    <div style="border-top:0.5px solid var(--border-tertiary);padding-top:9px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:12px;color:var(--text-secondary);">Avg return</span>
+      <span style="font-size:18px;font-weight:500;color:var(--text-success);">+11.2%</span>
+    </div>
+  </div>
+
+</div>
+<div class="note-box">
+  <p>Consistent with Eggers &amp; Hainmueller (2013) — the average Congress member barely beats market beta (+0.24% alpha is near zero). The signal is not in random congressional activity; it is concentrated in the cluster filter: when 2+ politicians independently buy the same ticker in 30 days, especially in sectors under active legislative oversight, the high-signal group averages +11.2% versus +1.4% for low-signal events. Signal score = cluster size × max politician BCR within the cluster.</p>
+</div>
+
+<!-- Cluster chart -->
+<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
+  <p class="section-title" style="margin:0;">Cluster signal alpha — 2+ politicians, same ticker, 30-day window</p>
+  <span style="font-size:11px;color:var(--text-tertiary);">INTC: 5 politicians — largest cluster in dataset</span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;">
+  <span style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-secondary);">
+    <span style="width:10px;height:10px;border-radius:2px;display:inline-block;background:#97C459;"></span>Beat SPY (positive alpha)
+  </span>
+  <span style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-secondary);">
+    <span style="width:10px;height:10px;border-radius:2px;display:inline-block;background:#F09595;"></span>Lagged SPY (negative alpha)
+  </span>
+  <span style="font-size:11px;color:var(--text-tertiary);">Parentheses = distinct politicians in cluster</span>
+</div>
+<div style="position:relative;width:100%;height:590px;">
+  <canvas id="clusterChart"></canvas>
+</div>
+<div class="note-box">
+  <p>Top signals are concentrated in semiconductors and AI infrastructure (DDOG, MRVL, MU, INTC, CRWD, FTNT) and healthcare (HUM). This aligns with CHIPS Act 2.0 drafting and AI National Security Commission work — members on Science and Armed Services committees appear to have had advance visibility into subsidy timing. The worst signals (CTSH, CSGP, LULU) are enterprise software and consumer discretionary — sectors with less direct Congressional oversight — confirming sector specificity matters as much as the cluster structure itself.</p>
+</div>
+
+<!-- Politician leaderboard -->
+<p class="section-title">Politician leaderboard — BUY trades, market-adjusted (min 10 trades)</p>
+<div style="border:0.5px solid var(--border-tertiary);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:8px;">
+  <table style="table-layout:fixed;font-size:12px;">
+    <colgroup>
+      <col style="width:22%">
+      <col style="width:11%">
+      <col style="width:11%">
+      <col style="width:10%">
+      <col style="width:8%">
+      <col style="width:10%">
+      <col style="width:28%">
+    </colgroup>
+    <thead>
+      <tr style="background:var(--bg-secondary);border-bottom:0.5px solid var(--border-tertiary);">
+        <th style="padding:9px 12px;text-align:left;font-weight:500;color:var(--text-secondary);">Politician</th>
+        <th style="padding:9px 8px;text-align:right;font-weight:500;color:var(--text-secondary);">Raw</th>
+        <th style="padding:9px 8px;text-align:right;font-weight:500;color:var(--text-secondary);">Alpha</th>
+        <th style="padding:9px 8px;text-align:right;font-weight:500;color:var(--text-secondary);">Win%</th>
+        <th style="padding:9px 8px;text-align:right;font-weight:500;color:var(--text-secondary);">n</th>
+        <th style="padding:9px 8px;text-align:right;font-weight:500;color:var(--text-secondary);">BCR</th>
+        <th style="padding:9px 12px;text-align:left;font-weight:500;color:var(--text-secondary);">Alpha vs SPY</th>
+      </tr>
+    </thead>
+    <tbody id="pol-tbody"></tbody>
+  </table>
+</div>
+<div class="note-box">
+  <p>BCR (buy-conviction ratio) = buys ÷ (buys + sells). High BCR alone does not predict alpha — Lloyd Doggett (BCR 1.00, never sells) has −1.20% alpha. The two most credible signals at meaningful sample sizes are Dave McCormick (BCR 0.87, +5.25% alpha, n=38) and Tim Moore (BCR 0.74, +4.25% alpha, n=147). Tim Moore is the most statistically robust entry in the current dataset: largest sample at meaningful positive alpha.</p>
+</div>
+
+<!-- Work remaining -->
+<p class="section-title">Work remaining</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem;">
+  <div class="card">
+    <p style="font-size:11px;color:var(--text-secondary);font-weight:600;margin:0 0 10px;text-transform:uppercase;letter-spacing:0.05em;">Data collection</p>
+    <div id="check-data"></div>
+  </div>
+  <div class="card">
+    <p style="font-size:11px;color:var(--text-secondary);font-weight:600;margin:0 0 10px;text-transform:uppercase;letter-spacing:0.05em;">Analysis &amp; paper</p>
+    <div id="check-paper"></div>
+  </div>
+</div>
+
+<!-- Footer -->
+<p style="font-size:11px;color:var(--text-tertiary);padding-top:1rem;border-top:0.5px solid var(--border-tertiary);">
+  * n &lt; 20 = insufficient for inference &nbsp;·&nbsp;
+  Alpha = raw return minus SPY over same 30-day disclosure window per trade &nbsp;·&nbsp;
+  BCR = buys ÷ (buys + sells) &nbsp;·&nbsp;
+  Source: <a href="https://www.capitoltrades.com">Capitol Trades</a> &nbsp;·&nbsp;
+  Code: <a href="https://github.com/Humanitariansai/Mycroft">github.com/Humanitariansai/Mycroft</a>
+</p>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const DARK = window.matchMedia('(prefers-color-scheme: dark)').matches;
+const TC = DARK ? '#B4B2A9' : '#888780';
+const GC = DARK ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+
+// ── Cluster chart ─────────────────────────────────────────────────────────────
+const CLUSTERS = [
+  {t:'DDOG',n:'Datadog',      a:68.94, p:2},
+  {t:'SNDK',n:'SanDisk',      a:51.72, p:2},
+  {t:'MRVL',n:'Marvell Tech', a:31.68, p:2},
+  {t:'HUM', n:'Humana',       a:29.91, p:2},
+  {t:'MU',  n:'Micron',       a:26.65, p:2},
+  {t:'FTNT',n:'Fortinet',     a:24.30, p:2},
+  {t:'DECK',n:'Deckers',      a:22.73, p:2},
+  {t:'INTC',n:'Intel',        a:18.93, p:5},
+  {t:'CDW', n:'CDW Corp',     a:16.96, p:2},
+  {t:'CRWD',n:'CrowdStrike',  a:16.50, p:2},
+  {t:'LULU',n:'Lululemon',    a:-14.34,p:3},
+  {t:'CSGP',n:'CoStar',       a:-15.38,p:3},
+  {t:'CTSH',n:'Cognizant',    a:-22.79,p:2},
+];
+
+new Chart(document.getElementById('clusterChart'), {
+  type: 'bar',
+  data: {
+    labels: CLUSTERS.map(d => `${d.t}  (${d.p})`),
+    datasets: [{
+      label: 'Alpha vs SPY',
+      data: CLUSTERS.map(d => d.a),
+      backgroundColor: CLUSTERS.map(d => d.a >= 0 ? '#97C459' : '#F09595'),
+      borderColor:     CLUSTERS.map(d => d.a >= 0 ? '#639922' : '#E24B4A'),
+      borderWidth: 1,
+      borderRadius: 3,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          title: i => { const d = CLUSTERS[i[0].dataIndex]; return `${d.t} — ${d.n}`; },
+          label: c => ` Alpha: ${c.raw >= 0 ? '+' : ''}${c.raw.toFixed(2)}%  ·  ${CLUSTERS[c.dataIndex].p} politicians`,
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: GC },
+        ticks: { callback: v => (v >= 0 ? '+' : '') + v + '%', color: TC, font: { size: 11 } },
+        border: { display: false },
+      },
+      y: {
+        grid: { display: false },
+        ticks: { color: TC, font: { size: 12, weight: '500' } },
+        border: { display: false },
+      }
+    }
+  }
+});
+
+// ── Politician leaderboard ────────────────────────────────────────────────────
+const POLS = [
+  {name:'Kelly Morrison',    raw:15.51, alpha:9.24,  win:90, n:10,  bcr:0.40},
+  {name:'Dave McCormick',    raw:6.32,  alpha:5.25,  win:87, n:38,  bcr:0.87},
+  {name:'Tim Moore',         raw:6.26,  alpha:4.25,  win:67, n:147, bcr:0.74},
+  {name:'M.E. Salazar',      raw:5.17,  alpha:2.22,  win:54, n:39,  bcr:0.91},
+  {name:'Ro Khanna',         raw:3.57,  alpha:0.93,  win:52, n:427, bcr:0.60},
+  {name:'Josh Gottheimer',   raw:-0.65, alpha:0.48,  win:53, n:238, bcr:0.37},
+  {name:'Greg Stanton',      raw:6.44,  alpha:0.36,  win:54, n:93,  bcr:0.50},
+  {name:'Gil Cisneros',      raw:1.56,  alpha:0.10,  win:44, n:423, bcr:0.62},
+  {name:'Jefferson Shreve',  raw:5.01,  alpha:-0.33, win:41, n:192, bcr:0.32},
+  {name:'Kevin Hern',        raw:0.81,  alpha:-0.96, win:37, n:105, bcr:0.65},
+  {name:'Lloyd Doggett',     raw:1.48,  alpha:-1.20, win:34, n:61,  bcr:1.00},
+  {name:'Tony Wied',         raw:0.52,  alpha:-1.68, win:57, n:23,  bcr:0.44},
+  {name:'Michael McCaul',    raw:0.75,  alpha:-1.91, win:35, n:243, bcr:0.54},
+  {name:'April M. Delaney',  raw:0.37,  alpha:-3.06, win:34, n:118, bcr:0.53},
+];
+
+const tbody = document.getElementById('pol-tbody');
+POLS.forEach(p => {
+  const pos    = p.alpha >= 0;
+  const alphaC = pos ? '#3B6D11' : '#A32D2D';
+  const barW   = Math.min(Math.abs(p.alpha) / 12 * 100, 100).toFixed(1);
+  const barC   = pos ? '#97C459' : '#F09595';
+  const bcrC   = p.bcr >= 0.75 ? '#3B6D11' : p.bcr >= 0.50 ? 'var(--text-secondary)' : '#854F0B';
+  const nFlag  = p.n < 20 ? '<span style="color:var(--text-tertiary);font-size:10px;"> *</span>' : '';
+
+  tbody.innerHTML += `
+  <tr style="border-bottom:0.5px solid var(--border-tertiary);">
+    <td style="padding:8px 12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.name}</td>
+    <td style="padding:8px 8px;text-align:right;color:var(--text-secondary);">${p.raw >= 0 ? '+' : ''}${p.raw.toFixed(2)}%</td>
+    <td style="padding:8px 8px;text-align:right;font-weight:500;color:${alphaC};">${pos ? '+' : ''}${p.alpha.toFixed(2)}%</td>
+    <td style="padding:8px 8px;text-align:right;color:var(--text-secondary);">${p.win}%</td>
+    <td style="padding:8px 8px;text-align:right;color:var(--text-secondary);">${p.n}${nFlag}</td>
+    <td style="padding:8px 8px;text-align:right;font-weight:500;color:${bcrC};">${p.bcr.toFixed(2)}</td>
+    <td style="padding:8px 12px;">
+      <div style="height:7px;background:var(--bg-secondary);border-radius:4px;overflow:hidden;display:flex;justify-content:${pos ? 'flex-start' : 'flex-end'};">
+        <div style="height:100%;width:${barW}%;background:${barC};border-radius:4px;"></div>
+      </div>
+    </td>
+  </tr>`;
+});
+
+// ── Checklists ────────────────────────────────────────────────────────────────
+function checklist(items, id) {
+  const el = document.getElementById(id);
+  items.forEach(it => {
+    const bg  = it.done ? '#97C459'      : 'var(--bg-primary)';
+    const bd  = it.done ? 'none'         : '0.5px solid var(--border-secondary)';
+    const ico = it.done ? '<i class="ti ti-check" style="font-size:10px;color:#27500A;" aria-hidden="true"></i>' : '';
+    el.innerHTML += `
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:7px;">
+      <span style="width:16px;height:16px;border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:${bg};border:${bd};">${ico}</span>
+      <span style="font-size:12px;color:${it.done ? 'var(--text-primary)' : 'var(--text-secondary)'};">${it.text}</span>
+    </div>`;
+  });
+}
+
+checklist([
+  {done:true,  text:'25 politicians scraped (Selenium + checkpoint)'},
+  {done:false, text:'Reach 50 politicians'},
+  {done:false, text:'Full 187-member dataset'},
+  {done:true,  text:'Price enrichment via yfinance (77% coverage)'},
+  {done:true,  text:'Per-trade SPY market adjustment'},
+  {done:false, text:'Ticker normalisation (BRK/B, WWE→TKO etc.)'},
+], 'check-data');
+
+checklist([
+  {done:true,  text:'Cluster signal detection (30-day rolling window)'},
+  {done:true,  text:'Two-factor filter: BCR × cluster size'},
+  {done:false, text:'Statistical significance testing (t-test / bootstrap)'},
+  {done:false, text:'Train / test split validation'},
+  {done:false, text:'Sector-adjusted benchmark (XSD ETF for semis)'},
+  {done:false, text:'Full paper methodology section'},
+], 'check-paper');
+</script>
+</body>
+</html>
