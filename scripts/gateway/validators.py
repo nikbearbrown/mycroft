@@ -6,7 +6,8 @@ sarcastic post still returns an allowed label, so `label_in_set` passes it and
 nothing escalates. These checks catch malformed answers -- empty, cut off,
 unparseable, unlabelled, ungrounded -- and nothing else. Judging correctness
 needs an answer key (the benchmark has one; production does not) or a stronger
-model (which costs as much as just retrying).
+model (which costs as much as just retrying, and on 2026-10-01 scored kappa
+0.00 against a human -- FINDINGS section 10).
 
 Every check is a pure function of text already in hand, so running them adds
 no cost and no latency, which is what makes them safe to run on every call.
@@ -67,8 +68,13 @@ def _normalize_label(text: str) -> str:
     return cleaned.strip().strip(".`\"'*").strip().lower()
 
 
-def _extract_json(text: str) -> Any:
-    """Parse JSON from a response that may be fenced or have prose around it."""
+def extract_json(text: str) -> Any:
+    """Parse JSON from a response that may be fenced or have prose around it.
+
+    Public because grading needs the same parse the check used: a grader that
+    parsed the answer differently from the validator would disagree with it
+    for reasons that have nothing to do with the model.
+    """
     for candidate in (text, *(m.group(1) for m in FENCE.finditer(text))):
         try:
             return json.loads(candidate.strip())
@@ -108,7 +114,7 @@ def _required_keys(text: str, *, required_keys: list[str] | None = None, **_) ->
     if not required_keys:
         raise ValueError("required_keys needs the key list")
 
-    data = _extract_json(text)
+    data = extract_json(text)
     if not isinstance(data, dict):
         return {"passed": False, "reason": "not_a_json_object", "got": text[:120]}
 
@@ -123,7 +129,7 @@ def _verdict_with_quote(text: str, *, labels: list[str] | None = None,
     if not labels:
         raise ValueError("verdict_with_quote needs the allowed verdicts")
 
-    data = _extract_json(text)
+    data = extract_json(text)
     if not isinstance(data, dict):
         return {"passed": False, "reason": "not_a_json_object", "got": text[:120]}
 

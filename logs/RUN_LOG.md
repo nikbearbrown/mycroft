@@ -37,3 +37,4 @@
   - Coverage is 8 open-ended fixtures against a target of 30 per task type.
   - `main` is behind `origin/main`.
   - GROQ_API_KEY still needs rotating; it has now been exposed four times.
+  

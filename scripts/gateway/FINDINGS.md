@@ -367,3 +367,70 @@ is 8.
 - Blind, independent scoring found this one week after the number was produced.
   The same discipline applied to section 9 at the time would have caught it
   immediately; the lesson is to run the check in the same sprint as the claim.
+@'
+
+## 11. What the baseline showed
+
+Sprint 7. Every fixture on every tier, three times each, with the router taken
+out of the picture: 216 counted calls plus three discarded warmups, 0 provider
+errors, $0.0147 total. Policy had only ever sent four fixtures to the cheap
+tier; this is the first measurement of what each tier can actually do.
+
+| tier | check ok | correct | mean cost | p50 | p95 |
+|---|---|---|---|---|---|
+| cheap | 99% | 55/60 (92%) | $0.000063 | 438 ms | 922 ms |
+| mid | 100% | 59/60 (98%) | $0.000103 | 610 ms | 919 ms |
+| strong | 99% | 55/60 (92%) | $0.000198 | 280 ms | 937 ms |
+
+**The strong tier is the best at nothing.** It never leads on accuracy for any
+task type -- it ties on three and loses on contradiction detection (75% against
+mid's 100%) and structured extraction (83% against 92%) -- while costing 3.1x
+cheap and 1.9x mid. Policy currently names it as an escalation target.
+
+**Cost does not buy correctness.** 92% / 98% / 92% up the ladder. The premise
+behind escalating to a dearer model does not hold here.
+
+**The dearest tier is the fastest.** p50 280 ms against cheap 438 and mid 610.
+Mid is the slowest thing in the system. Whatever the top tier is worth, latency
+is the only axis where it leads.
+
+**Every error in the run comes from two fixtures.** 169 of 180 graded answers
+were correct, and all 11 failures are `contra-003` (5) and `extract-004` (6).
+On the other 22 fixtures all three tiers were perfect on every repeat. Both
+look like answer-key disputes rather than model errors:
+
+- `contra-003` is keyed `consistent`; every tier that misses it answers
+  `insufficient_evidence`. Its key was already flagged as debatable in Sprint 3
+  and never resolved.
+- `extract-004` is the no-guidance case, keyed `none` for all three fields.
+  Models answer `{"metric":"none","direction":"none","period":"Q2"}`, taking
+  the period from "Fake Industries CFO, Q2 call". Reading `period` as the
+  call's own period is not unreasonable.
+
+The entire measured accuracy difference between the tiers therefore rests on
+two contested items.
+
+**Routing by task type is 25.6% cheaper at identical measured accuracy.**
+Taking the best tier per task type -- mid for contradiction detection and
+extraction, cheap for the rest -- costs $0.001839 a sweep against all-mid's
+$0.002473, with the same correctness on every gradeable type, and lower latency
+because cheap's p50 beats mid's. That clears the threshold fixed in August:
+at least 20% cheaper at equal quality and no more than 20% slower.
+
+All-cheap would be 38.6% cheaper ($0.001519). If the two disputed fixtures
+resolve in the models' favour, cheap and mid become indistinguishable on
+everything measurable and all-cheap becomes the honest recommendation.
+
+### Consequences
+
+- Sprint 8 cannot be decided until `contra-003` and `extract-004` are ruled on,
+  because they are the whole difference between the tiers. A second reader
+  should rule, since the labeller who wrote them would otherwise adjudicate
+  their own key.
+- `summarization` carries no correctness figure and its routing is decided on
+  cost alone. That must be stated wherever the recommendation appears.
+- The escalation ladder as configured sends failures to a tier that is less
+  accurate on the two task types that actually fail. Sprint 8 should test
+  escalating cheap to mid and stopping there.
+- 24 synthetic fixtures, three repeats, one provider, one day. The numbers are
+  about these task types, not about Mycroft's traffic.
