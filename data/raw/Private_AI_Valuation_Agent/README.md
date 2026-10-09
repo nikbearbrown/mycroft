@@ -13,7 +13,13 @@ possible because fund fiscal quarter-ends are staggered across the calendar.
 
 ## Status
 
-**Week 10 complete — the dataset is queryable from an AI assistant, and the quarterly
+**Week 11 complete — the project is done.** Eleven weeks, 14 quarters of SEC filings,
+5,806 filed holdings resolved to 5,479 marks, every number traceable to the filing that
+produced it. Start with [`proposal.md`](proposal.md) for what this is and why,
+[`system_architecture.md`](system_architecture.md) for how it fits together, and
+[`docs/demo.md`](docs/demo.md) for five acts end to end.
+
+**Week 10 — the dataset is queryable from an AI assistant, and the quarterly
 signal is frozen at `schema_version` 1.0.** See [`docs/mcp_server.md`](docs/mcp_server.md) and
 [`docs/signal_and_commentary.md`](docs/signal_and_commentary.md).
 
@@ -303,6 +309,9 @@ python -m src.graphs.quarterly_graph --dry-run    # no model call
 python -m scripts.schedule --show            # the platform-native scheduler command
 python -m scripts.schedule --install         # register it (asks first)
 
+python -m scripts.demo                       # the five-act demo, to stdout
+python -m scripts.demo --write               # docs/demo.md, for a human
+
 pytest -q                                    # 334 regression tests, none needing a GPU
                                              # ~40 need a Postgres, a local model or a
                                              # reachable EDGAR, and skip loudly without
@@ -379,7 +388,11 @@ docs/feasibility.md       Week 1 verification, findings, and open risks
 docs/entity_resolution.md normalisation, the matcher, the LLM measurement, the queue
 docs/review_queue.md      generated — the questions waiting on a human
 docs/marks_panel.md       generated — the price panel, and what is quarantined
-docs/findings.md          generated — re-mark, dispersion, propagation, Cerebras
+proposal.md               what this is, what it refuses to claim, and the prior art
+system_architecture.md    components, where LangGraph and the LLM sit, and why
+data_architecture.md      the fifteen tables, the layers, and the provenance chain
+docs/demo.md              generated — five acts: ingest, review, series, propagation, MCP
+docs/findings.md          generated — re-mark, dispersion, propagation, corroboration
 docs/context.md           generated — Form D, the N-CSR footnote, the exposure map
 docs/identity_queue.md    generated — which CIK is which company, and the evidence
 docs/mcp_server.md        the MCP server: setup, the six tools, token bounding

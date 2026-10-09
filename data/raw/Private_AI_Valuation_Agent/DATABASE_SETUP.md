@@ -95,19 +95,39 @@ you ask for a quarter whose zip is gone.
 
 ## Schema
 
-The block below is the **Week 2 core**, which is what the ingest path writes. Later weeks add
-tables on top of it, all in the same `src/db/schema.sql` and all created by the same
-idempotent `python -m src.db.connect`:
+**Fifteen project tables**, plus four LangGraph checkpoint tables created by the review
+queue's Postgres checkpointer. All of them live in `src/db/schema.sql` and are created by one
+idempotent command:
 
-| Added | Tables |
-|---|---|
-| Week 6 | `companies`, `securities`, `review_decisions`, `match_decisions`, `security_map` |
-| Week 7 | `marks` (the price panel and the split quarantine) |
-| Week 8 | `public_observations` (the non-Level-3 lane) |
-| Week 9 | `form_d_filings`, `company_identity`, `restricted_lots`, `ncsr_filings` |
+```bash
+python -m src.db.connect        # safe to run repeatedly
+```
 
-`src/db/schema.sql` is the authoritative definition and carries the reasoning for each column
-inline; a full consolidated listing here is Week 11's job. Nothing below has changed.
+| Table | Rows today | What it holds |
+|---|---|---|
+| `funds` | 183 | one row per (CIK, series); 30 fund families |
+| `filings` | 1,512 | one row per accession, with period end and net assets |
+| `raw_holdings` | 5,806 | one disclosed private position per row — **immutable** |
+| `runs` | 2 | one row per ingest; `complete = false` excludes a period from re-mark baselines |
+| `companies` | 11 | the canonical layer, seeded from frozen `universe_v1.json` |
+| `securities` | 232 | company × share class, with price basis and SPV flags |
+| `security_map` | 235 | how a filed line finds its security, carrying asset category |
+| `review_decisions` | 45 | **one row per ambiguity**; `reviewer` is a name — "auto" is not one |
+| `match_decisions` | 5,806 | **one row per resolved holding** — the per-holding audit trail |
+| `marks` | 5,479 | one row per (security, fund, period end) — the panel |
+| `public_observations` | 10,566 | universe companies at any fair-value level *other* than 3 |
+| `form_d_filings` | 706 | Form D issuer rows matching a universe name — a candidate pool |
+| `company_identity` | 46 | which EDGAR CIK *is* a company; the only thing Form D joins on |
+| `restricted_lots` | 249 | Reg S-X 12-12 footnote lots: acquisition date, cost where filed |
+| `ncsr_filings` | 60 | what was fetched and what came back, so "found nothing" ≠ "never looked" |
+
+Plus `checkpoints`, `checkpoint_blobs`, `checkpoint_writes`, `checkpoint_migrations` — owned by
+`langgraph-checkpoint-postgres`, not by this project's schema.
+
+`src/db/schema.sql` is the authoritative definition and carries the reasoning for every column
+inline; `data_architecture.md` explains the layering and the provenance chain. The Week 2 core
+is reproduced below unchanged, because its three deviations from `plan.md` are still the ones
+most likely to surprise.
 
 ```
 funds         (fund_id pk, cik, series_id, fund_name, family, first_seen, last_seen)

@@ -4,7 +4,53 @@ Newest first.
 
 ---
 
-## 2026-10-02 (latest) — the schedule renumbered: 10 and 11 merged, 12 becomes 11
+## 2026-10-09 (latest) — Week 11: documentation, catalogue, demo
+
+The final week. Three documents `plan.md` names did not exist; one explicit requirement had
+zero coverage.
+
+**Written from nothing**
+- `proposal.md` — what the project is, what it refuses to claim, and the prior art stated up
+  front rather than after someone else raises it.
+- `system_architecture.md` — the component map, where LangGraph earns its place and where it
+  does not, the two places an LLM sits and why neither touches a number, and the four
+  commentary guards.
+- `data_architecture.md` — fifteen tables by layer, the mutability rules, and a worked
+  provenance trace from the 25.0% headline back to the SEC's bytes.
+
+**The requirement with zero coverage: prior art.** `plan.md` asks for `findings.md` and
+`entity_resolution.md` to cite "the prior-art literature honestly". Neither mentioned Caplight,
+Gornall & Strebulaev, Agarwal et al., Chernenko et al. or Kwon et al. — **not once**. Now in
+three places, and in `entity_resolution.md` §11.1 it is load-bearing rather than decorative:
+Gornall & Strebulaev is the reason dispersion is measured at company level with the class
+recorded rather than within-class only.
+
+**`findings.md` stopped at Week 8.** Extended through the generator rather than by hand (P3):
+§6 the Form D × N-CSR corroboration (10 of 18 acquisition dates on a filed round date), §7
+where this sits in the literature.
+
+**`DATABASE_SETUP.md`** — the consolidated listing of all fifteen tables, which I had deferred
+to this week when I found the schema block stale at the Week 2 core.
+
+**The demo is a script, not a recording.** `scripts/demo.py` runs five acts — ingest
+reconciliation, a review-queue decision, a resolved series, propagation, an MCP query — and
+writes `docs/demo.md`. A recording is true on the day it was made; this re-runs, and every
+figure is queried live. Act II shows a decision a named human already made and does **not**
+make a new one: a demo that recorded a judgment would be a demo that clears a gate for a
+screenshot.
+
+**The catalogue entry.** `plan.md` says to add it to `n8n_Workflows/README.md`. No such
+directory exists in this repository — the path refers to a sibling repo. Written as
+`n8n/README.md` beside the workflow it documents, with a paste-ready catalogue row.
+
+**Open**
+- **Milestone PRs 1, 2 and 3 are not opened.** Git is the user's.
+- 314 of 322 golden-set labels remain unattested; the 28 `%COHERE%` canary holdings remain in
+  the shipped universe layer.
+
+---
+
+## 2026-10-02 (earlier) — the schedule renumbered: 10 and 11 merged, 12 becomes 11
 
 `plan.md`'s twelve weeks are now eleven. The two weeks covering the MCP server and the signal
 contract are merged into **Week 10**, and the documentation-and-launch week becomes **Week 11**.

@@ -1,0 +1,168 @@
+{
+  "name": "Private AI Valuations — quarterly digest",
+  "meta": {
+    "description": "Runs the quarterly analysis graph, then emails the human note and attaches the machine signal. Thin on purpose: every decision lives in the Python, and this workflow only schedules it, reads two files and sends one email. plan.md: 'Optional thin n8n workflow: quarterly trigger plus digest email, credentials in the n8n store.'",
+    "notes": [
+      "CREDENTIALS ARE REFERENCED, NEVER EMBEDDED. The SMTP node names a credential in the n8n store by id; this file carries no password, no API key and no DATABASE_URL. Importing it into a fresh n8n asks you to pick a credential, which is the intended behaviour.",
+      "Set PROJECT_DIR in the workflow's variables before the first run.",
+      "The schedule is the 20th of February, May, August and November. That is ~50 days after a calendar quarter end, which is roughly when the first filings for that quarter have landed. Running on the quarter end itself would produce a digest about the previous quarter and look like a bug."
+    ]
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7 20 2,5,8,11 *"
+            }
+          ]
+        }
+      },
+      "id": "trigger-quarterly",
+      "name": "Quarterly trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-460, 300]
+    },
+    {
+      "parameters": {
+        "command": "=cd \"{{ $vars.PROJECT_DIR }}\" && .venv/Scripts/python.exe -m src.graphs.quarterly_graph"
+      },
+      "id": "run-graph",
+      "name": "Run quarterly graph",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [-240, 300],
+      "notes": "The graph writes docs/_signal.json and docs/quarterly_note.md. It validates the signal against schema_version 1.0 before writing, so a non-zero exit here means nothing was written — which is the behaviour we want."
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $vars.PROJECT_DIR }}/docs/_signal.json",
+        "options": {}
+      },
+      "id": "read-signal",
+      "name": "Read signal",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [-20, 200]
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "options": {}
+      },
+      "id": "parse-signal",
+      "name": "Parse signal",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [200, 200]
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $vars.PROJECT_DIR }}/docs/quarterly_note.md",
+        "options": {}
+      },
+      "id": "read-note",
+      "name": "Read note",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [-20, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.data.schema_version }}",
+              "rightValue": "1.0",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "gate-schema",
+      "name": "Signal is schema 1.0?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [420, 200],
+      "notes": "A schema_version this workflow does not know is not a digest to send — it is a contract change somebody made. The false branch stops rather than emailing a payload the recipient's tooling cannot parse."
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $vars.DIGEST_FROM }}",
+        "toEmail": "={{ $vars.DIGEST_TO }}",
+        "subject": "=Private AI valuations — quarter to {{ $json.data.period.latest_period_end }}",
+        "emailFormat": "text",
+        "text": "={{ $('Read note').first().json.data }}\n\n---\nSignal schema_version {{ $json.data.schema_version }} · {{ $json.data.coverage.marks_published }} published marks of {{ $json.data.coverage.marks }} · {{ $json.data.guards.change_blocked }} marks blocked from change series.\n\nCommentary: {{ $json.data.commentary.refused ? 'REFUSED — ' + $json.data.commentary.refusal_reason : 'model output from ' + $json.data.commentary.model + ', not a verified claim' }}\n\nThis digest is generated from SEC filings and is not timely: every figure is as of a filed period end, and filings lag that by roughly 55-60 days.",
+        "options": {
+          "attachments": "data"
+        }
+      },
+      "id": "send-digest",
+      "name": "Send digest",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [640, 100],
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_WITH_YOUR_SMTP_CREDENTIAL_ID",
+          "name": "SMTP account"
+        }
+      },
+      "notes": "Credential by reference. n8n keeps the secret in its own store; this file never sees it."
+    },
+    {
+      "parameters": {
+        "errorMessage": "=Quarterly digest halted: signal reports schema_version {{ $json.data.schema_version }}, this workflow knows 1.0. A contract change needs a human before anything is emailed."
+      },
+      "id": "halt-unknown-schema",
+      "name": "Halt — unknown schema",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [640, 320]
+    }
+  ],
+  "connections": {
+    "Quarterly trigger": {
+      "main": [[{ "node": "Run quarterly graph", "type": "main", "index": 0 }]]
+    },
+    "Run quarterly graph": {
+      "main": [[
+        { "node": "Read signal", "type": "main", "index": 0 },
+        { "node": "Read note", "type": "main", "index": 0 }
+      ]]
+    },
+    "Read signal": {
+      "main": [[{ "node": "Parse signal", "type": "main", "index": 0 }]]
+    },
+    "Parse signal": {
+      "main": [[{ "node": "Signal is schema 1.0?", "type": "main", "index": 0 }]]
+    },
+    "Signal is schema 1.0?": {
+      "main": [
+        [{ "node": "Send digest", "type": "main", "index": 0 }],
+        [{ "node": "Halt — unknown schema", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "tags": [
+    { "name": "mycroft" },
+    { "name": "private-ai-valuations" },
+    { "name": "quarterly" }
+  ]
+}

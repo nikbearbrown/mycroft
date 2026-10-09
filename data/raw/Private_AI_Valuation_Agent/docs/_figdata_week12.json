@@ -1,0 +1,161 @@
+{
+  "documents": [
+    {
+      "document": "proposal.md",
+      "path": "proposal.md",
+      "existed": false,
+      "lines_before": 0,
+      "lines_now": 126
+    },
+    {
+      "document": "system_architecture.md",
+      "path": "system_architecture.md",
+      "existed": false,
+      "lines_before": 0,
+      "lines_now": 155
+    },
+    {
+      "document": "data_architecture.md",
+      "path": "data_architecture.md",
+      "existed": false,
+      "lines_before": 0,
+      "lines_now": 163
+    },
+    {
+      "document": "findings.md",
+      "path": "docs/findings.md",
+      "existed": true,
+      "lines_before": 231,
+      "lines_now": 262
+    },
+    {
+      "document": "entity_resolution.md",
+      "path": "docs/entity_resolution.md",
+      "existed": true,
+      "lines_before": 956,
+      "lines_now": 1016
+    },
+    {
+      "document": "README.md",
+      "path": "README.md",
+      "existed": true,
+      "lines_before": 428,
+      "lines_now": 441
+    }
+  ],
+  "prior_art": [
+    {
+      "document": "proposal.md",
+      "before": 0,
+      "existed": false,
+      "after": 9
+    },
+    {
+      "document": "findings.md",
+      "before": 0,
+      "existed": true,
+      "after": 8
+    },
+    {
+      "document": "entity_resolution.md",
+      "before": 0,
+      "existed": true,
+      "after": 5
+    }
+  ],
+  "remark": {
+    "share_unchanged": 0.2498,
+    "steps": 4079,
+    "unchanged": 1019,
+    "marks": 5178
+  },
+  "layers": [
+    {
+      "layer": "raw / filed",
+      "mutability": "immutable",
+      "tables": [
+        {
+          "table": "funds",
+          "rows": 183
+        },
+        {
+          "table": "filings",
+          "rows": 1512
+        },
+        {
+          "table": "raw_holdings",
+          "rows": 5806
+        },
+        {
+          "table": "form_d_filings",
+          "rows": 706
+        },
+        {
+          "table": "public_observations",
+          "rows": 10566
+        },
+        {
+          "table": "restricted_lots",
+          "rows": 249
+        },
+        {
+          "table": "ncsr_filings",
+          "rows": 60
+        },
+        {
+          "table": "runs",
+          "rows": 2
+        }
+      ],
+      "rows": 19084
+    },
+    {
+      "layer": "judgment",
+      "mutability": "append-only",
+      "tables": [
+        {
+          "table": "companies",
+          "rows": 11
+        },
+        {
+          "table": "review_decisions",
+          "rows": 45
+        },
+        {
+          "table": "match_decisions",
+          "rows": 5806
+        },
+        {
+          "table": "company_identity",
+          "rows": 46
+        }
+      ],
+      "rows": 5908
+    },
+    {
+      "layer": "resolved",
+      "mutability": "rebuildable",
+      "tables": [
+        {
+          "table": "securities",
+          "rows": 232
+        },
+        {
+          "table": "security_map",
+          "rows": 235
+        },
+        {
+          "table": "marks",
+          "rows": 5479
+        }
+      ],
+      "rows": 5946
+    }
+  ],
+  "tables_total": 15,
+  "demo": {
+    "acts": 5,
+    "files_scanned": 5,
+    "write_statements": 0
+  }
+}

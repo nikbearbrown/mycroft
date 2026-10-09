@@ -222,6 +222,37 @@ The second row matters too: `X.AI LLC TL 1L BANKDEBT` and `X.AI LLC/X.AI CO ISSU
 
 **What unblocks it:** `2026q3_nport.zip is downloaded, built, and scanned with `python -m src.ingest.public_marks 2026q3``. On the chosen route — waiting for the SEC rather than fetching from EDGAR — that is roughly November 2026, once the 2026Q3 filing quarter closes and DERA publishes.
 
+## 6. Two filings that agree, and neither cites the other
+
+Week 9 added two sources beside the marks panel: Form D (offering dates and amounts) and the Reg S-X 12-12 restricted-securities footnote (acquisition date and cost). Joined on an EDGAR identity a named human affirmed — never on an issuer name — they can be checked against each other.
+
+**10 of 18 fund acquisition dates fall on the exact day an issuer reported a first sale** (56%), and 11 of 18 within a week.
+
+The clearest case is Databricks on 2019-10-22: the issuer filed a Form D reporting $400,000,181 sold, and five separate registrants independently disclose acquiring Databricks stock on that same day.
+
+**The denominator is the method.** Only acquisitions falling *inside* a company's Form D filing window are counted. SpaceX stopped filing Form D in July 2022 and most of its later acquisitions have no round to match; measured against the nearest one they give gaps of 800 to 1,300 days, each of which is the distance to the end of the archive rather than a fact about a fund. Left in, a real 56% reads as 33%. Date ranges are excluded for the same reason: a position built across three years has no single acquisition date.
+
+**What this is not.** A fund buying on the day an issuer reports a first sale is consistent with participating in that round, and equally consistent with a secondary purchase that settled the same day. What it is not is circular — an issuer files Form D because it sold, a fund files N-CSR because it owns, and neither filing cites the other.
+
+**Why a name join would have been wrong.** A name scan of 49 quarters of Form D returns 706 issuer rows, of which **595 — 84.3% — are pooled feeder vehicles** named after a universe company rather than being it. Summing their raises per company would publish figures no company ever filed.
+
+## 7. Where this sits in the literature
+
+This source is neither underused nor novel, and saying so is part of the finding.
+
+**Commercially exploited.** Caplight holds 20,000+ fund marks across 370 late-stage companies and explicitly markets tracking how BlackRock, Fidelity, Franklin Templeton and Lincoln Financial value their stakes. Notice, Sacra, Forge and Nasdaq Private Market operate in adjacent space.
+
+**Academically mature.**
+
+- Agarwal, Barber, Cheng, Hameed & Yasuda, "Private Company Valuations by Mutual Funds," *Review of Finance* 27(2), 2023.
+- Gornall & Strebulaev, "Squaring Venture Capital Valuations with Reality," *JFE*, 2020.
+- Chernenko, Lerner & Zeng, "Mutual Funds as Venture Capitalists? Evidence from Unicorns," *RFS*.
+- Kwon, Lowry & Qian, "Mutual Fund Investments in Private Firms," *JFE*.
+
+**Gornall & Strebulaev is reproduced here, not merely cited.** Funds write up *all* share classes to the latest round price. That is why dispersion in section 2 is measured at company level with the class recorded, rather than within-class only — an earlier draft's rule, overturned by the verified data.
+
+**What does not exist** is an open, reproducible, continuously-updated, AI-cohort-specific artifact. No public repository parses N-PORT for private-company marks; the GitHub "unicorn dataset" projects are static Crunchbase scrapes, not filings-derived. **The contribution is open infrastructure, not discovery**, and claiming novelty of the data source would not survive a literature review.
+
 ## What none of this shows
 
 - **Marks are not valuations.** Every number here is what a fund wrote down, not what a company is worth. N-PORT gives the fund's share count, never the company's total shares outstanding.

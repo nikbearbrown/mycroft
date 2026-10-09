@@ -954,3 +954,63 @@ not a matcher change.
 `test_every_exported_human_decision_is_still_honoured` reads the 45 exported decisions and
 fails if the deterministic matcher ever contradicts one. It passes today, and it was skipping
 until these answers existed. The suite is **154 passed, 0 skipped** with a Postgres available.
+
+---
+
+## 11. Final metrics, and where the prior art bears on them
+
+Closing figures for the resolution layer, as of the final build.
+
+| | |
+|---|---|
+| Holdings resolved | **5,806** — every filed universe position |
+| Distinct questions asked | **231** (the holdings collapse to that many ambiguities) |
+| Decided without a human | 4,537 · **78.1%** |
+| Decided by a human | 1,269 · **21.9%** |
+| Named-reviewer decisions recorded | **45** in `review_decisions` |
+| Unresolved | **0** |
+| Securities resolved | **232**, across 11 companies |
+| Form D identities affirmed | **46** CIKs — 7 operating companies, 12 vehicles, 27 not in universe |
+
+Resolution method across all 5,806 holdings:
+
+| Method | Count | Share |
+|---|---|---|
+| `alias` | 2,760 | 47.5% |
+| `lei` | 1,681 | 29.0% |
+| `human` | 1,269 | 21.9% |
+| `fuzzy` | 57 | 1.0% |
+| `spv` | 39 | 0.7% |
+
+Matcher precision and recall on the 322-case golden set are in §7; the LLM comparison that did
+not change the shipping decision is in §9.
+
+### 11.1 Where the literature bears on this
+
+The share-class handling in §3 is not an independent discovery. **Gornall & Strebulaev**,
+"Squaring Venture Capital Valuations with Reality" (*JFE*, 2020), establishes that funds write
+up *all* share classes to the latest round price. That finding is reproduced on this cohort and
+is the reason dispersion is measured at **company level with the class recorded** rather than
+within-class only — an earlier draft's rule, overturned by the verified data rather than by the
+citation.
+
+**Agarwal, Barber, Cheng, Hameed & Yasuda**, "Private Company Valuations by Mutual Funds"
+(*Review of Finance* 27(2), 2023), together with **Chernenko, Lerner & Zeng** (*RFS*) and
+**Kwon, Lowry & Qian** (*JFE*), cover the valuation behaviour this project measures. The
+contribution here is not the observation that mutual funds mark private companies — that is
+settled — but an open, reproducible pipeline from the filings to the panel, with every
+judgment attributed.
+
+### 11.2 Still open
+
+Carried forward honestly rather than closed by assertion:
+
+- **314 of 322 golden-set labels are unattested.** Ten adjudications are attested in §6; the
+  rest were labelled by the deterministic pipeline and reviewed in aggregate, not case by case.
+- **The 28 `%COHERE%` holdings remain in the shipped universe layer.** They are the deliberate
+  Week 4 canary and are excluded from findings, but removing them from the layer is a
+  universe-version change rather than a matcher change.
+- **Non-USD currency is guarded but unexercised** — all 5,806 holdings are USD, so the guard
+  has never fired against real data.
+- **Opaque SPVs cannot be seen through.** 27 positions are counted and reported; the size of
+  what they hide is not knowable from filings.
