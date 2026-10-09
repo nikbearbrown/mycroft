@@ -1,34 +1,106 @@
-# Scoped deliberately: this recipe's fixtures and run artifacts only.
+# Line endings, repo-wide.
 #
-# core.autocrlf=true stores LF and checks out CRLF on Windows, which makes a file's
-# SHA-256 platform-dependent. This pipeline hashes source bytes to build a provenance
-# trace an auditor can re-verify, so a hash that changes with the checkout platform is
-# not usable evidence. Pinning these paths to LF makes the working tree match the blob
-# on every OS.
+# WHY THIS EXISTS
 #
-# Nothing outside these paths is affected.
-data/raw/market-sentiment-analysis-part-1/** text eol=lf
-data/verified/market-sentiment-analysis-part-1/** text eol=lf
+# `core.autocrlf=true` on Windows stores LF in the repository and checks out CRLF in
+# the working tree. The same commit therefore produces different bytes on different
+# machines, and a file's SHA-256 changes with the checkout platform.
+#
+# That matters here more than in most repositories, because this one treats hashes as
+# evidence. Recipe reports cite the SHA-256 of every source file and step script so a
+# reviewer can confirm they are reading the artifact the report describes. A hash that
+# only reproduces on the machine that wrote it is not proof of anything.
+#
+# It also caused the generated-instruction drift that made `npm run verify` fail: the
+# files under instructions/ were checked out as CRLF, the build emitted mixed endings,
+# and manifest-check compared the result against the committed LF version and reported
+# six files "out of sync" whose content was byte-identical.
+#
+# This file previously carried per-recipe blocks, added one recipe at a time as each
+# hit the problem. Two recipes were listed and a third was about to be. Pinning the
+# whole repository is the rule those blocks were each approximating.
 
-# The step scripts are hashed into the report's source inventory as re-verifiable
-# evidence, so their bytes must not change with the checkout platform either.
-scripts/**/market-sentiment-analysis-part-1-*.py text eol=lf
+# Default: treat every file as text, normalise to LF in the repository, and check out
+# LF everywhere. Git still auto-detects binary content and leaves it untouched, but the
+# explicit declarations below mean we do not rely on that detection.
+* text=auto eol=lf
 
+# --- Text, stated explicitly so intent does not depend on content sniffing -----------
+*.py      text eol=lf
+*.md      text eol=lf
+*.json    text eol=lf
+*.jsonl   text eol=lf
+*.yaml    text eol=lf
+*.yml     text eol=lf
+*.js      text eol=lf
+*.mjs     text eol=lf
+*.ts      text eol=lf
+*.tsx     text eol=lf
+*.jsx     text eol=lf
+*.css     text eol=lf
+*.html    text eol=lf
+*.svg     text eol=lf
+*.csv     text eol=lf
+*.txt     text eol=lf
+*.toml    text eol=lf
+*.sql     text eol=lf
+*.go      text eol=lf
+*.mod     text eol=lf
+*.sum     text eol=lf
+*.ipynb   text eol=lf
+*.example text eol=lf
+*.lock    text eol=lf
+.gitignore      text eol=lf
+.gitattributes  text eol=lf
+.gitkeep        text eol=lf
 
-# contradiction-detection-agent: fixtures, run outputs, gate records and step scripts are SHA-256 hashed (fixture manifest,
-# gate-decision evidence), so their bytes must not change with the checkout platform. Our own files only:
-# the 16 per-node scripts generated for this recipe on 2026-06-06 are deliberately not listed.
-data/raw/contradiction-detection-agent/** text eol=lf
-data/verified/contradiction-detection-agent/** text eol=lf
-logs/contradiction-detection-agent/** text eol=lf
-logs/gate-decisions/contradiction-detection-agent-gate-*.json text eol=lf
-scripts/gigo/contradiction-detection-agent-transform-quality-check.py text eol=lf
-scripts/gigo/contradiction-detection-agent-validate-data-shape.py text eol=lf
-scripts/ingest/contradiction-detection-agent-ingest-inputs.py text eol=lf
-scripts/tools/contradiction-detection-agent-gate-check.py text eol=lf
-scripts/tools/contradiction-detection-agent-parity-check.py text eol=lf
-scripts/tools/contradiction-detection-agent-produce-human-report.py text eol=lf
-scripts/tools/contradiction-detection-agent-run-approved-tools.py text eol=lf
-scripts/tools/contradiction-detection-agent-run-sample.py text eol=lf
-scripts/tools/contradiction-detection-agent-self-test.py text eol=lf
-scripts/tools/contradiction-detection-agent-verify-provenance.py text eol=lf
+# Shell scripts MUST be LF. A CRLF shebang line makes the interpreter unreachable and
+# the script fails with a confusing "bad interpreter" or "not found".
+*.sh text eol=lf
+
+# Windows batch files are the one case that genuinely requires CRLF: cmd.exe can
+# mis-parse an LF-only .bat. None exist today; the rule is here so adding one is safe.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# --- Binary: never transformed, never diffed as text ---------------------------------
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.webp binary
+*.pdf  binary
+*.zip  binary
+*.gz   binary
+*.bin  binary
+*.pyc  binary
+*.woff binary
+*.woff2 binary
+*.ttf  binary
+*.otf  binary
+*.eot  binary
+*.xlsx binary
+*.docx binary
+*.pptx binary
+*.psd  binary
+*.epub binary
+
+# --- Quarantined Tier 3: vendored CSV data is left exactly as imported ----------------
+# data/mycroft-main is a vendored upstream import kept for provenance. Its CSVs were
+# imported with CRLF and all 15 are stored that way; rewriting them would edit a
+# provenance record to satisfy a convention they were never part of, and would show up
+# as an 11,000-line diff that hides whatever else is in the change.
+#
+# The exemption is scoped to CSVs, NOT to the whole tree. Exempting the tree was tried
+# and did the opposite of its intent: the .py/.json/.svg files under it are already
+# stored LF-normalised, so `-text` made git adopt the working tree's CRLF and staged
+# ~30 files as changed. These 15 CSVs are the only files there stored with CRLF, so
+# `-text` is a no-op for them -- which is exactly what "leave it alone" should mean.
+data/mycroft-main/**/*.csv -text
+
+# --- Fixture files deliberately kept unparseable --------------------------------------
+# These are truncated on purpose, to exercise the parse-error path of a validator. They
+# are text and must stay byte-stable like everything else; the extension only keeps them
+# out of the *.json globs that gate 3 and conformance use.
+*.json.broken text eol=lf
