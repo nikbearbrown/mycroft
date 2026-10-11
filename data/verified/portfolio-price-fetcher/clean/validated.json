@@ -1,0 +1,58 @@
+{
+ "recipe": "portfolio-price-fetcher",
+ "fixture_set": "clean",
+ "schema_version": "yahoo-chart-meta/1 (fields read by the workflow's Calculate Metrics node)",
+ "record_count": 5,
+ "promoted_count": 5,
+ "rejected_count": 0,
+ "required_fields_present": true,
+ "required_fields": [
+  "chart.result[0].meta.symbol",
+  "chart.result[0].meta.regularMarketPrice | previousClose"
+ ],
+ "missing_fields": [],
+ "parse_errors": [],
+ "records": [
+  {
+   "file": "AMD.json",
+   "ticker": "AMD",
+   "regularMarketPrice": 102.0,
+   "previousClose": 104.25,
+   "effective_price": 102.0,
+   "price_source": "regularMarketPrice"
+  },
+  {
+   "file": "GOOGL.json",
+   "ticker": "GOOGL",
+   "regularMarketPrice": null,
+   "previousClose": 166.0,
+   "effective_price": 166.0,
+   "price_source": "previousClose"
+  },
+  {
+   "file": "META.json",
+   "ticker": "META",
+   "regularMarketPrice": 0,
+   "previousClose": 590.0,
+   "effective_price": 590.0,
+   "price_source": "previousClose"
+  },
+  {
+   "file": "MSFT.json",
+   "ticker": "MSFT",
+   "regularMarketPrice": 412.0,
+   "previousClose": 409.5,
+   "effective_price": 412.0,
+   "price_source": "regularMarketPrice"
+  },
+  {
+   "file": "NVDA.json",
+   "ticker": "NVDA",
+   "regularMarketPrice": 504.5625,
+   "previousClose": 498.0,
+   "effective_price": 504.5625,
+   "price_source": "regularMarketPrice"
+  }
+ ],
+ "rejects": []
+}

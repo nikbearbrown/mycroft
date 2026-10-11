@@ -1,0 +1,16 @@
+{
+ "workflow": "Portfolio Price Fetcher",
+ "source_paths": [
+  "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Portfolio_Visualization_Agent/Portfolio Price Fetcher.json",
+  "recipes/portfolio-price-fetcher.md"
+ ],
+ "exists": true,
+ "parsed_ok": true,
+ "approval_state": "no approval record: live mode not approved; sample mode only",
+ "checked_at": "2026-10-10T00:00:00+00:00",
+ "node_table_match": true,
+ "portfolio_consistent": true,
+ "fixtures_ok": true,
+ "findings": [],
+ "result": "pass"
+}

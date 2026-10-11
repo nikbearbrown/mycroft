@@ -1,0 +1,16 @@
+{
+ "tool_name": "Calculate Metrics + Aggregate Summary (Python port)",
+ "input_path": "data/verified/portfolio-price-fetcher/clean/validated.json",
+ "output_path": "data/verified/portfolio-price-fetcher/clean/portfolio-summary.json",
+ "action_taken": "computed metrics for 5 holdings and the portfolio summary from verified sample prices",
+ "approval_id": null,
+ "no_write_mode": true,
+ "mode": "sample",
+ "live_handoff": {
+  "node": "Fetch Stock Prices",
+  "type": "n8n-nodes-base.httpRequest",
+  "url_template": "=https://query1.finance.yahoo.com/v8/finance/chart/{{$json.ticker}}",
+  "approved_for_live_action": false,
+  "note": "Sample mode never fetches. A live run needs a logged approval for this call (gate 5) and an ingest script."
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "workflow": "Portfolio Dashboard",
+ "source_paths": [
+  "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Portfolio_Visualization_Agent/Portfolio_Dashboard_code.json",
+  "recipes/portfolio-dashboard.md",
+  "recipes/portfolio-price-fetcher.md"
+ ],
+ "exists": true,
+ "parsed_ok": true,
+ "approval_state": "no approval record: live mode (webhook, sub-workflow call) not approved",
+ "checked_at": "2026-10-10T00:00:00+00:00",
+ "node_table_match": true,
+ "calls_price_fetcher": true,
+ "findings": [
+  "note: 'Call Portfolio Price Fetcher' carries a placeholder workflow id (YOUR_WORKFLOW_1_ID); the link to the Price Fetcher holds by name only"
+ ],
+ "result": "pass"
+}

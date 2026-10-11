@@ -1,3 +1,11 @@
+---
+status: DRAFT
+todos_open: 4
+last_gate: null
+attestation: null
+recipe_version: 0.2.0
+---
+
 # Portfolio Price Fetcher
 
 ## Purpose
@@ -39,7 +47,9 @@ Portfolio Price Fetcher defines a Mycroft pipeline for collecting, transforming,
 ## Steps
 
 1. Step name: Verify provenance. Labor: AI with Human gate.
-   Script called: `scripts/tools/portfolio-price-fetcher-verify-provenance.py` [TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.
+   Script called: `scripts/tools/portfolio-price-fetcher-verify-provenance.py`
+   Closed 2026-10-10 (the script above is built and exercised). Original note, kept for the record: `[TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.`
+   Status: Built and exercised. Input: this recipe (its node table and its declared workflow JSON), that workflow, the sample fixture manifest (a SHA-256 per fixture) and the approval record, if any. Output: the fields below plus node_table_match, portfolio_consistent, fixtures_ok and findings, in `logs/portfolio-price-fetcher-provenance-<date>.json`. Errors: a missing or unparseable workflow, a node-table mismatch, the portfolio defined differently in Define Portfolio and Calculate Metrics, or a fixture changed since the manifest froze it stops the run (exit 1); the record is still written. Evidence: self-test section A.
    Input: declared recipe inputs, prior step outputs, and gate decisions for `portfolio-price-fetcher`.
    Output: workflow, source_paths, exists, parsed_ok, approval_state, checked_at.
    Where output goes: `logs/`
@@ -49,7 +59,9 @@ Portfolio Price Fetcher defines a Mycroft pipeline for collecting, transforming,
    Output: records, source_name, source_type, fetched_at, sample_mode, rejects.
    Where output goes: `data/raw/portfolio-price-fetcher/`
 3. Step name: Validate data shape. Labor: AI with Human gate.
-   Script called: `scripts/gigo/portfolio-price-fetcher-validate-data-shape.py` [TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.
+   Script called: `scripts/gigo/portfolio-price-fetcher-validate-data-shape.py`
+   Closed 2026-10-10 (the script above is built and exercised). Original note, kept for the record: `[TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.`
+   Status: Built and exercised (sample mode: reads a fixture set from `data/raw/portfolio-price-fetcher/sample/` directly, since step 2 is still open). Contract, taken from the Calculate Metrics node: chart.result is non-empty; result[0].meta is an object; meta.symbol is in the workflow's portfolio; the effective price, regularMarketPrice || previousClose with JavaScript truthiness, is a finite number > 0. Output: the fields below plus promoted records and rejects (file, reason), and `validate-audit.md` beside them. Errors: any reject stops the run (exit 1) after every finding is reported. Evidence: self-test section B (clean: 5 promoted; defective: all 5 catalogued defects rejected).
    Input: declared recipe inputs, prior step outputs, and gate decisions for `portfolio-price-fetcher`.
    Output: record_count, required_fields_present, missing_fields, parse_errors, schema_version.
    Where output goes: `data/verified/portfolio-price-fetcher/`
@@ -59,7 +71,9 @@ Portfolio Price Fetcher defines a Mycroft pipeline for collecting, transforming,
    Output: verified_records, record_count, duplicates, rejects, flags, quality_notes.
    Where output goes: `data/verified/portfolio-price-fetcher/`
 5. Step name: Run approved tools. Labor: AI with Human gate.
-   Script called: `scripts/tools/portfolio-price-fetcher-run-approved-tools.py` [TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.
+   Script called: `scripts/tools/portfolio-price-fetcher-run-approved-tools.py`
+   Closed 2026-10-10 (the script above is built and exercised). Original note, kept for the record: `[TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.`
+   Status: Built and exercised (sample mode: reads step 3's promoted records, since step 4 is still open). A Python port of the Calculate Metrics and Aggregate Summary nodes, writing `data/verified/portfolio-price-fetcher/<set>/portfolio-summary.json` in the original's shape; the record below adds the live-call handoff for Fetch Stock Prices with `approved_for_live_action: false`, never executed. Errors: missing input, any step-3 reject, or a ticker outside the portfolio stops the run (exit 1) and writes nothing. Evidence: self-test sections C and D (`scripts/tools/portfolio-price-fetcher-parity-check.py` runs the original JavaScript beside the port: 5/5 holdings and the summary agree).
    Input: declared recipe inputs, prior step outputs, and gate decisions for `portfolio-price-fetcher`.
    Output: tool_name, input_path, output_path, action_taken, approval_id, no_write_mode.
    Where output goes: `logs/`
@@ -183,3 +197,13 @@ Portfolio Price Fetcher defines a Mycroft pipeline for collecting, transforming,
    Input: agent log plus raw and verified outputs.
    Output: markdown report sections: run summary, source inventory, inputs used, validation results, flags, typed TODOs, decision recommendation.
    Where output goes: reports/generated/.
+
+## Notes from porting (2026-10-10)
+
+Details that matter when reading this workflow's numbers. Whether any of them should change is the maintainers' call.
+
+- `regularMarketPrice || previousClose` uses JavaScript truthiness, so a price of exactly 0 falls back to the previous close, as does a missing or null one.
+- `toFixed(2)` rounds the exact binary value with ties away from zero, so a total of 65098.125 shows as 65098.13; Python's default rounding would give 65098.12. The port copies JavaScript.
+- The portfolio (tickers, shares, buy prices) is written out twice, in Define Portfolio and inside Calculate Metrics. Step 1 checks the two agree.
+- `lastUpdatedFormatted` comes from `toLocaleString()`, which depends on the host's locale, so it is excluded from the parity check.
+- Sample mode never fetches prices: every price in `data/raw/portfolio-price-fetcher/sample/` is invented and labelled as such.

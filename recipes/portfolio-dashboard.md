@@ -1,3 +1,11 @@
+---
+status: DRAFT
+todos_open: 7
+last_gate: null
+attestation: null
+recipe_version: 0.2.0
+---
+
 # Portfolio Dashboard
 
 ## Purpose
@@ -38,7 +46,9 @@ Portfolio Dashboard defines a Mycroft pipeline for collecting, transforming, or 
 ## Steps
 
 1. Step name: Verify provenance. Labor: AI with Human gate.
-   Script called: `scripts/tools/portfolio-dashboard-verify-provenance.py` [TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.
+   Script called: `scripts/tools/portfolio-dashboard-verify-provenance.py`
+   Closed 2026-10-10 (the script above is built and exercised). Original note, kept for the record: `[TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.`
+   Status: Built and exercised. Input: this recipe (its node table and its declared workflow JSON), that workflow, and the workflow declared by `recipes/portfolio-price-fetcher.md`, which this one calls. Output: the fields below plus node_table_match, calls_price_fetcher and findings, in `logs/portfolio-dashboard-provenance-<date>.json`. Errors: a missing or unparseable workflow, a node-table mismatch, or a Call Portfolio Price Fetcher node that names another workflow stops the run (exit 1). The node's workflow id is a placeholder (`YOUR_WORKFLOW_1_ID`), so the link holds by name only; this is recorded as a note, not a stop. Evidence: self-test section A.
    Input: declared recipe inputs, prior step outputs, and gate decisions for `portfolio-dashboard`.
    Output: workflow, source_paths, exists, parsed_ok, approval_state, checked_at.
    Where output goes: `logs/`

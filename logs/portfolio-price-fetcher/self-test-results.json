@@ -1,0 +1,115 @@
+{
+ "recipe": "portfolio-price-fetcher",
+ "also_covers": [
+  "portfolio-dashboard step 1"
+ ],
+ "checks": 15,
+ "as_expected": 15,
+ "results": [
+  {
+   "section": "A step 1",
+   "ran": "price fetcher provenance, as declared",
+   "saw": "exit 0",
+   "expected": "exit 0, result pass",
+   "as_expected": true
+  },
+  {
+   "section": "A step 1",
+   "ran": "dashboard provenance, as declared",
+   "saw": "exit 0",
+   "expected": "exit 0; placeholder workflow id recorded as a note",
+   "as_expected": true
+  },
+  {
+   "section": "A step 1 break",
+   "ran": "workflow file missing",
+   "saw": "exit 1",
+   "expected": "exit 1 (stop)",
+   "as_expected": true
+  },
+  {
+   "section": "A step 1 break",
+   "ran": "a workflow node renamed (node table drift)",
+   "saw": "exit 1; - in the workflow but not the recipe's node table: Fetch Prices (renamed) (httpRequest)",
+   "expected": "exit 1, the renamed node named in the findings",
+   "as_expected": true
+  },
+  {
+   "section": "A step 1 break",
+   "ran": "the two portfolio definitions disagree (NVDA shares 50 vs 55)",
+   "saw": "exit 1",
+   "expected": "exit 1, portfolio_consistent false",
+   "as_expected": true
+  },
+  {
+   "section": "A step 1 break",
+   "ran": "a fixture edited after the manifest froze it",
+   "saw": "exit 1",
+   "expected": "exit 1, the fixture named",
+   "as_expected": true
+  },
+  {
+   "section": "A step 1 break",
+   "ran": "dashboard calls a different workflow by name",
+   "saw": "exit 1",
+   "expected": "exit 1, calls_price_fetcher false",
+   "as_expected": true
+  },
+  {
+   "section": "B step 3",
+   "ran": "clean set",
+   "saw": "exit 0; 5 promoted, 0 rejected",
+   "expected": "exit 0; 5 promoted, 0 rejected",
+   "as_expected": true
+  },
+  {
+   "section": "B step 3",
+   "ran": "price fallback (JavaScript ||)",
+   "saw": "previousClose used for ['GOOGL', 'META']",
+   "expected": "GOOGL (null) and META (0) fall back",
+   "as_expected": true
+  },
+  {
+   "section": "B step 3",
+   "ran": "defective set: every catalogued defect",
+   "saw": "exit 1; caught 5/5",
+   "expected": "exit 1; every defect in the manifest rejected, none promoted",
+   "as_expected": true
+  },
+  {
+   "section": "C step 5",
+   "ran": "refuses a set step 3 rejected",
+   "saw": "exit 1",
+   "expected": "exit 1, nothing written",
+   "as_expected": true
+  },
+  {
+   "section": "C step 5",
+   "ran": "clean set",
+   "saw": "exit 0; total 65098.13",
+   "expected": "exit 0; 65098.125 rounds to 65098.13 as toFixed does (Python's default gives .12)",
+   "as_expected": true
+  },
+  {
+   "section": "D parity",
+   "ran": "port vs the original JavaScript, clean set",
+   "saw": "parity pass: 5/5 holdings and the summary agree with the original JavaScript (excluded: lastUpdatedFormatted)",
+   "expected": "exit 0; every holding and the summary agree",
+   "as_expected": true
+  },
+  {
+   "section": "D parity break",
+   "ran": "a port that rounds like Python, not JavaScript",
+   "saw": "broken port ran: True; - summary.totalGainLoss: original '11298.13', port '11298.12'",
+   "expected": "the broken port runs, then parity exits 1 naming the totalCurrentValue difference",
+   "as_expected": true
+  },
+  {
+   "section": "E rerun",
+   "ran": "steps 3 and 5 run again",
+   "saw": "byte-identical",
+   "expected": "byte-identical outputs",
+   "as_expected": true
+  }
+ ]
+}
