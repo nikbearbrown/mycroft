@@ -1,0 +1,46 @@
+{
+ "recipe": "portfolio-price-fetcher",
+ "fixture_set": "defective",
+ "schema_version": "yahoo-chart-meta/1 (fields read by the workflow's Calculate Metrics node)",
+ "record_count": 5,
+ "promoted_count": 0,
+ "rejected_count": 5,
+ "required_fields_present": false,
+ "required_fields": [
+  "chart.result[0].meta.symbol",
+  "chart.result[0].meta.regularMarketPrice | previousClose"
+ ],
+ "missing_fields": [
+  "chart.result[0]",
+  "chart.result[0].meta.regularMarketPrice | previousClose"
+ ],
+ "parse_errors": [
+  {
+   "file": "truncated-json.txt",
+   "error": "Invalid control character at: line 1 column 65 (char 64)"
+  }
+ ],
+ "records": [],
+ "rejects": [
+  {
+   "file": "empty-result.json",
+   "reason": "chart.result is missing or empty (the original reads result[0])"
+  },
+  {
+   "file": "no-price.json",
+   "reason": "neither regularMarketPrice nor previousClose is present"
+  },
+  {
+   "file": "price-not-a-number.json",
+   "reason": "effective price 'abc' is not a finite number > 0"
+  },
+  {
+   "file": "truncated-json.txt",
+   "reason": "the response is not valid JSON"
+  },
+  {
+   "file": "unknown-ticker.json",
+   "reason": "meta.symbol 'ZZZZ' is not in the workflow's portfolio"
+  }
+ ]
+}

@@ -1,0 +1,8 @@
+{
+ "recipe": "portfolio-price-fetcher",
+ "mode": "sample",
+ "fixture_set": "clean",
+ "as_of": "2026-10-10T00:00:00Z",
+ "live_calls_approved": false,
+ "note": "Sample mode: prices come from the frozen fixtures in sample/, never from Yahoo Finance. as_of fixes the summary's timestamp so reruns are byte-identical."
+}

@@ -601,3 +601,25 @@ workflow changes.
 - **Open issues:**
   - [OPEN] Live mode: the four preconditions in the gate-5 record (needs live data access and a new decision by a named human).
   - [NOT COVERED] Live behaviour, LLM output, and live failure modes.
+
+## 2026-10-10 -- portfolio-price-fetcher + portfolio-dashboard: four [TODO: DEV] closures (provenance, data shape, the calculation port), sample mode
+
+- **Recipes:** `recipes/portfolio-price-fetcher.md` and `recipes/portfolio-dashboard.md` (the Portfolio Visualization Agent; the dashboard calls the price fetcher). Both now carry status frontmatter: `status: DRAFT`, v0.2.0; `todos_open` 4 and 7.
+- **Closed (each with its script, a status line and evidence in the recipe):**
+  - price fetcher step 1 `scripts/tools/portfolio-price-fetcher-verify-provenance.py`; step 3 `scripts/gigo/portfolio-price-fetcher-validate-data-shape.py`; step 5 `scripts/tools/portfolio-price-fetcher-run-approved-tools.py` (a Python port of Calculate Metrics and Aggregate Summary)
+  - dashboard step 1 `scripts/tools/portfolio-dashboard-verify-provenance.py`
+- **Inputs:** each recipe's declared workflow JSON (read as the named source file the recipe declares); a frozen sample corpus `data/raw/portfolio-price-fetcher/sample/` (5 clean responses for the workflow's own tickers, 5 catalogued defects, SHA-256 manifest; every price invented and labelled); `data/raw/portfolio-price-fetcher/run-envelope.json` (mode sample).
+- **Outputs:** `logs/portfolio-price-fetcher-provenance-2026-10-10.json`, `logs/portfolio-dashboard-provenance-2026-10-10.json`, `data/verified/portfolio-price-fetcher/{clean,defective}/validated.json` + `validate-audit.md`, `data/verified/portfolio-price-fetcher/clean/portfolio-summary.json`, `logs/portfolio-price-fetcher-run-approved-tools-2026-10-10.json`, `logs/portfolio-price-fetcher/self-test-results.{json,md}`.
+- **Commands:**
+  - provenance: price fetcher exit 0 (node table matches, both portfolio definitions agree, fixtures intact); dashboard exit 0 (calls the Price Fetcher by name; placeholder workflow id noted)
+  - step 3: clean exit 0 (5 promoted); defective exit 1 by design (5/5 catalogued defects rejected)
+  - step 5: clean exit 0 (total 65098.13); defective refused (exit 1, nothing written)
+  - `python3 scripts/tools/portfolio-price-fetcher-parity-check.py`: exit 0, 5/5 holdings and the summary agree with the original JavaScript (excluded: lastUpdatedFormatted, host-locale dependent)
+  - `python3 scripts/tools/portfolio-price-fetcher-self-test.py`: exit 0, 15/15 checks as expected, including 7 deliberate breaks
+  - `node scripts/conformance.mjs`: all conform; `node scripts/manifest-check.mjs`: passed
+- **Fixed while building:** the port first wrote `lastUpdated` as `...00Z`; JavaScript's `toISOString()` writes `...00.000Z`. Caught by the parity check, fixed in the port.
+- **Unchanged:** the four generated per-node scripts for these recipes (`scripts/ingest/portfolio-price-fetcher-fetch-stock-prices.py`, `scripts/tools/portfolio-price-fetcher-calculate-metrics.py`, `scripts/tools/portfolio-dashboard-call-portfolio-price-fetcher.py`, `scripts/tools/portfolio-dashboard-webhook.py`), byte-identical.
+- **Open issues:**
+  - [OPEN] Price fetcher steps 2, 4, 6 and the report-script mapping; dashboard steps 2-6 and its two script mappings: still `[TODO: DEV]`.
+  - [OPEN] Live mode: no approval record; Yahoo Finance is never called (the handoff is recorded with `approved_for_live_action: false`).
+  - [NOT COVERED] Real market data, live behaviour, and the dashboard's HTML generation.

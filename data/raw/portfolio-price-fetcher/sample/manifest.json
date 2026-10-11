@@ -1,0 +1,61 @@
+{
+ "recipe": "portfolio-price-fetcher",
+ "note": "Invented price for a Mycroft sample run. Not market data.",
+ "files": {
+  "clean/AMD.json": {
+   "sha256": "532888a5c92e46f5e3157d64bd22d717fd439656d598ed72a7eec41b1932ec2f",
+   "set": "clean",
+   "exercises": "loss"
+  },
+  "clean/GOOGL.json": {
+   "sha256": "dbc623c1b7a48f8146ecd89f276bd4e085b9bdcb6400d3709c60de61f6e83eea",
+   "set": "clean",
+   "exercises": "regularMarketPrice null: falls back to previousClose"
+  },
+  "clean/META.json": {
+   "sha256": "aa1eaca6a1807c30524a99f354eeb8316b211ac7e631317426bcf073bda33914",
+   "set": "clean",
+   "exercises": "regularMarketPrice 0: JavaScript || treats 0 as missing, falls back"
+  },
+  "clean/MSFT.json": {
+   "sha256": "d51610de8e6b5c9af01087bef3632d9e8aac96adcaacd3109df017770779b5c9",
+   "set": "clean",
+   "exercises": "gain"
+  },
+  "clean/NVDA.json": {
+   "sha256": "2633560d6573501e8f6d89aece824be75fe5954dec51b6ce0e710283f2ed294c",
+   "set": "clean",
+   "exercises": "gain; total-value rounding tie (.125)"
+  },
+  "defective/empty-result.json": {
+   "sha256": "d901b4ecddfa9968d0e20d53fa3c390c9abb27dfe45ac8e8e17d03b2c49bd405",
+   "set": "defective",
+   "defect": "chart.result is empty (the original throws reading result[0].meta)",
+   "must_be_caught_by": "step 3"
+  },
+  "defective/no-price.json": {
+   "sha256": "e528c9c8e05616cb1e16e17ffd750020f797934b0dd2b0f3e137ee61a53b215c",
+   "set": "defective",
+   "defect": "neither regularMarketPrice nor previousClose (the original would produce NaN values)",
+   "must_be_caught_by": "step 3"
+  },
+  "defective/price-not-a-number.json": {
+   "sha256": "7e8d4775700c5e19a14d8d830878bc225f9de82f82e21f86b56f8a3538a073da",
+   "set": "defective",
+   "defect": "regularMarketPrice is a string (the original would produce NaN values)",
+   "must_be_caught_by": "step 3"
+  },
+  "defective/truncated-json.txt": {
+   "sha256": "a4d43096c6ca27cac756450b9f9b1c581d892933aebaca2e10bfb7cd0f9f5926",
+   "set": "defective",
+   "defect": "the response is not valid JSON",
+   "must_be_caught_by": "step 3"
+  },
+  "defective/unknown-ticker.json": {
+   "sha256": "a949da2ddade533a115cfd82f6a392e4d76056eb083df8e2146dcd64738679cc",
+   "set": "defective",
+   "defect": "symbol not in the workflow's portfolio (the original throws on undefined shares)",
+   "must_be_caught_by": "step 3"
+  }
+ }
+}

@@ -1,0 +1,63 @@
+{
+ "stocks": [
+  {
+   "ticker": "NVDA",
+   "shares": 50,
+   "buyPrice": 450,
+   "currentPrice": 504.5625,
+   "currentValue": 25228.125,
+   "costBasis": 22500,
+   "gainLoss": 2728.125,
+   "gainLossPct": "12.13"
+  },
+  {
+   "ticker": "MSFT",
+   "shares": 30,
+   "buyPrice": 350,
+   "currentPrice": 412,
+   "currentValue": 12360,
+   "costBasis": 10500,
+   "gainLoss": 1860,
+   "gainLossPct": "17.71"
+  },
+  {
+   "ticker": "GOOGL",
+   "shares": 40,
+   "buyPrice": 140,
+   "currentPrice": 166,
+   "currentValue": 6640,
+   "costBasis": 5600,
+   "gainLoss": 1040,
+   "gainLossPct": "18.57"
+  },
+  {
+   "ticker": "META",
+   "shares": 25,
+   "buyPrice": 320,
+   "currentPrice": 590,
+   "currentValue": 14750,
+   "costBasis": 8000,
+   "gainLoss": 6750,
+   "gainLossPct": "84.38"
+  },
+  {
+   "ticker": "AMD",
+   "shares": 60,
+   "buyPrice": 120,
+   "currentPrice": 102,
+   "currentValue": 6120,
+   "costBasis": 7200,
+   "gainLoss": -1080,
+   "gainLossPct": "-15.00"
+  }
+ ],
+ "summary": {
+  "totalStocks": 5,
+  "totalCurrentValue": "65098.13",
+  "totalCostBasis": "53800.00",
+  "totalGainLoss": "11298.13",
+  "totalReturn": "21.00",
+  "lastUpdated": "2026-10-10T00:00:00.000Z",
+  "lastUpdatedFormatted": "10/10/2026, 12:00:00 AM"
+ }
+}
