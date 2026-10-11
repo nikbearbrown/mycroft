@@ -623,3 +623,7 @@ workflow changes.
   - [OPEN] Price fetcher steps 2, 4, 6 and the report-script mapping; dashboard steps 2-6 and its two script mappings: still `[TODO: DEV]`.
   - [OPEN] Live mode: no approval record; Yahoo Finance is never called (the handoff is recorded with `approved_for_live_action: false`).
   - [NOT COVERED] Real market data, live behaviour, and the dashboard's HTML generation.
+
+## 2026-10-10 -- portfolio-price-fetcher: run instructions added
+
+- **Artifact:** `logs/portfolio-price-fetcher/README.md`, covering how to run the closed steps of `recipes/portfolio-price-fetcher.md` and `recipes/portfolio-dashboard.md` (commands, stop conditions, outputs, the sample corpus, what is not covered). Documentation only; no script or data changed.
