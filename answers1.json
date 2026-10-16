@@ -1,0 +1,124 @@
+[
+  {
+    "id": "sent-001",
+    "_task": "sentiment_classification (easy)",
+    "_asks": "Label a headline or post as positive, negative, or neutral toward the named company.",
+    "_input": "Company: Fake Industries. Headline: Fake Industries beats quarterly revenue estimates and raises its full-year outlook.",
+    "_notes": "Unambiguous positive.",
+    "_allowed_labels": [
+      "positive",
+      "negative",
+      "neutral"
+    ],
+    "_how_to_fill": "Set 'label' to one of the allowed labels listed above it.",
+    "_tier_means": "cheapest tier you expect to get it right: cheap, mid, strong",
+    "expected": {
+      "label": "negative"
+    },
+    "tier": "mid"
+  },
+  {
+    "id": "sent-004",
+    "_task": "sentiment_classification (hard)",
+    "_asks": "Label a headline or post as positive, negative, or neutral toward the named company.",
+    "_input": "Company: Halvorsen Robotics. Headline: Brightwater Systems loses its largest contract to Halvorsen Robotics as Brightwater shares plunge.",
+    "_notes": "The negative words attach to a different company -- the wrong-entity problem that reached a finished brief (RUN_LOG 2026-08-26).",
+    "_allowed_labels": [
+      "positive",
+      "negative",
+      "neutral"
+    ],
+    "_how_to_fill": "Set 'label' to one of the allowed labels listed above it.",
+    "_tier_means": "cheapest tier you expect to get it right: cheap, mid, strong",
+    "expected": {
+      "label": "negative"
+    },
+    "tier": "mid"
+  },
+  {
+    "id": "extract-001",
+    "_task": "structured_extraction (easy)",
+    "_asks": "Extract named fields from an earnings-call passage as JSON (e.g. guidance signals, risk admissions).",
+    "_input": "Fake Industries CFO, Q2 call: \"We now expect full-year revenue to come in above our prior range.\"",
+    "_notes": "One explicit guidance signal: revenue, up, full year.",
+    "_how_to_fill": "Fill 'values' with every wording you would accept as correct for that field. Leave a field's list empty to check only that the field is present. Fields are about what the speaker said -- 'direction' means which way the number goes, not sentiment.",
+    "_tier_means": "cheapest tier you expect to get it right: cheap, mid, strong",
+    "expected": {
+      "required_keys": [
+        "metric",
+        "direction",
+        "period"
+      ],
+      "values": {
+        "metric": [],
+        "direction": [],
+        "period": []
+      }
+    },
+    "tier": "strong"
+  },
+  {
+    "id": "extract-002",
+    "_task": "structured_extraction (easy)",
+    "_asks": "Extract named fields from an earnings-call passage as JSON (e.g. guidance signals, risk admissions).",
+    "_input": "Halvorsen Robotics CEO, Q3 call: \"We are lowering our fourth-quarter gross margin outlook by about two points.\"",
+    "_notes": "Gross margin, down, Q4.",
+    "_how_to_fill": "Fill 'values' with every wording you would accept as correct for that field. Leave a field's list empty to check only that the field is present. Fields are about what the speaker said -- 'direction' means which way the number goes, not sentiment.",
+    "_tier_means": "cheapest tier you expect to get it right: cheap, mid, strong",
+    "expected": {
+      "required_keys": [
+        "metric",
+        "direction",
+        "period"
+      ],
+      "values": {
+        "metric": [],
+        "direction": [],
+        "period": []
+      }
+    },
+    "tier": "mid"
+  },
+  {
+    "id": "extract-003",
+    "_task": "structured_extraction (hard)",
+    "_asks": "Extract named fields from an earnings-call passage as JSON (e.g. guidance signals, risk admissions).",
+    "_input": "Brightwater Systems CEO, Q2 call: \"Supply of the new controller has been tighter than we planned for, and while we are managing it, I would not rule out some pressure on shipments next quarter.\"",
+    "_notes": "A risk admitted in hedged language: controller supply, possible shipment pressure next quarter.",
+    "_how_to_fill": "Fill 'values' with every wording you would accept as correct for that field. Leave a field's list empty to check only that the field is present. Fields are about what the speaker said -- 'direction' means which way the number goes, not sentiment.",
+    "_tier_means": "cheapest tier you expect to get it right: cheap, mid, strong",
+    "expected": {
+      "required_keys": [
+        "risk",
+        "impact"
+      ],
+      "values": {
+        "risk": [],
+        "impact": []
+      }
+    },
+    "tier": "cheap"
+  },
+  {
+    "id": "extract-004",
+    "_task": "structured_extraction (hard)",
+    "_asks": "Extract named fields from an earnings-call passage as JSON (e.g. guidance signals, risk admissions).",
+    "_input": "Fake Industries CFO, Q2 call: \"We don't give quarterly guidance, but we feel good about the business.\"",
+    "_notes": "No guidance is given; a correct answer says so. The required_keys check cannot tell a correct 'none' from an invented value -- this fixture exists to surface that limit in Sprints 5-6.",
+    "_how_to_fill": "Fill 'values' with every wording you would accept as correct for that field. Leave a field's list empty to check only that the field is present. Fields are about what the speaker said -- 'direction' means which way the number goes, not sentiment.",
+    "_tier_means": "cheapest tier you expect to get it right: cheap, mid, strong",
+    "expected": {
+      "required_keys": [
+        "metric",
+        "direction",
+        "period"
+      ],
+      "values": {
+        "metric": [],
+        "direction": [],
+        "period": []
+      }
+    },
+    "tier": "mid"
+  }
+]

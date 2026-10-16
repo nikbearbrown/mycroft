@@ -1,0 +1,430 @@
+{
+  "run_id": "2026-09-24T134356",
+  "run_on": "2026-09-24",
+  "policy_version": "0.2.0",
+  "tiers_version": "0.4.0",
+  "prices_version": "2026-09-17",
+  "fixtures_frozen_on": "2026-09-24",
+  "a_tier": "cheap",
+  "b_tier": "mid",
+  "judge_tier": "strong",
+  "judge_max_tokens": 256,
+  "summary": {
+    "comparisons": 8,
+    "counts": {
+      "a": 0,
+      "b": 1,
+      "inconsistent": 2,
+      "tie": 5,
+      "unparsed": 0
+    },
+    "decided": 6,
+    "cost_usd": 0.003426,
+    "kind": "model_judgment",
+    "note": "verdicts are model judgments, not ground truth; Sprint 6 measures how far they agree with a human"
+  },
+  "answers_cost_usd": 0.0015660749999999999,
+  "skipped": [],
+  "rows": [
+    {
+      "id": "rag-001",
+      "task_type": "rag_answer",
+      "difficulty": "easy",
+      "a": {
+        "tier": "cheap",
+        "text": "A dividend is a payment a company makes to its shareholders, usually in cash, out of its profits. [0]",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 3.735e-05,
+        "latency_ms": 417,
+        "request_id": "704da63ffc504195bdb5fc91a55c6705"
+      },
+      "b": {
+        "tier": "mid",
+        "text": "A dividend is a payment that a company makes to its shareholders, usually in cash, out of its profits. \u30100\u3011",
+        "passed_check": false,
+        "check_reason": "no_citation",
+        "cost_usd": 6.33e-05,
+        "latency_ms": 304,
+        "request_id": "018440ae27e94f9696f58fc3fac1d6cb"
+      },
+      "answers_cost_usd": 0.00010065,
+      "fixture_id": "rag-001",
+      "a_label": "cheap",
+      "b_label": "mid",
+      "result": "inconsistent",
+      "votes": [
+        {
+          "order": "ab",
+          "verdict": "a",
+          "raw": "FIRST",
+          "request_id": "dc5c5378f1824dd982a65c099e48a4f2",
+          "cost_usd": 0.0001832,
+          "latency_ms": 199
+        },
+        {
+          "order": "ba",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "f21d203cfe564484970e99f31f6383a4",
+          "cost_usd": 0.0001872,
+          "latency_ms": 356
+        }
+      ],
+      "cost_usd": 0.0003704,
+      "judged_by": "qwen/qwen3.8-27b",
+      "judged_at": "2026-09-24T17:43:57.888652+00:00",
+      "kind": "model_judgment"
+    },
+    {
+      "id": "rag-002",
+      "task_type": "rag_answer",
+      "difficulty": "easy",
+      "a": {
+        "tier": "cheap",
+        "text": "A bond\u2019s coupon rate is the annual interest it pays, stated as a percentage of its face value. [1]",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 4.4924999999999994e-05,
+        "latency_ms": 301,
+        "request_id": "538d286836f44353850e6a5750d1e473"
+      },
+      "b": {
+        "tier": "mid",
+        "text": "A bond\u2019s coupon rate is the annual interest the bond pays, expressed as a percentage of the bond\u2019s face (or principal) value.\u202f[1]",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 8.865e-05,
+        "latency_ms": 569,
+        "request_id": "0ebae6ca85264d399a6eac764ea2dd37"
+      },
+      "answers_cost_usd": 0.00013357499999999998,
+      "fixture_id": "rag-002",
+      "a_label": "cheap",
+      "b_label": "mid",
+      "result": "inconsistent",
+      "votes": [
+        {
+          "order": "ab",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "367019d5d81a4456aaaf7ecce6f178e5",
+          "cost_usd": 0.0001976,
+          "latency_ms": 234
+        },
+        {
+          "order": "ba",
+          "verdict": "a",
+          "raw": "SECOND",
+          "request_id": "9878a670291842bf94f77ca6f1b54adc",
+          "cost_usd": 0.00019360000000000002,
+          "latency_ms": 392
+        }
+      ],
+      "cost_usd": 0.0003912,
+      "judged_by": "qwen/qwen3.8-27b",
+      "judged_at": "2026-09-24T17:44:34.388149+00:00",
+      "kind": "model_judgment"
+    },
+    {
+      "id": "rag-003",
+      "task_type": "rag_answer",
+      "difficulty": "hard",
+      "a": {
+        "tier": "cheap",
+        "text": "No. A higher P/E ratio does not automatically indicate a better stock \u2013 it could simply reflect expectations of strong future growth or it could signal that the stock is overvalued, and on its own it says neither is true.\u30101\u3011",
+        "passed_check": false,
+        "check_reason": "no_citation",
+        "cost_usd": 5.264999999999999e-05,
+        "latency_ms": 236,
+        "request_id": "bc9ca34718814653809b32bf4ca601f6"
+      },
+      "b": {
+        "tier": "mid",
+        "text": "No. A higher price\u2011to\u2011earnings ratio is not automatically better. While a high P/E can reflect investors\u2019 expectations of strong future growth, it can also simply mean the stock is overvalued, and on its own it does not tell you which is the case\u30101\u3011. The P/E ratio is just the share price divided by earnings per share\u30100\u3011, so a larger number does not guarantee a better investment.",
+        "passed_check": false,
+        "check_reason": "no_citation",
+        "cost_usd": 0.00013829999999999997,
+        "latency_ms": 722,
+        "request_id": "e68dee1980324804b6a9714968b49d8a"
+      },
+      "answers_cost_usd": 0.00019094999999999995,
+      "fixture_id": "rag-003",
+      "a_label": "cheap",
+      "b_label": "mid",
+      "result": "b",
+      "votes": [
+        {
+          "order": "ab",
+          "verdict": "b",
+          "raw": "SECOND",
+          "request_id": "a7f579348b424bc69711457b1dfc13de",
+          "cost_usd": 0.0002672,
+          "latency_ms": 202
+        },
+        {
+          "order": "ba",
+          "verdict": "b",
+          "raw": "FIRST",
+          "request_id": "26f2e73cd7d54b0fa1e4489c479c7378",
+          "cost_usd": 0.0002672,
+          "latency_ms": 220
+        }
+      ],
+      "cost_usd": 0.0005344,
+      "judged_by": "qwen/qwen3.8-27b",
+      "judged_at": "2026-09-24T17:45:10.774046+00:00",
+      "kind": "model_judgment"
+    },
+    {
+      "id": "rag-004",
+      "task_type": "rag_answer",
+      "difficulty": "hard",
+      "a": {
+        "tier": "cheap",
+        "text": "When market interest rates rise, the price of an existing bond falls so that its yield aligns with newly issued bonds. [1]",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 3.9675e-05,
+        "latency_ms": 445,
+        "request_id": "e17622090d70473999bc94c5b81ce292"
+      },
+      "b": {
+        "tier": "mid",
+        "text": "When market interest rates rise, the prices of existing bonds fall so that their yields align with newly issued bonds.\u202f[1]",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 8.534999999999999e-05,
+        "latency_ms": 305,
+        "request_id": "ba530ebe1cd141b581cc3699a335ca21"
+      },
+      "answers_cost_usd": 0.000125025,
+      "fixture_id": "rag-004",
+      "a_label": "cheap",
+      "b_label": "mid",
+      "result": "tie",
+      "votes": [
+        {
+          "order": "ab",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "8667feb845214e06906eeb5f431ffeb2",
+          "cost_usd": 0.00019360000000000002,
+          "latency_ms": 483
+        },
+        {
+          "order": "ba",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "5ea4738339374acc8bba4ece10e52eb5",
+          "cost_usd": 0.00019360000000000002,
+          "latency_ms": 214
+        }
+      ],
+      "cost_usd": 0.00038720000000000003,
+      "judged_by": "qwen/qwen3.8-27b",
+      "judged_at": "2026-09-24T17:45:47.225447+00:00",
+      "kind": "model_judgment"
+    },
+    {
+      "id": "summ-001",
+      "task_type": "summarization",
+      "difficulty": "easy",
+      "a": {
+        "tier": "cheap",
+        "text": "Fake Industries reported Q2 revenue of $412 million, up 9% year over year, and an operating margin of 18%. The company repurchased $50 million of stock and left full\u2011year guidance unchanged.",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 6.2925e-05,
+        "latency_ms": 353,
+        "request_id": "49344b0e838248349768cdea7e5953ad"
+      },
+      "b": {
+        "tier": "mid",
+        "text": "Fake Industries reported Q2 revenue of $412\u202fmillion, a 9% increase year over year. The operating margin was 18% and the company repurchased $50\u202fmillion of stock while leaving its full\u2011year guidance unchanged.",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 0.00019365,
+        "latency_ms": 990,
+        "request_id": "79f87156c93341c0a3a83d98137f3eab"
+      },
+      "answers_cost_usd": 0.000256575,
+      "fixture_id": "summ-001",
+      "a_label": "cheap",
+      "b_label": "mid",
+      "result": "tie",
+      "votes": [
+        {
+          "order": "ab",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "87259e06d01a4386924356fd1b1f2454",
+          "cost_usd": 0.00022400000000000002,
+          "latency_ms": 239
+        },
+        {
+          "order": "ba",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "b79b66c7904b4324a4f70fb98401c7c9",
+          "cost_usd": 0.00022400000000000002,
+          "latency_ms": 4398
+        }
+      ],
+      "cost_usd": 0.00044800000000000005,
+      "judged_by": "qwen/qwen3.8-27b",
+      "judged_at": "2026-09-24T17:46:28.210058+00:00",
+      "kind": "model_judgment"
+    },
+    {
+      "id": "summ-002",
+      "task_type": "summarization",
+      "difficulty": "easy",
+      "a": {
+        "tier": "cheap",
+        "text": "Halvorsen Robotics reported Q3 revenue fell 4% to $96 million as unit shipments dropped to 1,200. The company ended the quarter with $210 million in cash and no debt.",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 0.00010282499999999998,
+        "latency_ms": 698,
+        "request_id": "8e2c1b5d548149618eced8be026f8227"
+      },
+      "b": {
+        "tier": "mid",
+        "text": "Halvorsen Robotics reported Q3 revenue fell 4% to $96\u202fmillion while unit shipments dropped to 1,200. The company ended the quarter with $210\u202fmillion in cash and no debt.",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 0.00017504999999999997,
+        "latency_ms": 831,
+        "request_id": "0b2c264ba005482e96e8913cb3badbb1"
+      },
+      "answers_cost_usd": 0.00027787499999999996,
+      "fixture_id": "summ-002",
+      "a_label": "cheap",
+      "b_label": "mid",
+      "result": "tie",
+      "votes": [
+        {
+          "order": "ab",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "3eaabce6d4d745e9b577a32eeb81243e",
+          "cost_usd": 0.00022,
+          "latency_ms": 136
+        },
+        {
+          "order": "ba",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "1b77f1cbd2a042bb8c413a88de4847bb",
+          "cost_usd": 0.00022,
+          "latency_ms": 122
+        }
+      ],
+      "cost_usd": 0.00044,
+      "judged_by": "qwen/qwen3.8-27b",
+      "judged_at": "2026-09-24T17:47:05.000724+00:00",
+      "kind": "model_judgment"
+    },
+    {
+      "id": "summ-003",
+      "task_type": "summarization",
+      "difficulty": "hard",
+      "a": {
+        "tier": "cheap",
+        "text": "Brightwater Systems reported Q2 revenue of $1.15 billion. The company restated prior\u2011quarter revenue from $1.20 billion to $1.12 billion. Gross margin was 41%.",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 6.592499999999999e-05,
+        "latency_ms": 293,
+        "request_id": "7e0dddea33c341c18deea125cb828b15"
+      },
+      "b": {
+        "tier": "mid",
+        "text": "Brightwater Systems reported Q2 revenue of $1.15\u202fbillion. The company restated the prior\u2011quarter revenue from $1.20\u202fbillion to $1.12\u202fbillion and posted a gross margin of 41%.",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 0.00017744999999999998,
+        "latency_ms": 654,
+        "request_id": "5d845fe5d7b84d80aeb41ce0659efbef"
+      },
+      "answers_cost_usd": 0.00024337499999999997,
+      "fixture_id": "summ-003",
+      "a_label": "cheap",
+      "b_label": "mid",
+      "result": "tie",
+      "votes": [
+        {
+          "order": "ab",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "5037b96c49f74c5aa80114768b3804e8",
+          "cost_usd": 0.00022720000000000002,
+          "latency_ms": 165
+        },
+        {
+          "order": "ba",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "fb406f79563741f7abea1a492b759141",
+          "cost_usd": 0.00022720000000000002,
+          "latency_ms": 187
+        }
+      ],
+      "cost_usd": 0.00045440000000000004,
+      "judged_by": "qwen/qwen3.8-27b",
+      "judged_at": "2026-09-24T17:47:41.305988+00:00",
+      "kind": "model_judgment"
+    },
+    {
+      "id": "summ-004",
+      "task_type": "summarization",
+      "difficulty": "hard",
+      "a": {
+        "tier": "cheap",
+        "text": "Operating margin expanded 150 basis points to 19.5%.  \nFree cash flow rose to $88 million from $61 million a year earlier.",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 6.675e-05,
+        "latency_ms": 369,
+        "request_id": "42129698c1d54e459686b6a2848cb051"
+      },
+      "b": {
+        "tier": "mid",
+        "text": "Fake Industries reported that its operating margin expanded 150 basis points to 19.5% in Q3. Free cash flow rose to $88 million, up from $61 million a year earlier.",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 0.0001713,
+        "latency_ms": 1030,
+        "request_id": "168d3b43bac04bc9a9c66e6041d62017"
+      },
+      "answers_cost_usd": 0.00023804999999999999,
+      "fixture_id": "summ-004",
+      "a_label": "cheap",
+      "b_label": "mid",
+      "result": "tie",
+      "votes": [
+        {
+          "order": "ab",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "e4395b390fad4b569abc83b1d4e112ab",
+          "cost_usd": 0.00019999999999999998,
+          "latency_ms": 173
+        },
+        {
+          "order": "ba",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "e7166a8537114d6e905c16587da0910b",
+          "cost_usd": 0.00019999999999999998,
+          "latency_ms": 213
+        }
+      ],
+      "cost_usd": 0.00039999999999999996,
+      "judged_by": "qwen/qwen3.8-27b",
+      "judged_at": "2026-09-24T17:48:18.094284+00:00",
+      "kind": "model_judgment"
+    }
+  ]
+}

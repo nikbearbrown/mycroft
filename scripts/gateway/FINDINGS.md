@@ -241,3 +241,268 @@ of the model, which answered fine at 896.
   than predicted, and cost is reported as a spread. At the strong tier's
   current cap that is roughly one call per minute.
 - Sprint 8 must compare cost per *useful answer*, not per token.
+
+## 9. What the first judged run showed
+
+Three runs on 2026-09-24 -- a 2-fixture smoke (13:29), the full 8 (13:43), and
+a 4-fixture re-run after the validator fix (14:00). 14 comparisons, 28 judging
+calls, on `summarization` and `rag_answer` only: the tasks where no answer key
+can exist. cheap wrote answer A, mid wrote answer B, strong judged, each pair
+both ways round.
+
+| result | count |
+|---|---|
+| tie | 10 |
+| mid won | 1 |
+| cheap won | 0 |
+| inconsistent (verdict flipped when the answers swapped) | 3 |
+| unparsed | 0 |
+
+**Judging costs more than answering.** An answer cost $0.000086 on average; a
+comparison cost $0.000420 in judging -- 2.4x the cost of producing the two
+answers it compares, plus two strong-tier calls of latency. That ratio is the
+argument for keeping the judge offline, and it is why a "route by judged
+quality" design would be more expensive than always using the strong model.
+
+**Three of 28 answers failed their check over a bracket glyph.** The mid tier
+wrote its citation as 【0】 rather than [0], and `cites_context` saw no
+citation at all. The answers were correct and cited the right passage. In the
+request path each one is an escalation to a dearer tier bought by punctuation
+-- the same class of defect as the `verdict_with_quote` false alarms in
+section 7, found the same way: by reading what the models actually wrote.
+`cites_context` now translates fullwidth brackets before matching, and the
+out-of-range check is unchanged, so widening what counts as a bracket did not
+widen what counts as a valid passage.
+
+**The judge's disagreements are about degree, not direction.** All three
+inconsistent results were `tie` one way round and a winner the other. Not once
+did it pick A in one order and B in the other. And all 28 replies were a bare
+FIRST / SECOND / TIE at a 256-token budget -- nothing unparseable, no
+reasoning leaking into the verdict.
+
+**The same pair judged twice does not give the same verdict.** rag-001 came
+back `tie` at 13:29 and `inconsistent` at 13:43 and 14:00. rag-003 came back
+`b` at 13:43 and `tie` at 14:00. The models rewrite their answers each run, so
+a single sweep is one sample, not a measurement.
+
+**On open prose, mid bought nothing measurable over cheap.** Ten ties, one mid
+win, no cheap win. Read this as a hypothesis with evidence behind it, not a
+result: the verdicts are model judgments no human has checked yet, the sample
+is 8 fixtures, and the answers are one or two sentences long. Sprint 6 is what
+decides whether these verdicts can be quoted at all.
+
+### Consequences
+
+- The judge never runs in the request path, and no routing decision reads a
+  verdict. It costs more than the work it grades.
+- Sprint 6 must hand-score these same pairs blind and measure agreement. Until
+  then, no quality number from the judge belongs in a report.
+- Sprint 7 needs several runs per fixture, not one: the answers, and therefore
+  the verdicts, change between runs.
+- A check that rejects a correct answer over formatting is a cost bug, not a
+  cosmetic one. Both found so far (quote spans, citation brackets) were
+  invisible until someone read the raw answers.
+
+## 10. What the scorer check showed
+
+Sprint 6. 32 pairs — 8 open-ended fixtures, 4 independently generated answer
+pairs each — scored twice: once by the strong-model judge from section 9, once
+by a human who could not see which tier wrote which answer, could not see the
+judge's verdict, and was shown the two answers in a seeded random order so that
+the human's own position bias could be measured the same way the judge's was.
+
+|  | picked cheap | picked mid | tie |
+|---|---|---|---|
+| human | 11 | 16 | 5 |
+| judge | 0 | 0 | 28 |
+
+Four further pairs got no verdict at all: the judge contradicted itself when the
+answers were swapped.
+
+**Cohen's kappa is 0.00.** Raw agreement was 18%, which is exactly what chance
+predicts given the two distributions. Per task type: `rag_answer` 27% raw, kappa
+0.00; `summarization` 8% raw, kappa 0.00. Not weak agreement -- none.
+
+**The judge never once picked a winner; the human picked one on 27 of 32.** A
+rater that uses a single category has no discrimination to measure, so there is
+nothing here to calibrate or tune toward. The judge is not a weak instrument for
+these tasks, it is not an instrument.
+
+**Section 9's main conclusion is withdrawn.** "On open-ended work, mid bought
+nothing measurable over cheap -- 10 ties, 1 mid win, 0 cheap wins" was a
+property of the instrument, not of the models. A human reading the same kind of
+pairs saw a difference in 27 of 32 and favoured mid 16 to 11. Section 9 stays as
+written, because the record is append-only; this section supersedes its
+conclusion.
+
+**The human showed no detectable order bias**: 13 picks for the first answer
+shown, 14 for the second. The judge flipped its verdict on 4 pairs when the
+order changed. Of the two raters, the one that cannot scale is the one whose
+judgments are stable.
+
+**Caveat, from the human's own notes.** Three notes read "more detailed", "well
+detailed", "more clearer". The mid tier writes longer answers, so some of the
+16-11 split may be a preference for thoroughness rather than for correctness.
+This is a confound to watch in Sprint 7, not a reason to discount a kappa of
+zero.
+
+**Scope.** 32 pairs over 8 distinct fixtures. Four samples of one fixture are
+four observations of the same task, not four tasks, so the effective coverage
+is 8.
+
+### Consequences
+
+- The pairwise judge is retired as a quality measure for `summarization` and
+  `rag_answer`. No number it produced may be quoted as a quality figure.
+- Sprint 7's baseline reports judged quality for no prose task. Those two task
+  types carry cost, latency and check-pass rate only, with quality recorded as
+  unmeasured.
+- Sprint 8's ship / don't-ship decision rests on the four task types that have
+  an answer key, plus cost and latency everywhere. If that is not enough to
+  decide, the honest outcome is "undecidable on the available evidence".
+- The next cheap experiment is to remove TIE from the judge's options and force
+  a choice, then re-measure. It separates two diagnoses that look identical from
+  the outside: a judge that cannot tell these answers apart, and a judge that
+  can but takes the safe option. One prompt change, 32 pairs, about two cents.
+- Blind, independent scoring found this one week after the number was produced.
+  The same discipline applied to section 9 at the time would have caught it
+  immediately; the lesson is to run the check in the same sprint as the claim.
+@'
+
+## 11. What the baseline showed
+
+Sprint 7. Every fixture on every tier, three times each, with the router taken
+out of the picture: 216 counted calls plus three discarded warmups, 0 provider
+errors, $0.0147 total. Policy had only ever sent four fixtures to the cheap
+tier; this is the first measurement of what each tier can actually do.
+
+| tier | check ok | correct | mean cost | p50 | p95 |
+|---|---|---|---|---|---|
+| cheap | 99% | 55/60 (92%) | $0.000063 | 438 ms | 922 ms |
+| mid | 100% | 59/60 (98%) | $0.000103 | 610 ms | 919 ms |
+| strong | 99% | 55/60 (92%) | $0.000198 | 280 ms | 937 ms |
+
+**The strong tier is the best at nothing.** It never leads on accuracy for any
+task type -- it ties on three and loses on contradiction detection (75% against
+mid's 100%) and structured extraction (83% against 92%) -- while costing 3.1x
+cheap and 1.9x mid. Policy currently names it as an escalation target.
+
+**Cost does not buy correctness.** 92% / 98% / 92% up the ladder. The premise
+behind escalating to a dearer model does not hold here.
+
+**The dearest tier is the fastest.** p50 280 ms against cheap 438 and mid 610.
+Mid is the slowest thing in the system. Whatever the top tier is worth, latency
+is the only axis where it leads.
+
+**Every error in the run comes from two fixtures.** 169 of 180 graded answers
+were correct, and all 11 failures are `contra-003` (5) and `extract-004` (6).
+On the other 22 fixtures all three tiers were perfect on every repeat. Both
+look like answer-key disputes rather than model errors:
+
+- `contra-003` is keyed `consistent`; every tier that misses it answers
+  `insufficient_evidence`. Its key was already flagged as debatable in Sprint 3
+  and never resolved.
+- `extract-004` is the no-guidance case, keyed `none` for all three fields.
+  Models answer `{"metric":"none","direction":"none","period":"Q2"}`, taking
+  the period from "Fake Industries CFO, Q2 call". Reading `period` as the
+  call's own period is not unreasonable.
+
+The entire measured accuracy difference between the tiers therefore rests on
+two contested items.
+
+**Routing by task type is 25.6% cheaper at identical measured accuracy.**
+Taking the best tier per task type -- mid for contradiction detection and
+extraction, cheap for the rest -- costs $0.001839 a sweep against all-mid's
+$0.002473, with the same correctness on every gradeable type, and lower latency
+because cheap's p50 beats mid's. That clears the threshold fixed in August:
+at least 20% cheaper at equal quality and no more than 20% slower.
+
+All-cheap would be 38.6% cheaper ($0.001519). If the two disputed fixtures
+resolve in the models' favour, cheap and mid become indistinguishable on
+everything measurable and all-cheap becomes the honest recommendation.
+
+### Consequences
+
+- Sprint 8 cannot be decided until `contra-003` and `extract-004` are ruled on,
+  because they are the whole difference between the tiers. A second reader
+  should rule, since the labeller who wrote them would otherwise adjudicate
+  their own key.
+- `summarization` carries no correctness figure and its routing is decided on
+  cost alone. That must be stated wherever the recommendation appears.
+- The escalation ladder as configured sends failures to a tier that is less
+  accurate on the two task types that actually fail. Sprint 8 should test
+  escalating cheap to mid and stopping there.
+- 24 synthetic fixtures, three repeats, one provider, one day. The numbers are
+  about these task types, not about Mycroft's traffic.
+
+  @'
+
+## 12. The decision
+
+Sprint 8. Six routing policies replayed against the Sprint 7 baseline, fitted
+on repeats 1-2 and evaluated on the held-out repeat 3. No new calls: the
+baseline recorded cost, latency, check result and correctness for every fixture
+on every tier, so a policy's behaviour is a lookup. Every policy is therefore
+judged on the same answers, and a difference between two of them cannot be
+run-to-run noise.
+
+The thresholds were fixed in August, before any of this was measured: at least
+20% cheaper at equal quality, and at most 20% slower.
+
+| policy | mean cost | p50 | correct | vs current |
+|---|---|---|---|---|
+| current policy | $0.000098 | 633 ms | 19/20 | incumbent |
+| **always cheap** | **$0.000067** | **438 ms** | 19/20 | **31% cheaper, 31% faster** |
+| always mid | $0.000109 | 633 ms | 19/20 | 12% dearer |
+| always strong | $0.000195 | 257 ms | 18/20 | 100% dearer, 59% faster |
+| task-type table | $0.000084 | 522 ms | 19/20 | 14% cheaper, 18% faster |
+| break-even | $0.000084 | 522 ms | 19/20 | 14% cheaper, 18% faster |
+
+**One candidate clears the thresholds, and it is the simplest one available:
+send every request to the cheap tier.** No router, no table, no per-request
+arithmetic. 31% cheaper and 31% faster than what the gateway does today, at the
+same measured correctness.
+
+**The two clever policies lost, and lost for the same reason.** Both route
+contradiction detection and structured extraction to mid, because the fit split
+measured mid as more accurate on those task types (100% and 92% against cheap's
+83% and 75%). On the held-out repeat that advantage did not reproduce: the only
+errors were `extract-004`, wrong on all three tiers, and `contra-003`, wrong on
+strong alone. So both policies paid mid's premium and got nothing for it, and
+both landed at 14% cheaper -- short of the 20% bar.
+
+This is what the holdout was for. Fitted, mid looked worth paying for.
+Evaluated, it wasn't.
+
+**The break-even rule and the task-type table made identical choices.** The rule
+that has been reserved since Sprint 3 as the "clever version" reduces, on this
+data, to the same table a human would write by eye. It is not wrong; it is
+redundant.
+
+### What this result does not establish
+
+- **The holdout can barely separate quality.** Every policy but always-strong
+  scores 19/20. "Quality held" is satisfied arithmetically, but at n=20 with a
+  single error it is a weak claim, and that error is `extract-004`, whose
+  answer key is itself disputed. If the ruling goes the models' way, every
+  policy scores 20/20 and the decision rests on cost and latency alone.
+- **No escalation fired.** There were no check failures at all in the held-out
+  repeat, so Sprint 4's retry rule contributed nothing here and is untested by
+  this comparison.
+- **Summarization is routed on cost alone** -- four of the 24 requests -- because
+  the judge that was supposed to grade it scored kappa 0.00 (section 10).
+- 24 synthetic fixtures, one provider, one held-out repeat.
+
+### Consequences
+
+- Sprint 9 packages "always cheap" as the recommendation, with the escalation
+  machinery retained but no longer load-bearing: it costs nothing when checks
+  pass and it is the only thing standing between a malformed answer and the
+  caller.
+- The strong tier should be dropped from the default ladder. It is dearer than
+  mid, less accurate than mid on the two task types that fail, and its single
+  advantage -- latency -- is not something any current caller has asked for.
+- The honest headline is that the project set out to build adaptive routing and
+  the measurement says not to. A rule that chooses per request has to beat a
+  constant, and here it did not.
+'@ | Add-Content -Encoding utf8 scripts/gateway/FINDINGS.md

@@ -13,6 +13,10 @@ its expected tier -- before any model has been run on it.
 
 expected_tier means: the cheapest tier the labeler expects to get this right.
 It is a judgment, not the router's rule applied by hand.
+
+A json task may also carry expected.values: acceptable answers per field.
+The key check alone cannot tell a right value from an invented one, so these
+are what make extraction gradeable (Sprint 5).
 """
 
 from __future__ import annotations
@@ -59,6 +63,26 @@ def load(fixtures_dir: Path = FIXTURES_DIR) -> list[dict[str, Any]]:
     return fixtures
 
 
+def _check_values(expected: dict[str, Any], where: str) -> None:
+    """Acceptable answers per field, for json tasks. Optional until labeled."""
+    values = expected.get("values")
+    if values is None:
+        return
+    if not isinstance(values, dict) or not values:
+        raise FixtureError(f"{where}: 'values' must be a non-empty object")
+
+    required = set(expected.get("required_keys") or [])
+    unknown = sorted(set(values) - required)
+    if unknown:
+        raise FixtureError(f"{where}: 'values' names fields that are not in "
+                           f"required_keys: {unknown}")
+    for field, accepted in values.items():
+        if (not isinstance(accepted, list) or not accepted
+                or not all(isinstance(x, str) and x.strip() for x in accepted)):
+            raise FixtureError(f"{where}: values[{field!r}] must be a non-empty "
+                               f"list of non-empty strings")
+
+
 def _check_expected(fx: dict[str, Any], rule: dict[str, Any], where: str) -> None:
     expected = fx["expected"]
     if not isinstance(expected, dict):
@@ -73,6 +97,7 @@ def _check_expected(fx: dict[str, Any], rule: dict[str, Any], where: str) -> Non
         if not isinstance(keys, list) or not keys or not all(
                 isinstance(k, str) and k.strip() for k in keys):
             raise FixtureError(f"{where}: 'required_keys' must be a non-empty list")
+        _check_values(expected, where)
     elif rule["validator"] == "cites_context":
         context = fx.get("context")
         if not isinstance(context, list) or not context:

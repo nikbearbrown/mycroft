@@ -1,0 +1,255 @@
+{
+  "decided_on": "2026-10-15",
+  "baseline_rows": "2026-10-08T161625-baseline.jsonl",
+  "holdout_repeat": 3,
+  "thresholds": {
+    "cheaper_by_at_least": 0.2,
+    "slower_by_at_most": 0.2
+  },
+  "fit": {
+    "contradiction_detection": {
+      "cheap": {
+        "calls": 8,
+        "pass_rate": 1.0,
+        "correct_rate": 0.75,
+        "mean_cost": 8.879999999999999e-05
+      },
+      "mid": {
+        "calls": 8,
+        "pass_rate": 1.0,
+        "correct_rate": 1.0,
+        "mean_cost": 0.00011834999999999999
+      },
+      "strong": {
+        "calls": 8,
+        "pass_rate": 0.875,
+        "correct_rate": 0.75,
+        "mean_cost": 0.0002496
+      }
+    },
+    "rag_answer": {
+      "cheap": {
+        "calls": 8,
+        "pass_rate": 1.0,
+        "correct_rate": 1.0,
+        "mean_cost": 4.9949999999999994e-05
+      },
+      "mid": {
+        "calls": 8,
+        "pass_rate": 1.0,
+        "correct_rate": 1.0,
+        "mean_cost": 8.939999999999999e-05
+      },
+      "strong": {
+        "calls": 8,
+        "pass_rate": 1.0,
+        "correct_rate": 1.0,
+        "mean_cost": 0.000262
+      }
+    },
+    "sentiment_classification": {
+      "cheap": {
+        "calls": 8,
+        "pass_rate": 1.0,
+        "correct_rate": 1.0,
+        "mean_cost": 2.9981249999999997e-05
+      },
+      "mid": {
+        "calls": 8,
+        "pass_rate": 1.0,
+        "correct_rate": 1.0,
+        "mean_cost": 5.4712499999999995e-05
+      },
+      "strong": {
+        "calls": 8,
+        "pass_rate": 1.0,
+        "correct_rate": 1.0,
+        "mean_cost": 8.38e-05
+      }
+    },
+    "structured_extraction": {
+      "cheap": {
+        "calls": 8,
+        "pass_rate": 0.875,
+        "correct_rate": 0.75,
+        "mean_cost": 8.034375e-05
+      },
+      "mid": {
+        "calls": 8,
+        "pass_rate": 1.0,
+        "correct_rate": 1.0,
+        "mean_cost": 0.00012131249999999999
+      },
+      "strong": {
+        "calls": 8,
+        "pass_rate": 1.0,
+        "correct_rate": 0.875,
+        "mean_cost": 0.0002178
+      }
+    },
+    "summarization": {
+      "cheap": {
+        "calls": 8,
+        "pass_rate": 1.0,
+        "correct_rate": null,
+        "mean_cost": 8.240624999999999e-05
+      },
+      "mid": {
+        "calls": 8,
+        "pass_rate": 1.0,
+        "correct_rate": null,
+        "mean_cost": 0.00013563749999999998
+      },
+      "strong": {
+        "calls": 8,
+        "pass_rate": 1.0,
+        "correct_rate": null,
+        "mean_cost": 0.0002972
+      }
+    },
+    "topic_classification": {
+      "cheap": {
+        "calls": 8,
+        "pass_rate": 1.0,
+        "correct_rate": 1.0,
+        "mean_cost": 3.6824999999999994e-05
+      },
+      "mid": {
+        "calls": 8,
+        "pass_rate": 1.0,
+        "correct_rate": 1.0,
+        "mean_cost": 8.092499999999999e-05
+      },
+      "strong": {
+        "calls": 8,
+        "pass_rate": 1.0,
+        "correct_rate": 1.0,
+        "mean_cost": 8.520000000000001e-05
+      }
+    }
+  },
+  "results": {
+    "current policy": {
+      "requests": 24,
+      "missing_rows": 0,
+      "total_cost_usd": 0.002342,
+      "mean_cost_usd": 9.757e-05,
+      "p50_latency_ms": 633.0,
+      "p95_latency_ms": 980.0,
+      "graded": 20,
+      "correct": 19,
+      "correct_rate": 0.95,
+      "escalations": 0
+    },
+    "always cheap": {
+      "requests": 24,
+      "missing_rows": 0,
+      "total_cost_usd": 0.00161,
+      "mean_cost_usd": 6.707e-05,
+      "p50_latency_ms": 438.0,
+      "p95_latency_ms": 1014.0,
+      "graded": 20,
+      "correct": 19,
+      "correct_rate": 0.95,
+      "escalations": 0
+    },
+    "always mid": {
+      "requests": 24,
+      "missing_rows": 0,
+      "total_cost_usd": 0.002615,
+      "mean_cost_usd": 0.00010897,
+      "p50_latency_ms": 633.0,
+      "p95_latency_ms": 980.0,
+      "graded": 20,
+      "correct": 19,
+      "correct_rate": 0.95,
+      "escalations": 0
+    },
+    "always strong": {
+      "requests": 24,
+      "missing_rows": 0,
+      "total_cost_usd": 0.004686,
+      "mean_cost_usd": 0.00019527,
+      "p50_latency_ms": 257.0,
+      "p95_latency_ms": 662.0,
+      "graded": 20,
+      "correct": 18,
+      "correct_rate": 0.9,
+      "escalations": 0
+    },
+    "task-type table": {
+      "requests": 24,
+      "missing_rows": 0,
+      "total_cost_usd": 0.002008,
+      "mean_cost_usd": 8.365e-05,
+      "p50_latency_ms": 522.0,
+      "p95_latency_ms": 1014.0,
+      "graded": 20,
+      "correct": 19,
+      "correct_rate": 0.95,
+      "escalations": 0
+    },
+    "break-even": {
+      "requests": 24,
+      "missing_rows": 0,
+      "total_cost_usd": 0.002008,
+      "mean_cost_usd": 8.365e-05,
+      "p50_latency_ms": 522.0,
+      "p95_latency_ms": 1014.0,
+      "graded": 20,
+      "correct": 19,
+      "correct_rate": 0.95,
+      "escalations": 0
+    }
+  },
+  "verdicts": {
+    "current policy": {
+      "cheaper_by": 0.0,
+      "slower_by": 0.0,
+      "quality_held": true,
+      "meets_cost_threshold": false,
+      "meets_latency_threshold": true,
+      "ship": false
+    },
+    "always cheap": {
+      "cheaper_by": 0.3125960848621502,
+      "slower_by": -0.30805687203791465,
+      "quality_held": true,
+      "meets_cost_threshold": true,
+      "meets_latency_threshold": true,
+      "ship": true
+    },
+    "always mid": {
+      "cheaper_by": -0.11683919237470519,
+      "slower_by": 0.0,
+      "quality_held": true,
+      "meets_cost_threshold": false,
+      "meets_latency_threshold": true,
+      "ship": false
+    },
+    "always strong": {
+      "cheaper_by": -1.0013323767551499,
+      "slower_by": -0.5939968404423381,
+      "quality_held": false,
+      "meets_cost_threshold": false,
+      "meets_latency_threshold": true,
+      "ship": false
+    },
+    "task-type table": {
+      "cheaper_by": 0.14266680332069281,
+      "slower_by": -0.17535545023696686,
+      "quality_held": true,
+      "meets_cost_threshold": false,
+      "meets_latency_threshold": true,
+      "ship": false
+    },
+    "break-even": {
+      "cheaper_by": 0.14266680332069281,
+      "slower_by": -0.17535545023696686,
+      "quality_held": true,
+      "meets_cost_threshold": false,
+      "meets_latency_threshold": true,
+      "ship": false
+    }
+  }
+}

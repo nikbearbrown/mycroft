@@ -1,6 +1,6 @@
 {
-  "frozen_on": "2026-09-17",
-  "policy_version": "0.1.0",
+  "frozen_on": "2026-10-01",
+  "policy_version": "0.2.0",
   "fixture_count": 24,
   "files": {
     "contradiction_detection.jsonl": {
@@ -12,11 +12,11 @@
       "count": 4
     },
     "sentiment_classification.jsonl": {
-      "sha256": "aa7c681e97ba9ec34c11736fa7fb52670e641663295d91bb36722ea2ccefbfe3",
+      "sha256": "74ae9f2989cb3bf1f38b31ceac76cece96f4b7de44ac45a035f7f10902cbabec",
       "count": 4
     },
     "structured_extraction.jsonl": {
-      "sha256": "0a378b586cf710396c767d3f87fdcd4c0eb577dec979e73195d23ec51316c19e",
+      "sha256": "678a1e96d7ce05d4be8dbf3250d278b1a3dd6400e252f58c5f2ef8c2413c814b",
       "count": 4
     },
     "summarization.jsonl": {

@@ -1,0 +1,130 @@
+{
+  "run_id": "2026-09-24T132939",
+  "run_on": "2026-09-24",
+  "policy_version": "0.2.0",
+  "tiers_version": "0.4.0",
+  "prices_version": "2026-09-17",
+  "fixtures_frozen_on": "2026-09-24",
+  "a_tier": "cheap",
+  "b_tier": "mid",
+  "judge_tier": "strong",
+  "judge_max_tokens": 256,
+  "summary": {
+    "comparisons": 2,
+    "counts": {
+      "a": 0,
+      "b": 0,
+      "inconsistent": 0,
+      "tie": 2,
+      "unparsed": 0
+    },
+    "decided": 2,
+    "cost_usd": 0.00077,
+    "kind": "model_judgment",
+    "note": "verdicts are model judgments, not ground truth; Sprint 6 measures how far they agree with a human"
+  },
+  "answers_cost_usd": 0.000250725,
+  "skipped": [],
+  "rows": [
+    {
+      "id": "rag-001",
+      "task_type": "rag_answer",
+      "difficulty": "easy",
+      "a": {
+        "tier": "cheap",
+        "text": "A dividend is a payment a company makes to its shareholders, usually in cash, out of its profits. [0]",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 4.425e-05,
+        "latency_ms": 525,
+        "request_id": "d0155f6eb42940e7ba89fd2eb6304912"
+      },
+      "b": {
+        "tier": "mid",
+        "text": "A dividend is a payment that a company makes to its shareholders\u2014typically in cash\u2014using its profits.\u202f[0]",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 7.649999999999999e-05,
+        "latency_ms": 527,
+        "request_id": "770286ec05e74f2a90c5a001144f7596"
+      },
+      "answers_cost_usd": 0.00012074999999999998,
+      "fixture_id": "rag-001",
+      "a_label": "cheap",
+      "b_label": "mid",
+      "result": "tie",
+      "votes": [
+        {
+          "order": "ab",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "76658ca4c82e4e8bb23d9e1bb7633dc0",
+          "cost_usd": 0.00018800000000000002,
+          "latency_ms": 133
+        },
+        {
+          "order": "ba",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "40f0be9e74bd4f18b704b1c9bdade0ed",
+          "cost_usd": 0.00018800000000000002,
+          "latency_ms": 179
+        }
+      ],
+      "cost_usd": 0.00037600000000000003,
+      "judged_by": "qwen/qwen3.8-27b",
+      "judged_at": "2026-09-24T17:29:42.262836+00:00",
+      "kind": "model_judgment"
+    },
+    {
+      "id": "rag-002",
+      "task_type": "rag_answer",
+      "difficulty": "easy",
+      "a": {
+        "tier": "cheap",
+        "text": "The bond\u2019s coupon rate is the annual interest it pays, expressed as a percentage of its face value. [1]",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 4.1324999999999995e-05,
+        "latency_ms": 407,
+        "request_id": "32c55a89772b4f188740360997960e70"
+      },
+      "b": {
+        "tier": "mid",
+        "text": "A bond\u2019s coupon rate is the annual interest the bond pays, expressed as a percentage of the bond\u2019s face (par) value.\u202f[1]",
+        "passed_check": true,
+        "check_reason": "",
+        "cost_usd": 8.865e-05,
+        "latency_ms": 390,
+        "request_id": "a67dbf1143414899b7e4d60ddb619449"
+      },
+      "answers_cost_usd": 0.000129975,
+      "fixture_id": "rag-002",
+      "a_label": "cheap",
+      "b_label": "mid",
+      "result": "tie",
+      "votes": [
+        {
+          "order": "ab",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "5a0819f998b848dcb6d24e0bd37c6a24",
+          "cost_usd": 0.0001968,
+          "latency_ms": 248
+        },
+        {
+          "order": "ba",
+          "verdict": "tie",
+          "raw": "TIE",
+          "request_id": "4971e1ce114f45aaa06f3bb59f3fa943",
+          "cost_usd": 0.0001968,
+          "latency_ms": 523
+        }
+      ],
+      "cost_usd": 0.0003936,
+      "judged_by": "qwen/qwen3.8-27b",
+      "judged_at": "2026-09-24T17:30:18.835938+00:00",
+      "kind": "model_judgment"
+    }
+  ]
+}
