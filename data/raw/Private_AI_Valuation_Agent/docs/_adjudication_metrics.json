@@ -1,0 +1,2620 @@
+{
+ "subsets": {
+  "all": {
+   "B_matcher_v1": {
+    "macro": {
+     "overall": {
+      "tp": 240,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.9959,
+      "recall": 1.0,
+      "f1": 0.9979
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 20,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 22,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Cerebras Systems Inc.": {
+       "tp": 4,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Databricks, Inc.": {
+       "tp": 85,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Figure AI Inc.": {
+       "tp": 2,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Groq, Inc.": {
+       "tp": 3,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 33,
+       "fp": 1,
+       "fn": 0,
+       "precision": 0.9706,
+       "recall": 1.0,
+       "f1": 0.9851
+      },
+      "Perplexity AI, Inc.": {
+       "tp": 3,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 39,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "X.AI Corp": {
+       "tp": 29,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      }
+     },
+     "errors": [
+      {
+       "id": "g0207",
+       "issuer_name": "OPEN BAY AUTOS AI INC.",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "OpenAI Group PBC",
+       "kind": "false_positive"
+      }
+     ]
+    },
+    "micro": {
+     "overall": {
+      "tp": 5935,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.9998,
+      "recall": 1.0,
+      "f1": 0.9999
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 524,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 428,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Cerebras Systems Inc.": {
+       "tp": 80,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Databricks, Inc.": {
+       "tp": 2236,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Figure AI Inc.": {
+       "tp": 31,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Groq, Inc.": {
+       "tp": 16,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 481,
+       "fp": 1,
+       "fn": 0,
+       "precision": 0.9979,
+       "recall": 1.0,
+       "f1": 0.999
+      },
+      "Perplexity AI, Inc.": {
+       "tp": 24,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 1752,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "X.AI Corp": {
+       "tp": 363,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      }
+     },
+     "errors": [
+      {
+       "id": "g0207",
+       "issuer_name": "OPEN BAY AUTOS AI INC.",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "OpenAI Group PBC",
+       "kind": "false_positive"
+      }
+     ]
+    }
+   },
+   "C_v2_band": {
+    "macro": {
+     "overall": {
+      "tp": 240,
+      "fp": 14,
+      "fn": 0,
+      "precision": 0.9449,
+      "recall": 1.0,
+      "f1": 0.9717
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 20,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 22,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Cerebras Systems Inc.": {
+       "tp": 4,
+       "fp": 1,
+       "fn": 0,
+       "precision": 0.8,
+       "recall": 1.0,
+       "f1": 0.8889
+      },
+      "Databricks, Inc.": {
+       "tp": 85,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Figure AI Inc.": {
+       "tp": 2,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Groq, Inc.": {
+       "tp": 3,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 33,
+       "fp": 1,
+       "fn": 0,
+       "precision": 0.9706,
+       "recall": 1.0,
+       "f1": 0.9851
+      },
+      "Perplexity AI, Inc.": {
+       "tp": 3,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Scale AI, Inc.": {
+       "tp": 0,
+       "fp": 8,
+       "fn": 0,
+       "precision": 0.0,
+       "recall": null,
+       "f1": null
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 39,
+       "fp": 2,
+       "fn": 0,
+       "precision": 0.9512,
+       "recall": 1.0,
+       "f1": 0.975
+      },
+      "X.AI Corp": {
+       "tp": 29,
+       "fp": 2,
+       "fn": 0,
+       "precision": 0.9355,
+       "recall": 1.0,
+       "f1": 0.9667
+      }
+     },
+     "errors": [
+      {
+       "id": "g0001",
+       "issuer_name": "ABL SPACABL SPACE SYSTEMS COE SYSTEMS",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Space Exploration Technologies Corp.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0069",
+       "issuer_name": "COHERE TECHNOLOGIES, INC. PREFERRED SERIES D-1   /",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Cerebras Systems Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0187",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0188",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0189",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0191",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0192",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0194",
+       "issuer_name": "J7PV-OPEN.AF",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "OpenAI Group PBC",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0208",
+       "issuer_name": "OPEN SPACE LABS INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Space Exploration Technologies Corp.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0254",
+       "issuer_name": "SCALED AGILE INC. 2021 UNITRANCHE TERM LOAN",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0255",
+       "issuer_name": "SCALED AGILE, INC.-DELAYED DRAW TERM LOAN",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0256",
+       "issuer_name": "SCALED AGILE, INC.-REVOLVER",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0320",
+       "issuer_name": "XAI3-FT5O.AF",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "X.AI Corp",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0321",
+       "issuer_name": "XAIJ-C5DQ.AF",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "X.AI Corp",
+       "kind": "false_positive"
+      }
+     ]
+    },
+    "micro": {
+     "overall": {
+      "tp": 5935,
+      "fp": 196,
+      "fn": 0,
+      "precision": 0.968,
+      "recall": 1.0,
+      "f1": 0.9838
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 524,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 428,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Cerebras Systems Inc.": {
+       "tp": 80,
+       "fp": 14,
+       "fn": 0,
+       "precision": 0.8511,
+       "recall": 1.0,
+       "f1": 0.9195
+      },
+      "Databricks, Inc.": {
+       "tp": 2236,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Figure AI Inc.": {
+       "tp": 31,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Groq, Inc.": {
+       "tp": 16,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 481,
+       "fp": 7,
+       "fn": 0,
+       "precision": 0.9857,
+       "recall": 1.0,
+       "f1": 0.9928
+      },
+      "Perplexity AI, Inc.": {
+       "tp": 24,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Scale AI, Inc.": {
+       "tp": 0,
+       "fp": 128,
+       "fn": 0,
+       "precision": 0.0,
+       "recall": null,
+       "f1": null
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 1752,
+       "fp": 32,
+       "fn": 0,
+       "precision": 0.9821,
+       "recall": 1.0,
+       "f1": 0.991
+      },
+      "X.AI Corp": {
+       "tp": 363,
+       "fp": 15,
+       "fn": 0,
+       "precision": 0.9603,
+       "recall": 1.0,
+       "f1": 0.9798
+      }
+     },
+     "errors": [
+      {
+       "id": "g0001",
+       "issuer_name": "ABL SPACABL SPACE SYSTEMS COE SYSTEMS",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Space Exploration Technologies Corp.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0069",
+       "issuer_name": "COHERE TECHNOLOGIES, INC. PREFERRED SERIES D-1   /",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Cerebras Systems Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0187",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0188",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0189",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0191",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0192",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0194",
+       "issuer_name": "J7PV-OPEN.AF",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "OpenAI Group PBC",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0208",
+       "issuer_name": "OPEN SPACE LABS INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Space Exploration Technologies Corp.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0254",
+       "issuer_name": "SCALED AGILE INC. 2021 UNITRANCHE TERM LOAN",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0255",
+       "issuer_name": "SCALED AGILE, INC.-DELAYED DRAW TERM LOAN",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0256",
+       "issuer_name": "SCALED AGILE, INC.-REVOLVER",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0320",
+       "issuer_name": "XAI3-FT5O.AF",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "X.AI Corp",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0321",
+       "issuer_name": "XAIJ-C5DQ.AF",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "X.AI Corp",
+       "kind": "false_positive"
+      }
+     ]
+    }
+   },
+   "D_v2_all": {
+    "macro": {
+     "overall": {
+      "tp": 239,
+      "fp": 14,
+      "fn": 1,
+      "precision": 0.9447,
+      "recall": 0.9958,
+      "f1": 0.9696
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 20,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 22,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Cerebras Systems Inc.": {
+       "tp": 4,
+       "fp": 1,
+       "fn": 0,
+       "precision": 0.8,
+       "recall": 1.0,
+       "f1": 0.8889
+      },
+      "Databricks, Inc.": {
+       "tp": 85,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Figure AI Inc.": {
+       "tp": 2,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Groq, Inc.": {
+       "tp": 3,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 32,
+       "fp": 1,
+       "fn": 1,
+       "precision": 0.9697,
+       "recall": 0.9697,
+       "f1": 0.9697
+      },
+      "Perplexity AI, Inc.": {
+       "tp": 3,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Scale AI, Inc.": {
+       "tp": 0,
+       "fp": 8,
+       "fn": 0,
+       "precision": 0.0,
+       "recall": null,
+       "f1": null
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 39,
+       "fp": 2,
+       "fn": 0,
+       "precision": 0.9512,
+       "recall": 1.0,
+       "f1": 0.975
+      },
+      "X.AI Corp": {
+       "tp": 29,
+       "fp": 2,
+       "fn": 0,
+       "precision": 0.9355,
+       "recall": 1.0,
+       "f1": 0.9667
+      }
+     },
+     "errors": [
+      {
+       "id": "g0001",
+       "issuer_name": "ABL SPACABL SPACE SYSTEMS COE SYSTEMS",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Space Exploration Technologies Corp.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0069",
+       "issuer_name": "COHERE TECHNOLOGIES, INC. PREFERRED SERIES D-1   /",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Cerebras Systems Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0187",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0188",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0189",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0191",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0192",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0194",
+       "issuer_name": "J7PV-OPEN.AF",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "OpenAI Group PBC",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0208",
+       "issuer_name": "OPEN SPACE LABS INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Space Exploration Technologies Corp.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0232",
+       "issuer_name": "OPENAIR.COM",
+       "truth": "OpenAI Group PBC",
+       "predicted": null,
+       "kind": "false_negative"
+      },
+      {
+       "id": "g0254",
+       "issuer_name": "SCALED AGILE INC. 2021 UNITRANCHE TERM LOAN",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0255",
+       "issuer_name": "SCALED AGILE, INC.-DELAYED DRAW TERM LOAN",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0256",
+       "issuer_name": "SCALED AGILE, INC.-REVOLVER",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0320",
+       "issuer_name": "XAI3-FT5O.AF",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "X.AI Corp",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0321",
+       "issuer_name": "XAIJ-C5DQ.AF",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "X.AI Corp",
+       "kind": "false_positive"
+      }
+     ]
+    },
+    "micro": {
+     "overall": {
+      "tp": 5930,
+      "fp": 196,
+      "fn": 5,
+      "precision": 0.968,
+      "recall": 0.9992,
+      "f1": 0.9833
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 524,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 428,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Cerebras Systems Inc.": {
+       "tp": 80,
+       "fp": 14,
+       "fn": 0,
+       "precision": 0.8511,
+       "recall": 1.0,
+       "f1": 0.9195
+      },
+      "Databricks, Inc.": {
+       "tp": 2236,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Figure AI Inc.": {
+       "tp": 31,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Groq, Inc.": {
+       "tp": 16,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 476,
+       "fp": 7,
+       "fn": 5,
+       "precision": 0.9855,
+       "recall": 0.9896,
+       "f1": 0.9876
+      },
+      "Perplexity AI, Inc.": {
+       "tp": 24,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Scale AI, Inc.": {
+       "tp": 0,
+       "fp": 128,
+       "fn": 0,
+       "precision": 0.0,
+       "recall": null,
+       "f1": null
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 1752,
+       "fp": 32,
+       "fn": 0,
+       "precision": 0.9821,
+       "recall": 1.0,
+       "f1": 0.991
+      },
+      "X.AI Corp": {
+       "tp": 363,
+       "fp": 15,
+       "fn": 0,
+       "precision": 0.9603,
+       "recall": 1.0,
+       "f1": 0.9798
+      }
+     },
+     "errors": [
+      {
+       "id": "g0001",
+       "issuer_name": "ABL SPACABL SPACE SYSTEMS COE SYSTEMS",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Space Exploration Technologies Corp.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0069",
+       "issuer_name": "COHERE TECHNOLOGIES, INC. PREFERRED SERIES D-1   /",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Cerebras Systems Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0187",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0188",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0189",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0191",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0192",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0194",
+       "issuer_name": "J7PV-OPEN.AF",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "OpenAI Group PBC",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0208",
+       "issuer_name": "OPEN SPACE LABS INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Space Exploration Technologies Corp.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0232",
+       "issuer_name": "OPENAIR.COM",
+       "truth": "OpenAI Group PBC",
+       "predicted": null,
+       "kind": "false_negative"
+      },
+      {
+       "id": "g0254",
+       "issuer_name": "SCALED AGILE INC. 2021 UNITRANCHE TERM LOAN",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0255",
+       "issuer_name": "SCALED AGILE, INC.-DELAYED DRAW TERM LOAN",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0256",
+       "issuer_name": "SCALED AGILE, INC.-REVOLVER",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0320",
+       "issuer_name": "XAI3-FT5O.AF",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "X.AI Corp",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0321",
+       "issuer_name": "XAIJ-C5DQ.AF",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "X.AI Corp",
+       "kind": "false_positive"
+      }
+     ]
+    }
+   },
+   "E_llm_only": {
+    "macro": {
+     "overall": {
+      "tp": 239,
+      "fp": 14,
+      "fn": 1,
+      "precision": 0.9447,
+      "recall": 0.9958,
+      "f1": 0.9696
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 20,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 22,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Cerebras Systems Inc.": {
+       "tp": 4,
+       "fp": 1,
+       "fn": 0,
+       "precision": 0.8,
+       "recall": 1.0,
+       "f1": 0.8889
+      },
+      "Databricks, Inc.": {
+       "tp": 85,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Figure AI Inc.": {
+       "tp": 2,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Groq, Inc.": {
+       "tp": 3,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 32,
+       "fp": 1,
+       "fn": 1,
+       "precision": 0.9697,
+       "recall": 0.9697,
+       "f1": 0.9697
+      },
+      "Perplexity AI, Inc.": {
+       "tp": 3,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Scale AI, Inc.": {
+       "tp": 0,
+       "fp": 8,
+       "fn": 0,
+       "precision": 0.0,
+       "recall": null,
+       "f1": null
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 39,
+       "fp": 2,
+       "fn": 0,
+       "precision": 0.9512,
+       "recall": 1.0,
+       "f1": 0.975
+      },
+      "X.AI Corp": {
+       "tp": 29,
+       "fp": 2,
+       "fn": 0,
+       "precision": 0.9355,
+       "recall": 1.0,
+       "f1": 0.9667
+      }
+     },
+     "errors": [
+      {
+       "id": "g0001",
+       "issuer_name": "ABL SPACABL SPACE SYSTEMS COE SYSTEMS",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Space Exploration Technologies Corp.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0069",
+       "issuer_name": "COHERE TECHNOLOGIES, INC. PREFERRED SERIES D-1   /",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Cerebras Systems Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0187",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0188",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0189",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0191",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0192",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0194",
+       "issuer_name": "J7PV-OPEN.AF",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "OpenAI Group PBC",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0208",
+       "issuer_name": "OPEN SPACE LABS INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Space Exploration Technologies Corp.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0232",
+       "issuer_name": "OPENAIR.COM",
+       "truth": "OpenAI Group PBC",
+       "predicted": null,
+       "kind": "false_negative"
+      },
+      {
+       "id": "g0254",
+       "issuer_name": "SCALED AGILE INC. 2021 UNITRANCHE TERM LOAN",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0255",
+       "issuer_name": "SCALED AGILE, INC.-DELAYED DRAW TERM LOAN",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0256",
+       "issuer_name": "SCALED AGILE, INC.-REVOLVER",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0320",
+       "issuer_name": "XAI3-FT5O.AF",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "X.AI Corp",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0321",
+       "issuer_name": "XAIJ-C5DQ.AF",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "X.AI Corp",
+       "kind": "false_positive"
+      }
+     ]
+    },
+    "micro": {
+     "overall": {
+      "tp": 5930,
+      "fp": 196,
+      "fn": 5,
+      "precision": 0.968,
+      "recall": 0.9992,
+      "f1": 0.9833
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 524,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 428,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Cerebras Systems Inc.": {
+       "tp": 80,
+       "fp": 14,
+       "fn": 0,
+       "precision": 0.8511,
+       "recall": 1.0,
+       "f1": 0.9195
+      },
+      "Databricks, Inc.": {
+       "tp": 2236,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Figure AI Inc.": {
+       "tp": 31,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Groq, Inc.": {
+       "tp": 16,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 476,
+       "fp": 7,
+       "fn": 5,
+       "precision": 0.9855,
+       "recall": 0.9896,
+       "f1": 0.9876
+      },
+      "Perplexity AI, Inc.": {
+       "tp": 24,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Scale AI, Inc.": {
+       "tp": 0,
+       "fp": 128,
+       "fn": 0,
+       "precision": 0.0,
+       "recall": null,
+       "f1": null
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 1752,
+       "fp": 32,
+       "fn": 0,
+       "precision": 0.9821,
+       "recall": 1.0,
+       "f1": 0.991
+      },
+      "X.AI Corp": {
+       "tp": 363,
+       "fp": 15,
+       "fn": 0,
+       "precision": 0.9603,
+       "recall": 1.0,
+       "f1": 0.9798
+      }
+     },
+     "errors": [
+      {
+       "id": "g0001",
+       "issuer_name": "ABL SPACABL SPACE SYSTEMS COE SYSTEMS",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Space Exploration Technologies Corp.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0069",
+       "issuer_name": "COHERE TECHNOLOGIES, INC. PREFERRED SERIES D-1   /",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Cerebras Systems Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0187",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0188",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0189",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0191",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0192",
+       "issuer_name": "HYPERSCALE DATA INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0194",
+       "issuer_name": "J7PV-OPEN.AF",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "OpenAI Group PBC",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0208",
+       "issuer_name": "OPEN SPACE LABS INC",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Space Exploration Technologies Corp.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0232",
+       "issuer_name": "OPENAIR.COM",
+       "truth": "OpenAI Group PBC",
+       "predicted": null,
+       "kind": "false_negative"
+      },
+      {
+       "id": "g0254",
+       "issuer_name": "SCALED AGILE INC. 2021 UNITRANCHE TERM LOAN",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0255",
+       "issuer_name": "SCALED AGILE, INC.-DELAYED DRAW TERM LOAN",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0256",
+       "issuer_name": "SCALED AGILE, INC.-REVOLVER",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "Scale AI, Inc.",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0320",
+       "issuer_name": "XAI3-FT5O.AF",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "X.AI Corp",
+       "kind": "false_positive"
+      },
+      {
+       "id": "g0321",
+       "issuer_name": "XAIJ-C5DQ.AF",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "X.AI Corp",
+       "kind": "false_positive"
+      }
+     ]
+    }
+   },
+   "F_v2_veto": {
+    "macro": {
+     "overall": {
+      "tp": 240,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 20,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 22,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Cerebras Systems Inc.": {
+       "tp": 4,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Databricks, Inc.": {
+       "tp": 85,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Figure AI Inc.": {
+       "tp": 2,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Groq, Inc.": {
+       "tp": 3,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 33,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Perplexity AI, Inc.": {
+       "tp": 3,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 39,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "X.AI Corp": {
+       "tp": 29,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      }
+     },
+     "errors": []
+    },
+    "micro": {
+     "overall": {
+      "tp": 5935,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 524,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 428,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Cerebras Systems Inc.": {
+       "tp": 80,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Databricks, Inc.": {
+       "tp": 2236,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Figure AI Inc.": {
+       "tp": 31,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Groq, Inc.": {
+       "tp": 16,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 481,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Perplexity AI, Inc.": {
+       "tp": 24,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 1752,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "X.AI Corp": {
+       "tp": 363,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      }
+     },
+     "errors": []
+    }
+   }
+  },
+  "hard": {
+   "B_matcher_v1": {
+    "macro": {
+     "overall": {
+      "tp": 140,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.9929,
+      "recall": 1.0,
+      "f1": 0.9964
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 16,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 20,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Databricks, Inc.": {
+       "tp": 57,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 8,
+       "fp": 1,
+       "fn": 0,
+       "precision": 0.8889,
+       "recall": 1.0,
+       "f1": 0.9412
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 34,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "X.AI Corp": {
+       "tp": 5,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      }
+     },
+     "errors": [
+      {
+       "id": "g0207",
+       "issuer_name": "OPEN BAY AUTOS AI INC.",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "OpenAI Group PBC",
+       "kind": "false_positive"
+      }
+     ]
+    },
+    "micro": {
+     "overall": {
+      "tp": 4586,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.9998,
+      "recall": 1.0,
+      "f1": 0.9999
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 488,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 421,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Databricks, Inc.": {
+       "tp": 1901,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 41,
+       "fp": 1,
+       "fn": 0,
+       "precision": 0.9762,
+       "recall": 1.0,
+       "f1": 0.988
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 1725,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "X.AI Corp": {
+       "tp": 10,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      }
+     },
+     "errors": [
+      {
+       "id": "g0207",
+       "issuer_name": "OPEN BAY AUTOS AI INC.",
+       "truth": "NOT_IN_UNIVERSE",
+       "predicted": "OpenAI Group PBC",
+       "kind": "false_positive"
+      }
+     ]
+    }
+   },
+   "C_v2_band": {
+    "macro": {
+     "overall": {
+      "tp": 140,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 16,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 20,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Databricks, Inc.": {
+       "tp": 57,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 8,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 34,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "X.AI Corp": {
+       "tp": 5,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      }
+     },
+     "errors": []
+    },
+    "micro": {
+     "overall": {
+      "tp": 4586,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 488,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 421,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Databricks, Inc.": {
+       "tp": 1901,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 41,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 1725,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "X.AI Corp": {
+       "tp": 10,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      }
+     },
+     "errors": []
+    }
+   },
+   "D_v2_all": {
+    "macro": {
+     "overall": {
+      "tp": 139,
+      "fp": 0,
+      "fn": 1,
+      "precision": 1.0,
+      "recall": 0.9929,
+      "f1": 0.9964
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 16,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 20,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Databricks, Inc.": {
+       "tp": 57,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 7,
+       "fp": 0,
+       "fn": 1,
+       "precision": 1.0,
+       "recall": 0.875,
+       "f1": 0.9333
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 34,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "X.AI Corp": {
+       "tp": 5,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      }
+     },
+     "errors": [
+      {
+       "id": "g0232",
+       "issuer_name": "OPENAIR.COM",
+       "truth": "OpenAI Group PBC",
+       "predicted": null,
+       "kind": "false_negative"
+      }
+     ]
+    },
+    "micro": {
+     "overall": {
+      "tp": 4581,
+      "fp": 0,
+      "fn": 5,
+      "precision": 1.0,
+      "recall": 0.9989,
+      "f1": 0.9995
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 488,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 421,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Databricks, Inc.": {
+       "tp": 1901,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 36,
+       "fp": 0,
+       "fn": 5,
+       "precision": 1.0,
+       "recall": 0.878,
+       "f1": 0.9351
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 1725,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "X.AI Corp": {
+       "tp": 10,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      }
+     },
+     "errors": [
+      {
+       "id": "g0232",
+       "issuer_name": "OPENAIR.COM",
+       "truth": "OpenAI Group PBC",
+       "predicted": null,
+       "kind": "false_negative"
+      }
+     ]
+    }
+   },
+   "E_llm_only": {
+    "macro": {
+     "overall": {
+      "tp": 139,
+      "fp": 0,
+      "fn": 1,
+      "precision": 1.0,
+      "recall": 0.9929,
+      "f1": 0.9964
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 16,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 20,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Databricks, Inc.": {
+       "tp": 57,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 7,
+       "fp": 0,
+       "fn": 1,
+       "precision": 1.0,
+       "recall": 0.875,
+       "f1": 0.9333
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 34,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "X.AI Corp": {
+       "tp": 5,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      }
+     },
+     "errors": [
+      {
+       "id": "g0232",
+       "issuer_name": "OPENAIR.COM",
+       "truth": "OpenAI Group PBC",
+       "predicted": null,
+       "kind": "false_negative"
+      }
+     ]
+    },
+    "micro": {
+     "overall": {
+      "tp": 4581,
+      "fp": 0,
+      "fn": 5,
+      "precision": 1.0,
+      "recall": 0.9989,
+      "f1": 0.9995
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 488,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 421,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Databricks, Inc.": {
+       "tp": 1901,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 36,
+       "fp": 0,
+       "fn": 5,
+       "precision": 1.0,
+       "recall": 0.878,
+       "f1": 0.9351
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 1725,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "X.AI Corp": {
+       "tp": 10,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      }
+     },
+     "errors": [
+      {
+       "id": "g0232",
+       "issuer_name": "OPENAIR.COM",
+       "truth": "OpenAI Group PBC",
+       "predicted": null,
+       "kind": "false_negative"
+      }
+     ]
+    }
+   },
+   "F_v2_veto": {
+    "macro": {
+     "overall": {
+      "tp": 140,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 16,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 20,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Databricks, Inc.": {
+       "tp": 57,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 8,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 34,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "X.AI Corp": {
+       "tp": 5,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      }
+     },
+     "errors": []
+    },
+    "micro": {
+     "overall": {
+      "tp": 4586,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+     },
+     "per_company": {
+      "Anduril Industries, Inc.": {
+       "tp": 488,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Anthropic PBC": {
+       "tp": 421,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Databricks, Inc.": {
+       "tp": 1901,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "OpenAI Group PBC": {
+       "tp": 41,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "Space Exploration Technologies Corp.": {
+       "tp": 1725,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      },
+      "X.AI Corp": {
+       "tp": 10,
+       "fp": 0,
+       "fn": 0,
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0
+      }
+     },
+     "errors": []
+    }
+   }
+  }
+ },
+ "lift_vs_baseline_all_macro": {
+  "C_v2_band": {
+   "precision": -0.051,
+   "recall": 0.0,
+   "f1": -0.0262
+  },
+  "D_v2_all": {
+   "precision": -0.0512,
+   "recall": -0.0042,
+   "f1": -0.0283
+  },
+  "E_llm_only": {
+   "precision": -0.0512,
+   "recall": -0.0042,
+   "f1": -0.0283
+  },
+  "F_v2_veto": {
+   "precision": 0.0041,
+   "recall": 0.0,
+   "f1": 0.0021
+  }
+ },
+ "band_policy_changes": {
+  "consulted": 85,
+  "changed": [
+   {
+    "id": "g0001",
+    "issuer_name": "ABL SPACABL SPACE SYSTEMS COE SYSTEMS",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Space Exploration Technologies Corp.",
+    "reason": "The issuer name matches the name of a company in the candidate list."
+   },
+   {
+    "id": "g0069",
+    "issuer_name": "COHERE TECHNOLOGIES, INC. PREFERRED SERIES D-1   /",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Cerebras Systems Inc.",
+    "reason": "COHERE TECHNOLOGIES, INC. PREFERRED SERIES D-1 is a preferred series of Cerebras Systems Inc."
+   },
+   {
+    "id": "g0187",
+    "issuer_name": "HYPERSCALE DATA INC",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Scale AI, Inc.",
+    "reason": "The issuer name and title are very similar to Scale AI, Inc."
+   },
+   {
+    "id": "g0188",
+    "issuer_name": "HYPERSCALE DATA INC",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Scale AI, Inc.",
+    "reason": "HYPERSCALE DATA INC is a known investment of Scale AI, Inc."
+   },
+   {
+    "id": "g0189",
+    "issuer_name": "HYPERSCALE DATA INC",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Scale AI, Inc.",
+    "reason": "The issuer name is HYPERSCALE DATA INC, which is not in the candidate list."
+   },
+   {
+    "id": "g0191",
+    "issuer_name": "HYPERSCALE DATA INC",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Scale AI, Inc.",
+    "reason": "The issuer name is HYPERSCALE DATA INC, which is the parent company of Scale AI, Inc."
+   },
+   {
+    "id": "g0192",
+    "issuer_name": "HYPERSCALE DATA INC",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Scale AI, Inc.",
+    "reason": "HYPERSCALE DATA INC- CL B suggests a class B common stock"
+   },
+   {
+    "id": "g0194",
+    "issuer_name": "J7PV-OPEN.AF",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "OpenAI Group PBC",
+    "reason": "The issuer name and title match the known OpenAI naming convention."
+   },
+   {
+    "id": "g0207",
+    "issuer_name": "OPEN BAY AUTOS AI INC.",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": "OpenAI Group PBC",
+    "after": null,
+    "reason": "The issuer name does not match any of the candidate companies."
+   },
+   {
+    "id": "g0208",
+    "issuer_name": "OPEN SPACE LABS INC",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Space Exploration Technologies Corp.",
+    "reason": "The issuer name is a clear match for SpaceX"
+   },
+   {
+    "id": "g0254",
+    "issuer_name": "SCALED AGILE INC. 2021 UNITRANCHE TERM LOAN",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Scale AI, Inc.",
+    "reason": "The issuer name and title match the name of Scale AI, Inc."
+   },
+   {
+    "id": "g0255",
+    "issuer_name": "SCALED AGILE, INC.-DELAYED DRAW TERM LOAN",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Scale AI, Inc.",
+    "reason": "The issuer name and title do not match any of the candidate companies."
+   },
+   {
+    "id": "g0256",
+    "issuer_name": "SCALED AGILE, INC.-REVOLVER",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Scale AI, Inc.",
+    "reason": "The issuer name and title do not disclose the holding, and the filing does not provide any additional information."
+   },
+   {
+    "id": "g0320",
+    "issuer_name": "XAI3-FT5O.AF",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "X.AI Corp",
+    "reason": "The issuer name and title are identical, and match the name of one of the candidate companies."
+   },
+   {
+    "id": "g0321",
+    "issuer_name": "XAIJ-C5DQ.AF",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "X.AI Corp",
+    "reason": "The issuer name and title are identical, and match the name of one of the candidate companies."
+   }
+  ],
+  "fixed": [
+   {
+    "id": "g0207",
+    "issuer_name": "OPEN BAY AUTOS AI INC.",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": "OpenAI Group PBC",
+    "after": null,
+    "reason": "The issuer name does not match any of the candidate companies."
+   }
+  ],
+  "broke": [
+   {
+    "id": "g0001",
+    "issuer_name": "ABL SPACABL SPACE SYSTEMS COE SYSTEMS",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Space Exploration Technologies Corp.",
+    "reason": "The issuer name matches the name of a company in the candidate list."
+   },
+   {
+    "id": "g0069",
+    "issuer_name": "COHERE TECHNOLOGIES, INC. PREFERRED SERIES D-1   /",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Cerebras Systems Inc.",
+    "reason": "COHERE TECHNOLOGIES, INC. PREFERRED SERIES D-1 is a preferred series of Cerebras Systems Inc."
+   },
+   {
+    "id": "g0187",
+    "issuer_name": "HYPERSCALE DATA INC",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Scale AI, Inc.",
+    "reason": "The issuer name and title are very similar to Scale AI, Inc."
+   },
+   {
+    "id": "g0188",
+    "issuer_name": "HYPERSCALE DATA INC",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Scale AI, Inc.",
+    "reason": "HYPERSCALE DATA INC is a known investment of Scale AI, Inc."
+   },
+   {
+    "id": "g0189",
+    "issuer_name": "HYPERSCALE DATA INC",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Scale AI, Inc.",
+    "reason": "The issuer name is HYPERSCALE DATA INC, which is not in the candidate list."
+   },
+   {
+    "id": "g0191",
+    "issuer_name": "HYPERSCALE DATA INC",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Scale AI, Inc.",
+    "reason": "The issuer name is HYPERSCALE DATA INC, which is the parent company of Scale AI, Inc."
+   },
+   {
+    "id": "g0192",
+    "issuer_name": "HYPERSCALE DATA INC",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Scale AI, Inc.",
+    "reason": "HYPERSCALE DATA INC- CL B suggests a class B common stock"
+   },
+   {
+    "id": "g0194",
+    "issuer_name": "J7PV-OPEN.AF",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "OpenAI Group PBC",
+    "reason": "The issuer name and title match the known OpenAI naming convention."
+   },
+   {
+    "id": "g0208",
+    "issuer_name": "OPEN SPACE LABS INC",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Space Exploration Technologies Corp.",
+    "reason": "The issuer name is a clear match for SpaceX"
+   },
+   {
+    "id": "g0254",
+    "issuer_name": "SCALED AGILE INC. 2021 UNITRANCHE TERM LOAN",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Scale AI, Inc.",
+    "reason": "The issuer name and title match the name of Scale AI, Inc."
+   },
+   {
+    "id": "g0255",
+    "issuer_name": "SCALED AGILE, INC.-DELAYED DRAW TERM LOAN",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Scale AI, Inc.",
+    "reason": "The issuer name and title do not match any of the candidate companies."
+   },
+   {
+    "id": "g0256",
+    "issuer_name": "SCALED AGILE, INC.-REVOLVER",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "Scale AI, Inc.",
+    "reason": "The issuer name and title do not disclose the holding, and the filing does not provide any additional information."
+   },
+   {
+    "id": "g0320",
+    "issuer_name": "XAI3-FT5O.AF",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "X.AI Corp",
+    "reason": "The issuer name and title are identical, and match the name of one of the candidate companies."
+   },
+   {
+    "id": "g0321",
+    "issuer_name": "XAIJ-C5DQ.AF",
+    "truth": "NOT_IN_UNIVERSE",
+    "before": null,
+    "after": "X.AI Corp",
+    "reason": "The issuer name and title are identical, and match the name of one of the candidate companies."
+   }
+  ]
+ },
+ "veto_policy_consulted": 4,
+ "confidence": {
+  "answers": 322,
+  "distribution": {
+   "1.0": 315,
+   "0.95": 4,
+   "0.0": 3
+  },
+  "at_full_confidence": 315,
+  "disagreements": 15,
+  "disagreements_at_95_plus": 12,
+  "disagreements_at_full": 8,
+  "band_breaks": 14,
+  "band_breaks_at_95_plus": 11,
+  "band_breaks_at_full": 7
+ },
+ "throughput": {
+  "calls_measured": 322,
+  "errors": 0,
+  "mean_seconds_per_call": 3.236,
+  "median_seconds_per_call": 3.205,
+  "slowest_seconds": 3.669,
+  "tokens_total": 205214,
+  "tokens_per_second": 196.9,
+  "warm_seconds": 2.4,
+  "golden_set_strings": 322,
+  "strings_consulted_under_band_policy": 85,
+  "band_policy_consult_rate": 0.264,
+  "seconds_for_full_golden_set_llm_only": 1042.1,
+  "seconds_for_full_golden_set_band_policy": 275.1
+ },
+ "run": {
+  "at": "2026-08-28T14:59:24+00:00",
+  "host": "http://localhost:11434",
+  "machine": "Windows AMD64",
+  "model": "llama3.1:8b",
+  "digest": "46e0c10c039e0191",
+  "parameter_size": "8.0B",
+  "quantization": "Q4_K_M",
+  "family": "llama",
+  "warm_seconds": 2.4,
+  "entries_adjudicated": 322,
+  "wall_seconds": 1042.2,
+  "temperature": 0,
+  "seed": 7,
+  "schema_constrained": true
+ }
+}

@@ -1,0 +1,1640 @@
+{
+  "form_d": {
+    "quarters_scanned": 49,
+    "first_quarter": "2014q1",
+    "last_quarter": "2026q1",
+    "rows": 706,
+    "first_filing_date": "2014-01-22",
+    "last_filing_date": "2026-03-31",
+    "by_class": [
+      {
+        "vehicle_class": "candidate_operating",
+        "rows": 111,
+        "ciks": 46
+      },
+      {
+        "vehicle_class": "pooled_vehicle",
+        "rows": 595,
+        "ciks": 481
+      }
+    ],
+    "by_company": [
+      {
+        "company": "Space Exploration Technologies Corp.",
+        "vehicles": 177,
+        "candidates": 25,
+        "ciks": 151
+      },
+      {
+        "company": "Anduril Industries, Inc.",
+        "vehicles": 89,
+        "candidates": 3,
+        "ciks": 69
+      },
+      {
+        "company": "Anthropic PBC",
+        "vehicles": 86,
+        "candidates": 1,
+        "ciks": 67
+      },
+      {
+        "company": "Groq, Inc.",
+        "vehicles": 58,
+        "candidates": 3,
+        "ciks": 56
+      },
+      {
+        "company": "Cohere Inc. [FALSE POSITIVE]",
+        "vehicles": 47,
+        "candidates": 24,
+        "ciks": 29
+      },
+      {
+        "company": "OpenAI Group PBC",
+        "vehicles": 42,
+        "candidates": 7,
+        "ciks": 41
+      },
+      {
+        "company": "Perplexity AI, Inc.",
+        "vehicles": 39,
+        "candidates": 2,
+        "ciks": 41
+      },
+      {
+        "company": "Cerebras Systems Inc.",
+        "vehicles": 18,
+        "candidates": 0,
+        "ciks": 18
+      },
+      {
+        "company": "Databricks, Inc.",
+        "vehicles": 14,
+        "candidates": 19,
+        "ciks": 17
+      },
+      {
+        "company": "Figure AI Inc.",
+        "vehicles": 14,
+        "candidates": 2,
+        "ciks": 15
+      },
+      {
+        "company": "X.AI Corp",
+        "vehicles": 8,
+        "candidates": 22,
+        "ciks": 16
+      },
+      {
+        "company": "Scale AI, Inc.",
+        "vehicles": 3,
+        "candidates": 3,
+        "ciks": 5
+      }
+    ],
+    "archive_gap": "2008Q2-2013Q4 are not published by the SEC; 2008Q1 and 2012Q1 exist as orphans and are deliberately excluded so that the earliest observed filing is a property of a contiguous archive rather than of which orphan a company happened to appear in."
+  },
+  "ncsr": {
+    "filings": {
+      "filings": 60,
+      "with_footnote": 58,
+      "with_lots": 31,
+      "registrants": 30,
+      "bytes_fetched": "1170588213"
+    },
+    "by_company": [
+      {
+        "company": "Databricks, Inc.",
+        "lots": 74,
+        "registrants": 13,
+        "with_position_cost": 74,
+        "date_ranges": 0,
+        "earliest_entry": "2019-10-22",
+        "latest_entry": "2025-12-18"
+      },
+      {
+        "company": "Space Exploration Technologies Corp.",
+        "lots": 52,
+        "registrants": 12,
+        "with_position_cost": 36,
+        "date_ranges": 24,
+        "earliest_entry": "2015-01-20",
+        "latest_entry": "2026-02-02"
+      },
+      {
+        "company": "Anduril Industries, Inc.",
+        "lots": 49,
+        "registrants": 5,
+        "with_position_cost": 49,
+        "date_ranges": 0,
+        "earliest_entry": "2024-08-07",
+        "latest_entry": "2026-05-12"
+      },
+      {
+        "company": "Anthropic PBC",
+        "lots": 39,
+        "registrants": 9,
+        "with_position_cost": 39,
+        "date_ranges": 1,
+        "earliest_entry": "2025-08-18",
+        "latest_entry": "2026-05-28"
+      },
+      {
+        "company": "OpenAI Group PBC",
+        "lots": 20,
+        "registrants": 6,
+        "with_position_cost": 20,
+        "date_ranges": 0,
+        "earliest_entry": "2024-09-30",
+        "latest_entry": "2026-03-31"
+      },
+      {
+        "company": "X.AI Corp",
+        "lots": 10,
+        "registrants": 5,
+        "with_position_cost": 4,
+        "date_ranges": 0,
+        "earliest_entry": "2021-10-27",
+        "latest_entry": "2025-12-19"
+      },
+      {
+        "company": "Cerebras Systems Inc.",
+        "lots": 5,
+        "registrants": 3,
+        "with_position_cost": 5,
+        "date_ranges": 0,
+        "earliest_entry": "2025-09-19",
+        "latest_entry": "2026-01-30"
+      }
+    ]
+  },
+  "exposure": [
+    {
+      "company": "Anduril Industries, Inc.",
+      "coverage_status": "full",
+      "manager": "Fidelity",
+      "as_of": "2026-04-30",
+      "positions": 23,
+      "funds": 6,
+      "value_usd": "227895056.90",
+      "shares": "3305222.00",
+      "max_pct_net_assets": "0.252577892439",
+      "first_period": "2024-08-31",
+      "periods_held": 21
+    },
+    {
+      "company": "Anduril Industries, Inc.",
+      "coverage_status": "full",
+      "manager": "Franklin Templeton",
+      "as_of": "2026-04-30",
+      "positions": 4,
+      "funds": 2,
+      "value_usd": "49112119.70",
+      "shares": "712286.00",
+      "max_pct_net_assets": "0.808609053685",
+      "first_period": "2024-09-30",
+      "periods_held": 14
+    },
+    {
+      "company": "Anduril Industries, Inc.",
+      "coverage_status": "full",
+      "manager": "BlackRock",
+      "as_of": "2026-04-30",
+      "positions": 4,
+      "funds": 2,
+      "value_usd": "33680211.23",
+      "shares": "488471.00",
+      "max_pct_net_assets": "0.122426732785",
+      "first_period": "2024-09-30",
+      "periods_held": 14
+    },
+    {
+      "company": "Anduril Industries, Inc.",
+      "coverage_status": "full",
+      "manager": "StepStone",
+      "as_of": "2026-03-31",
+      "positions": 3,
+      "funds": 1,
+      "value_usd": "28146561.09",
+      "shares": "408201.00",
+      "max_pct_net_assets": "0.2708857535",
+      "first_period": "2024-06-30",
+      "periods_held": 8
+    },
+    {
+      "company": "Anduril Industries, Inc.",
+      "coverage_status": "full",
+      "manager": "Fundrise",
+      "as_of": "2026-03-31",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "7350006.00",
+      "shares": "76087.00",
+      "max_pct_net_assets": "1.082605679031",
+      "first_period": "2026-03-31",
+      "periods_held": 1
+    },
+    {
+      "company": "Anduril Industries, Inc.",
+      "coverage_status": "full",
+      "manager": "T. Rowe Price",
+      "as_of": "2026-04-30",
+      "positions": 3,
+      "funds": 2,
+      "value_usd": "7248721.54",
+      "shares": "105126.00",
+      "max_pct_net_assets": "0.0615214871",
+      "first_period": "2025-04-30",
+      "periods_held": 9
+    },
+    {
+      "company": "Anduril Industries, Inc.",
+      "coverage_status": "full",
+      "manager": "Coatue",
+      "as_of": "2026-03-31",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "2430666.86",
+      "shares": "58791.00",
+      "max_pct_net_assets": "0.050349304693",
+      "first_period": "2025-09-30",
+      "periods_held": 3
+    },
+    {
+      "company": "Anduril Industries, Inc.",
+      "coverage_status": "full",
+      "manager": "Neuberger Berman",
+      "as_of": "2026-04-30",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "1249973.00",
+      "shares": "18128.00",
+      "max_pct_net_assets": "0.093844816466",
+      "first_period": "2026-04-30",
+      "periods_held": 1
+    },
+    {
+      "company": "Anthropic PBC",
+      "coverage_status": "full",
+      "manager": "Coatue",
+      "as_of": "2026-03-31",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "479783270.50",
+      "shares": "1851470.00",
+      "max_pct_net_assets": "5.181011221942",
+      "first_period": "2025-09-30",
+      "periods_held": 3
+    },
+    {
+      "company": "Anthropic PBC",
+      "coverage_status": "full",
+      "manager": "Fidelity",
+      "as_of": "2026-04-30",
+      "positions": 18,
+      "funds": 9,
+      "value_usd": "468135576.09",
+      "shares": "1371423.00",
+      "max_pct_net_assets": "0.348007866754",
+      "first_period": "2024-03-31",
+      "periods_held": 26
+    },
+    {
+      "company": "Anthropic PBC",
+      "coverage_status": "full",
+      "manager": "Capital Group",
+      "as_of": "2026-03-31",
+      "positions": 3,
+      "funds": 1,
+      "value_usd": "384358623.43",
+      "shares": "1483229.00",
+      "max_pct_net_assets": "0.3931237569",
+      "first_period": "2025-09-30",
+      "periods_held": 5
+    },
+    {
+      "company": "Anthropic PBC",
+      "coverage_status": "full",
+      "manager": "Destiny Tech100",
+      "as_of": "2026-03-31",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "134092223.28",
+      "shares": "386088.00",
+      "max_pct_net_assets": "17.9181208325",
+      "first_period": "2026-03-31",
+      "periods_held": 1
+    },
+    {
+      "company": "Anthropic PBC",
+      "coverage_status": "full",
+      "manager": "BlackRock",
+      "as_of": "2026-04-30",
+      "positions": 3,
+      "funds": 2,
+      "value_usd": "100526993.49",
+      "shares": "315557.00",
+      "max_pct_net_assets": "0.441566337151",
+      "first_period": "2025-09-30",
+      "periods_held": 8
+    },
+    {
+      "company": "Anthropic PBC",
+      "coverage_status": "full",
+      "manager": "New York Life",
+      "as_of": "2026-04-30",
+      "positions": 2,
+      "funds": 1,
+      "value_usd": "74324206.57",
+      "shares": "286815.00",
+      "max_pct_net_assets": "0.311157146326",
+      "first_period": "2025-09-30",
+      "periods_held": 6
+    },
+    {
+      "company": "Anthropic PBC",
+      "coverage_status": "full",
+      "manager": "Alger",
+      "as_of": "2026-04-30",
+      "positions": 8,
+      "funds": 8,
+      "value_usd": "65160625.19",
+      "shares": "251453.00",
+      "max_pct_net_assets": "2.229311586078",
+      "first_period": "2026-04-30",
+      "periods_held": 1
+    },
+    {
+      "company": "Anthropic PBC",
+      "coverage_status": "full",
+      "manager": "JPMorgan",
+      "as_of": "2026-03-31",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "60662794.69",
+      "shares": "234096.00",
+      "max_pct_net_assets": "0.30059033745",
+      "first_period": "2025-09-30",
+      "periods_held": 3
+    },
+    {
+      "company": "Anthropic PBC",
+      "coverage_status": "full",
+      "manager": "Franklin Templeton",
+      "as_of": "2026-04-30",
+      "positions": 3,
+      "funds": 2,
+      "value_usd": "47867416.67",
+      "shares": "184719.00",
+      "max_pct_net_assets": "0.778796887849",
+      "first_period": "2025-10-31",
+      "periods_held": 3
+    },
+    {
+      "company": "Anthropic PBC",
+      "coverage_status": "full",
+      "manager": "T. Rowe Price",
+      "as_of": "2026-04-30",
+      "positions": 2,
+      "funds": 1,
+      "value_usd": "34774448.39",
+      "shares": "89581.00",
+      "max_pct_net_assets": "0.3489464152",
+      "first_period": "2025-09-30",
+      "periods_held": 6
+    },
+    {
+      "company": "Anthropic PBC",
+      "coverage_status": "full",
+      "manager": "ARK",
+      "as_of": "2026-04-30",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "23083672.92",
+      "shares": "89078.00",
+      "max_pct_net_assets": "2.676532597846",
+      "first_period": "2023-04-28",
+      "periods_held": 13
+    },
+    {
+      "company": "Anthropic PBC",
+      "coverage_status": "full",
+      "manager": "Nuveen",
+      "as_of": "2026-04-30",
+      "positions": 2,
+      "funds": 1,
+      "value_usd": "6605839.35",
+      "shares": "18281.00",
+      "max_pct_net_assets": "0.398943487452",
+      "first_period": "2025-10-31",
+      "periods_held": 3
+    },
+    {
+      "company": "Cerebras Systems Inc.",
+      "coverage_status": "full",
+      "manager": "Fidelity",
+      "as_of": "2026-04-30",
+      "positions": 6,
+      "funds": 5,
+      "value_usd": "167835240.00",
+      "shares": "1674000.00",
+      "max_pct_net_assets": "0.122775801565",
+      "first_period": "2025-09-30",
+      "periods_held": 8
+    },
+    {
+      "company": "Cerebras Systems Inc.",
+      "coverage_status": "full",
+      "manager": "Private Shares Fund",
+      "as_of": "2026-03-31",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "22142776.13",
+      "shares": "223687.00",
+      "max_pct_net_assets": "1.9059484222",
+      "first_period": "2022-12-31",
+      "periods_held": 14
+    },
+    {
+      "company": "Cerebras Systems Inc.",
+      "coverage_status": "full",
+      "manager": "StepStone",
+      "as_of": "2026-03-31",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "17399968.35",
+      "shares": "195471.00",
+      "max_pct_net_assets": "0.2716019701",
+      "first_period": "2026-03-31",
+      "periods_held": 1
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "Capital Group",
+      "as_of": "2026-02-28",
+      "positions": 4,
+      "funds": 2,
+      "value_usd": "757394570.45",
+      "shares": "4251443.00",
+      "max_pct_net_assets": "0.373990329",
+      "first_period": "2025-02-28",
+      "periods_held": 5
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "Morgan Stanley",
+      "as_of": "2026-03-31",
+      "positions": 7,
+      "funds": 5,
+      "value_usd": "396344239.32",
+      "shares": "2439642.00",
+      "max_pct_net_assets": "7.596181691288",
+      "first_period": "2022-12-31",
+      "periods_held": 14
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "Alger",
+      "as_of": "2026-04-30",
+      "positions": 16,
+      "funds": 7,
+      "value_usd": "257623178.67",
+      "shares": "1498419.00",
+      "max_pct_net_assets": "2.937657577757",
+      "first_period": "2024-12-31",
+      "periods_held": 13
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "Coatue",
+      "as_of": "2026-03-31",
+      "positions": 2,
+      "funds": 1,
+      "value_usd": "232333140.00",
+      "shares": "1222806.00",
+      "max_pct_net_assets": "3.108606913879",
+      "first_period": "2025-09-30",
+      "periods_held": 3
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "Fidelity",
+      "as_of": "2026-04-30",
+      "positions": 18,
+      "funds": 4,
+      "value_usd": "231062754.70",
+      "shares": "1318099.00",
+      "max_pct_net_assets": "0.122136567029",
+      "first_period": "2022-11-30",
+      "periods_held": 42
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "Franklin Templeton",
+      "as_of": "2026-04-30",
+      "positions": 5,
+      "funds": 3,
+      "value_usd": "205241186.30",
+      "shares": "1074362.00",
+      "max_pct_net_assets": "1.441686864943",
+      "first_period": "2022-12-31",
+      "periods_held": 30
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "BlackRock",
+      "as_of": "2026-04-30",
+      "positions": 2,
+      "funds": 1,
+      "value_usd": "176630280.96",
+      "shares": "1044408.00",
+      "max_pct_net_assets": "0.806760530942",
+      "first_period": "2022-11-30",
+      "periods_held": 42
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "AMCAP Fund",
+      "as_of": "2026-02-28",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "156290995.00",
+      "shares": "877300.00",
+      "max_pct_net_assets": "0.1665153832",
+      "first_period": "2026-02-28",
+      "periods_held": 1
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "StepStone",
+      "as_of": "2026-03-31",
+      "positions": 3,
+      "funds": 1,
+      "value_usd": "128497950.00",
+      "shares": "676305.00",
+      "max_pct_net_assets": "1.5918643836",
+      "first_period": "2025-12-31",
+      "periods_held": 2
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "Brighthouse",
+      "as_of": "2026-03-31",
+      "positions": 8,
+      "funds": 4,
+      "value_usd": "122272083.48",
+      "shares": "714916.00",
+      "max_pct_net_assets": "3.510745581545",
+      "first_period": "2022-12-31",
+      "periods_held": 14
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "T. Rowe Price",
+      "as_of": "2026-04-30",
+      "positions": 9,
+      "funds": 2,
+      "value_usd": "113658570.00",
+      "shares": "598203.00",
+      "max_pct_net_assets": "0.7156370646",
+      "first_period": "2025-01-31",
+      "periods_held": 16
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "Robinhood Ventures Fund I",
+      "as_of": "2026-03-31",
+      "positions": 2,
+      "funds": 1,
+      "value_usd": "81666370.00",
+      "shares": "429823.00",
+      "max_pct_net_assets": "7.6298814974",
+      "first_period": "2026-03-31",
+      "periods_held": 1
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "JPMorgan",
+      "as_of": "2026-03-31",
+      "positions": 2,
+      "funds": 2,
+      "value_usd": "55540610.00",
+      "shares": "292319.00",
+      "max_pct_net_assets": "0.176848434016",
+      "first_period": "2025-09-30",
+      "periods_held": 3
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "Lincoln Financial",
+      "as_of": "2026-03-31",
+      "positions": 10,
+      "funds": 3,
+      "value_usd": "44217750.00",
+      "shares": "232725.00",
+      "max_pct_net_assets": "0.90281308379",
+      "first_period": "2022-12-31",
+      "periods_held": 14
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "New York Life",
+      "as_of": "2026-04-30",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "37360719.92",
+      "shares": "217517.00",
+      "max_pct_net_assets": "0.303889370897",
+      "first_period": "2025-03-31",
+      "periods_held": 7
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "Private Shares Fund",
+      "as_of": "2026-03-31",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "34706160.00",
+      "shares": "182664.00",
+      "max_pct_net_assets": "2.9873467764",
+      "first_period": "2022-12-31",
+      "periods_held": 14
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "VALIC Co I",
+      "as_of": "2026-02-28",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "29181401.60",
+      "shares": "163280.00",
+      "max_pct_net_assets": "1.645464564796",
+      "first_period": "2022-11-30",
+      "periods_held": 12
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "Fundrise",
+      "as_of": "2026-03-31",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "23256000.00",
+      "shares": "122400.00",
+      "max_pct_net_assets": "3.425449948143",
+      "first_period": "2023-12-31",
+      "periods_held": 10
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "Neuberger Berman",
+      "as_of": "2026-04-30",
+      "positions": 8,
+      "funds": 1,
+      "value_usd": "22225060.00",
+      "shares": "116974.00",
+      "max_pct_net_assets": "0.146906036804",
+      "first_period": "2025-04-30",
+      "periods_held": 9
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "ARK",
+      "as_of": "2026-04-30",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "19944660.66",
+      "shares": "100728.00",
+      "max_pct_net_assets": "0.906264988591",
+      "first_period": "2025-10-31",
+      "periods_held": 3
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "Destiny Tech100",
+      "as_of": "2026-03-31",
+      "positions": 2,
+      "funds": 1,
+      "value_usd": "18206593.02",
+      "shares": "92106.00",
+      "max_pct_net_assets": "1.3902071093",
+      "first_period": "2025-12-31",
+      "periods_held": 2
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "Voya",
+      "as_of": "2024-12-31",
+      "positions": 3,
+      "funds": 1,
+      "value_usd": "10660162.50",
+      "shares": "115245.00",
+      "max_pct_net_assets": "0.590362361607",
+      "first_period": "2022-12-30",
+      "periods_held": 9
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "MassMutual",
+      "as_of": "2024-12-31",
+      "positions": 10,
+      "funds": 5,
+      "value_usd": "10649340.00",
+      "shares": "115128.00",
+      "max_pct_net_assets": "0.139222705804",
+      "first_period": "2022-12-31",
+      "periods_held": 9
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "Nuveen",
+      "as_of": "2026-04-30",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "2663610.00",
+      "shares": "14019.00",
+      "max_pct_net_assets": "0.314079025014",
+      "first_period": "2026-01-31",
+      "periods_held": 2
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "BNY Mellon",
+      "as_of": "2026-03-31",
+      "positions": 3,
+      "funds": 1,
+      "value_usd": "2498654.40",
+      "shares": "17760.00",
+      "max_pct_net_assets": "0.812318550921",
+      "first_period": "2022-11-30",
+      "periods_held": 29
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "EQ Advisors Trust",
+      "as_of": "2026-03-31",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "2207467.50",
+      "shares": "15491.00",
+      "max_pct_net_assets": "0.377958697769",
+      "first_period": "2024-12-31",
+      "periods_held": 6
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "EMPOWER FUNDS, INC.",
+      "as_of": "2025-12-31",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "1094970.00",
+      "shares": "5763.00",
+      "max_pct_net_assets": "0.0544297504",
+      "first_period": "2022-12-31",
+      "periods_held": 13
+    },
+    {
+      "company": "Databricks, Inc.",
+      "coverage_status": "full",
+      "manager": "SunAmerica",
+      "as_of": "2026-04-30",
+      "positions": 4,
+      "funds": 2,
+      "value_usd": "945630.00",
+      "shares": "4977.00",
+      "max_pct_net_assets": "0.036159608454",
+      "first_period": "2022-12-31",
+      "periods_held": 28
+    },
+    {
+      "company": "Figure AI Inc.",
+      "coverage_status": "thin",
+      "manager": "Alger",
+      "as_of": "2026-04-30",
+      "positions": 8,
+      "funds": 8,
+      "value_usd": "65640715.20",
+      "shares": "337658.00",
+      "max_pct_net_assets": "0.477651981046",
+      "first_period": "2025-12-31",
+      "periods_held": 5
+    },
+    {
+      "company": "Figure AI Inc.",
+      "coverage_status": "thin",
+      "manager": "ARK",
+      "as_of": "2026-04-30",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "25527960.00",
+      "shares": "189096.00",
+      "max_pct_net_assets": "2.959945643542",
+      "first_period": "2024-04-30",
+      "periods_held": 9
+    },
+    {
+      "company": "Groq, Inc.",
+      "coverage_status": "watchlist",
+      "manager": "Capital Group",
+      "as_of": "2026-02-28",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "51288445.34",
+      "shares": "583022.00",
+      "max_pct_net_assets": "0.0156344498",
+      "first_period": "2025-11-30",
+      "periods_held": 2
+    },
+    {
+      "company": "Groq, Inc.",
+      "coverage_status": "watchlist",
+      "manager": "ARK",
+      "as_of": "2026-04-30",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "2985152.00",
+      "shares": "46643.00",
+      "max_pct_net_assets": "0.346125881492",
+      "first_period": "2025-04-30",
+      "periods_held": 5
+    },
+    {
+      "company": "Groq, Inc.",
+      "coverage_status": "watchlist",
+      "manager": "BlackRock",
+      "as_of": "2026-03-31",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "2502261.01",
+      "shares": "40425.00",
+      "max_pct_net_assets": "0.532522731528",
+      "first_period": "2024-09-30",
+      "periods_held": 7
+    },
+    {
+      "company": "OpenAI Group PBC",
+      "coverage_status": "full",
+      "manager": "Coatue",
+      "as_of": "2026-03-31",
+      "positions": 2,
+      "funds": 1,
+      "value_usd": "496621347.10",
+      "shares": "722162.00",
+      "max_pct_net_assets": "6.966542795619",
+      "first_period": "2025-09-30",
+      "periods_held": 3
+    },
+    {
+      "company": "OpenAI Group PBC",
+      "coverage_status": "full",
+      "manager": "ARK",
+      "as_of": "2026-04-30",
+      "positions": 6,
+      "funds": 4,
+      "value_usd": "312511918.09",
+      "shares": "454439.10",
+      "max_pct_net_assets": "5.797417829645",
+      "first_period": "2024-04-30",
+      "periods_held": 9
+    },
+    {
+      "company": "OpenAI Group PBC",
+      "coverage_status": "full",
+      "manager": "Fidelity",
+      "as_of": "2026-04-30",
+      "positions": 11,
+      "funds": 5,
+      "value_usd": "264543339.96",
+      "shares": "384684.00",
+      "max_pct_net_assets": "0.187408809513",
+      "first_period": "2024-09-30",
+      "periods_held": 20
+    },
+    {
+      "company": "OpenAI Group PBC",
+      "coverage_status": "full",
+      "manager": "New York Life",
+      "as_of": "2026-04-30",
+      "positions": 2,
+      "funds": 1,
+      "value_usd": "101854682.14",
+      "shares": "148112.00",
+      "max_pct_net_assets": "0.665732906568",
+      "first_period": "2025-10-31",
+      "periods_held": 5
+    },
+    {
+      "company": "OpenAI Group PBC",
+      "coverage_status": "full",
+      "manager": "Capital Group",
+      "as_of": "2026-03-31",
+      "positions": 2,
+      "funds": 1,
+      "value_usd": "74759818.27",
+      "shares": "108712.00",
+      "max_pct_net_assets": "0.1014230222",
+      "first_period": "2024-11-30",
+      "periods_held": 12
+    },
+    {
+      "company": "OpenAI Group PBC",
+      "coverage_status": "full",
+      "manager": "BlackRock",
+      "as_of": "2026-04-30",
+      "positions": 2,
+      "funds": 2,
+      "value_usd": "55935077.08",
+      "shares": "81338.00",
+      "max_pct_net_assets": "0.351996606565",
+      "first_period": "2026-03-31",
+      "periods_held": 2
+    },
+    {
+      "company": "OpenAI Group PBC",
+      "coverage_status": "full",
+      "manager": "Destiny Tech100",
+      "as_of": "2026-03-31",
+      "positions": 2,
+      "funds": 1,
+      "value_usd": "42726674.79",
+      "shares": "62131.00",
+      "max_pct_net_assets": "4.6768639835",
+      "first_period": "2024-03-31",
+      "periods_held": 9
+    },
+    {
+      "company": "OpenAI Group PBC",
+      "coverage_status": "full",
+      "manager": "T. Rowe Price",
+      "as_of": "2026-04-30",
+      "positions": 5,
+      "funds": 2,
+      "value_usd": "29134543.21",
+      "shares": "42366.00",
+      "max_pct_net_assets": "0.2114110054",
+      "first_period": "2025-09-30",
+      "periods_held": 8
+    },
+    {
+      "company": "OpenAI Group PBC",
+      "coverage_status": "full",
+      "manager": "Alger",
+      "as_of": "2026-04-30",
+      "positions": 5,
+      "funds": 5,
+      "value_usd": "23069144.75",
+      "shares": "33546.00",
+      "max_pct_net_assets": "0.448575223462",
+      "first_period": "2026-04-30",
+      "periods_held": 1
+    },
+    {
+      "company": "OpenAI Group PBC",
+      "coverage_status": "full",
+      "manager": "Franklin Templeton",
+      "as_of": "2026-04-30",
+      "positions": 2,
+      "funds": 2,
+      "value_usd": "18424590.48",
+      "shares": "26792.00",
+      "max_pct_net_assets": "0.388268594254",
+      "first_period": "2025-10-31",
+      "periods_held": 4
+    },
+    {
+      "company": "OpenAI Group PBC",
+      "coverage_status": "full",
+      "manager": "JPMorgan",
+      "as_of": "2026-03-31",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "18018853.38",
+      "shares": "26202.00",
+      "max_pct_net_assets": "0.089285257061",
+      "first_period": "2025-12-31",
+      "periods_held": 2
+    },
+    {
+      "company": "OpenAI Group PBC",
+      "coverage_status": "full",
+      "manager": "Nuveen",
+      "as_of": "2026-04-30",
+      "positions": 2,
+      "funds": 1,
+      "value_usd": "6880995.13",
+      "shares": "10006.00",
+      "max_pct_net_assets": "0.663222509164",
+      "first_period": "2026-01-31",
+      "periods_held": 2
+    },
+    {
+      "company": "Perplexity AI, Inc.",
+      "coverage_status": "watchlist",
+      "manager": "ARK",
+      "as_of": "2026-04-30",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "3542758.43",
+      "shares": "60810.00",
+      "max_pct_net_assets": "0.410779881392",
+      "first_period": "2025-01-31",
+      "periods_held": 6
+    },
+    {
+      "company": "Perplexity AI, Inc.",
+      "coverage_status": "watchlist",
+      "manager": "T. Rowe Price",
+      "as_of": "2026-04-30",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "68153.49",
+      "shares": "980.00",
+      "max_pct_net_assets": "0.0079559102",
+      "first_period": "2025-09-30",
+      "periods_held": 6
+    },
+    {
+      "company": "Space Exploration Technologies Corp.",
+      "coverage_status": "full",
+      "manager": "Fidelity",
+      "as_of": "2026-04-30",
+      "positions": 21,
+      "funds": 12,
+      "value_usd": "6567457231.89",
+      "shares": "10594064.00",
+      "max_pct_net_assets": "4.723612382474",
+      "first_period": "2022-11-30",
+      "periods_held": 42
+    },
+    {
+      "company": "Space Exploration Technologies Corp.",
+      "coverage_status": "full",
+      "manager": "Baron Capital",
+      "as_of": "2026-03-31",
+      "positions": 14,
+      "funds": 7,
+      "value_usd": "6057362137.05",
+      "shares": "5612990.00",
+      "max_pct_net_assets": "15.85882794098",
+      "first_period": "2022-12-31",
+      "periods_held": 14
+    },
+    {
+      "company": "Space Exploration Technologies Corp.",
+      "coverage_status": "full",
+      "manager": "StepStone",
+      "as_of": "2026-03-31",
+      "positions": 3,
+      "funds": 1,
+      "value_usd": "586533319.47",
+      "shares": "588944.00",
+      "max_pct_net_assets": "4.7938233564",
+      "first_period": "2024-06-30",
+      "periods_held": 8
+    },
+    {
+      "company": "Space Exploration Technologies Corp.",
+      "coverage_status": "full",
+      "manager": "Private Shares Fund",
+      "as_of": "2026-03-31",
+      "positions": 4,
+      "funds": 1,
+      "value_usd": "224253091.00",
+      "shares": "425859.00",
+      "max_pct_net_assets": "16.3324788518",
+      "first_period": "2022-12-31",
+      "periods_held": 14
+    },
+    {
+      "company": "Space Exploration Technologies Corp.",
+      "coverage_status": "full",
+      "manager": "BlackRock",
+      "as_of": "2026-04-30",
+      "positions": 2,
+      "funds": 1,
+      "value_usd": "197227438.83",
+      "shares": "374537.00",
+      "max_pct_net_assets": "0.8152015778",
+      "first_period": "2023-09-30",
+      "periods_held": 15
+    },
+    {
+      "company": "Space Exploration Technologies Corp.",
+      "coverage_status": "full",
+      "manager": "Coatue",
+      "as_of": "2026-03-31",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "136969218.54",
+      "shares": "260106.00",
+      "max_pct_net_assets": "1.764056520108",
+      "first_period": "2025-09-30",
+      "periods_held": 3
+    },
+    {
+      "company": "Space Exploration Technologies Corp.",
+      "coverage_status": "full",
+      "manager": "ARK",
+      "as_of": "2026-04-30",
+      "positions": 2,
+      "funds": 1,
+      "value_usd": "107358335.20",
+      "shares": "174487.52",
+      "max_pct_net_assets": "8.768644010909",
+      "first_period": "2024-01-31",
+      "periods_held": 10
+    },
+    {
+      "company": "Space Exploration Technologies Corp.",
+      "coverage_status": "full",
+      "manager": "Destiny Tech100",
+      "as_of": "2026-03-31",
+      "positions": 3,
+      "funds": 1,
+      "value_usd": "107309944.83",
+      "shares": "206478.00",
+      "max_pct_net_assets": "9.5542032718",
+      "first_period": "2023-12-31",
+      "periods_held": 10
+    },
+    {
+      "company": "Space Exploration Technologies Corp.",
+      "coverage_status": "full",
+      "manager": "Franklin Templeton",
+      "as_of": "2026-04-30",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "75227067.63",
+      "shares": "142857.00",
+      "max_pct_net_assets": "1.678243033794",
+      "first_period": "2023-01-31",
+      "periods_held": 14
+    },
+    {
+      "company": "Space Exploration Technologies Corp.",
+      "coverage_status": "full",
+      "manager": "Neuberger Berman",
+      "as_of": "2026-03-31",
+      "positions": 3,
+      "funds": 1,
+      "value_usd": "40804932.51",
+      "shares": "46637.00",
+      "max_pct_net_assets": "2.193795771736",
+      "first_period": "2023-08-31",
+      "periods_held": 22
+    },
+    {
+      "company": "Space Exploration Technologies Corp.",
+      "coverage_status": "full",
+      "manager": "T. Rowe Price",
+      "as_of": "2026-04-30",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "7298449.30",
+      "shares": "13859.83",
+      "max_pct_net_assets": "0.0892771637",
+      "first_period": "2023-01-31",
+      "periods_held": 12
+    },
+    {
+      "company": "Space Exploration Technologies Corp.",
+      "coverage_status": "full",
+      "manager": "Master Bond LLC",
+      "as_of": "2024-06-28",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "5153610.00",
+      "shares": "53130.00",
+      "max_pct_net_assets": "0.014145254171",
+      "first_period": "2023-09-29",
+      "periods_held": 4
+    },
+    {
+      "company": "X.AI Corp",
+      "coverage_status": "watchlist",
+      "manager": "Fidelity",
+      "as_of": "2026-01-31",
+      "positions": 12,
+      "funds": 6,
+      "value_usd": "717076383.10",
+      "shares": "9502735.00",
+      "max_pct_net_assets": "0.419923644375",
+      "first_period": "2025-04-30",
+      "periods_held": 10
+    },
+    {
+      "company": "X.AI Corp",
+      "coverage_status": "watchlist",
+      "manager": "Baron Capital",
+      "as_of": "2025-12-31",
+      "positions": 10,
+      "funds": 6,
+      "value_usd": "606471416.32",
+      "shares": "8036992.00",
+      "max_pct_net_assets": "7.44938120868",
+      "first_period": "2024-06-30",
+      "periods_held": 7
+    },
+    {
+      "company": "X.AI Corp",
+      "coverage_status": "watchlist",
+      "manager": "StepStone",
+      "as_of": "2025-12-31",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "162388863.56",
+      "shares": "2151986.00",
+      "max_pct_net_assets": "3.4721595267",
+      "first_period": "2024-06-30",
+      "periods_held": 7
+    },
+    {
+      "company": "X.AI Corp",
+      "coverage_status": "watchlist",
+      "manager": "BlackRock",
+      "as_of": "2026-03-31",
+      "positions": 5,
+      "funds": 5,
+      "value_usd": "155026382.28",
+      "shares": "2054418.00",
+      "max_pct_net_assets": "0.582647622599",
+      "first_period": "2025-04-30",
+      "periods_held": 8
+    },
+    {
+      "company": "X.AI Corp",
+      "coverage_status": "watchlist",
+      "manager": "Private Shares Fund",
+      "as_of": "2025-12-31",
+      "positions": 3,
+      "funds": 1,
+      "value_usd": "34505518.74",
+      "shares": "457269.00",
+      "max_pct_net_assets": "1.8140783516",
+      "first_period": "2024-06-30",
+      "periods_held": 7
+    },
+    {
+      "company": "X.AI Corp",
+      "coverage_status": "watchlist",
+      "manager": "ARK",
+      "as_of": "2026-01-30",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "34038218.35",
+      "shares": "451076.31",
+      "max_pct_net_assets": "4.102809826557",
+      "first_period": "2024-07-31",
+      "periods_held": 7
+    },
+    {
+      "company": "X.AI Corp",
+      "coverage_status": "watchlist",
+      "manager": "T. Rowe Price",
+      "as_of": "2026-03-31",
+      "positions": 2,
+      "funds": 1,
+      "value_usd": "27427219.82",
+      "shares": "363467.00",
+      "max_pct_net_assets": "0.1623358317",
+      "first_period": "2025-09-30",
+      "periods_held": 4
+    },
+    {
+      "company": "X.AI Corp",
+      "coverage_status": "watchlist",
+      "manager": "Destiny Tech100",
+      "as_of": "2025-12-31",
+      "positions": 1,
+      "funds": 1,
+      "value_usd": "14999938.80",
+      "shares": "198780.00",
+      "max_pct_net_assets": "3.4242980672",
+      "first_period": "2025-12-31",
+      "periods_held": 1
+    }
+  ],
+  "corroboration": {
+    "dates_in_window": 18,
+    "hits": {
+      "0": 10,
+      "7": 11,
+      "31": 11
+    },
+    "share": {
+      "0": 0.5556,
+      "7": 0.6111,
+      "31": 0.6111
+    },
+    "pairs": [
+      {
+        "company": "Databricks, Inc.",
+        "acquired": "2019-10-22",
+        "gap_days": 0,
+        "registrants": 5
+      },
+      {
+        "company": "Databricks, Inc.",
+        "acquired": "2020-07-24",
+        "gap_days": 192,
+        "registrants": 1
+      },
+      {
+        "company": "Databricks, Inc.",
+        "acquired": "2020-08-28",
+        "gap_days": 157,
+        "registrants": 1
+      },
+      {
+        "company": "Databricks, Inc.",
+        "acquired": "2021-02-01",
+        "gap_days": 0,
+        "registrants": 8
+      },
+      {
+        "company": "Databricks, Inc.",
+        "acquired": "2021-08-31",
+        "gap_days": 0,
+        "registrants": 5
+      },
+      {
+        "company": "Databricks, Inc.",
+        "acquired": "2021-09-01",
+        "gap_days": 1,
+        "registrants": 1
+      },
+      {
+        "company": "Databricks, Inc.",
+        "acquired": "2023-09-14",
+        "gap_days": 0,
+        "registrants": 1
+      },
+      {
+        "company": "Databricks, Inc.",
+        "acquired": "2024-06-03",
+        "gap_days": 197,
+        "registrants": 1
+      },
+      {
+        "company": "Databricks, Inc.",
+        "acquired": "2024-12-17",
+        "gap_days": 0,
+        "registrants": 1
+      },
+      {
+        "company": "Databricks, Inc.",
+        "acquired": "2025-03-12",
+        "gap_days": 76,
+        "registrants": 1
+      },
+      {
+        "company": "Databricks, Inc.",
+        "acquired": "2025-09-08",
+        "gap_days": 0,
+        "registrants": 3
+      },
+      {
+        "company": "Space Exploration Technologies Corp.",
+        "acquired": "2017-09-11",
+        "gap_days": 47,
+        "registrants": 1
+      },
+      {
+        "company": "Space Exploration Technologies Corp.",
+        "acquired": "2017-09-13",
+        "gap_days": 49,
+        "registrants": 1
+      },
+      {
+        "company": "Space Exploration Technologies Corp.",
+        "acquired": "2020-08-04",
+        "gap_days": 0,
+        "registrants": 1
+      },
+      {
+        "company": "Space Exploration Technologies Corp.",
+        "acquired": "2021-02-16",
+        "gap_days": 0,
+        "registrants": 1
+      },
+      {
+        "company": "X.AI Corp",
+        "acquired": "2024-06-11",
+        "gap_days": 32,
+        "registrants": 2
+      },
+      {
+        "company": "X.AI Corp",
+        "acquired": "2024-11-22",
+        "gap_days": 0,
+        "registrants": 3
+      },
+      {
+        "company": "X.AI Corp",
+        "acquired": "2025-12-19",
+        "gap_days": 0,
+        "registrants": 1
+      }
+    ],
+    "by_company": [
+      {
+        "company": "Databricks, Inc.",
+        "first_round": "2013-09-11",
+        "last_round": "2025-12-16",
+        "dates_outside_window": 1,
+        "dates_total": 12
+      },
+      {
+        "company": "Figure AI Inc.",
+        "first_round": "2024-02-27",
+        "last_round": "2024-02-27",
+        "dates_outside_window": 0,
+        "dates_total": 0
+      },
+      {
+        "company": "Groq, Inc.",
+        "first_round": "2016-10-06",
+        "last_round": "2018-08-28",
+        "dates_outside_window": 0,
+        "dates_total": 0
+      },
+      {
+        "company": "Perplexity AI, Inc.",
+        "first_round": "2023-03-21",
+        "last_round": "2023-03-21",
+        "dates_outside_window": 0,
+        "dates_total": 0
+      },
+      {
+        "company": "Space Exploration Technologies Corp.",
+        "first_round": "2015-01-20",
+        "last_round": "2022-07-20",
+        "dates_outside_window": 9,
+        "dates_total": 13
+      },
+      {
+        "company": "X.AI Corp",
+        "first_round": "2023-11-29",
+        "last_round": "2025-12-19",
+        "dates_outside_window": 2,
+        "dates_total": 5
+      }
+    ],
+    "method": "One row per (company, acquisition date) where the date falls inside that company's Form D filing window and is not a range. gap_days is the distance to the nearest filed round.",
+    "caveat": "Agreement is evidence, not proof of causation: a fund buying on the day an issuer reports first sale is consistent with participating in that round, and also with a secondary purchase that happened to settle the same day. What it is not is circular -- neither filing cites the other."
+  },
+  "by_class": [
+    {
+      "vehicle_class": "candidate_operating",
+      "ciks": 46,
+      "rows": 111
+    },
+    {
+      "vehicle_class": "pooled_vehicle",
+      "ciks": 481,
+      "rows": 595
+    }
+  ],
+  "by_filer": [
+    {
+      "filer": "FIDELITY",
+      "lots": 104,
+      "position_cost": 104,
+      "fund_cost": 0,
+      "ranges": 14
+    },
+    {
+      "filer": "VARIABLE",
+      "lots": 42,
+      "position_cost": 42,
+      "fund_cost": 0,
+      "ranges": 1
+    },
+    {
+      "filer": "BARON",
+      "lots": 22,
+      "position_cost": 0,
+      "fund_cost": 22,
+      "ranges": 9
+    },
+    {
+      "filer": "NEUBERGER",
+      "lots": 21,
+      "position_cost": 21,
+      "fund_cost": 0,
+      "ranges": 0
+    },
+    {
+      "filer": "Brighthouse",
+      "lots": 19,
+      "position_cost": 19,
+      "fund_cost": 0,
+      "ranges": 1
+    },
+    {
+      "filer": "BlackRock",
+      "lots": 14,
+      "position_cost": 14,
+      "fund_cost": 0,
+      "ranges": 0
+    },
+    {
+      "filer": "BLACKROCK",
+      "lots": 10,
+      "position_cost": 10,
+      "fund_cost": 0,
+      "ranges": 0
+    },
+    {
+      "filer": "LINCOLN",
+      "lots": 8,
+      "position_cost": 8,
+      "fund_cost": 0,
+      "ranges": 0
+    },
+    {
+      "filer": "SEASONS",
+      "lots": 5,
+      "position_cost": 5,
+      "fund_cost": 0,
+      "ranges": 0
+    },
+    {
+      "filer": "SUNAMERICA",
+      "lots": 4,
+      "position_cost": 4,
+      "fund_cost": 0,
+      "ranges": 0
+    }
+  ],
+  "entry_vs_mark": [
+    {
+      "company": "Space Exploration Technologies Corp.",
+      "first_entry": "2015-01-20",
+      "first_mark": "2022-11-30",
+      "lots": 52
+    },
+    {
+      "company": "Databricks, Inc.",
+      "first_entry": "2019-10-22",
+      "first_mark": "2022-11-30",
+      "lots": 74
+    },
+    {
+      "company": "X.AI Corp",
+      "first_entry": "2021-10-27",
+      "first_mark": "2024-06-30",
+      "lots": 10
+    },
+    {
+      "company": "Anduril Industries, Inc.",
+      "first_entry": "2024-08-07",
+      "first_mark": "2024-06-30",
+      "lots": 49
+    },
+    {
+      "company": "OpenAI Group PBC",
+      "first_entry": "2024-09-30",
+      "first_mark": "2024-03-31",
+      "lots": 20
+    },
+    {
+      "company": "Anthropic PBC",
+      "first_entry": "2025-08-18",
+      "first_mark": "2023-04-28",
+      "lots": 39
+    },
+    {
+      "company": "Cerebras Systems Inc.",
+      "first_entry": "2025-09-19",
+      "first_mark": "2022-12-31",
+      "lots": 5
+    }
+  ]
+}

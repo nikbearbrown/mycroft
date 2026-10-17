@@ -1,0 +1,150 @@
+{
+  "name": "Hacker News Dashboard",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "dashboard",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -272,
+        -80
+      ],
+      "id": "2aae3ccf-42b6-417e-a3a2-15f0781bd7fd",
+      "name": "Webhook",
+      "webhookId": "bac790f8-38de-4619-a303-9521c0dd4402"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/.n8n-files/dashboard/index.html",
+        "options": {
+          "dataPropertyName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        -64,
+        -80
+      ],
+      "id": "462f045b-5be6-44cc-8d9a-667e64c470ca",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "jsCode": "const html = $json.data\n  .replaceAll('%%SUPABASE_URL%%', $env.SUPABASE_URL || '')\n  .replaceAll('%%SUPABASE_ANON_KEY%%', $env.SUPABASE_ANON_KEY || '');\n\nreturn [{ json: { html } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        336,
+        -80
+      ],
+      "id": "c073a6c7-6392-46c9-b988-32d3f0efa934",
+      "name": "Inject Config"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {
+          "encoding": "utf8"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        128,
+        -80
+      ],
+      "id": "fd76b118-1d58-4968-a6e1-7104ba026125",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.html }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        544,
+        -80
+      ],
+      "id": "6de9427a-0881-4e2f-a0b6-a8d746b9c213",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inject Config": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Inject Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "760a1318-b069-4336-9950-b942958df553",
+  "meta": {
+    "instanceId": "d0a68b696e02b2fc92bad4789630b17f2998255dc1653cae92dc42ce1fb35cfe"
+  },
+  "nodeGroups": [],
+  "id": "MuAsCl1bQ4x24Ot3",
+  "tags": []
+}

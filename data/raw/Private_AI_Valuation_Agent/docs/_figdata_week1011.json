@@ -1,0 +1,82 @@
+{
+  "tools": [
+    {
+      "tool": "list_companies",
+      "rows_total": 11,
+      "rows_returned": 11,
+      "bounded_chars": 3059,
+      "unbounded_chars": 2277
+    },
+    {
+      "tool": "get_marks",
+      "rows_total": 2151,
+      "rows_returned": 50,
+      "bounded_chars": 17976,
+      "unbounded_chars": 575299
+    },
+    {
+      "tool": "compare_managers",
+      "rows_total": 39,
+      "rows_returned": 39,
+      "bounded_chars": 9978,
+      "unbounded_chars": 7810
+    },
+    {
+      "tool": "get_propagation",
+      "rows_total": 14,
+      "rows_returned": 14,
+      "bounded_chars": 6481,
+      "unbounded_chars": 5453
+    },
+    {
+      "tool": "get_fund_exposure",
+      "rows_total": 2,
+      "rows_returned": 2,
+      "bounded_chars": 1185,
+      "unbounded_chars": 907
+    },
+    {
+      "tool": "list_unresolved",
+      "rows_total": 0,
+      "rows_returned": 0,
+      "bounded_chars": 335,
+      "unbounded_chars": 225
+    }
+  ],
+  "limits": {
+    "default_limit": 50,
+    "max_response_chars": 48000
+  },
+  "signal": {
+    "schema_version": "1.0",
+    "companies": 10,
+    "not_supported": 4,
+    "forbidden_fields": 10,
+    "top_level_keys": 9,
+    "commentary_words": 388,
+    "commentary_model": "groq/openai/gpt-oss-120b",
+    "suppressed": [
+      "X.AI Corp",
+      "Figure AI Inc.",
+      "Perplexity AI, Inc.",
+      "Groq, Inc."
+    ]
+  },
+  "guards": [
+    {
+      "guard": "fabricated number",
+      "draft": "The spread was 47.3 percent.",
+      "caught": true
+    },
+    {
+      "guard": "invented ranking",
+      "draft": "Databricks, Inc. has the lowest number of marks, at 2151.",
+      "caught": true
+    },
+    {
+      "guard": "placeholder in prose",
+      "draft": "Figure AI had a maximum spread of null.",
+      "caught": true
+    }
+  ]
+}

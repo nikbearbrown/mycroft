@@ -1,0 +1,128 @@
+{
+  "name": "Hacker News Signal Endpoint",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "signal",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "46e30bcd-cccf-4734-8d96-51a41860447e",
+      "name": "Webhook",
+      "webhookId": "e9222826-e230-4bfa-9000-bd1e1c8c9fe5"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT run_date, window_hours, complete, watchlist_version,\n       leaderboard, narratives, community_opinions, sector_narrative\nFROM hn_buzz_runs\nWHERE complete = true AND watchlist_version = 'v1'\nORDER BY created_at DESC LIMIT 1;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        192,
+        0
+      ],
+      "id": "d445d895-8a6c-4eb3-bf7a-eb97d27af137",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "Utf7akeIjwVRiOaF",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        544,
+        0
+      ],
+      "id": "e75c0f52-5545-4312-bf69-81188c7acc61",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# n8n code node: Signal Endpoint  (Week 11 — /webhook/signal transform, schema 1.1)\n# Sits between the Postgres read and the Respond to Webhook node. Turns the latest\n# complete run row into the schema-1.1 JSON contract (docs/json_signal_contract.md).\n#\n# 1.1 is ADDITIVE over 1.0: same top-level + entity fields, plus per-entity\n# `narrative` (theme/tone) and structured `community_opinion` (no free text), plus\n# a top-level `sector` block. Consumers pinned on 1.0 ignore the new fields.\n#\n# Data source: the persisted `leaderboard` jsonb already carries each entity's\n# `narrative` and `communityOpinion` (they're attached before Save Snapshot), so\n# the endpoint query does NOT strictly need extra columns. As a fallback it will\n# also read top-level `narratives` / `community_opinions` maps if the query selects\n# them. The sector block reads `sectorNarrative`/`sector_narrative` if present,\n# else emits a well-formed degraded sector.\n#\n# Suggested query:\n#   SELECT run_date, window_hours, complete, watchlist_version,\n#          leaderboard, narratives, community_opinions\n#   FROM hn_buzz_runs\n#   WHERE complete = true AND watchlist_version = 'v1'\n#   ORDER BY created_at DESC LIMIT 1;\nimport json\n\n\ndef _as_list(v):\n    if isinstance(v, str):\n        try:\n            v = json.loads(v)\n        except Exception:\n            v = []\n    return v or []\n\n\ndef _as_map(v):\n    if isinstance(v, str):\n        try:\n            v = json.loads(v)\n        except Exception:\n            v = {}\n    return v or {}\n\n\ndef _narrative_out(n):\n    n = n or {}\n    return {\"theme\": n.get(\"theme\"), \"tone\": n.get(\"tone\")}\n\n\ndef _opinion_out(op):\n    op = op or {}\n    return {\n        \"sentiment\": op.get(\"sentiment\"),\n        \"themes\": op.get(\"themes\") or [],\n        \"comments_analyzed\": op.get(\"commentsAnalyzed\", 0),\n        \"low_confidence\": op.get(\"lowConfidence\", False),\n        \"degraded\": op.get(\"degraded\", False),\n    }\n\n\ndef _sector_out(row):\n    sec = row.get(\"sectorNarrative\") or row.get(\"sector_narrative\")\n    sec = _as_map(sec)\n    if not sec:\n        return {\"narrative\": None, \"cross_entity_themes\": [], \"degraded\": True}\n    return {\n        \"narrative\": sec.get(\"narrative\"),\n        \"cross_entity_themes\": sec.get(\"crossEntityThemes\") or [],\n        \"degraded\": sec.get(\"degraded\", False),\n    }\n\n\ndef func(_items):\n    row = _items[0][\"json\"] if (_items and _items[0].get(\"json\")) else {}\n\n    lb = _as_list(row.get(\"leaderboard\"))\n    narratives = _as_map(row.get(\"narratives\"))            # fallback maps (optional)\n    opinions = _as_map(row.get(\"community_opinions\"))\n\n    entities = []\n    for e in lb:\n        ent = e.get(\"entity\")\n        narrative = e.get(\"narrative\") or narratives.get(ent)\n        opinion = e.get(\"communityOpinion\") or opinions.get(ent)\n        entities.append({\n            \"entity\": ent,\n            \"ticker\": e.get(\"ticker\"),\n            \"buzz_score\": e.get(\"buzzScore\"),\n            \"velocity\": e.get(\"velocity\", 0),\n            \"breakout\": e.get(\"breakout\", False),\n            \"low_confidence\": e.get(\"lowConfidence\", False),\n            \"cold_start\": e.get(\"coldStart\", False),\n            \"narrative\": _narrative_out(narrative),\n            \"community_opinion\": _opinion_out(opinion),\n        })\n\n    signal = {\n        \"source\": \"hacker_news_buzz\",\n        \"schema_version\": \"1.1\",\n        \"run_date\": row.get(\"run_date\"),\n        \"window_hours\": row.get(\"window_hours\", 24),\n        \"watchlist_version\": row.get(\"watchlist_version\", \"v1\"),\n        \"complete\": bool(row.get(\"complete\")) if lb else False,\n        \"entities\": entities,\n        \"sector\": _sector_out(row),\n    }\n    return [{\"json\": signal}]\n\n\nreturn func(_items)\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        368,
+        0
+      ],
+      "id": "39676f8d-97e0-4880-8f94-7ce90a853d51",
+      "name": "Signal Endpoint"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Signal Endpoint",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signal Endpoint": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "7f0b943a-1c31-4752-92d1-b47fb59b81c3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d0a68b696e02b2fc92bad4789630b17f2998255dc1653cae92dc42ce1fb35cfe"
+  },
+  "nodeGroups": [],
+  "id": "XlORsgg47mVVu1LZ",
+  "tags": []
+}
