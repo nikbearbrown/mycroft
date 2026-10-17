@@ -1,0 +1,4500 @@
+[
+  {
+    "run_date": "2026-04-11",
+    "window_hours": 168,
+    "complete": true,
+    "watchlist_version": "v1",
+    "leaderboard": [
+      {
+        "entity": "OpenAI",
+        "ticker": null,
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-11",
+        "rawMetrics": {
+          "storyCount": 114,
+          "totalPoints": 2429,
+          "totalComments": 1266,
+          "frontPageCount": 5
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Anthropic",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-04-11",
+        "rawMetrics": {
+          "storyCount": 416,
+          "totalPoints": 10460,
+          "totalComments": 6078,
+          "frontPageCount": 24
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Google (Gemini)",
+        "ticker": "GOOGL",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-11",
+        "rawMetrics": {
+          "storyCount": 63,
+          "totalPoints": 1106,
+          "totalComments": 567,
+          "frontPageCount": 3
+        },
+        "lowConfidence": false,
+        "buzzScore": 72.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 12.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "NVIDIA",
+        "ticker": "NVDA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-11",
+        "rawMetrics": {
+          "storyCount": 28,
+          "totalPoints": 349,
+          "totalComments": 231,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 61.1,
+        "scoreComponents": {
+          "volume": 29.4,
+          "engagement": 27.6,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "AMD",
+        "ticker": "AMD",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-11",
+        "rawMetrics": {
+          "storyCount": 8,
+          "totalPoints": 437,
+          "totalComments": 248,
+          "frontPageCount": 2
+        },
+        "lowConfidence": false,
+        "buzzScore": 55.6,
+        "scoreComponents": {
+          "volume": 19.2,
+          "engagement": 28.4,
+          "frontPage": 8.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Mistral",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-04-11",
+        "rawMetrics": {
+          "storyCount": 2,
+          "totalPoints": 204,
+          "totalComments": 139,
+          "frontPageCount": 1
+        },
+        "lowConfidence": true,
+        "buzzScore": 50.0,
+        "scoreComponents": {
+          "volume": 20.0,
+          "engagement": 30.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Meta (Llama)",
+        "ticker": "META",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-11",
+        "rawMetrics": {
+          "storyCount": 14,
+          "totalPoints": 43,
+          "totalComments": 16,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 41.4,
+        "scoreComponents": {
+          "volume": 23.7,
+          "engagement": 17.8,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Microsoft (Copilot)",
+        "ticker": "MSFT",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-11",
+        "rawMetrics": {
+          "storyCount": 9,
+          "totalPoints": 33,
+          "totalComments": 14,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 36.9,
+        "scoreComponents": {
+          "volume": 20.1,
+          "engagement": 16.8,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Tesla (AI/FSD)",
+        "ticker": "TSLA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-11",
+        "rawMetrics": {
+          "storyCount": 4,
+          "totalPoints": 99,
+          "totalComments": 31,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 35.2,
+        "scoreComponents": {
+          "volume": 14.1,
+          "engagement": 21.2,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Palantir",
+        "ticker": "PLTR",
+        "breakoutThreshold": 60,
+        "runDate": "2026-04-11",
+        "rawMetrics": {
+          "storyCount": 5,
+          "totalPoints": 40,
+          "totalComments": 10,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 32.7,
+        "scoreComponents": {
+          "volume": 15.7,
+          "engagement": 17.1,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Amazon (AWS AI)",
+        "ticker": "AMZN",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-11",
+        "rawMetrics": {
+          "storyCount": 1,
+          "totalPoints": 2,
+          "totalComments": 2,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 12.4,
+        "scoreComponents": {
+          "volume": 10.0,
+          "engagement": 2.4,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Apple (Apple Intelligence)",
+        "ticker": "AAPL",
+        "breakoutThreshold": 60,
+        "runDate": "2026-04-11",
+        "rawMetrics": {
+          "storyCount": 0,
+          "totalPoints": 0,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 0,
+        "scoreComponents": {
+          "volume": 0.0,
+          "engagement": 0.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      }
+    ],
+    "raw_metrics": {
+      "OpenAI": {
+        "storyCount": 114,
+        "totalPoints": 2429,
+        "totalComments": 1266,
+        "frontPageCount": 5
+      },
+      "Anthropic": {
+        "storyCount": 416,
+        "totalPoints": 10460,
+        "totalComments": 6078,
+        "frontPageCount": 24
+      },
+      "Google (Gemini)": {
+        "storyCount": 63,
+        "totalPoints": 1106,
+        "totalComments": 567,
+        "frontPageCount": 3
+      },
+      "NVIDIA": {
+        "storyCount": 28,
+        "totalPoints": 349,
+        "totalComments": 231,
+        "frontPageCount": 1
+      },
+      "AMD": {
+        "storyCount": 8,
+        "totalPoints": 437,
+        "totalComments": 248,
+        "frontPageCount": 2
+      },
+      "Mistral": {
+        "storyCount": 2,
+        "totalPoints": 204,
+        "totalComments": 139,
+        "frontPageCount": 1
+      },
+      "Meta (Llama)": {
+        "storyCount": 14,
+        "totalPoints": 43,
+        "totalComments": 16,
+        "frontPageCount": 0
+      },
+      "Microsoft (Copilot)": {
+        "storyCount": 9,
+        "totalPoints": 33,
+        "totalComments": 14,
+        "frontPageCount": 0
+      },
+      "Tesla (AI/FSD)": {
+        "storyCount": 4,
+        "totalPoints": 99,
+        "totalComments": 31,
+        "frontPageCount": 0
+      },
+      "Palantir": {
+        "storyCount": 5,
+        "totalPoints": 40,
+        "totalComments": 10,
+        "frontPageCount": 0
+      },
+      "Amazon (AWS AI)": {
+        "storyCount": 1,
+        "totalPoints": 2,
+        "totalComments": 2,
+        "frontPageCount": 0
+      },
+      "Apple (Apple Intelligence)": {
+        "storyCount": 0,
+        "totalPoints": 0,
+        "totalComments": 0,
+        "frontPageCount": 0
+      }
+    }
+  },
+  {
+    "run_date": "2026-04-17",
+    "window_hours": 168,
+    "complete": true,
+    "watchlist_version": "v1",
+    "leaderboard": [
+      {
+        "entity": "OpenAI",
+        "ticker": null,
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-17",
+        "rawMetrics": {
+          "storyCount": 173,
+          "totalPoints": 5221,
+          "totalComments": 2921,
+          "frontPageCount": 10
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Anthropic",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-04-17",
+        "rawMetrics": {
+          "storyCount": 403,
+          "totalPoints": 10264,
+          "totalComments": 6052,
+          "frontPageCount": 28
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Palantir",
+        "ticker": "PLTR",
+        "breakoutThreshold": 60,
+        "runDate": "2026-04-17",
+        "rawMetrics": {
+          "storyCount": 21,
+          "totalPoints": 1605,
+          "totalComments": 1123,
+          "frontPageCount": 3
+        },
+        "lowConfidence": false,
+        "buzzScore": 69.0,
+        "scoreComponents": {
+          "volume": 27.0,
+          "engagement": 30.0,
+          "frontPage": 12.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Google (Gemini)",
+        "ticker": "GOOGL",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-17",
+        "rawMetrics": {
+          "storyCount": 63,
+          "totalPoints": 509,
+          "totalComments": 174,
+          "frontPageCount": 2
+        },
+        "lowConfidence": false,
+        "buzzScore": 66.3,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 28.3,
+          "frontPage": 8.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "NVIDIA",
+        "ticker": "NVDA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-17",
+        "rawMetrics": {
+          "storyCount": 31,
+          "totalPoints": 299,
+          "totalComments": 51,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 59.4,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 25.4,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Microsoft (Copilot)",
+        "ticker": "MSFT",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-17",
+        "rawMetrics": {
+          "storyCount": 17,
+          "totalPoints": 660,
+          "totalComments": 267,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 58.9,
+        "scoreComponents": {
+          "volume": 25.3,
+          "engagement": 29.7,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Meta (Llama)",
+        "ticker": "META",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-17",
+        "rawMetrics": {
+          "storyCount": 12,
+          "totalPoints": 897,
+          "totalComments": 538,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 56.4,
+        "scoreComponents": {
+          "volume": 22.4,
+          "engagement": 30.0,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "AMD",
+        "ticker": "AMD",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-17",
+        "rawMetrics": {
+          "storyCount": 7,
+          "totalPoints": 127,
+          "totalComments": 62,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 41.0,
+        "scoreComponents": {
+          "volume": 18.2,
+          "engagement": 22.8,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Mistral",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-04-17",
+        "rawMetrics": {
+          "storyCount": 6,
+          "totalPoints": 14,
+          "totalComments": 5,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 30.0,
+        "scoreComponents": {
+          "volume": 17.0,
+          "engagement": 13.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Tesla (AI/FSD)",
+        "ticker": "TSLA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-17",
+        "rawMetrics": {
+          "storyCount": 2,
+          "totalPoints": 5,
+          "totalComments": 1,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 23.6,
+        "scoreComponents": {
+          "volume": 20.0,
+          "engagement": 3.6,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Apple (Apple Intelligence)",
+        "ticker": "AAPL",
+        "breakoutThreshold": 60,
+        "runDate": "2026-04-17",
+        "rawMetrics": {
+          "storyCount": 1,
+          "totalPoints": 15,
+          "totalComments": 6,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 22.6,
+        "scoreComponents": {
+          "volume": 10.0,
+          "engagement": 12.6,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Amazon (AWS AI)",
+        "ticker": "AMZN",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-17",
+        "rawMetrics": {
+          "storyCount": 1,
+          "totalPoints": 2,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 11.2,
+        "scoreComponents": {
+          "volume": 10.0,
+          "engagement": 1.2,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      }
+    ],
+    "raw_metrics": {
+      "OpenAI": {
+        "storyCount": 173,
+        "totalPoints": 5221,
+        "totalComments": 2921,
+        "frontPageCount": 10
+      },
+      "Anthropic": {
+        "storyCount": 403,
+        "totalPoints": 10264,
+        "totalComments": 6052,
+        "frontPageCount": 28
+      },
+      "Palantir": {
+        "storyCount": 21,
+        "totalPoints": 1605,
+        "totalComments": 1123,
+        "frontPageCount": 3
+      },
+      "Google (Gemini)": {
+        "storyCount": 63,
+        "totalPoints": 509,
+        "totalComments": 174,
+        "frontPageCount": 2
+      },
+      "NVIDIA": {
+        "storyCount": 31,
+        "totalPoints": 299,
+        "totalComments": 51,
+        "frontPageCount": 1
+      },
+      "Microsoft (Copilot)": {
+        "storyCount": 17,
+        "totalPoints": 660,
+        "totalComments": 267,
+        "frontPageCount": 1
+      },
+      "Meta (Llama)": {
+        "storyCount": 12,
+        "totalPoints": 897,
+        "totalComments": 538,
+        "frontPageCount": 1
+      },
+      "AMD": {
+        "storyCount": 7,
+        "totalPoints": 127,
+        "totalComments": 62,
+        "frontPageCount": 0
+      },
+      "Mistral": {
+        "storyCount": 6,
+        "totalPoints": 14,
+        "totalComments": 5,
+        "frontPageCount": 0
+      },
+      "Tesla (AI/FSD)": {
+        "storyCount": 2,
+        "totalPoints": 5,
+        "totalComments": 1,
+        "frontPageCount": 0
+      },
+      "Apple (Apple Intelligence)": {
+        "storyCount": 1,
+        "totalPoints": 15,
+        "totalComments": 6,
+        "frontPageCount": 0
+      },
+      "Amazon (AWS AI)": {
+        "storyCount": 1,
+        "totalPoints": 2,
+        "totalComments": 0,
+        "frontPageCount": 0
+      }
+    }
+  },
+  {
+    "run_date": "2026-04-24",
+    "window_hours": 168,
+    "complete": true,
+    "watchlist_version": "v1",
+    "leaderboard": [
+      {
+        "entity": "OpenAI",
+        "ticker": null,
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-24",
+        "rawMetrics": {
+          "storyCount": 242,
+          "totalPoints": 6652,
+          "totalComments": 3927,
+          "frontPageCount": 12
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Anthropic",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-04-24",
+        "rawMetrics": {
+          "storyCount": 328,
+          "totalPoints": 7920,
+          "totalComments": 5034,
+          "frontPageCount": 19
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Microsoft (Copilot)",
+        "ticker": "MSFT",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-24",
+        "rawMetrics": {
+          "storyCount": 18,
+          "totalPoints": 1271,
+          "totalComments": 819,
+          "frontPageCount": 3
+        },
+        "lowConfidence": false,
+        "buzzScore": 67.7,
+        "scoreComponents": {
+          "volume": 25.7,
+          "engagement": 30.0,
+          "frontPage": 12.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Google (Gemini)",
+        "ticker": "GOOGL",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-24",
+        "rawMetrics": {
+          "storyCount": 54,
+          "totalPoints": 813,
+          "totalComments": 419,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 64.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "NVIDIA",
+        "ticker": "NVDA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-24",
+        "rawMetrics": {
+          "storyCount": 32,
+          "totalPoints": 250,
+          "totalComments": 48,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 58.8,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 24.8,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Mistral",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-04-24",
+        "rawMetrics": {
+          "storyCount": 8,
+          "totalPoints": 740,
+          "totalComments": 408,
+          "frontPageCount": 2
+        },
+        "lowConfidence": false,
+        "buzzScore": 57.2,
+        "scoreComponents": {
+          "volume": 19.2,
+          "engagement": 30.0,
+          "frontPage": 8.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Amazon (AWS AI)",
+        "ticker": "AMZN",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-24",
+        "rawMetrics": {
+          "storyCount": 6,
+          "totalPoints": 366,
+          "totalComments": 124,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 47.9,
+        "scoreComponents": {
+          "volume": 17.0,
+          "engagement": 26.9,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "AMD",
+        "ticker": "AMD",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-24",
+        "rawMetrics": {
+          "storyCount": 15,
+          "totalPoints": 138,
+          "totalComments": 44,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 46.8,
+        "scoreComponents": {
+          "volume": 24.2,
+          "engagement": 22.6,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Palantir",
+        "ticker": "PLTR",
+        "breakoutThreshold": 60,
+        "runDate": "2026-04-24",
+        "rawMetrics": {
+          "storyCount": 14,
+          "totalPoints": 97,
+          "totalComments": 8,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 43.9,
+        "scoreComponents": {
+          "volume": 23.7,
+          "engagement": 20.3,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Meta (Llama)",
+        "ticker": "META",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-24",
+        "rawMetrics": {
+          "storyCount": 10,
+          "totalPoints": 51,
+          "totalComments": 4,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 38.4,
+        "scoreComponents": {
+          "volume": 20.9,
+          "engagement": 17.5,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Apple (Apple Intelligence)",
+        "ticker": "AAPL",
+        "breakoutThreshold": 60,
+        "runDate": "2026-04-24",
+        "rawMetrics": {
+          "storyCount": 1,
+          "totalPoints": 7,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 14.2,
+        "scoreComponents": {
+          "volume": 10.0,
+          "engagement": 4.2,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Tesla (AI/FSD)",
+        "ticker": "TSLA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-04-24",
+        "rawMetrics": {
+          "storyCount": 1,
+          "totalPoints": 4,
+          "totalComments": 2,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 13.6,
+        "scoreComponents": {
+          "volume": 10.0,
+          "engagement": 3.6,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      }
+    ],
+    "raw_metrics": {
+      "OpenAI": {
+        "storyCount": 242,
+        "totalPoints": 6652,
+        "totalComments": 3927,
+        "frontPageCount": 12
+      },
+      "Anthropic": {
+        "storyCount": 328,
+        "totalPoints": 7920,
+        "totalComments": 5034,
+        "frontPageCount": 19
+      },
+      "Microsoft (Copilot)": {
+        "storyCount": 18,
+        "totalPoints": 1271,
+        "totalComments": 819,
+        "frontPageCount": 3
+      },
+      "Google (Gemini)": {
+        "storyCount": 54,
+        "totalPoints": 813,
+        "totalComments": 419,
+        "frontPageCount": 1
+      },
+      "NVIDIA": {
+        "storyCount": 32,
+        "totalPoints": 250,
+        "totalComments": 48,
+        "frontPageCount": 1
+      },
+      "Mistral": {
+        "storyCount": 8,
+        "totalPoints": 740,
+        "totalComments": 408,
+        "frontPageCount": 2
+      },
+      "Amazon (AWS AI)": {
+        "storyCount": 6,
+        "totalPoints": 366,
+        "totalComments": 124,
+        "frontPageCount": 1
+      },
+      "AMD": {
+        "storyCount": 15,
+        "totalPoints": 138,
+        "totalComments": 44,
+        "frontPageCount": 0
+      },
+      "Palantir": {
+        "storyCount": 14,
+        "totalPoints": 97,
+        "totalComments": 8,
+        "frontPageCount": 0
+      },
+      "Meta (Llama)": {
+        "storyCount": 10,
+        "totalPoints": 51,
+        "totalComments": 4,
+        "frontPageCount": 0
+      },
+      "Apple (Apple Intelligence)": {
+        "storyCount": 1,
+        "totalPoints": 7,
+        "totalComments": 0,
+        "frontPageCount": 0
+      },
+      "Tesla (AI/FSD)": {
+        "storyCount": 1,
+        "totalPoints": 4,
+        "totalComments": 2,
+        "frontPageCount": 0
+      }
+    }
+  },
+  {
+    "run_date": "2026-05-01",
+    "window_hours": 168,
+    "complete": true,
+    "watchlist_version": "v1",
+    "leaderboard": [
+      {
+        "entity": "OpenAI",
+        "ticker": null,
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-01",
+        "rawMetrics": {
+          "storyCount": 164,
+          "totalPoints": 3705,
+          "totalComments": 1679,
+          "frontPageCount": 7
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Anthropic",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-01",
+        "rawMetrics": {
+          "storyCount": 280,
+          "totalPoints": 4697,
+          "totalComments": 2521,
+          "frontPageCount": 11
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Google (Gemini)",
+        "ticker": "GOOGL",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-01",
+        "rawMetrics": {
+          "storyCount": 43,
+          "totalPoints": 990,
+          "totalComments": 428,
+          "frontPageCount": 2
+        },
+        "lowConfidence": false,
+        "buzzScore": 68.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 8.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Meta (Llama)",
+        "ticker": "META",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-01",
+        "rawMetrics": {
+          "storyCount": 13,
+          "totalPoints": 709,
+          "totalComments": 467,
+          "frontPageCount": 2
+        },
+        "lowConfidence": false,
+        "buzzScore": 61.1,
+        "scoreComponents": {
+          "volume": 23.1,
+          "engagement": 30.0,
+          "frontPage": 8.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "NVIDIA",
+        "ticker": "NVDA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-01",
+        "rawMetrics": {
+          "storyCount": 28,
+          "totalPoints": 321,
+          "totalComments": 67,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 59.3,
+        "scoreComponents": {
+          "volume": 29.4,
+          "engagement": 25.9,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Tesla (AI/FSD)",
+        "ticker": "TSLA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-01",
+        "rawMetrics": {
+          "storyCount": 2,
+          "totalPoints": 290,
+          "totalComments": 145,
+          "frontPageCount": 1
+        },
+        "lowConfidence": true,
+        "buzzScore": 50.0,
+        "scoreComponents": {
+          "volume": 20.0,
+          "engagement": 30.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Palantir",
+        "ticker": "PLTR",
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-01",
+        "rawMetrics": {
+          "storyCount": 13,
+          "totalPoints": 128,
+          "totalComments": 28,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 45.0,
+        "scoreComponents": {
+          "volume": 23.1,
+          "engagement": 22.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "AMD",
+        "ticker": "AMD",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-01",
+        "rawMetrics": {
+          "storyCount": 10,
+          "totalPoints": 31,
+          "totalComments": 2,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 36.3,
+        "scoreComponents": {
+          "volume": 20.9,
+          "engagement": 15.3,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Microsoft (Copilot)",
+        "ticker": "MSFT",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-01",
+        "rawMetrics": {
+          "storyCount": 4,
+          "totalPoints": 18,
+          "totalComments": 6,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 28.0,
+        "scoreComponents": {
+          "volume": 14.1,
+          "engagement": 14.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Mistral",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-01",
+        "rawMetrics": {
+          "storyCount": 4,
+          "totalPoints": 21,
+          "totalComments": 3,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 28.0,
+        "scoreComponents": {
+          "volume": 14.1,
+          "engagement": 14.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Apple (Apple Intelligence)",
+        "ticker": "AAPL",
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-01",
+        "rawMetrics": {
+          "storyCount": 2,
+          "totalPoints": 8,
+          "totalComments": 1,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 25.4,
+        "scoreComponents": {
+          "volume": 20.0,
+          "engagement": 5.4,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Amazon (AWS AI)",
+        "ticker": "AMZN",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-01",
+        "rawMetrics": {
+          "storyCount": 1,
+          "totalPoints": 7,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 14.2,
+        "scoreComponents": {
+          "volume": 10.0,
+          "engagement": 4.2,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      }
+    ],
+    "raw_metrics": {
+      "OpenAI": {
+        "storyCount": 164,
+        "totalPoints": 3705,
+        "totalComments": 1679,
+        "frontPageCount": 7
+      },
+      "Anthropic": {
+        "storyCount": 280,
+        "totalPoints": 4697,
+        "totalComments": 2521,
+        "frontPageCount": 11
+      },
+      "Google (Gemini)": {
+        "storyCount": 43,
+        "totalPoints": 990,
+        "totalComments": 428,
+        "frontPageCount": 2
+      },
+      "Meta (Llama)": {
+        "storyCount": 13,
+        "totalPoints": 709,
+        "totalComments": 467,
+        "frontPageCount": 2
+      },
+      "NVIDIA": {
+        "storyCount": 28,
+        "totalPoints": 321,
+        "totalComments": 67,
+        "frontPageCount": 1
+      },
+      "Tesla (AI/FSD)": {
+        "storyCount": 2,
+        "totalPoints": 290,
+        "totalComments": 145,
+        "frontPageCount": 1
+      },
+      "Palantir": {
+        "storyCount": 13,
+        "totalPoints": 128,
+        "totalComments": 28,
+        "frontPageCount": 0
+      },
+      "AMD": {
+        "storyCount": 10,
+        "totalPoints": 31,
+        "totalComments": 2,
+        "frontPageCount": 0
+      },
+      "Microsoft (Copilot)": {
+        "storyCount": 4,
+        "totalPoints": 18,
+        "totalComments": 6,
+        "frontPageCount": 0
+      },
+      "Mistral": {
+        "storyCount": 4,
+        "totalPoints": 21,
+        "totalComments": 3,
+        "frontPageCount": 0
+      },
+      "Apple (Apple Intelligence)": {
+        "storyCount": 2,
+        "totalPoints": 8,
+        "totalComments": 1,
+        "frontPageCount": 0
+      },
+      "Amazon (AWS AI)": {
+        "storyCount": 1,
+        "totalPoints": 7,
+        "totalComments": 0,
+        "frontPageCount": 0
+      }
+    }
+  },
+  {
+    "run_date": "2026-05-08",
+    "window_hours": 168,
+    "complete": true,
+    "watchlist_version": "v1",
+    "leaderboard": [
+      {
+        "entity": "Google (Gemini)",
+        "ticker": "GOOGL",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-08",
+        "rawMetrics": {
+          "storyCount": 53,
+          "totalPoints": 1982,
+          "totalComments": 806,
+          "frontPageCount": 6
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Anthropic",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-08",
+        "rawMetrics": {
+          "storyCount": 306,
+          "totalPoints": 5275,
+          "totalComments": 2863,
+          "frontPageCount": 15
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "OpenAI",
+        "ticker": null,
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-08",
+        "rawMetrics": {
+          "storyCount": 159,
+          "totalPoints": 2889,
+          "totalComments": 1648,
+          "frontPageCount": 4
+        },
+        "lowConfidence": false,
+        "buzzScore": 76.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 16.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Palantir",
+        "ticker": "PLTR",
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-08",
+        "rawMetrics": {
+          "storyCount": 15,
+          "totalPoints": 1236,
+          "totalComments": 416,
+          "frontPageCount": 7
+        },
+        "lowConfidence": false,
+        "buzzScore": 74.2,
+        "scoreComponents": {
+          "volume": 24.2,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "NVIDIA",
+        "ticker": "NVDA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-08",
+        "rawMetrics": {
+          "storyCount": 29,
+          "totalPoints": 683,
+          "totalComments": 196,
+          "frontPageCount": 2
+        },
+        "lowConfidence": false,
+        "buzzScore": 67.2,
+        "scoreComponents": {
+          "volume": 29.7,
+          "engagement": 29.4,
+          "frontPage": 8.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Meta (Llama)",
+        "ticker": "META",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-08",
+        "rawMetrics": {
+          "storyCount": 10,
+          "totalPoints": 681,
+          "totalComments": 616,
+          "frontPageCount": 2
+        },
+        "lowConfidence": false,
+        "buzzScore": 58.9,
+        "scoreComponents": {
+          "volume": 20.9,
+          "engagement": 30.0,
+          "frontPage": 8.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "AMD",
+        "ticker": "AMD",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-08",
+        "rawMetrics": {
+          "storyCount": 13,
+          "totalPoints": 191,
+          "totalComments": 63,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 51.1,
+        "scoreComponents": {
+          "volume": 23.1,
+          "engagement": 24.1,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Microsoft (Copilot)",
+        "ticker": "MSFT",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-08",
+        "rawMetrics": {
+          "storyCount": 15,
+          "totalPoints": 45,
+          "totalComments": 4,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 41.2,
+        "scoreComponents": {
+          "volume": 24.2,
+          "engagement": 17.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Mistral",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-08",
+        "rawMetrics": {
+          "storyCount": 8,
+          "totalPoints": 106,
+          "totalComments": 7,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 39.8,
+        "scoreComponents": {
+          "volume": 19.2,
+          "engagement": 20.6,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Amazon (AWS AI)",
+        "ticker": "AMZN",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-08",
+        "rawMetrics": {
+          "storyCount": 0,
+          "totalPoints": 0,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 0,
+        "scoreComponents": {
+          "volume": 0.0,
+          "engagement": 0.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Apple (Apple Intelligence)",
+        "ticker": "AAPL",
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-08",
+        "rawMetrics": {
+          "storyCount": 0,
+          "totalPoints": 0,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 0,
+        "scoreComponents": {
+          "volume": 0.0,
+          "engagement": 0.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Tesla (AI/FSD)",
+        "ticker": "TSLA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-08",
+        "rawMetrics": {
+          "storyCount": 0,
+          "totalPoints": 0,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 0,
+        "scoreComponents": {
+          "volume": 0.0,
+          "engagement": 0.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      }
+    ],
+    "raw_metrics": {
+      "Google (Gemini)": {
+        "storyCount": 53,
+        "totalPoints": 1982,
+        "totalComments": 806,
+        "frontPageCount": 6
+      },
+      "Anthropic": {
+        "storyCount": 306,
+        "totalPoints": 5275,
+        "totalComments": 2863,
+        "frontPageCount": 15
+      },
+      "OpenAI": {
+        "storyCount": 159,
+        "totalPoints": 2889,
+        "totalComments": 1648,
+        "frontPageCount": 4
+      },
+      "Palantir": {
+        "storyCount": 15,
+        "totalPoints": 1236,
+        "totalComments": 416,
+        "frontPageCount": 7
+      },
+      "NVIDIA": {
+        "storyCount": 29,
+        "totalPoints": 683,
+        "totalComments": 196,
+        "frontPageCount": 2
+      },
+      "Meta (Llama)": {
+        "storyCount": 10,
+        "totalPoints": 681,
+        "totalComments": 616,
+        "frontPageCount": 2
+      },
+      "AMD": {
+        "storyCount": 13,
+        "totalPoints": 191,
+        "totalComments": 63,
+        "frontPageCount": 1
+      },
+      "Microsoft (Copilot)": {
+        "storyCount": 15,
+        "totalPoints": 45,
+        "totalComments": 4,
+        "frontPageCount": 0
+      },
+      "Mistral": {
+        "storyCount": 8,
+        "totalPoints": 106,
+        "totalComments": 7,
+        "frontPageCount": 0
+      },
+      "Amazon (AWS AI)": {
+        "storyCount": 0,
+        "totalPoints": 0,
+        "totalComments": 0,
+        "frontPageCount": 0
+      },
+      "Apple (Apple Intelligence)": {
+        "storyCount": 0,
+        "totalPoints": 0,
+        "totalComments": 0,
+        "frontPageCount": 0
+      },
+      "Tesla (AI/FSD)": {
+        "storyCount": 0,
+        "totalPoints": 0,
+        "totalComments": 0,
+        "frontPageCount": 0
+      }
+    }
+  },
+  {
+    "run_date": "2026-05-15",
+    "window_hours": 168,
+    "complete": true,
+    "watchlist_version": "v1",
+    "leaderboard": [
+      {
+        "entity": "OpenAI",
+        "ticker": null,
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-15",
+        "rawMetrics": {
+          "storyCount": 139,
+          "totalPoints": 6534,
+          "totalComments": 3846,
+          "frontPageCount": 10
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Google (Gemini)",
+        "ticker": "GOOGL",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-15",
+        "rawMetrics": {
+          "storyCount": 85,
+          "totalPoints": 2697,
+          "totalComments": 1367,
+          "frontPageCount": 6
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Anthropic",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-15",
+        "rawMetrics": {
+          "storyCount": 274,
+          "totalPoints": 6328,
+          "totalComments": 3503,
+          "frontPageCount": 12
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "NVIDIA",
+        "ticker": "NVDA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-15",
+        "rawMetrics": {
+          "storyCount": 27,
+          "totalPoints": 1166,
+          "totalComments": 362,
+          "frontPageCount": 2
+        },
+        "lowConfidence": false,
+        "buzzScore": 67.1,
+        "scoreComponents": {
+          "volume": 29.1,
+          "engagement": 30.0,
+          "frontPage": 8.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Mistral",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-15",
+        "rawMetrics": {
+          "storyCount": 9,
+          "totalPoints": 1159,
+          "totalComments": 553,
+          "frontPageCount": 3
+        },
+        "lowConfidence": false,
+        "buzzScore": 62.1,
+        "scoreComponents": {
+          "volume": 20.1,
+          "engagement": 30.0,
+          "frontPage": 12.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Meta (Llama)",
+        "ticker": "META",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-15",
+        "rawMetrics": {
+          "storyCount": 11,
+          "totalPoints": 710,
+          "totalComments": 254,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 55.5,
+        "scoreComponents": {
+          "volume": 21.7,
+          "engagement": 29.8,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Palantir",
+        "ticker": "PLTR",
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-15",
+        "rawMetrics": {
+          "storyCount": 10,
+          "totalPoints": 259,
+          "totalComments": 81,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 50.3,
+        "scoreComponents": {
+          "volume": 20.9,
+          "engagement": 25.3,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Apple (Apple Intelligence)",
+        "ticker": "AAPL",
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-15",
+        "rawMetrics": {
+          "storyCount": 3,
+          "totalPoints": 733,
+          "totalComments": 382,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 46.1,
+        "scoreComponents": {
+          "volume": 12.1,
+          "engagement": 30.0,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "AMD",
+        "ticker": "AMD",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-15",
+        "rawMetrics": {
+          "storyCount": 14,
+          "totalPoints": 109,
+          "totalComments": 38,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 45.4,
+        "scoreComponents": {
+          "volume": 23.7,
+          "engagement": 21.7,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Microsoft (Copilot)",
+        "ticker": "MSFT",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-15",
+        "rawMetrics": {
+          "storyCount": 6,
+          "totalPoints": 9,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 27.0,
+        "scoreComponents": {
+          "volume": 17.0,
+          "engagement": 10.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Amazon (AWS AI)",
+        "ticker": "AMZN",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-15",
+        "rawMetrics": {
+          "storyCount": 1,
+          "totalPoints": 3,
+          "totalComments": 1,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 12.4,
+        "scoreComponents": {
+          "volume": 10.0,
+          "engagement": 2.4,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Tesla (AI/FSD)",
+        "ticker": "TSLA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-15",
+        "rawMetrics": {
+          "storyCount": 0,
+          "totalPoints": 0,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 0,
+        "scoreComponents": {
+          "volume": 0.0,
+          "engagement": 0.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      }
+    ],
+    "raw_metrics": {
+      "OpenAI": {
+        "storyCount": 139,
+        "totalPoints": 6534,
+        "totalComments": 3846,
+        "frontPageCount": 10
+      },
+      "Google (Gemini)": {
+        "storyCount": 85,
+        "totalPoints": 2697,
+        "totalComments": 1367,
+        "frontPageCount": 6
+      },
+      "Anthropic": {
+        "storyCount": 274,
+        "totalPoints": 6328,
+        "totalComments": 3503,
+        "frontPageCount": 12
+      },
+      "NVIDIA": {
+        "storyCount": 27,
+        "totalPoints": 1166,
+        "totalComments": 362,
+        "frontPageCount": 2
+      },
+      "Mistral": {
+        "storyCount": 9,
+        "totalPoints": 1159,
+        "totalComments": 553,
+        "frontPageCount": 3
+      },
+      "Meta (Llama)": {
+        "storyCount": 11,
+        "totalPoints": 710,
+        "totalComments": 254,
+        "frontPageCount": 1
+      },
+      "Palantir": {
+        "storyCount": 10,
+        "totalPoints": 259,
+        "totalComments": 81,
+        "frontPageCount": 1
+      },
+      "Apple (Apple Intelligence)": {
+        "storyCount": 3,
+        "totalPoints": 733,
+        "totalComments": 382,
+        "frontPageCount": 1
+      },
+      "AMD": {
+        "storyCount": 14,
+        "totalPoints": 109,
+        "totalComments": 38,
+        "frontPageCount": 0
+      },
+      "Microsoft (Copilot)": {
+        "storyCount": 6,
+        "totalPoints": 9,
+        "totalComments": 0,
+        "frontPageCount": 0
+      },
+      "Amazon (AWS AI)": {
+        "storyCount": 1,
+        "totalPoints": 3,
+        "totalComments": 1,
+        "frontPageCount": 0
+      },
+      "Tesla (AI/FSD)": {
+        "storyCount": 0,
+        "totalPoints": 0,
+        "totalComments": 0,
+        "frontPageCount": 0
+      }
+    }
+  },
+  {
+    "run_date": "2026-05-22",
+    "window_hours": 168,
+    "complete": true,
+    "watchlist_version": "v1",
+    "leaderboard": [
+      {
+        "entity": "Anthropic",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-22",
+        "rawMetrics": {
+          "storyCount": 262,
+          "totalPoints": 6197,
+          "totalComments": 4652,
+          "frontPageCount": 11
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "OpenAI",
+        "ticker": null,
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-22",
+        "rawMetrics": {
+          "storyCount": 85,
+          "totalPoints": 1573,
+          "totalComments": 1456,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 64.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Google (Gemini)",
+        "ticker": "GOOGL",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-22",
+        "rawMetrics": {
+          "storyCount": 39,
+          "totalPoints": 360,
+          "totalComments": 167,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 61.2,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 27.2,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "NVIDIA",
+        "ticker": "NVDA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-22",
+        "rawMetrics": {
+          "storyCount": 30,
+          "totalPoints": 423,
+          "totalComments": 63,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 60.9,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 26.9,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "AMD",
+        "ticker": "AMD",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-22",
+        "rawMetrics": {
+          "storyCount": 12,
+          "totalPoints": 799,
+          "totalComments": 411,
+          "frontPageCount": 2
+        },
+        "lowConfidence": false,
+        "buzzScore": 60.4,
+        "scoreComponents": {
+          "volume": 22.4,
+          "engagement": 30.0,
+          "frontPage": 8.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Mistral",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-22",
+        "rawMetrics": {
+          "storyCount": 8,
+          "totalPoints": 501,
+          "totalComments": 214,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 51.7,
+        "scoreComponents": {
+          "volume": 19.2,
+          "engagement": 28.5,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Microsoft (Copilot)",
+        "ticker": "MSFT",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-22",
+        "rawMetrics": {
+          "storyCount": 4,
+          "totalPoints": 275,
+          "totalComments": 51,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 43.2,
+        "scoreComponents": {
+          "volume": 14.1,
+          "engagement": 25.1,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Meta (Llama)",
+        "ticker": "META",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-22",
+        "rawMetrics": {
+          "storyCount": 10,
+          "totalPoints": 69,
+          "totalComments": 11,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 40.0,
+        "scoreComponents": {
+          "volume": 20.9,
+          "engagement": 19.1,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Palantir",
+        "ticker": "PLTR",
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-22",
+        "rawMetrics": {
+          "storyCount": 5,
+          "totalPoints": 58,
+          "totalComments": 1,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 33.4,
+        "scoreComponents": {
+          "volume": 15.7,
+          "engagement": 17.8,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Tesla (AI/FSD)",
+        "ticker": "TSLA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-22",
+        "rawMetrics": {
+          "storyCount": 2,
+          "totalPoints": 8,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 24.8,
+        "scoreComponents": {
+          "volume": 20.0,
+          "engagement": 4.8,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Amazon (AWS AI)",
+        "ticker": "AMZN",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-22",
+        "rawMetrics": {
+          "storyCount": 1,
+          "totalPoints": 1,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 10.6,
+        "scoreComponents": {
+          "volume": 10.0,
+          "engagement": 0.6,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Apple (Apple Intelligence)",
+        "ticker": "AAPL",
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-22",
+        "rawMetrics": {
+          "storyCount": 0,
+          "totalPoints": 0,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 0,
+        "scoreComponents": {
+          "volume": 0.0,
+          "engagement": 0.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      }
+    ],
+    "raw_metrics": {
+      "Anthropic": {
+        "storyCount": 262,
+        "totalPoints": 6197,
+        "totalComments": 4652,
+        "frontPageCount": 11
+      },
+      "OpenAI": {
+        "storyCount": 85,
+        "totalPoints": 1573,
+        "totalComments": 1456,
+        "frontPageCount": 1
+      },
+      "Google (Gemini)": {
+        "storyCount": 39,
+        "totalPoints": 360,
+        "totalComments": 167,
+        "frontPageCount": 1
+      },
+      "NVIDIA": {
+        "storyCount": 30,
+        "totalPoints": 423,
+        "totalComments": 63,
+        "frontPageCount": 1
+      },
+      "AMD": {
+        "storyCount": 12,
+        "totalPoints": 799,
+        "totalComments": 411,
+        "frontPageCount": 2
+      },
+      "Mistral": {
+        "storyCount": 8,
+        "totalPoints": 501,
+        "totalComments": 214,
+        "frontPageCount": 1
+      },
+      "Microsoft (Copilot)": {
+        "storyCount": 4,
+        "totalPoints": 275,
+        "totalComments": 51,
+        "frontPageCount": 1
+      },
+      "Meta (Llama)": {
+        "storyCount": 10,
+        "totalPoints": 69,
+        "totalComments": 11,
+        "frontPageCount": 0
+      },
+      "Palantir": {
+        "storyCount": 5,
+        "totalPoints": 58,
+        "totalComments": 1,
+        "frontPageCount": 0
+      },
+      "Tesla (AI/FSD)": {
+        "storyCount": 2,
+        "totalPoints": 8,
+        "totalComments": 0,
+        "frontPageCount": 0
+      },
+      "Amazon (AWS AI)": {
+        "storyCount": 1,
+        "totalPoints": 1,
+        "totalComments": 0,
+        "frontPageCount": 0
+      },
+      "Apple (Apple Intelligence)": {
+        "storyCount": 0,
+        "totalPoints": 0,
+        "totalComments": 0,
+        "frontPageCount": 0
+      }
+    }
+  },
+  {
+    "run_date": "2026-05-29",
+    "window_hours": 168,
+    "complete": true,
+    "watchlist_version": "v1",
+    "leaderboard": [
+      {
+        "entity": "OpenAI",
+        "ticker": null,
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-29",
+        "rawMetrics": {
+          "storyCount": 148,
+          "totalPoints": 3915,
+          "totalComments": 3696,
+          "frontPageCount": 8
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Anthropic",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-29",
+        "rawMetrics": {
+          "storyCount": 258,
+          "totalPoints": 7280,
+          "totalComments": 5428,
+          "frontPageCount": 18
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "NVIDIA",
+        "ticker": "NVDA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-29",
+        "rawMetrics": {
+          "storyCount": 79,
+          "totalPoints": 1822,
+          "totalComments": 1319,
+          "frontPageCount": 4
+        },
+        "lowConfidence": false,
+        "buzzScore": 76.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 16.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Google (Gemini)",
+        "ticker": "GOOGL",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-29",
+        "rawMetrics": {
+          "storyCount": 43,
+          "totalPoints": 406,
+          "totalComments": 175,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 61.6,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 27.6,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Microsoft (Copilot)",
+        "ticker": "MSFT",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-29",
+        "rawMetrics": {
+          "storyCount": 22,
+          "totalPoints": 307,
+          "totalComments": 146,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 58.0,
+        "scoreComponents": {
+          "volume": 27.4,
+          "engagement": 26.6,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Meta (Llama)",
+        "ticker": "META",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-29",
+        "rawMetrics": {
+          "storyCount": 23,
+          "totalPoints": 200,
+          "totalComments": 41,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 51.6,
+        "scoreComponents": {
+          "volume": 27.8,
+          "engagement": 23.8,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "AMD",
+        "ticker": "AMD",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-29",
+        "rawMetrics": {
+          "storyCount": 12,
+          "totalPoints": 213,
+          "totalComments": 40,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 50.5,
+        "scoreComponents": {
+          "volume": 22.4,
+          "engagement": 24.0,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Palantir",
+        "ticker": "PLTR",
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-29",
+        "rawMetrics": {
+          "storyCount": 8,
+          "totalPoints": 76,
+          "totalComments": 2,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 38.2,
+        "scoreComponents": {
+          "volume": 19.2,
+          "engagement": 19.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Mistral",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-29",
+        "rawMetrics": {
+          "storyCount": 3,
+          "totalPoints": 38,
+          "totalComments": 5,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 28.5,
+        "scoreComponents": {
+          "volume": 12.1,
+          "engagement": 16.4,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Amazon (AWS AI)",
+        "ticker": "AMZN",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-29",
+        "rawMetrics": {
+          "storyCount": 2,
+          "totalPoints": 5,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 23.0,
+        "scoreComponents": {
+          "volume": 20.0,
+          "engagement": 3.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Tesla (AI/FSD)",
+        "ticker": "TSLA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-05-29",
+        "rawMetrics": {
+          "storyCount": 1,
+          "totalPoints": 15,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 19.0,
+        "scoreComponents": {
+          "volume": 10.0,
+          "engagement": 9.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Apple (Apple Intelligence)",
+        "ticker": "AAPL",
+        "breakoutThreshold": 60,
+        "runDate": "2026-05-29",
+        "rawMetrics": {
+          "storyCount": 0,
+          "totalPoints": 0,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 0,
+        "scoreComponents": {
+          "volume": 0.0,
+          "engagement": 0.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      }
+    ],
+    "raw_metrics": {
+      "OpenAI": {
+        "storyCount": 148,
+        "totalPoints": 3915,
+        "totalComments": 3696,
+        "frontPageCount": 8
+      },
+      "Anthropic": {
+        "storyCount": 258,
+        "totalPoints": 7280,
+        "totalComments": 5428,
+        "frontPageCount": 18
+      },
+      "NVIDIA": {
+        "storyCount": 79,
+        "totalPoints": 1822,
+        "totalComments": 1319,
+        "frontPageCount": 4
+      },
+      "Google (Gemini)": {
+        "storyCount": 43,
+        "totalPoints": 406,
+        "totalComments": 175,
+        "frontPageCount": 1
+      },
+      "Microsoft (Copilot)": {
+        "storyCount": 22,
+        "totalPoints": 307,
+        "totalComments": 146,
+        "frontPageCount": 1
+      },
+      "Meta (Llama)": {
+        "storyCount": 23,
+        "totalPoints": 200,
+        "totalComments": 41,
+        "frontPageCount": 0
+      },
+      "AMD": {
+        "storyCount": 12,
+        "totalPoints": 213,
+        "totalComments": 40,
+        "frontPageCount": 1
+      },
+      "Palantir": {
+        "storyCount": 8,
+        "totalPoints": 76,
+        "totalComments": 2,
+        "frontPageCount": 0
+      },
+      "Mistral": {
+        "storyCount": 3,
+        "totalPoints": 38,
+        "totalComments": 5,
+        "frontPageCount": 0
+      },
+      "Amazon (AWS AI)": {
+        "storyCount": 2,
+        "totalPoints": 5,
+        "totalComments": 0,
+        "frontPageCount": 0
+      },
+      "Tesla (AI/FSD)": {
+        "storyCount": 1,
+        "totalPoints": 15,
+        "totalComments": 0,
+        "frontPageCount": 0
+      },
+      "Apple (Apple Intelligence)": {
+        "storyCount": 0,
+        "totalPoints": 0,
+        "totalComments": 0,
+        "frontPageCount": 0
+      }
+    }
+  },
+  {
+    "run_date": "2026-06-05",
+    "window_hours": 168,
+    "complete": true,
+    "watchlist_version": "v1",
+    "leaderboard": [
+      {
+        "entity": "OpenAI",
+        "ticker": null,
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-05",
+        "rawMetrics": {
+          "storyCount": 123,
+          "totalPoints": 3993,
+          "totalComments": 1993,
+          "frontPageCount": 7
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Anthropic",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-06-05",
+        "rawMetrics": {
+          "storyCount": 336,
+          "totalPoints": 14327,
+          "totalComments": 9016,
+          "frontPageCount": 22
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Google (Gemini)",
+        "ticker": "GOOGL",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-05",
+        "rawMetrics": {
+          "storyCount": 34,
+          "totalPoints": 1087,
+          "totalComments": 655,
+          "frontPageCount": 2
+        },
+        "lowConfidence": false,
+        "buzzScore": 68.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 8.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "NVIDIA",
+        "ticker": "NVDA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-05",
+        "rawMetrics": {
+          "storyCount": 24,
+          "totalPoints": 587,
+          "totalComments": 685,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 62.1,
+        "scoreComponents": {
+          "volume": 28.1,
+          "engagement": 30.0,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "AMD",
+        "ticker": "AMD",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-05",
+        "rawMetrics": {
+          "storyCount": 12,
+          "totalPoints": 474,
+          "totalComments": 138,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 54.3,
+        "scoreComponents": {
+          "volume": 22.4,
+          "engagement": 27.9,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Apple (Apple Intelligence)",
+        "ticker": "AAPL",
+        "breakoutThreshold": 60,
+        "runDate": "2026-06-05",
+        "rawMetrics": {
+          "storyCount": 7,
+          "totalPoints": 696,
+          "totalComments": 704,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 52.2,
+        "scoreComponents": {
+          "volume": 18.2,
+          "engagement": 30.0,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Amazon (AWS AI)",
+        "ticker": "AMZN",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-05",
+        "rawMetrics": {
+          "storyCount": 2,
+          "totalPoints": 429,
+          "totalComments": 255,
+          "frontPageCount": 1
+        },
+        "lowConfidence": true,
+        "buzzScore": 50.0,
+        "scoreComponents": {
+          "volume": 20.0,
+          "engagement": 30.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Palantir",
+        "ticker": "PLTR",
+        "breakoutThreshold": 60,
+        "runDate": "2026-06-05",
+        "rawMetrics": {
+          "storyCount": 7,
+          "totalPoints": 458,
+          "totalComments": 116,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 49.8,
+        "scoreComponents": {
+          "volume": 18.2,
+          "engagement": 27.6,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Meta (Llama)",
+        "ticker": "META",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-05",
+        "rawMetrics": {
+          "storyCount": 11,
+          "totalPoints": 58,
+          "totalComments": 12,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 40.2,
+        "scoreComponents": {
+          "volume": 21.7,
+          "engagement": 18.5,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Microsoft (Copilot)",
+        "ticker": "MSFT",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-05",
+        "rawMetrics": {
+          "storyCount": 9,
+          "totalPoints": 28,
+          "totalComments": 10,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 36.0,
+        "scoreComponents": {
+          "volume": 20.1,
+          "engagement": 15.9,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Mistral",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-06-05",
+        "rawMetrics": {
+          "storyCount": 2,
+          "totalPoints": 3,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 21.8,
+        "scoreComponents": {
+          "volume": 20.0,
+          "engagement": 1.8,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Tesla (AI/FSD)",
+        "ticker": "TSLA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-05",
+        "rawMetrics": {
+          "storyCount": 0,
+          "totalPoints": 0,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 0,
+        "scoreComponents": {
+          "volume": 0.0,
+          "engagement": 0.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      }
+    ],
+    "raw_metrics": {
+      "OpenAI": {
+        "storyCount": 123,
+        "totalPoints": 3993,
+        "totalComments": 1993,
+        "frontPageCount": 7
+      },
+      "Anthropic": {
+        "storyCount": 336,
+        "totalPoints": 14327,
+        "totalComments": 9016,
+        "frontPageCount": 22
+      },
+      "Google (Gemini)": {
+        "storyCount": 34,
+        "totalPoints": 1087,
+        "totalComments": 655,
+        "frontPageCount": 2
+      },
+      "NVIDIA": {
+        "storyCount": 24,
+        "totalPoints": 587,
+        "totalComments": 685,
+        "frontPageCount": 1
+      },
+      "AMD": {
+        "storyCount": 12,
+        "totalPoints": 474,
+        "totalComments": 138,
+        "frontPageCount": 1
+      },
+      "Apple (Apple Intelligence)": {
+        "storyCount": 7,
+        "totalPoints": 696,
+        "totalComments": 704,
+        "frontPageCount": 1
+      },
+      "Amazon (AWS AI)": {
+        "storyCount": 2,
+        "totalPoints": 429,
+        "totalComments": 255,
+        "frontPageCount": 1
+      },
+      "Palantir": {
+        "storyCount": 7,
+        "totalPoints": 458,
+        "totalComments": 116,
+        "frontPageCount": 1
+      },
+      "Meta (Llama)": {
+        "storyCount": 11,
+        "totalPoints": 58,
+        "totalComments": 12,
+        "frontPageCount": 0
+      },
+      "Microsoft (Copilot)": {
+        "storyCount": 9,
+        "totalPoints": 28,
+        "totalComments": 10,
+        "frontPageCount": 0
+      },
+      "Mistral": {
+        "storyCount": 2,
+        "totalPoints": 3,
+        "totalComments": 0,
+        "frontPageCount": 0
+      },
+      "Tesla (AI/FSD)": {
+        "storyCount": 0,
+        "totalPoints": 0,
+        "totalComments": 0,
+        "frontPageCount": 0
+      }
+    }
+  },
+  {
+    "run_date": "2026-06-12",
+    "window_hours": 168,
+    "complete": true,
+    "watchlist_version": "v1",
+    "leaderboard": [
+      {
+        "entity": "OpenAI",
+        "ticker": null,
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-12",
+        "rawMetrics": {
+          "storyCount": 122,
+          "totalPoints": 3161,
+          "totalComments": 1980,
+          "frontPageCount": 9
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Anthropic",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-06-12",
+        "rawMetrics": {
+          "storyCount": 379,
+          "totalPoints": 10646,
+          "totalComments": 6531,
+          "frontPageCount": 21
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Google (Gemini)",
+        "ticker": "GOOGL",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-12",
+        "rawMetrics": {
+          "storyCount": 41,
+          "totalPoints": 750,
+          "totalComments": 553,
+          "frontPageCount": 2
+        },
+        "lowConfidence": false,
+        "buzzScore": 68.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 8.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "AMD",
+        "ticker": "AMD",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-12",
+        "rawMetrics": {
+          "storyCount": 29,
+          "totalPoints": 688,
+          "totalComments": 258,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 63.5,
+        "scoreComponents": {
+          "volume": 29.7,
+          "engagement": 29.8,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "NVIDIA",
+        "ticker": "NVDA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-12",
+        "rawMetrics": {
+          "storyCount": 26,
+          "totalPoints": 136,
+          "totalComments": 19,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 50.7,
+        "scoreComponents": {
+          "volume": 28.8,
+          "engagement": 21.9,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Apple (Apple Intelligence)",
+        "ticker": "AAPL",
+        "breakoutThreshold": 60,
+        "runDate": "2026-06-12",
+        "rawMetrics": {
+          "storyCount": 2,
+          "totalPoints": 28,
+          "totalComments": 21,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 49.4,
+        "scoreComponents": {
+          "volume": 20.0,
+          "engagement": 29.4,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Palantir",
+        "ticker": "PLTR",
+        "breakoutThreshold": 60,
+        "runDate": "2026-06-12",
+        "rawMetrics": {
+          "storyCount": 12,
+          "totalPoints": 107,
+          "totalComments": 11,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 43.2,
+        "scoreComponents": {
+          "volume": 22.4,
+          "engagement": 20.8,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Microsoft (Copilot)",
+        "ticker": "MSFT",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-12",
+        "rawMetrics": {
+          "storyCount": 10,
+          "totalPoints": 35,
+          "totalComments": 4,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 37.0,
+        "scoreComponents": {
+          "volume": 20.9,
+          "engagement": 16.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Mistral",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-06-12",
+        "rawMetrics": {
+          "storyCount": 7,
+          "totalPoints": 42,
+          "totalComments": 7,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 35.2,
+        "scoreComponents": {
+          "volume": 18.2,
+          "engagement": 17.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Meta (Llama)",
+        "ticker": "META",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-12",
+        "rawMetrics": {
+          "storyCount": 8,
+          "totalPoints": 25,
+          "totalComments": 9,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 34.6,
+        "scoreComponents": {
+          "volume": 19.2,
+          "engagement": 15.4,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Amazon (AWS AI)",
+        "ticker": "AMZN",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-12",
+        "rawMetrics": {
+          "storyCount": 2,
+          "totalPoints": 5,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 23.0,
+        "scoreComponents": {
+          "volume": 20.0,
+          "engagement": 3.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Tesla (AI/FSD)",
+        "ticker": "TSLA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-12",
+        "rawMetrics": {
+          "storyCount": 0,
+          "totalPoints": 0,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 0,
+        "scoreComponents": {
+          "volume": 0.0,
+          "engagement": 0.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      }
+    ],
+    "raw_metrics": {
+      "OpenAI": {
+        "storyCount": 122,
+        "totalPoints": 3161,
+        "totalComments": 1980,
+        "frontPageCount": 9
+      },
+      "Anthropic": {
+        "storyCount": 379,
+        "totalPoints": 10646,
+        "totalComments": 6531,
+        "frontPageCount": 21
+      },
+      "Google (Gemini)": {
+        "storyCount": 41,
+        "totalPoints": 750,
+        "totalComments": 553,
+        "frontPageCount": 2
+      },
+      "AMD": {
+        "storyCount": 29,
+        "totalPoints": 688,
+        "totalComments": 258,
+        "frontPageCount": 1
+      },
+      "NVIDIA": {
+        "storyCount": 26,
+        "totalPoints": 136,
+        "totalComments": 19,
+        "frontPageCount": 0
+      },
+      "Apple (Apple Intelligence)": {
+        "storyCount": 2,
+        "totalPoints": 28,
+        "totalComments": 21,
+        "frontPageCount": 0
+      },
+      "Palantir": {
+        "storyCount": 12,
+        "totalPoints": 107,
+        "totalComments": 11,
+        "frontPageCount": 0
+      },
+      "Microsoft (Copilot)": {
+        "storyCount": 10,
+        "totalPoints": 35,
+        "totalComments": 4,
+        "frontPageCount": 0
+      },
+      "Mistral": {
+        "storyCount": 7,
+        "totalPoints": 42,
+        "totalComments": 7,
+        "frontPageCount": 0
+      },
+      "Meta (Llama)": {
+        "storyCount": 8,
+        "totalPoints": 25,
+        "totalComments": 9,
+        "frontPageCount": 0
+      },
+      "Amazon (AWS AI)": {
+        "storyCount": 2,
+        "totalPoints": 5,
+        "totalComments": 0,
+        "frontPageCount": 0
+      },
+      "Tesla (AI/FSD)": {
+        "storyCount": 0,
+        "totalPoints": 0,
+        "totalComments": 0,
+        "frontPageCount": 0
+      }
+    }
+  },
+  {
+    "run_date": "2026-06-19",
+    "window_hours": 168,
+    "complete": true,
+    "watchlist_version": "v1",
+    "leaderboard": [
+      {
+        "entity": "OpenAI",
+        "ticker": null,
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-19",
+        "rawMetrics": {
+          "storyCount": 146,
+          "totalPoints": 5771,
+          "totalComments": 3747,
+          "frontPageCount": 11
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Anthropic",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-06-19",
+        "rawMetrics": {
+          "storyCount": 269,
+          "totalPoints": 6803,
+          "totalComments": 5953,
+          "frontPageCount": 20
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Google (Gemini)",
+        "ticker": "GOOGL",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-19",
+        "rawMetrics": {
+          "storyCount": 27,
+          "totalPoints": 550,
+          "totalComments": 258,
+          "frontPageCount": 2
+        },
+        "lowConfidence": false,
+        "buzzScore": 66.2,
+        "scoreComponents": {
+          "volume": 29.1,
+          "engagement": 29.1,
+          "frontPage": 8.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "NVIDIA",
+        "ticker": "NVDA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-19",
+        "rawMetrics": {
+          "storyCount": 30,
+          "totalPoints": 694,
+          "totalComments": 499,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 64.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "AMD",
+        "ticker": "AMD",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-19",
+        "rawMetrics": {
+          "storyCount": 16,
+          "totalPoints": 419,
+          "totalComments": 137,
+          "frontPageCount": 2
+        },
+        "lowConfidence": false,
+        "buzzScore": 60.2,
+        "scoreComponents": {
+          "volume": 24.8,
+          "engagement": 27.5,
+          "frontPage": 8.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Meta (Llama)",
+        "ticker": "META",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-19",
+        "rawMetrics": {
+          "storyCount": 14,
+          "totalPoints": 214,
+          "totalComments": 44,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 51.8,
+        "scoreComponents": {
+          "volume": 23.7,
+          "engagement": 24.1,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Mistral",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-06-19",
+        "rawMetrics": {
+          "storyCount": 4,
+          "totalPoints": 512,
+          "totalComments": 138,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 46.2,
+        "scoreComponents": {
+          "volume": 14.1,
+          "engagement": 28.1,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Microsoft (Copilot)",
+        "ticker": "MSFT",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-19",
+        "rawMetrics": {
+          "storyCount": 9,
+          "totalPoints": 26,
+          "totalComments": 3,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 34.9,
+        "scoreComponents": {
+          "volume": 20.1,
+          "engagement": 14.8,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Palantir",
+        "ticker": "PLTR",
+        "breakoutThreshold": 60,
+        "runDate": "2026-06-19",
+        "rawMetrics": {
+          "storyCount": 3,
+          "totalPoints": 76,
+          "totalComments": 10,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 31.5,
+        "scoreComponents": {
+          "volume": 12.1,
+          "engagement": 19.4,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Amazon (AWS AI)",
+        "ticker": "AMZN",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-19",
+        "rawMetrics": {
+          "storyCount": 1,
+          "totalPoints": 5,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 13.0,
+        "scoreComponents": {
+          "volume": 10.0,
+          "engagement": 3.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Apple (Apple Intelligence)",
+        "ticker": "AAPL",
+        "breakoutThreshold": 60,
+        "runDate": "2026-06-19",
+        "rawMetrics": {
+          "storyCount": 1,
+          "totalPoints": 2,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 11.2,
+        "scoreComponents": {
+          "volume": 10.0,
+          "engagement": 1.2,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Tesla (AI/FSD)",
+        "ticker": "TSLA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-19",
+        "rawMetrics": {
+          "storyCount": 1,
+          "totalPoints": 2,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 11.2,
+        "scoreComponents": {
+          "volume": 10.0,
+          "engagement": 1.2,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      }
+    ],
+    "raw_metrics": {
+      "OpenAI": {
+        "storyCount": 146,
+        "totalPoints": 5771,
+        "totalComments": 3747,
+        "frontPageCount": 11
+      },
+      "Anthropic": {
+        "storyCount": 269,
+        "totalPoints": 6803,
+        "totalComments": 5953,
+        "frontPageCount": 20
+      },
+      "Google (Gemini)": {
+        "storyCount": 27,
+        "totalPoints": 550,
+        "totalComments": 258,
+        "frontPageCount": 2
+      },
+      "NVIDIA": {
+        "storyCount": 30,
+        "totalPoints": 694,
+        "totalComments": 499,
+        "frontPageCount": 1
+      },
+      "AMD": {
+        "storyCount": 16,
+        "totalPoints": 419,
+        "totalComments": 137,
+        "frontPageCount": 2
+      },
+      "Meta (Llama)": {
+        "storyCount": 14,
+        "totalPoints": 214,
+        "totalComments": 44,
+        "frontPageCount": 1
+      },
+      "Mistral": {
+        "storyCount": 4,
+        "totalPoints": 512,
+        "totalComments": 138,
+        "frontPageCount": 1
+      },
+      "Microsoft (Copilot)": {
+        "storyCount": 9,
+        "totalPoints": 26,
+        "totalComments": 3,
+        "frontPageCount": 0
+      },
+      "Palantir": {
+        "storyCount": 3,
+        "totalPoints": 76,
+        "totalComments": 10,
+        "frontPageCount": 0
+      },
+      "Amazon (AWS AI)": {
+        "storyCount": 1,
+        "totalPoints": 5,
+        "totalComments": 0,
+        "frontPageCount": 0
+      },
+      "Apple (Apple Intelligence)": {
+        "storyCount": 1,
+        "totalPoints": 2,
+        "totalComments": 0,
+        "frontPageCount": 0
+      },
+      "Tesla (AI/FSD)": {
+        "storyCount": 1,
+        "totalPoints": 2,
+        "totalComments": 0,
+        "frontPageCount": 0
+      }
+    }
+  },
+  {
+    "run_date": "2026-06-26",
+    "window_hours": 168,
+    "complete": true,
+    "watchlist_version": "v1",
+    "leaderboard": [
+      {
+        "entity": "OpenAI",
+        "ticker": null,
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-26",
+        "rawMetrics": {
+          "storyCount": 114,
+          "totalPoints": 1283,
+          "totalComments": 761,
+          "frontPageCount": 5
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Anthropic",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-06-26",
+        "rawMetrics": {
+          "storyCount": 336,
+          "totalPoints": 10840,
+          "totalComments": 5514,
+          "frontPageCount": 17
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Google (Gemini)",
+        "ticker": "GOOGL",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-26",
+        "rawMetrics": {
+          "storyCount": 40,
+          "totalPoints": 981,
+          "totalComments": 421,
+          "frontPageCount": 3
+        },
+        "lowConfidence": false,
+        "buzzScore": 72.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 12.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Palantir",
+        "ticker": "PLTR",
+        "breakoutThreshold": 60,
+        "runDate": "2026-06-26",
+        "rawMetrics": {
+          "storyCount": 16,
+          "totalPoints": 1051,
+          "totalComments": 479,
+          "frontPageCount": 3
+        },
+        "lowConfidence": false,
+        "buzzScore": 66.8,
+        "scoreComponents": {
+          "volume": 24.8,
+          "engagement": 30.0,
+          "frontPage": 12.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "NVIDIA",
+        "ticker": "NVDA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-26",
+        "rawMetrics": {
+          "storyCount": 27,
+          "totalPoints": 645,
+          "totalComments": 113,
+          "frontPageCount": 2
+        },
+        "lowConfidence": false,
+        "buzzScore": 65.9,
+        "scoreComponents": {
+          "volume": 29.1,
+          "engagement": 28.8,
+          "frontPage": 8.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "AMD",
+        "ticker": "AMD",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-26",
+        "rawMetrics": {
+          "storyCount": 12,
+          "totalPoints": 626,
+          "totalComments": 230,
+          "frontPageCount": 2
+        },
+        "lowConfidence": false,
+        "buzzScore": 59.7,
+        "scoreComponents": {
+          "volume": 22.4,
+          "engagement": 29.3,
+          "frontPage": 8.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Mistral",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-06-26",
+        "rawMetrics": {
+          "storyCount": 4,
+          "totalPoints": 697,
+          "totalComments": 256,
+          "frontPageCount": 2
+        },
+        "lowConfidence": false,
+        "buzzScore": 51.9,
+        "scoreComponents": {
+          "volume": 14.1,
+          "engagement": 29.8,
+          "frontPage": 8.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Microsoft (Copilot)",
+        "ticker": "MSFT",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-26",
+        "rawMetrics": {
+          "storyCount": 4,
+          "totalPoints": 424,
+          "totalComments": 185,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 45.9,
+        "scoreComponents": {
+          "volume": 14.1,
+          "engagement": 27.8,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Meta (Llama)",
+        "ticker": "META",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-26",
+        "rawMetrics": {
+          "storyCount": 9,
+          "totalPoints": 94,
+          "totalComments": 61,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 42.0,
+        "scoreComponents": {
+          "volume": 20.1,
+          "engagement": 21.9,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Tesla (AI/FSD)",
+        "ticker": "TSLA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-26",
+        "rawMetrics": {
+          "storyCount": 3,
+          "totalPoints": 19,
+          "totalComments": 1,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 25.3,
+        "scoreComponents": {
+          "volume": 12.1,
+          "engagement": 13.2,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Apple (Apple Intelligence)",
+        "ticker": "AAPL",
+        "breakoutThreshold": 60,
+        "runDate": "2026-06-26",
+        "rawMetrics": {
+          "storyCount": 1,
+          "totalPoints": 7,
+          "totalComments": 1,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 14.8,
+        "scoreComponents": {
+          "volume": 10.0,
+          "engagement": 4.8,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Amazon (AWS AI)",
+        "ticker": "AMZN",
+        "breakoutThreshold": 70,
+        "runDate": "2026-06-26",
+        "rawMetrics": {
+          "storyCount": 0,
+          "totalPoints": 0,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 0,
+        "scoreComponents": {
+          "volume": 0.0,
+          "engagement": 0.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      }
+    ],
+    "raw_metrics": {
+      "OpenAI": {
+        "storyCount": 114,
+        "totalPoints": 1283,
+        "totalComments": 761,
+        "frontPageCount": 5
+      },
+      "Anthropic": {
+        "storyCount": 336,
+        "totalPoints": 10840,
+        "totalComments": 5514,
+        "frontPageCount": 17
+      },
+      "Google (Gemini)": {
+        "storyCount": 40,
+        "totalPoints": 981,
+        "totalComments": 421,
+        "frontPageCount": 3
+      },
+      "Palantir": {
+        "storyCount": 16,
+        "totalPoints": 1051,
+        "totalComments": 479,
+        "frontPageCount": 3
+      },
+      "NVIDIA": {
+        "storyCount": 27,
+        "totalPoints": 645,
+        "totalComments": 113,
+        "frontPageCount": 2
+      },
+      "AMD": {
+        "storyCount": 12,
+        "totalPoints": 626,
+        "totalComments": 230,
+        "frontPageCount": 2
+      },
+      "Mistral": {
+        "storyCount": 4,
+        "totalPoints": 697,
+        "totalComments": 256,
+        "frontPageCount": 2
+      },
+      "Microsoft (Copilot)": {
+        "storyCount": 4,
+        "totalPoints": 424,
+        "totalComments": 185,
+        "frontPageCount": 1
+      },
+      "Meta (Llama)": {
+        "storyCount": 9,
+        "totalPoints": 94,
+        "totalComments": 61,
+        "frontPageCount": 0
+      },
+      "Tesla (AI/FSD)": {
+        "storyCount": 3,
+        "totalPoints": 19,
+        "totalComments": 1,
+        "frontPageCount": 0
+      },
+      "Apple (Apple Intelligence)": {
+        "storyCount": 1,
+        "totalPoints": 7,
+        "totalComments": 1,
+        "frontPageCount": 0
+      },
+      "Amazon (AWS AI)": {
+        "storyCount": 0,
+        "totalPoints": 0,
+        "totalComments": 0,
+        "frontPageCount": 0
+      }
+    }
+  },
+  {
+    "run_date": "2026-07-03",
+    "window_hours": 168,
+    "complete": true,
+    "watchlist_version": "v1",
+    "leaderboard": [
+      {
+        "entity": "OpenAI",
+        "ticker": null,
+        "breakoutThreshold": 70,
+        "runDate": "2026-07-03",
+        "rawMetrics": {
+          "storyCount": 162,
+          "totalPoints": 5910,
+          "totalComments": 3534,
+          "frontPageCount": 13
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Anthropic",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-07-03",
+        "rawMetrics": {
+          "storyCount": 269,
+          "totalPoints": 4703,
+          "totalComments": 2086,
+          "frontPageCount": 15
+        },
+        "lowConfidence": false,
+        "buzzScore": 80.0,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 30.0,
+          "frontPage": 20.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": true
+      },
+      {
+        "entity": "Google (Gemini)",
+        "ticker": "GOOGL",
+        "breakoutThreshold": 70,
+        "runDate": "2026-07-03",
+        "rawMetrics": {
+          "storyCount": 33,
+          "totalPoints": 298,
+          "totalComments": 113,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 60.1,
+        "scoreComponents": {
+          "volume": 30.0,
+          "engagement": 26.1,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "AMD",
+        "ticker": "AMD",
+        "breakoutThreshold": 70,
+        "runDate": "2026-07-03",
+        "rawMetrics": {
+          "storyCount": 13,
+          "totalPoints": 450,
+          "totalComments": 308,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 55.9,
+        "scoreComponents": {
+          "volume": 23.1,
+          "engagement": 28.8,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Palantir",
+        "ticker": "PLTR",
+        "breakoutThreshold": 60,
+        "runDate": "2026-07-03",
+        "rawMetrics": {
+          "storyCount": 11,
+          "totalPoints": 208,
+          "totalComments": 92,
+          "frontPageCount": 1
+        },
+        "lowConfidence": false,
+        "buzzScore": 50.5,
+        "scoreComponents": {
+          "volume": 21.7,
+          "engagement": 24.8,
+          "frontPage": 4.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "NVIDIA",
+        "ticker": "NVDA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-07-03",
+        "rawMetrics": {
+          "storyCount": 27,
+          "totalPoints": 100,
+          "totalComments": 22,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 50.0,
+        "scoreComponents": {
+          "volume": 29.1,
+          "engagement": 20.9,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Mistral",
+        "ticker": null,
+        "breakoutThreshold": 60,
+        "runDate": "2026-07-03",
+        "rawMetrics": {
+          "storyCount": 2,
+          "totalPoints": 486,
+          "totalComments": 112,
+          "frontPageCount": 1
+        },
+        "lowConfidence": true,
+        "buzzScore": 50.0,
+        "scoreComponents": {
+          "volume": 20.0,
+          "engagement": 30.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Meta (Llama)",
+        "ticker": "META",
+        "breakoutThreshold": 70,
+        "runDate": "2026-07-03",
+        "rawMetrics": {
+          "storyCount": 13,
+          "totalPoints": 92,
+          "totalComments": 36,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 44.2,
+        "scoreComponents": {
+          "volume": 23.1,
+          "engagement": 21.1,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Apple (Apple Intelligence)",
+        "ticker": "AAPL",
+        "breakoutThreshold": 60,
+        "runDate": "2026-07-03",
+        "rawMetrics": {
+          "storyCount": 3,
+          "totalPoints": 10,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 22.5,
+        "scoreComponents": {
+          "volume": 12.1,
+          "engagement": 10.4,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Microsoft (Copilot)",
+        "ticker": "MSFT",
+        "breakoutThreshold": 70,
+        "runDate": "2026-07-03",
+        "rawMetrics": {
+          "storyCount": 4,
+          "totalPoints": 5,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": false,
+        "buzzScore": 21.8,
+        "scoreComponents": {
+          "volume": 14.1,
+          "engagement": 7.8,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Amazon (AWS AI)",
+        "ticker": "AMZN",
+        "breakoutThreshold": 70,
+        "runDate": "2026-07-03",
+        "rawMetrics": {
+          "storyCount": 0,
+          "totalPoints": 0,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 0,
+        "scoreComponents": {
+          "volume": 0.0,
+          "engagement": 0.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      },
+      {
+        "entity": "Tesla (AI/FSD)",
+        "ticker": "TSLA",
+        "breakoutThreshold": 70,
+        "runDate": "2026-07-03",
+        "rawMetrics": {
+          "storyCount": 0,
+          "totalPoints": 0,
+          "totalComments": 0,
+          "frontPageCount": 0
+        },
+        "lowConfidence": true,
+        "buzzScore": 0,
+        "scoreComponents": {
+          "volume": 0.0,
+          "engagement": 0.0,
+          "frontPage": 0.0,
+          "acceleration": 0.0
+        },
+        "coldStart": true,
+        "breakout": false
+      }
+    ],
+    "raw_metrics": {
+      "OpenAI": {
+        "storyCount": 162,
+        "totalPoints": 5910,
+        "totalComments": 3534,
+        "frontPageCount": 13
+      },
+      "Anthropic": {
+        "storyCount": 269,
+        "totalPoints": 4703,
+        "totalComments": 2086,
+        "frontPageCount": 15
+      },
+      "Google (Gemini)": {
+        "storyCount": 33,
+        "totalPoints": 298,
+        "totalComments": 113,
+        "frontPageCount": 1
+      },
+      "AMD": {
+        "storyCount": 13,
+        "totalPoints": 450,
+        "totalComments": 308,
+        "frontPageCount": 1
+      },
+      "Palantir": {
+        "storyCount": 11,
+        "totalPoints": 208,
+        "totalComments": 92,
+        "frontPageCount": 1
+      },
+      "NVIDIA": {
+        "storyCount": 27,
+        "totalPoints": 100,
+        "totalComments": 22,
+        "frontPageCount": 0
+      },
+      "Mistral": {
+        "storyCount": 2,
+        "totalPoints": 486,
+        "totalComments": 112,
+        "frontPageCount": 1
+      },
+      "Meta (Llama)": {
+        "storyCount": 13,
+        "totalPoints": 92,
+        "totalComments": 36,
+        "frontPageCount": 0
+      },
+      "Apple (Apple Intelligence)": {
+        "storyCount": 3,
+        "totalPoints": 10,
+        "totalComments": 0,
+        "frontPageCount": 0
+      },
+      "Microsoft (Copilot)": {
+        "storyCount": 4,
+        "totalPoints": 5,
+        "totalComments": 0,
+        "frontPageCount": 0
+      },
+      "Amazon (AWS AI)": {
+        "storyCount": 0,
+        "totalPoints": 0,
+        "totalComments": 0,
+        "frontPageCount": 0
+      },
+      "Tesla (AI/FSD)": {
+        "storyCount": 0,
+        "totalPoints": 0,
+        "totalComments": 0,
+        "frontPageCount": 0
+      }
+    }
+  }
+]
