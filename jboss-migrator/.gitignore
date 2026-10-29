@@ -1,0 +1,18 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+.pytest_cache/
+.idea/
+.vscode/
+
+# migrator runtime output
+workspace/
+.migrator/
+reports/
+
+# docker build context staging
+docker/*/staging/

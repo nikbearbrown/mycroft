@@ -1,0 +1,37 @@
+---
+# Organisation-specific OpenRewrite recipes. Every *.yml in this folder is merged into the
+# rewrite config and can be activated from migration.yaml -> custom_recipes.
+# Replace the example types below with your own internal APIs.
+type: specs.openrewrite.org/v1beta/recipe
+name: com.company.migration.CompanyConventions
+displayName: Company migration conventions
+description: >-
+  Moves internal helper APIs that wrapped JBoss-specific behaviour to their EAP 8 replacements.
+recipeList:
+  # Internal security facade that wrapped PicketLink.
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: com.company.common.security.PicketLinkIdentity
+      newFullyQualifiedTypeName: com.company.common.security.ElytronIdentity
+  # Internal service locator: lookupEjb(String) became lookup(String) in the EAP 8 version.
+  - org.openrewrite.java.ChangeMethodName:
+      methodPattern: com.company.common.jndi.ServiceLocator lookupEjb(String)
+      newMethodName: lookup
+  - com.company.migration.Eap8Bom
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: com.company.migration.Eap8Bom
+displayName: Use the JBoss EAP 8 BOM
+description: Replaces the EAP 7 Jakarta EE 8 BOM with the EAP 8 EE BOM.
+recipeList:
+  - org.openrewrite.maven.ChangeManagedDependencyGroupIdAndArtifactId:
+      oldGroupId: org.jboss.bom
+      oldArtifactId: jboss-eap-jakartaee8
+      newGroupId: org.jboss.bom
+      newArtifactId: jboss-eap-ee
+      newVersion: 8.0.0.GA-redhat-00009
+  - org.openrewrite.maven.ChangeManagedDependencyGroupIdAndArtifactId:
+      oldGroupId: org.jboss.bom
+      oldArtifactId: jboss-eap-javaee8
+      newGroupId: org.jboss.bom
+      newArtifactId: jboss-eap-ee
+      newVersion: 8.0.0.GA-redhat-00009

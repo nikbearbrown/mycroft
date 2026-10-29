@@ -1,0 +1,22 @@
+Automated migration **{{ cfg.source.server }} / Java {{ cfg.source.java }} → {{ cfg.target.server }} / Java {{ cfg.target.java }}** by jboss-migrator.
+
+Each step is a separate commit, so changes can be reviewed recipe by recipe:
+{% for s in steps if s.commit %}
+- `{{ s.commit[:10] }}` {{ s.step.description }} ({{ s.files | length }} files)
+{%- endfor %}
+
+### Verification
+- Diff guard on protected paths: {{ "pass" if guard.ok else "**FAIL** (" ~ (guard.violations | length) ~ " files)" }}
+- Build: {{ "pass" if outcome.build_ok else "**FAIL**" }}
+- Tests vs baseline: {% if tests %}{{ tests.regressions | length }} regressions, {{ tests.missing | length }} missing{% else %}skipped{% endif %}
+- UI screenshots: {% if ui %}{{ ui.failed | length }} page(s) changed{% else %}skipped{% endif %}
+
+### Needs a human ({{ manual | length }})
+{% for item in manual[:50] %}
+- [ ] {{ item }}
+{%- endfor %}
+{% if manual | length > 50 %}
+- …and {{ manual | length - 50 }} more in the migration report
+{% endif %}
+
+Full details: `{{ report_path }}` and `{{ test_plan_path }}` on this branch.

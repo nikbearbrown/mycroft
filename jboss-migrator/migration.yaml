@@ -1,0 +1,61 @@
+# Example migration config: JBoss EAP 7.2 / Java 8  ->  JBoss EAP 8.0 / Java 17
+repo:
+  url: https://git.company.com/apps/orders.git
+  branch: develop
+
+source:
+  server: jboss-eap-7.2
+  java: 8
+
+target:
+  server: jboss-eap-8.0      # or wildfly-3x, quarkus, spring-boot
+  java: 17
+
+upgrades:
+  - javax-to-jakarta
+  - hibernate-5-to-6
+  - junit4-to-junit5
+  - picketlink-to-elytron
+
+# Business + UI code the tool must not alter beyond imports, annotations and namespace URIs.
+protected_paths:
+  - src/main/java/com/company/orders/domain/**
+  - src/main/webapp/**
+
+# Optional: organisation-specific OpenRewrite recipes (see recipes/).
+custom_recipes:
+  - com.company.migration.CompanyConventions
+
+baseline:
+  run_tests: true
+  characterization_tests: true
+  # Packages whose public service classes get characterization test skeletons.
+  characterization_packages:
+    - com.company.orders.service
+
+ui:
+  enabled: false
+  # Instance used for screenshots; for the target it is started from docker/ automatically.
+  base_url: http://localhost:8080/orders
+  pages:
+    - /
+    - /orders/list.xhtml
+    - /orders/new.xhtml
+  max_pixel_diff_ratio: 0.01
+
+tools:
+  # Leave a path empty to skip that engine; the run reports what was skipped.
+  mta_cli: mta-cli
+  eclipse_transformer_jar: ""
+  wildfly_server_migration: ""
+  maven: mvn
+
+llm:
+  # Proposes fixes for leftover compile errors as reviewable suggestions; never edits code.
+  enabled: false
+  model: claude-opus-5-5
+
+output:
+  create_pr: true
+  test_plan_format: [markdown, xlsx]
+  report_dir: migration      # committed on the migration branch alongside the CLI scripts
