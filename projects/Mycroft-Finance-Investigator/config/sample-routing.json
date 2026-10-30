@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1.0",
+  "classification": "SYNTHETIC_EVIDENCE_GAP_ROUTING",
+  "trend_run_id": "week35-trend",
+  "max_delegations": 4,
+  "control_specialist": "lineage-specialist",
+  "routes": {
+    "revenue": "revenue-specialist",
+    "cogs": "cost-specialist",
+    "payroll": "workforce-specialist",
+    "opex": "cost-specialist"
+  }
+}

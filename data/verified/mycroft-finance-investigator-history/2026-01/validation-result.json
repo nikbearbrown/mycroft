@@ -1,0 +1,44 @@
+{
+  "status": "CONFORMANT_SAMPLE",
+  "source_directory": "../../data/raw/mycroft-finance-investigator-history/2026-01",
+  "verified_directory": "../../data/verified/mycroft-finance-investigator-history/2026-01",
+  "source_hashes": {
+    "account_mapping.csv": "c45ba1275b8daa38b6827e7257170a9ea34b255033be5128c4c6e74e51d1a839",
+    "budget.csv": "f2a6de1ee3fa367c1b7d16657184308a4a8ece2af50199246e83526145a15304",
+    "actuals.csv": "007f5786115fbf94af981f8604fc2a6dffcfd26da6c2a473bfafa8104eaae6fc",
+    "ledger.csv": "55ecf3a9064375b53b00d5d21888a318adb3a74b4e25635ea0b76bb28a57fc1d",
+    "customers.csv": "bd94e40093870334aa276bd05504d094a8d9766cce06d77528702cb995623ba9",
+    "headcount.csv": "05497113cdb1d7346a5adfbc1eeabbcf07c94e4c940772f9161f2de415099b9e"
+  },
+  "row_counts": {
+    "account_mapping.csv": 7,
+    "budget.csv": 8,
+    "actuals.csv": 8,
+    "ledger.csv": 14,
+    "customers.csv": 4,
+    "headcount.csv": 2
+  },
+  "checks": [
+    {
+      "name": "Account mapping coverage",
+      "observed": "All budget, actual, and ledger accounts mapped"
+    },
+    {
+      "name": "Scope",
+      "observed": "One period (2026-01) and one entity (Northstar Software Sample)"
+    },
+    {
+      "name": "Actuals-to-ledger control total",
+      "observed": "Reconciled at 1579000.00"
+    },
+    {
+      "name": "Customer revenue drivers",
+      "observed": "Budget 970000.00; actual 920000.00; reconciled"
+    },
+    {
+      "name": "Headcount cost drivers",
+      "observed": "Budget 310000.00; actual 302000.00; reconciled"
+    }
+  ],
+  "adequacy": "PENDING_HUMAN_REVIEW"
+}

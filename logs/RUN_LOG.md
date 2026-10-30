@@ -441,6 +441,128 @@
   - One labeler; no agreement measure.
   - Recommendation for Sprint 7: run every fixture on all three tiers (about a
     cent) so the cheapest correct tier is measured rather than predicted.
+- **[BLOCKER] Wrong-entity claims found in a finished brief.** `labeled_briefs.csv`
+  captures a real Scale AI brief attributing to Scale AI: "a Rs 170 Cr raise by Elevate
+  Education", "a $2.2 million raise by SambaNova", and "a $900m credit facility to scale
+  AI data centers" — two other companies' funding rounds, plus "scale AI" matched as an
+  ordinary verb phrase. Its COMPETITIVE POSITION names Ecolab (water treatment) as a
+  competitor. Scale AI's seed entry carries aliases ["Scale AI", "ScaleAI"] and no
+  `exclude_entities` or `exclude_terms`, so the deterministic filter had nothing to
+  reject on.
+  - *Effect on the gate:* **Signal validation stays CLEARED.** Its clearance on
+    2026-08-22 was explicitly batch-level and named common-word names as residual risk;
+    this is that risk confirmed, not a new one concealed. Decision by Muskan Khandelwal,
+    2026-08-26. `last_gate` and `todos_open` unchanged.
+  - *What changed:* the risk is no longer hypothetical, and it is now known to reach
+    finished briefs rather than stopping at the signal table.
+  - *Not yet applied:* populate `exclude_entities`/`exclude_terms` for common-word
+    vendors (Adept, Writer, Notion, Glean, Modal, Replicate, Scale AI).
+
+- **[LIMIT] Grounding checks cannot catch this class.** `check_date_grounding` and
+  `check_amount_grounding` verify that a claim traces to a *collected signal*. A
+  wrong-entity signal already in the corpus passes — the figure is real, it just belongs
+  to another company. This is why the Scale AI claims were not flagged. A clean eval run
+  is not evidence that a brief's signals belong to the right company.
+
+- **[DEFECT] README drift in the platform repo.** `README.md` (commit `2b44793`) states
+  that briefs write prose for COMPETITIVE POSITION when Neo4j is unreachable and that
+  the fix is "pending". The fix landed in the very next commit (`0fa8a10`). The README
+  has not been updated — a P6 mismatch between stated intent and shipped code. Not fixed
+  here: this log governs Mycroft, and the file lives in the other repo.
+
+- **Outputs:**
+  - `recipes/vendor-intelligence-brief.yaml` v0.3.0 — new `evaluation:` section (6
+    checks with severities, the harness limit, the human accuracy set, 17 tests, CI),
+    new `architecture.unknown_enforcement`, three issues added
+  - `data/verified/ai_company_signals-schema.yaml` v0.3.0 — residual risk upgraded to
+    CONFIRMED with the Scale AI instance; new note on the grounding-check limit
+  - Amended the 2026-08-22 entry: its open provenance issue is closed by `5edd72c`
+  - This entry
+- **Result:** Mycroft records the machine half of brief evaluation. Recipe stays
+  **DRAFT** — no gate closed this round, `todos_open` still 2, no attestation.
+- **Open issues:**
+  - [BLOCKER] No accuracy rate exists. `labeled_briefs.csv` has 6 queued claims and an
+    empty `accurate` column — the machine half runs, the human half has not started.
+    No accuracy figure may be quoted for this system (P3).
+  - [BLOCKER] Common-word vendors still lack exclusion lists (above).
+  - [GATE OPEN] Supervisor routing review (Phase 2) — no Langfuse trace reviewed.
+  - [GATE OPEN] Brief approval (Phase 2) — no procurement owner review process.
+  - [BLOCKER] Per-source signal counts still stale (pre-purge). Recount before citing.
+  - [BLOCKER] Groq token limit at company #33 of 50 — Phase 3 batch job still blocked.
+  - [OPEN] `eval_runner.py` is not wired to any Mycroft phase gate. It reports; nothing
+    yet requires it to pass before a brief ships. Deliberate for now — a gate is a hard
+    stop and needs a named owner.
+## 2026-07-26 -- Implement Mycroft Finance Investigator Weeks 1-3
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); no lifecycle promotion or human gate clearance attempted.
+- **Inputs:** Local synthetic finance pack in `data/raw/mycroft-finance-investigator/` containing provenance, account mapping, budget, actuals, ledger, customer drivers, and headcount drivers for one sample entity and period.
+- **Commands:** Ran `python3 -m unittest discover -s tests -v`; ran `python3 -m mycroft_finance_investigator.cli all --run-id sample-2026-02`; parsed generated JSON; reviewed the validation audit and human report; ran targeted `node scripts/conformance.mjs`; parsed `pyproject.toml`; ran `git diff --check`; ran `npm run verify`.
+- **Outputs:** `projects/Mycroft-Finance-Investigator/`; `recipes/mycroft-finance-investigator.md`; `conductor/mycroft-finance-investigator.md`; `reports/templates/mycroft-finance-investigator.md`; `data/verified/mycroft-finance-investigator/`; `logs/mycroft-finance-investigator-sample-2026-02.json`; `reports/generated/mycroft-finance-investigator-sample-2026-02.md`; updated data contract, indexes, and current status.
+- **Result:** All 12 unit tests pass, including deliberate ledger-mismatch, unmapped-account, agent-step-limit, and complete-category-bridge checks. Validation accepted 43 synthetic rows across six datasets; account coverage, single period/entity scope, actuals-to-ledger, customer-to-revenue, and headcount-to-payroll checks reconciled. The deterministic bridge calculated sample budget EBITDA of 350000.00 and actual EBITDA of 230000.00, a -120000.00 variance. The investigator completed seven conditionally selected tool steps, retained 41 evidence references, wrote separate machine/human artifacts, and kept the human gate open. Targeted conformance and repository-wide verification pass.
+- **Open issues:** The 10000.00 materiality amount is a demo fixture, not an approved finance policy. No human has supplied or approved causal explanations or authorized distribution. The local policy demonstrates the stateful observe-plan-act contract without a hosted model; an LLM planning policy, persistent database, reviewer agent, scenario engine, and UI remain future-week work.
+
+## 2026-07-31 -- Add Finance Investigator human review gate
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); no human decision or lifecycle promotion recorded.
+- **Inputs:** Completed synthetic sample run `logs/mycroft-finance-investigator-sample-2026-02.json` and its 41 evidence references.
+- **Commands:** Ran the project unit suite; generated an open review request with `review-request`; parsed the artifact; ran targeted conformance and repository verification.
+- **Outputs:** `mycroft_finance_investigator/review.py`; `schemas/review-decision.schema.json`; review CLI commands; `logs/gate-decisions/mycroft-finance-investigator-sample-2026-02-review-request.json`; review tests and updated contracts.
+- **Result:** The review gate binds decisions to the exact run hash, rejects agent identities and unknown evidence, requires evidence-backed explanations for approval, and refuses to overwrite a recorded decision. The committed sample request is `OPEN`; it is not an approval.
+- **Open issues:** No named finance reviewer has completed the request. Demo materiality, causal adequacy, and distribution remain human decisions.
+
+## 2026-08-07 -- Add Finance Investigator adversarial evaluation
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); evaluation does not clear an adequacy or release gate.
+- **Inputs:** The committed synthetic finance pack, completed sample run, and seven explicit cases in `projects/Mycroft-Finance-Investigator/evaluations/cases.json`.
+- **Commands:** Ran the complete project unit suite; ran the `evaluate` CLI; parsed the JSON scorecard; checked that raw-source hashes were unchanged; ran targeted conformance and repository verification.
+- **Outputs:** `mycroft_finance_investigator/evaluation.py`; evaluation case/schema files; evaluation tests; `logs/mycroft-finance-investigator-evaluation-week32.json`; `reports/generated/mycroft-finance-investigator-evaluation-week32.md`; updated recipe, conductor, project documentation, and status.
+- **Result:** All seven named expectations matched: the reconciled baseline completed with the expected EBITDA, tool trace, evidence count, and open human gate; four planted reconciliation/mapping defects stopped validation; the step limit stopped the investigator; and an agent identity could not clear the human gate. Every mutation ran in a temporary copy.
+- **Open issues:** This finite synthetic case set is not model confidence or production certification. A named human still owns test adequacy, materiality, causal explanation, and distribution.
+
+## 2026-08-13 -- Add Finance Investigator scenario decision pack
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); no planning, adequacy, or release gate was cleared.
+- **Inputs:** Verified synthetic sample, exact baseline run `sample-2026-02`, and three explicitly unapproved exercises in `projects/Mycroft-Finance-Investigator/config/sample-scenarios.json`.
+- **Commands:** Ran the complete project unit suite; ran the `scenario` CLI; parsed and reconciled the machine decision pack; reviewed the human Markdown view; ran targeted conformance and repository verification.
+- **Outputs:** `mycroft_finance_investigator/scenario.py`; scenario plan/schema and tests; `logs/mycroft-finance-investigator-scenarios-week33.json`; `reports/generated/mycroft-finance-investigator-scenarios-week33.md`; updated recipe, conductor, project documentation, and status.
+- **Result:** The engine bound the plan to the exact baseline log and reproduced actual EBITDA of 230000.00. It calculated three transparent sensitivities at 275500.00, 250000.00, and 252300.00, retaining baseline records and plan references for every assumption. Outputs are labeled `SIMULATION_NOT_FORECAST`, contain no recommendation, and require a human decision.
+- **Open issues:** The sample assumptions are not approved forecasts or operating plans. A named finance owner must approve or replace assumptions, judge scenario adequacy, and own any decision, causal explanation, materiality policy, or distribution.
+
+## 2026-08-21 -- Add Finance Investigator audit-bundle handoff
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); packaging and integrity checks did not clear any human gate.
+- **Inputs:** Exact synthetic raw and verified data; baseline investigation `sample-2026-02`; open review request; Week 32 evaluation; Week 33 scenario pack; current recipe, conductor, implementation, schemas, and tests.
+- **Commands:** Rebased the feature branch onto current `origin/main` while preserving historical commit dates; ran the complete unit suite; generated the Week 34 bundle with `bundle`; independently checked it with `verify-bundle`; deliberately changed packaged files and manifest content in tests; ran targeted conformance, repository verification, and Git whitespace checks. The first root-directory `verify-bundle` invocation could not import the project package, so it was rerun from the documented project directory.
+- **Outputs:** `mycroft_finance_investigator/bundle.py`; `schemas/audit-bundle.schema.json`; bundle CLI commands and tests; `reports/generated/mycroft-finance-investigator-audit-week34/`; updated recipe, conductor, project documentation, and status.
+- **Result:** All 41 project tests pass. The bundle validates the cross-artifact run IDs and hashes before packaging 54 source, data, specification, implementation, test, machine, and human artifacts. The integrity verifier recomputes the manifest, review view, byte counts, every artifact SHA-256, and the exact inventory. Deliberate manifest, review, artifact, and extra-file modifications are rejected. The initial inventory check exposed the macOS `/var` to `/private/var` temporary-directory symlink; resolving both bundle and artifact roots fixed the false mismatch. The human view reports `BLOCKED_PENDING_HUMAN_REVIEW` and distinguishes checksums from signatures.
+- **Open issues:** No named finance reviewer has approved materiality, causation, evaluation adequacy, scenario assumptions, or distribution. The recipe remains `DRAFT`; the bundle is an integrity-preserving handoff, not production certification or attestation.
+
+## 2026-08-28 -- Add Finance Investigator multi-month trend investigation
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); historical comparison did not clear materiality, causation, adequacy, or release gates.
+- **Inputs:** Independently validated synthetic January and March finance packs, the existing February sample, their three completed investigation logs, and `projects/Mycroft-Finance-Investigator/config/sample-trend.json`.
+- **Commands:** Ran `all` separately for January and March; ran the `trend` CLI; parsed the machine comparison; reviewed the human report; ran all project tests; ran targeted conformance, repository-wide verification, and Git whitespace checks.
+- **Outputs:** `data/raw/mycroft-finance-investigator-history/`; `data/verified/mycroft-finance-investigator-history/`; January and March machine logs and human reports; `mycroft_finance_investigator/trend.py`; trend plan/schema/tests; `logs/mycroft-finance-investigator-trend-week35.json`; `reports/generated/mycroft-finance-investigator-trend-week35.md`; updated recipe, conductor, data contract, project documentation, and status.
+- **Result:** Both added monthly packs validated 43 synthetic rows across six datasets and passed mapping, single-scope, actuals-to-ledger, customer-to-revenue, and headcount-to-payroll controls. The comparison verified every source hash and recomputed actual EBITDA of 261000.00 for January, 230000.00 for February, and 265000.00 for March. It reported a -31000.00 then +35000.00 historical movement and found revenue, COGS, and operating expense materially adverse in all three sample periods under the 10000.00 demo threshold. All 49 project tests pass, including source tampering, duplicate period, entity mismatch, and period mismatch checks. Targeted conformance and repository verification pass.
+- **Open issues:** The threshold remains demo-only. Recurrence is a deterministic historical pattern, not a causal explanation, forecast, recommendation, or approved business decision. No named finance reviewer has judged the history adequate or authorized distribution; the recipe remains `DRAFT`.
+
+## 2026-09-04 -- Add Finance Investigator specialist-agent routing
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); specialist execution did not clear an adequacy or release gate.
+- **Inputs:** Exact Week 35 trend log, its three source investigation logs and verified packs, and `projects/Mycroft-Finance-Investigator/config/sample-routing.json`.
+- **Commands:** Rebased PR 17 onto current `origin/main` while preserving upstream and Finance history; ran the pre-change 49-test baseline; ran the complete project unit suite; generated the Week 36 orchestration log and human work queue; parsed the machine artifact and reviewed the Markdown report.
+- **Outputs:** `mycroft_finance_investigator/orchestration.py`; routing plan/schema/tests and CLI command; `logs/mycroft-finance-investigator-routing-week36.json`; `reports/generated/mycroft-finance-investigator-routing-week36.md`; updated recipe, conductor, project documentation, and status.
+- **Result:** The lineage specialist verified all three source-run and verified-file chains before category work. The supervisor used four of four permitted delegations and deterministically prioritized revenue (200000.00 cumulative material adverse impact), COGS (100000.00), and operating expense (36000.00). It routed revenue to the revenue specialist and both cost categories to the cost specialist, retained calculation and correlated-record evidence separately, and fingerprinted every result. All 57 project tests pass, including deliberate source tampering, category drift, specialist-scope, and delegation-limit failures.
+- **Open issues:** The work queue is not a causal analysis or recommendation. COGS and operating expense still lack operational driver records; all three tasks require an owner-supplied causal explanation. Materiality, evidence adequacy, and distribution remain open human gates.
+
+## 2026-09-10 -- Add Finance Investigator review-driven re-investigation
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`); the committed follow-up is a synthetic review exercise, not a human gate decision.
+- **Inputs:** Exact Week 36 orchestration log and its recorded routing-plan, trend-log, source-task, and specialist-result hashes; `projects/Mycroft-Finance-Investigator/config/sample-follow-up-request.json`.
+- **Commands:** Ran the complete project unit suite; ran the `follow-up` CLI; parsed the machine closure log; reviewed the human before/after report; exercised hash, task-inventory, citation, and append-only failures in tests.
+- **Outputs:** `mycroft_finance_investigator/reinvestigation.py`; follow-up request/schema/tests and CLI command; `logs/mycroft-finance-investigator-follow-up-week37.json`; `reports/generated/mycroft-finance-investigator-follow-up-week37.md`; updated recipe, conductor, project documentation, and status.
+- **Result:** The engine bound the request to the exact Week 36 SHA-256, revalidated upstream plan and trend hashes, and reproduced all three specialist result fingerprints. One existing evidence set replayed exactly, one synthetic causal claim was classified unsupported because it cited calculation evidence without an approved causal evidence class, and one operational evidence request remained open. All 66 project tests pass, including deliberate orchestration tampering, unknown citation, missing task, duplicate task, and overwrite attempts.
+- **Open issues:** `VERIFIED` means evidence integrity only, not verified causation. The COGS claim is a synthetic rejection test and is not an endorsed explanation. A named finance reviewer still must inspect unresolved gaps, approve or replace materiality, supply causal evidence, judge adequacy, and authorize distribution.
 
 ## 2026-09-17 -- Gateway Sprint 4: retry system and first full run
 
@@ -828,3 +950,48 @@
   - [OPEN] Steps 2, 4 and 6 and the script mappings for the respond-to-webhook and human-report nodes: still `[TODO: DEV]` (`todos_open` is 5).
   - [OPEN] Live mode: no approval record; the Alpha Vantage request, the Groq call and the webhook reply are only recorded handoffs (`approved_for_live_action: false`); Parse_LLM_Response is not ported, so a custom scenario stops at the Groq handoff.
   - [NOT COVERED] Real portfolios, live behaviour, and whether the template shocks and the engine's risk thresholds are sound (ported faithfully, not judged).
+
+## 2026-10-26 -- Add Finance Investigator named materiality approval
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`). Closes the open issue every prior run of this project has carried: the materiality threshold was a fixture nobody had approved.
+- **Inputs:** `data/verified/mycroft-finance-investigator` (2026-02 pack, six source files); `projects/Mycroft-Finance-Investigator/config/sample-materiality-approval.json` as a clearly-marked fixture, not an approval.
+- **Commands:** Ran the complete project unit suite; ran `materiality-request` against the real verified pack; exercised the four refusal paths through `record-materiality` (agent-authored decision, placeholder reasoning, scope mismatch, overwrite of an existing approval); ran repo conformance on every added file.
+- **Outputs:** `mycroft_finance_investigator/materiality.py`; `schemas/materiality-approval.schema.json`; `config/sample-materiality-approval.json`; `tests/test_materiality.py` (18 cases); `materiality-request` and `record-materiality` CLI commands.
+- **Result:** A threshold can now reach `APPROVED` only through a record naming a human, stating a basis of at least twenty characters, and carrying the SHA-256 of all six source files as the approver saw them. Reading an approval back re-hashes the pack, so an approval recorded against one pack cannot authorise a different one. Approvals are append-only; a second write to the same path is refused. All 84 project tests pass (66 existing, 18 new).
+- **Open issues:** No approved threshold is committed, by design -- the shipped sample is a fixture and says so. `APPROVED` records that a named human set the amount against specific data; it does not assert the amount is appropriate, and the engine cannot tell a considered basis from a plausible-sounding one. Causal explanation, adequacy, and distribution remain with a named human.
+
+## 2026-10-26 -- Add Finance Investigator evidence freshness
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`). A variance report is a claim about a period; the age of the data behind it is invisible in the numbers.
+- **Inputs:** `data/verified/mycroft-finance-investigator/provenance.json` (period 2026-02, created_on 2026-07-26).
+- **Commands:** Ran the complete project unit suite; ran the `freshness` CLI against the project's own shipped pack; exercised the impossibility refusal, the missing-provenance refusal, and both limit boundaries; ran repo conformance on every added file.
+- **Outputs:** `mycroft_finance_investigator/freshness.py`; `tests/test_freshness.py` (14 cases); `freshness` CLI command.
+- **Result:** The engine measures two gaps separately -- arrival lag (period close to data creation) and shelf age (data creation to time of use) -- and reports FRESH, STALE or EXPIRED against supplied limits. Run against this project's own verified pack it returns **STALE at 148 days of lag**: the 2026-02 pack was created 2026-07-26. A pack with no provenance is refused rather than assumed fresh, and a pack whose created_on precedes the end of the period it claims to describe is refused as impossible rather than merely stale. All 98 project tests pass (84 existing, 14 new).
+- **Open issues:** The engine measures the gaps; it cannot judge whether a gap disqualifies a claim. A 148-day lag is routine for an annual audit and disqualifying for a weekly flash report, and the limits are supplied, not derived. No limit policy is committed as approved.
+
+## 2026-10-26 -- Add Finance Investigator reviewer disagreement log
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`). The review gate records approve, request-changes or block. It had no way to record the common case: the reviewer accepts the report but rejects one finding in it.
+- **Inputs:** `logs/mycroft-finance-investigator-sample-2026-02.json` (the Week 2 investigation and its four category findings).
+- **Commands:** Ran the complete project unit suite; appended a reviewer position against the real 2026-02 revenue finding; exercised the agent-authorship, unknown-claim, restated-value, placeholder-basis, duplicate-reviewer and detached-run refusals; ran repo conformance on every added file.
+- **Outputs:** `mycroft_finance_investigator/disagreement.py`; `tests/test_disagreement.py` (13 cases); `record-disagreement` CLI command.
+- **Result:** A named reviewer can record a position (`NOT_MATERIAL`, `MATERIAL_EXPECTED`, `MISCLASSIFIED`, `INSUFFICIENT_EVIDENCE`) against a category the engine actually reported on, with a stated basis. Both sides are kept: the engine's figure is copied from the run rather than from the record, and a record that tries to restate `engine_value` is refused. The log binds to the run's SHA-256, so if the run changes the log detaches rather than silently referring to findings that no longer exist. Two reviewers may disagree with the same finding; one reviewer may not restate a position. All 111 project tests pass (98 existing, 13 new).
+- **Open issues:** A recorded disagreement resolves nothing. Neither side is adopted, the engine's numbers are unchanged, and no downstream artifact currently consumes the log. Whether a reviewer's position is correct is outside what this records.
+
+## 2026-10-26 -- Add Finance Investigator evidence coverage
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`). Findings already carried evidence references. Nothing had ever resolved them.
+- **Inputs:** `logs/mycroft-finance-investigator-sample-2026-02.json`; `data/verified/mycroft-finance-investigator` (six source files).
+- **Commands:** Ran the complete project unit suite; ran the `coverage` CLI against the real 2026-02 run and pack; exercised all three failure modes plus malformed references; ran repo conformance on every added file.
+- **Outputs:** `mycroft_finance_investigator/coverage.py`; `tests/test_coverage.py` (11 cases); `coverage` CLI command.
+- **Result:** Every evidence reference is parsed into file, column and value, then resolved by reading the file and finding the row. Against the real 2026-02 investigation **all 21 references across 4 claims resolve**. Three failures are reported separately rather than collapsed into "unsourced": `UNCITED` (no evidence at all), `DANGLING` (file not in the pack) and `UNRESOLVED` (file present, no matching row). A malformed reference raises rather than being skipped. All 122 project tests pass (111 existing, 11 new).
+- **Open issues:** Resolution proves the cited row exists. It does not prove the row supports the claim -- a figure can resolve perfectly and still be the wrong figure. Nothing yet blocks a report whose coverage is incomplete; the check reports, it does not gate.
+
+## 2026-10-26 -- Add Finance Investigator distribution gate
+
+- **Recipe:** `mycroft-finance-investigator` v0.1.0 (`DRAFT`). Every upstream feature produced an artifact and stopped. None of them prevented a report being sent to someone who would act on it.
+- **Inputs:** the artifacts produced by the four preceding features -- materiality approval, freshness assessment, coverage report, review decision, disagreement log.
+- **Commands:** Ran the complete project unit suite; ran `distribution-gate` end to end against the real artifacts generated today; verified the empty call blocks on four conditions rather than passing; ran repo conformance on every added file.
+- **Outputs:** `mycroft_finance_investigator/distribution.py`; `tests/test_distribution.py` (13 cases); `distribution-gate` CLI command.
+- **Result:** The gate is BLOCKED by default and clears only when every condition is positively demonstrated by an artifact on disk. A missing artifact blocks; it is never read as a pass. Run against today's real artifacts it returned **BLOCKED**, clearing materiality, freshness and coverage while blocking on a missing review decision and one open disagreement on revenue. `STALE` evidence is allowed through with the lag stated, because lateness is a fact a reader can weigh; `EXPIRED` is not. Every blocking reason is reported, not just the first. All 135 project tests pass (122 existing, 13 new).
+- **Open issues:** `CLEARED` authorises sending, not believing. It means each precondition was demonstrated by an artifact, not that the report is correct or the judgements behind it sound. The gate does not send anything, and nothing yet prevents a human bypassing it.

@@ -1,0 +1,18 @@
+{
+  "workflow": "mycroft-finance-investigator",
+  "artifact": "materiality-approval",
+  "decision": "APPROVE_DEMO",
+  "approved_by": "SAMPLE — replace with a named finance reviewer",
+  "approved_at": "2026-09-18T14:05:00Z",
+  "reasoning": "SAMPLE FIXTURE, NOT AN APPROVAL. Replace this with the real basis for the threshold before recording. The engine refuses placeholder reasoning under twenty characters, but it cannot tell a considered basis from a plausible-sounding one; that judgement is the reviewer's.",
+  "entity": "Northstar Software Sample",
+  "period": "2026-02",
+  "source_hashes": {
+    "account_mapping.csv": "0000000000000000000000000000000000000000000000000000000000000000",
+    "actuals.csv": "0000000000000000000000000000000000000000000000000000000000000000",
+    "budget.csv": "0000000000000000000000000000000000000000000000000000000000000000",
+    "customers.csv": "0000000000000000000000000000000000000000000000000000000000000000",
+    "headcount.csv": "0000000000000000000000000000000000000000000000000000000000000000",
+    "ledger.csv": "0000000000000000000000000000000000000000000000000000000000000000"
+  }
+}

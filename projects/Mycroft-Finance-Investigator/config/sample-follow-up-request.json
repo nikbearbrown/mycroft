@@ -1,0 +1,34 @@
+{
+  "schema_version": "0.1.0",
+  "classification": "SYNTHETIC_REVIEW_FOLLOW_UP_EXERCISE",
+  "source_orchestration_run_id": "week36-routing",
+  "source_orchestration_sha256": "b7c49dedb8cd21c521ef296e81ba5d877fe686fb3846726749222b356855fa74",
+  "requests": [
+    {
+      "request_id": "follow-up-revenue-replay",
+      "task_id": "gap-revenue",
+      "action": "VERIFY_EXISTING_EVIDENCE",
+      "instruction": "Replay the revenue specialist and verify that its evidence set is unchanged.",
+      "claim": null,
+      "cited_evidence": []
+    },
+    {
+      "request_id": "follow-up-cogs-causal-test",
+      "task_id": "gap-cogs",
+      "action": "TEST_CAUSAL_CLAIM",
+      "instruction": "Test whether the proposed COGS explanation is supported by an approved causal evidence class.",
+      "claim": "Higher cloud usage caused the COGS variance.",
+      "cited_evidence": [
+        "2026-01:ledger.csv:transaction_id=JAN-TXN-005"
+      ]
+    },
+    {
+      "request_id": "follow-up-opex-more-evidence",
+      "task_id": "gap-opex",
+      "action": "REQUEST_ADDITIONAL_EVIDENCE",
+      "instruction": "Keep the task open until an approved operational driver source is added.",
+      "claim": null,
+      "cited_evidence": []
+    }
+  ]
+}

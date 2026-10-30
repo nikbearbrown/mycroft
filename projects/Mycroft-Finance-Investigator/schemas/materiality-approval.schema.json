@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mycroft-finance-investigator-materiality-approval.schema.json",
+  "title": "Mycroft Finance Investigator Materiality Approval",
+  "description": "A named human's decision on the materiality threshold, bound to the exact finance pack it was judged against. The agent may prepare the request; it may never author this decision.",
+  "type": "object",
+  "required": [
+    "workflow",
+    "artifact",
+    "decision",
+    "approved_by",
+    "approved_at",
+    "reasoning",
+    "entity",
+    "period",
+    "source_hashes"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "workflow": {"const": "mycroft-finance-investigator"},
+    "artifact": {"const": "materiality-approval"},
+    "decision": {
+      "enum": ["APPROVE_DEMO", "REPLACE"],
+      "description": "APPROVE_DEMO keeps the fixture amount but puts a name against it. REPLACE substitutes a different, stated amount."
+    },
+    "approved_by": {
+      "type": "string",
+      "minLength": 1,
+      "description": "A named human. Agent identities are refused at validation."
+    },
+    "approved_at": {"type": "string", "format": "date-time"},
+    "reasoning": {
+      "type": "string",
+      "minLength": 20,
+      "description": "The basis for the amount. An approval without reasoning is not an approval."
+    },
+    "entity": {"type": "string", "minLength": 1},
+    "period": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$"},
+    "approved_amount": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]{2}$",
+      "description": "Required for REPLACE and must differ from the demo amount. Omitted or equal for APPROVE_DEMO."
+    },
+    "source_hashes": {
+      "type": "object",
+      "description": "SHA-256 of every verified source file, as recorded in the approval request.",
+      "required": [
+        "account_mapping.csv",
+        "actuals.csv",
+        "budget.csv",
+        "customers.csv",
+        "headcount.csv",
+        "ledger.csv"
+      ],
+      "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+    }
+  }
+}

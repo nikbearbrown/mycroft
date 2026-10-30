@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mycroft-finance-investigator-audit-bundle.schema.json",
+  "title": "Finance Investigator Audit Bundle Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "workflow",
+    "bundle_id",
+    "baseline_run_id",
+    "release_status",
+    "integrity_algorithm",
+    "summary",
+    "checks",
+    "open_human_gates",
+    "artifacts",
+    "human_attestation"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "workflow": {"const": "mycroft-finance-investigator-audit-bundle"},
+    "bundle_id": {"type": "string", "minLength": 1},
+    "baseline_run_id": {"type": "string", "minLength": 1},
+    "release_status": {"const": "BLOCKED_PENDING_HUMAN_REVIEW"},
+    "integrity_algorithm": {"const": "SHA-256"},
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_count", "machine_check_count", "open_human_gate_count"],
+      "properties": {
+        "artifact_count": {"type": "integer", "minimum": 1},
+        "machine_check_count": {"type": "integer", "minimum": 1},
+        "open_human_gate_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "checks": {"type": "array", "minItems": 1},
+    "open_human_gates": {"type": "array", "minItems": 1},
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "source_path", "bundled_path", "bytes", "sha256"],
+        "properties": {
+          "role": {"type": "string", "minLength": 1},
+          "source_path": {"type": "string", "minLength": 1},
+          "bundled_path": {"type": "string", "pattern": "^artifacts/"},
+          "bytes": {"type": "integer", "minimum": 1},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "human_attestation": {"type": "null"}
+  }
+}
