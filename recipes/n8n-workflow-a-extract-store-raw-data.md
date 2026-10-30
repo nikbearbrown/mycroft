@@ -1,3 +1,11 @@
+---
+status: DRAFT
+todos_open: 6
+last_gate: null
+attestation: null
+recipe_version: 0.1.0
+---
+
 # Workflow A — Extract & Store Raw Data
 
 ## Purpose
