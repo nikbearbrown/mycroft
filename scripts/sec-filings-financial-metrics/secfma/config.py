@@ -35,6 +35,15 @@ COMPANY_CONCEPT_URL = (
     "https://data.sec.gov/api/xbrl/companyconcept/CIK{cik10}/{taxonomy}/{tag}.json"
 )
 
+# Curated ticker -> CIK overrides. SEC's company_tickers.json can map a ticker
+# to a post-reorganization shell entity with no filing history (e.g. "XOM" ->
+# CIK 2115436 "ExxonMobil Holdings Corp", which has no companyfacts) instead of
+# the operating company. Each entry is an explicit, auditable mapping decision,
+# same philosophy as custom_extension_map.json.
+TICKER_CIK_OVERRIDES = {
+    "XOM": "0000034088",  # Exxon Mobil Corporation (operating co), not the 2024 holdco shell
+}
+
 # Forms we care about for financial metrics.
 DEFAULT_FORMS = ("10-K", "10-Q")
 

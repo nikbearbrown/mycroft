@@ -93,14 +93,29 @@ def build_annual(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
     for end in sorted(by_end):
         recs = by_end[end]
         vals = {m: r["value"] for m, r in recs.items()}
+        provenance = {m: {k: r.get(k) for k in PROVENANCE_FIELDS} for m, r in recs.items()}
+
+        # Reconstruct total_liabilities from its components when the aggregate
+        # `Liabilities` tag is absent (many filers report only current +
+        # non-current). Using independent components keeps the accounting-identity
+        # check (A == L + E) a genuine cross-check — unlike deriving L = A - E,
+        # which would make that check trivially pass.
+        if ("total_liabilities" not in vals
+                and vals.get("current_liabilities") is not None
+                and vals.get("liabilities_noncurrent") is not None):
+            vals["total_liabilities"] = vals["current_liabilities"] + vals["liabilities_noncurrent"]
+            provenance["total_liabilities"] = {
+                "us_gaap_tag": "LiabilitiesCurrent+LiabilitiesNoncurrent",
+                "tag_source": "derived", "accession": None,
+                "form": None, "filed": None, "source_url": None,
+            }
+
         rows.append({
             "fiscal_year": int(end[:4]),
             "period_end": end,
             "base": vals,
             "ratios": _ratios(vals, prev_vals),
-            "provenance": {
-                m: {k: r.get(k) for k in PROVENANCE_FIELDS} for m, r in recs.items()
-            },
+            "provenance": provenance,
         })
         prev_vals = vals
     return rows

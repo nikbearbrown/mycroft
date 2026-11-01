@@ -52,6 +52,9 @@ CANONICAL_METRICS: tuple[MetricSpec, ...] = (
     )),
     MetricSpec("current_assets", "instant", "USD", ("AssetsCurrent",)),
     MetricSpec("current_liabilities", "instant", "USD", ("LiabilitiesCurrent",)),
+    # Non-current liabilities — used to reconstruct total_liabilities for filers
+    # that report no aggregate `Liabilities` tag (see metrics.build_annual).
+    MetricSpec("liabilities_noncurrent", "instant", "USD", ("LiabilitiesNoncurrent",)),
     MetricSpec("cash_and_equivalents", "instant", "USD", (
         "CashAndCashEquivalentsAtCarryingValue",
     )),

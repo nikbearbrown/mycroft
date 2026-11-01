@@ -65,13 +65,21 @@ class EdgarClient:
 
     # -- public API ----------------------------------------------------------
     def ticker_to_cik(self, ticker: str) -> str:
-        """Resolve a ticker to a 10-digit zero-padded CIK string."""
+        """Resolve a ticker to a 10-digit zero-padded CIK string.
+
+        A curated override (config.TICKER_CIK_OVERRIDES) wins first: SEC's ticker
+        map can point a ticker at a post-reorg shell with no filing history, so
+        known-ambiguous tickers are pinned to the operating company's CIK.
+        """
+        wanted = ticker.upper().strip()
+        override = config.TICKER_CIK_OVERRIDES.get(wanted)
+        if override:
+            return override
         if self.sample:
             data = json.loads((FIXTURES_DIR / "company_tickers.json").read_text())
         else:
             cache = config.RAW_DIR / "company_tickers.json"
             data = self._get_json(config.TICKER_MAP_URL, cache)
-        wanted = ticker.upper().strip()
         for row in data.values():
             if str(row["ticker"]).upper() == wanted:
                 return f"{int(row['cik_str']):010d}"
