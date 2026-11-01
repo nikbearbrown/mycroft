@@ -6,7 +6,7 @@
 
 - **1093** reports from **100** companies (25 AI, 75 generalisation); 798 of them for quarters inside the dev and test windows.
 - Finest level each report supports: **L1 900**, **L2 41**, **L3 152**.
-- Bonds in the key (outstanding, with a maturity year): **9,653**.
+- Bonds in the key (outstanding, with a maturity year): **9,630**.
 - Episodes in `manifests/dev.csv` and `test.csv` without their start or target record: **0**.
 
 ## Anomalies (counted, not hidden)
@@ -62,5 +62,5 @@ Episode target levels were frozen at the Week 1 gate. Re-graded with today's ans
 
 ## Generalisation set
 
-75 companies, 824 reports, 774 bonds in their latest reports. Per-company detail is in `index.json`.
+75 companies, 824 reports, 773 bonds in their latest reports. Per-company detail is in `index.json`.
 

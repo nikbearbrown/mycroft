@@ -6,19 +6,19 @@
 
 Dev episodes graded per bond whose start report is itemised too, with at least one change.
 
-**New bonds: 30 of 32 announced** (94%) in a filing the agent could read before the report; 2 unannounced ($0.4 bn); 4 without a tagged coupon to search for.
+**New bonds: 29 of 31 announced** (94%) in a filing the agent could read before the report; 2 unannounced ($0.4 bn); 4 without a tagged coupon to search for.
 
-**Removed bonds: 16** — 9 reached their scheduled maturity (no announcement needed); of the other 7, **5 of 6 announced** as a redemption, repurchase, tender, exchange or conversion.
+**Removed bonds: 15** — 9 reached their scheduled maturity (no announcement needed); of the other 6, **4 of 5 announced** as a redemption, repurchase, tender, exchange or conversion.
 
 | Change | Class | Bonds |
 |---|---|---|
 | added | announced (424B) | 3 |
-| added | announced (8-K) | 11 |
+| added | announced (8-K) | 10 |
 | added | announced (FWP) | 16 |
 | added | no coupon to search for | 4 |
 | added | unannounced | 2 |
 | removed | announced (424B) | 2 |
-| removed | announced (8-K) | 3 |
+| removed | announced (8-K) | 2 |
 | removed | matured (scheduled) | 9 |
 | removed | no coupon to search for | 1 |
 | removed | unannounced | 1 |

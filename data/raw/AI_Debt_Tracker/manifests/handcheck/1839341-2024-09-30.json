@@ -1,0 +1,89 @@
+{
+ "episode": "1839341-2024-09-30",
+ "company": "Core Scientific",
+ "report": "10-Q 20240930",
+ "level": "L1",
+ "status": "reviewed",
+ "holdout": "week 3",
+ "reviewer": "Claude (model judgment, P8), 2026-10-31",
+ "source": "printed debt table / balance sheet / debt note text in the report's HTML",
+ "source_rows": "rows 1-23",
+ "review": "Rows 1-22 of the notes payable table (in thousands: stated rate, effective rate, maturity, Sep 30 2024, Dec 31 2023); '\u2014' means repaid or converted. Outstanding: the $460 m 3.00% 2029 convertible notes, four small notes, two loans (by the printed name), and the ACM note (stated rate '\u2014'). Total notes payable, net $492,537 k.",
+ "instruments": [
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 3.0,
+   "maturity_year": 2029,
+   "principal": 460000000.0,
+   "amount_usd": 460000000.0,
+   "row": "2029 Convertible Notes | 3.0% | 2029 | 460,000"
+  },
+  {
+   "kind": "facility",
+   "currency": "USD",
+   "coupon_pct": null,
+   "maturity_year": 2029,
+   "principal": 6366000.0,
+   "amount_usd": 6366000.0,
+   "row": "Liberty/Stonebriar takeback loan | None% | 2029 | 6,366"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": null,
+   "maturity_year": 2025,
+   "principal": 4137000.0,
+   "amount_usd": 4137000.0,
+   "row": "ACM note | None% | 2025 | 4,137"
+  },
+  {
+   "kind": "facility",
+   "currency": "USD",
+   "coupon_pct": 5.5,
+   "maturity_year": 2027,
+   "principal": 11674000.0,
+   "amount_usd": 11674000.0,
+   "row": "Bremer loan | 5.5% | 2027 | 11,674"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 5.0,
+   "maturity_year": 2026,
+   "principal": 10764000.0,
+   "amount_usd": 10764000.0,
+   "row": "HMC note | 5.0% | 2026 | 10,764"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 5.0,
+   "maturity_year": 2027,
+   "principal": 10315000.0,
+   "amount_usd": 10315000.0,
+   "row": "Didado note | 5.0% | 2027 | 10,315"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 5.0,
+   "maturity_year": 2026,
+   "principal": 3587000.0,
+   "amount_usd": 3587000.0,
+   "row": "Harper note | 5.0% | 2026 | 3,587"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 5.0,
+   "maturity_year": 2026,
+   "principal": 2379000.0,
+   "amount_usd": 2379000.0,
+   "row": "Trilogy note | 5.0% | 2026 | 2,379"
+  }
+ ],
+ "totals": {
+  "total_debt": 492537000.0
+ }
+}

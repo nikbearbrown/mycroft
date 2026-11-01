@@ -1,0 +1,87 @@
+{
+ "episode": "1375365-2025-06-30",
+ "company": "Super Micro",
+ "report": "10-K 20250630",
+ "level": "L1",
+ "status": "reviewed",
+ "holdout": "week 3",
+ "reviewer": "Claude (model judgment, P8), 2026-10-31",
+ "source": "printed debt table / balance sheet / debt note text in the report's HTML",
+ "source_rows": "Note 8 text; term-loan table rows 445-449",
+ "review": "The convertible notes are described in Note 8's text, not a table: $700.0 m 2.25% notes due 2028, $1,725.0 m 0.0% notes due 2029, $2.3 bn notes due 2030 (no coupon printed, so none recorded). Term loans from the term-loan table (thousands). No single total-debt figure is printed, so no total is recorded.",
+ "instruments": [
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 2.25,
+   "maturity_year": 2028,
+   "principal": 700000000.0,
+   "amount_usd": 700000000.0,
+   "row": "$700.0 million aggregate principal amount of 2.25% Convertible Senior Notes due 2028"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 0.0,
+   "maturity_year": 2029,
+   "principal": 1725000000.0,
+   "amount_usd": 1725000000.0,
+   "row": "$1,725.0 million aggregate principal amount of 0.0% Convertible Senior Notes due 2029"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": null,
+   "maturity_year": 2030,
+   "principal": 2300000000.0,
+   "amount_usd": 2300000000.0,
+   "row": "$2.3 billion aggregate principal amount of 2030 Convertible Notes"
+  },
+  {
+   "kind": "facility",
+   "currency": "USD",
+   "coupon_pct": null,
+   "maturity_year": 2030,
+   "principal": 28822000.0,
+   "amount_usd": 28822000.0,
+   "row": "CTBC Term Loan Facility, due June 4, 2030 | 28,822"
+  },
+  {
+   "kind": "facility",
+   "currency": "USD",
+   "coupon_pct": null,
+   "maturity_year": 2026,
+   "principal": 1846000.0,
+   "amount_usd": 1846000.0,
+   "row": "CTBC Term Loan Facility, due August 15, 2026 | 1,846"
+  },
+  {
+   "kind": "facility",
+   "currency": "USD",
+   "coupon_pct": null,
+   "maturity_year": 2026,
+   "principal": 13678000.0,
+   "amount_usd": 13678000.0,
+   "row": "E.SUN Bank Term Loan Facility, due September 15, 2026 | 13,678"
+  },
+  {
+   "kind": "facility",
+   "currency": "USD",
+   "coupon_pct": null,
+   "maturity_year": 2027,
+   "principal": 9632000.0,
+   "amount_usd": 9632000.0,
+   "row": "E.SUN Bank Term Loan Facility, due August 15, 2027 | 9,632"
+  },
+  {
+   "kind": "facility",
+   "currency": "USD",
+   "coupon_pct": null,
+   "maturity_year": 2026,
+   "principal": 17098000.0,
+   "amount_usd": 17098000.0,
+   "row": "Mega Bank Term Loan Facility, due October 3, 2026 | 17,098"
+  }
+ ],
+ "totals": {}
+}

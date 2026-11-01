@@ -225,9 +225,12 @@ are still graded per bond. Evidence: [`docs/universe_v1_review.md`](docs/univers
 | P32 | **Acquired debt on a `BusinessAcquisition` axis.** | Week 2 hand-check: Broadcom's 10 assumed VMware notes (56 facts) were dropped. | The axis is descriptive; its facts are kept. |
 | P33 | **Members named by due date**, and misspelt. | Broadcom: `May2025SeniorNotes`, `November2025SeniorNotes`, `May2027SeniorNots`. | A month on or after the report's period end is a maturity; "Nots" reads as notes. |
 | P34 | **A currency the XBRL never states.** A Swiss franc note whose label names no currency and whose face and carrying are both tagged in USD. | Week 2 hand-check (Equinix 10-K). | A key currency is *known* only from the label or a foreign-unit face; otherwise it does not block a match. |
-| P35 | **Face-only "outstanding" is unreliable.** A repaid sterling note with no balance tag, only a face dated at the period end. | Week 2 held-out check (Digital Realty 10-Q). | Open (Week 3): require a balance tag where the report tags balances elsewhere. |
-| P36 | **Filer tagging errors on currency.** A dollar exchangeable note's face tagged in euros. | Same. | Open (Week 3): when face and carrying units disagree, treat the currency as unknown. |
-| P37 | **Translated face amounts.** Euro notes' face tagged as dollar translations, so the key's principal is in another currency from the printed one. | Same (principal 4 of 20 agree). | Open (Week 3): score principal only when the key's currency is known and equals the ledger's. |
+| P35 | **Face-only "outstanding" is unreliable.** A repaid sterling note with no balance tag, only a face dated at the period end. | Week 2 held-out check (Digital Realty 10-Q). | **Fixed (Week 3):** a face-only bond due by the report's year, in a report that tags balances for its other debt, is repaid. (Requiring a balance tag outright was rejected: it drops new issues tagged only by face.) |
+| P36 | **Filer tagging errors on currency.** A dollar exchangeable note's face tagged in euros. | Same. | **Fixed (Week 3):** when face and carrying are tagged in different units and the label names no currency, the currency is unknown and does not block a match. |
+| P37 | **Translated face amounts.** Euro notes' face tagged as dollar translations, so the key's principal is in another currency from the printed one. | Same (principal 4 of 20 agree). | **Fixed (Week 3):** principal is scored only when the key's currency is known or equals the ledger's. |
+| P38 | **Over-allotment tagged as its own bond.** The banks' $300 m option on a convertible is a separate member, although the base bond's amount already includes it — a double count. | Week 3 fresh held-out check (Super Micro 10-K FY2025). | Open (Week 4): an over-allotment member belongs to its base bond. |
+| P39 | **Small notes with no maturity anywhere in the XBRL.** Names carry the lender (HMC, Trilogy …), not a year; the year is only a printed column. | Week 3 fresh held-out check (Core Scientific 10-Q; 1 key bond vs 6 printed). | Open (Week 4): such instruments cannot be graded per bond; narrow the report's level or its truth. |
+| P40 | **A coupon found inside another number.** The change search read "0%" inside "escalates 20%" and credited a 0% 2031 convertible to an earnings release. | Week 3 triage report (Core Scientific). | **Fixed (Week 3):** a coupon must start a number; the notes are credited to the 8-K that announced them. Week 2's counts unchanged. |
 
 ## 3.5 How the data is used
 
@@ -652,6 +655,7 @@ quarters). Full results in [`docs/feasibility.md`](docs/feasibility.md):
 | Does the professor agree? | **Approved** (16 October 2026) |
 | *Week 1:* matching on L1-graded episodes (dev) | **93.4%** — pass (all episodes 85%, the gap being Intel's and Oracle's 10-Q tagging, graded at L3) |
 | *Week 1:* bake-off, no hints, 29 documents | `qwen3:4b` **95% of fields**, 29/29 JSON, ≤ 12.6 s — pass; `qwen3:8b` 84% |
+| *Week 3:* triage on 50 labelled filings | recall **24 of 24 (100%)**, precision 92%, all 22 of Week 2's announcement filings kept; the model decided 34% of 593 filings at 3.1 s each — pass |
 
 Verdict: **go.**
 
@@ -679,8 +683,11 @@ data/raw/AI_Debt_Tracker/
   src/ai_debt_tracker/
     config.py  sec.py  edgar.py               # env-only paths; the one door to sec.gov; filing index   [week 1]
     mcp_servers/   edgar_pit_core.py  edgar_pit.py                                                   [week 1]
-                   docs.py  ledger.py  debt_signals.py
-    graph/         state.py  supervisor.py  scheduler.py  nodes/
+                   docs.py                    # sections, sentences, tables, search, span            [week 3]
+                   ledger.py  debt_signals.py
+    documents/     parse.py  store.py         # filing HTML -> addressable headings/sentences/tables [week 3]
+    graph/         nodes/timeline.py  nodes/triage.py                                                [week 3]
+                   state.py  supervisor.py  scheduler.py  nodes/…
     ledger/        parsers.py  matcher.py                                                            [week 1]
                    engine.py  checks.py
     llm/           ollama_client.py  schemas.py
@@ -692,12 +699,15 @@ data/raw/AI_Debt_Tracker/
                    review_universe.py  select_generalisation.py  build_splits.py
                    load_answer_key.py  f1_matching.py  bakeoff.py                                    [week 1]
                    build_answer_key.py  score_baseline.py  handcheck.py  explain_changes.py           [week 2]
+                   triage_eval.py                                                                    [week 3]
                    demo.py
   manifests/       dev.csv  test.csv  generalisation.csv  week1_gate.json                            [week 1]
-                   handcheck/<episode>.json   (13 transcriptions of printed debt tables)             [week 2]
+                   handcheck/<episode>.json   (13 transcriptions of printed debt tables)  week2_gate.json [week 2]
+                   handcheck/ +5 (fresh held-out)  triage_labels.json  week3_gate.json               [week 3]
   docs/            feasibility.md  worklog.md  universe_v1_review.md  answer_key_week1.md
                    bakeoff.md  bakeoff_set.md  week1_review.md                                       [week 1]
                    answer_key.md  baseline_b0.md  handcheck.md  changes_dev.md                       [week 2]
+                   triage.md  triage_labels.md                                                       [week 3]
                    archive/   (superseded: universe_draft.json, run_log_pending.md)
                    (later: findings.md, demo.md, mcp_server.md)
   tests/
@@ -764,4 +774,18 @@ after EDGAR's clock moved (P29). See [`docs/worklog.md`](docs/worklog.md).
 **Week 2 gate cleared** by Om Mali on 23 October 2026: the hand-check
 ([`docs/handcheck.md`](docs/handcheck.md)) accepted as the week 2 check (`manifests/week2_gate.json`).
 
-**Week 3 begins with** P35–P37 and a fresh held-out check, then the `docs` server and triage (§11).
+*Done in week 3 (31 October 2026):* P35–P37 fixed (Week 2's held-out set now 3 of 3); a fresh held-out
+hand-check, drawn before reading — **1 of 3** gradable reports agree (Dell); Super Micro and Core Scientific
+disagree because of two new answer-key defects, P38 and P39, left open on purpose; Cipher Mining and
+TeraWulf had no debt to compare. The `docs` server (filings as addressable headings, sentences, tables and
+cells, opened only through `edgar_pit`), the timeline across 8-Ks, 424Bs and FWPs including issuing
+subsidiaries, and triage (rules R1–R5, `qwen3:4b` for the doubtful third). **Triage on the 50 labelled
+filings: recall 24 of 24, precision 24 of 26** ([`docs/triage.md`](docs/triage.md)); the labels are
+Claude's reading, made before the run ([`docs/triage_labels.md`](docs/triage_labels.md)). P40 (a
+change-search coupon bug) found by the triage report and fixed.
+
+**Week 3 gate** (`manifests/week3_gate.json`): Om Mali delegated the whole week in advance and did not
+review it; the record says so, and every judgment in it is labelled as Claude's.
+
+**Week 4 begins with** P38–P39 and another fresh held-out check, a fresh triage check on new filings (the
+`Item1.01` spacing and blank-cover 424B cases), then the event reader and baselines B1/B2 (§11).

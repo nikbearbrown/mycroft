@@ -8,17 +8,17 @@ Reads nothing. It takes the last report itemised finely enough for the episode's
 
 ## Results
 
-**L1 — per bond** (47 episodes, 593 true bonds):
+**L1 — per bond** (47 episodes, 587 true bonds):
 
-- Bond recall: **90.7%** (87.5%–93.5%)
-- Bond precision: **90.3%** (85.9%–94.0%)
+- Bond recall: **90.8%** (87.5%–93.6%)
+- Bond precision: **90.0%** (85.6%–93.8%)
 - Principal accuracy on matched bonds: **99.2%** (98.0%–100.0%)
 - Episodes reproduced exactly (every bond, nothing extra): **18 of 47**
 
 **Change detection** (42 episodes whose start report is itemised too; 21 of them have at least one bond added or removed):
 
-- New bonds caught: **0.0%** (0.0%–0.0%) of 36
-- Removed bonds caught: **18.8%** (0.0%–40.0%) of 16
+- New bonds caught: **0.0%** (0.0%–0.0%) of 35
+- Removed bonds caught: **6.7%** (0.0%–21.1%) of 15
 
 B0 cannot catch a new bond by construction; it catches a removal only when the bond's maturity year has passed. **This is the headroom:** every new bond, and every early repayment, is something only reading the filings can find.
 
@@ -43,7 +43,7 @@ Most reports tag the maturity ladder only in the annual report, so a carried-for
 |---|---|---|---|---|
 | ai_software | 8 | 93.8% | 100.0% | 7 |
 | chips_hardware | 23 | 91.3% | 91.6% | 11 |
-| datacentre_neocloud | 15 | 92.2% | 86.2% | 0 |
+| datacentre_neocloud | 15 | 92.4% | 85.5% | 0 |
 | hyperscaler | 1 | 77.8% | 94.6% | 0 |
 
 ## Where B0 is wrong most (L1)
@@ -57,6 +57,6 @@ Most reports tag the maturity ladder only in the annual report, so a carried-for
 | Core Scientific | 1839341-2024-09-30 | 1 | 6 |
 | Broadcom | 1730168-2025-06-30 | 4 | 2 |
 | Core Scientific | 1839341-2024-12-31 | 1 | 4 |
-| Digital Realty | 1297996-2025-03-31 | 2 | 3 |
 | Core Scientific | 1839341-2025-03-31 | 0 | 4 |
+| Digital Realty | 1297996-2025-03-31 | 1 | 3 |
 | Equinix | 1101239-2024-12-31 | 2 | 2 |

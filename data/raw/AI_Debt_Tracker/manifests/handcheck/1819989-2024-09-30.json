@@ -1,0 +1,15 @@
+{
+ "episode": "1819989-2024-09-30",
+ "company": "Cipher Mining",
+ "report": "10-Q 20240930",
+ "level": "L3",
+ "status": "reviewed",
+ "holdout": "week 3",
+ "reviewer": "Claude (model judgment, P8), 2026-10-31",
+ "source": "printed debt table / balance sheet / debt note text in the report's HTML",
+ "source_rows": "balance sheet",
+ "review": "No debt is printed: the balance sheet has no debt line (finance lease payments only), consistent with Cipher issuing its first notes in 2025.",
+ "instruments": [],
+ "totals": {},
+ "no_debt": true
+}

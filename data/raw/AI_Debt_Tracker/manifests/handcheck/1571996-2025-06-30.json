@@ -1,0 +1,17 @@
+{
+ "episode": "1571996-2025-06-30",
+ "company": "Dell",
+ "report": "10-Q 20250731",
+ "level": "L3",
+ "status": "reviewed",
+ "holdout": "week 3",
+ "reviewer": "Claude (model judgment, P8), 2026-10-31",
+ "source": "printed debt table / balance sheet / debt note text in the report's HTML",
+ "source_rows": "balance sheet rows 'Short-term debt', 'Long-term debt'",
+ "review": "Totals only (the episode's level), from the balance sheet: short-term debt $7,154 m and long-term debt $21,535 m at Aug 1 2025, so total debt $28,689 m.",
+ "instruments": [],
+ "totals": {
+  "total_debt": 28689000000.0,
+  "current": 7154000000.0
+ }
+}

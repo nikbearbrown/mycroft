@@ -60,9 +60,12 @@ def rate_strings(rate: float) -> list[str]:
 
 
 def mentions(text: str, rate: float, year: int):
-    """Positions where the bond is named: its coupon with its maturity year within 300 characters."""
+    """Positions where the bond is named: its coupon with its maturity year within 300 characters.
+    The coupon must start a number — "0%" inside "20%" is not a 0% coupon (P40: Week 3's triage check
+    found a 0% 2031 convertible credited to an earnings release whose lease table says "escalates 20%"
+    near "Nov 2031")."""
     for rs in rate_strings(rate):
-        for m in re.finditer(re.escape(rs), text):
+        for m in re.finditer(r"(?<![\d.,])" + re.escape(rs), text):
             if str(year) in text[max(0, m.start() - 300): m.end() + 300]:
                 yield m.start()
 

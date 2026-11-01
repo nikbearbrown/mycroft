@@ -4,6 +4,50 @@ Newest first.
 
 ---
 
+## 2026-10-31 — Week 3: finding the debt news (timeline, triage, documents)
+
+**Week 2's leftovers first.** P35–P37, Digital Realty's own tagging, are fixed in the answer key and
+grader: a face-only bond due by the report's year in a report that tags balances elsewhere is repaid
+(P35); face and carrying in different units leave the currency unknown (P36); principal is scored only
+in a known currency (P37). Week 2's held-out set now agrees 3 of 3 — but it is no longer held out, so a
+**fresh held-out set** of five dev reports was drawn by seed before reading and graded once: **1 of 3**
+gradable agree (Dell's totals exactly). Super Micro's key double-counts an over-allotment option (P38) and
+Core Scientific's small notes have no maturity anywhere in the XBRL (P39); both are diagnosed and left
+open, not tuned away. Cipher Mining and TeraWulf had no debt at those dates, so they are not counted. The
+check also caught a mistake by the checker: a Super Micro coupon was transcribed from the notes' original
+terms (disclosed; the verdict does not change). The key now holds 9,630 bonds (was 9,653); B0's recall is
+90.8%, new bonds caught still 0 of 35, removals 1 of 15.
+
+**The `docs` server.** A filing becomes addressable pieces — headings `h3`, sentences `s12`, tables
+`t2`, rows `t2.r4`, cells `t2.r4.c1` — with bounded tools (`sections`, `sentences`, `tables`, `search`,
+`span`), so the agent cites ids instead of retyping numbers. Every document is opened through
+`edgar_pit` (a new internal `raw` call), so the point-in-time rule holds: a live test found Oracle's
+4.200% 2029 notes sentence by search and was refused the episode's own target report.
+
+**Timeline and triage.** The timeline gathers 8-Ks, 424B prospectuses and FWP term sheets in an episode's
+window, for the company *and* its issuing subsidiaries (Equinix's euro notes come from a subsidiary
+CIK), with co-filings removed. Over every dev window that is **593 candidate filings**. Triage decides
+them with five rules — item 2.03/2.04, prospectus covers, term sheets, a debt announcement in the lead,
+no debt words at all — and asks `qwen3:4b` only about the doubtful **199 (34%)**, at a median 3.1 s.
+
+**The check.** 50 filings were drawn by seed (30 at random, 20 from filings with any debt word) and
+labelled by Claude against a written definition **before** triage ran; the labels file's hash is
+unchanged after the run. Result: **recall 24 of 24**, precision 24 of 26 (an Alphabet *share*
+mini-tender and a TeraWulf acquisition were false alarms), event type right on 20. All 22 filings that
+Week 2 found announcing a bond change are kept.
+
+**What went wrong, and is recorded.** The first run crashed: a runaway model answer hit its token cap
+and returned broken JSON. Unreadable answers now keep the filing (flagged) and the whole pool was rerun.
+The report's first version showed one Week 2 announcement dropped; it was Week 2's error — "0%" matched
+inside "escalates 20%" — now P40, fixed. 8 of the model's 21 keeps quoted text that isn't in the filing,
+so the Week 4 reader must re-ground every fact. Two rule weaknesses seen while labelling (`Item1.01`
+without a space; a prospectus cover with blanks) were deliberately not fixed against the labelled set.
+
+**Gate (P4):** Om delegated the whole week in advance and did not review it; `manifests/week3_gate.json`
+says exactly that (status DELEGATED, not CLEARED). Git is Om's.
+
+---
+
 ## 2026-10-23 — Week 2: the answer key, the grader and the do-nothing baseline
 
 **Housekeeping first.** Weeks 0–1 were committed; their three RUN_LOG entries had not reached

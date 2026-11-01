@@ -260,6 +260,9 @@ def grade_l1(target: dict, ledger: dict, start: dict | None = None) -> dict:
     p_scored = p_ok = p_unstated = 0
     for r, c in pairs:
         tp, lp = truth[r].get("principal"), bonds[c].get("principal")
+        if (not truth[r].get("currency_known", True)
+                and (truth[r].get("currency") or "USD") != (bonds[c].get("currency") or "USD")):
+            continue  # P37: the key's amount may be a dollar translation of a euro face; not comparable
         if tp is not None:
             p_scored += 1
             p_unstated += lp is None

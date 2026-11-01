@@ -259,6 +259,11 @@ class AnswerKey:
             # translation into dollars: Equinix's 2.875% 2028 notes are Swiss franc notes whose label
             # never says so and whose only amount is a USD carrying value (Week 2 hand-check).
             currency_from = "label" if parsed.currency else "face" if face_row else "carrying" if amount_uom else None
+            if currency_from == "face" and crow is not None and crow["uom"] != face_row["uom"]:
+                # P36: face and carrying tagged in different units with no currency in the label —
+                # Digital Realty tags its *dollar* exchangeable notes' face in euros. Neither unit can
+                # be trusted, so the currency is unknown and does not block a match.
+                currency_from = "conflict"
             mat = maturities.get((axis, member))
 
             plain = re.sub(r"\[member\]|\bmember\b", "", label or "", flags=re.I).strip(" ,")
@@ -292,6 +297,17 @@ class AnswerKey:
                 tags=sorted(by_tag), parse_notes=parsed.notes,
             )
             out.append(inst)
+        # P35: a bond known only by a face amount dated at the period end, in a report that tags
+        # balances for its other debt, and due by the report's own year, has almost certainly been
+        # repaid — Digital Realty's £400 m 4.250% notes (due Jan 2025) in its June 2025 10-Q, UPS's
+        # 2022 notes in its 2023 10-K. Face-only bonds due later are kept: new issues are often
+        # tagged only by face in the narrative (Mastercard's 2028/2032/2035 notes, Sep 2024).
+        if any(i.outstanding_from == "balance at period end" for i in out):
+            for i in out:
+                if (i.outstanding and (i.outstanding_from or "").startswith("face") and i.maturity_year
+                        and i.maturity_year <= year):
+                    i.outstanding = False
+                    i.outstanding_from = "face only, due by the report year, balances tagged elsewhere (P35)"
         out.sort(key=lambda i: (i.klass, i.maturity_year or 0, i.rate or 0, i.member))
         return out, dict(skipped)
 

@@ -11,17 +11,23 @@ runs on local models only (Ollama on an 8 GB laptop GPU) — no paid APIs.
 
 ## Status
 
-**Week 2 complete — gate cleared 2026-10-23.** The answer key covers all 100 companies, the grader
-scores at three levels, and the do-nothing baseline is measured: it finds 90.7% of bonds but none of
-the 36 new ones. The grader agrees with 10 of 10 hand-checked printed debt tables (2 of 3 held out),
-accepted by Om Mali (`manifests/week2_gate.json`). Week 1 is frozen (`manifests/week1_gate.json`).
+**Week 3 complete — 2026-10-31.** The agent can now find the debt news: a timeline of every 8-K,
+prospectus and term sheet in an episode's window (subsidiaries included), triage that keeps the
+debt-relevant ones — **24 of 24** on a 50-filing labelled set, precision 92%, using rules for two
+thirds of filings and `qwen3:4b` for the rest — and a `docs` server that hands the agent a filing as
+addressable sentences and table cells. The answer key's P35–P37 are fixed; a fresh held-out hand-check
+found two more defects (P38–P39, open for Week 4). Om Mali delegated the week in advance and did not
+review it (`manifests/week3_gate.json`); the labels and transcriptions are Claude's model judgment.
+Weeks 1–2 gates: `manifests/week1_gate.json`, `manifests/week2_gate.json`.
 
+- [`docs/triage.md`](docs/triage.md) — triage scored on the labelled set and run over the dev pool; the Week 3 check.
+- [`docs/triage_labels.md`](docs/triage_labels.md) — the 50 labelled filings and why each label.
 - [`docs/answer_key.md`](docs/answer_key.md) — the answer key for every report, with its anomalies.
 - [`docs/baseline_b0.md`](docs/baseline_b0.md) — baseline B0 (carry forward) scored on dev.
 - [`docs/handcheck.md`](docs/handcheck.md) — the grader against printed debt tables; the Week 2 check.
 - [`docs/changes_dev.md`](docs/changes_dev.md) — which bond changes were announced in a filing.
 
-- [`DESIGN.md`](DESIGN.md) — data sources, problems and fixes (P1–P29), agents, MCP servers,
+- [`DESIGN.md`](DESIGN.md) — data sources, problems and fixes (P1–P40), agents, MCP servers,
   models, evaluation, ten-week plan.
 - [`docs/feasibility.md`](docs/feasibility.md) — every go/no-go check with its pass line and result,
   including the Week 1 re-runs.
@@ -71,7 +77,8 @@ $env:OLLAMA_MODELS = "<your models directory>"; ollama serve
 ```powershell
 $env:UV_PROJECT_ENVIRONMENT = "<your venv directory>"; $env:UV_CACHE_DIR = "<your uv cache>"
 uv sync                      # Python 3.11+, installs mcp (<2), scipy and pytest
-uv run pytest                # 95 offline tests: parser, matcher, answer key, grader, B0, edgar_pit's cut-off rule
+uv run pytest                # 122 offline tests: parser, matcher, answer key, grader, B0, edgar_pit's cut-off rule,
+                             # document parsing and store, timeline, triage rules
 ```
 
 ## Reproducing Week 1
@@ -115,6 +122,31 @@ report — not from a timestamp, because EDGAR's acceptance times have moved by 
 ```powershell
 $env:EDGAR_PIT_TARGET = "<cik>:<target_adsh>"                   # both columns of manifests/*.csv
 uv run python -m ai_debt_tracker.mcp_servers.edgar_pit          # stdio; tools: timeline, exhibits, fetch
+```
+
+## Reproducing Week 3
+
+```powershell
+$env:PYTHONPATH = "scripts"
+uv run python scripts/build_answer_key.py                       # after the P35-P37 fixes
+uv run python scripts/score_baseline.py dev
+uv run python scripts/handcheck.py grade                        # incl. the fresh held-out set (HOLDOUT_W3)
+uv run python scripts/explain_changes.py
+uv run python scripts/triage_eval.py pool                       # every candidate filing in every dev window (~600)
+uv run python scripts/triage_eval.py sample                     # the 50-filing labelled set; refuses once labelled
+uv run python scripts/triage_eval.py run qwen3:4b               # Ollama running; rules first, model for the rest
+uv run python scripts/triage_eval.py report qwen3:4b            # -> docs/triage.md, docs/triage_labels.md
+```
+
+**The `docs` MCP server** reads a filing as addressable pieces — headings `h3`, sentences `s12`,
+tables `t2`, rows `t2.r4`, cells `t2.r4.c1` — so the agent cites ids instead of retyping numbers.
+It is started like `edgar_pit` (same environment, same point-in-time rule: every document is opened
+through `edgar_pit`, and the target report is refused). Document keys are
+`<cik>/<accession>/<file name>`, the file name coming from `edgar_pit`'s `exhibits` tool:
+
+```powershell
+$env:EDGAR_PIT_TARGET = "<cik>:<target_adsh>"
+uv run python -m ai_debt_tracker.mcp_servers.docs               # tools: sections, sentences, tables, search, span
 ```
 
 ## Reproducing the feasibility numbers (Week 0)

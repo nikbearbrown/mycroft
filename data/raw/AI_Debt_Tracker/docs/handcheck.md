@@ -33,25 +33,55 @@ was read, graded once after every fix, and nothing changed in response to them.
 | 1326801-2024-12-31 | Meta | 10-K 20241231 | L2 | 3 | 3 | 3 | 0/0 | **yes** |
 | 1692819-2025-06-30 | Vistra | 10-Q 20250630 | L3 | — | — | — | 1/1 | **yes** |
 
-## Held-out set: 2 of 3 agree
+## Week 2 held-out set, re-graded after the Week 3 fixes: 3 of 3 agree
 
 | Episode | Company | Report | Level | Printed | Key | Matched | Totals within 2% | Agree? |
 |---|---|---|---|---|---|---|---|---|
 | 2488-2025-03-31 | AMD | 10-Q 20250331 | L1 | 5 | 5 | 5 (principal 5/5) | 1/1 | **yes** |
-| 1297996-2025-06-30 | Digital Realty | 10-Q 20250630 | L1 | 21 | 22 | 20 (principal 4/20) | 0/0 | **no** |
+| 1297996-2025-06-30 | Digital Realty | 10-Q 20250630 | L1 | 21 | 21 | 21 (principal 4/4) | 0/0 | **yes** |
 | 1640147-2025-06-30 | Snowflake | 10-Q 20250731 | L1 | 2 | 2 | 2 (principal 2/2) | 0/0 | **yes** |
 
-**What the held-out disagreement shows** (diagnosed, deliberately *not* fixed in Week 2 — fixing it
-would turn the held-out set into a second calibration set; these are Week 3's first items):
+**Week 2's held-out result was 2 of 3.** Its disagreements were diagnosed and deliberately *not*
+fixed in Week 2; they became P35–P37 and were fixed in Week 3. This set is therefore no longer held out —
+the table above shows it re-graded after those fixes. Week 3's fresh held-out set is below.
 
-| # | Found on | Defect | Proposed fix (Week 3, then a fresh held-out check) |
+| # | Found on | Defect | Fix (Week 3) |
 |---|---|---|---|
-| P35 | Digital Realty 10-Q | The repaid £400 m 4.250% notes have no balance tag at all, only a face amount dated at the period end, so the key keeps them | The face-at-period-end fallback is unreliable on its own; require a balance tag, or a face tag in a report that tags no balances anywhere |
-| P36 | Digital Realty 10-Q | The 1.875% exchangeable notes are dollar notes, but the filer tagged their face in euros, so the key's currency blocks the match | Prefer the carrying amount's unit when face and carrying units disagree, and treat the currency as unknown |
-| P37 | Digital Realty 10-Q | Euro notes' face amounts are tagged as dollar translations; the key's principal is in a different currency from the printed one (4 of 20 agree) | Score principal only when the key's currency is known and equals the ledger's |
+| P35 | Digital Realty 10-Q | The repaid £400 m 4.250% notes have no balance tag at all, only a face amount dated at the period end, so the key keeps them | A face-only bond, due by the report's year, in a report that tags balances for its other debt, is repaid. (Requiring a balance tag outright was rejected: it would drop new issues tagged only by face, e.g. Mastercard's 2028/2032/2035 notes.) |
+| P36 | Digital Realty 10-Q | The 1.875% exchangeable notes are dollar notes, but the filer tagged their face in euros, so the key's currency blocks the match | When face and carrying are tagged in different units and the label names no currency, the currency is unknown and does not block a match |
+| P37 | Digital Realty 10-Q | Euro notes' face amounts are tagged as dollar translations; the key's principal is in a different currency from the printed one (4 of 20 agree) | Principal is scored only when the key's currency is known or equals the ledger's |
 
-Identity matching held up on the held-out set — 27 of 29 printed bonds matched (AMD 5/5, Snowflake 2/2, Digital
-Realty 20/22). Principal amounts on foreign-currency notes are the weak spot.
+In Week 2, identity matching held up on this set — 27 of 29 printed bonds matched (AMD 5/5, Snowflake 2/2,
+Digital Realty 20/22); principal amounts on foreign-currency notes were the weak spot.
+
+## Week 3 held-out set (fresh; graded once): 1 of 3 agree (2 not gradable)
+
+| Episode | Company | Report | Level | Printed | Key | Matched | Totals within 2% | Agree? |
+|---|---|---|---|---|---|---|---|---|
+| 1571996-2025-06-30 | Dell | 10-Q 20250731 | L3 | — | — | — | 2/2 | **yes** |
+| 1375365-2025-06-30 | Super Micro | 10-K 20250630 | L1 | 3 | 4 | 2 (principal 2/2) | 0/0 | **no** |
+| 1819989-2024-09-30 | Cipher Mining | 10-Q 20240930 | L3 | none | none | — | — | not gradable (no debt on either side) |
+| 1083301-2024-09-30 | TeraWulf | 10-Q 20240930 | L3 | none | none | — | — | not gradable (no debt on either side) |
+| 1839341-2024-09-30 | Core Scientific | 10-Q 20240930 | L1 | 6 | 1 | 1 (principal 1/1) | 0/0 | **no** |
+
+Drawn by a fixed rule before any of these reports was read: one dev episode per company never
+hand-checked, in seeded random order (`HOLDOUT_W3` in `scripts/handcheck.py`). Three of the five are
+totals-only quarters, so they test the L3 totals; the draw was kept as it fell rather than redrawn
+for more interesting cases. Two of those turned out to have no debt at all at the period end (Cipher
+before its 2025 notes, TeraWulf after repaying its term loan), so there is nothing to compare: they are
+left out of the count rather than scored as agreements — a rule written before grading.
+
+**What the disagreements show** (diagnosed, not fixed this week — Week 4's first items, then another
+fresh held-out check):
+
+| # | Found on | What happened | Whose error |
+|---|---|---|---|
+| P38 | Super Micro 10-K | The key tags the $300 m over-allotment option of the 2030 convertible notes as a *separate* bond, although the $2.3 bn 2030 notes already include it — a double count | Answer key: an over-allotment member belongs to its base bond |
+| P39 | Core Scientific 10-Q | Its small notes (HMC, Didado, Trilogy …) have no maturity in their names and no maturity-date tag; the year exists only in a printed table column, so the key cannot identify them bond by bond (1 key bond vs 6 printed) | Answer key: such reports cannot be graded per bond on those instruments; their level or their truth needs narrowing |
+| — | Super Micro 10-K | The transcription used the *original* 0.0% coupon of the 2029 notes from a sentence that calls them the "Original 2029 Convertible Notes"; they were amended in February 2025, and the key's 3.5% is right | **The transcription** (Claude). Correcting it would not change the result: P38 alone makes this report disagree |
+
+So the fresh check found two more answer-key defects and one reading error by the checker. Dell's
+totals agree exactly.
 
 ## Review notes
 
@@ -67,8 +97,14 @@ Realty 20/22). Principal amounts on foreign-currency notes are the weak spot.
 - **Vistra 10-Q 20250630** — Totals only (the episode's level): 'Total long-term debt including amounts due currently' $15,770 m and 'Less amounts due currently' $230 m. The forward repurchase obligation ($1,295 m) is printed as a separate line and is not debt.
 - **AMD 10-Q 20250331** — Rows 1-5 (principal at Mar 29 2025, Dec 28 2024). The two 2025 notes ($875 m 4.212% 2026, $625 m 4.319% 2028) are new this quarter. Total long-term debt (net) $3,217 m.
 - **Digital Realty 10-Q 20250630** — Rows 4-25 of the senior notes table (in thousands): principal in the borrowed currency, its US-dollar amount, maturity date, balance at Jun 30 2025 and Dec 31 2024. The £400 m 4.250% 2025 notes show '—' (repaid in January); the €650 m 0.625% notes were still outstanding at Jun 30 (paid July 15). Euro notes identified as rows whose principal differs from its dollar amount (the € cell is stripped in extraction).
-- **Digital Realty**: disagreement — key members unmatched: ['FourPointTwoFiveZeroPercentNotesDueTwoThousandTwentyFive', 'OnePointEightSevenFivePercentExchangeableNotesDueTwentyTwentyNine']; printed rows unexplained: 1; totals: {}
 - **Snowflake 10-Q 20250731** — The convertible notes table (principal, unamortized issuance costs, net carrying amount, fair value): $1.15 bn 0% notes due 2027 and 2029. The 0% coupon is the notes' name in the report's text. Net carrying total $2,275.7 m.
+- **Dell 10-Q 20250731** — Totals only (the episode's level), from the balance sheet: short-term debt $7,154 m and long-term debt $21,535 m at Aug 1 2025, so total debt $28,689 m.
+- **Super Micro 10-K 20250630** — The convertible notes are described in Note 8's text, not a table: $700.0 m 2.25% notes due 2028, $1,725.0 m 0.0% notes due 2029, $2.3 bn notes due 2030 (no coupon printed, so none recorded). Term loans from the term-loan table (thousands). No single total-debt figure is printed, so no total is recorded.
+- **Super Micro**: disagreement — key members unmatched: ['ConvertibleSeniorNotesDue2029', 'ConvertibleSeniorNotesDue2030OverallotmentOption']; printed rows unexplained: 1; totals: {}
+- **Cipher Mining 10-Q 20240930** — No debt is printed: the balance sheet has no debt line (finance lease payments only), consistent with Cipher issuing its first notes in 2025.
+- **TeraWulf 10-Q 20240930** — No debt at the period end: the term loan line and the current portion of long-term debt are both '—' at Sep 30 2024 (repaid during the quarter; $139.4 m of principal payments). The convertible notes followed in October 2024.
+- **Core Scientific 10-Q 20240930** — Rows 1-22 of the notes payable table (in thousands: stated rate, effective rate, maturity, Sep 30 2024, Dec 31 2023); '—' means repaid or converted. Outstanding: the $460 m 3.00% 2029 convertible notes, four small notes, two loans (by the printed name), and the ACM note (stated rate '—'). Total notes payable, net $492,537 k.
+- **Core Scientific**: disagreement — key members unmatched: []; printed rows unexplained: 5; totals: {}
 
 ## Who checked
 

@@ -147,6 +147,21 @@ class PointInTimeEdgar:
         self._log("exhibits", args, "ok", n=len(docs))
         return docs
 
+    def raw(self, cik: int, accession: str, doc: str) -> bytes:
+        """One document's original bytes, under the same rule and log as `fetch`. For the `docs`
+        server, which needs the HTML itself to keep tables as tables (Week 3)."""
+        args = {"cik": cik, "accession": accession, "doc": doc}
+        try:
+            self._check(cik, accession)
+            if not DOC_NAME.match(doc or ""):
+                raise Refused("document name must be a plain file name from exhibits()")
+        except Refused as ex:
+            self._log("raw", args, "refused", str(ex))
+            raise
+        body = self.client.get(ARCHIVE.format(cik=int(cik), acc_nodash=accession.replace("-", "")) + doc)
+        self._log("raw", args, "ok", n=len(body))
+        return body
+
     def fetch(self, cik: int, accession: str, doc: str, offset: int = 0, max_chars: int = DEFAULT_MAX_CHARS) -> dict:
         """One document as plain text, paged: `text` holds chars [offset, offset+max_chars)."""
         args = {"cik": cik, "accession": accession, "doc": doc, "offset": offset}

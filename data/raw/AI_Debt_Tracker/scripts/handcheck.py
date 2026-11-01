@@ -29,7 +29,7 @@ from pathlib import Path
 from ai_debt_tracker import config
 from ai_debt_tracker.edgar import ARCHIVE, load_filings
 from ai_debt_tracker.eval.answer_key import AnswerKey
-from ai_debt_tracker.eval.grader import grade_episode, truth_bonds, truth_totals, truth_units
+from ai_debt_tracker.eval.grader import grade_episode, truth_bonds, truth_totals, truth_units  # noqa: F401
 from ai_debt_tracker.mcp_servers.edgar_pit_core import html_to_text
 from ai_debt_tracker.sec import SecClient
 from review_universe import extracted_periods
@@ -40,9 +40,14 @@ RAW = config.data_dir() / "week2" / "handcheck"
 EPISODES = ["1101239-2024-12-31", "1045810-2024-12-31", "1730168-2025-03-31", "723125-2025-06-30",
             "1769628-2025-06-30", "1341439-2025-06-30", "1108524-2025-06-30", "789019-2025-06-30",
             "1326801-2024-12-31", "1692819-2025-06-30"]
-# Chosen after the calibration fixes and before any of them was read; graded once, nothing changed
-# in response (AMD carries a combined member, Digital Realty number words and a subtotal).
+# Week 2's held-out set: chosen after the calibration fixes and before any of them was read, graded
+# once (2 of 3). Its disagreements became P35-P37 and were fixed in Week 3, so it is no longer held out.
 HOLDOUT = ["2488-2025-03-31", "1297996-2025-06-30", "1640147-2025-06-30"]
+# Week 3's held-out set, drawn after the P35-P37 fixes and before any of them was read: one dev episode
+# per company never hand-checked, in the order of random.Random(20261031).sample over the eligible
+# episodes sorted by id (48 episodes, 12 companies), first 5 companies. Graded once.
+HOLDOUT_W3 = ["1571996-2025-06-30", "1375365-2025-06-30", "1819989-2024-09-30", "1083301-2024-09-30",
+              "1839341-2024-09-30"]
 
 RATE = re.compile(r"(\d{1,2}\.\d{1,4})\s*%")
 YEAR = re.compile(r"\b(20[2-7]\d)\b")
@@ -54,7 +59,7 @@ CURRENCY = [("EUR", r"euro|€"), ("GBP", r"sterling|£|pound"), ("CHF", r"swiss
 def episodes(ids: list[str] | None = None) -> dict:
     with open(ROOT / "manifests" / "dev.csv", encoding="utf-8") as f:
         rows = {e["episode_id"]: e for e in csv.DictReader(line for line in f if not line.startswith("#"))}
-    return {k: rows[k] for k in (ids if ids is not None else EPISODES + HOLDOUT)}
+    return {k: rows[k] for k in (ids if ids is not None else EPISODES + HOLDOUT + HOLDOUT_W3)}
 
 
 COUPON_CELL = re.compile(r"^\(?(\d{1,2}\.\d{1,4})\s*%?\)?$")
@@ -150,17 +155,38 @@ accuracy estimate. That is what the **held-out** reports below are for: chosen b
 was read, graded once after every fix, and nothing changed in response to them."""
 
 
-HOLDOUT_FINDINGS = """**What the held-out disagreement shows** (diagnosed, deliberately *not* fixed in Week 2 — fixing it
-would turn the held-out set into a second calibration set; these are Week 3's first items):
+HOLDOUT_FINDINGS = """**Week 2's held-out result was 2 of 3.** Its disagreements were diagnosed and deliberately *not*
+fixed in Week 2; they became P35–P37 and were fixed in Week 3. This set is therefore no longer held out —
+the table above shows it re-graded after those fixes. Week 3's fresh held-out set is below.
 
-| # | Found on | Defect | Proposed fix (Week 3, then a fresh held-out check) |
+| # | Found on | Defect | Fix (Week 3) |
 |---|---|---|---|
-| P35 | Digital Realty 10-Q | The repaid £400 m 4.250% notes have no balance tag at all, only a face amount dated at the period end, so the key keeps them | The face-at-period-end fallback is unreliable on its own; require a balance tag, or a face tag in a report that tags no balances anywhere |
-| P36 | Digital Realty 10-Q | The 1.875% exchangeable notes are dollar notes, but the filer tagged their face in euros, so the key's currency blocks the match | Prefer the carrying amount's unit when face and carrying units disagree, and treat the currency as unknown |
-| P37 | Digital Realty 10-Q | Euro notes' face amounts are tagged as dollar translations; the key's principal is in a different currency from the printed one (4 of 20 agree) | Score principal only when the key's currency is known and equals the ledger's |
+| P35 | Digital Realty 10-Q | The repaid £400 m 4.250% notes have no balance tag at all, only a face amount dated at the period end, so the key keeps them | A face-only bond, due by the report's year, in a report that tags balances for its other debt, is repaid. (Requiring a balance tag outright was rejected: it would drop new issues tagged only by face, e.g. Mastercard's 2028/2032/2035 notes.) |
+| P36 | Digital Realty 10-Q | The 1.875% exchangeable notes are dollar notes, but the filer tagged their face in euros, so the key's currency blocks the match | When face and carrying are tagged in different units and the label names no currency, the currency is unknown and does not block a match |
+| P37 | Digital Realty 10-Q | Euro notes' face amounts are tagged as dollar translations; the key's principal is in a different currency from the printed one (4 of 20 agree) | Principal is scored only when the key's currency is known or equals the ledger's |
 
-Identity matching held up on the held-out set — 27 of 29 printed bonds matched (AMD 5/5, Snowflake 2/2, Digital
-Realty 20/22). Principal amounts on foreign-currency notes are the weak spot."""
+In Week 2, identity matching held up on this set — 27 of 29 printed bonds matched (AMD 5/5, Snowflake 2/2,
+Digital Realty 20/22); principal amounts on foreign-currency notes were the weak spot."""
+
+
+FRESH_NOTE = """Drawn by a fixed rule before any of these reports was read: one dev episode per company never
+hand-checked, in seeded random order (`HOLDOUT_W3` in `scripts/handcheck.py`). Three of the five are
+totals-only quarters, so they test the L3 totals; the draw was kept as it fell rather than redrawn
+for more interesting cases. Two of those turned out to have no debt at all at the period end (Cipher
+before its 2025 notes, TeraWulf after repaying its term loan), so there is nothing to compare: they are
+left out of the count rather than scored as agreements — a rule written before grading.
+
+**What the disagreements show** (diagnosed, not fixed this week — Week 4's first items, then another
+fresh held-out check):
+
+| # | Found on | What happened | Whose error |
+|---|---|---|---|
+| P38 | Super Micro 10-K | The key tags the $300 m over-allotment option of the 2030 convertible notes as a *separate* bond, although the $2.3 bn 2030 notes already include it — a double count | Answer key: an over-allotment member belongs to its base bond |
+| P39 | Core Scientific 10-Q | Its small notes (HMC, Didado, Trilogy …) have no maturity in their names and no maturity-date tag; the year exists only in a printed table column, so the key cannot identify them bond by bond (1 key bond vs 6 printed) | Answer key: such reports cannot be graded per bond on those instruments; their level or their truth needs narrowing |
+| — | Super Micro 10-K | The transcription used the *original* 0.0% coupon of the 2029 notes from a sentence that calls them the "Original 2029 Convertible Notes"; they were amended in February 2025, and the key's 3.5% is right | **The transcription** (Claude). Correcting it would not change the result: P38 alone makes this report disagree |
+
+So the fresh check found two more answer-key defects and one reading error by the checker. Dell's
+totals agree exactly."""
 
 
 def grade_one(ep_id: str, e: dict, ak) -> tuple[str, bool, list[str]]:
@@ -168,6 +194,18 @@ def grade_one(ep_id: str, e: dict, ak) -> tuple[str, bool, list[str]]:
     if t.get("status") == "draft":
         return f"| {ep_id} | {e['company']} | {t['report']} | {e['graded_level']} | — | — | — | — | not reviewed |", False, []
     target = ak.filing_record(e["target_adsh"])
+    if t.get("no_debt"):
+        # nothing printed: gradable only if the key claims debt (then it disagrees); if neither side
+        # shows debt there is nothing to compare, and the report is left out of the count
+        key_debt = [i for i in target["instruments"] if i["outstanding"] and i["klass"] in ("bond", "facility", "offering")]
+        key_total = truth_totals(target).get("total_debt")
+        notes = [f"- **{e['company']} {t['report']}** — {t['review']}"]
+        if key_debt or key_total:
+            notes.append(f"- **{e['company']}**: disagreement — the key shows {len(key_debt)} instruments, total {key_total}")
+            return (f"| {ep_id} | {e['company']} | {t['report']} | {e['graded_level']} | none | {len(key_debt)} | — | — | "
+                    f"**no** |"), False, notes
+        return (f"| {ep_id} | {e['company']} | {t['report']} | {e['graded_level']} | none | none | — | — | "
+                f"not gradable (no debt on either side) |"), None, notes
     ledger = {"instruments": t["instruments"], "totals": t.get("totals", {})}
     g = grade_episode(target, ledger, e["graded_level"])
     tot = g["l3"]
@@ -201,8 +239,8 @@ def grade_one(ep_id: str, e: dict, ak) -> tuple[str, bool, list[str]]:
 
 
 def grade() -> int:
-    eps, held = episodes(EPISODES), episodes(HOLDOUT)
-    ak = AnswerKey(extracted_periods(), {int(e["cik"]) for e in list(eps.values()) + list(held.values())})
+    eps, held, fresh = episodes(EPISODES), episodes(HOLDOUT), episodes(HOLDOUT_W3)
+    ak = AnswerKey(extracted_periods(), {int(e["cik"]) for g in (eps, held, fresh) for e in g.values()})
     head = ["| Episode | Company | Report | Level | Printed | Key | Matched | Totals within 2% | Agree? |",
             "|---|---|---|---|---|---|---|---|---|"]
     L = ["# Hand-check — the answer key against printed debt tables\n",
@@ -210,19 +248,29 @@ def grade() -> int:
          "read from the report's printed debt table, not from its XBRL tags, and graded *as a ledger* against the answer "
          "key. Agreement means the key, the grader and the printed report say the same thing.\n"]
     notes = []
-    for title, group in (("Calibration set (DESIGN.md §11's 10 company-quarters)", eps), ("Held-out set", held)):
-        rows, agree = [], 0
-        for ep_id, e in group.items():
+    groups = (("Calibration set (DESIGN.md §11's 10 company-quarters)", eps),
+              ("Week 2 held-out set, re-graded after the Week 3 fixes", held),
+              ("Week 3 held-out set (fresh; graded once)", fresh))
+    for title, group in groups:
+        present = {k: v for k, v in group.items() if (HC / f"{k}.json").exists()}
+        rows, agree, gradable = [], 0, len(group)
+        for ep_id, e in present.items():
             row, ok, n = grade_one(ep_id, e, ak)
             rows.append(row)
-            agree += ok
+            if ok is None:
+                gradable -= 1
+            else:
+                agree += ok
             notes += n
-        L += [f"## {title}: {agree} of {len(group)} agree\n"]
+        skipped = len(group) - gradable
+        L += [f"## {title}: {agree} of {gradable} agree" + (f" ({skipped} not gradable)" if skipped else "") + "\n"]
         if group is eps:
             L += [FIRST_PASS + "\n"]
         L += head + rows + [""]
         if group is held:
             L += [HOLDOUT_FINDINGS + "\n"]
+        if group is fresh:
+            L += [FRESH_NOTE + "\n"]
     L += ["## Review notes\n"] + notes
     gate_path = ROOT / "manifests" / "week2_gate.json"
     gate = json.loads(gate_path.read_text(encoding="utf-8")) if gate_path.exists() else {}

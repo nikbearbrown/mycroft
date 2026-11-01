@@ -1,0 +1,18 @@
+{
+ "gate": "Week 3 check: triage finds at least 95% of the debt-relevant documents on the labelled set (DESIGN.md §11, P4)",
+ "status": "DELEGATED",
+ "delegated_by": "Om Mali",
+ "date": "2026-10-31",
+ "delegation": "Before the week's work began, Om Mali instructed Claude: \"Do all the work for week 3. I dont want to be involved in it so complete everything end to end.\" Om did not review the labels, the transcriptions or the results. This record therefore does not claim a human review; it records that the week's decisions were delegated in advance.",
+ "handoff_condition": "recall >= 95% on manifests/triage_labels.json, labels written before triage ran",
+ "measured": "docs/triage.md -- recall 24 of 24 (100%), precision 24 of 26 (92%), event type 20 of 24; all 22 filings that Week 2's change search found announcing a bond change kept",
+ "labels_fixed_before_run": "manifests/triage_labels.json, git blob b1b6924bbec461735eab3181ddc96e977ff09ccd before and after the run",
+ "basis": "The 50 labels, the 5 held-out transcriptions (manifests/handcheck/) and their review are Claude's model judgment (P8), labelled as such in each file. The triage decisions by qwen3:4b are model judgments flagged per record.",
+ "to_clear_after_review": "Om (or another named human) reads docs/triage.md and docs/triage_labels.md, then sets status to CLEARED with the date and logs it in logs/RUN_LOG.md",
+ "carried_forward": [
+  "P38 (over-allotment member double-counted) and P39 (small notes with no maturity in the XBRL), then another fresh held-out hand-check",
+  "a fresh triage check on filings outside the labelled set, covering the two rule weaknesses seen while labelling (Item1.01 without a space; a 424B cover with blank coupon and year)",
+  "8 of the model's 21 keeps quoted evidence not found in the text: the event reader must re-ground every fact",
+  "5 of 495 frozen episode levels differ under today's answer-key rules; they stay frozen until a gate decides otherwise"
+ ]
+}

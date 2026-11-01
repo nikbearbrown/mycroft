@@ -193,3 +193,26 @@ def test_zero_balance_beats_a_face_amount_dated_at_period_end(key):
                        "qtrs": "0", "uom": "USD", "dimh": "0xb8", "coreg": "", "value": "2000000000", "dcml": "-6"})
     i = by_member(key)[0]["Notes1.00Due2026"]
     assert i.outstanding is False and i.outstanding_from == "zero balance at period end"
+
+
+def test_p35_face_only_bond_due_by_the_report_year_is_repaid(key):
+    """Digital Realty: a repaid note with no balance tag, only a face dated at the period end, in a
+    report that tags balances for its other debt."""
+    from ai_debt_tracker.eval.answer_key import NO_DIMS  # noqa: F401
+    key.dims["0xb9"] = "DebtInstrument=FourPointTwoFiveZeroPercentNotesDueTwoThousandTwentySix;"
+    key.labels[("FourPointTwoFiveZeroPercentNotesDueTwoThousandTwentySixMember", A)] = "4.250% Notes due 2026"
+    key.dims["0xba"] = "DebtInstrument=NewNotes5.000Due2031;"
+    key.labels[("NewNotes5.000Due2031Member", A)] = "5.000% Notes due 2031"
+    for dimh in ("0xb9", "0xba"):
+        key.num[A].append({"adsh": A, "tag": "DebtInstrumentFaceAmount", "version": "us-gaap/2025", "ddate": "20260630",
+                           "qtrs": "0", "uom": "USD", "dimh": dimh, "coreg": "", "value": "500000000", "dcml": "-6"})
+    m, _ = by_member(key)
+    assert m["FourPointTwoFiveZeroPercentNotesDueTwoThousandTwentySix"].outstanding is False      # due 2026 <= 2026
+    assert m["NewNotes5.000Due2031"].outstanding is True                                         # a new issue, kept
+
+
+def test_p36_conflicting_face_and_carrying_units_make_the_currency_unknown(key):
+    key.num[A].append({"adsh": A, "tag": "DebtInstrumentFaceAmount", "version": "us-gaap/2025", "ddate": "20260630",
+                       "qtrs": "0", "uom": "EUR", "dimh": "0xb3", "coreg": "", "value": "1150000000", "dcml": "-6"})
+    i = by_member(key)[0]["IssuanceOfLongTermDebtEight"]
+    assert i.currency_from == "conflict"

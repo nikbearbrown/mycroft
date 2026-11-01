@@ -164,3 +164,13 @@ def test_b0_carries_offerings_on_the_same_amount_the_key_grades():
     opening = rec([off], totals={"long_term_debt": 7.93e9}, period="20250331")
     target = rec([dict(off)], totals={"long_term_debt": 7.93e9}, period="20250630")
     assert grade_l2(target, carry_forward(opening, "20250630"))["matched"] == 1
+
+
+def test_p37_translated_principal_is_not_scored():
+    """Digital Realty: a euro note whose face is tagged as a dollar translation, currency unknown."""
+    i = inst("OnePointOneTwoFivePercentNotesDue2028", 1.125, 2028, 5.4855e8)
+    i["currency_from"] = "face"                       # face tagged in USD: currency not known
+    g = grade_l1(rec([i], totals={}), {"instruments": [bond(1.125, 2028, 5e8, "EUR")]})
+    assert g["matched"] == 1 and g["principal_scored"] == 0
+    g = grade_l1(rec([i], totals={}), {"instruments": [bond(1.125, 2028, 5.4855e8, "USD")]})
+    assert g["principal_scored"] == 1 and g["principal_ok"] == 1

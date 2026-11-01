@@ -149,3 +149,5 @@ changes are never announced in a filing" would itself be a useful finding for My
 | 2026-10-23 | F2 re-run on dev (new removal method) | 94% of new bonds, 5 of 6 early removals announced — pass | — (evidence only) |
 | 2026-10-23 | B0 scored on dev | recall 90.7%, 0 of 36 new bonds caught, 18 of 47 exact — the headroom is real | — (evidence only) |
 | 2026-10-23 | Hand-check (week 2 check) | 10 of 10 calibration, 2 of 3 held-out | **Accepted** — **Om Mali**, 2026-10-23 (`manifests/week2_gate.json`); transcriptions are Claude's model judgment |
+| 2026-10-31 | Fresh held-out hand-check (after P35–P37) | 1 of 3 gradable agree; P38–P39 found, left open | — (evidence only) |
+| 2026-10-31 | Triage (week 3 check) | recall 24 of 24, precision 92% on 50 labelled filings; 22 of 22 Week 2 announcements kept — pass | **Delegated** in advance by **Om Mali**, not reviewed (`manifests/week3_gate.json`); labels are Claude's model judgment |
