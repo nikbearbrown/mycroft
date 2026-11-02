@@ -3,7 +3,8 @@
          files steps 3, 4 and 5 left behind. Nothing here is computed from outside the repo; every number in the report is read from, or
          recomputed from, those files and the report says which. Findings the data supports are labelled verified; readings of an invented
          sample are labelled inferred. The recommendation only ever approves a sample-mode next phase: live execution stays blocked
-         while no approval record exists.
+         while no approval record exists. The recipe's four stop conditions are judged from evidence (a scan for hardcoded credentials, the run envelope and approval
+         record, the sample folder and its manifest, the report's provenance sections), recorded in the agent log, and counted in the report's run summary.
 Input: data/verified/scenariostresstestingagent/<clean|defective>/ (validated.json from step 3, stress-results.json from step 5 if any
        request ran, quality-check.json from step 4), data/raw/scenariostresstestingagent/run-envelope.json, the latest step-1 and step-5
        logs in logs/, and the recipe.
@@ -109,6 +110,52 @@ def evaluate_gates(recipe: dict, envelope: dict, folder: str) -> list[dict]:
     ]
 
 
+# ------------------------------------------------------------------------------------------------ stop conditions, from evidence
+# A quoted literal of 8 or more characters assigned to a credential-like name, an `sk-` key, or a Bearer token. The patterns are assignments and
+# literals, so the words in this file's own regexes do not match them (a scan of this recipe's files, this one included, finds none).
+CREDENTIAL_PATTERNS = (
+    re.compile(r"""(?i)\b(api[_-]?key|secret|token|passwd|password|authorization)\b["']?\s*[:=]\s*["'][^"'\s]{8,}["']"""),
+    re.compile(r"\bsk-[A-Za-z0-9]{20,}\b"),
+    re.compile(r"\bBearer\s+[A-Za-z0-9._\-]{20,}"),
+)
+
+
+def scan_for_credentials() -> tuple[int, list[str]]:
+    files = sorted((REPO / "scripts").glob(f"*/{SLUG}-*.py")) + sorted(RAW.rglob("*.json")) + [RECIPE]
+    hits = []
+    for p in files:
+        text = p.read_text(errors="ignore")
+        if any(rx.search(text) for rx in CREDENTIAL_PATTERNS):
+            hits.append(rel(p))
+    return len(files), hits
+
+
+def evaluate_stop_conditions(recipe: dict, envelope: dict, folder: str, run: dict, source_files: list[str], validated: dict) -> list[dict]:
+    """The recipe's Stop Conditions, each judged from evidence. Returns one {condition, triggered, evidence} per condition, in the recipe's order."""
+    out = []
+    conds = recipe["stop_conditions"]
+    n_scanned, hits = scan_for_credentials()
+    live = [k for k in ("live_calls", "network", "database_writes") if envelope.get(k)]
+    approval = LOGS / "gate-decisions" / f"{SLUG}-approval.json"
+    sample = RAW / "sample" / folder
+    manifest = RAW / "sample" / "manifest.json"
+    n_req = len([p for p in sample.glob("*.json")]) if sample.exists() else 0
+    missing = (not sample.exists()) or (not manifest.exists()) or n_req == 0
+    omits = (not source_files) or ("Source inventory" not in SECTIONS) or ("Inputs used" not in SECTIONS)
+    handoffs = run.get("handoffs_not_made") or []
+    evidence = [
+        (bool(hits), f"scanned {n_scanned} file(s) (this recipe's scripts, its raw data and the recipe) for a quoted literal assigned to an api key, secret, token, password or authorization, an `sk-` key or a Bearer token: " + (f"found in {', '.join(hits)}" if hits else "none found")),
+        (bool(live) and not approval.exists(), f"run envelope: live_calls {envelope.get('live_calls')}, network {envelope.get('network')}, database_writes {envelope.get('database_writes')}; "
+            + (f"{', '.join(live)} requested and no approval record exists" if (live and not approval.exists()) else f"nothing live requested, so no approval is needed; {len(handoffs)} hand-off(s) recorded in the step-5 log, none made")),
+        (missing, f"the `{folder}` sample folder {'exists' if sample.exists() else 'is missing'} with {n_req} request file(s) and the manifest {'exists' if manifest.exists() else 'is missing'}; step 3 read {len(validated['accepted']) + len(validated['rejected'])}"),
+        (omits, f"the log lists {len(source_files)} source file(s); the report carries Source inventory and Inputs used, and keeps readings of the sample under Inferred findings, labelled"),
+    ]
+    for i, c in enumerate(conds):
+        trig, ev = evidence[i] if i < len(evidence) else (False, "no check is defined for this condition")
+        out.append({"condition": c, "triggered": bool(trig), "evidence": ev})
+    return out
+
+
 # ------------------------------------------------------------------------------------------------ numbers, recomputed from the files
 def describe(results: list[dict]) -> dict:
     ran = [r for r in results if r.get("result")]
@@ -155,8 +202,11 @@ def build(folder: str, now: datetime) -> tuple[str, dict, Path, Path]:
     rejected = validated["rejected"]
     n_in = len(acc_ids) + len(rejected)
     reasons_of = lambda r: r.get("reasons") or r.get("reason") or []
+    source_files = [rel(RECIPE), rel(RAW / "run-envelope.json")] + sorted(rel(p) for p in (RAW / "sample" / folder).glob("*.json"))
+    stops = evaluate_stop_conditions(recipe, envelope, folder, run, source_files, validated)
+    n_trig = sum(1 for x in stops if x["triggered"])
     if folder == "clean":
-        approve = bool(not failed_ids and not quality["duplicates"] and not rejected)
+        approve = bool(not failed_ids and not quality["duplicates"] and not rejected and not n_trig)
     else:
         approve = False
     fix = bool(rejected or failed_ids or quality["duplicates"])
@@ -170,6 +220,7 @@ def build(folder: str, now: datetime) -> tuple[str, dict, Path, Path]:
     sec["Run summary"] = [f"- {n_in} request(s) read from the `{folder}` sample folder; {len(acc_ids)} accepted at step 3, {len(rejected)} rejected there.",
                           f"- {len(d['ran'])} stress-tested at step 5, {len(results) - len(d['ran'])} stopped at the Groq handoff; {len(quality['verified_records'])} reconciled on every step-4 check, "
                           f"{len(failed_ids)} failed one, {len(quality['duplicates'])} duplicate group(s), {len(quality['flags'])} advisory flag(s).",
+                          f"- Stop conditions: {n_trig} of {len(stops)} triggered" + (" (" + "; ".join(x["condition"].split(":")[0][:60] for x in stops if x["triggered"]) + ")." if n_trig else "; each is judged from evidence in the agent log."),
                           "- Mode **sample**: every request is invented; no Groq call, Alpha Vantage request, webhook reply, database write or credential was used."]
     sec["Purpose"] = [recipe["purpose"] or "(the recipe's Purpose section was not found)"]
     sec["Source inventory"] = ["| Source | What it is | Where |", "|---|---|---|",
@@ -212,7 +263,8 @@ def build(folder: str, now: datetime) -> tuple[str, dict, Path, Path]:
     sec["Inferred findings"] = inf
     dec = [f"- **Approve for the next phase (sample mode only): {'YES' if approve else 'NO'}.** " +
            ("Every accepted request reconciled, no duplicates, nothing rejected; the next phase is still a sample run, and a named human has to clear it." if approve
-            else "This folder holds requests the gate rejects on purpose; nothing ran, so there is nothing to approve." if folder != "clean" else "A request was rejected, failed a check or duplicated another; see the sections above."),
+            else "This folder holds requests the gate rejects on purpose; nothing ran, so there is nothing to approve." if folder != "clean"
+            else f"{n_trig} stop condition(s) triggered; see the agent log's stop_conditions for the evidence." if n_trig else "A request was rejected, failed a check or duplicated another; see the sections above."),
            f"- **Request source or schema fixes: {'YES' if fix else 'NO'}.** " + (f"{len(rejected)} reject(s), {len(failed_ids)} failed check(s), {len(quality['duplicates'])} duplicate group(s) are listed above." if fix else "None needed for the sample corpus."),
            f"- **Block live execution: YES.** No approval record exists; step 2 (ingest) is still open, the Alpha Vantage request, the Groq call and the webhook reply are only recorded handoffs, and the custom-scenario route stops at the handoff."]
     sec["Decision recommendation"] = dec
@@ -221,14 +273,10 @@ def build(folder: str, now: datetime) -> tuple[str, dict, Path, Path]:
     report = "\n".join(R)
 
     # ---------------------------------------------------------------- the agent log, with the contract's fields
-    scripts = sorted((REPO / "scripts").glob(f"*/{SLUG}-*.py"))
-    reads_env = [rel(p) for p in scripts if re.search(r"os\.environ|getenv", p.read_text())]
-    stop = [{"condition": c, "triggered": False if i != 0 else bool(reads_env), "evidence": ("scripts that read the environment: " + ", ".join(reads_env)) if (i == 0 and reads_env) else "not triggered in sample mode"}
-            for i, c in enumerate(recipe["stop_conditions"])]
     log = {"workflow": "ScenarioStressTestingAgent", "run_id": f"sample-{day}-{folder}", "mode": "sample", "steps_completed": closed_steps,
            "records_seen": n_in, "rejects": [{"id": r["id"], "stage": "step 3", "reasons": reasons_of(r)} for r in rejected] + [{"id": f["id"], "stage": f"step 4 ({f['check']})", "reasons": [f["detail"]]} for f in quality.get("failures", [])],
-           "duplicates": quality["duplicates"], "flags": quality["flags"], "stop_conditions": stop, "todo_items": todos,
-           "source_files": [rel(RECIPE), rel(RAW / "run-envelope.json")] + sorted(rel(p) for p in (RAW / "sample" / folder).glob("*.json")),
+           "duplicates": quality["duplicates"], "flags": quality["flags"], "stop_conditions": stops, "todo_items": todos,
+           "source_files": source_files,
            "gate_decisions": [{"gate": g["gate"], "result": g["result"]} for g in gates] + [{"gate": "human clearance", "result": "none recorded"}],
            "generated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"), "raw_output_paths": [rel(RAW / "run-envelope.json")],
            "verified_output_paths": [rel(p) for p in (vdir / "validated.json", spath, vdir / "quality-check.json", vdir / "quality-notes.md") if p.exists()],

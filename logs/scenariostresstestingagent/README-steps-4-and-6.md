@@ -11,7 +11,7 @@ Python 3.9+ standard library only. Run from the repository root.
 | 4 on the defective set | `python3 scripts/gigo/scenariostresstestingagent-transform-quality-check.py --verified-dir data/verified/scenariostresstestingagent/defective` | exit 1 **by design**: 10 rejects carried from step 3, nothing to check |
 | 6 human report | `python3 scripts/tools/scenariostresstestingagent-produce-human-report.py --now 2026-11-01T09:00:00Z` | exit 0: writes `reports/generated/scenariostresstestingagent-2026-11-01.md` and `logs/scenariostresstestingagent-2026-11-01.json` |
 | 6 on the defective set | `python3 scripts/tools/scenariostresstestingagent-produce-human-report.py --folder defective --now 2026-11-01T09:00:00Z` | exit 0: the same pair with `-defective` added; the report says nothing ran |
-| evidence | `python3 scripts/tools/scenariostresstestingagent-report-self-test.py` | exit 0: 26 of 26 checks as expected, including 11 deliberate breaks and 3 refusals |
+| evidence | `python3 scripts/tools/scenariostresstestingagent-report-self-test.py` | exit 0: 30 of 30 checks as expected, including 12 deliberate breaks and 3 refusals |
 
 Step 6 needs step 4's output first (it refuses, exit 2, if `quality-check.json` is missing or does not account for exactly the requests step 3
 accepted and step 5 ran, or if the run envelope declares live calls). `--now <ISO time>` pins the date and `generated_at`; with it pinned, two
@@ -31,6 +31,14 @@ judge whether the template shocks or risk lines are sound.
 The report follows the recipe's Output Contract: the reader, the decision it enables, and fifteen sections in order (run summary through decision
 recommendation). The six phase gates are judged from evidence, findings the data supports are kept apart from readings of the invented sample
 (labelled inferred), and the recommendation can only approve a sample-mode next phase: live execution stays blocked while no approval record exists.
+
+## Stop conditions
+
+The recipe's four stop conditions are judged from evidence, not assumed: a scan of this recipe's scripts, raw data and recipe for a quoted literal
+assigned to an api key, secret, token, password or authorization (or an `sk-` key or a Bearer token); the run envelope and the approval record; the
+sample folder and its manifest; and the report's provenance sections. Each gets a `triggered` value and its own `evidence` string in the agent log,
+and the report's run summary says how many triggered, so the log and the report say the same thing. If one triggers, the recommendation to approve
+becomes NO.
 
 ## What is in this folder
 

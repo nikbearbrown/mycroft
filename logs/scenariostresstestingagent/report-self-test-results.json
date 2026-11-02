@@ -135,6 +135,24 @@
       "passed": true
     },
     {
+      "check": "6 stop conditions: four judged from evidence, none triggered, each with its own evidence",
+      "expected": "4 conditions; none triggered; four different evidence strings, none the old placeholder",
+      "observed": "4 conditions; triggered: [False, False, False, False]; distinct evidence: 4",
+      "passed": true
+    },
+    {
+      "check": "6 the credential scan does not flag the report script itself",
+      "expected": "condition 1 says none found and names no script",
+      "observed": "et, token, password or authorization, an `sk-` key or a Bearer token: none found",
+      "passed": true
+    },
+    {
+      "check": "6 the person's page and the machine's page agree on stop conditions",
+      "expected": "report: 'Stop conditions: 0 of 4 triggered'; log: 0 triggered",
+      "observed": "report line present: True; log triggered: 0",
+      "passed": true
+    },
+    {
       "check": "6 idempotent: a second run (clock pinned) gives the same bytes",
       "expected": "identical",
       "observed": "identical",
@@ -144,6 +162,12 @@
       "check": "6 defective set: exit 0, nothing ran, nothing to approve",
       "expected": "exit 0; 'Approve for the next phase (sample mode only): NO'",
       "observed": "exit 0; NO",
+      "passed": true
+    },
+    {
+      "check": "6 break caught: a hardcoded key planted in a script trips stop condition 1, both pages say so, and approve turns NO",
+      "expected": "log: condition 1 triggered, others not; report: 'Stop conditions: 1 of 4 triggered'; 'sample mode only): NO'",
+      "observed": "exit 0; triggered: [True, False, False, False]; report line: True; approve NO: True",
       "passed": true
     },
     {

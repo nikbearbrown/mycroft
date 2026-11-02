@@ -1,6 +1,6 @@
 # Self-test, steps 4 and 6: scenariostresstestingagent
 
-26 of 26 checks came out as expected. A check passes only if what was observed is what was expected; the deliberate breaks are meant to be caught. Every break ran on a temporary copy of the tree.
+30 of 30 checks came out as expected. A check passes only if what was observed is what was expected; the deliberate breaks are meant to be caught. Every break ran on a temporary copy of the tree.
 
 | Check | Expected | Observed | Result |
 |---|---|---|---|
@@ -25,8 +25,12 @@
 | 6 the report's counts equal the files' counts | 12 requests in; 11 reconciled; 11 flags | 12 request(s) read; 11 reconciled; 11 advisory flag | as expected |
 | 6 the recommendation always blocks live execution while no approval record exists | contains 'Block live execution: YES' | yes | as expected |
 | 6 gates: 4 reads 5 of 6 scripts with step 2 open; 6 passes | 5 of 6; step(s) 2; gate 6 PASS | (True, True) | as expected |
+| 6 stop conditions: four judged from evidence, none triggered, each with its own evidence | 4 conditions; none triggered; four different evidence strings, none the old placeholder | 4 conditions; triggered: [False, False, False, False]; distinct evidence: 4 | as expected |
+| 6 the credential scan does not flag the report script itself | condition 1 says none found and names no script | et, token, password or authorization, an `sk-` key or a Bearer token: none found | as expected |
+| 6 the person's page and the machine's page agree on stop conditions | report: 'Stop conditions: 0 of 4 triggered'; log: 0 triggered | report line present: True; log triggered: 0 | as expected |
 | 6 idempotent: a second run (clock pinned) gives the same bytes | identical | identical | as expected |
 | 6 defective set: exit 0, nothing ran, nothing to approve | exit 0; 'Approve for the next phase (sample mode only): NO' | exit 0; NO | as expected |
+| 6 break caught: a hardcoded key planted in a script trips stop condition 1, both pages say so, and approve turns NO | log: condition 1 triggered, others not; report: 'Stop conditions: 1 of 4 triggered'; 'sample mode only): NO' | exit 0; triggered: [True, False, False, False]; report line: True; approve NO: True | as expected |
 | 6 refuses when step 4's output is missing | exit 2; no report written | exit 2; report written: False | as expected |
 | 6 refuses when step 4's output does not account for the accepted requests | exit 2; no report written | exit 2; report written: False | as expected |
 | 6 refuses when the run envelope declares live calls | exit 2; no report written | exit 2; report written: False | as expected |

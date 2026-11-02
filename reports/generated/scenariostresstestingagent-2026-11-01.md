@@ -7,6 +7,7 @@
 
 - 12 request(s) read from the `clean` sample folder; 12 accepted at step 3, 0 rejected there.
 - 11 stress-tested at step 5, 1 stopped at the Groq handoff; 11 reconciled on every step-4 check, 0 failed one, 0 duplicate group(s), 11 advisory flag(s).
+- Stop conditions: 0 of 4 triggered; each is judged from evidence in the agent log.
 - Mode **sample**: every request is invented; no Groq call, Alpha Vantage request, webhook reply, database write or credential was used.
 
 ## Purpose
@@ -17,7 +18,7 @@ ScenarioStressTestingAgent defines a Mycroft pipeline for collecting, transformi
 
 | Source | What it is | Where |
 |---|---|---|
-| the recipe | intent, steps, contracts (status `DRAFT`, version 0.3.0) | `recipes/scenariostresstestingagent.md` |
+| the recipe | intent, steps, contracts (status `DRAFT`, version 0.3.1) | `recipes/scenariostresstestingagent.md` |
 | sample corpus | 12 invented requests in `clean/` with a SHA-256 manifest | `data/raw/scenariostresstestingagent/sample/clean/` |
 | run envelope | declares sample mode and that nothing live runs | `data/raw/scenariostresstestingagent/run-envelope.json` |
 | the original workflow | the n8n workflow the recipe was converted from (read by step 1 only) | named in the recipe's Inputs and Provenance |

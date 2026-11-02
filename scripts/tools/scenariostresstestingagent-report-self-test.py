@@ -178,6 +178,16 @@ def main() -> int:
           "yes" if "Block live execution: YES" in rep else "no", "Block live execution: YES" in rep)
     check("6 gates: 4 reads 5 of 6 scripts with step 2 open; 6 passes", "5 of 6; step(s) 2; gate 6 PASS",
           ("5 of 6 step scripts exist; step(s) 2" in rep, "6 Report gate | PASS" in rep), "5 of 6 step scripts exist; step(s) 2" in rep and "6 Report gate | PASS" in rep)
+    stops = log.get("stop_conditions", [])
+    ev = [x.get("evidence", "") for x in stops]
+    check("6 stop conditions: four judged from evidence, none triggered, each with its own evidence", "4 conditions; none triggered; four different evidence strings, none the old placeholder",
+          f"{len(stops)} conditions; triggered: {[x.get('triggered') for x in stops]}; distinct evidence: {len(set(ev))}",
+          len(stops) == 4 and not any(x.get("triggered") for x in stops) and len(set(ev)) == 4 and not any("not triggered in sample mode" in e for e in ev))
+    check("6 the credential scan does not flag the report script itself", "condition 1 says none found and names no script", ev[0][-80:] if ev else "no evidence",
+          bool(ev) and ev[0].endswith("none found") and "produce-human-report" not in ev[0])
+    check("6 the person's page and the machine's page agree on stop conditions", "report: 'Stop conditions: 0 of 4 triggered'; log: 0 triggered",
+          f"report line present: {'Stop conditions: 0 of 4 triggered' in rep}; log triggered: {sum(1 for x in stops if x.get('triggered'))}",
+          "Stop conditions: 0 of 4 triggered" in rep and sum(1 for x in stops if x.get("triggered")) == 0)
     b1 = (rp.read_bytes(), lp.read_bytes())
     run(t, R, "--now", NOW)
     check("6 idempotent: a second run (clock pinned) gives the same bytes", "identical", "identical" if (rp.read_bytes(), lp.read_bytes()) == b1 else "different", (rp.read_bytes(), lp.read_bytes()) == b1)
@@ -187,6 +197,23 @@ def main() -> int:
     drep = (t / "reports" / "generated" / f"{SLUG}-2026-11-01-defective.md").read_text() if (t / "reports" / "generated" / f"{SLUG}-2026-11-01-defective.md").exists() else ""
     check("6 defective set: exit 0, nothing ran, nothing to approve", "exit 0; 'Approve for the next phase (sample mode only): NO'",
           f"exit {code}; {'NO' if 'sample mode only): NO' in drep else 'not NO'}", code == 0 and "sample mode only): NO" in drep and "No request was accepted" in drep)
+    shutil.rmtree(t)
+
+    # ------------------------------------------------------------------ step 6, a deliberate break of the stop-condition check
+    t = tree()
+    # built from pieces at run time, so that no script in the repo contains a credential-shaped literal, this one included
+    planted = "api_" + "key = " + '"' + "sk" + "-" + "abcdefghijklmnopqrstuvwxyz0123" + '"' + "\n"
+    (t / "scripts" / "tools" / f"{SLUG}-planted-credential.py").write_text(planted)
+    run(t, Q)
+    code, out = run(t, R, "--now", NOW)
+    prep = (t / "reports" / "generated" / f"{SLUG}-2026-11-01.md").read_text() if (t / "reports" / "generated" / f"{SLUG}-2026-11-01.md").exists() else ""
+    plog = json.loads((t / "logs" / f"{SLUG}-2026-11-01.json").read_text()) if (t / "logs" / f"{SLUG}-2026-11-01.json").exists() else {"stop_conditions": []}
+    pst = plog["stop_conditions"]
+    check("6 break caught: a hardcoded key planted in a script trips stop condition 1, both pages say so, and approve turns NO",
+          "log: condition 1 triggered, others not; report: 'Stop conditions: 1 of 4 triggered'; 'sample mode only): NO'",
+          f"exit {code}; triggered: {[x.get('triggered') for x in pst]}; report line: {'Stop conditions: 1 of 4 triggered' in prep}; approve NO: {'sample mode only): NO' in prep}",
+          code == 0 and [x.get("triggered") for x in pst] == [True, False, False, False] and "Stop conditions: 1 of 4 triggered" in prep and "sample mode only): NO" in prep
+          and "planted-credential" in pst[0].get("evidence", ""))
     shutil.rmtree(t)
 
     # ------------------------------------------------------------------ step 6, refusals (exit 2, nothing written)

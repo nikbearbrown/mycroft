@@ -88,23 +88,23 @@
   "stop_conditions": [
     {
       "condition": "Stop if credentials, API keys, database destinations, email addresses, or tokens are hardcoded instead of read from environment variables.",
-      "triggered": true,
-      "evidence": "scripts that read the environment: scripts/tools/scenariostresstestingagent-produce-human-report.py"
+      "triggered": false,
+      "evidence": "scanned 41 file(s) (this recipe's scripts, its raw data and the recipe) for a quoted literal assigned to an api key, secret, token, password or authorization, an `sk-` key or a Bearer token: none found"
     },
     {
       "condition": "Stop if live external calls, database writes, notifications, trades, or publication actions are requested without explicit human approval.",
       "triggered": false,
-      "evidence": "not triggered in sample mode"
+      "evidence": "run envelope: live_calls False, network False, database_writes False; nothing live requested, so no approval is needed; 3 hand-off(s) recorded in the step-5 log, none made"
     },
     {
       "condition": "Stop if required local source data is missing and no approved live-call path is available.",
       "triggered": false,
-      "evidence": "not triggered in sample mode"
+      "evidence": "the `defective` sample folder exists with 10 request file(s) and the manifest exists; step 3 read 10"
     },
     {
       "condition": "Stop if generated outputs omit provenance or make unsupported analytical claims.",
       "triggered": false,
-      "evidence": "not triggered in sample mode"
+      "evidence": "the log lists 12 source file(s); the report carries Source inventory and Inputs used, and keeps readings of the sample under Inferred findings, labelled"
     }
   ],
   "todo_items": [
