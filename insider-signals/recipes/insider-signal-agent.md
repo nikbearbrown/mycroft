@@ -119,7 +119,8 @@ From SEC's "Accessing EDGAR Data" page (checked 2026-11-03):
   (`/files/datastandardsinnovation/...` for 2026 Q3, `/files/structureddata/...` for
   earlier quarters, as of 2026-11-03).
 - Writes `data/raw/form345/manifest.json`: per quarter, `source_url`, `retrieved_at`,
-  `sha256`, `bytes`, `user_agent`, `http_status`.
+  `sha256`, `bytes`, `http_status`, `user_agent_set`. The User-Agent value is not stored,
+  because it holds a personal email.
 - Appends every HTTP request to `data/raw/form345/request_log.jsonl` (timestamp, URL,
   status, elapsed) so the G1 check can prove the rate limit was respected.
 - **Checkpoint/resume:** a quarter whose ZIP exists and whose hash matches the manifest is
@@ -154,8 +155,9 @@ From SEC's "Accessing EDGAR Data" page (checked 2026-11-03):
   excluded or kept with a flag.
 - **10b5-1 plans:** SEC added `AFF10B5ONE` to SUBMISSION for 2023+ data. Pre-planned
   purchases are less informative; they are kept but flagged and **cannot score STRONG**.
-  **[verify]** the column's exact name and values in the downloaded files — it is
-  announced on SEC's data-set page but not yet in the PDF readme's table definitions.
+  Confirmed in the 2026 Q3 file (2026-11-03): the column exists, with mixed values
+  `1`/`true` (plan), `0`/`false` (no plan) and blank. PARSE normalizes these to
+  true / false / unknown. Unknown is reported in the audit and is not treated as "no plan".
 - Every excluded row is counted by reason in the parse audit. Nothing is dropped silently.
 
 ### 3. GIGO — conformance checks, raw → verified promotion
