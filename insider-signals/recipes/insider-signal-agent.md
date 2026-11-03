@@ -159,6 +159,14 @@ From SEC's "Accessing EDGAR Data" page (checked 2026-11-03):
   `1`/`true` (plan), `0`/`false` (no plan) and blank. PARSE normalizes these to
   true / false / unknown. Unknown is reported in the audit and is not treated as "no plan".
 - Every excluded row is counted by reason in the parse audit. Nothing is dropped silently.
+  Each excluded row gets one reason: the first check it fails, in the order code → acquired →
+  shares → price → equity swap.
+- **Implemented (2026-11-03, `parse.py`):** the private-purchase TODO above is still open. In the
+  meantime PARSE flags qualifying buys, without excluding them, using footnotes attached to the
+  transaction's own fields (not the holdings columns): `private_purchase_flag` for offering /
+  private-placement / issuer wording, and `espp_or_drip_flag` for employee stock purchase plan
+  or dividend reinvestment. The second category also isn't open-market buying, and the TODO's
+  decision should cover it too.
 
 ### 3. GIGO — conformance checks, raw → verified promotion
 

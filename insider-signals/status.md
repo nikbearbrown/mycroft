@@ -25,7 +25,9 @@ Lifecycle: `DRAFT → SPECIFIED → RUNNABLE-SAMPLE → RUNNABLE-LIVE → VERIFI
 
 - ~~Write `ingest.py` and its tests~~ (done 2026-11-03: 33 tests passing).
 - Ingest the full study period (2023 Q1 – 2026 Q3), then run `--verify` and log the G1 decision.
-- Start PARSE: join tables, transaction-code classification, `AFF10B5ONE` normalization.
+- ~~Start PARSE~~ (done 2026-11-03: 2026 Q3 gives 5,115 qualifying buys of 59,834 Form 4 rows; 57 tests passing).
+- Decide the private-purchase rule ([TODO: DEFINE]): exclude or keep flagged buys (private 135, ESPP/DRIP 201 in 2026 Q3).
+- Next stage: GIGO `conformance.py` (G2).
 
 ## Open decisions / blockers
 

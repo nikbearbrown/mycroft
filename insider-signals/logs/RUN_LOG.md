@@ -5,6 +5,37 @@ Newest entries at top.
 
 ---
 
+## 2026-11-03 — PARSE built; run on local 2026 Q3
+
+**Fellow:** Gomathy S.
+**Recipe:** insider-signal-agent v0.1.0 (DRAFT)
+
+**Built:** `parse.py` (stdlib only): provenance check against manifest.json; headers read from
+each file (missing required column → halt; AFF10B5ONE optional); SUBMISSION ⋈ NONDERIV_TRANS
+with all REPORTINGOWNERs attached (joint filings stay one row); Form 4 / 4-A only; one class per
+row; buy filter; AFF10B5ONE and RPTOWNER_RELATIONSHIP normalization; provisional footnote flags.
+`tests/test_parse.py`: 24 tests on a synthetic fixture with real headers. Suite: 57 tests, all pass.
+
+**Run (real data, no network):** `python parse.py --quarters 2026q3`, ZIP SHA-256 `a4e6a681…92c90f3`.
+- Funnel: 59,885 non-derivative rows → 59,834 Form 4/4-A → 5,183 code P → **5,115 qualifying buys**.
+- Independent recount from the raw TSVs (separate script) gave the same numbers.
+- Excluded: 54,719. Largest reasons: sale 25,430; grant 9,791; option exercise (M) 7,433; tax withholding (F) 6,801. Code P rows failing the filter: 68 (price 53, shares 8, not acquired 6, equity swap 1).
+- Qualifying buys by 10b5-1: plan 136, no plan 4,979, unknown 0.
+- Flags (not excluded): likely private / issuer 135; ESPP / DRIP 201; joint filing 686.
+- Context: 225 Form 4 code P rows are in the derivative table (excluded by design).
+
+**Design change during the run:** flags first read footnotes from every column. The samples showed
+holdings notes ("includes shares acquired through the DRIP") flagging purchases that weren't
+DRIP. Flags now read only footnotes on the transaction's own fields. That removed 107 ESPP/DRIP
+flags and 5 private flags. The 10b5-1 mention check still reads every footnote.
+
+**Outputs:** `data/raw/parsed/2026q3_parse_summary.json`, `2026q3_parse-audit.md` (committed);
+`2026q3_form4_transactions.csv` (gitignored, rebuildable).
+
+**Open:** the private-purchase rule is still [TODO: DEFINE], and should cover ESPP/DRIP too. Nothing has entered data/verified/; that is G2.
+
+---
+
 ## 2026-11-03 — INGEST built; live run on 2026 Q3
 
 **Fellow:** Gomathy S.

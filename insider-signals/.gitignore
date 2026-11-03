@@ -1,5 +1,5 @@
 # Re-downloadable SEC files and rebuildable intermediates (provenance is in data/raw/form345/manifest.json)
 data/raw/form345/*.zip
 data/raw/form345/*/
-data/raw/parsed/
+data/raw/parsed/*.csv
 data/raw/prices/
