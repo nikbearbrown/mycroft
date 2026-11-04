@@ -1,0 +1,1078 @@
+{
+  "run_at": "2026-11-04T17:49:19.368Z",
+  "quarters": [
+    "2026q3"
+  ],
+  "source_sha256": {
+    "2026q3": "a4e6a681cfcfa43a3d9e4ca9cfec1fd26a59d0a01eac7e9f7b5a0122092c90f3"
+  },
+  "halting_checks": {
+    "2026q3": {
+      "hash": {
+        "name": "hash",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "manifest SHA-256 a4e6a681cfcfa43a3d9e4ca9cfec1fd26a59d0a01eac7e9f7b5a0122092c90f3",
+        "not_run": ""
+      },
+      "required_columns": {
+        "name": "required_columns",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "DATA_CONTRACT.md fields in 4 raw tables + parsed CSV header",
+        "not_run": ""
+      },
+      "keys": {
+        "name": "keys",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "59,885 NONDERIV_TRANS keys, 5,115 buys",
+        "not_run": ""
+      },
+      "dates": {
+        "name": "dates",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: DD-MON-YYYY, TRANS_DATE \u2264 FILING_DATE",
+        "not_run": ""
+      },
+      "codes": {
+        "name": "codes",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: SEC code list, A/D",
+        "not_run": ""
+      },
+      "buy_filter_purity": {
+        "name": "buy_filter_purity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "independent filter on raw: 5,115 buys; buys file: 5,115",
+        "not_run": ""
+      },
+      "identity": {
+        "name": "identity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "ISSUERCIK and RPTOWNERCIK, numeric",
+        "not_run": ""
+      }
+    }
+  },
+  "cross_quarter_duplicate_keys": [],
+  "failed_checks": [],
+  "promoted": true,
+  "rows_promoted": 5115,
+  "findings": {
+    "2026q3": {
+      "prereg_rule1": {
+        "excluded_from_clustering": 336,
+        "private_flag": 135,
+        "espp_or_drip_flag": 201,
+        "both_flags": 0,
+        "plan_buys_strong_ineligible": 136,
+        "plan_buys_also_excluded": 0,
+        "unknown_10b5_1": 0,
+        "cluster_eligible": 4779
+      },
+      "amendments": {
+        "amendment_buys": 144,
+        "amendment_accessions": 92,
+        "original_candidates_in_quarter": {
+          "unique": 65,
+          "none_in_quarter": 27
+        },
+        "amendment_buys_repeating_an_original_buy": 42
+      },
+      "symbols": {
+        "buys": {
+          "NONE": 165,
+          "N/A": 45,
+          "NA": 3
+        },
+        "issuers": {
+          "NONE": 41,
+          "N/A": 21,
+          "NA": 1
+        }
+      },
+      "timeliness": {
+        "TRANS_TIMELINESS": {
+          "<blank: on time>": 5095,
+          "E": 20
+        },
+        "more_than_2_business_days": 791,
+        "more_than_2_business_days_and_not_marked_L": 791
+      },
+      "lag_calendar_days": {
+        "n": 5115,
+        "min": 0,
+        "p25": 1,
+        "median": 2,
+        "p75": 4,
+        "p90": 6,
+        "p99": 342,
+        "max": 7308,
+        "buckets": {
+          "0": 662,
+          "1-2": 2565,
+          "3-5": 1313,
+          "6-30": 360,
+          "31-365": 170,
+          ">365": 45
+        }
+      },
+      "joint_filings": {
+        "buys": 686,
+        "accessions": 231,
+        "owner_count_distribution": {
+          "1": 4429,
+          "2": 275,
+          "3": 85,
+          "4": 99,
+          "5": 75,
+          "6": 132,
+          "7": 7,
+          "8": 5,
+          "9": 8
+        }
+      },
+      "form4_rows_not_promoted": {
+        "trans_date_after_filing_date": 2,
+        "unparseable_dates": 0,
+        "code_blank_or_unrecognized": 4,
+        "acquired_disposed_not_A_or_D": 0
+      },
+      "precision": {
+        "max_decimals_price": 2,
+        "max_decimals_shares": 2,
+        "buys_price_below_1": 588,
+        "buys_price_at_most_0_05": 92
+      },
+      "parse": {
+        "funnel": {
+          "nonderiv_rows_total": 59885,
+          "form4_rows": 59834,
+          "form4_code_p_rows": 5183,
+          "qualifying_buys": 5115
+        },
+        "exclusions_by_reason": {
+          "code_missing": 4,
+          "code_A_grant_award": 9791,
+          "code_C_conversion": 902,
+          "code_D_disposition_to_issuer": 1382,
+          "code_F_tax_or_exercise_payment": 6801,
+          "code_G_gift": 1033,
+          "code_I_discretionary_16b3f": 23,
+          "code_J_other": 1672,
+          "code_L_small_acquisition": 63,
+          "code_M_option_exercise_16b3": 7433,
+          "code_O_option_exercise_otm": 1,
+          "code_S_sale": 25430,
+          "code_U_tender_change_of_control": 38,
+          "code_W_will_or_descent": 14,
+          "code_X_option_exercise_itm": 56,
+          "code_Z_voting_trust": 8,
+          "p_not_acquired": 6,
+          "p_shares_missing_or_not_positive": 8,
+          "p_price_missing_or_not_positive": 53,
+          "p_equity_swap": 1
+        }
+      }
+    }
+  },
+  "spot_check": {
+    "run": true,
+    "n": 25,
+    "seed": 14553824015086086844,
+    "results": [
+      {
+        "accession_number": "0001628873-26-000057",
+        "nonderiv_trans_sk": "9042641",
+        "issuer_cik": "0001059213",
+        "issuer_name": "BEXIL INVESTMENT TRUST",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "5000.0",
+          "price": "17.78",
+          "date": "2026-08-10"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1059213/000162887326000057/0001628873-26-000057.txt",
+        "filing_sha256": "5dd5d5e1ad52624e8b64ac44d26e4388c200eac8ab30e24e85ce0a83c1ad1929",
+        "cached": true,
+        "xml_transactions": 2,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "5000",
+          "price": "17.78",
+          "date": "2026-08-10"
+        }
+      },
+      {
+        "accession_number": "0001422493-26-000012",
+        "nonderiv_trans_sk": "9021874",
+        "issuer_cik": "0000879635",
+        "issuer_name": "MID PENN BANCORP INC",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "287.0",
+          "price": "34.84",
+          "date": "2026-06-30"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/879635/000142249326000012/0001422493-26-000012.txt",
+        "filing_sha256": "cdfdc16cc10280a2cbc0a1ee1a08929a75d683f078df0dfafb400a203eafe0b4",
+        "cached": true,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "287",
+          "price": "34.84",
+          "date": "2026-06-30"
+        }
+      },
+      {
+        "accession_number": "0001193125-26-402849",
+        "nonderiv_trans_sk": "9077048",
+        "issuer_cik": "0001325702",
+        "issuer_name": "MAGNACHIP SEMICONDUCTOR Corp",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "20000.0",
+          "price": "3.22",
+          "date": "2026-09-24"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1325702/000119312526402849/0001193125-26-402849.txt",
+        "filing_sha256": "d4c978580e5217d7a9653e7cf0987440761eb5b63522f5e56b1cdf2e37cf5b18",
+        "cached": true,
+        "xml_transactions": 3,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": false,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "20000",
+          "price": "3.2199",
+          "date": "2026-09-24"
+        }
+      },
+      {
+        "accession_number": "0001325533-26-000006",
+        "nonderiv_trans_sk": "9059163",
+        "issuer_cik": "0001821175",
+        "issuer_name": "Motorsport Games Inc.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "1497.0",
+          "price": "3.91",
+          "date": "2026-08-28"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1821175/000132553326000006/0001325533-26-000006.txt",
+        "filing_sha256": "9b7605e917de340c6cf825ff46c4cdc4458024b2004d173ba5e36aecc2ba7e59",
+        "cached": true,
+        "xml_transactions": 6,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": false,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "1497",
+          "price": "3.913",
+          "date": "2026-08-28"
+        }
+      },
+      {
+        "accession_number": "0001477932-26-004305",
+        "nonderiv_trans_sk": "9027075",
+        "issuer_cik": "0001434740",
+        "issuer_name": "Ranger Gold Corp.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "27836.0",
+          "price": "0.01",
+          "date": "2025-07-10"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1434740/000147793226004305/0001477932-26-004305.txt",
+        "filing_sha256": "de5ddb885fd764f788bdc89f63ff7aa5490fd246812b0773cfa66af9714ed71b",
+        "cached": true,
+        "xml_transactions": 30,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": false,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "27836",
+          "price": "0.006",
+          "date": "2025-07-10"
+        }
+      },
+      {
+        "accession_number": "0001221359-26-000053",
+        "nonderiv_trans_sk": "9057720",
+        "issuer_cik": "0001500217",
+        "issuer_name": "American Assets Trust, Inc.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "50000.0",
+          "price": "22.56",
+          "date": "2026-08-27"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1500217/000122135926000053/0001221359-26-000053.txt",
+        "filing_sha256": "144fe21e7e051c1d5a977269a87f9237c2870915eda2f24e15f94fb12f14c07a",
+        "cached": true,
+        "xml_transactions": 2,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "50000",
+          "price": "22.56",
+          "date": "2026-08-27"
+        }
+      },
+      {
+        "accession_number": "0001451455-26-000011",
+        "nonderiv_trans_sk": "9053501",
+        "issuer_cik": "0000766421",
+        "issuer_name": "ALASKA AIR GROUP, INC.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "25000.0",
+          "price": "40.06",
+          "date": "2026-08-20"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/766421/000145145526000011/0001451455-26-000011.txt",
+        "filing_sha256": "2c19e81e15027d7526f2c2e54c0d8a1b4974fa25aac30197225ae8f7c67e0b2b",
+        "cached": true,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": false,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "25000",
+          "price": "40.0604",
+          "date": "2026-08-20"
+        }
+      },
+      {
+        "accession_number": "0001213900-26-092276",
+        "nonderiv_trans_sk": "9052239",
+        "issuer_cik": "0001979414",
+        "issuer_name": "NEONC TECHNOLOGIES HOLDINGS, INC.",
+        "document_type": "4/A",
+        "dataset": {
+          "code": "P",
+          "shares": "10000.0",
+          "price": "4.8",
+          "date": "2026-04-24"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1979414/000121390026092276/0001213900-26-092276.txt",
+        "filing_sha256": "3a407519c292220f572f56498bbb2a4b2dc54e8a5ba9ecb45f6ea7d7e57aa5ea",
+        "cached": true,
+        "xml_transactions": 4,
+        "document_type_xml": "4/A",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "10000",
+          "price": "4.80",
+          "date": "2026-04-24"
+        }
+      },
+      {
+        "accession_number": "0002029760-26-000006",
+        "nonderiv_trans_sk": "9040472",
+        "issuer_cik": "0001659494",
+        "issuer_name": "51Talk Online Education Group",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "158460.0",
+          "price": "19.2",
+          "date": "2026-08-05"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1659494/000202976026000006/0002029760-26-000006.txt",
+        "filing_sha256": "6c0fdf84500aa82696b04ea186d9ab51a0b4af93009e4203c2e54816f3a00b81",
+        "cached": true,
+        "xml_transactions": 4,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "158460",
+          "price": "19.2",
+          "date": "2026-08-05"
+        }
+      },
+      {
+        "accession_number": "0001193125-26-392656",
+        "nonderiv_trans_sk": "9069616",
+        "issuer_cik": "0000790816",
+        "issuer_name": "BRANDYWINE REALTY TRUST",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "33900.0",
+          "price": "2.96",
+          "date": "2026-09-14"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/790816/000119312526392656/0001193125-26-392656.txt",
+        "filing_sha256": "f45d61d04260f3d079df494e425108be6c106c7d05a0a338c44db256428192a1",
+        "cached": true,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "33900",
+          "price": "2.96",
+          "date": "2026-09-14"
+        }
+      },
+      {
+        "accession_number": "0001213900-26-100498",
+        "nonderiv_trans_sk": "9070862",
+        "issuer_cik": "0001439124",
+        "issuer_name": "AXIA Energia S.A.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "15800.0",
+          "price": "10.5",
+          "date": "2026-09-14"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1439124/000121390026100498/0001213900-26-100498.txt",
+        "filing_sha256": "a49d4c9cbf7c123e4ebc8eaf3e5818208af3f3b56be699c3b1d1e6d65a6ff9ef",
+        "cached": true,
+        "xml_transactions": 6,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "15800",
+          "price": "10.50",
+          "date": "2026-09-14"
+        }
+      },
+      {
+        "accession_number": "0001213900-26-099887",
+        "nonderiv_trans_sk": "9068662",
+        "issuer_cik": "0001795251",
+        "issuer_name": "Nano-X Imaging Ltd.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "30000.0",
+          "price": "0.76",
+          "date": "2026-09-14"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1795251/000121390026099887/0001213900-26-099887.txt",
+        "filing_sha256": "84d0fb55a2b4cc4bf58f0ebcfd0b4a475f0328877b881f3ae9aeedd91ede40c1",
+        "cached": true,
+        "xml_transactions": 2,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "30000",
+          "price": "0.76",
+          "date": "2026-09-14"
+        }
+      },
+      {
+        "accession_number": "0001628280-26-050262",
+        "nonderiv_trans_sk": "9034897",
+        "issuer_cik": "0002035713",
+        "issuer_name": "Crestline Lending Solutions, LLC",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "10190.82",
+          "price": "19.63",
+          "date": "2026-07-24"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/2035713/000162828026050262/0001628280-26-050262.txt",
+        "filing_sha256": "a2dec2e06ee8ea6122f31a443687bee418c5053d9d7bb7b24a0fede5ac074b0d",
+        "cached": true,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": false,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "10190.823",
+          "price": "19.63",
+          "date": "2026-07-24"
+        }
+      },
+      {
+        "accession_number": "0001104659-26-081762",
+        "nonderiv_trans_sk": "9025689",
+        "issuer_cik": "0001612940",
+        "issuer_name": "ProQR Therapeutics N.V.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "150000.0",
+          "price": "1.59",
+          "date": "2026-07-07"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1612940/000110465926081762/0001104659-26-081762.txt",
+        "filing_sha256": "4b25e69fb41078fa5f84d3212908f37ef36eceb33b09e84c5a10d671b2f92191",
+        "cached": true,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "150000",
+          "price": "1.59",
+          "date": "2026-07-07"
+        }
+      },
+      {
+        "accession_number": "0001475597-26-000246",
+        "nonderiv_trans_sk": "9070658",
+        "issuer_cik": "0001327068",
+        "issuer_name": "United States Oil Fund, LP",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "26472.0",
+          "price": "160.0",
+          "date": "2026-09-14"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1327068/000147559726000246/0001475597-26-000246.txt",
+        "filing_sha256": "28d355ec01ec352aee0083a27341001f3f586d2e6fdd4b3d392615f553cffedc",
+        "cached": true,
+        "xml_transactions": 14,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "26472",
+          "price": "160",
+          "date": "2026-09-14"
+        }
+      },
+      {
+        "accession_number": "0001628280-26-059399",
+        "nonderiv_trans_sk": "9057494",
+        "issuer_cik": "0001909747",
+        "issuer_name": "Jushi Holdings Inc.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "500000.0",
+          "price": "0.49",
+          "date": "2026-08-27"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1909747/000162828026059399/0001628280-26-059399.txt",
+        "filing_sha256": "d6003fba3edd3224dd6c6f96701a1ffbf566d22ed0c325613268ab1ff1ef7198",
+        "cached": true,
+        "xml_transactions": 2,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "500000",
+          "price": "0.49",
+          "date": "2026-08-27"
+        }
+      },
+      {
+        "accession_number": "0001626337-26-000011",
+        "nonderiv_trans_sk": "9069076",
+        "issuer_cik": "0000711404",
+        "issuer_name": "COOPER COMPANIES, INC.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "4701.02",
+          "price": "53.18",
+          "date": "2026-09-11"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/711404/000162633726000011/0001626337-26-000011.txt",
+        "filing_sha256": "f556f359c8dc395b74c0e82f8ded7b33a5f91ba392a6dbc5657102183ccf5259",
+        "cached": true,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": false,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "4701.015",
+          "price": "53.18",
+          "date": "2026-09-11"
+        }
+      },
+      {
+        "accession_number": "0001475597-26-000246",
+        "nonderiv_trans_sk": "9070656",
+        "issuer_cik": "0001327068",
+        "issuer_name": "United States Oil Fund, LP",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "2553.0",
+          "price": "158.08",
+          "date": "2026-09-14"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1327068/000147559726000246/0001475597-26-000246.txt",
+        "filing_sha256": "28d355ec01ec352aee0083a27341001f3f586d2e6fdd4b3d392615f553cffedc",
+        "cached": true,
+        "xml_transactions": 14,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "2553",
+          "price": "158.08",
+          "date": "2026-09-14"
+        }
+      },
+      {
+        "accession_number": "0001554855-26-001756",
+        "nonderiv_trans_sk": "9041844",
+        "issuer_cik": "0001029199",
+        "issuer_name": "EURONET WORLDWIDE, INC.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "781.0",
+          "price": "70.6",
+          "date": "2026-08-07"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1029199/000155485526001756/0001554855-26-001756.txt",
+        "filing_sha256": "77ab9bcf8074dbf8f59af0e1bcb549ed7b69efcf43253d8247ab5f88deb42f2d",
+        "cached": true,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "781",
+          "price": "70.6",
+          "date": "2026-08-07"
+        }
+      },
+      {
+        "accession_number": "0001654954-26-008365",
+        "nonderiv_trans_sk": "9068141",
+        "issuer_cik": "0001375205",
+        "issuer_name": "UR-ENERGY INC",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "75581.0",
+          "price": "1.29",
+          "date": "2026-09-11"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1375205/000165495426008365/0001654954-26-008365.txt",
+        "filing_sha256": "5f889b6f3449127adcd9569f79317fc175de2a8e6a4b57d1132f2d546dfe10fd",
+        "cached": true,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "75581",
+          "price": "1.29",
+          "date": "2026-09-11"
+        }
+      },
+      {
+        "accession_number": "0002017181-26-000005",
+        "nonderiv_trans_sk": "9060080",
+        "issuer_cik": "0000701719",
+        "issuer_name": "Envela Corp",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "105.0",
+          "price": "13.76",
+          "date": "2026-08-31"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/701719/000201718126000005/0002017181-26-000005.txt",
+        "filing_sha256": "7377b37178b03838dc23604c44487d44b9a1b6c6b4c9c1981476d855ef753869",
+        "cached": true,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "105",
+          "price": "13.76",
+          "date": "2026-08-31"
+        }
+      },
+      {
+        "accession_number": "0001184754-26-000010",
+        "nonderiv_trans_sk": "9045278",
+        "issuer_cik": "0002090312",
+        "issuer_name": "Mobility Global Inc.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "15000.0",
+          "price": "19.87",
+          "date": "2026-08-13"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/2090312/000118475426000010/0001184754-26-000010.txt",
+        "filing_sha256": "b5993482a2d054dc38cae208caace046da1384ac2bf9319b89ec13027fc70d71",
+        "cached": true,
+        "xml_transactions": 3,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": false,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "15000",
+          "price": "19.8714",
+          "date": "2026-08-13"
+        }
+      },
+      {
+        "accession_number": "0001477932-26-004305",
+        "nonderiv_trans_sk": "9027095",
+        "issuer_cik": "0001434740",
+        "issuer_name": "Ranger Gold Corp.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "31400.0",
+          "price": "0.01",
+          "date": "2025-10-21"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1434740/000147793226004305/0001477932-26-004305.txt",
+        "filing_sha256": "de5ddb885fd764f788bdc89f63ff7aa5490fd246812b0773cfa66af9714ed71b",
+        "cached": true,
+        "xml_transactions": 30,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": false,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "31400",
+          "price": "0.006",
+          "date": "2025-10-21"
+        }
+      },
+      {
+        "accession_number": "0000905148-26-004111",
+        "nonderiv_trans_sk": "9064891",
+        "issuer_cik": "0001031203",
+        "issuer_name": "GROUP 1 AUTOMOTIVE INC",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "19286.0",
+          "price": "302.46",
+          "date": "2026-09-04"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1031203/000090514826004111/0000905148-26-004111.txt",
+        "filing_sha256": "fb04b5c275054ddcaa80e515176b149d726365fe5814e09c102d27f7536d78ff",
+        "cached": true,
+        "xml_transactions": 27,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": false,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "19286",
+          "price": "302.4635",
+          "date": "2026-09-04"
+        }
+      },
+      {
+        "accession_number": "0000905148-26-003881",
+        "nonderiv_trans_sk": "9054708",
+        "issuer_cik": "0001839341",
+        "issuer_name": "Core Scientific, Inc./tx",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "6000.0",
+          "price": "18.33",
+          "date": "2026-08-20"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1839341/000090514826003881/0000905148-26-003881.txt",
+        "filing_sha256": "f2f41a3ff2f2b3325fdabc6d1a662881fd9dc05caf84d5edde90fcda12b9cb5d",
+        "cached": true,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": false,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "6000",
+          "price": "18.3324",
+          "date": "2026-08-20"
+        }
+      }
+    ],
+    "matched": 15,
+    "rounding_only": 10,
+    "substantive_mismatch": 0,
+    "requests": 0
+  },
+  "insider_buys_sha256": "dead8bee1a423dd97028b8e643b3e1ad24185c138cc7f3cad2410b1c86026e07"
+}

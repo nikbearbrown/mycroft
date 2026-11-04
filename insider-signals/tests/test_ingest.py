@@ -392,5 +392,24 @@ class TestExtraction(IngestTestCase):
         self.assertEqual((out / "SUBMISSION.tsv").read_text(), "changed")
 
 
+
+class TestAllow404(IngestTestCase):
+    """The G2 spot-check may see a 404 on one EDGAR path and try the next; it must not halt."""
+
+    def test_404_returns_none_only_when_allowed(self):
+        sec = FakeSec({})
+        client = self.client(sec)
+        self.assertIsNone(client.get("https://www.sec.gov/missing", allow_404=True))
+        with self.assertRaises(ingest.HaltError):
+            client.get("https://www.sec.gov/missing")
+        self.assertEqual([r["status"] for r in self.log_lines()], [404, 404])
+
+    def test_403_still_halts_with_allow_404(self):
+        sec = FakeSec({"https://www.sec.gov/x": [FakeResponse(403)]})
+        with self.assertRaises(ingest.HaltError):
+            self.client(sec).get("https://www.sec.gov/x", allow_404=True)
+        self.assertEqual(len(sec.calls), ingest.MAX_RETRIES + 1)
+
+
 if __name__ == "__main__":
     unittest.main()

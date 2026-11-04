@@ -5,6 +5,49 @@ Newest entries at top.
 
 ---
 
+## 2026-11-04 — GIGO built; run on 2026 Q3; 5,115 buys promoted to data/verified/
+
+**Fellow:** Gomathy S.
+**Recipe:** insider-signal-agent v0.1.0 (DRAFT)
+
+**Built:** `conformance.py` (stdlib only). Halting checks: hash, required columns, keys, dates,
+codes, buy-filter purity (independent re-derivation from raw), identity. Promotion via a staging
+folder only when all pass; on failure the audit goes to `data/raw/conformance/` and
+`data/verified/` is unchanged. Spot-check of N = 25 seeded random buys against their EDGAR
+filings. `ingest.SecClient.get` gained `allow_404`.
+`tests/test_conformance.py`: 24 tests, including 7 that each break one halting check and prove
+`data/verified/` keeps its bytes. A mutation run (failure branch disabled) made those 7 fail.
+Suite: 83 tests, all pass.
+
+**Run (real data):** `python conformance.py --quarters 2026q3`, User-Agent set (value not logged).
+- All 7 halting checks PASS. 5,115 buys promoted → `data/verified/insider_buys.csv`,
+  SHA-256 `dead8bee1a423dd97028b8e643b3e1ad24185c138cc7f3cad2410b1c86026e07`.
+- Spot-check (seed 14553824015086086844): 23 requests (2 accessions sampled twice), all HTTP 200,
+  spaced ≥ 1.0 s; all 25 resolved on the issuer-CIK path. **15 exact matches, 10 rounding only,
+  0 other mismatches.** The data set rounds shares and price to 2 decimals (e.g. filed `0.006`
+  → `0.01`). A re-run after adding the rounding classification used the cache: 0 requests.
+- Rule 1 counts: 336 buys kept but excluded from clustering (private 135, ESPP/DRIP 201, both 0);
+  136 plan buys may cluster but cannot be STRONG; 0 unknown; 4,779 cluster-eligible.
+- Amendments: 144 buys on 92 Form 4/A filings; original found in quarter for 65 filings (unique),
+  none for 27; **42 amendment buys repeat a buy on their original** (possible double count).
+- Symbols: `NONE` 165 buys (41 issuers), `N/A` 45 (21), `NA` 3 (1).
+- Lag (calendar days): median 2, p90 6, p99 342, max 7,308. 791 buys filed > 2 business days
+  after the trade (no holiday calendar), none marked `L`; `TRANS_TIMELINESS`: blank 5,095, `E` 20.
+- Joint filings: 686 buys from 231 filings.
+- Not promoted, reported: 2 Form 4 rows with TRANS_DATE after FILING_DATE (codes S, J); 4 blank codes.
+
+**Gate:** G2 is **not cleared**. Clearing it is the owner's logged decision after reading
+`data/verified/conformance-audit.md`; G1 also still requires the full study period.
+
+**Open for the owner:** (1) rounding: use filing values for low-priced buys, exclude them, or
+accept; (2) the 42 repeated amendment buys (TODO 3); (3) Rule 1's `unknown` 10b5-1 case;
+(4) confirm the AI-drafted reasons for closing TODOs 1 and 2.
+
+**Process note:** recipe and `data/verified/` changed on the owner's written instruction
+without a separate plan-mode step (see the entry below).
+
+---
+
 ## 2026-11-04 — Decision: flagged-buy rule pre-registered; TODOs 1 and 2 closed
 
 **Decided by:** Gomathy S.

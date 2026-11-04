@@ -204,6 +204,21 @@ for the human. They do not silently correct the data.
 **Promotion rule:** `data/verified/insider_buys.csv` is written **only** when every halting
 check passes (exit 0). On failure, nothing in `data/verified/` changes.
 
+**Implemented (2026-11-04, `conformance.py`):**
+- Date and code checks apply to the rows being promoted. Problems in other Form 4 rows (2026 Q3:
+  2 sales/other rows dated after their filing, 4 blank codes) never enter `data/verified/` and are
+  reported in the audit instead. `AFF10B5ONE` is a required column, since the study period is 2023+.
+- Buy-filter purity re-derives the buys from the raw tables with its own filter (not
+  `parse.classify`) and requires the result to equal the buys file exactly.
+- Spot-check sample: seed derived from the source ZIP hashes (reproducible, not hand-picked).
+  Each filing is fetched as `<accession>.txt` from `/Archives/edgar/data/<ISSUERCIK>/…`, then
+  the owner's CIK path on a 404; cached in `data/raw/filings/`. In 2026 Q3 all 25 resolved on
+  the issuer path, which is early evidence for the REPORT `[verify]` below (G5 still checks it).
+- Mismatches are classed as **rounding only** (the data set rounds shares and price to 2
+  decimals) or **other**.
+- Outputs are written to a staging folder and then moved into `data/verified/`; a failure
+  writes its audit to `data/raw/conformance/` instead.
+
 **Amendments (4/A):** `DATE_OF_ORIG_SUB` links an amendment to its original. The verified
 file keeps the original row and records the amendment as a separate dated event, so a
 backtest can use only what was public on a given date (see Look-ahead Rule).

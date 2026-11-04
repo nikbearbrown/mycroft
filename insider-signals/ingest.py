@@ -228,8 +228,11 @@ class SecClient:
         with open(self.log_path, "a", encoding="utf-8") as fh:
             fh.write(json.dumps(record) + "\n")
 
-    def get(self, url: str):
-        """Return a 200 response (caller must close it), or raise HaltError."""
+    def get(self, url: str, allow_404: bool = False):
+        """Return a 200 response (caller must close it), or raise HaltError.
+
+        With allow_404, a 404 returns None instead of halting (the G2 spot-check uses this
+        to try the next EDGAR path for a filing). 403/429/5xx still back off, then halt."""
         for attempt in range(MAX_RETRIES + 1):
             self._wait_turn()
             started_at, t0 = self._now(), self._clock()
@@ -246,6 +249,8 @@ class SecClient:
             if status == 200:
                 return resp
             _close(resp)
+            if status == 404 and allow_404:
+                return None
             if status in RETRY_STATUSES and attempt < MAX_RETRIES:
                 self._sleep(BACKOFF_SECONDS * (2 ** attempt))
                 continue

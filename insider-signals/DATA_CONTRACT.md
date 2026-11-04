@@ -63,14 +63,18 @@ the ZIP but not used in v1.
 |---|---|---|---|---|
 | `data/raw/form345/<YYYY>q<N>_form345.zip` | raw | `ingest.py` | SEC ZIP, unchanged | no (re-downloadable) |
 | `data/raw/form345/manifest.json` | raw | `ingest.py` | per quarter: `quarter`, `source_url`, `retrieved_at` (UTC ISO-8601), `sha256`, `bytes`, `http_status`, `user_agent_set` (bool; the value itself is not stored) | yes |
-| `data/raw/form345/request_log.jsonl` | raw | `ingest.py`, G2 spot-check | one line per HTTP request: `ts`, `url`, `status`, `elapsed_ms` | yes |
+| `data/raw/form345/request_log.jsonl` | raw | `ingest.py` | one line per HTTP request: `ts`, `url`, `status`, `elapsed_ms` | yes |
+| `data/raw/filings/<accession>.txt` + `.json` | raw | `conformance.py` (spot-check) | EDGAR full-submission text of each sampled filing, unchanged; sidecar with `url`, `sha256`, `bytes`, `retrieved_at`. Cached: never fetched twice | no (re-downloadable; URL and hash also in `conformance_summary.json`) |
+| `data/raw/filings/request_log.jsonl` | raw | `conformance.py` (spot-check) | same format as INGEST's log. Kept separate so a spot-check 404 on one EDGAR path is not read by G1 as an unhandled status | yes |
+| `data/raw/conformance/conformance-audit-FAILED-<ts>.md`, `conformance_summary-FAILED-<ts>.json` | raw | `conformance.py` (on failure) | the audit and summary of a run that did not promote; `data/verified/` is left unchanged | yes |
 | `data/raw/form345/<YYYY>q<N>/*` | raw | `ingest.py` (unzip) | SEC tables as extracted (8 `.tsv` files plus SEC's `FORM_345_metadata.json` and `FORM_345_readme.htm`), and `_EXTRACTED_FROM.json` (ZIP hash, member list) | no |
 | `data/raw/parsed/<YYYY>q<N>_form4_transactions.csv` | raw | `parse.py` | one row per Form 4 / 4-A non-derivative transaction (joint filings not duplicated; `owners` is a JSON list of every reporting owner with `cik`, `name`, `relationship`, `title`), plus `is_10b5_1` (plan / no_plan / unknown), `private_purchase_flag`, `espp_or_drip_flag`, `flag_evidence`, `footnote_mentions_10b5_1`, and `buy_class` (`qualifying_buy` or one exclusion reason). Columns: `parse.OUTPUT_COLUMNS` | no (rebuildable) |
 | `data/raw/parsed/<YYYY>q<N>_parse_summary.json` | raw | `parse.py` | every count: funnel, rows by document type and code, exclusions by reason, flag counts, raw value distributions, review samples (accession + issuer only) | yes |
 | `data/raw/parsed/<YYYY>q<N>_parse-audit.md` | raw | `parse.py` | human view of the summary (an audit: findings, not pass/fail) | yes |
 | `data/raw/prices/*.csv` | raw | `enrich.py` | daily adjusted close per ticker and SPY, with `fetched_at` | no |
-| `data/verified/insider_buys.csv` | verified | `conformance.py` (on pass) | one row per qualifying buy: `accession_number`, `nonderiv_trans_sk`, `document_type`, `filing_date`, `trans_date`, `issuer_cik`, `issuer_name`, `ticker_as_filed`, `rptowner_cik`, `rptowner_name`, `relationship`, `title`, `role` (mapped), `shares`, `price`, `value_usd`, `shares_owned_after`, `direct_indirect`, `is_10b5_1`, `private_purchase_flag`, `amends_accession` (null if original), `source_quarter` | yes, if size allows; otherwise hash in manifest |
-| `data/verified/conformance-audit.md` | verified | `conformance.py` | audit (findings, not pass/fail): rows in/out, exclusions by reason and code, amendments, blank symbols, late filings, joint filings, filing spot-check results | yes |
+| `data/verified/insider_buys.csv` | verified | `conformance.py` (on pass) | one row per qualifying buy, flagged buys included (`PRE_REGISTRATION.md` Rule 1). Columns: `conformance.VERIFIED_COLUMNS`: keys, dates, issuer, `owner_count`, `rptowner_ciks` / `rptowner_names` / `titles` (`;`-joined, every owner of a joint filing), `relationships`, `owners` (JSON), code, shares, price, `value_usd`, holdings, `trans_timeliness`, `is_10b5_1`, `private_purchase_flag`, `espp_or_drip_flag`, `flag_evidence`, `source_quarter`, `filing_index_url`. Not yet included: `role` (needs TODO 7) and `amends_accession` (needs TODO 3) | yes while small (2026 Q3: 2.8 MB); the SHA-256 is in `conformance_summary.json` |
+| `data/verified/conformance_summary.json` | verified | `conformance.py` (on pass) | every halting check, finding and spot-check row; `insider_buys_sha256` | yes |
+| `data/verified/conformance-audit.md` | verified | `conformance.py` (on pass) | audit (findings, not pass/fail): halting-check table, rows in/out, exclusions by reason and code, Rule 1 counts, amendments, blank symbols, late filings and lag, joint filings, precision, filing spot-check results | yes |
 | `data/verified/enriched_buys.csv` | verified | `enrich.py` (on G3 pass) | `insider_buys.csv` fields + `entry_date`, `entry_price`, `exit_date`, `exit_price`, `stock_return`, `spy_return`, `abnormal_return`, `window_days`, `price_status` | yes |
 | `data/verified/clusters.json` | verified | `signals.py` | per cluster: `issuer_cik`, `ticker`, `signal_date`, `members` (`rptowner_cik`, role, `value_usd`, `accession_numbers`), `score`, `label`, `label_reasons`, `abnormal_return` (null until the window closes) | yes |
 | `logs/run_<run_id>.json` | logs | `langgraph_pipeline.py` | full graph state, append-only run log, input file hashes | yes |
@@ -84,7 +88,7 @@ the ZIP but not used in v1.
 | Gate | Check | Tool | Pass condition |
 |---|---|---|---|
 | G1 | download integrity + fair access | `ingest.py --verify` | every requested quarter present; hash matches manifest; request log within rate; no unhandled 403/429 |
-| G2 | schema, keys, dates, codes, buy-filter purity, CIKs present | `conformance.py` | all halting checks pass (exit 0) → `insider_buys.csv` written |
+| G2 | hash, required columns, keys, dates, codes, buy-filter purity, CIKs present | `conformance.py` | all halting checks pass (exit 0) → `insider_buys.csv` written; otherwise `data/verified/` unchanged. Date and code checks apply to the rows being promoted; anomalies elsewhere are audit findings |
 | G3 | price coverage + window rule | `enrich.py --check` | coverage ≥ minimum defined in the recipe; every unpriced row has a `price_status` reason |
 | G4 | thresholds match pre-registration | `signals.py --check-prereg` | thresholds in code = `PRE_REGISTRATION.md` |
 
@@ -114,5 +118,14 @@ G5 and G6 concern the agent and the report; see the recipe.
 - **Prices come from yfinance**, which is not an authoritative source and is weak on
   delisted tickers. Delistings appear as missing prices, which is a survivorship risk that
   shows up in G3 coverage.
+- **Shares and prices are rounded to 2 decimals in the data set** (found by the G2 spot-check,
+  2026-11-04: 10 of 25 sampled buys differ from their filing only by rounding, e.g. a filed
+  price of `0.006` is `0.01` in the data set). SEC's metadata does not say so. Low-priced buys
+  are affected most (2026 Q3: 588 buys below $1.00, 92 at $0.05 or less). A filed price below
+  $0.005 rounds to `0.00`, so some `p_price_missing_or_not_positive` exclusions may be real
+  sub-cent buys. Not corrected; decision pending.
+- **Amendments can repeat their original's buy.** In 2026 Q3, 42 buys on 4/A filings have the
+  same trade date, shares and price as a buy on their original. Both are kept until the 4/A
+  matching rule (TODO 3) exists.
 - **Timeliness:** `TRANS_TIMELINESS` is `E` (early), `L` (late) or empty (on time). Late
   filings are kept. The lag is reported.

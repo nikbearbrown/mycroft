@@ -3,3 +3,8 @@ data/raw/form345/*.zip
 data/raw/form345/*/
 data/raw/parsed/*.csv
 data/raw/prices/
+# Spot-check filing copies (re-downloadable; URL + SHA-256 are in conformance_summary.json). The request log is kept.
+data/raw/filings/*
+!data/raw/filings/request_log.jsonl
+# Empty staging folders left by an interrupted promotion
+data/raw/conformance/stage-*/
