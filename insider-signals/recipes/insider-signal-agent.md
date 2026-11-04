@@ -1,6 +1,6 @@
 ---
 status: DRAFT          # DRAFT | SPECIFIED | RUNNABLE-SAMPLE | RUNNABLE-LIVE | VERIFIED
-todos_open: 10
+todos_open: 8
 last_gate: null
 attestation: null
 recipe_version: 0.1.0
@@ -150,23 +150,29 @@ From SEC's "Accessing EDGAR Data" page (checked 2026-11-03):
   it is in **NONDERIV_TRANS** (Table I — derivative purchases are excluded in v1);
   `TRANS_SHARES > 0`; `TRANS_PRICEPERSHARE > 0`; `EQUITY_SWAP_INVOLVED` is not true.
 - Code P covers **private** as well as open-market purchases, and the code alone cannot
-  separate them. [TODO: DEFINE] the footnote/price rule used to flag likely private
-  placements (e.g. price far from that day's market close), and whether flagged rows are
-  excluded or kept with a flag.
+  separate them. **Private-purchase rule (decided by Gomathy S., 2026-11-04, registered in
+  `PRE_REGISTRATION.md` Rule 1):** the flag is the footnote rule PARSE implements
+  (`private_purchase_flag`, plus `espp_or_drip_flag` for employee stock purchase plans and
+  dividend reinvestment); no price-vs-market test is used. Flagged buys **stay in
+  `data/verified/insider_buys.csv` with their flags but are excluded from cluster detection
+  and scoring.** Reason: these purchases are set by an offering or a plan rather than chosen
+  by the insider in the market, so they say little about the insider's view, while keeping
+  them in the verified file keeps the record complete and auditable.
 - **10b5-1 plans:** SEC added `AFF10B5ONE` to SUBMISSION for 2023+ data. Pre-planned
-  purchases are less informative; they are kept but flagged and **cannot score STRONG**.
+  purchases are less informative; they are kept, flagged, **may join clusters, but a cluster
+  containing one cannot score STRONG** (`PRE_REGISTRATION.md` Rule 1). How `unknown` is
+  treated for STRONG is not yet registered.
   Confirmed in the 2026 Q3 file (2026-11-03): the column exists, with mixed values
   `1`/`true` (plan), `0`/`false` (no plan) and blank. PARSE normalizes these to
   true / false / unknown. Unknown is reported in the audit and is not treated as "no plan".
 - Every excluded row is counted by reason in the parse audit. Nothing is dropped silently.
   Each excluded row gets one reason: the first check it fails, in the order code → acquired →
   shares → price → equity swap.
-- **Implemented (2026-11-03, `parse.py`):** the private-purchase TODO above is still open. In the
-  meantime PARSE flags qualifying buys, without excluding them, using footnotes attached to the
-  transaction's own fields (not the holdings columns): `private_purchase_flag` for offering /
-  private-placement / issuer wording, and `espp_or_drip_flag` for employee stock purchase plan
-  or dividend reinvestment. The second category also isn't open-market buying, and the TODO's
-  decision should cover it too.
+- **Implemented (2026-11-03, `parse.py` at `86c002c`):** PARSE flags qualifying buys, without
+  excluding them, using footnotes attached to the transaction's own fields (not the holdings
+  columns): `private_purchase_flag` for offering / private-placement / issuer wording, and
+  `espp_or_drip_flag` for employee stock purchase plan or dividend reinvestment. These
+  patterns are the registered flag definitions; changing one is a pre-registration amendment.
 
 ### 3. GIGO — conformance checks, raw → verified promotion
 
@@ -189,8 +195,9 @@ reason and code; amendments found and how they were resolved; blank or `NONE` tr
 symbols; late filings (`TRANS_TIMELINESS = 'L'`); `TRANS_DATE` → `FILING_DATE` lag
 distribution; joint filings (one accession, several reporting owners).
 
-**Spot-check against the filings:** the audit samples [TODO: DEFINE] N rows (proposed: 25)
-at random, fetches their individual Form 4 XML (within fair-access limits) and records
+**Spot-check against the filings:** the audit samples **N = 25** rows (decided by Gomathy S.,
+2026-11-04; enough to surface a systematic mismatch between the data set and the filings for
+25 requests at 1/s) at random, fetches their individual Form 4 XML (within fair-access limits) and records
 per row whether code, shares, price and date match. Mismatches are listed in the audit
 for the human. They do not silently correct the data.
 
@@ -404,8 +411,6 @@ python langgraph_pipeline.py --no-llm         # AGENT      (G5) → review packe
 
 Open items (counted in `todos_open`):
 
-1. [TODO: DEFINE] Private-purchase flag rule for code P, and whether flagged rows are excluded.
-2. [TODO: DEFINE] Spot-check sample size N for the G2 audit.
 3. [TODO: DEV] 4/A → original accession matching rule.
 4. [TODO: DEFINE] Return window N (primary) and at most one secondary window.
 5. [TODO: DEFINE] Minimum price coverage for G3.
@@ -420,5 +425,13 @@ Closed 2026-11-03 (decisions by Gomathy S., logged in `logs/RUN_LOG.md`):
 - ~~[TODO: APPROVE] Named reviewer who clears G6~~ → Gomathy S. (self-attestation during development; external review pending).
 - ~~[TODO: DEFINE] Study period~~ → 2023 Q1 – 2026 Q3, so the 10b5-1 flag is available for every quarter.
 
-Also open, but not counted as recipe TODOs: write `PRE_REGISTRATION.md` before week 8;
+Closed 2026-11-04 (decisions by Gomathy S., logged in `logs/RUN_LOG.md`):
+
+- ~~1. [TODO: DEFINE] Private-purchase flag rule, and whether flagged rows are excluded~~ →
+  footnote flags as implemented; flagged buys kept in verified, excluded from clustering and
+  scoring (`PRE_REGISTRATION.md` Rule 1).
+- ~~2. [TODO: DEFINE] Spot-check sample size N~~ → 25.
+
+Also open, but not counted as recipe TODOs: complete `PRE_REGISTRATION.md` (created
+2026-11-04 with Rule 1) before week 8;
 DEV for each script listed in the CLI reference.

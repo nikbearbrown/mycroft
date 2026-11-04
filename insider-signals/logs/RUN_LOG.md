@@ -5,6 +5,31 @@ Newest entries at top.
 
 ---
 
+## 2026-11-04 — Decision: flagged-buy rule pre-registered; TODOs 1 and 2 closed
+
+**Decided by:** Gomathy S.
+**Recipe:** insider-signal-agent v0.1.0 (DRAFT), todos_open 10 → 8
+
+**Rule (registered in `PRE_REGISTRATION.md`, Rule 1, dated 2026-11-04):** buys flagged
+`espp_or_drip_flag` or `private_purchase_flag` stay in `data/verified/` with their flags but are
+excluded from cluster detection and scoring. 10b5-1 plan buys may join clusters but cannot score
+STRONG. Flag definitions are those in `parse.py` at `86c002c`.
+
+**Recorded before any results:** no prices, returns, clusters or scores exist; `conformance.py`
+had not been run. This entry and `PRE_REGISTRATION.md` were committed before the first GIGO run.
+
+**TODO closures:** 1 (private-purchase rule) → the rule above. 2 (spot-check N) → 25, as
+instructed for the G2 spot-check. The one-sentence reasons in the recipe were drafted by the AI
+and await the owner's confirmation.
+
+**Still open:** treatment of `is_10b5_1 = unknown` for STRONG (0 such buys in 2026 Q3).
+
+**Process note:** CLAUDE.md asks for plan mode before edits under `recipes/` and
+`data/verified/`. These edits were made directly on the owner's explicit written instruction,
+which set out the change; no separate plan-mode step was used.
+
+---
+
 ## 2026-11-03 — PARSE built; run on local 2026 Q3
 
 **Fellow:** Gomathy S.
