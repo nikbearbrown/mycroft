@@ -1,0 +1,47 @@
+# Unit test plan: {{ cfg.source.server }} → {{ cfg.target.server }}
+
+{{ plan.classes | length }} changed production classes, {{ plan.gap_count }} gaps flagged for manual tests.
+
+| Risk | Class | Protected | Changes | Existing tests | Gaps |
+|------|-------|-----------|---------|----------------|------|
+{% for c in plan.classes -%}
+| {{ c.risk }} | `{{ c.fqcn }}` | {{ "yes" if c.protected else "no" }} | {% for ch in c.changes %}{{ ch.step_id }} (+{{ ch.added }}/-{{ ch.removed }}{{ ", ns-only" if ch.namespace_only }}){{ "<br>" if not loop.last }}{% endfor %} | {{ c.existing_tests | length }} | {{ c.gaps | length }} |
+{% endfor %}
+
+{% for c in plan.classes %}
+## `{{ c.fqcn }}` — risk: **{{ c.risk }}**
+
+File: `{{ c.path }}`{{ " (protected path)" if c.protected }}
+
+**What changed**
+{% for ch in c.changes %}
+- `{{ ch.step_id }}` — {{ ch.description }}: +{{ ch.added }} / -{{ ch.removed }} lines{% if ch.namespace_only %} (namespace/imports/annotations only){% endif %}{% if ch.recipes %}; recipes: {% for r in ch.recipes %}`{{ r }}`{{ ", " if not loop.last }}{% endfor %}{% endif %}
+{%- endfor %}
+
+**Existing tests**
+{% for t in c.existing_tests %}
+- `{{ t }}`
+{%- else %}
+- none found
+{%- endfor %}
+
+**Test cases**
+{% for t in c.test_cases %}
+- [ ] {{ t }}
+{%- endfor %}
+{% if c.gaps %}
+
+**Gaps (write by hand)**
+{% for g in c.gaps %}
+- {{ g }}
+{%- endfor %}
+{% endif %}
+{% endfor %}
+{% if plan.characterization_tests %}
+## Characterization tests generated
+
+Fill in inputs, run on the baseline commit to record golden output, then remove `@Disabled`/`@Ignore`.
+{% for t in plan.characterization_tests %}
+- `{{ t }}`
+{%- endfor %}
+{% endif %}

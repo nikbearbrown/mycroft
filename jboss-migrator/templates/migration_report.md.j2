@@ -1,0 +1,77 @@
+# Migration report: {{ cfg.source.server }} (Java {{ cfg.source.java }}) → {{ cfg.target.server }} (Java {{ cfg.target.java }})
+
+- Repository: `{{ cfg.repo_url }}` @ `{{ cfg.branch }}` (baseline `{{ baseline.commit[:10] }}`)
+- Migration branch: `{{ cfg.migration_branch }}`
+- Overall: **{{ "PASSED" if outcome.ok else "NEEDS ATTENTION" }}**
+
+## Verification
+
+| Check | Result |
+|-------|--------|
+| Diff guard ({{ guard.checked | length }} protected files changed) | {{ "✅ pass" if guard.ok else "❌ " ~ (guard.violations | length) ~ " violation(s)" }} |
+| Build on target | {{ "✅ pass" if outcome.build_ok else "❌ fail" }} |
+| Tests vs baseline ({{ baseline.tests | length }} baseline tests) | {% if tests %}{{ "✅" if tests.ok else "❌" }} {{ tests.regressions | length }} regressions, {{ tests.missing | length }} missing, {{ tests.fixed | length }} fixed, {{ tests.new | length }} new{% else %}skipped{% endif %} |
+| UI screenshots | {% if ui %}{{ "✅" if ui.ok else "❌" }} {{ ui.failed | length }} page(s) over threshold{% else %}skipped{% endif %} |
+
+{% if guard.violations %}
+### Diff guard violations
+
+These protected files changed beyond imports, annotations and namespaces. Review before merging.
+{% for v in guard.violations %}
+#### `{{ v.file }}`
+```diff
+{% for l in v.removed %}-{{ l }}
+{% endfor %}{% for l in v.added %}+{{ l }}
+{% endfor %}```
+{% endfor %}
+{% endif %}
+{% if tests and tests.regressions %}
+### Test regressions
+{% for t in tests.regressions %}
+- `{{ t }}`
+{%- endfor %}
+{% endif %}
+{% if tests and tests.missing %}
+### Tests missing after migration
+{% for t in tests.missing %}
+- `{{ t }}`
+{%- endfor %}
+{% endif %}
+
+## Steps applied
+
+| Step | Engine | Commit | Files changed |
+|------|--------|--------|---------------|
+{% for s in steps -%}
+| {{ s.step.description }} | {{ s.step.engine }} | {{ s.commit[:10] if s.commit else "no changes" }} | {{ s.files | length }} |
+{% endfor %}
+
+## Inventory
+
+- Build tool: {{ inventory.build_tool }}; {{ inventory.java_files }} main / {{ inventory.test_files }} test Java files
+- Descriptors: {% for d in inventory.descriptors %}`{{ d }}`{{ ", " if not loop.last }}{% else %}none{% endfor %}
+- JSP/JSF/TLD files: {{ inventory.jsp_jsf_files | length }}; bundled JARs: {{ inventory.bundled_jars | length }}
+- MTA analysis: {{ "included" if inventory.mta_ran else "not run (CLI unavailable)" }}
+
+| Category | Findings | Automatable |
+|----------|----------|-------------|
+{% for cat, items in inventory.by_category().items() | sort -%}
+| {{ cat }} | {{ items | length }} | {{ items | selectattr("automatable") | list | length }} |
+{% endfor %}
+
+## Could not be automated
+
+{% for item in manual -%}
+- [ ] {{ item }}
+{% else -%}
+Nothing; all detected items were handled mechanically.
+{% endfor %}
+{% if skipped %}
+## Engines skipped
+{% for s in skipped %}
+- {{ s }}
+{%- endfor %}
+{% endif %}
+{% if suggestions %}
+LLM fix suggestions for remaining compile errors: `{{ suggestions }}` (not applied).
+{% endif %}
