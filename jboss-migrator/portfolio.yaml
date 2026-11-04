@@ -1,0 +1,54 @@
+# Batch mode: jboss-migrator batch --portfolio portfolio.yaml
+#
+# `defaults` takes any migration.yaml keys. Each app is deep-merged over them:
+# nested mappings merge, while lists (upgrades, protected_paths, ...) and scalars replace.
+parallel: 2            # apps migrated at once; UI checks still run one at a time
+
+defaults:
+  source:
+    server: jboss-eap-7.2
+    java: 8
+  target:
+    server: jboss-eap-8.0
+    java: 17
+  upgrades:
+    - javax-to-jakarta
+    - hibernate-5-to-6
+    - junit4-to-junit5
+  custom_recipes:
+    - com.company.migration.CompanyConventions
+  output:
+    create_pr: true
+    test_plan_format: [markdown, xlsx]
+
+apps:
+  - name: orders
+    repo:
+      url: https://git.company.com/apps/orders.git
+      branch: develop
+    upgrades:            # replaces the default list for this app
+      - javax-to-jakarta
+      - hibernate-5-to-6
+      - junit4-to-junit5
+      - picketlink-to-elytron
+    protected_paths:
+      - src/main/java/com/company/orders/domain/**
+      - src/main/webapp/**
+
+  - name: billing
+    repo:
+      url: https://git.company.com/apps/billing.git
+      branch: main
+    protected_paths:
+      - src/main/java/com/company/billing/model/**
+
+  - name: customer-portal
+    repo:
+      url: https://git.company.com/apps/customer-portal.git
+      branch: develop
+    source:
+      server: jboss-eap-7.4   # java: 8 still comes from defaults
+    ui:
+      enabled: true
+      base_url: http://localhost:8080/portal
+      pages: [/, /account.xhtml]

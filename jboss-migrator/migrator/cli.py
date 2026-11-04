@@ -9,7 +9,7 @@ import sys
 from dataclasses import asdict
 from pathlib import Path
 
-from . import __version__, analyzer, buildtool, config, planner
+from . import __version__, analyzer, batch, buildtool, config, planner
 from .git_ops import Repo
 from .pipeline import Options, Pipeline
 from .verify import diff_guard
@@ -22,6 +22,20 @@ def _cmd_migrate(args) -> int:
     outcome = Pipeline(cfg, opts).run()
     print(json.dumps(asdict(outcome) | {"ok": outcome.ok}, indent=2))
     return 0 if outcome.ok else 2
+
+
+def _cmd_batch(args) -> int:
+    portfolio = batch.load(args.portfolio)
+    opts = Options(workdir=Path(args.workdir).resolve(), push=not args.no_push,
+                   skip_baseline=args.skip_baseline)
+    only = [n.strip() for n in args.only.split(",") if n.strip()] if args.only else None
+    results = batch.run(portfolio, opts, parallel=args.parallel, only=only)
+    md, _ = batch.write_summary(results, opts.workdir)
+    for r in results:
+        print(f"{r.status:16s} {r.name:24s} manual={r.manual_items:<4d} "
+              f"{r.pr_url or r.error or ''}")
+    print(f"summary: {md}")
+    return 0 if all(r.status == batch.OK for r in results) else 2
 
 
 def _inventory(args):
@@ -85,6 +99,15 @@ def build_parser() -> argparse.ArgumentParser:
     m.add_argument("--skip-baseline", action="store_true",
                    help="skip baseline build/tests/UI (faster, but nothing to compare against)")
     m.set_defaults(func=_cmd_migrate)
+
+    b = sub.add_parser("batch", help="migrate every app in a portfolio file")
+    b.add_argument("--portfolio", default="portfolio.yaml")
+    b.add_argument("--workdir", default="workspace")
+    b.add_argument("--parallel", type=int, help="apps to run at once (overrides the file)")
+    b.add_argument("--only", help="comma-separated app names to run")
+    b.add_argument("--no-push", action="store_true", help="keep branches local; no PRs")
+    b.add_argument("--skip-baseline", action="store_true")
+    b.set_defaults(func=_cmd_batch)
 
     a = sub.add_parser("analyze", help="inventory + findings only")
     common(a, needs_repo=True)

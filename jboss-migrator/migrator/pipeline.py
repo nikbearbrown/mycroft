@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import threading
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -14,6 +15,8 @@ from .transformers import jar_transformer, llm_suggest, openrewrite, server_conf
 from .verify import deploy, diff_guard, test_compare, ui_compare
 
 log = logging.getLogger(__name__)
+
+_UI_LOCK = threading.Lock()
 
 
 @dataclass
@@ -32,6 +35,8 @@ class Outcome:
     tests_ok: bool | None = None
     ui_ok: bool | None = None
     pr_url: str | None = None
+    manual_items: int = 0
+    report: str | None = None
 
     @property
     def ok(self) -> bool:
@@ -73,6 +78,11 @@ class Pipeline:
         if not build.package().ok or not build.artifacts():
             self.skipped.append(f"UI snapshots on {server}: package failed")
             return {}
+        # One verification container and port at a time, even when batch runs apps in parallel.
+        with _UI_LOCK:
+            return self._deploy_and_snapshot(build, server, out, cli_scripts)
+
+    def _deploy_and_snapshot(self, build, server, out, cli_scripts) -> dict[str, str]:
         try:
             deploy.start(server, build.artifacts()[0], list(cli_scripts))
             if not deploy.wait_ready(self.cfg.ui.base_url):
@@ -184,6 +194,7 @@ class Pipeline:
                    suggestions=suggestions)
         report_path = report.write("migration_report.md.j2", out / "migration-report.md", **ctx)
         repo.commit_all("migrator: migration report and unit test plan")
+        outcome.manual_items, outcome.report = len(self.manual), str(report_path)
 
         rel = lambda p: p.relative_to(repo.path).as_posix()
         if cfg.output.create_pr and self.opts.push:

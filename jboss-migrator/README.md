@@ -47,6 +47,25 @@ External tools, used when they're on PATH or configured under `tools:`: Maven or
 preferred), a JDK, `mta-cli`, the Eclipse Transformer CLI jar, Docker (for UI verification).
 Missing optional tools are listed under "Engines skipped" in the report instead of failing the run.
 
+## Batch mode
+
+Migrate a whole portfolio of apps from one file. See [`portfolio.yaml`](portfolio.yaml): `defaults`
+takes any `migration.yaml` keys, and each entry under `apps` is deep-merged over them. Nested mappings
+merge, while lists (`upgrades`, `protected_paths`, …) and scalars replace.
+
+```bash
+jboss-migrator batch --portfolio portfolio.yaml                 # all apps, `parallel` from the file
+jboss-migrator batch --portfolio portfolio.yaml --parallel 4 --no-push
+jboss-migrator batch --portfolio portfolio.yaml --only orders,billing
+```
+
+- Every entry is validated before anything runs, and all bad entries are reported together.
+- Each app runs the normal pipeline in `workspace/<app>/`. One app failing (clone error, crash) is
+  recorded and the rest carry on.
+- UI checks share one verification container, so they run one at a time even in parallel mode.
+- `workspace/batch-summary.md` and `batch-summary.json` list each app's status, checks, manual-item count,
+  report path and PR link. The exit code is `0` only when every app is `ok`.
+
 ## Configuration
 
 See [`migration.yaml`](migration.yaml). Supported `upgrades`:
@@ -88,8 +107,9 @@ migration/
 ```
 jboss-migrator/
 ├── migrator/
-│   ├── cli.py              # entry point: migrate | plan | analyze | guard
+│   ├── cli.py              # entry point: migrate | batch | plan | analyze | guard
 │   ├── pipeline.py         # stage orchestration
+│   ├── batch.py            # portfolio runs + summary
 │   ├── git_ops.py          # clone, branch, per-step commits, push, PR
 │   ├── baseline.py         # build, run tests, UI snapshots
 │   ├── analyzer.py         # inventory + MTA report parsing
@@ -102,7 +122,8 @@ jboss-migrator/
 ├── templates/              # report, test plan and PR templates
 ├── docker/                 # source and target JBoss images for verification
 ├── tests/
-└── migration.yaml
+├── migration.yaml
+└── portfolio.yaml          # batch mode example
 ```
 
 ## Development

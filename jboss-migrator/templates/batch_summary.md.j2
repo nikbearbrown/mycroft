@@ -1,0 +1,24 @@
+{%- macro check(v) %}{{ "✅" if v is sameas true else ("❌" if v is sameas false else "–") }}{% endmacro -%}
+# Batch migration summary
+
+{{ results | length }} app(s): **{{ counts["ok"] }} ok**, **{{ counts["needs-attention"] }} need attention**, **{{ counts["error"] }} errored**.
+
+| App | Target | Status | Guard | Build | Tests | UI | Manual items | PR | Time |
+|-----|--------|--------|-------|-------|-------|----|--------------|----|------|
+{% for r in results -%}
+| {{ r.name }} | {{ r.target }} | {{ r.status }} | {{ check(r.checks.get("guard")) }} | {{ check(r.checks.get("build")) }} | {{ check(r.checks.get("tests")) }} | {{ check(r.checks.get("ui")) }} | {{ r.manual_items }} | {% if r.pr_url %}[PR]({{ r.pr_url }}){% else %}–{% endif %} | {{ "%.0f" | format(r.seconds) }}s |
+{% endfor %}
+{%- set errored = results | selectattr("error") | list %}
+{% if errored %}
+## Errors
+{% for r in errored %}
+- **{{ r.name }}** (`{{ r.repo }}`): {{ r.error }}
+{%- endfor %}
+{% endif %}
+{%- set reports = results | selectattr("report") | list %}
+{% if reports %}
+## Reports
+{% for r in reports %}
+- {{ r.name }}: `{{ r.report }}`
+{%- endfor %}
+{% endif %}
