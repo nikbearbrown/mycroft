@@ -1,5 +1,131 @@
 {
   "quarters": {
+    "2023q1": {
+      "bytes": 13882049,
+      "http_status": 200,
+      "quarter": "2023q1",
+      "retrieved_at": "2026-11-04T22:08:50.230Z",
+      "sha256": "0b476188f52a0862e71886eb31a81f6345fc6616403b52188484aef0438cfcfb",
+      "source_url": "https://www.sec.gov/files/structureddata/data/insider-transactions-data-sets/2023q1_form345.zip",
+      "user_agent_set": true
+    },
+    "2023q2": {
+      "bytes": 10742628,
+      "http_status": 200,
+      "quarter": "2023q2",
+      "retrieved_at": "2026-11-04T22:08:51.985Z",
+      "sha256": "7e636787231ae0f00accf5c3627298402dedd1aefffd7c50fb48292e5d3a8fbb",
+      "source_url": "https://www.sec.gov/files/structureddata/data/insider-transactions-data-sets/2023q2_form345.zip",
+      "user_agent_set": true
+    },
+    "2023q3": {
+      "bytes": 8202487,
+      "http_status": 200,
+      "quarter": "2023q3",
+      "retrieved_at": "2026-11-04T22:08:53.017Z",
+      "sha256": "26947559fbd710ca4fb007e2ff0481b13ebc3ca47153e77a9b0bc84db250a48e",
+      "source_url": "https://www.sec.gov/files/structureddata/data/insider-transactions-data-sets/2023q3_form345.zip",
+      "user_agent_set": true
+    },
+    "2023q4": {
+      "bytes": 8497639,
+      "http_status": 200,
+      "quarter": "2023q4",
+      "retrieved_at": "2026-11-04T22:08:53.956Z",
+      "sha256": "be19822ad9116ea6c1a55303b1f2e23864f21101e42d2da0455a6ff2b33e1a9e",
+      "source_url": "https://www.sec.gov/files/structureddata/data/insider-transactions-data-sets/2023q4_form345.zip",
+      "user_agent_set": true
+    },
+    "2024q1": {
+      "bytes": 13874620,
+      "http_status": 200,
+      "quarter": "2024q1",
+      "retrieved_at": "2026-11-04T22:08:56.515Z",
+      "sha256": "8e9bb34335416829a88e4ca7d09bb8aaceca689da9718fef22c298d6f18c9b04",
+      "source_url": "https://www.sec.gov/files/structureddata/data/insider-transactions-data-sets/2024q1_form345.zip",
+      "user_agent_set": true
+    },
+    "2024q2": {
+      "bytes": 10286787,
+      "http_status": 200,
+      "quarter": "2024q2",
+      "retrieved_at": "2026-11-04T22:08:57.755Z",
+      "sha256": "782abee663e466b243f953625ae319da93c3e896816007d5a375e558c94dc7c1",
+      "source_url": "https://www.sec.gov/files/structureddata/data/insider-transactions-data-sets/2024q2_form345.zip",
+      "user_agent_set": true
+    },
+    "2024q3": {
+      "bytes": 8163472,
+      "http_status": 200,
+      "quarter": "2024q3",
+      "retrieved_at": "2026-11-04T22:08:58.672Z",
+      "sha256": "8b55b4ffd91e56770fc0e71f9b73e6886f3c60fac8b7266e4b3e5586d2857910",
+      "source_url": "https://www.sec.gov/files/structureddata/data/insider-transactions-data-sets/2024q3_form345.zip",
+      "user_agent_set": true
+    },
+    "2024q4": {
+      "bytes": 8954329,
+      "http_status": 200,
+      "quarter": "2024q4",
+      "retrieved_at": "2026-11-04T22:08:59.551Z",
+      "sha256": "44763a00aa8a2077747bc015f12c6a4c09ba7cae4a2d031bf24398f9db9e52f3",
+      "source_url": "https://www.sec.gov/files/structureddata/data/insider-transactions-data-sets/2024q4_form345.zip",
+      "user_agent_set": true
+    },
+    "2025q1": {
+      "bytes": 12804783,
+      "http_status": 200,
+      "quarter": "2025q1",
+      "retrieved_at": "2026-11-04T22:09:00.734Z",
+      "sha256": "37f6b4287df129b88acf0782498540640d055b1c893320877e329945b534a8c2",
+      "source_url": "https://www.sec.gov/files/structureddata/data/insider-transactions-data-sets/2025q1_form345.zip",
+      "user_agent_set": true
+    },
+    "2025q2": {
+      "bytes": 9860984,
+      "http_status": 200,
+      "quarter": "2025q2",
+      "retrieved_at": "2026-11-04T22:09:04.239Z",
+      "sha256": "64e7f81328933b1281bd8737961048d76d2ab3d5d1d2d7149a32ec061b0e3ff2",
+      "source_url": "https://www.sec.gov/files/structureddata/data/insider-transactions-data-sets/2025q2_form345.zip",
+      "user_agent_set": true
+    },
+    "2025q3": {
+      "bytes": 7956025,
+      "http_status": 200,
+      "quarter": "2025q3",
+      "retrieved_at": "2026-11-04T22:09:06.658Z",
+      "sha256": "9c57f272b7230500771f661bc1fe181527ed6b76a6f45d23a910c7fc7e9fcfa4",
+      "source_url": "https://www.sec.gov/files/structureddata/data/insider-transactions-data-sets/2025q3_form345.zip",
+      "user_agent_set": true
+    },
+    "2025q4": {
+      "bytes": 8309708,
+      "http_status": 200,
+      "quarter": "2025q4",
+      "retrieved_at": "2026-11-04T22:09:07.580Z",
+      "sha256": "6af26a68f5834eab96dff2c568530d9213638d3e6c9d1256e4f6c9f8af1d2d28",
+      "source_url": "https://www.sec.gov/files/structureddata/data/insider-transactions-data-sets/2025q4_form345.zip",
+      "user_agent_set": true
+    },
+    "2026q1": {
+      "bytes": 13874904,
+      "http_status": 200,
+      "quarter": "2026q1",
+      "retrieved_at": "2026-11-04T22:09:08.418Z",
+      "sha256": "3dcb680593f5829bc951cb0969e858b60fc21a6835b094838218093a849592d6",
+      "source_url": "https://www.sec.gov/files/structureddata/data/insider-transactions-data-sets/2026q1_form345.zip",
+      "user_agent_set": true
+    },
+    "2026q2": {
+      "bytes": 11498860,
+      "http_status": 200,
+      "quarter": "2026q2",
+      "retrieved_at": "2026-11-04T22:09:09.838Z",
+      "sha256": "11f1b2bbbdcbe6347a34437c02d04202fda0eca1dbb023726e4b56504b802e27",
+      "source_url": "https://www.sec.gov/files/datastandardsinnovation/data/insider-transactions-data-sets/2026q2_form345.zip",
+      "user_agent_set": true
+    },
     "2026q3": {
       "bytes": 8660776,
       "http_status": 200,

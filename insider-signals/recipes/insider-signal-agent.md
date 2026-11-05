@@ -1,6 +1,6 @@
 ---
 status: DRAFT          # DRAFT | SPECIFIED | RUNNABLE-SAMPLE | RUNNABLE-LIVE | VERIFIED
-todos_open: 8
+todos_open: 6
 last_gate: null
 attestation: null
 recipe_version: 0.1.0
@@ -100,7 +100,7 @@ From SEC's "Accessing EDGAR Data" page (checked 2026-11-03):
 | Input | Required | Approval gate |
 |---|---|---|
 | `SEC_USER_AGENT` env var (name + contact email) | yes | INGEST refuses without it |
-| Quarter range for the study | yes | **2023 Q1 – 2026 Q3** (15 quarters). Chosen because SEC's 10b5-1 flag (`AFF10B5ONE`) exists for 2023+ data, so the plan-purchase rule applies to every quarter. Decided 2026-11-03. |
+| Quarter range for the study | yes | **2023 Q2 – 2026 Q3** (14 quarters). Decided 2026-11-03 as 2023 Q1 – 2026 Q3; changed by Gomathy S. on 2026-11-04, before any returns were computed, because SEC's 10b5-1 flag (`AFF10B5ONE`) is blank on most 2023 Q1 filings (4,934 of 6,074 buys unknown). The 2023 Q1 download stays on disk (G1 covers it) but is not part of the study. |
 | `data/raw/form345/<YYYY>q<N>_form345.zip` | yes | G1 |
 | `data/verified/insider_buys.csv` | yes | G2 |
 | `data/verified/enriched_buys.csv` | yes | G3 |
@@ -112,7 +112,7 @@ From SEC's "Accessing EDGAR Data" page (checked 2026-11-03):
 
 ### 1. INGEST — SEC Insider Transactions Data Sets → `data/raw/`
 
-`ingest.py --quarters 2023q1:2026q3`
+`ingest.py --quarters 2023q2:2026q3`
 
 - Downloads each quarterly ZIP. The download URL is read from SEC's data-set page, **not
   assembled from a pattern**: SEC hosts recent quarters under different folders
@@ -148,7 +148,10 @@ From SEC's "Accessing EDGAR Data" page (checked 2026-11-03):
 
 - **A row counts as a buy only if all hold:** `TRANS_CODE = 'P'`; `TRANS_ACQUIRED_DISP_CD = 'A'`;
   it is in **NONDERIV_TRANS** (Table I — derivative purchases are excluded in v1);
-  `TRANS_SHARES > 0`; `TRANS_PRICEPERSHARE > 0`; `EQUITY_SWAP_INVOLVED` is not true.
+  `TRANS_SHARES > 0`; `TRANS_PRICEPERSHARE > 0`; `EQUITY_SWAP_INVOLVED` is not true; and
+  `TRANS_DATE` is not after `FILING_DATE` (otherwise excluded as `trans_date_after_filing`,
+  decided by Gomathy S. on 2026-11-04: a trade dated after its own filing is a filing error, and
+  11 such buys halted G2 on the full period).
 - Code P covers **private** as well as open-market purchases, and the code alone cannot
   separate them. **Private-purchase rule (decided by Gomathy S., 2026-11-04, registered in
   `PRE_REGISTRATION.md` Rule 1):** the flag is the footnote rule PARSE implements
@@ -167,7 +170,7 @@ From SEC's "Accessing EDGAR Data" page (checked 2026-11-03):
   true / false / unknown. Unknown is reported in the audit and is not treated as "no plan".
 - Every excluded row is counted by reason in the parse audit. Nothing is dropped silently.
   Each excluded row gets one reason: the first check it fails, in the order code → acquired →
-  shares → price → equity swap.
+  shares → price → equity swap → trade date after filing.
 - **Implemented (2026-11-03, `parse.py` at `86c002c`):** PARSE flags qualifying buys, without
   excluding them, using footnotes attached to the transaction's own fields (not the holdings
   columns): `private_purchase_flag` for offering / private-placement / issuer wording, and
@@ -222,8 +225,14 @@ check passes (exit 0). On failure, nothing in `data/verified/` changes.
 **Amendments (4/A):** `DATE_OF_ORIG_SUB` links an amendment to its original. The verified
 file keeps the original row and records the amendment as a separate dated event, so a
 backtest can use only what was public on a given date (see Look-ahead Rule).
-[TODO: DEV] the matching rule from a 4/A to the specific original accession, which
-`DATE_OF_ORIG_SUB` alone may not identify uniquely.
+Matching a 4/A to its original accession is fixed by `PRE_REGISTRATION.md` (TODO 3, closed
+2026-11-05): **Rule 2**: a 4/A buy that repeats a buy in its original (same owner, trade date,
+shares, price) counts once, at the original's filing date; **Rule 2a**: with several candidate
+originals, link only if exactly one holds an identical buy, else `multiple`, its own event;
+**Rule 2b**: a 4/A whose original is not found in the study period, or that has no
+`DATE_OF_ORIG_SUB`, is its own event at its own filing date (`none_in_study` /
+`no_date_of_orig_sub`). Implemented in `conformance.py` (`match_amendments`), across every
+quarter of the run.
 
 ### 4. ENRICH — prices and market-adjusted returns → `data/verified/enriched_buys.csv`
 
@@ -252,9 +261,15 @@ backtest can use only what was public on a given date (see Look-ahead Rule).
 - **Signal date** = the `FILING_DATE` of the filing that completes the cluster (the day it
   became knowable). Returns for scoring validation start from this date, using ENRICH's
   entry rule.
-- **Joint filings:** [TODO: DEFINE] whether a single accession naming several reporting
-  owners (e.g. a fund and its managing members) counts as one insider or several.
-  Proposed: one, so a joint filing cannot form a cluster by itself.
+- **Joint filings:** all reporting owners on one filing count as **one insider**, so a joint
+  filing cannot form a cluster by itself (decided by Gomathy S., 2026-11-04,
+  `PRE_REGISTRATION.md` Rule 5). Reason: the owners of a joint filing (e.g. a fund and its
+  managing members) report one decision, and counting them separately would let one decision
+  look like agreement among insiders.
+- **Other cluster inputs** (`PRE_REGISTRATION.md`, 2026-11-04): buys with more than 30 calendar
+  days between trade and filing (Rule 3) and buys priced below $1.00 (Rule 4) are excluded from
+  clustering and scoring; flagged buys are excluded (Rule 1); repeated 4/A buys count once
+  (Rule 2). All of them stay in `data/verified/`.
 - **Role weight** (from `RPTOWNER_RELATIONSHIP` + `RPTOWNER_TITLE`) — a model of judgment,
   labeled as such. Proposed: CEO 3 · CFO 3 · other officer 1.5 · director 2 ·
   10% owner 1 · other 0.5. [TODO: DEFINE] the weights and the title-to-role mapping
@@ -411,7 +426,7 @@ Run: `cd insider-signals && python -m unittest discover -s tests`
 
 ```bash
 export SEC_USER_AGENT="Gomathy S. <contact email>"
-python ingest.py --quarters 2023q1:2026q3     # INGEST     (G1: --verify)
+python ingest.py --quarters 2023q2:2026q3     # INGEST     (G1: --verify)
 python parse.py                               # PARSE
 python conformance.py                         # GIGO       (G2)
 python enrich.py                              # ENRICH     (G3: --check)
@@ -426,10 +441,8 @@ python langgraph_pipeline.py --no-llm         # AGENT      (G5) → review packe
 
 Open items (counted in `todos_open`):
 
-3. [TODO: DEV] 4/A → original accession matching rule.
 4. [TODO: DEFINE] Return window N (primary) and at most one secondary window.
 5. [TODO: DEFINE] Minimum price coverage for G3.
-6. [TODO: DEFINE] Joint-filing rule for clusters.
 7. [TODO: DEFINE] Role weights and title → role mapping.
 8. [TODO: DEFINE] Size buckets and whether relative size is used.
 9. [TODO: DEFINE] T_strong.
@@ -439,6 +452,7 @@ Closed 2026-11-03 (decisions by Gomathy S., logged in `logs/RUN_LOG.md`):
 
 - ~~[TODO: APPROVE] Named reviewer who clears G6~~ → Gomathy S. (self-attestation during development; external review pending).
 - ~~[TODO: DEFINE] Study period~~ → 2023 Q1 – 2026 Q3, so the 10b5-1 flag is available for every quarter.
+  **Revised 2026-11-04 → 2023 Q2 – 2026 Q3**: the flag turned out to be blank on most 2023 Q1 filings.
 
 Closed 2026-11-04 (decisions by Gomathy S., logged in `logs/RUN_LOG.md`):
 
@@ -446,7 +460,19 @@ Closed 2026-11-04 (decisions by Gomathy S., logged in `logs/RUN_LOG.md`):
   footnote flags as implemented; flagged buys kept in verified, excluded from clustering and
   scoring (`PRE_REGISTRATION.md` Rule 1).
 - ~~2. [TODO: DEFINE] Spot-check sample size N~~ → 25.
+- ~~6. [TODO: DEFINE] Joint-filing rule for clusters~~ → one filing counts as one insider
+  (`PRE_REGISTRATION.md` Rule 5).
+
+Closed 2026-11-05 (decision by Gomathy S., logged in `logs/RUN_LOG.md`):
+
+- ~~3. [TODO: DEV] 4/A → original accession matching rule~~ → `PRE_REGISTRATION.md` Rules 2,
+  2a and 2b; implemented in `conformance.py` (`match_amendments`).
+
+Also open, not yet a counted TODO: **fund and trust issuers.** Identify issuers that are funds
+or trusts (for example via SEC industry / SIC codes) and decide whether to exclude them from
+clustering. In 2026 Q3 they appear among the buys (e.g. a closed-end investment trust and an
+oil ETF in the spot-check sample). Not implemented; raised by Gomathy S. on 2026-11-04.
 
 Also open, but not counted as recipe TODOs: complete `PRE_REGISTRATION.md` (created
-2026-11-04 with Rule 1) before week 8;
+2026-11-04 with Rules 1–6 and 2a; Rule 2b added 2026-11-05) before week 8;
 DEV for each script listed in the CLI reference.

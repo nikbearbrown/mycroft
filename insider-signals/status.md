@@ -12,26 +12,33 @@ _Snapshot updated at the end of each working session. See `logs/RUN_LOG.md` for 
 
 | Recipe | State | Evidence |
 |--------|-------|----------|
-| `insider-signal-agent` | **DRAFT** | 8 open TODOs; INGEST, PARSE, GIGO run on 2026 Q3 only; no gate cleared |
+| `insider-signal-agent` | **DRAFT** | 6 open TODOs; INGEST, PARSE, GIGO run on the study period (2023 Q2 – 2026 Q3); last gate G2 (cleared for the study period); G1 cleared |
+
+**Last gate:** G2 (parse + conformance), cleared by Gomathy S. on 2026-11-05 for the study period 2023 Q2 – 2026 Q3: 98 of 98 halting checks pass; 78,495 buys promoted (SHA-256 `a7ec5529…db75b16`); spot-check 25/25 consistent (`logs/RUN_LOG.md#2026-11-05`). Earlier: G2 cleared 2026-11-04 for 2026 Q3; G1 cleared 2026-11-04 for 2023 Q1 – 2026 Q3.
 
 Lifecycle: `DRAFT → SPECIFIED → RUNNABLE-SAMPLE → RUNNABLE-LIVE → VERIFIED`
 
 ## Current dataset
 
-- Source: SEC Insider Transactions Data Sets, study period **2023 Q1 – 2026 Q3**.
-- Downloaded so far: **2026 Q3 only** (live test, G1 verify PASS). Raw files are gitignored; `manifest.json` and `request_log.jsonl` are committed.
+- Source: SEC Insider Transactions Data Sets, study period **2023 Q2 – 2026 Q3** (14 quarters; changed 2026-11-04 from 2023 Q1 – 2026 Q3). 2023 Q1 is downloaded and kept on disk but is not in the study.
+- Downloaded: **2023 Q1 – 2026 Q3** (15 quarters, G1 cleared 2026-11-04). Raw files are gitignored; `manifest.json` and `request_log.jsonl` are committed.
+- Verified (2026-11-04, 14 study quarters): `data/verified/insider_buys.csv`, **78,495 buys**, SHA-256 `a7ec55298bf886c0090f7c5fc4e93bfb18faeabc5d4c407db8d77abefdb75b16` (gitignored; rebuild with `parse.py` + `conformance.py --quarters 2023q2:2026q3`). Eligible for clustering under Rules 1–6, 2a and 2b: **65,106**.
 
 ## Next actions (week 1–2)
 
 - ~~Write `ingest.py` and its tests~~ (done 2026-11-03: 33 tests passing).
-- Ingest the full study period (2023 Q1 – 2026 Q3), then run `--verify` and log the G1 decision.
+- ~~Ingest the full study period, run `--verify`, log the G1 decision~~ (done 2026-11-04: 2023 Q1 – 2026 Q3 downloaded; G1 cleared).
 - ~~Start PARSE~~ (done 2026-11-03: 2026 Q3 gives 5,115 qualifying buys of 59,834 Form 4 rows; 57 tests passing).
 - ~~Decide the private-purchase rule~~ (done 2026-11-04: `PRE_REGISTRATION.md` Rule 1).
 - ~~GIGO `conformance.py`~~ (done 2026-11-04: all halting checks pass on 2026 Q3; 5,115 buys in `data/verified/insider_buys.csv`; spot-check 15 exact / 10 rounding only / 0 other; 83 tests passing).
-- Read `data/verified/conformance-audit.md` and log the G2 decision.
-- Decide how to handle the data set's 2-decimal rounding (588 buys below $1.00) and the 42 amendment buys that repeat an original.
-- Register the `is_10b5_1 = unknown` treatment before SIGNALS.
-- Next stage: ENRICH (`enrich.py`, G3), after the full-period ingest.
+- ~~Read the conformance audit and log the G2 decision~~ (G2 cleared 2026-11-04).
+- ~~Decide the rounding and repeated-amendment handling~~ (2026-11-04: Rules 2–5 in `PRE_REGISTRATION.md`; 4,052 buys eligible for clustering in 2026 Q3).
+- Identify fund and trust issuers and decide whether to exclude them (open item; not implemented).
+- ~~Register the `is_10b5_1 = unknown` treatment~~ (2026-11-04: Rule 6).
+- Rounding: settled for sub-$1 buys by Rule 4; for buys at $1.00 and above the 2-decimal rounding changes price by at most 0.5%, accepted as negligible.
+- ~~Log the G2 decision for the study-period promotion~~ (G2 cleared 2026-11-05).
+- ~~Close TODO 3 (4/A matching)~~ (2026-11-05: Rules 2, 2a and 2b).
+- Next stage: ENRICH (`enrich.py`, G3).
 
 ## Open decisions / blockers
 

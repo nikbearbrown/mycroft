@@ -1,0 +1,239 @@
+{
+  "source_sha256": "6af26a68f5834eab96dff2c568530d9213638d3e6c9d1256e4f6c9f8af1d2d28",
+  "quarter": "2025q4",
+  "aff10b5one_column_present": true,
+  "funnel": {
+    "nonderiv_rows_total": 59678,
+    "form4_rows": 59517,
+    "form4_code_p_rows": 5426,
+    "qualifying_buys": 5313
+  },
+  "nonderiv_rows_by_document_type": {
+    "4": 58999,
+    "4/A": 518,
+    "5": 151,
+    "5/A": 10
+  },
+  "nonderiv_rows_without_submission": 0,
+  "form4_rows_by_trans_code": {
+    "S": 22483,
+    "A": 8938,
+    "M": 8141,
+    "F": 8096,
+    "P": 5426,
+    "G": 2341,
+    "J": 1471,
+    "D": 1374,
+    "C": 756,
+    "L": 292,
+    "X": 93,
+    "U": 66,
+    "I": 22,
+    "W": 15,
+    "E": 2,
+    "<blank>": 1
+  },
+  "exclusions_by_reason": {
+    "code_missing": 1,
+    "code_A_grant_award": 8938,
+    "code_C_conversion": 756,
+    "code_D_disposition_to_issuer": 1374,
+    "code_E_expiration_short_derivative": 2,
+    "code_F_tax_or_exercise_payment": 8096,
+    "code_G_gift": 2341,
+    "code_I_discretionary_16b3f": 22,
+    "code_J_other": 1471,
+    "code_L_small_acquisition": 292,
+    "code_M_option_exercise_16b3": 8141,
+    "code_S_sale": 22483,
+    "code_U_tender_change_of_control": 66,
+    "code_W_will_or_descent": 15,
+    "code_X_option_exercise_itm": 93,
+    "p_not_acquired": 29,
+    "p_shares_missing_or_not_positive": 6,
+    "p_price_missing_or_not_positive": 78
+  },
+  "qualifying_buys_by_is_10b5_1": {
+    "plan": 139,
+    "no_plan": 5174,
+    "unknown": 0
+  },
+  "qualifying_buys_aff10b5one_raw_values": {
+    "0": 4285,
+    "false": 889,
+    "1": 110,
+    "true": 29
+  },
+  "form4_submissions_aff10b5one_raw_values": {
+    "0": 23024,
+    "false": 5989,
+    "1": 3479,
+    "true": 1133
+  },
+  "qualifying_buys_footnote_mentions_10b5_1_by_is_10b5_1": {
+    "plan": 74,
+    "no_plan": 6
+  },
+  "qualifying_buy_flags": {
+    "espp_drip:ESPP": 39,
+    "espp_drip:dividend reinvestment": 41,
+    "espp_or_drip_flag": 80,
+    "joint_filing": 588,
+    "plan_and_footnote_flag": 1,
+    "private:IPO": 29,
+    "private:PIPE": 1,
+    "private:directed share program": 24,
+    "private:from the issuer": 4,
+    "private:private placement": 18,
+    "private:privately negotiated": 4,
+    "private:public offering": 40,
+    "private:registered direct": 4,
+    "private:rights offering": 6,
+    "private:securities purchase agreement": 18,
+    "private:subscription agreement": 4,
+    "private:underwritten": 19,
+    "private_purchase_flag": 103
+  },
+  "context": {
+    "form4_derivative_table_code_p_rows": 173,
+    "form4_rows_without_reporting_owner": 0,
+    "code_p_equity_swap_raw_values": {
+      "0": 4538,
+      "false": 888
+    },
+    "unrecognized_relationship_tokens": {}
+  },
+  "private_purchase_samples": [
+    {
+      "accession_number": "0001878313-25-000073",
+      "issuer": "MAIA Biotechnology, Inc.",
+      "matched": [
+        "securities purchase agreement"
+      ],
+      "snippet": "The common stock was purchased pursuant to a Securities Purchase Agreement and were issued under the Issuer's 2021 Equity Incentive Plan on December 22, 2025."
+    },
+    {
+      "accession_number": "0001878313-25-000071",
+      "issuer": "MAIA Biotechnology, Inc.",
+      "matched": [
+        "securities purchase agreement"
+      ],
+      "snippet": "The common stock was purchased pursuant to a Securities Purchase Agreement and were issued under the Issuer's 2021 Equity Incentive Plan on December 22, 2025."
+    },
+    {
+      "accession_number": "0001878313-25-000069",
+      "issuer": "MAIA Biotechnology, Inc.",
+      "matched": [
+        "securities purchase agreement"
+      ],
+      "snippet": "The common stock was purchased pursuant to a Securities Purchase Agreement and were issued under the Issuer's 2021 Equity Incentive Plan on December 22, 2025"
+    },
+    {
+      "accession_number": "0001193125-25-328997",
+      "issuer": "Medline Inc.",
+      "matched": [
+        "IPO"
+      ],
+      "snippet": "purchased 12,586,206 shares of Class A Common Stock in the IPO.\""
+    },
+    {
+      "accession_number": "0001193125-25-328814",
+      "issuer": "Medline Inc.",
+      "matched": [
+        "public offering",
+        "IPO"
+      ],
+      "snippet": "Class A Common Stock of the Issuer acquired in the initial public offering of Class A Common Stock of the Issuer at the initial public offering price and on the same terms as the"
+    },
+    {
+      "accession_number": "0001193125-25-328813",
+      "issuer": "Medline Inc.",
+      "matched": [
+        "public offering",
+        "IPO"
+      ],
+      "snippet": "Class A Common Stock of the Issuer acquired in the initial public offering of Class A Common Stock of the Issuer at the initial public offering price and on the same terms as the"
+    },
+    {
+      "accession_number": "0001193125-25-328813",
+      "issuer": "Medline Inc.",
+      "matched": [
+        "public offering",
+        "IPO"
+      ],
+      "snippet": "Class A Common Stock of the Issuer acquired in the initial public offering of Class A Common Stock of the Issuer at the initial public offering price and on the same terms as the"
+    },
+    {
+      "accession_number": "0001193125-25-328764",
+      "issuer": "Andersen Group Inc.",
+      "matched": [
+        "public offering",
+        "IPO",
+        "directed share program"
+      ],
+      "snippet": "ected share program in connection with the Issuer's initial public offering of Class A common stock."
+    },
+    {
+      "accession_number": "0001193125-25-328754",
+      "issuer": "Andersen Group Inc.",
+      "matched": [
+        "public offering",
+        "IPO",
+        "directed share program"
+      ],
+      "snippet": "ected share program in connection with the Issuer's initial public offering of Class A common stock."
+    },
+    {
+      "accession_number": "0001193125-25-328741",
+      "issuer": "Andersen Group Inc.",
+      "matched": [
+        "public offering",
+        "IPO",
+        "directed share program"
+      ],
+      "snippet": "ected share program in connection with the Issuer's initial public offering of Class A common stock."
+    }
+  ],
+  "espp_or_drip_samples": [
+    {
+      "accession_number": "0001072627-25-000049",
+      "issuer": "KINGSWAY FINANCIAL SERVICES INC",
+      "matched": [
+        "ESPP"
+      ],
+      "snippet": "Plan, as amended and restated effective May 29, 2014 (the \"\"ESPP\"\"). Pursuant to the ESPP, eligible employees may contribute an amount up to 5% of adjusted salary for eac"
+    },
+    {
+      "accession_number": "0001072627-25-000048",
+      "issuer": "KINGSWAY FINANCIAL SERVICES INC",
+      "matched": [
+        "ESPP"
+      ],
+      "snippet": "Plan, as amended and restated effective May 29, 2014 (the \"\"ESPP\"\"). Pursuant to the ESPP, eligible employees may contribute an amount up to 5% of adjusted salary for eac"
+    },
+    {
+      "accession_number": "0001628280-25-057530",
+      "issuer": "Granite Ridge Resources, Inc.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Shares acquired through automatic dividend reinvestment pursuant to the terms of a brokerage account."
+    },
+    {
+      "accession_number": "0001791771-25-000006",
+      "issuer": "GERMAN AMERICAN BANCORP, INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "hares of common stock through participation in the Issuer's Dividend Reinvestment and Stock Purchase Plan (the \"\"Dividend Reinvestment Plan\"\").\""
+    },
+    {
+      "accession_number": "0001872989-25-000005",
+      "issuer": "GERMAN AMERICAN BANCORP, INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "hares of common stock through participation in the Issuer's Dividend Reinvestment and Stock Purchase Plan (the \"\"Dividend Reinvestment Plan\"\").\""
+    }
+  ]
+}

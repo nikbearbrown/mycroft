@@ -1,0 +1,237 @@
+{
+  "source_sha256": "64e7f81328933b1281bd8737961048d76d2ab3d5d1d2d7149a32ec061b0e3ff2",
+  "quarter": "2025q2",
+  "aff10b5one_column_present": true,
+  "funnel": {
+    "nonderiv_rows_total": 66915,
+    "form4_rows": 66719,
+    "form4_code_p_rows": 6399,
+    "qualifying_buys": 6297
+  },
+  "nonderiv_rows_by_document_type": {
+    "4": 65709,
+    "4/A": 1010,
+    "5": 173,
+    "5/A": 23
+  },
+  "nonderiv_rows_without_submission": 0,
+  "form4_rows_by_trans_code": {
+    "A": 18965,
+    "S": 17165,
+    "M": 9507,
+    "F": 9039,
+    "P": 6399,
+    "J": 1796,
+    "D": 1608,
+    "G": 1238,
+    "C": 696,
+    "U": 109,
+    "X": 87,
+    "L": 58,
+    "I": 35,
+    "W": 16,
+    "O": 1
+  },
+  "exclusions_by_reason": {
+    "code_A_grant_award": 18965,
+    "code_C_conversion": 696,
+    "code_D_disposition_to_issuer": 1608,
+    "code_F_tax_or_exercise_payment": 9039,
+    "code_G_gift": 1238,
+    "code_I_discretionary_16b3f": 35,
+    "code_J_other": 1796,
+    "code_L_small_acquisition": 58,
+    "code_M_option_exercise_16b3": 9507,
+    "code_O_option_exercise_otm": 1,
+    "code_S_sale": 17165,
+    "code_U_tender_change_of_control": 109,
+    "code_W_will_or_descent": 16,
+    "code_X_option_exercise_itm": 87,
+    "p_not_acquired": 29,
+    "p_shares_missing_or_not_positive": 18,
+    "p_price_missing_or_not_positive": 49,
+    "p_equity_swap": 3,
+    "trans_date_after_filing": 3
+  },
+  "qualifying_buys_by_is_10b5_1": {
+    "plan": 743,
+    "no_plan": 5554,
+    "unknown": 0
+  },
+  "qualifying_buys_aff10b5one_raw_values": {
+    "0": 4529,
+    "false": 1025,
+    "1": 727,
+    "true": 16
+  },
+  "form4_submissions_aff10b5one_raw_values": {
+    "0": 33860,
+    "false": 9499,
+    "1": 3170,
+    "true": 1018
+  },
+  "qualifying_buys_footnote_mentions_10b5_1_by_is_10b5_1": {
+    "no_plan": 5,
+    "plan": 612
+  },
+  "qualifying_buy_flags": {
+    "espp_drip:ESPP": 22,
+    "espp_drip:dividend reinvestment": 52,
+    "espp_or_drip_flag": 74,
+    "joint_filing": 1152,
+    "plan_and_footnote_flag": 4,
+    "private:IPO": 11,
+    "private:PIPE": 3,
+    "private:directed share program": 12,
+    "private:from the issuer": 11,
+    "private:private placement": 36,
+    "private:privately negotiated": 7,
+    "private:public offering": 33,
+    "private:rights offering": 3,
+    "private:securities purchase agreement": 11,
+    "private:subscription agreement": 5,
+    "private:underwritten": 24,
+    "private_purchase_flag": 100
+  },
+  "context": {
+    "form4_derivative_table_code_p_rows": 297,
+    "form4_rows_without_reporting_owner": 0,
+    "code_p_equity_swap_raw_values": {
+      "0": 5554,
+      "false": 842,
+      "1": 3
+    },
+    "unrecognized_relationship_tokens": {}
+  },
+  "private_purchase_samples": [
+    {
+      "accession_number": "0000950170-25-091829",
+      "issuer": "Kymera Therapeutics, Inc.",
+      "matched": [
+        "underwritten"
+      ],
+      "snippet": "f Kymera Therapeutics, Inc. (the \"\"Issuer\"\") pursuant to an underwritten offering that closed on June 30, 2025.\""
+    },
+    {
+      "accession_number": "0000950170-25-091829",
+      "issuer": "Kymera Therapeutics, Inc.",
+      "matched": [
+        "underwritten"
+      ],
+      "snippet": "f Kymera Therapeutics, Inc. (the \"\"Issuer\"\") pursuant to an underwritten offering that closed on June 30, 2025.\""
+    },
+    {
+      "accession_number": "0000950170-25-091735",
+      "issuer": "5C Lending Partners Corp.",
+      "matched": [
+        "subscription agreement"
+      ],
+      "snippet": "issuer in the form of a capital call. Under the terms of a subscription agreement between the reporting persons and the issuer, the reporting persons are required to fund drawdown"
+    },
+    {
+      "accession_number": "0001104659-25-063993",
+      "issuer": "ACTUATE THERAPEUTICS, INC.",
+      "matched": [
+        "private placement",
+        "securities purchase agreement",
+        "from the issuer"
+      ],
+      "snippet": "LP (\"\"Bios 2024 Co-Invest\"\") purchased from the Issuer in a private placement 71,428 shares of common stock, par value $0.000001 per share (the \"\"Common Stock\"\"), and warrants to p"
+    },
+    {
+      "accession_number": "0001104659-25-063992",
+      "issuer": "ACTUATE THERAPEUTICS, INC.",
+      "matched": [
+        "private placement",
+        "securities purchase agreement",
+        "from the issuer"
+      ],
+      "snippet": "LP (\"\"Bios 2024 Co-Invest\"\") purchased from the Issuer in a private placement 71,428 shares of common stock, par value $0.000001 per share (the \"\"Common Stock\"\"), and warrants to p"
+    },
+    {
+      "accession_number": "0001104659-25-063991",
+      "issuer": "ACTUATE THERAPEUTICS, INC.",
+      "matched": [
+        "private placement",
+        "securities purchase agreement",
+        "from the issuer"
+      ],
+      "snippet": "LP (\"\"Bios 2024 Co-Invest\"\") purchased from the Issuer in a private placement 71,428 shares of common stock, par value $0.000001 per share (the \"\"Common Stock\"\"), and warrants to p"
+    },
+    {
+      "accession_number": "0001213900-25-059081",
+      "issuer": "Cantor Equity Partners III, Inc.",
+      "matched": [
+        "private placement"
+      ],
+      "snippet": "Cantor EP Holdings III, LLC (the \"\"Sponsor\"\") pursuant to a private placement shares purchase agreement, dated June 25, 2025, by and between the Sponsor and the issuer.\""
+    },
+    {
+      "accession_number": "0000950170-25-090878",
+      "issuer": "Churchill Capital Corp X/Cayman",
+      "matched": [
+        "private placement"
+      ],
+      "snippet": "\"Represents shares underlying the private placement units (each unit consisting of one Class A ordinary share and one-quarter of one warrant, each whole warrant exercisable to purc"
+    },
+    {
+      "accession_number": "0001213900-25-058680",
+      "issuer": "Bit Digital, Inc",
+      "matched": [
+        "public offering",
+        "underwritten"
+      ],
+      "snippet": "the reporting person expects to acquire in an underwritten public offering at a purchase price of $2.00 per share. The underwritten public offering is expected to close on June 27"
+    },
+    {
+      "accession_number": "0001104659-25-063044",
+      "issuer": "NETLIST INC",
+      "matched": [
+        "securities purchase agreement"
+      ],
+      "snippet": "per share and accompanying warrant pursuant to that certain Securities Purchase Agreement, dated as of June 24, 2025, by and among the Issuer and the investors signatory thereto."
+    }
+  ],
+  "espp_or_drip_samples": [
+    {
+      "accession_number": "0001156375-25-000139",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Reflects shares that were acquired pursuant to a dividend reinvestment plan administered by the reporting person's broker. Actual amounts of fractional shares owned may vary slight"
+    },
+    {
+      "accession_number": "0001156375-25-000139",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Reflects shares that were acquired pursuant to a dividend reinvestment plan administered by the reporting person's broker. Actual amounts of fractional shares owned may vary slight"
+    },
+    {
+      "accession_number": "0001754011-25-000006",
+      "issuer": "Capital Bancorp Inc",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "The purchased shares are pursuant to a broker's dividend reinvestment program that qualifies for small acquisition reporting under Rule 16a-6."
+    },
+    {
+      "accession_number": "0001628280-25-031980",
+      "issuer": "PHINIA INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Reflects shares acquired pursuant to an automatic dividend reinvestment feature of the reporting person's brokerage account."
+    },
+    {
+      "accession_number": "0001628280-25-031876",
+      "issuer": "Granite Ridge Resources, Inc.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Shares acquired through automatic dividend reinvestment pursuant to the terms of a brokerage account."
+    }
+  ]
+}

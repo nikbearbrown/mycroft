@@ -173,6 +173,14 @@ class TestHelpers(unittest.TestCase):
         for bad in ("5-AUG-2026", "2026-08-05", "", "31-FEB-2026", None):
             self.assertIsNone(conformance.sec_date(bad), bad)
 
+    def test_trade_after_filing_is_not_a_buy(self):
+        ok = dict(doc_type="4", code="P", acquired="A", shares="10", price="1.5", equity_swap="0")
+        self.assertFalse(conformance.meets_buy_filter(**ok, trans_date=date(2027, 7, 27),
+                                                      filing_date=date(2023, 7, 28)))
+        self.assertTrue(conformance.meets_buy_filter(**ok, trans_date=date(2023, 7, 28),
+                                                     filing_date=date(2023, 7, 28)))
+        self.assertTrue(conformance.meets_buy_filter(**ok))          # dates unknown: dates check decides
+
     def test_buy_filter_is_independent_and_complete(self):
         ok = dict(doc_type="4", code="P", acquired="A", shares="10", price="1.5", equity_swap="0")
         self.assertTrue(conformance.meets_buy_filter(**ok))
@@ -224,6 +232,103 @@ class TestHelpers(unittest.TestCase):
         self.assertIsNone(conformance.ownership_xml("<SEC-DOCUMENT>no xml</SEC-DOCUMENT>"))
 
 
+# --------------------------------------------------------------------------- amendments + Rules
+
+def vrow(acc, sk, doc="4", q="2026q3", filed="2026-08-10", orig="", issuer="9000001",
+         owners="8000001", trade="2026-08-05", shares="100", price="5", **kw):
+    r = {"accession_number": acc, "nonderiv_trans_sk": str(sk), "document_type": doc,
+         "source_quarter": q, "filing_date": filed, "date_of_orig_sub": orig,
+         "issuer_cik": issuer, "issuer_name": "Example", "rptowner_ciks": owners,
+         "trans_date": trade, "shares": shares, "price": price, "owner_count": str(len(owners.split(";"))),
+         "private_purchase_flag": "false", "espp_or_drip_flag": "false", "is_10b5_1": "no_plan"}
+    r.update(kw)
+    return r
+
+
+def orig_entry(acc, filed="2026-08-10", issuer="9000001", owners="8000001"):
+    return (issuer, frozenset(owners.split(";")), filed, acc)
+
+
+class TestAmendmentMatching(unittest.TestCase):
+    """Rule 2 matching across quarters: issuer + owner set + DATE_OF_ORIG_SUB → original."""
+
+    def test_repeat_across_quarters_is_linked_once(self):
+        o = vrow("A-orig", 1, q="2026q2", filed="2026-06-29", trade="2026-06-25")
+        a1 = vrow("A-amend", 5, doc="4/A", filed="2026-07-15", orig="2026-06-29", trade="2026-06-25")
+        a2 = vrow("A-amend", 6, doc="4/A", filed="2026-07-15", orig="2026-06-29", trade="2026-06-25")
+        res = conformance.match_amendments([o, a1, a2], [orig_entry("A-orig", filed="2026-06-29")])
+        self.assertEqual(a1["amendment_match"], "unique")
+        self.assertEqual(a1["amends_accession"], "A-orig")
+        self.assertEqual(a1["repeats_original_buy"], "A-orig#1")
+        self.assertEqual(a2["repeats_original_buy"], "")        # an original buy is claimed once
+        self.assertEqual((res["repeat_buys"], res["repeat_buys_across_quarters"]), (1, 1))
+        self.assertEqual(res["links_to_an_earlier_quarter"], 1)
+        self.assertEqual(o["amendment_match"], "")
+
+    def test_different_shares_or_owner_set_is_not_a_repeat(self):
+        o = vrow("B-orig", 1)
+        a = vrow("B-amend", 2, doc="4/A", filed="2026-08-20", orig="2026-08-10", shares="101")
+        conformance.match_amendments([o, a], [orig_entry("B-orig")])
+        self.assertEqual((a["amendment_match"], a["repeats_original_buy"]), ("unique", ""))
+        j = vrow("C-amend", 3, doc="4/A", filed="2026-08-20", orig="2026-08-10", owners="8000001;8000002")
+        conformance.match_amendments([o, j], [orig_entry("B-orig")])
+        self.assertEqual(j["amendment_match"], "none_in_study")
+
+    def test_several_candidates_are_reported_not_linked(self):
+        o1, o2 = vrow("D-1", 1), vrow("D-2", 2)
+        a = vrow("D-amend", 3, doc="4/A", filed="2026-08-20", orig="2026-08-10")
+        res = conformance.match_amendments([o1, o2, a], [orig_entry("D-1"), orig_entry("D-2")])
+        self.assertEqual((a["amendment_match"], a["amends_accession"], a["repeats_original_buy"]),
+                         ("multiple", "", ""))
+        self.assertEqual(res["multiple_candidates"][0]["candidates"], ["D-1", "D-2"])
+
+    def test_rule_2a_links_when_one_candidate_holds_the_buy(self):
+        o1 = vrow("R-1", 1, shares="100")
+        o2 = vrow("R-2", 2, shares="250")
+        a = vrow("R-amend", 3, doc="4/A", filed="2026-08-20", orig="2026-08-10", shares="250")
+        res = conformance.match_amendments([o1, o2, a], [orig_entry("R-1"), orig_entry("R-2")])
+        self.assertEqual((a["amendment_match"], a["amends_accession"], a["repeats_original_buy"]),
+                         ("resolved_rule_2a", "R-2", "R-2#2"))
+        self.assertEqual(res["multiple_candidates"], [])
+
+    def test_rule_2a_two_holders_or_none_stays_multiple(self):
+        o1, o2 = vrow("S-1", 1), vrow("S-2", 2)                      # both hold the same buy
+        a = vrow("S-amend", 3, doc="4/A", filed="2026-08-20", orig="2026-08-10")
+        conformance.match_amendments([o1, o2, a], [orig_entry("S-1"), orig_entry("S-2")])
+        self.assertEqual((a["amendment_match"], a["repeats_original_buy"]), ("multiple", ""))
+        b = vrow("T-amend", 4, doc="4/A", filed="2026-08-20", orig="2026-08-10", shares="7")
+        conformance.match_amendments([o1, o2, b], [orig_entry("S-1"), orig_entry("S-2")])
+        self.assertEqual(b["amendment_match"], "multiple")             # no candidate holds it
+
+    def test_original_with_no_buy_and_missing_date(self):
+        a = vrow("E-amend", 1, doc="4/A", filed="2026-08-20", orig="2026-08-10")
+        b = vrow("F-amend", 2, doc="4/A", filed="2026-08-20", orig="")
+        res = conformance.match_amendments([a, b], [orig_entry("E-orig")])   # original: no buys
+        self.assertEqual((a["amendment_match"], a["amends_accession"], a["repeats_original_buy"]),
+                         ("unique", "E-orig", ""))
+        self.assertEqual(b["amendment_match"], "no_date_of_orig_sub")
+        self.assertEqual(res["accessions_by_match"], {"unique": 1, "no_date_of_orig_sub": 1})
+
+    def test_prereg_counts_order_and_boundaries(self):
+        rows = [
+            vrow("G", 1),                                                    # eligible
+            vrow("G", 2, private_purchase_flag="true", price="0.5"),          # rule 1 first
+            vrow("G", 3, trade="2026-07-10", filed="2026-08-10"),            # 31 days → rule 3
+            vrow("G", 4, trade="2026-07-11", filed="2026-08-10"),            # 30 days → kept
+            vrow("G", 5, price="0.99"),                                       # rule 4
+            vrow("G", 6, price="1.00", is_10b5_1="plan"),                     # kept (plan may cluster)
+            vrow("H", 7, doc="4/A", repeats_original_buy="G#1"),             # rule 2 collapsed
+        ]
+        for r in rows:
+            r.setdefault("repeats_original_buy", "")
+        pc = conformance.prereg_counts(rows)
+        self.assertEqual(pc["total"], {"buys": 7, "rule2_collapsed": 1, "rule1_flagged": 1,
+                                       "rule3_stale": 1, "rule4_below_1": 1, "eligible": 3})
+        self.assertEqual(pc["eligible_plan_10b5_1"], 1)
+        self.assertEqual(pc["eligible_strong_ineligible_plan_or_unknown"], 1)
+        self.assertEqual(pc["eligible_filings_rule5_insider_units"], 1)
+
+
 # --------------------------------------------------------------------------- pass path
 
 class TestPromotion(GigoCase):
@@ -243,6 +348,24 @@ class TestPromotion(GigoCase):
         summary = json.loads((self.verified / conformance.SUMMARY_NAME).read_text())
         self.assertEqual(summary["insider_buys_sha256"],
                          ingest.sha256_file(self.verified / conformance.BUYS_NAME))
+
+    def test_buy_dated_after_filing_is_excluded_by_parse_and_gigo_passes(self):
+        buy = self.parsed_buys()[0]
+        header, rows = read_tsv(self.data / Q / "NONDERIV_TRANS.tsv")
+        a, k, t = header.index("ACCESSION_NUMBER"), header.index("NONDERIV_TRANS_SK"), header.index("TRANS_DATE")
+        for r in rows:
+            if (r[a], r[k]) == (buy["accession_number"], buy["nonderiv_trans_sk"]):
+                r[t] = "31-DEC-2027"
+        write_tsv(self.data / Q / "NONDERIV_TRANS.tsv", header, rows)
+        self.assertEqual(parse.main(["--quarters", Q, "--data-dir", str(self.data),
+                                     "--out-dir", str(self.parsed)]), 0)
+        summary = json.loads((self.parsed / f"{Q}_parse_summary.json").read_text())
+        self.assertEqual(summary["exclusions_by_reason"]["trans_date_after_filing"], 1)
+        code, s = self.run_gigo()
+        self.assertEqual(code, 0)
+        keys = {(r["accession_number"], r["nonderiv_trans_sk"]) for r in self.verified_rows()}
+        self.assertNotIn((buy["accession_number"], buy["nonderiv_trans_sk"]), keys)
+        self.assertEqual(len(keys), 5)
 
     def test_flagged_buys_stay_in_verified_with_flags(self):
         self.run_gigo()
@@ -266,6 +389,8 @@ class TestPromotion(GigoCase):
         self.assertIn("**Not run** (--no-spot-check)", audit)
         self.assertIn("PRE_REGISTRATION.md Rule 1", audit)
         self.assertIn("### Amendments (4/A)", audit)
+        self.assertIn("## Per-quarter funnel", audit)
+        self.assertIn("## Amendments — all quarters", audit)
         self.assertNotIn("Owner 8000", audit)
 
 

@@ -114,7 +114,12 @@ VERIFIED_COLUMNS = [
     "value_usd", "shares_owned_after", "direct_indirect", "nature_of_ownership",
     "trans_timeliness", "is_10b5_1", "private_purchase_flag", "espp_or_drip_flag",
     "flag_evidence", "footnote_mentions_10b5_1", "source_quarter", "filing_index_url",
+    "amendment_match", "amends_accession", "repeats_original_buy",
 ]
+# amendment_match (4/A rows only): unique | resolved_rule_2a | multiple | none_in_study |
+# no_date_of_orig_sub. amends_accession: the linked original (unique or resolved_rule_2a).
+# repeats_original_buy: "<accession>#<sk>" of the original buy this 4/A buy repeats
+# (same owners, trade date, shares, price), for PRE_REGISTRATION.md Rule 2. Blank otherwise.
 HALTING_CHECKS = ("hash", "required_columns", "keys", "dates", "codes", "buy_filter_purity",
                   "identity")
 
@@ -148,15 +153,26 @@ def sec_date(value: str | None) -> date | None:
 
 
 def meets_buy_filter(doc_type: str, code: str, acquired: str, shares: str, price: str,
-                     equity_swap: str) -> bool:
-    """The recipe's buy filter, written independently of parse.classify."""
+                     equity_swap: str, trans_date: date | None = None,
+                     filing_date: date | None = None) -> bool:
+    """The recipe's buy filter, written independently of parse.classify. A trade dated after
+    its filing is not a buy (2026-11-04); unparseable dates are left to the dates check."""
     s, p = dec(shares), dec(price)
+    late = trans_date is not None and filing_date is not None and trans_date > filing_date
     return (doc_type.strip() in FORM4_TYPES and code.strip().upper() == "P"
             and acquired.strip().upper() == "A" and s is not None and s > 0
-            and p is not None and p > 0 and equity_swap.strip().lower() not in _SWAP_TRUE)
+            and p is not None and p > 0 and equity_swap.strip().lower() not in _SWAP_TRUE
+            and not late)
 
 
 DATASET_DECIMALS = Decimal("0.01")   # SEC's data set carries at most 2 decimals (see the audit)
+
+
+def _iso(value: str) -> date | None:
+    try:
+        return date.fromisoformat(value) if value else None
+    except ValueError:
+        return None
 
 
 def rounds_to(dataset: Decimal | None, filed: Decimal | None) -> bool:
@@ -258,7 +274,7 @@ def check_quarter(data_dir: Path, parsed_dir: Path, quarter: str) -> dict:
         for name in HALTING_CHECKS[2:]:
             checks[name] = _check(name, [], not_run=why)
         return {"quarter": quarter, "sha256": sha, "checks": checks, "rows": [],
-                "findings": {}, "parse_summary": parse_summary}
+                "findings": {}, "parse_summary": parse_summary, "originals": []}
 
     # read raw tables ----------------------------------------------------------------------
     try:
@@ -339,11 +355,12 @@ def check_quarter(data_dir: Path, parsed_dir: Path, quarter: str) -> dict:
         owners = json.loads(r["owners"])
         # purity: the row on its own fields, and against its raw source
         if not meets_buy_filter(r["document_type"], r["trans_code"], r["acquired_disposed"],
-                                r["shares"], r["price"], r["equity_swap"]):
+                                r["shares"], r["price"], r["equity_swap"],
+                                _iso(r["trans_date"]), _iso(r["filing_date"])):
             p_pure.append(f"{tag}: buys-file row fails the buy filter")
         if not meets_buy_filter(sub["DOCUMENT_TYPE"], raw["TRANS_CODE"],
                                 raw["TRANS_ACQUIRED_DISP_CD"], raw["TRANS_SHARES"],
-                                raw["TRANS_PRICEPERSHARE"], raw["EQUITY_SWAP_INVOLVED"]):
+                                raw["TRANS_PRICEPERSHARE"], raw["EQUITY_SWAP_INVOLVED"], td, fd):
             p_pure.append(f"{tag}: raw source row fails the buy filter")
         diffs = [f for f, a, b in (
             ("shares", dec(r["shares"]), dec(raw["TRANS_SHARES"])),
@@ -359,7 +376,8 @@ def check_quarter(data_dir: Path, parsed_dir: Path, quarter: str) -> dict:
 
     raw_buy_keys = {k for k, raw in nd.items() if k[0] in subs and meets_buy_filter(
         subs[k[0]]["DOCUMENT_TYPE"], raw["TRANS_CODE"], raw["TRANS_ACQUIRED_DISP_CD"],
-        raw["TRANS_SHARES"], raw["TRANS_PRICEPERSHARE"], raw["EQUITY_SWAP_INVOLVED"])}
+        raw["TRANS_SHARES"], raw["TRANS_PRICEPERSHARE"], raw["EQUITY_SWAP_INVOLVED"],
+        sec_date(raw["TRANS_DATE"]), sec_date(subs[k[0]]["FILING_DATE"]))}
     missing = sorted(raw_buy_keys - seen)
     extra = sorted(seen - raw_buy_keys)
     p_pure += [f"raw buy {k} missing from the buys file" for k in missing]
@@ -373,8 +391,12 @@ def check_quarter(data_dir: Path, parsed_dir: Path, quarter: str) -> dict:
     checks["identity"] = _check("identity", p_ident, "ISSUERCIK and RPTOWNERCIK, numeric")
 
     findings = _findings(rows, subs, owners_raw, nd, parse_summary)
+    originals = [(s["ISSUERCIK"].strip(),
+                  frozenset(o["RPTOWNERCIK"].strip() for o in owners_raw.get(acc, [])),
+                  parse.iso_date(s["FILING_DATE"]), acc)
+                 for acc, s in subs.items() if s["DOCUMENT_TYPE"].strip() == "4"]
     return {"quarter": quarter, "sha256": sha, "checks": checks, "rows": rows,
-            "findings": findings, "parse_summary": parse_summary}
+            "findings": findings, "parse_summary": parse_summary, "originals": originals}
 
 
 def _verified_row(r: dict, owners: list[dict]) -> dict:
@@ -414,33 +436,10 @@ def _findings(rows: list[dict], subs: dict, owners_raw: dict, nd: dict, ps: dict
         "unknown_10b5_1": sum(r["is_10b5_1"] == "unknown" for r in rows),
         "cluster_eligible": len(rows) - len(excl),
     }
-    # amendments
-    owner_set = {acc: frozenset(o["RPTOWNERCIK"].strip() for o in os_) for acc, os_ in owners_raw.items()}
-    originals = defaultdict(list)
-    for acc, s in subs.items():
-        if s["DOCUMENT_TYPE"].strip() == "4":
-            originals[(s["ISSUERCIK"].strip(), owner_set.get(acc, frozenset()),
-                       parse.iso_date(s["FILING_DATE"]))].append(acc)
-    buys_by_acc = defaultdict(list)
-    for r in rows:
-        buys_by_acc[r["accession_number"]].append(r)
+    # amendments (matching to originals is done across all quarters; see match_amendments)
     am = [r for r in rows if r["document_type"] == "4/A"]
-    am_accs = sorted({r["accession_number"] for r in am})
-    match = Counter()
-    dup_buys = 0
-    for acc in am_accs:
-        s = subs[acc]
-        cands = originals.get((s["ISSUERCIK"].strip(), owner_set.get(acc, frozenset()),
-                               parse.iso_date(s["DATE_OF_ORIG_SUB"])), [])
-        match["no DATE_OF_ORIG_SUB" if not s["DATE_OF_ORIG_SUB"].strip() else
-              "unique" if len(cands) == 1 else "multiple" if cands else "none_in_quarter"] += 1
-        orig_buys = {(b["trans_date"], dec(b["shares"]), dec(b["price"]))
-                     for c in cands for b in buys_by_acc.get(c, [])}
-        dup_buys += sum((b["trans_date"], dec(b["shares"]), dec(b["price"])) in orig_buys
-                        for b in buys_by_acc[acc])
-    f["amendments"] = {"amendment_buys": len(am), "amendment_accessions": len(am_accs),
-                       "original_candidates_in_quarter": dict(match),
-                       "amendment_buys_repeating_an_original_buy": dup_buys}
+    f["amendments"] = {"amendment_buys": len(am),
+                       "amendment_accessions": len({r["accession_number"] for r in am})}
     # symbols
     sym = Counter()
     sym_issuers = defaultdict(set)
@@ -508,6 +507,127 @@ def _findings(rows: list[dict], subs: dict, owners_raw: dict, nd: dict, ps: dict
     }
     f["parse"] = {"funnel": ps.get("funnel", {}), "exclusions_by_reason": ps.get("exclusions_by_reason", {})}
     return f
+
+
+# --------------------------------------------------------------------------- amendments + Rule counts
+
+def _buy_key(r: dict) -> str:
+    return f"{r['accession_number']}#{r['nonderiv_trans_sk']}"
+
+
+def match_amendments(rows: list[dict], originals: Iterable[tuple]) -> dict:
+    """Link each 4/A buy to its original Form 4 across every quarter in the run, and mark the
+    buys that repeat an original buy (PRE_REGISTRATION.md Rule 2). Fills amendment_match,
+    amends_accession and repeats_original_buy on `rows` in place; returns the findings.
+
+    Original = a Form 4 (any quarter in the run) with the same ISSUERCIK, the same set of
+    RPTOWNERCIKs, and FILING_DATE equal to the 4/A's DATE_OF_ORIG_SUB. A repeat = an original
+    buy with the same trade date, shares and price; each original buy is claimed at most once.
+    Rule 2a: with several candidates, the 4/A is linked only if exactly one candidate contains
+    a buy identical to one of the 4/A's buys (owner set, trade date, shares, price);
+    amendment_match = resolved_rule_2a. Otherwise it stays its own event, flagged multiple."""
+    index: dict[tuple, set[str]] = defaultdict(set)
+    acc_quarter: dict[str, str] = {}
+    for issuer, owners, filed, acc in originals:
+        index[(issuer, owners, filed)].add(acc)
+    buys_by_acc: dict[str, list[dict]] = defaultdict(list)
+    for r in rows:
+        r.setdefault("amendment_match", "")
+        r.setdefault("amends_accession", "")
+        r.setdefault("repeats_original_buy", "")
+        buys_by_acc[r["accession_number"]].append(r)
+        acc_quarter[r["accession_number"]] = r["source_quarter"]
+    status = Counter()
+    multiple: list[dict] = []
+    repeats = cross_q_links = cross_q_repeats = 0
+    claimed: set[str] = set()
+    for acc in sorted(a for a, b in buys_by_acc.items() if b[0]["document_type"] == "4/A"):
+        am_buys = sorted(buys_by_acc[acc], key=lambda r: int(r["nonderiv_trans_sk"]))
+        first = am_buys[0]
+        if not first["date_of_orig_sub"]:
+            st, cands = "no_date_of_orig_sub", []
+        else:
+            cands = sorted(index.get((first["issuer_cik"], frozenset(first["rptowner_ciks"].split(";")),
+                                      first["date_of_orig_sub"]), set()))
+            st = "unique" if len(cands) == 1 else "multiple" if cands else "none_in_study"
+        sig = lambda r: (r["trans_date"], dec(r["shares"]), dec(r["price"]))
+        if st == "multiple":
+            mine = {sig(b) for b in am_buys}
+            holders = [c for c in cands if any(sig(o) in mine for o in buys_by_acc.get(c, []))]
+            if len(holders) == 1:
+                st, cands = "resolved_rule_2a", holders
+        status[st] += 1
+        if st == "multiple":
+            multiple.append({"accession_number": acc, "source_quarter": first["source_quarter"],
+                             "issuer_cik": first["issuer_cik"], "issuer_name": first["issuer_name"],
+                             "date_of_orig_sub": first["date_of_orig_sub"], "candidates": cands,
+                             "buys": len(am_buys)})
+        orig = cands[0] if st in ("unique", "resolved_rule_2a") else ""
+        cross = bool(orig) and acc_quarter.get(orig, "") not in ("", first["source_quarter"])
+        cross_q_links += cross
+        orig_buys = sorted(buys_by_acc.get(orig, []), key=lambda r: int(r["nonderiv_trans_sk"]))
+        for b in am_buys:
+            b["amendment_match"], b["amends_accession"] = st, orig
+            for o in orig_buys:
+                k = _buy_key(o)
+                if k not in claimed and (o["trans_date"], dec(o["shares"]), dec(o["price"])) == \
+                        (b["trans_date"], dec(b["shares"]), dec(b["price"])):
+                    b["repeats_original_buy"] = k
+                    claimed.add(k)
+                    repeats += 1
+                    cross_q_repeats += cross
+                    break
+    am_buys_total = sum(len(v) for v in buys_by_acc.values() if v[0]["document_type"] == "4/A")
+    return {"amendment_buys": am_buys_total, "amendment_accessions": sum(status.values()),
+            "accessions_by_match": dict(status), "links_to_an_earlier_quarter": cross_q_links,
+            "repeat_buys": repeats, "repeat_buys_across_quarters": cross_q_repeats,
+            "multiple_candidates": multiple}
+
+
+def _rule_excluded(r: dict) -> str:
+    """First of Rules 1, 3, 4 that excludes this buy from clustering, or ''."""
+    if r["private_purchase_flag"] == "true" or r["espp_or_drip_flag"] == "true":
+        return "rule1_flagged"
+    if (date.fromisoformat(r["filing_date"]) - date.fromisoformat(r["trans_date"])).days > 30:
+        return "rule3_stale"
+    if dec(r["price"]) < 1:
+        return "rule4_below_1"
+    return ""
+
+
+def prereg_counts(rows: list[dict]) -> dict:
+    """Counts only (no prices or outcomes): buys eligible for clustering under Rules 1-5.
+    Rule 2 first: a repeating 4/A buy collapses into its original and is judged on it."""
+    by_q: dict[str, Counter] = defaultdict(Counter)
+    total = Counter()
+    issuers: set[str] = set()
+    eligible = []
+    for r in rows:
+        q = by_q[r["source_quarter"]]
+        q["buys"] += 1
+        if r["repeats_original_buy"]:
+            q["rule2_collapsed"] += 1
+            continue
+        why = _rule_excluded(r)
+        q[why or "eligible"] += 1
+        if not why:
+            eligible.append(r)
+            issuers.add(r["issuer_cik"])
+    for c in by_q.values():
+        total.update(c)
+    keys = ("buys", "rule2_collapsed", "rule1_flagged", "rule3_stale", "rule4_below_1", "eligible")
+    return {
+        "by_quarter": {q: {k: c[k] for k in keys} for q, c in sorted(by_q.items())},
+        "total": {k: total[k] for k in keys},
+        "eligible_issuers": len(issuers),
+        "eligible_plan_10b5_1": sum(r["is_10b5_1"] == "plan" for r in eligible),
+        "eligible_unknown_10b5_1": sum(r["is_10b5_1"] == "unknown" for r in eligible),
+        # Rules 1 and 6: plan and unknown buys may join clusters but cannot make one STRONG
+        "eligible_strong_ineligible_plan_or_unknown": sum(r["is_10b5_1"] in ("plan", "unknown")
+                                                          for r in eligible),
+        "eligible_joint_filing": sum(int(r["owner_count"]) > 1 for r in eligible),
+        "eligible_filings_rule5_insider_units": len({r["accession_number"] for r in eligible}),
+    }
 
 
 # --------------------------------------------------------------------------- spot-check
@@ -650,6 +770,7 @@ def run(quarters: list[str], data_dir: Path, parsed_dir: Path, verified_dir: Pat
     cross_dupes = [f"key {k} in more than one quarter" for k, c in cross.items() if c > 1]
     failed = [f"{q['quarter']}:{name}" for q in per_q for name, c in q["checks"].items()
               if not c["passed"]] + (["cross-quarter keys"] if cross_dupes else [])
+    amendments = match_amendments(rows, (o for q in per_q for o in q["originals"])) if not failed else {}
     summary = {
         "run_at": ingest._iso(started), "quarters": quarters,
         "source_sha256": {q["quarter"]: q["sha256"] for q in per_q},
@@ -657,6 +778,8 @@ def run(quarters: list[str], data_dir: Path, parsed_dir: Path, verified_dir: Pat
         "cross_quarter_duplicate_keys": cross_dupes[:5],
         "failed_checks": failed, "promoted": False, "rows_promoted": 0,
         "findings": {q["quarter"]: q["findings"] for q in per_q},
+        "amendments_all_quarters": amendments,
+        "prereg_counts": prereg_counts(rows) if not failed else {},
         "spot_check": {"run": False, "reason": "halting check failed" if failed else
                        "--no-spot-check" if client is None else ""},
     }
@@ -741,6 +864,51 @@ def render_audit(s: dict, per_q: list[dict]) -> str:
         for name, c in checks.items():
             if c["examples"]:
                 L += ["", f"Examples, {q} {name}:", *(f"- {_md(e)}" for e in c["examples"])]
+    pc, am = s.get("prereg_counts") or {}, s.get("amendments_all_quarters") or {}
+    if per_q and per_q[0]["findings"] and pc:
+        L += ["", "## Per-quarter funnel", "",
+              "| Quarter | Form 4 rows | Code P | Qualifying (PARSE) | Promoted | Rule 2 collapsed | Rule 1 | Rule 3 | Rule 4 | **Eligible** |",
+              "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
+        tot = Counter()
+        for q in per_q:
+            fun, c = q["findings"]["parse"]["funnel"], pc["by_quarter"].get(q["quarter"], {})
+            vals = [fun.get("form4_rows", 0), fun.get("form4_code_p_rows", 0),
+                    fun.get("qualifying_buys", 0), len(q["rows"]), c.get("rule2_collapsed", 0),
+                    c.get("rule1_flagged", 0), c.get("rule3_stale", 0), c.get("rule4_below_1", 0),
+                    c.get("eligible", 0)]
+            tot.update(dict(enumerate(vals)))
+            L.append(f"| {q['quarter']} | " + " | ".join(f"{v:,}" for v in vals[:-1]) +
+                     f" | **{vals[-1]:,}** |")
+        L.append("| **All** | " + " | ".join(f"**{tot[i]:,}**" for i in range(9)) + " |")
+        L += ["", "Eligible = cluster-detection inputs under `PRE_REGISTRATION.md` Rules 1–5 "
+              "(counts only; no prices or outcomes). Rule 2 is applied first; each other "
+              "exclusion is counted under the first rule that applies (1, then 3, then 4). "
+              f"Eligible buys: {pc['total']['eligible']:,} at {pc['eligible_issuers']:,} issuers, "
+              f"from {pc['eligible_filings_rule5_insider_units']:,} filings (Rule 5: one filing = "
+              f"one insider). Cannot be STRONG (Rules 1 and 6): {pc['eligible_strong_ineligible_plan_or_unknown']:,} "
+              f"(10b5-1 plan {pc['eligible_plan_10b5_1']:,}, unknown {pc['eligible_unknown_10b5_1']:,}). "
+              f"Joint filings: {pc['eligible_joint_filing']:,}.",
+              "", "## Amendments — all quarters", "",
+              f"{am['amendment_buys']:,} buys on {am['amendment_accessions']:,} Form 4/A filings. "
+              "Original = a Form 4 in any quarter of this run with the same issuer, the same "
+              "set of reporting owners, filed on the 4/A's `DATE_OF_ORIG_SUB`.", "",
+              "| Original found | 4/A filings |", "|---|---:|",
+              *(f"| {k} | {v:,} |" for k, v in sorted(am["accessions_by_match"].items())), "",
+              f"- Links to an original in an earlier quarter: {am['links_to_an_earlier_quarter']:,}.",
+              f"- **Repeat buys (Rule 2: counted once, as the original): {am['repeat_buys']:,}**, "
+              f"of which {am['repeat_buys_across_quarters']:,} repeat an original in an earlier quarter.",
+              "- `none_in_study`: the original was filed before the study period, or does not "
+              "match on issuer, owners and date.", "",
+              f"**4/A filings with several candidate originals that Rule 2a could not resolve: "
+              f"{len(am['multiple_candidates'])}.** Each stays its own event (`amendment_match = multiple`). "
+              "Rule 2a links a 4/A with several candidates only when exactly one candidate holds an "
+              "identical buy (`resolved_rule_2a`).", ""]
+        if am["multiple_candidates"]:
+            L += ["| 4/A accession | Quarter | Issuer | DATE_OF_ORIG_SUB | Buys | Candidate originals |",
+                  "|---|---|---|---|---:|---|",
+                  *(f"| {m['accession_number']} | {m['source_quarter']} | {_md(m['issuer_name'])} | "
+                    f"{m['date_of_orig_sub']} | {m['buys']} | {', '.join(m['candidates'])} |"
+                    for m in am["multiple_candidates"]), ""]
     for q in per_q:
         f = q["findings"]
         if not f:
@@ -769,17 +937,9 @@ def render_audit(s: dict, per_q: list[dict]) -> str:
               f"| **Eligible for cluster detection** | **{p['cluster_eligible']:,}** |", ""]
         a = f["amendments"]
         L += ["### Amendments (4/A)", "",
-              f"- {a['amendment_buys']:,} promoted buys come from {a['amendment_accessions']:,} "
-              "Form 4/A filings.",
-              "- Original filing found in this quarter (same issuer, same owners, filed on "
-              "`DATE_OF_ORIG_SUB`): " + (", ".join(f"{k} {v:,}" for k, v in
-                                                     a["original_candidates_in_quarter"].items()) or "none") + ".",
-              f"- Amendment buys that repeat a buy in a candidate original (same trade date, "
-              f"shares and price): **{a['amendment_buys_repeating_an_original_buy']:,}**. These "
-              "may be the same purchase counted twice.",
-              "- Resolution: each amendment is kept as its own dated event at its own "
-              "`FILING_DATE`; it is not linked to or merged with an original. The matching rule "
-              "is recipe `[TODO: DEV]` 3, still open.", ""]
+              f"{a['amendment_buys']:,} promoted buys come from {a['amendment_accessions']:,} "
+              "Form 4/A filings. Matching to originals is across all quarters: see "
+              "\"Amendments — all quarters\" below.", ""]
         sy = f["symbols"]
         L += ["### Blank or placeholder trading symbols", "",
               "| Symbol as filed | Buys | Issuers |", "|---|---:|---:|",

@@ -93,6 +93,17 @@ class TestHelpers(unittest.TestCase):
         for no_swap in ("0", "false", ""):
             self.assertEqual(parse.classify(self.base(EQUITY_SWAP_INVOLVED=no_swap)), parse.QUALIFYING)
 
+    def test_trade_dated_after_filing_is_excluded(self):
+        late = self.base(TRANS_DATE="06-AUG-2026")
+        self.assertEqual(parse.classify(late, "05-AUG-2026"), "trans_date_after_filing")
+        self.assertEqual(parse.classify(late, "06-AUG-2026"), parse.QUALIFYING)       # same day is fine
+        self.assertEqual(parse.classify(late), parse.QUALIFYING)                      # no filing date given
+        self.assertEqual(parse.classify(self.base(TRANS_DATE=""), "05-AUG-2026"), parse.QUALIFYING)
+        # earlier checks still win: one reason per row
+        self.assertEqual(parse.classify(dict(late, TRANS_PRICEPERSHARE="0"), "05-AUG-2026"),
+                         "p_price_missing_or_not_positive")
+        self.assertEqual(parse.REASONS[-1], "trans_date_after_filing")
+
     def test_every_sec_code_has_a_reason(self):
         for code in parse.TRANS_CODES:
             reason = parse.classify(self.base(TRANS_CODE=code))

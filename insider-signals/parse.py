@@ -15,7 +15,8 @@ What it does (recipe: "2. PARSE")
     - Classifies every row by TRANS_CODE (SEC's Trans Code List) and applies the buy filter:
       code P, TRANS_ACQUIRED_DISP_CD = A, non-derivative table, shares > 0, price > 0,
       no equity swap. Each excluded row gets exactly one reason (the first failing check,
-      in the order above), and every reason is counted.
+      in the order above), and every reason is counted. A buy whose trade date is after its
+      filing date is excluded last, as trans_date_after_filing.
     - Normalizes AFF10B5ONE: 1/true → plan, 0/false → no_plan, blank → unknown.
       Unrecognized values are also unknown and are counted separately.
     - Splits RPTOWNER_RELATIONSHIP on commas, case-insensitively.
@@ -103,6 +104,7 @@ REASONS = (
     "p_shares_missing_or_not_positive",
     "p_price_missing_or_not_positive",
     "p_equity_swap",
+    "trans_date_after_filing",
 )
 QUALIFYING = "qualifying_buy"
 
@@ -222,8 +224,12 @@ def footnote_ids(row: dict, fn_columns: Iterable[str]) -> list[str]:
     return ids
 
 
-def classify(row: dict) -> str:
-    """Return QUALIFYING or the first failing exclusion reason."""
+def classify(row: dict, filing_date: str = "") -> str:
+    """Return QUALIFYING or the first failing exclusion reason.
+
+    `filing_date` is the submission's raw FILING_DATE. A buy whose TRANS_DATE is after it is
+    excluded as trans_date_after_filing (decided 2026-11-04: such dates are filing errors).
+    If either date does not parse, this check is skipped and G2's dates check decides."""
     code = (row.get("TRANS_CODE") or "").strip().upper()
     if not code:
         return "code_missing"
@@ -241,6 +247,9 @@ def classify(row: dict) -> str:
         return "p_price_missing_or_not_positive"
     if norm_bool(row.get("EQUITY_SWAP_INVOLVED")) is True:
         return "p_equity_swap"
+    td, fd = iso_date(row.get("TRANS_DATE")), iso_date(filing_date)
+    if td and fd and td > fd:
+        return "trans_date_after_filing"
     return QUALIFYING
 
 
@@ -356,7 +365,7 @@ def parse_folder(folder: Path, quarter: str) -> tuple[list[dict], dict]:
             c["form4_code_p_rows"] += 1
             swap_raw[(row["EQUITY_SWAP_INVOLVED"] or "").strip() or "<blank>"] += 1
 
-        buy_class = classify(row)
+        buy_class = classify(row, sub["FILING_DATE"])
         acc_owners = owners.get(acc, [])
         if not acc_owners:
             c["form4_rows_without_owner"] += 1

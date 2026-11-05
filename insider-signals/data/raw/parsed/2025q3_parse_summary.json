@@ -1,0 +1,229 @@
+{
+  "source_sha256": "9c57f272b7230500771f661bc1fe181527ed6b76a6f45d23a910c7fc7e9fcfa4",
+  "quarter": "2025q3",
+  "aff10b5one_column_present": true,
+  "funnel": {
+    "nonderiv_rows_total": 55125,
+    "form4_rows": 54955,
+    "form4_code_p_rows": 4850,
+    "qualifying_buys": 4788
+  },
+  "nonderiv_rows_by_document_type": {
+    "4": 54344,
+    "4/A": 611,
+    "5": 170
+  },
+  "nonderiv_rows_without_submission": 0,
+  "form4_rows_by_trans_code": {
+    "S": 22167,
+    "A": 8976,
+    "M": 6919,
+    "F": 6708,
+    "P": 4850,
+    "J": 1540,
+    "D": 1496,
+    "G": 1219,
+    "C": 771,
+    "U": 128,
+    "L": 58,
+    "X": 51,
+    "W": 37,
+    "I": 26,
+    "Z": 8,
+    "O": 1
+  },
+  "exclusions_by_reason": {
+    "code_A_grant_award": 8976,
+    "code_C_conversion": 771,
+    "code_D_disposition_to_issuer": 1496,
+    "code_F_tax_or_exercise_payment": 6708,
+    "code_G_gift": 1219,
+    "code_I_discretionary_16b3f": 26,
+    "code_J_other": 1540,
+    "code_L_small_acquisition": 58,
+    "code_M_option_exercise_16b3": 6919,
+    "code_O_option_exercise_otm": 1,
+    "code_S_sale": 22167,
+    "code_U_tender_change_of_control": 128,
+    "code_W_will_or_descent": 37,
+    "code_X_option_exercise_itm": 51,
+    "code_Z_voting_trust": 8,
+    "p_not_acquired": 17,
+    "p_shares_missing_or_not_positive": 3,
+    "p_price_missing_or_not_positive": 42
+  },
+  "qualifying_buys_by_is_10b5_1": {
+    "plan": 321,
+    "no_plan": 4467,
+    "unknown": 0
+  },
+  "qualifying_buys_aff10b5one_raw_values": {
+    "0": 3626,
+    "false": 841,
+    "1": 317,
+    "true": 4
+  },
+  "form4_submissions_aff10b5one_raw_values": {
+    "0": 21755,
+    "false": 5716,
+    "1": 3613,
+    "true": 1043
+  },
+  "qualifying_buys_footnote_mentions_10b5_1_by_is_10b5_1": {
+    "plan": 273,
+    "no_plan": 96
+  },
+  "qualifying_buy_flags": {
+    "espp_drip:ESPP": 23,
+    "espp_drip:dividend reinvestment": 51,
+    "espp_or_drip_flag": 74,
+    "joint_filing": 550,
+    "private:IPO": 13,
+    "private:PIPE": 3,
+    "private:directed share program": 29,
+    "private:from the issuer": 8,
+    "private:private placement": 34,
+    "private:privately negotiated": 1,
+    "private:public offering": 83,
+    "private:registered direct": 2,
+    "private:rights offering": 4,
+    "private:securities purchase agreement": 15,
+    "private:subscription agreement": 8,
+    "private:underwritten": 60,
+    "private_purchase_flag": 137
+  },
+  "context": {
+    "form4_derivative_table_code_p_rows": 252,
+    "form4_rows_without_reporting_owner": 0,
+    "code_p_equity_swap_raw_values": {
+      "0": 4069,
+      "false": 781
+    },
+    "unrecognized_relationship_tokens": {}
+  },
+  "private_purchase_samples": [
+    {
+      "accession_number": "0001737912-25-000006",
+      "issuer": "Transocean Ltd.",
+      "matched": [
+        "public offering"
+      ],
+      "snippet": "on reported herein was made in connection with a registered public offering of securities at the reported public offering price offered by the Issuer, as described in the Issuer's"
+    },
+    {
+      "accession_number": "0001729635-25-000005",
+      "issuer": "Transocean Ltd.",
+      "matched": [
+        "public offering"
+      ],
+      "snippet": "on reported herein was made in connection with a registered public offering of securities at the reported public offering price offered by the Issuer, as described in the Issuer's"
+    },
+    {
+      "accession_number": "0001729638-25-000008",
+      "issuer": "Transocean Ltd.",
+      "matched": [
+        "public offering"
+      ],
+      "snippet": "on reported herein was made in connection with a registered public offering of securities at the reported public offering price offered by the Issuer, as described in the Issuer's"
+    },
+    {
+      "accession_number": "0001213900-25-093530",
+      "issuer": "Emmis Acquisition Corp.",
+      "matched": [
+        "private placement"
+      ],
+      "snippet": "ion Corp. (the \"\"Issuer\"\") that are included in the 310,000 private placement units of the Issuer purchased by Emmis Capital Sponsor LLC (\"\"Sponsor\"\"). Each private placement unit"
+    },
+    {
+      "accession_number": "0001493152-25-016130",
+      "issuer": "Nordicus Partners Corp",
+      "matched": [
+        "subscription agreement"
+      ],
+      "snippet": "These shares were acquired pursuant to a subscription agreement. The reporting person undertakes to provide, upon request by the Securities and Exchange Commission staff, the issue"
+    },
+    {
+      "accession_number": "0001493152-25-016130",
+      "issuer": "Nordicus Partners Corp",
+      "matched": [
+        "subscription agreement"
+      ],
+      "snippet": "These shares were acquired pursuant to a subscription agreement. The reporting person undertakes to provide, upon request by the Securities and Exchange Commission staff, the issue"
+    },
+    {
+      "accession_number": "0001493152-25-016130",
+      "issuer": "Nordicus Partners Corp",
+      "matched": [
+        "subscription agreement"
+      ],
+      "snippet": "These shares were acquired pursuant to a subscription agreement. The reporting person undertakes to provide, upon request by the Securities and Exchange Commission staff, the issue"
+    },
+    {
+      "accession_number": "0001493152-25-016130",
+      "issuer": "Nordicus Partners Corp",
+      "matched": [
+        "subscription agreement"
+      ],
+      "snippet": "These shares were acquired pursuant to a subscription agreement. The reporting person undertakes to provide, upon request by the Securities and Exchange Commission staff, the issue"
+    },
+    {
+      "accession_number": "0001193125-25-223503",
+      "issuer": "5C Lending Partners Corp.",
+      "matched": [
+        "subscription agreement"
+      ],
+      "snippet": "issuer in the form of a capital call. Under the terms of a subscription agreement between the reporting persons and the issuer, the reporting persons are required to fund drawdown"
+    },
+    {
+      "accession_number": "0001213900-25-091105",
+      "issuer": "Jasper Therapeutics, Inc.",
+      "matched": [
+        "public offering",
+        "underwritten"
+      ],
+      "snippet": "urchase one share of voting common stock in an underwritten public offering at a combined offering price of $2.43 per share of voting common stock and accompanying warrant."
+    }
+  ],
+  "espp_or_drip_samples": [
+    {
+      "accession_number": "0001628280-25-042985",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Reflects shares that were acquired pursuant to a dividend reinvestment plan administered by the reporting person's broker. Actual amounts of fractional shares owned may vary slight"
+    },
+    {
+      "accession_number": "0001628280-25-042985",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Reflects shares that were acquired pursuant to a dividend reinvestment plan administered by the reporting person's broker. Actual amounts of fractional shares owned may vary slight"
+    },
+    {
+      "accession_number": "0001746448-25-000003",
+      "issuer": "GERMAN AMERICAN BANCORP, INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "hares of common stock through participation in the Issuer's Dividend Reinvestment and Stock Purchase Plan (the \"\"Dividend Reinvestment Plan\"\").\""
+    },
+    {
+      "accession_number": "0001872989-25-000003",
+      "issuer": "GERMAN AMERICAN BANCORP, INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "hares of common stock through participation in the Issuer's Dividend Reinvestment and Stock Purchase Plan (the \"\"Dividend Reinvestment Plan\"\").\""
+    },
+    {
+      "accession_number": "0001791771-25-000003",
+      "issuer": "GERMAN AMERICAN BANCORP, INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "hares of common stock through participation in the Issuer's Dividend Reinvestment and Stock Purchase Plan (the \"\"Dividend Reinvestment Plan\"\").\""
+    }
+  ]
+}

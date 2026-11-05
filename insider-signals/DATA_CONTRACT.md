@@ -72,7 +72,7 @@ the ZIP but not used in v1.
 | `data/raw/parsed/<YYYY>q<N>_parse_summary.json` | raw | `parse.py` | every count: funnel, rows by document type and code, exclusions by reason, flag counts, raw value distributions, review samples (accession + issuer only) | yes |
 | `data/raw/parsed/<YYYY>q<N>_parse-audit.md` | raw | `parse.py` | human view of the summary (an audit: findings, not pass/fail) | yes |
 | `data/raw/prices/*.csv` | raw | `enrich.py` | daily adjusted close per ticker and SPY, with `fetched_at` | no |
-| `data/verified/insider_buys.csv` | verified | `conformance.py` (on pass) | one row per qualifying buy, flagged buys included (`PRE_REGISTRATION.md` Rule 1). Columns: `conformance.VERIFIED_COLUMNS`: keys, dates, issuer, `owner_count`, `rptowner_ciks` / `rptowner_names` / `titles` (`;`-joined, every owner of a joint filing), `relationships`, `owners` (JSON), code, shares, price, `value_usd`, holdings, `trans_timeliness`, `is_10b5_1`, `private_purchase_flag`, `espp_or_drip_flag`, `flag_evidence`, `source_quarter`, `filing_index_url`. Not yet included: `role` (needs TODO 7) and `amends_accession` (needs TODO 3) | yes while small (2026 Q3: 2.8 MB); the SHA-256 is in `conformance_summary.json` |
+| `data/verified/insider_buys.csv` | verified | `conformance.py` (on pass) | one row per qualifying buy, flagged buys included (`PRE_REGISTRATION.md` Rule 1). Columns: `conformance.VERIFIED_COLUMNS`: keys, dates, issuer, `owner_count`, `rptowner_ciks` / `rptowner_names` / `titles` (`;`-joined, every owner of a joint filing), `relationships`, `owners` (JSON), code, shares, price, `value_usd`, holdings, `trans_timeliness`, `is_10b5_1`, `private_purchase_flag`, `espp_or_drip_flag`, `flag_evidence`, `source_quarter`, `filing_index_url`. `amendment_match` (4/A: unique / resolved_rule_2a / multiple / none_in_study / no_date_of_orig_sub), `amends_accession` (the linked original), `repeats_original_buy` (`<accession>#<sk>` of the original buy it repeats, for Rule 2). Not yet included: `role` (needs TODO 7) | **no** (gitignored from 2026-11-04; ~45 MB for the study period). Its SHA-256 is recorded in `conformance_summary.json` (`insider_buys_sha256`) and `status.md`; rebuild with `parse.py` + `conformance.py` |
 | `data/verified/conformance_summary.json` | verified | `conformance.py` (on pass) | every halting check, finding and spot-check row; `insider_buys_sha256` | yes |
 | `data/verified/conformance-audit.md` | verified | `conformance.py` (on pass) | audit (findings, not pass/fail): halting-check table, rows in/out, exclusions by reason and code, Rule 1 counts, amendments, blank symbols, late filings and lag, joint filings, precision, filing spot-check results | yes |
 | `data/verified/enriched_buys.csv` | verified | `enrich.py` (on G3 pass) | `insider_buys.csv` fields + `entry_date`, `entry_price`, `exit_date`, `exit_price`, `stock_return`, `spy_return`, `abnormal_return`, `window_days`, `price_status` | yes |
@@ -123,9 +123,10 @@ G5 and G6 concern the agent and the report; see the recipe.
   price of `0.006` is `0.01` in the data set). SEC's metadata does not say so. Low-priced buys
   are affected most (2026 Q3: 588 buys below $1.00, 92 at $0.05 or less). A filed price below
   $0.005 rounds to `0.00`, so some `p_price_missing_or_not_positive` exclusions may be real
-  sub-cent buys. Not corrected; decision pending.
+  sub-cent buys. Not corrected. Decided 2026-11-04: sub-$1 buys are excluded from clustering by
+  `PRE_REGISTRATION.md` Rule 4; at $1.00 and above rounding moves price by at most 0.5%, accepted.
 - **Amendments can repeat their original's buy.** In 2026 Q3, 42 buys on 4/A filings have the
-  same trade date, shares and price as a buy on their original. Both are kept until the 4/A
-  matching rule (TODO 3) exists.
+  same trade date, shares and price as a buy on their original. Both stay in verified;
+  `repeats_original_buy` marks the repeat, and Rule 2 counts it once for clustering.
 - **Timeliness:** `TRANS_TIMELINESS` is `E` (early), `L` (late) or empty (on time). Late
   filings are kept. The lag is reported.
