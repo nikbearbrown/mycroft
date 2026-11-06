@@ -1,6 +1,6 @@
 ---
 status: DRAFT
-todos_open: 4
+todos_open: 3
 last_gate: null
 attestation: null
 recipe_version: 0.2.0
