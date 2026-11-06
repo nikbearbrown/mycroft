@@ -565,10 +565,30 @@ function scriptFlags(file) {
   return out;
 }
 
+// A missing script is only a defect if the recipe CLAIMS it should be there.
+//
+// SNICKERDOODLE's lifecycle settles when that is: a DEV todo closes on "script exists",
+// and DRAFT -> SPECIFIED requires zero open todos. So scripts must exist from SPECIFIED
+// onward. At DRAFT their absence is not a defect -- it is what DRAFT means.
+//
+// The first version of this check ignored status and reported every unbuilt step as a
+// finding, which made 94 of 97 recipes look broken and buried the ~20 real contract
+// mismatches under ~600 entries for work that simply has not been done yet.
+const BUILT_EXPECTED_FROM = ['SPECIFIED', 'RUNNABLE-SAMPLE', 'RUNNABLE-LIVE', 'VERIFIED'];
+
 function checkRecipe(recipe) {
   const findings = [];
   let comparable = 0; // steps whose script exists, so its flags could be compared
-  const add = (kind, where, detail) => findings.push({ kind, where, detail });
+  // severity: 'defect' contradicts something the recipe claims; 'expected' is the
+  // honest state of unbuilt work and must not be counted as breakage.
+  const add = (kind, where, detail, severity = 'defect') => findings.push({ kind, where, detail, severity });
+
+  const status = recipe.frontmatter.status || null;
+  const claimsBuilt = BUILT_EXPECTED_FROM.includes(status);
+
+  if (!status) {
+    add('no-lifecycle-status', 'recipe', 'no status frontmatter, so the recipe claims nothing and nothing can contradict it');
+  }
 
   for (const step of recipe.steps.values()) {
     if (!step.script) {
@@ -576,7 +596,12 @@ function checkRecipe(recipe) {
       continue;
     }
     if (!fs.existsSync(step.script)) {
-      add('script-missing', step.slug, `recipe names ${step.script}, which does not exist`);
+      if (claimsBuilt) {
+        add('script-missing', step.slug, `status is ${status}, which requires this script to exist: ${step.script}`);
+      } else {
+        add('step-not-built', step.slug, `${step.script} does not exist`
+          + (status ? ` — expected at status ${status}` : ' — the recipe claims no status'), 'expected');
+      }
       continue;
     }
     comparable += 1;
@@ -627,26 +652,44 @@ function cmdCheck(argv) {
     }
   }
 
+  const comparableOf = (r) => r.comparable;
   if (!all) {
     const { slug, findings } = perRecipe[0];
-    console.log(`${bold(slug)}  ${findings.length ? `${findings.length} finding(s)` : 'no contract mismatches'}\n`);
-    for (const f of findings) {
+    const defects = findings.filter((f) => f.severity !== 'expected');
+    const expected = findings.filter((f) => f.severity === 'expected');
+    const status = loadRecipe(slug).frontmatter.status || 'no status';
+    console.log(`${bold(slug)}  ${dim(status)}  ${defects.length ? `${defects.length} defect(s)` : 'no contract defects'}\n`);
+    for (const f of defects) {
       console.log(`  ${f.kind.padEnd(24)} ${f.where.padEnd(26)} ${f.detail}`);
     }
-    if (!findings.length) console.log(dim('  every declared step has a script, and its flags match what the script implements.'));
-    process.exit(findings.length ? 1 : 0);
+    if (!defects.length) {
+      // Do not claim the scripts match when there are none. "No defects" on an unbuilt
+      // DRAFT means nothing contradicts its claims, which is a much weaker statement.
+      console.log(dim(expected.length
+        ? `  Nothing here contradicts what the recipe claims. ${expected.length} of its `
+          + `${expected.length + comparableOf(perRecipe[0])} step(s) are unbuilt, which is what status ${status} means.`
+        : '  every declared step has a script, and its flags match what the script implements.'));
+    }
+    if (expected.length) {
+      console.log(dim(`\n  ${expected.length} step(s) not built — expected at this status, not counted as defects:`));
+      for (const f of expected) console.log(dim(`    ${f.where.padEnd(26)} ${f.detail}`));
+    }
+    process.exit(defects.length ? 1 : 0);
   }
 
   // Repo-wide: the point is to show whether a finding is one shared defect or many
   // separate ones. A kind that appears in nearly every recipe came from the template.
+  const defectsOf = (r) => r.findings.filter((f) => f.severity !== 'expected');
   const affected = new Map();
-  for (const { slug, findings } of perRecipe) {
-    for (const f of new Set(findings.map((x) => x.kind))) {
+  for (const r of perRecipe) {
+    for (const f of new Set(defectsOf(r).map((x) => x.kind))) {
       affected.set(f, (affected.get(f) || 0) + 1);
     }
   }
-  const clean = perRecipe.filter((r) => !r.findings.length).length;
-  const total = perRecipe.reduce((n, r) => n + r.findings.length, 0);
+  const clean = perRecipe.filter((r) => !defectsOf(r).length).length;
+  const total = perRecipe.reduce((n, r) => n + defectsOf(r).length, 0);
+  const unbuiltSteps = perRecipe.reduce((n, r) => n + r.findings.filter((f) => f.severity === 'expected').length, 0);
+  const unbuiltRecipes = perRecipe.filter((r) => r.findings.some((f) => f.severity === 'expected')).length;
 
   // A flag mismatch can only be seen where the script exists to compare against. Scoring
   // those findings out of all 97 recipes would report them as rare when they are near
@@ -655,7 +698,7 @@ function cmdCheck(argv) {
   const flagKinds = new Set(['documented-not-built', 'built-not-documented']);
   const measurable = perRecipe.filter((r) => r.comparable > 0).length;
 
-  console.log(`${bold('recipe/script contract check')}  ·  ${scanned} recipes  ·  ${total} findings\n`);
+  console.log(`${bold('recipe/script contract check')}  ·  ${scanned} recipes  ·  ${total} defect(s)\n`);
   console.log(`  ${'FINDING'.padEnd(26)} ${'OF MEASURABLE'.padEnd(15)} READ AS`);
   for (const [kind, n] of [...affected.entries()].sort((a, b) => b[1] - a[1])) {
     const denom = flagKinds.has(kind) ? measurable : scanned;
@@ -667,7 +710,12 @@ function cmdCheck(argv) {
     console.log(dim(`\n  Flag findings are scored out of the ${measurable} recipe(s) with at least one script on disk —`));
     console.log(dim(`  the other ${scanned - measurable} have nothing to compare against, so counting them would understate the rate.`));
   }
-  console.log(`\n  ${clean} recipe(s) with no mismatches.`);
+  console.log(`\n  ${clean} recipe(s) with no defects.`);
+  if (unbuiltSteps) {
+    console.log(dim(`  ${unbuiltSteps} step(s) across ${unbuiltRecipes} recipe(s) are not built — NOT counted above.`));
+    console.log(dim('  A DRAFT recipe whose scripts do not exist is correctly described, not broken.'));
+    console.log(dim('  Scripts are required from SPECIFIED onward, because a DEV todo closes on "script exists".'));
+  }
   console.log(dim('  A finding present in nearly every recipe is one defect in the template they share,\n'
     + '  not N defects. Fix it there and it closes everywhere.'));
   console.log(dim(`\n  Per recipe:  snickerdoodle check <recipe>`));

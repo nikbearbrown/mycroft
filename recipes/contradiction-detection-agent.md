@@ -3,7 +3,7 @@ status: RUNNABLE-SAMPLE
 todos_open: 0
 last_gate: "gate-6 approve, 2026-10-04, logs/RUN_LOG.md#2026-10-04"
 attestation: null
-recipe_version: 0.2.0
+recipe_version: 0.2.1
 ---
 
 # Contradiction_detection_agent
@@ -228,12 +228,12 @@ Sample mode (no live network calls, no writes):
 
 | Step | CLI Command | Flags |
 |---|---|---|
-| Verify provenance | `snickerdoodle run contradiction-detection-agent --step verify-provenance` | `--sample` `--no-write` |
-| Ingest declared inputs | `snickerdoodle run contradiction-detection-agent --step ingest-inputs` | `--sample` |
-| Validate data shape | `snickerdoodle run contradiction-detection-agent --step validate-data-shape` | `--sample` |
-| Transform and quality check | `snickerdoodle run contradiction-detection-agent --step transform-quality-check` | `--sample` |
-| Run approved tools | `snickerdoodle run contradiction-detection-agent --step run-approved-tools` | `--sample` `--no-write` |
-| Produce human report | `snickerdoodle run contradiction-detection-agent --step produce-human-report` | `--sample` `--no-write` |
+| Verify provenance | `snickerdoodle run contradiction-detection-agent --step verify-provenance` | `--envelope` |
+| Ingest declared inputs | `snickerdoodle run contradiction-detection-agent --step ingest-inputs` | `--envelope` `--fixture-set` |
+| Validate data shape | `snickerdoodle run contradiction-detection-agent --step validate-data-shape` | `--envelope` `--fixture-set` |
+| Transform and quality check | `snickerdoodle run contradiction-detection-agent --step transform-quality-check` | `--envelope` `--fixture-set` |
+| Run approved tools | `snickerdoodle run contradiction-detection-agent --step run-approved-tools` | `--envelope` `--fixture-set` |
+| Produce human report | `snickerdoodle run contradiction-detection-agent --step produce-human-report` | `--envelope` `--fixture-set` |
 
 ### Gate Commands
 
