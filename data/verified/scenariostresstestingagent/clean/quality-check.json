@@ -1,0 +1,105 @@
+{
+  "step": "transform-quality-check",
+  "mode": "sample",
+  "schema_version": "1",
+  "source_folder": "clean",
+  "verified_records": [
+    "c01-tech-crash-semiconductor-heavy",
+    "c02-rate-hike-mixed-book",
+    "c03-ai-regulation-outside-the-map",
+    "c04-chip-shortage-mostly-unmapped",
+    "c05-black-swan-two-names",
+    "c06-weights-sum-to-six-tenths",
+    "c07-weights-within-tolerance",
+    "c08-weights-sum-to-one-point-two",
+    "c09-scenario-type-absent",
+    "c11-exactly-ten-percent",
+    "c12-growth-stack-rate-hike"
+  ],
+  "handed_off": [
+    "c10-custom-scenario-needs-the-llm"
+  ],
+  "record_count": 12,
+  "duplicates": [],
+  "rejects": [],
+  "flags": [
+    {
+      "id": "c02-rate-hike-mixed-book",
+      "flag": "default-sector",
+      "detail": "50% of the book is in tickers the workflow's sector map does not list, so it gets the default tech_sector shock"
+    },
+    {
+      "id": "c03-ai-regulation-outside-the-map",
+      "flag": "default-sector",
+      "detail": "100% of the book is in tickers the workflow's sector map does not list, so it gets the default tech_sector shock"
+    },
+    {
+      "id": "c04-chip-shortage-mostly-unmapped",
+      "flag": "default-sector",
+      "detail": "90% of the book is in tickers the workflow's sector map does not list, so it gets the default tech_sector shock"
+    },
+    {
+      "id": "c05-black-swan-two-names",
+      "flag": "default-sector",
+      "detail": "100% of the book is in tickers the workflow's sector map does not list, so it gets the default tech_sector shock"
+    },
+    {
+      "id": "c06-weights-sum-to-six-tenths",
+      "flag": "rescaled",
+      "detail": "the request's weights add to 0.6; the workflow rescaled them to 1.0"
+    },
+    {
+      "id": "c07-weights-within-tolerance",
+      "flag": "majority-holding",
+      "detail": "OMNI is 50.5% of the book after rescaling, more than half"
+    },
+    {
+      "id": "c07-weights-within-tolerance",
+      "flag": "default-sector",
+      "detail": "50% of the book is in tickers the workflow's sector map does not list, so it gets the default tech_sector shock"
+    },
+    {
+      "id": "c08-weights-sum-to-one-point-two",
+      "flag": "rescaled",
+      "detail": "the request's weights add to 1.2; the workflow rescaled them to 1.0"
+    },
+    {
+      "id": "c09-scenario-type-absent",
+      "flag": "scenario-defaulted",
+      "detail": "no scenario_type in the request; the workflow runs the default, tech_crash"
+    },
+    {
+      "id": "c10-custom-scenario-needs-the-llm",
+      "flag": "handoff",
+      "detail": "Groq chat call needed for a custom scenario: not approved, not made"
+    },
+    {
+      "id": "c11-exactly-ten-percent",
+      "flag": "on-threshold",
+      "detail": "drawdown -10.0% sits within 0.05 points of the 10% line; the rule is 'above', so the level is LOW"
+    }
+  ],
+  "quality_notes": [
+    "12 request(s) came in from step 3 and 0 were rejected there; 12 have a step-5 result (1 stopped at a handoff).",
+    "11 result(s) reconciled on every check and 1 stopped at a handoff with nothing to reconcile; 0 failure(s); 0 duplicate group(s); 11 advisory flag(s).",
+    "Every figure was re-derived from the workflow's own template shocks (sector map, ai_stocks, growth_stocks) with exact decimals; the step-5 engine was not called.",
+    "Flags are for a human to read. They are not failures, and the checks do not judge whether the template shocks or risk thresholds are sound."
+  ],
+  "checks_run": [
+    "weights-sum",
+    "position-shock",
+    "position-initial",
+    "position-loss",
+    "position-final",
+    "total-loss",
+    "final-value",
+    "drawdown",
+    "risk-level",
+    "positions-order",
+    "top-losers",
+    "scenario-name",
+    "duplicate-id",
+    "duplicate-content"
+  ],
+  "failures": []
+}

@@ -64,6 +64,23 @@ function skipped(p) {
   return SKIP_PREFIXES.some((q) => rel === q || rel.startsWith(`${q}/`));
 }
 
+// Python under the data layers is extracted provenance, not source. The n8n conversions
+// store Code-node bodies as .py files -- `# n8n code node: WatchList` followed by a bare
+// top-level `return [...]`. That is correct for a fragment and a SyntaxError for a module,
+// so py_compile asks them a question they were never meant to answer. 73 of the 157 .py
+// files under data/ fail for exactly this reason, and the pass rate is beside the point:
+// a fragment that happens to compile is still not a module.
+//
+// Python SOURCE lives in scripts/, which is checked in full. JSON, YAML and Markdown under
+// data/ are still checked -- that is gate 3's machine half and the reason data/ is on the
+// default surface at all.
+const DATA_LAYERS = ['data/raw', 'data/verified'];
+
+function compilableHere(file) {
+  const rel = path.relative(process.cwd(), path.resolve(file)).split(path.sep).join('/');
+  return !DATA_LAYERS.some((d) => rel === d || rel.startsWith(`${d}/`));
+}
+
 function collect(p, acc) {
   let st;
   try { st = fs.statSync(p); } catch { return; }
@@ -73,6 +90,7 @@ function collect(p, acc) {
   } else if (KIND[path.extname(p)]) {
     // A file named explicitly on the command line is still checked; only
     // directory traversal honours the skip rules.
+    if (KIND[path.extname(p)] === 'py' && !compilableHere(p)) return;
     acc.push(p);
   }
 }

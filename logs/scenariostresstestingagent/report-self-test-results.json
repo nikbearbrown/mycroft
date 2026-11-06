@@ -1,0 +1,193 @@
+{
+  "recipe": "scenariostresstestingagent",
+  "steps": [
+    4,
+    6
+  ],
+  "checks": [
+    {
+      "check": "4 clean set: exit 0, 11 reconciled, 1 handed off, no failures, no duplicates",
+      "expected": "exit 0; 11; 1; 0; 0",
+      "observed": "exit 0; 11; 1; 0; 0",
+      "passed": true
+    },
+    {
+      "check": "4 clean set: the corpus's designed edge cases raise their flags",
+      "expected": "default-sector, handoff, majority-holding, on-threshold, rescaled, scenario-defaulted",
+      "observed": "default-sector, handoff, majority-holding, on-threshold, rescaled, scenario-defaulted",
+      "passed": true
+    },
+    {
+      "check": "4 idempotent: a second run gives the same bytes",
+      "expected": "identical",
+      "observed": "identical",
+      "passed": true
+    },
+    {
+      "check": "4 defective set: exit 1, 0 verified, 10 rejects",
+      "expected": "exit 1; 0; 10",
+      "observed": "exit 1; 0; 10",
+      "passed": true
+    },
+    {
+      "check": "4 break caught: a position's loss is off by 1",
+      "expected": "exit 1; failure `position-loss` recorded",
+      "observed": "exit 1; ['position-final', 'position-loss', 'top-losers', 'total-loss']",
+      "passed": true
+    },
+    {
+      "check": "4 break caught: a position's shock_pct is off by 1",
+      "expected": "exit 1; failure `position-shock` recorded",
+      "observed": "exit 1; ['position-loss', 'position-shock', 'top-losers']",
+      "passed": true
+    },
+    {
+      "check": "4 break caught: total_loss is off by 5",
+      "expected": "exit 1; failure `total-loss` recorded",
+      "observed": "exit 1; ['drawdown', 'final-value', 'total-loss']",
+      "passed": true
+    },
+    {
+      "check": "4 break caught: final_portfolio_value is off by 10",
+      "expected": "exit 1; failure `final-value` recorded",
+      "observed": "exit 1; ['final-value']",
+      "passed": true
+    },
+    {
+      "check": "4 break caught: risk_level says LOW for a 78% drawdown",
+      "expected": "exit 1; failure `risk-level` recorded",
+      "observed": "exit 1; ['risk-level']",
+      "passed": true
+    },
+    {
+      "check": "4 break caught: top_losers in the wrong order",
+      "expected": "exit 1; failure `top-losers` recorded",
+      "observed": "exit 1; ['top-losers']",
+      "passed": true
+    },
+    {
+      "check": "4 break caught: a weight changed so the book adds to 0.9",
+      "expected": "exit 1; failure `weights-sum` recorded",
+      "observed": "exit 1; ['position-initial', 'top-losers', 'weights-sum']",
+      "passed": true
+    },
+    {
+      "check": "4 break caught: scenario_name is not the template's",
+      "expected": "exit 1; failure `scenario-name` recorded",
+      "observed": "exit 1; ['scenario-name']",
+      "passed": true
+    },
+    {
+      "check": "4 break caught: the same id twice",
+      "expected": "exit 1; a duplicate of kind `id`",
+      "observed": "exit 1; ['id', 'content']",
+      "passed": true
+    },
+    {
+      "check": "4 break caught: the same holdings and scenario under another id",
+      "expected": "exit 1; a duplicate of kind `content`",
+      "observed": "exit 1; ['content']",
+      "passed": true
+    },
+    {
+      "check": "4 break caught: an accepted request with no step-5 result",
+      "expected": "exit 1; failure `ran`",
+      "observed": "exit 1; ['ran']",
+      "passed": true
+    },
+    {
+      "check": "4 refuses an unreadable validated.json: exit 2, nothing written",
+      "expected": "exit 2; quality-check.json not written",
+      "observed": "exit 2; written: False",
+      "passed": true
+    },
+    {
+      "check": "6 clean report: exit 0 and the Output Contract's fifteen sections, in order",
+      "expected": "exit 0; Run summary, Purpose, Source inventory, Inputs used, Phase-gate results, Steps completed, Records seen, Rejects, Duplicates, Flags, Typed TODOs, Human approvals, Verified findings, Inferred findings, Decision recommendation",
+      "observed": "exit 0; ['Run summary', 'Purpose', 'Source inventory', 'Inputs used', 'Phase-gate results', 'Steps completed', 'Records seen', 'Rejects', 'Duplicates', 'Flags', 'Typed TODOs', 'Human approvals', 'Verified findings', 'Inferred findings', 'Decision recommendation']",
+      "passed": true
+    },
+    {
+      "check": "6 agent log: the contract's sixteen fields",
+      "expected": "workflow, run_id, mode, steps_completed, records_seen, rejects, duplicates, flags, stop_conditions, todo_items, source_files, gate_decisions, generated_at, raw_output_paths, verified_output_paths, report_path",
+      "observed": "workflow, run_id, mode, steps_completed, records_seen, rejects, duplicates, flags, stop_conditions, todo_items, source_files, gate_decisions, generated_at, raw_output_paths, verified_output_paths, report_path",
+      "passed": true
+    },
+    {
+      "check": "6 the report's counts equal the files' counts",
+      "expected": "12 requests in; 11 reconciled; 11 flags",
+      "observed": "12 request(s) read; 11 reconciled; 11 advisory flag",
+      "passed": true
+    },
+    {
+      "check": "6 the recommendation always blocks live execution while no approval record exists",
+      "expected": "contains 'Block live execution: YES'",
+      "observed": "yes",
+      "passed": true
+    },
+    {
+      "check": "6 gates: 4 reads 5 of 6 scripts with step 2 open; 6 passes",
+      "expected": "5 of 6; step(s) 2; gate 6 PASS",
+      "observed": [
+        true,
+        true
+      ],
+      "passed": true
+    },
+    {
+      "check": "6 stop conditions: four judged from evidence, none triggered, each with its own evidence",
+      "expected": "4 conditions; none triggered; four different evidence strings, none the old placeholder",
+      "observed": "4 conditions; triggered: [False, False, False, False]; distinct evidence: 4",
+      "passed": true
+    },
+    {
+      "check": "6 the credential scan does not flag the report script itself",
+      "expected": "condition 1 says none found and names no script",
+      "observed": "et, token, password or authorization, an `sk-` key or a Bearer token: none found",
+      "passed": true
+    },
+    {
+      "check": "6 the person's page and the machine's page agree on stop conditions",
+      "expected": "report: 'Stop conditions: 0 of 4 triggered'; log: 0 triggered",
+      "observed": "report line present: True; log triggered: 0",
+      "passed": true
+    },
+    {
+      "check": "6 idempotent: a second run (clock pinned) gives the same bytes",
+      "expected": "identical",
+      "observed": "identical",
+      "passed": true
+    },
+    {
+      "check": "6 defective set: exit 0, nothing ran, nothing to approve",
+      "expected": "exit 0; 'Approve for the next phase (sample mode only): NO'",
+      "observed": "exit 0; NO",
+      "passed": true
+    },
+    {
+      "check": "6 break caught: a hardcoded key planted in a script trips stop condition 1, both pages say so, and approve turns NO",
+      "expected": "log: condition 1 triggered, others not; report: 'Stop conditions: 1 of 4 triggered'; 'sample mode only): NO'",
+      "observed": "exit 0; triggered: [True, False, False, False]; report line: True; approve NO: True",
+      "passed": true
+    },
+    {
+      "check": "6 refuses when step 4's output is missing",
+      "expected": "exit 2; no report written",
+      "observed": "exit 2; report written: False",
+      "passed": true
+    },
+    {
+      "check": "6 refuses when step 4's output does not account for the accepted requests",
+      "expected": "exit 2; no report written",
+      "observed": "exit 2; report written: False",
+      "passed": true
+    },
+    {
+      "check": "6 refuses when the run envelope declares live calls",
+      "expected": "exit 2; no report written",
+      "observed": "exit 2; report written: False",
+      "passed": true
+    }
+  ],
+  "all_passed": true
+}

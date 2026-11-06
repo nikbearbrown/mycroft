@@ -828,3 +828,49 @@
   - [OPEN] Steps 2, 4 and 6 and the script mappings for the respond-to-webhook and human-report nodes: still `[TODO: DEV]` (`todos_open` is 5).
   - [OPEN] Live mode: no approval record; the Alpha Vantage request, the Groq call and the webhook reply are only recorded handoffs (`approved_for_live_action: false`); Parse_LLM_Response is not ported, so a custom scenario stops at the Groq handoff.
   - [NOT COVERED] Real portfolios, live behaviour, and whether the template shocks and the engine's risk thresholds are sound (ported faithfully, not judged).
+
+## 2026-11-01 -- scenariostresstestingagent: two more [TODO: DEV] closures (quality check, human report), sample mode
+
+- **Recipe:** `recipes/scenariostresstestingagent.md` stays `status: DRAFT`; `todos_open` goes from 5 to 3 and `recipe_version` from 0.2.0 to 0.3.0. `attestation` and `last_gate` are unchanged. Each closure below keeps its original `[TODO: DEV]` text word for word on a `Closed 2026-11-01` line, with a status line (input, output, how it stops, evidence).
+- **Closed:**
+  - step 4 `scripts/gigo/scenariostresstestingagent-transform-quality-check.py`: re-derives every stress result from the workflow's own template shocks with exact decimals (it does not call the step-5 engine), reconciles per-position and total figures, risk level, ordering and weights, looks for duplicates by id and by content, and raises advisory flags for a human
+  - step 6 `scripts/tools/scenariostresstestingagent-produce-human-report.py`: writes the report (the Output Contract's reader, decision enabled and fifteen sections) and the agent log (its sixteen fields); judges the six phase gates from evidence; separates verified findings from labelled readings of the sample; can only recommend a sample-mode next phase and always blocks live execution without an approval record
+- **Inputs:** the existing invented sample corpus and the step-3 and step-5 outputs and step-1 and step-5 logs from 2026-10-25; the run envelope. Nothing new was fetched; no network, no credentials.
+- **Outputs:** `data/verified/scenariostresstestingagent/{clean,defective}/quality-check.json` and `quality-notes.md`; `reports/generated/scenariostresstestingagent-2026-11-01.md` and `-defective.md`; `logs/scenariostresstestingagent-2026-11-01.json` and `-defective.json`; `logs/scenariostresstestingagent/report-self-test-results.{json,md}` and `README-steps-4-and-6.md`; a new self-test `scripts/tools/scenariostresstestingagent-report-self-test.py`.
+- **Commands:**
+  - step 4: clean exit 0 (12 accepted: 11 results reconcile on every check, 1 stops at the Groq handoff, 0 duplicates, 11 advisory flags); defective exit 1 by design (10 rejects, nothing to check)
+  - step 6: clean exit 0 and defective exit 0, gate 6 PASS on both; two runs with the clock pinned give identical bytes
+  - `python3 scripts/tools/scenariostresstestingagent-report-self-test.py`: exit 0, 26/26 checks as expected, including 11 deliberate breaks (a position's loss, a position's shock, the total loss, the final value, the risk level, the top-losers order, the weights, the scenario name, a duplicate id, a duplicate book under another id, a missing result) and 3 refusals of step 6 (step 4's output missing, step 4's output not accounting for the accepted requests, an envelope declaring live calls)
+  - still passing after this change: step 1 (node table match, chain match, ported nodes, fixtures), `scenariostresstestingagent-parity-check.py` 24/24 identical to the original code, `scenariostresstestingagent-self-test.py` 27/27
+  - `node scripts/conformance.mjs`: 963 files, all conform; `node scripts/manifest-check.mjs`: passed
+- **Fixed while building:**
+  - the report's step table first showed sixteen steps and "14 of 16 step scripts exist": the recipe parser had also read the preserved list of ten workflow-node steps further down the recipe. It now reads only the `## Steps` section. Seen in the first generated report, before anything was saved.
+  - step 4 first counted the custom-scenario request (which stops at the Groq handoff and has no result) among the reconciled results; it now reports `handed_off` separately (11 reconciled, 1 handed off)
+  - the "concentrated" flag first fired on seven books at exactly half; it now means one holding strictly more than half (one request in the corpus)
+  - step 4's unreadable-input case exited 1 although its docstring and the recipe say exit 2; fixed, and the self-test now asserts exactly 2 and that nothing is written
+- **Observations, offered as open questions for the maintainers and not as findings:**
+  - the engine's risk rule is "above" each line, so a drawdown of exactly 10.0% is LOW (`c11-exactly-ten-percent`); the corpus keeps that case on purpose and step 4 flags it as on a line
+  - the recipe's second preserved script mapping (`scripts/tools/scenariostresstestingagent-produce-human-report.py`) now names a script that exists; it is left as its original wording and still counted in `todos_open`, for a maintainer to close if that reading is right
+- **Unchanged:** the eight generated per-node scripts for this recipe, and every file added on 2026-10-25.
+- **Open issues:**
+  - [OPEN] Step 2 (ingest) and the respond-to-webhook script mapping are still `[TODO: DEV]`; the report mapping line is as noted above (`todos_open` is 3).
+  - [OPEN] Live mode: no approval record; the Alpha Vantage request, the Groq call and the webhook reply are only recorded handoffs; a custom scenario still stops at the Groq handoff.
+  - [NOT COVERED] Real portfolios, live behaviour, and whether the template shocks and risk lines are sound (re-derived faithfully, not judged). No human has yet cleared this sample run for the next phase; the report says so.
+
+## 2026-11-02 -- scenariostresstestingagent: step 6 judges the recipe's stop conditions from evidence (a correction to #81), sample mode
+
+- **What reading the page as its reader found:** in the agent logs written on 2026-11-01, stop condition 1 (credentials hardcoded instead of read from environment variables) was recorded as `triggered: true`. Nothing was hardcoded. Step 6 had tested whether any script reads the environment, which is the behaviour the condition asks for, and its pattern matched the words in its own source line. The other three conditions were recorded as not triggered without a check behind them, and the human report did not mention stop conditions, so the machine's page and the person's page disagreed. The self-test had checked that the log has its sixteen fields, not what the stop-condition values say.
+- **Changed (our own files from #81, and the recipe):**
+  - `scripts/tools/scenariostresstestingagent-produce-human-report.py`: each of the four stop conditions is now judged from evidence and recorded with its own evidence string (a scan of this recipe's scripts, raw data and recipe for a quoted literal assigned to an api key, secret, token, password or authorization, an `sk-` key or a Bearer token; the run envelope and the approval record; the sample folder and its manifest; the report's provenance sections). The report's run summary gains one line, "Stop conditions: N of 4 triggered", so both pages say the same thing; if one triggers, the recommendation to approve becomes NO.
+  - `scripts/tools/scenariostresstestingagent-report-self-test.py`: four new checks (four conditions with four different evidence strings and none triggered; the scan does not flag the report script itself; the report's count equals the log's; a hardcoded key planted in a script, built at run time, trips condition 1, both pages say so and approve turns NO). 30 checks now.
+  - `logs/scenariostresstestingagent-2026-11-01.json` and `-defective.json`, `reports/generated/scenariostresstestingagent-2026-11-01.md` and `-defective.md`: regenerated in place with the clock pinned; a diff against the 2026-11-01 versions shows only the four stop-condition entries and the one summary line differ.
+  - `recipes/scenariostresstestingagent.md`: step 6's status line gains a sentence on the stop conditions; `recipe_version` 0.3.0 to 0.3.1. `status` stays `DRAFT` and `todos_open` stays 3.
+  - `logs/scenariostresstestingagent/report-self-test-results.{json,md}` and `README-steps-4-and-6.md`: regenerated and one section added.
+- **Commands:**
+  - step 6: clean and defective exit 0, gate 6 PASS; stop conditions 0 of 4 triggered on both; two runs with the clock pinned give identical bytes
+  - `python3 scripts/tools/scenariostresstestingagent-report-self-test.py`: exit 0, 30/30 checks as expected
+  - still passing: `scenariostresstestingagent-self-test.py` 27/27, the parity check 24/24, step 1's provenance check
+  - `node scripts/conformance.mjs` and `node scripts/manifest-check.mjs`: passed
+- **Fixed while building:** the first version of the planted-key check kept the credential-shaped text literally in the self-test's source, so the scan flagged the self-test file itself in a clean tree. The new "does not flag its own scripts" check caught it; the string is now assembled at run time, and a scan of the 41 files of this recipe finds nothing.
+- **Unchanged:** the eight generated per-node scripts, every file added on 2026-10-25, and step 4's outputs.
+- **Open issues:** as on 2026-11-01: step 2 (ingest) and the respond-to-webhook script mapping are still `[TODO: DEV]`, the report-script mapping line is left as its original wording (`todos_open` is 3), live mode has no approval record, and no human has yet cleared this sample run for the next phase.

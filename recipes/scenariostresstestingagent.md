@@ -1,9 +1,9 @@
 ---
 status: DRAFT
-todos_open: 5
+todos_open: 3
 last_gate: null
 attestation: null
-recipe_version: 0.2.0
+recipe_version: 0.3.1
 ---
 
 # ScenarioStressTestingAgent
@@ -80,7 +80,9 @@ ScenarioStressTestingAgent defines a Mycroft pipeline for collecting, transformi
    Output: record_count, required_fields_present, missing_fields, parse_errors, schema_version.
    Where output goes: `data/verified/scenariostresstestingagent/`
 4. Step name: Transform and quality check. Labor: AI with Human gate.
-   Script called: `scripts/gigo/scenariostresstestingagent-transform-quality-check.py` [TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.
+   Script called: `scripts/gigo/scenariostresstestingagent-transform-quality-check.py`
+   Closed 2026-11-01 (the script above is built and exercised). Original note, kept for the record: `[TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.`
+   Status: Built and exercised (sample mode). Input: the step-3 `validated.json` and the step-5 `stress-results.json` for one sample folder (default `clean`), plus the workflow's own template shocks, sector map and risk lines read from the step-5 script as data (its engine is never called). Output: `quality-check.json` (verified_records, handed_off, record_count, duplicates, rejects, flags, quality_notes, the checks run, failures) and `quality-notes.md`, beside the data. What it does: re-derives every position's shock from the template and recomputes each loss, final value, total, drawdown and risk level with exact decimals, and checks the weights (within 0.01 of 1.0 after the workflow's rescale), the ordering of positions and the top losers, and that the scenario name is the template's; looks for duplicates by id and by content (same holdings under the same scenario); and raises advisory flags for a human (weights rescaled, a majority holding, at least half the book in tickers the sector map does not list, a drawdown within 0.05 points of a risk line, a defaulted scenario, a handoff). How it stops: exit 1 if anything was rejected at step 3, a result fails a check or a duplicate is found (the files are still written); exit 2, nothing written, if `validated.json` is missing or unparseable. Evidence: on the 12 clean requests, 11 stress results reconcile on every check and 1 stops at the Groq handoff; on the 10 defective requests, 10 rejects and nothing to check; `scripts/tools/scenariostresstestingagent-report-self-test.py` breaks a result in eight ways and every one is caught.
    Input: declared recipe inputs, prior step outputs, and gate decisions for `scenariostresstestingagent`.
    Output: verified_records, record_count, duplicates, rejects, flags, quality_notes.
    Where output goes: `data/verified/scenariostresstestingagent/`
@@ -92,7 +94,9 @@ ScenarioStressTestingAgent defines a Mycroft pipeline for collecting, transformi
    Output: tool_name, input_path, output_path, action_taken, approval_id, no_write_mode.
    Where output goes: `logs/`
 6. Step name: Produce human report. Labor: AI with Human gate.
-   Script called: `scripts/tools/scenariostresstestingagent-produce-human-report.py` [TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.
+   Script called: `scripts/tools/scenariostresstestingagent-produce-human-report.py`
+   Closed 2026-11-01 (the script above is built and exercised). Original note, kept for the record: `[TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.`
+   Status: Built and exercised (sample mode). Input: the verified files of steps 3, 4 and 5 for one sample folder, the run envelope, the latest step-1 and step-5 logs and this recipe. Output: the report `reports/generated/scenariostresstestingagent-<DATE>.md` (the reader, the decision it enables and the Output Contract's fifteen sections, in order) and the agent log `logs/scenariostresstestingagent-<DATE>.json` (the contract's sixteen fields); the defective folder writes the same pair with `-defective` added. How the report is made: each phase gate is judged from evidence and not from the recipe's shell lines; findings the data supports (every figure re-read or recomputed from the files, with the path) are kept apart from readings of the invented sample, which are labelled inferred; the recommendation can only approve a sample-mode next phase and always blocks live execution while no approval record exists. How it stops: exit 2, nothing written, if step 4's output is missing or does not account for exactly the requests step 3 accepted and step 5 ran, or if the run envelope declares live calls, network or database writes. The recipe's four stop conditions are judged from evidence and recorded in the agent log, each with its own evidence string (a scan of this recipe's scripts, raw data and recipe for a hardcoded credential, the run envelope and the approval record, the sample folder and its manifest, and the report's provenance sections), and the report's run summary says how many triggered; if any does, the recommendation to approve turns to NO. `--now` pins the date. Evidence: the report and log for both folders, two runs giving identical bytes, and `scripts/tools/scenariostresstestingagent-report-self-test.py`, whose checks include a hardcoded key planted in a script, which must trip condition 1.
    Input: declared recipe inputs, prior step outputs, and gate decisions for `scenariostresstestingagent`.
    Output: summary, sources_checked, gate_results, findings, typed_todos, next_decision.
    Where output goes: `reports/generated/`
