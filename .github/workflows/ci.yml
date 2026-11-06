@@ -37,7 +37,8 @@ jobs:
         GATEKEEPER_SECRET_KEY: ci-test-secret-key
         ALERT_WEBHOOK_URL: http://localhost:5678/webhook/test
       run: |
-        python -m pytest tests/ -v
+        # Explicitly target ONLY the unit tests so we don't trigger live HTTP calls yet
+        python -m pytest tests/test_main.py tests/test_api.py -v
 
     - name: Start Gatekeeper Service via Docker Compose
       run: |
