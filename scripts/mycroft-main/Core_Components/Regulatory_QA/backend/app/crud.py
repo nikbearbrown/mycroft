@@ -172,13 +172,16 @@ class FeedCRUD:
             cursor.execute("SELECT COUNT(*) as total FROM regulatory_feeds")
             total = cursor.fetchone()['total']
             
-            # By urgency
+            # By urgency - bucketed from impact_level, the column email generation
+            # and every other consumer treats as authoritative (not re-derived from
+            # urgency_score, which disagrees with impact_level on a real fraction of
+            # rows once keyword-rule or LLM corrections land - see D1-VERIFICATION.md)
             cursor.execute("""
-                SELECT 
-                    COUNT(*) FILTER (WHERE urgency_score >= 8) as critical,
-                    COUNT(*) FILTER (WHERE urgency_score BETWEEN 6 AND 7) as high,
-                    COUNT(*) FILTER (WHERE urgency_score BETWEEN 4 AND 5) as medium,
-                    COUNT(*) FILTER (WHERE urgency_score <= 3) as low
+                SELECT
+                    COUNT(*) FILTER (WHERE impact_level = 'Critical') as critical,
+                    COUNT(*) FILTER (WHERE impact_level = 'High') as high,
+                    COUNT(*) FILTER (WHERE impact_level = 'Medium') as medium,
+                    COUNT(*) FILTER (WHERE impact_level = 'Low') as low
                 FROM regulatory_feeds
                 WHERE created_at >= NOW() - INTERVAL '7 days'
             """)
