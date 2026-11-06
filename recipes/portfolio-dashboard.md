@@ -3,7 +3,7 @@ status: DRAFT
 todos_open: 5
 last_gate: null
 attestation: null
-recipe_version: 0.2.0
+recipe_version: 0.2.1
 ---
 
 # Portfolio Dashboard
@@ -110,7 +110,7 @@ Sample mode (no live network calls, no writes):
 
 | Step | CLI Command | Flags |
 |---|---|---|
-| Verify provenance | `snickerdoodle run portfolio-dashboard --step verify-provenance` | `--sample` `--no-write` |
+| Verify provenance | `snickerdoodle run portfolio-dashboard --step verify-provenance` | `--called-recipe` `--now` `--out-dir` `--recipe` `--workflow` |
 | Ingest declared inputs | `snickerdoodle run portfolio-dashboard --step ingest-inputs` | `--sample` |
 | Validate data shape | `snickerdoodle run portfolio-dashboard --step validate-data-shape` | `--sample` |
 | Transform and quality check | `snickerdoodle run portfolio-dashboard --step transform-quality-check` | `--sample` |

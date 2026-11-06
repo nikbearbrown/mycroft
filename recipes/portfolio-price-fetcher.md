@@ -3,7 +3,7 @@ status: DRAFT
 todos_open: 3
 last_gate: null
 attestation: null
-recipe_version: 0.2.0
+recipe_version: 0.2.1
 ---
 
 # Portfolio Price Fetcher
@@ -115,11 +115,11 @@ Sample mode (no live network calls, no writes):
 
 | Step | CLI Command | Flags |
 |---|---|---|
-| Verify provenance | `snickerdoodle run portfolio-price-fetcher --step verify-provenance` | `--sample` `--no-write` |
+| Verify provenance | `snickerdoodle run portfolio-price-fetcher --step verify-provenance` | `--now` `--out-dir` `--recipe` `--sample-dir` `--workflow` |
 | Ingest declared inputs | `snickerdoodle run portfolio-price-fetcher --step ingest-inputs` | `--sample` |
-| Validate data shape | `snickerdoodle run portfolio-price-fetcher --step validate-data-shape` | `--sample` |
+| Validate data shape | `snickerdoodle run portfolio-price-fetcher --step validate-data-shape` | `--fixture-set` `--out-dir` `--raw-dir` `--workflow` |
 | Transform and quality check | `snickerdoodle run portfolio-price-fetcher --step transform-quality-check` | `--sample` |
-| Run approved tools | `snickerdoodle run portfolio-price-fetcher --step run-approved-tools` | `--sample` `--no-write` |
+| Run approved tools | `snickerdoodle run portfolio-price-fetcher --step run-approved-tools` | `--envelope` `--fixture-set` `--log-dir` `--verified-dir` `--workflow` |
 | Produce human report | `snickerdoodle run portfolio-price-fetcher --step produce-human-report` | `--sample` `--no-write` |
 
 ### Gate Commands

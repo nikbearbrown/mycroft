@@ -2,8 +2,8 @@
 status: RUNNABLE-SAMPLE
 todos_open: 0
 last_gate: "gate-5 deny, 2026-10-02, logs/RUN_LOG.md#2026-10-02"
-attestation: logs/attestations/market-sentiment-analysis-part-1-v0.2.0.md
-recipe_version: 0.2.0
+attestation: null  # v0.2.0 record voided by the v0.2.1 flag-table correction
+recipe_version: 0.2.1
 ---
 
 # Market Sentiment Analysis - Part 1
@@ -146,12 +146,12 @@ Sample mode (no live network calls, no writes):
 
 | Step | CLI Command | Flags |
 |---|---|---|
-| Verify provenance | `snickerdoodle run market-sentiment-analysis-part-1 --step verify-provenance` | `--sample` `--no-write` |
-| Ingest declared inputs | `snickerdoodle run market-sentiment-analysis-part-1 --step ingest-inputs` | `--sample` `--fixture-set` |
-| Validate data shape | `snickerdoodle run market-sentiment-analysis-part-1 --step validate-data-shape` | `--sample` `--fixture-set` |
-| Transform and quality check | `snickerdoodle run market-sentiment-analysis-part-1 --step transform-quality-check` | `--sample` `--fixture-set` |
-| Run approved tools | `snickerdoodle run market-sentiment-analysis-part-1 --step run-approved-tools` | `--sample` `--no-write` `--fixture-set` |
-| Produce human report | `snickerdoodle run market-sentiment-analysis-part-1 --step produce-human-report` | `--sample` `--no-write` `--fixture-set` |
+| Verify provenance | `snickerdoodle run market-sentiment-analysis-part-1 --step verify-provenance` | `--sample` |
+| Ingest declared inputs | `snickerdoodle run market-sentiment-analysis-part-1 --step ingest-inputs` | `--fixture-set` `--sample` |
+| Validate data shape | `snickerdoodle run market-sentiment-analysis-part-1 --step validate-data-shape` | `--fixture-set` `--run-dir` `--sample` |
+| Transform and quality check | `snickerdoodle run market-sentiment-analysis-part-1 --step transform-quality-check` | `--fixture-set` `--sample` `--verified-dir` |
+| Run approved tools | `snickerdoodle run market-sentiment-analysis-part-1 --step run-approved-tools` | `--fixture-set` `--input-dir` `--no-write` `--sample` |
+| Produce human report | `snickerdoodle run market-sentiment-analysis-part-1 --step produce-human-report` | `--fixture-set` `--no-write` `--run-id` `--sample` |
 
 ### Gate Commands
 

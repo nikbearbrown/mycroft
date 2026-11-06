@@ -3,7 +3,7 @@ status: DRAFT
 todos_open: 3
 last_gate: null
 attestation: null
-recipe_version: 0.2.0
+recipe_version: 0.2.1
 ---
 
 # What-If Simulation Agent
@@ -124,11 +124,11 @@ Sample mode (no live network calls, no writes):
 
 | Step | CLI Command | Flags |
 |---|---|---|
-| Verify provenance | `snickerdoodle run what-if-simulation-agent --step verify-provenance` | `--sample` `--no-write` |
+| Verify provenance | `snickerdoodle run what-if-simulation-agent --step verify-provenance` | `--now` `--repo` |
 | Ingest declared inputs | `snickerdoodle run what-if-simulation-agent --step ingest-inputs` | `--sample` |
-| Validate data shape | `snickerdoodle run what-if-simulation-agent --step validate-data-shape` | `--sample` |
+| Validate data shape | `snickerdoodle run what-if-simulation-agent --step validate-data-shape` | `--out` `--sample-dir` |
 | Transform and quality check | `snickerdoodle run what-if-simulation-agent --step transform-quality-check` | `--sample` |
-| Run approved tools | `snickerdoodle run what-if-simulation-agent --step run-approved-tools` | `--sample` `--no-write` |
+| Run approved tools | `snickerdoodle run what-if-simulation-agent --step run-approved-tools` | `--now` `--output-dir` `--simulation-id` `--timestamp` |
 | Produce human report | `snickerdoodle run what-if-simulation-agent --step produce-human-report` | `--sample` `--no-write` |
 
 ### Gate Commands

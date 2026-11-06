@@ -123,3 +123,27 @@ of the format. What it attests to is a thoroughly tested *sample* recipe, not a 
    its scripts voids this one.
 
 Steps 1 and 2 are code. Step 3 is a judgment that has already been made once, and made *no*.
+
+---
+
+## Voided — 2026-11-05
+
+This attestation no longer binds. Point 5 above states the rule it is being held to: any
+edit to the recipe or its scripts voids it.
+
+**What changed:** the recipe's Step Commands table was corrected at v0.2.1. It advertised
+`--no-write` on verify-provenance, which that script does not implement, and omitted four
+flags the scripts do implement (`--run-dir`, `--verified-dir`, `--input-dir`, `--run-id`).
+The table is not documentation — `snickerdoodle run` uses it to decide what to pass
+through — so the entry was a live defect, not a typo.
+
+**No script was edited.** The six step scripts are byte-identical to the ones exercised in
+the Tested table below, so every row there still describes behaviour that is still true.
+What is no longer true is the binding: the attestation was taken against recipe v0.2.0,
+and the recipe is now v0.2.1.
+
+**What this costs:** a fresh attestation against v0.2.1, which is cheap — the Tested table
+can be re-run as written. It is recorded rather than quietly re-pointed because an
+attestation that follows its recipe across edits is not evidence of anything.
+
+The record is kept in full. Nothing above this line was changed.

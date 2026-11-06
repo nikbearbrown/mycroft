@@ -3,7 +3,7 @@ status: DRAFT
 todos_open: 1
 last_gate: null
 attestation: null
-recipe_version: 0.3.1
+recipe_version: 0.3.2
 ---
 
 # ScenarioStressTestingAgent
@@ -133,12 +133,12 @@ Sample mode (no live network calls, no writes):
 
 | Step | CLI Command | Flags |
 |---|---|---|
-| Verify provenance | `snickerdoodle run scenariostresstestingagent --step verify-provenance` | `--sample` `--no-write` |
+| Verify provenance | `snickerdoodle run scenariostresstestingagent --step verify-provenance` | `--no-write` `--now` `--repo` `--sample-dir` `--workflow` |
 | Ingest declared inputs | `snickerdoodle run scenariostresstestingagent --step ingest-inputs` | `--sample` |
-| Validate data shape | `snickerdoodle run scenariostresstestingagent --step validate-data-shape` | `--sample` |
-| Transform and quality check | `snickerdoodle run scenariostresstestingagent --step transform-quality-check` | `--sample` |
-| Run approved tools | `snickerdoodle run scenariostresstestingagent --step run-approved-tools` | `--sample` `--no-write` |
-| Produce human report | `snickerdoodle run scenariostresstestingagent --step produce-human-report` | `--sample` `--no-write` |
+| Validate data shape | `snickerdoodle run scenariostresstestingagent --step validate-data-shape` | `--out` `--sample-dir` |
+| Transform and quality check | `snickerdoodle run scenariostresstestingagent --step transform-quality-check` | `--verified-dir` |
+| Run approved tools | `snickerdoodle run scenariostresstestingagent --step run-approved-tools` | `--no-write` `--now` `--sample-dir` |
+| Produce human report | `snickerdoodle run scenariostresstestingagent --step produce-human-report` | `--folder` `--no-write` `--now` |
 
 ### Gate Commands
 
