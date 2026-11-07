@@ -228,9 +228,15 @@ are still graded per bond. Evidence: [`docs/universe_v1_review.md`](docs/univers
 | P35 | **Face-only "outstanding" is unreliable.** A repaid sterling note with no balance tag, only a face dated at the period end. | Week 2 held-out check (Digital Realty 10-Q). | **Fixed (Week 3):** a face-only bond due by the report's year, in a report that tags balances for its other debt, is repaid. (Requiring a balance tag outright was rejected: it drops new issues tagged only by face.) |
 | P36 | **Filer tagging errors on currency.** A dollar exchangeable note's face tagged in euros. | Same. | **Fixed (Week 3):** when face and carrying are tagged in different units and the label names no currency, the currency is unknown and does not block a match. |
 | P37 | **Translated face amounts.** Euro notes' face tagged as dollar translations, so the key's principal is in another currency from the printed one. | Same (principal 4 of 20 agree). | **Fixed (Week 3):** principal is scored only when the key's currency is known or equals the ledger's. |
-| P38 | **Over-allotment tagged as its own bond.** The banks' $300 m option on a convertible is a separate member, although the base bond's amount already includes it — a double count. | Week 3 fresh held-out check (Super Micro 10-K FY2025). | Open (Week 4): an over-allotment member belongs to its base bond. |
-| P39 | **Small notes with no maturity anywhere in the XBRL.** Names carry the lender (HMC, Trilogy …), not a year; the year is only a printed column. | Week 3 fresh held-out check (Core Scientific 10-Q; 1 key bond vs 6 printed). | Open (Week 4): such instruments cannot be graded per bond; narrow the report's level or its truth. |
+| P38 | **Over-allotment tagged as its own bond.** The banks' $300 m option on a convertible is a separate member, although the base bond's amount already includes it — a double count. | Week 3 fresh held-out check (Super Micro 10-K FY2025). | **Fixed (Week 4):** a bond member named for an over-allotment (or greenshoe) with a base bond of the same maturity is a *component*, not a bond (19 such members across the key, all at Super Micro and TeraWulf). |
+| P39 | **Small notes with no maturity anywhere in the XBRL.** Names carry the lender (HMC, Trilogy …), not a year; the year is only a printed column. | Week 3 fresh held-out check (Core Scientific 10-Q; 1 key bond vs 6 printed). | **Fixed (Week 4), by narrowing the truth:** a ledger bond that is one of the key's instruments with no maturity (same currency, amount within 1%/2%, same coupon where both state one) is set aside — neither a match nor an extra — and counted (`grader.covered_by_unkeyed`). |
 | P40 | **A coupon found inside another number.** The change search read "0%" inside "escalates 20%" and credited a 0% 2031 convertible to an earnings release. | Week 3 triage report (Core Scientific). | **Fixed (Week 3):** a coupon must start a number; the notes are credited to the 8-K that announced them. Week 2's counts unchanged. |
+| P41 | **Total debt from half a pair.** The key sums "long-term debt, noncurrent + current", but a filer tags the current part under a tag the key does not read (`LongTermDebtAndCapitalLeaseObligationsCurrent`), so the total is the noncurrent part alone. | Week 4 fresh held-out check (Constellation 10-Q: $7,321 m vs $8,358 m printed). | Open (Week 5): a pair with a missing half is not a total. |
+| P42 | **One bond under two members.** The same notes tagged twice, once with a coupon and once without, same maturity and amount. | Week 4 fresh held-out check (Marvell 10-Q: 4.875% 2028 notes, $499.9 m twice). | Open (Week 5): two members with the same maturity and amount, one without a coupon, are one bond. |
+| P43 | **A member naming a range of maturities.** "Oregon and Arizona Bonds Due 2035 To 2040" (printed 3.80%–4.10%, one line) is read as one 2035 bond. | Week 4 fresh held-out check (Intel 10-K FY2024). | Open (Week 5): a member naming a year range is several bonds, like P31's combined members. |
+| P44 | **L1 with nothing to grade per bond.** No instrument carries a maturity and no total is tagged, so coverage is measured against the report's own instruments; and a note's face tag is its commitment ($125 m), not what is drawn ($105 m). | Week 4 fresh held-out check (Applied Digital 10-Q). | Open (Week 5): L1 needs at least one keyed bond and a measured total. |
+| P45 | **One document, two accessions.** A co-issued term sheet is filed under each co-issuer's CIK with different accession numbers, so de-duplicating co-filings by accession keeps both copies. | Week 4 fresh triage set (Dell's October 2024 term sheet, under Dell International and EMC). | Open (Week 5): de-duplicate by document content, not accession. |
+| P46 | **A preliminary cover blank down to the century.** `€ % Notes due` (no "20") escapes the Week 4 blank-cover pattern, and rule R2 then reads "Preferred Stock" in the cover's contents as an equity offering. | Week 4 fresh triage check (IBM euro notes, Feb 2025) — the only miss, 8 of 9. | Open (Week 5): not fixed against the set that found it; a third fresh triage check follows the fix. |
 
 ## 3.5 How the data is used
 
@@ -577,6 +583,14 @@ in a filing it could read ([`docs/changes_dev.md`](docs/changes_dev.md)). B0 ope
 report itemised finely enough (it walks back for Intel- and Oracle-style annual-only itemisers) and
 sweeps bonds by maturity year.
 
+*B1, B2 and the event reader measured in week 4* ([`docs/reader.md`](docs/reader.md)), on the 24 debt-relevant
+filings of Week 3's labelled triage set (66 instruments, truth labelled before any run and checked against the
+next report's XBRL): **B1 135 of 160 fields (84%)**; **B2 160 of 160 (100%)**; **the event reader 157 of 167
+(94%)**. B2 is run with `qwen3:4b`, not `qwen3:8b` as first planned, so the comparison holds the model fixed.
+The reader passes the week 4 check (beats B1), but B2 reads numbers at least as well on these documents; the
+reader's gain is provenance — every value is parsed by code from a cited passage, and copies no passage contains
+are refused (8 this week were currency signs the model rewrote).
+
 ## 9.4 Ablations
 
 | | Change | Question answered |
@@ -656,6 +670,8 @@ quarters). Full results in [`docs/feasibility.md`](docs/feasibility.md):
 | *Week 1:* matching on L1-graded episodes (dev) | **93.4%** — pass (all episodes 85%, the gap being Intel's and Oracle's 10-Q tagging, graded at L3) |
 | *Week 1:* bake-off, no hints, 29 documents | `qwen3:4b` **95% of fields**, 29/29 JSON, ≤ 12.6 s — pass; `qwen3:8b` 84% |
 | *Week 3:* triage on 50 labelled filings | recall **24 of 24 (100%)**, precision 92%, all 22 of Week 2's announcement filings kept; the model decided 34% of 593 filings at 3.1 s each — pass |
+| *Week 4:* triage on a fresh labelled set | recall **8 of 9 (89%)** — **below the 95% line** (P46, a blank preliminary cover); the Week 3 set, now a calibration, 24 of 24 |
+| *Week 4:* event reader vs B1 on the 24 labelled filings | **94% vs 84%** of fields — pass; B2 (one call, model types numbers) 100% |
 
 Verdict: **go.**
 
@@ -687,27 +703,33 @@ data/raw/AI_Debt_Tracker/
                    ledger.py  debt_signals.py
     documents/     parse.py  store.py         # filing HTML -> addressable headings/sentences/tables [week 3]
     graph/         nodes/timeline.py  nodes/triage.py                                                [week 3]
+                   nodes/reader.py            # event reader: points at passages, code parses           [week 4]
                    state.py  supervisor.py  scheduler.py  nodes/…
     ledger/        parsers.py  matcher.py                                                            [week 1]
+                   values.py                  # amounts, rates, maturity years from cited words         [week 4]
                    engine.py  checks.py
     llm/           ollama_client.py  schemas.py
     signals/       compute.py  contract.py
     eval/          fsn.py  answer_key.py                                                             [week 1]
                    grader.py  baselines/carry_forward.py                                             [week 2]
+                   baselines/regex_reader.py (B1)  baselines/single_call.py (B2)                     [week 4]
                    metrics.py   # nothing outside eval/ may import eval/ (enforced by a test)
   scripts/         probe_debt_filings.py  spike_*.py                                                  [week 0]
                    review_universe.py  select_generalisation.py  build_splits.py
                    load_answer_key.py  f1_matching.py  bakeoff.py                                    [week 1]
                    build_answer_key.py  score_baseline.py  handcheck.py  explain_changes.py           [week 2]
                    triage_eval.py                                                                    [week 3]
+                   reader_eval.py                                                                    [week 4]
                    demo.py
   manifests/       dev.csv  test.csv  generalisation.csv  week1_gate.json                            [week 1]
                    handcheck/<episode>.json   (13 transcriptions of printed debt tables)  week2_gate.json [week 2]
                    handcheck/ +5 (fresh held-out)  triage_labels.json  week3_gate.json               [week 3]
+                   handcheck/ +5  triage_labels_w4.json  reader_truth.json  week4_gate.json          [week 4]
   docs/            feasibility.md  worklog.md  universe_v1_review.md  answer_key_week1.md
                    bakeoff.md  bakeoff_set.md  week1_review.md                                       [week 1]
                    answer_key.md  baseline_b0.md  handcheck.md  changes_dev.md                       [week 2]
                    triage.md  triage_labels.md                                                       [week 3]
+                   reader.md  reader_truth.md  triage_labels_w4.md                                   [week 4]
                    archive/   (superseded: universe_draft.json, run_log_pending.md)
                    (later: findings.md, demo.md, mcp_server.md)
   tests/
@@ -787,5 +809,17 @@ change-search coupon bug) found by the triage report and fixed.
 **Week 3 gate** (`manifests/week3_gate.json`): Om Mali delegated the whole week in advance and did not
 review it; the record says so, and every judgment in it is labelled as Claude's.
 
-**Week 4 begins with** P38–P39 and another fresh held-out check, a fresh triage check on new filings (the
-`Item1.01` spacing and blank-cover 424B cases), then the event reader and baselines B1/B2 (§11).
+*Done in week 4 (7 November 2026):* P38–P39 fixed (Week 3's held-out set now 3 of 3, a calibration); a fresh
+held-out hand-check of five reports drawn before reading — **1 of 5** agree (Amazon), four new answer-key defects
+P41–P44 left open. The two triage weaknesses from Week 3 fixed, and a fresh 50-filing set labelled before the run:
+**recall 8 of 9 — below the 95% line** (P46); one document turned out to be in both sets (P45). The event reader
+(`graph/nodes/reader.py`, code parsers in `ledger/values.py`) and baselines B1 (regex) and B2 (one call): on the
+24 labelled filings **reader 94%, B1 84%, B2 100%** of fields ([`docs/reader.md`](docs/reader.md)).
+
+**Week 4 gate** (`manifests/week4_gate.json`): Om Mali delegated the week in advance and did not review it. The
+reader passes its check; the fresh triage check does not, and the record says so. Whether that blocks Week 5 is
+the reviewer's decision (§11: "if a check fails, fix it before moving on").
+
+**Week 5 begins with** P46 and P45 and a third fresh triage check, P41–P44 and another fresh held-out hand-check,
+and the three reader defects (currency signs, amount-only facility sentences, existing-debt tables), measured on
+fresh filings — then the supervisor, the ledger engine and the first full episodes (§11).

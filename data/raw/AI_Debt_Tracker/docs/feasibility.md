@@ -151,3 +151,6 @@ changes are never announced in a filing" would itself be a useful finding for My
 | 2026-10-23 | Hand-check (week 2 check) | 10 of 10 calibration, 2 of 3 held-out | **Accepted** — **Om Mali**, 2026-10-23 (`manifests/week2_gate.json`); transcriptions are Claude's model judgment |
 | 2026-10-31 | Fresh held-out hand-check (after P35–P37) | 1 of 3 gradable agree; P38–P39 found, left open | — (evidence only) |
 | 2026-10-31 | Triage (week 3 check) | recall 24 of 24, precision 92% on 50 labelled filings; 22 of 22 Week 2 announcements kept — pass | **Delegated** in advance by **Om Mali**, not reviewed (`manifests/week3_gate.json`); labels are Claude's model judgment |
+| 2026-11-07 | Fresh held-out hand-check (after P38–P39) | 1 of 5 agree (Amazon); P41–P44 found, left open | — (evidence only) |
+| 2026-11-07 | Fresh triage check | recall 8 of 9 (89%) — **below the 95% line**; the miss is a blank preliminary cover (P46), left open | — (evidence; part of the Week 4 gate record) |
+| 2026-11-07 | Event reader (week 4 check) | 157 of 167 fields (94%) vs B1 84% — pass; B2 100% | **Delegated** in advance by **Om Mali**, not reviewed (`manifests/week4_gate.json`); truth is Claude's model judgment |

@@ -252,6 +252,47 @@ def covered_by_offerings(target: dict, unmatched: list[dict], max_size: int = 6)
     return covered
 
 
+def unkeyed_instruments(target: dict) -> list[dict]:
+    """Outstanding bonds and loans the key holds but cannot identify bond by bond (P39): no maturity
+    year in the member, the label or a date tag. Core Scientific's September 2024 10-Q tags its HMC,
+    Didado and Trilogy notes with a 5.0% rate and a balance, and their years exist only in a printed
+    column. Subtotals (≥ 50% of what the report tags) are left out, as in `truth_bonds`."""
+    outs = [i for i in target["instruments"] if i["outstanding"] and i["klass"] in ("bond", "other")]
+    tagged = sum(i.get("amount_usd") or 0 for i in outs)
+    out = []
+    for i in outs:
+        if i.get("maturity_year"):
+            continue
+        p, basis = principal_of(i)
+        if p and not (tagged and (i.get("amount_usd") or 0) >= 0.5 * tagged):
+            out.append({"member": i["member"], "currency": i.get("currency") or "USD", "coupon_pct": i.get("rate"),
+                        "principal": p, "principal_basis": basis})
+    return out
+
+
+def covered_by_unkeyed(target: dict, unmatched: list[dict]) -> int:
+    """Unmatched ledger bonds that are one of the key's unidentifiable instruments (P39): same currency,
+    principal within 1% of face (2% of carrying), and the same coupon wherever both state one. The key
+    cannot say whether such a bond's maturity is right, so it is set aside — neither a match nor an
+    extra — and counted. Each key instrument vouches for at most one ledger bond."""
+    pool = unkeyed_instruments(target)
+    used, covered = set(), 0
+    for b in unmatched:
+        for k, u in enumerate(pool):
+            if k in used or (b.get("currency") or "USD") != u["currency"]:
+                continue
+            tol = PRINCIPAL_TOL if u["principal_basis"] == "face" else CARRYING_TOL
+            if not _close(u["principal"], b.get("principal"), tol):
+                continue
+            if u["coupon_pct"] is not None and b.get("coupon_pct") is not None \
+                    and abs(u["coupon_pct"] - b["coupon_pct"]) > RATE_TOL:
+                continue
+            used.add(k)
+            covered += 1
+            break
+    return covered
+
+
 # ------------------------------------------------------------------------------------ grading
 def grade_l1(target: dict, ledger: dict, start: dict | None = None) -> dict:
     truth = truth_bonds(target)
@@ -269,12 +310,16 @@ def grade_l1(target: dict, ledger: dict, start: dict | None = None) -> dict:
             tol = PRINCIPAL_TOL if truth[r]["principal_basis"] == "face" else CARRYING_TOL
             p_ok += _close(tp, lp, tol)
     matched_truth = {r for r, _ in pairs}
-    covered = covered_by_offerings(target, [bonds[c] for c in range(len(bonds)) if c not in {c_ for _, c_ in pairs}])
+    unmatched = [bonds[c] for c in range(len(bonds)) if c not in {c_ for _, c_ in pairs}]
+    covered = covered_by_offerings(target, unmatched)
+    # P39: what the offering totals did not vouch for may still be an instrument the key cannot key
+    unkeyed = covered_by_unkeyed(target, unmatched) if len(unmatched) > covered else 0
+    unkeyed = min(unkeyed, len(unmatched) - covered)
     out = {"truth": len(truth), "ledger": len(bonds), "matched": len(pairs),
            "principal_scored": p_scored, "principal_ok": p_ok, "principal_unstated": p_unstated,
-           "covered_by_offering": covered,
+           "covered_by_offering": covered, "covered_by_unkeyed": unkeyed,
            "missed": [truth[r]["member"] for r in range(len(truth)) if r not in matched_truth],
-           "extra": len(bonds) - len(pairs) - covered}
+           "extra": len(bonds) - len(pairs) - covered - unkeyed}
     if start is not None:
         prev = truth_bonds(start)
         carried = {r for r, _ in assign(truth, prev, _bond_cost)}
@@ -333,9 +378,11 @@ def summarise(results: list[dict]) -> dict:
     l1 = [r["l1"] for r in results if "l1" in r]
     if l1:
         a = lambda k: np.array([x.get(k, 0) for x in l1], dtype=float)  # noqa: E731
-        claimed = a("ledger") - a("covered_by_offering")   # bonds a report's offering totals vouch for are not extras
+        # bonds a report's offering totals vouch for, or that are instruments the key cannot key (P39), are not extras
+        claimed = a("ledger") - a("covered_by_offering") - a("covered_by_unkeyed")
         out["l1"] = {"episodes": len(l1), "truth": int(a("truth").sum()), "ledger": int(a("ledger").sum()),
                      "matched": int(a("matched").sum()), "covered_by_offering": int(a("covered_by_offering").sum()),
+                     "covered_by_unkeyed": int(a("covered_by_unkeyed").sum()),
                      "recall": _ratio_ci(a("matched"), a("truth")), "precision": _ratio_ci(a("matched"), claimed),
                      "principal_accuracy": _ratio_ci(a("principal_ok"), a("principal_scored")),
                      "exact_episodes": int(sum(x["matched"] == x["truth"] and x["extra"] == 0 for x in l1))}

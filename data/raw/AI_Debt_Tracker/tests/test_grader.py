@@ -174,3 +174,13 @@ def test_p37_translated_principal_is_not_scored():
     assert g["matched"] == 1 and g["principal_scored"] == 0
     g = grade_l1(rec([i], totals={}), {"instruments": [bond(1.125, 2028, 5.4855e8, "USD")]})
     assert g["principal_scored"] == 1 and g["principal_ok"] == 1
+
+
+def test_p39_printed_bond_the_key_holds_without_a_maturity_is_set_aside():
+    """Core Scientific: small notes tagged with a rate and a balance but no maturity anywhere. A ledger
+    bond that is one of them (same amount and coupon) is neither a match nor an extra; one that is not
+    stays an extra."""
+    target = rec([inst("ConvertibleNotes2029", 3.0, 2029, 4.6e8), inst("HCMNote", 5.0, None, 1.0764e7)])
+    led = {"instruments": [bond(3.0, 2029, 4.6e8), bond(5.0, 2026, 1.0764e7), bond(7.0, 2027, 2e7)]}
+    g = grade_l1(target, led)
+    assert (g["matched"], g["covered_by_unkeyed"], g["extra"]) == (1, 1, 1)

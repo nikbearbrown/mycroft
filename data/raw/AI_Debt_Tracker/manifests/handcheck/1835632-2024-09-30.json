@@ -1,0 +1,81 @@
+{
+ "episode": "1835632-2024-09-30",
+ "company": "Marvell",
+ "report": "10-Q 20241102",
+ "level": "L1",
+ "status": "reviewed",
+ "holdout": "week 4",
+ "reviewer": "Claude (model judgment, P8), 2026-11-07",
+ "source": "printed debt table / balance sheet / debt note text in the report's HTML",
+ "source_rows": "debt table (in millions) rows 284-298; balance sheet rows 47 and 49",
+ "review": "Face value outstanding at Nov 2 2024: the 2026 term loan (5-year tranche) $623.4 m and six senior notes. Net carrying amount of debt $4,094.9 m, current portion $129.4 m (balance sheet: short-term debt $129.4 m, long-term debt $3,965.5 m). The maturity schedule is by fiscal year (remainder of FY2025 $32.8 m, FY2026 $131.2 m ...), not the next twelve months, so no 12-month figure is recorded. Process note: before this transcription, the answer key's *totals* for the five Week 4 held-out reports were printed once by mistake while checking which totals the key tags; the values below are read from the printed report only, each with its source row.",
+ "instruments": [
+  {
+   "kind": "facility",
+   "currency": "USD",
+   "coupon_pct": null,
+   "maturity_year": 2026,
+   "principal": 623400000.0,
+   "amount_usd": 623400000.0,
+   "row": "2026 Term Loan - 5-Year Tranche | 623.4"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 4.875,
+   "maturity_year": 2028,
+   "principal": 499900000.0,
+   "amount_usd": 499900000.0,
+   "row": "4.875 % MTG/MTI 2028 Senior Notes | 499.9"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 1.65,
+   "maturity_year": 2026,
+   "principal": 500000000.0,
+   "amount_usd": 500000000.0,
+   "row": "1.650 % 2026 Senior Notes | 500.0"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 2.45,
+   "maturity_year": 2028,
+   "principal": 750000000.0,
+   "amount_usd": 750000000.0,
+   "row": "2.450 % 2028 Senior Notes | 750.0"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 5.75,
+   "maturity_year": 2029,
+   "principal": 500000000.0,
+   "amount_usd": 500000000.0,
+   "row": "5.750 % 2029 Senior Notes | 500.0"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 2.95,
+   "maturity_year": 2031,
+   "principal": 750000000.0,
+   "amount_usd": 750000000.0,
+   "row": "2.950 % 2031 Senior Notes | 750.0"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 5.95,
+   "maturity_year": 2033,
+   "principal": 500000000.0,
+   "amount_usd": 500000000.0,
+   "row": "5.950 % 2033 Senior Notes | 500.0"
+  }
+ ],
+ "totals": {
+  "total_debt": 4094900000.0,
+  "current": 129400000.0
+ }
+}

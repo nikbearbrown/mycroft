@@ -1,0 +1,17 @@
+{
+ "episode": "1868275-2025-03-31",
+ "company": "Constellation Energy",
+ "report": "10-Q 20250331",
+ "level": "L3",
+ "status": "reviewed",
+ "holdout": "week 4",
+ "reviewer": "Claude (model judgment, P8), 2026-11-07",
+ "source": "printed debt table / balance sheet / debt note text in the report's HTML",
+ "source_rows": "Constellation Energy Corp. balance sheet (in millions) rows 279 and 285; fair-value table row 616",
+ "review": "Totals only (the episode's level), from Constellation Energy Corporation's balance sheet at Mar 31 2025: long-term debt due within one year $1,037 m and long-term debt $7,321 m, so total debt $8,358 m (the fair-value note prints the same $8,358 m 'Long-Term Debt, including amounts due within one year'). No commercial paper or short-term borrowings outstanding (the liquidity table shows none). Process note: before this transcription, the answer key's *totals* for the five Week 4 held-out reports were printed once by mistake while checking which totals the key tags; the values below are read from the printed report only, each with its source row.",
+ "instruments": [],
+ "totals": {
+  "total_debt": 8358000000.0,
+  "current": 1037000000.0
+ }
+}

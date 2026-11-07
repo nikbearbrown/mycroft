@@ -8,16 +8,16 @@ Reads nothing. It takes the last report itemised finely enough for the episode's
 
 ## Results
 
-**L1 — per bond** (47 episodes, 587 true bonds):
+**L1 — per bond** (47 episodes, 586 true bonds):
 
-- Bond recall: **90.8%** (87.5%–93.6%)
-- Bond precision: **90.0%** (85.6%–93.8%)
+- Bond recall: **91.0%** (87.7%–93.7%)
+- Bond precision: **92.2%** (88.6%–95.0%)
 - Principal accuracy on matched bonds: **99.2%** (98.0%–100.0%)
-- Episodes reproduced exactly (every bond, nothing extra): **18 of 47**
+- Episodes reproduced exactly (every bond, nothing extra): **19 of 47**
 
 **Change detection** (42 episodes whose start report is itemised too; 21 of them have at least one bond added or removed):
 
-- New bonds caught: **0.0%** (0.0%–0.0%) of 35
+- New bonds caught: **0.0%** (0.0%–0.0%) of 34
 - Removed bonds caught: **6.7%** (0.0%–21.1%) of 15
 
 B0 cannot catch a new bond by construction; it catches a removal only when the bond's maturity year has passed. **This is the headroom:** every new bond, and every early repayment, is something only reading the filings can find.
@@ -42,19 +42,19 @@ Most reports tag the maturity ladder only in the annual report, so a carried-for
 | Group | Episodes | Bond recall | Bond precision | Exact |
 |---|---|---|---|---|
 | ai_software | 8 | 93.8% | 100.0% | 7 |
-| chips_hardware | 23 | 91.3% | 91.6% | 11 |
-| datacentre_neocloud | 15 | 92.4% | 85.5% | 0 |
+| chips_hardware | 23 | 91.6% | 95.3% | 12 |
+| datacentre_neocloud | 15 | 92.4% | 86.3% | 0 |
 | hyperscaler | 1 | 77.8% | 94.6% | 0 |
 
 ## Where B0 is wrong most (L1)
 
 | Company | Episode | Bonds missed | Extra bonds |
 |---|---|---|---|
-| Intel | 50863-2024-12-31 | 4 | 12 |
 | Oracle | 1341439-2025-06-30 | 10 | 2 |
-| Broadcom | 1730168-2024-09-30 | 4 | 4 |
-| Broadcom | 1730168-2024-12-31 | 4 | 3 |
+| Broadcom | 1730168-2024-09-30 | 4 | 3 |
 | Core Scientific | 1839341-2024-09-30 | 1 | 6 |
+| Intel | 50863-2024-12-31 | 4 | 3 |
+| Broadcom | 1730168-2024-12-31 | 4 | 2 |
 | Broadcom | 1730168-2025-06-30 | 4 | 2 |
 | Core Scientific | 1839341-2024-12-31 | 1 | 4 |
 | Core Scientific | 1839341-2025-03-31 | 0 | 4 |

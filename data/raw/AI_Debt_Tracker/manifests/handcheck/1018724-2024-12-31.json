@@ -1,0 +1,20 @@
+{
+ "episode": "1018724-2024-12-31",
+ "company": "Amazon",
+ "report": "10-K 20241231",
+ "level": "L3",
+ "status": "reviewed",
+ "holdout": "week 4",
+ "reviewer": "Claude (model judgment, P8), 2026-11-07",
+ "source": "printed debt table / balance sheet / debt note text in the report's HTML",
+ "source_rows": "Note 6 Debt table (in millions) rows 464-475; maturity rows 476-483",
+ "review": "Totals only (the episode's level). At Dec 31 2024: total face value of long-term debt $58,000 m (six note issuances; the credit facility shows '\u2014'), unamortized discount and issuance costs $360 m, current portion $5,017 m and long-term debt $52,623 m, so total debt on the balance-sheet basis $57,640 m. Face due 2025 $5,000 m, 2026-2029 $16,750 m (2,750 + 8,750 + 2,250 + 3,000), thereafter $36,250 m. Process note: before this transcription, the answer key's *totals* for the five Week 4 held-out reports were printed once by mistake while checking which totals the key tags; the values below are read from the printed report only, each with its source row.",
+ "instruments": [],
+ "totals": {
+  "total_debt": 57640000000.0,
+  "current": 5017000000.0,
+  "due_next_12m": 5000000000.0,
+  "due_2_5": 16750000000.0,
+  "due_after_5": 36250000000.0
+ }
+}

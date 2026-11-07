@@ -22,11 +22,11 @@
   {
    "kind": "bond",
    "currency": "USD",
-   "coupon_pct": 0.0,
+   "coupon_pct": 3.5,
    "maturity_year": 2029,
    "principal": 1725000000.0,
    "amount_usd": 1725000000.0,
-   "row": "$1,725.0 million aggregate principal amount of 0.0% Convertible Senior Notes due 2029"
+   "row": "$1,725.0 million aggregate principal amount of 0.0% Convertible Senior Notes due 2029 [coupon corrected 2026-11-07: amended to 3.5% in February 2025]"
   },
   {
    "kind": "bond",
@@ -83,5 +83,13 @@
    "row": "Mega Bank Term Loan Facility, due October 3, 2026 | 17,098"
   }
  ],
- "totals": {}
+ "totals": {},
+ "corrections": [
+  {
+   "date": "2026-11-07",
+   "by": "Claude (model judgment, P8)",
+   "what": "2029 convertible notes coupon 0.0% -> 3.5%",
+   "why": "Week 3's transcription read the notes' original terms; Note 8 says they were amended in February 2025 to bear 3.5%. Disclosed in Week 3 (docs/handcheck.md) and corrected in Week 4, when the set was no longer held out."
+  }
+ ]
 }

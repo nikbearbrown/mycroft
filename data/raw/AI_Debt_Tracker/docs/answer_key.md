@@ -6,7 +6,7 @@
 
 - **1093** reports from **100** companies (25 AI, 75 generalisation); 798 of them for quarters inside the dev and test windows.
 - Finest level each report supports: **L1 900**, **L2 41**, **L3 152**.
-- Bonds in the key (outstanding, with a maturity year): **9,630**.
+- Bonds in the key (outstanding, with a maturity year): **9,629**.
 - Episodes in `manifests/dev.csv` and `test.csv` without their start or target record: **0**.
 
 ## Anomalies (counted, not hidden)

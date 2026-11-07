@@ -52,6 +52,7 @@ CARRYING_ORDER = ("DebtInstrumentCarryingAmount", "LongTermDebt", "LongTermDebtG
 # IBM tags its debt by maturity year ("Maturing 2027", "Maturing 2026-2028"): buckets, not instruments
 BUCKET = re.compile(r"^(maturing|maturity|maturities|due)( in)?( (19|20)\d\d)+(( to| through| -|-)? ?(19|20)\d\d)?$", re.I)
 L1_COVERAGE = 0.8
+OVERALLOTMENT = re.compile(r"over-?\s?allot|greenshoe", re.I)
 FACILITY_KINDS = {"revolver", "term_loan", "delayed_draw", "credit_facility", "commercial_paper"}
 TOTALS = {
     "long_term_debt": "LongTermDebt", "long_term_debt_noncurrent": "LongTermDebtNoncurrent",
@@ -88,7 +89,7 @@ class Instrument:
     axis: str
     label: str | None
     custom: bool
-    klass: str                     # bond | offering | facility | category | other
+    klass: str                     # bond | offering | facility | category | other | component (P38)
     kind: str | None
     outstanding: bool
     outstanding_from: str | None = None   # "balance at period end" | "face at period end"
@@ -308,6 +309,18 @@ class AnswerKey:
                         and i.maturity_year <= year):
                     i.outstanding = False
                     i.outstanding_from = "face only, due by the report year, balances tagged elsewhere (P35)"
+        # P38: the banks' over-allotment option is part of its base bond, not a second bond. Super
+        # Micro tags "Convertible Senior Notes Due 2030, Overallotment Option" ($300 m) beside the
+        # 2030 notes, whose $2.3 bn already includes it (Week 3 fresh held-out check). A member named
+        # for an over-allotment (or greenshoe) with a base bond of the same maturity year is a component.
+        for i in out:
+            text = f"{i.member} {i.label or ''}"
+            if i.klass == "bond" and OVERALLOTMENT.search(text):
+                base = [b for b in out if b is not i and b.klass == "bond" and not OVERALLOTMENT.search(f"{b.member} {b.label or ''}")
+                        and b.maturity_year == i.maturity_year and b.maturity_year is not None]
+                if base:
+                    i.klass = "component"
+                    i.parse_notes = i.parse_notes + [f"over-allotment of {base[0].member} (P38)"]
         out.sort(key=lambda i: (i.klass, i.maturity_year or 0, i.rate or 0, i.member))
         return out, dict(skipped)
 

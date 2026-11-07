@@ -216,3 +216,19 @@ def test_p36_conflicting_face_and_carrying_units_make_the_currency_unknown(key):
                        "qtrs": "0", "uom": "EUR", "dimh": "0xb3", "coreg": "", "value": "1150000000", "dcml": "-6"})
     i = by_member(key)[0]["IssuanceOfLongTermDebtEight"]
     assert i.currency_from == "conflict"
+
+
+def test_p38_over_allotment_member_is_a_component_of_its_base_bond(key):
+    """Super Micro: "Convertible Senior Notes Due 2030, Overallotment Option" beside the 2030 notes,
+    whose amount already includes it (Week 3 fresh held-out check)."""
+    key.dims["0xbb"] = "DebtInstrument=ConvertibleSeniorNotesDue2030;"
+    key.labels[("ConvertibleSeniorNotesDue2030Member", A)] = "Convertible Senior Notes Due 2030"
+    key.dims["0xbc"] = "DebtInstrument=ConvertibleSeniorNotesDue2030OverallotmentOption;"
+    key.labels[("ConvertibleSeniorNotesDue2030OverallotmentOptionMember", A)] = \
+        "Convertible Senior Notes Due 2030, Overallotment Option"
+    for dimh, v in (("0xbb", "2300000000"), ("0xbc", "300000000")):
+        key.num[A].append({"adsh": A, "tag": "DebtInstrumentFaceAmount", "version": "us-gaap/2025", "ddate": "20260630",
+                           "qtrs": "0", "uom": "USD", "dimh": dimh, "coreg": "", "value": v, "dcml": "-6"})
+    m, _ = by_member(key)
+    assert m["ConvertibleSeniorNotesDue2030"].klass == "bond"
+    assert m["ConvertibleSeniorNotesDue2030OverallotmentOption"].klass == "component"

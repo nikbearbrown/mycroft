@@ -40,8 +40,10 @@ EVENT_TYPES = ["new_bond_issue", "new_loan_or_facility", "facility_amendment", "
                "tender_or_exchange", "conversion", "other_debt_event", "not_debt"]
 NOTE_WORDS = r"(?:senior\s+|subordinated\s+|secured\s+|unsecured\s+|convertible\s+|exchangeable\s+|guaranteed\s+|" \
              r"fixed[- ]rate\s+|floating[- ]rate\s+)*(?:notes|debentures|bonds)"
+# The last alternative is a preliminary prospectus cover that leaves the coupon and the year blank
+# ("$      % Senior Notes due 20  ") — Week 3 saw one escape rule R2 that way.
 NOTE_OFFER = re.compile(rf"\d{{1,2}}\.\d{{1,4}}\s?%\s+{NOTE_WORDS}|floating[- ]rate\s+notes|{NOTE_WORDS}\s+due\s+20\d\d|"
-                        r"aggregate principal amount", re.I)
+                        rf"aggregate principal amount|%\s+{NOTE_WORDS}\s+due\s+20(?!\d)", re.I)
 EQUITY = re.compile(r"\bshares of (?:our |its )?(?:class [ab] )?common stock\b|\bcommon stock\b|\bwarrants\b|\bunits\b|"
                     r"\bdepositary shares\b|\bpreferred stock\b", re.I)
 DEBT_WORDS = re.compile(r"\bnotes?\b(?! to (?:the )?(?:condensed )?(?:consolidated )?financial)|\bdebentures?\b|\bbonds?\b|"
@@ -139,8 +141,8 @@ def rules(form: str, items: list[str], texts: dict[str, str]) -> TriageResult | 
 
 def _strip_boilerplate(text: str) -> str:
     """Drop the 8-K cover page (registrant name, addresses, check boxes) so 'the lead' is the
-    first item's text, where the news is."""
-    m = re.search(r"Item\s+\d\.\d{2}", text)
+    first item's text, where the news is. Some filers print "Item1.01" with no space (Week 3)."""
+    m = re.search(r"Item\s*\d\.\d{2}", text)
     if m and m.start() < 12_000:
         return text[m.start():]
     return text

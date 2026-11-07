@@ -1,0 +1,417 @@
+{
+ "episode": "50863-2024-12-31",
+ "company": "Intel",
+ "report": "10-K 20241228",
+ "level": "L1",
+ "status": "reviewed",
+ "holdout": "week 4",
+ "reviewer": "Claude (model judgment, P8), 2026-11-07",
+ "source": "printed debt table / balance sheet / debt note text in the report's HTML",
+ "source_rows": "Note 13 Borrowings table (in millions) rows 766-823; maturity table rows 824-825",
+ "review": "Note 13's table at Dec 28 2024: 43 fixed-rate senior notes and Oregon/Arizona bonds with an amount outstanding (the 2.88% May 2024 and 2.70% June 2024 notes and the 5.00% June 2049 bonds show '\u2014': repaid or remarketed), plus one Oregon/Arizona line printed as a range (3.80%-4.10%, due 2035-2040, $423 m) recorded as 'other' because it is several bonds on one line. Coupons are printed to two decimals (4.88% is the 4.875% notes). Total senior notes and other borrowings $50,985 m; long-term debt $50,011 m after premium/discount and hedge adjustments; current portion $3,729 m. Principal due 2025 $3,750 m, 2026-2029 $12,787 m (2,500 + 3,826 + 3,173 + 3,288), 2030 and after $34,448 m. Process note: before this transcription, the answer key's *totals* for the five Week 4 held-out reports were printed once by mistake while checking which totals the key tags; the values below are read from the printed report only, each with its source row.",
+ "instruments": [
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 3.4,
+   "maturity_year": 2025,
+   "principal": 1500000000.0,
+   "amount_usd": 1500000000.0,
+   "row": "Fixed-rate senior notes: 3.40%, due March 2025 | 3.44 % | 1,500 | 1,500"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 3.7,
+   "maturity_year": 2025,
+   "principal": 2250000000.0,
+   "amount_usd": 2250000000.0,
+   "row": "Fixed-rate senior notes: 3.70%, due July 2025 | 7.49 % | 2,250 | 2,250"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 4.88,
+   "maturity_year": 2026,
+   "principal": 1500000000.0,
+   "amount_usd": 1500000000.0,
+   "row": "Fixed-rate senior notes: 4.88%, due February 2026 | 4.93 % | 1,500 | 1,500"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 2.6,
+   "maturity_year": 2026,
+   "principal": 1000000000.0,
+   "amount_usd": 1000000000.0,
+   "row": "Fixed-rate senior notes: 2.60%, due May 2026 | 5.97 % | 1,000 | 1,000"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 3.75,
+   "maturity_year": 2027,
+   "principal": 1000000000.0,
+   "amount_usd": 1000000000.0,
+   "row": "Fixed-rate senior notes: 3.75%, due March 2027 | 3.78 % | 1,000 | 1,000"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 3.15,
+   "maturity_year": 2027,
+   "principal": 1000000000.0,
+   "amount_usd": 1000000000.0,
+   "row": "Fixed-rate senior notes: 3.15%, due May 2027 | 6.54 % | 1,000 | 1,000"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 3.75,
+   "maturity_year": 2027,
+   "principal": 1250000000.0,
+   "amount_usd": 1250000000.0,
+   "row": "Fixed-rate senior notes: 3.75%, due August 2027 | 3.81 % | 1,250 | 1,250"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 4.88,
+   "maturity_year": 2028,
+   "principal": 1750000000.0,
+   "amount_usd": 1750000000.0,
+   "row": "Fixed-rate senior notes: 4.88%, due February 2028 | 4.92 % | 1,750 | 1,750"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 1.6,
+   "maturity_year": 2028,
+   "principal": 1000000000.0,
+   "amount_usd": 1000000000.0,
+   "row": "Fixed-rate senior notes: 1.60%, due August 2028 | 1.67 % | 1,000 | 1,000"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 4.0,
+   "maturity_year": 2029,
+   "principal": 850000000.0,
+   "amount_usd": 850000000.0,
+   "row": "Fixed-rate senior notes: 4.00%, due August 2029 | 4.05 % | 850 | 850"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 2.45,
+   "maturity_year": 2029,
+   "principal": 2000000000.0,
+   "amount_usd": 2000000000.0,
+   "row": "Fixed-rate senior notes: 2.45%, due November 2029 | 2.38 % | 2,000 | 2,000"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 5.13,
+   "maturity_year": 2030,
+   "principal": 1250000000.0,
+   "amount_usd": 1250000000.0,
+   "row": "Fixed-rate senior notes: 5.13%, due February 2030 | 5.14 % | 1,250 | 1,250"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 3.9,
+   "maturity_year": 2030,
+   "principal": 1500000000.0,
+   "amount_usd": 1500000000.0,
+   "row": "Fixed-rate senior notes: 3.90%, due March 2030 | 3.91 % | 1,500 | 1,500"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 5.0,
+   "maturity_year": 2031,
+   "principal": 500000000.0,
+   "amount_usd": 500000000.0,
+   "row": "Fixed-rate senior notes: 5.00%, due February 2031 | 4.99 % | 500 | \u2014"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 2.0,
+   "maturity_year": 2031,
+   "principal": 1250000000.0,
+   "amount_usd": 1250000000.0,
+   "row": "Fixed-rate senior notes: 2.00%, due August 2031 | 2.02 % | 1,250 | 1,250"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 4.15,
+   "maturity_year": 2032,
+   "principal": 1250000000.0,
+   "amount_usd": 1250000000.0,
+   "row": "Fixed-rate senior notes: 4.15%, due August 2032 | 4.17 % | 1,250 | 1,250"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 4.0,
+   "maturity_year": 2032,
+   "principal": 750000000.0,
+   "amount_usd": 750000000.0,
+   "row": "Fixed-rate senior notes: 4.00%, due December 2032 | 6.59 % | 750 | 750"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 5.2,
+   "maturity_year": 2033,
+   "principal": 2250000000.0,
+   "amount_usd": 2250000000.0,
+   "row": "Fixed-rate senior notes: 5.20%, due February 2033 | 5.23 % | 2,250 | 2,250"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 5.15,
+   "maturity_year": 2034,
+   "principal": 900000000.0,
+   "amount_usd": 900000000.0,
+   "row": "Fixed-rate senior notes: 5.15%, due February 2034 | 5.20 % | 900 | \u2014"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 4.6,
+   "maturity_year": 2040,
+   "principal": 750000000.0,
+   "amount_usd": 750000000.0,
+   "row": "Fixed-rate senior notes: 4.60%, due March 2040 | 4.59 % | 750 | 750"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 2.8,
+   "maturity_year": 2041,
+   "principal": 750000000.0,
+   "amount_usd": 750000000.0,
+   "row": "Fixed-rate senior notes: 2.80%, due August 2041 | 2.81 % | 750 | 750"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 4.8,
+   "maturity_year": 2041,
+   "principal": 802000000.0,
+   "amount_usd": 802000000.0,
+   "row": "Fixed-rate senior notes: 4.80%, due October 2041 | 7.33 % | 802 | 802"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 4.25,
+   "maturity_year": 2042,
+   "principal": 567000000.0,
+   "amount_usd": 567000000.0,
+   "row": "Fixed-rate senior notes: 4.25%, due December 2042 | 6.70 % | 567 | 567"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 5.63,
+   "maturity_year": 2043,
+   "principal": 1000000000.0,
+   "amount_usd": 1000000000.0,
+   "row": "Fixed-rate senior notes: 5.63%, due February 2043 | 5.61 % | 1,000 | 1,000"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 4.9,
+   "maturity_year": 2045,
+   "principal": 772000000.0,
+   "amount_usd": 772000000.0,
+   "row": "Fixed-rate senior notes: 4.90%, due July 2045 | 7.46 % | 772 | 772"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 4.1,
+   "maturity_year": 2046,
+   "principal": 1250000000.0,
+   "amount_usd": 1250000000.0,
+   "row": "Fixed-rate senior notes: 4.10%, due May 2046 | 6.74 % | 1,250 | 1,250"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 4.1,
+   "maturity_year": 2047,
+   "principal": 1000000000.0,
+   "amount_usd": 1000000000.0,
+   "row": "Fixed-rate senior notes: 4.10%, due May 2047 | 6.70 % | 1,000 | 1,000"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 4.1,
+   "maturity_year": 2047,
+   "principal": 640000000.0,
+   "amount_usd": 640000000.0,
+   "row": "Fixed-rate senior notes: 4.10%, due August 2047 | 6.27 % | 640 | 640"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 3.73,
+   "maturity_year": 2047,
+   "principal": 1967000000.0,
+   "amount_usd": 1967000000.0,
+   "row": "Fixed-rate senior notes: 3.73%, due December 2047 | 7.11 % | 1,967 | 1,967"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 3.25,
+   "maturity_year": 2049,
+   "principal": 2000000000.0,
+   "amount_usd": 2000000000.0,
+   "row": "Fixed-rate senior notes: 3.25%, due November 2049 | 3.19 % | 2,000 | 2,000"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 4.75,
+   "maturity_year": 2050,
+   "principal": 2250000000.0,
+   "amount_usd": 2250000000.0,
+   "row": "Fixed-rate senior notes: 4.75%, due March 2050 | 4.73 % | 2,250 | 2,250"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 3.05,
+   "maturity_year": 2051,
+   "principal": 1250000000.0,
+   "amount_usd": 1250000000.0,
+   "row": "Fixed-rate senior notes: 3.05%, due August 2051 | 3.05 % | 1,250 | 1,250"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 4.9,
+   "maturity_year": 2052,
+   "principal": 1750000000.0,
+   "amount_usd": 1750000000.0,
+   "row": "Fixed-rate senior notes: 4.90%, due August 2052 | 4.89 % | 1,750 | 1,750"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 5.7,
+   "maturity_year": 2053,
+   "principal": 2000000000.0,
+   "amount_usd": 2000000000.0,
+   "row": "Fixed-rate senior notes: 5.70%, due February 2053 | 5.68 % | 2,000 | 2,000"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 5.6,
+   "maturity_year": 2054,
+   "principal": 1150000000.0,
+   "amount_usd": 1150000000.0,
+   "row": "Fixed-rate senior notes: 5.60%, due February 2054 | 5.61 % | 1,150 | \u2014"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 3.1,
+   "maturity_year": 2060,
+   "principal": 1000000000.0,
+   "amount_usd": 1000000000.0,
+   "row": "Fixed-rate senior notes: 3.10%, due February 2060 | 3.10 % | 1,000 | 1,000"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 4.95,
+   "maturity_year": 2060,
+   "principal": 1000000000.0,
+   "amount_usd": 1000000000.0,
+   "row": "Fixed-rate senior notes: 4.95%, due March 2060 | 4.98 % | 1,000 | 1,000"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 3.2,
+   "maturity_year": 2061,
+   "principal": 750000000.0,
+   "amount_usd": 750000000.0,
+   "row": "Fixed-rate senior notes: 3.20%, due August 2061 | 3.20 % | 750 | 750"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 5.05,
+   "maturity_year": 2062,
+   "principal": 900000000.0,
+   "amount_usd": 900000000.0,
+   "row": "Fixed-rate senior notes: 5.05%, due August 2062 | 5.03 % | 900 | 900"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 5.9,
+   "maturity_year": 2063,
+   "principal": 1250000000.0,
+   "amount_usd": 1250000000.0,
+   "row": "Fixed-rate senior notes: 5.90%, due February 2063 | 5.88 % | 1,250 | 1,250"
+  },
+  {
+   "kind": "other",
+   "currency": "USD",
+   "coupon_pct": null,
+   "maturity_year": null,
+   "principal": 423000000.0,
+   "amount_usd": 423000000.0,
+   "row": "Oregon and Arizona bonds: 3.80% - 4.10%, due December 2035 - 2040 | 3.87 % | 423 | 423"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 5.0,
+   "maturity_year": 2042,
+   "principal": 131000000.0,
+   "amount_usd": 131000000.0,
+   "row": "Oregon and Arizona bonds: 5.00%, due September 2042 | 3.63 % | 131 | 131"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 4.0,
+   "maturity_year": 2049,
+   "principal": 438000000.0,
+   "amount_usd": 438000000.0,
+   "row": "Oregon and Arizona bonds: 4.00%, due June 2049 | 3.99 % | 438 | \u2014"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 5.0,
+   "maturity_year": 2052,
+   "principal": 445000000.0,
+   "amount_usd": 445000000.0,
+   "row": "Oregon and Arizona bonds: 5.00%, due September 2052 | 4.24 % | 445 | 445"
+  }
+ ],
+ "totals": {
+  "total_debt": 50011000000.0,
+  "current": 3729000000.0,
+  "due_next_12m": 3750000000.0,
+  "due_2_5": 12787000000.0,
+  "due_after_5": 34448000000.0
+ }
+}

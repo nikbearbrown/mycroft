@@ -4,6 +4,45 @@ Newest first.
 
 ---
 
+## 2026-11-07 — Week 4: reading debt announcements into cited facts
+
+**Week 3's leftovers.** P38 (an over-allotment member is a component of its base bond; 19 such members in the key,
+all Super Micro and TeraWulf) and P39 (a printed bond that is one of the key's instruments with no maturity is set
+aside, neither matched nor extra) are fixed; Week 3's Super Micro transcription error is corrected in the file and
+recorded. Week 3's held-out set now agrees 3 of 3 — a calibration. A **fresh held-out set** of five reports was
+drawn by the same rule (seed 20261107) and graded once: **1 of 5 agree** (Amazon's five totals). Four new
+answer-key defects, each a different filer's tagging: half a total-debt pair (P41, Constellation), one bond under
+two members (P42, Marvell), a member naming a range of years (P43, Intel — the other 34 bonds and all five totals
+agree), and an L1 level with nothing keyed (P44, Applied Digital). Left open. A slip: the key's totals for the five
+reports were printed once before the transcriptions were written; disclosed in `docs/handcheck.md`. The key now holds
+9,629 bonds; B0's recall is 91.0%, precision 92.2% (the P39 rule stops counting its carried bonds that the key
+cannot key as extras), new bonds caught 0 of 34.
+
+**Triage, checked fresh.** The two weaknesses seen in Week 3 are fixed (`Item1.01` without a space; a preliminary
+cover with coupon and year blank). A fresh 50-filing set was drawn from the filings not in Week 3's set (seed
+20261107) and labelled before the run. Result: **recall 8 of 9 — below the 95% pass line.** The miss is IBM's euro
+preliminary prospectus, whose cover is blank down to the century (`€ % Notes due`) and whose contents list
+"Preferred Stock" (P46) — the Week 3 fix covered one blank form, not its neighbour. Not fixed against the set.
+Precision 8 of 12; one false alarm is probably a labelling error (Applied Digital's $150 m Macquarie financing,
+in an earnings release). One document is in both sets: Dell's term sheet filed under both co-issuers (P45). With
+9 positives this is a small check. Week 3's set, re-scored on the new run: 24 of 24.
+
+**The event reader.** `graph/nodes/reader.py`: code picks the passages that state debt terms; `qwen3:4b` lists the
+instruments and, for each value, copies the words and cites the passage id; code checks the words are in the
+passage and parses them (`ledger/values.py`). Baselines B1 (regex) and B2 (one call, the model types the numbers,
+the bake-off prompt). Developed on the 25 bake-off documents not in the evaluation set (three rounds, 95% → 96% of
+fields, extras 25 → 10), then run once on the 24 debt-relevant filings of Week 3's set, whose 66 instruments were
+labelled before any run (`manifests/reader_truth.json`; 51 of 51 labelled new bonds found in the next report's XBRL
+with the same coupon and year). **Reader 157 of 167 fields (94%), B1 84% — the check passes. B2: 160 of 160.**
+The reader is not more accurate than asking the model; it is traceable. Of 24 copies the grounding check refused,
+8 were currency signs the model rewrote (€ → $), the rest the word "null" written as text (bookkeeping, fixed).
+
+**Gate (P4):** Om delegated the week in advance and did not review it; `manifests/week4_gate.json` says so
+(DELEGATED), records the failed fresh triage check, and leaves the decision whether it blocks Week 5 to a reviewer.
+Git is Om's.
+
+---
+
 ## 2026-10-31 — Week 3: finding the debt news (timeline, triage, documents)
 
 **Week 2's leftovers first.** P35–P37, Digital Realty's own tagging, are fixed in the answer key and

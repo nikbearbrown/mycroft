@@ -48,6 +48,12 @@ HOLDOUT = ["2488-2025-03-31", "1297996-2025-06-30", "1640147-2025-06-30"]
 # episodes sorted by id (48 episodes, 12 companies), first 5 companies. Graded once.
 HOLDOUT_W3 = ["1571996-2025-06-30", "1375365-2025-06-30", "1819989-2024-09-30", "1083301-2024-09-30",
               "1839341-2024-09-30"]
+# Week 4's held-out set, drawn after the P38-P39 fixes and before any of them was read, by the same rule
+# (`draw` below): one dev episode per company never hand-checked (28 episodes, 7 companies), in the order
+# of random.Random(20261107).sample, first 5 companies. Graded once.
+HOLDOUT_W4 = ["1868275-2025-03-31", "50863-2024-12-31", "1835632-2024-09-30", "1018724-2024-12-31",
+              "1144879-2024-09-30"]
+DRAW_SEEDS = {"week 3": (20261031, EPISODES + HOLDOUT), "week 4": (20261107, EPISODES + HOLDOUT + HOLDOUT_W3)}
 
 RATE = re.compile(r"(\d{1,2}\.\d{1,4})\s*%")
 YEAR = re.compile(r"\b(20[2-7]\d)\b")
@@ -59,7 +65,24 @@ CURRENCY = [("EUR", r"euro|€"), ("GBP", r"sterling|£|pound"), ("CHF", r"swiss
 def episodes(ids: list[str] | None = None) -> dict:
     with open(ROOT / "manifests" / "dev.csv", encoding="utf-8") as f:
         rows = {e["episode_id"]: e for e in csv.DictReader(line for line in f if not line.startswith("#"))}
-    return {k: rows[k] for k in (ids if ids is not None else EPISODES + HOLDOUT + HOLDOUT_W3)}
+    return {k: rows[k] for k in (ids if ids is not None else EPISODES + HOLDOUT + HOLDOUT_W3 + HOLDOUT_W4)}
+
+
+def draw(week: str, n: int = 5) -> list[str]:
+    """The held-out draw, reproducible: one AI-25 dev episode per company never hand-checked before,
+    in seeded random order over the eligible episodes sorted by id; the first `n` companies."""
+    import random
+    seed, before = DRAW_SEEDS[week]
+    with open(ROOT / "manifests" / "dev.csv", encoding="utf-8") as f:
+        eps = [e for e in csv.DictReader(line for line in f if not line.startswith("#")) if e["universe"] == "ai25"]
+    checked = {x.split("-")[0] for x in before}
+    elig = sorted((e for e in eps if e["cik"] not in checked), key=lambda e: e["episode_id"])
+    picked, ciks = [], set()
+    for e in random.Random(seed).sample(elig, len(elig)):
+        if e["cik"] not in ciks:
+            ciks.add(e["cik"])
+            picked.append(e["episode_id"])
+    return picked[:n]
 
 
 COUPON_CELL = re.compile(r"^\(?(\d{1,2}\.\d{1,4})\s*%?\)?$")
@@ -186,7 +209,37 @@ fresh held-out check):
 | — | Super Micro 10-K | The transcription used the *original* 0.0% coupon of the 2029 notes from a sentence that calls them the "Original 2029 Convertible Notes"; they were amended in February 2025, and the key's 3.5% is right | **The transcription** (Claude). Correcting it would not change the result: P38 alone makes this report disagree |
 
 So the fresh check found two more answer-key defects and one reading error by the checker. Dell's
-totals agree exactly."""
+totals agree exactly.
+
+**Week 3's held-out result was 1 of 3.** In Week 4, P38 and P39 were fixed (an over-allotment member is a
+component of its base bond; a printed bond that is one of the key's instruments with no maturity is set
+aside, neither matched nor extra) and the Super Micro coupon was corrected in the transcription (recorded in
+the file's `corrections`). This set is therefore no longer held out: the table above shows it re-graded
+after those fixes. Week 4's fresh held-out set is below."""
+
+FRESH_NOTE_W4 = """Drawn by the same rule, after the P38–P39 fixes were written and before any of these reports was
+read (`HOLDOUT_W4`, reproducible with `draw("week 4")`): 28 eligible episodes from the 7 companies never
+hand-checked, seed 20261107, first 5 companies. Graded once.
+
+**A slip in the process, recorded.** While checking which totals the key tags for these five reports,
+the key's total values were printed once before the transcriptions were written. The transcriptions
+were then read from the printed reports only, each value with its source row, and nothing in the key or
+the grader was changed after that point. A reader should still weigh that the checker had seen the
+key's totals.
+
+**What the disagreements show** (diagnosed after grading, not fixed — fixing them against the reports
+that found them would turn the next check into a calibration):
+
+| # | Found on | What happened | Whose error |
+|---|---|---|---|
+| P41 | Constellation 10-Q | Total debt came from half a pair: the key sums "long-term debt, noncurrent + current", but the current part is tagged `LongTermDebtAndCapitalLeaseObligationsCurrent` ($1,037 m), which the key does not read, so total debt is the noncurrent $7,321 m alone against $8,358 m printed | Answer key: a pair with a missing half is not a total |
+| P42 | Marvell 10-Q | The 4.875% 2028 notes are tagged under two members (`MTGAndMTI2028SeniorNotes` with no coupon and `MTGAndMTISeniorNotesDueIn2028` at 4.88%), both $499.9 m, so the key holds 7 bonds against 6 printed | Answer key: two members with the same maturity and amount, one without a coupon, are one bond |
+| P43 | Intel 10-K | `OregonAndArizonaBondsDue2035To2040` names a range of years (printed as 3.80%–4.10%, due 2035–2040, one line) and is read as a single 2035 bond. The other 34 key bonds match, principal 34 of 34, and all five totals agree | Answer key: a member naming a range of maturities is several bonds, like P31's combined members |
+| P44 | Applied Digital 10-Q | Graded at L1 with no bond the key can identify: no instrument carries a maturity and no total is tagged, so its coverage is measured against its own instruments. The CIM promissory note's face tag is the $125 m commitment, not the $105 m drawn | Answer key: an L1 level needs at least one keyed bond and a measured total; a note's face can be a commitment |
+
+So the fresh check found four more answer-key defects, each in a different company's tagging. Amazon's
+five totals agree exactly. The P39 rule written this week did its job on Intel: nine printed bonds that
+the key holds without a maturity were set aside rather than counted as extras."""
 
 
 def grade_one(ep_id: str, e: dict, ak) -> tuple[str, bool, list[str]]:
@@ -217,7 +270,9 @@ def grade_one(ep_id: str, e: dict, ak) -> tuple[str, bool, list[str]]:
         stated = x["principal_scored"] - x["principal_unstated"]   # foreign notes printed only in USD
         ok = matched == key and x["extra"] == 0 and x["principal_ok"] == stated and tot_ok == tot_n
         detail = f"{matched} (principal {x['principal_ok']}/{stated}" + \
-                 (f"; {x['covered_by_offering']} printed bonds = tagged offering totals" if x["covered_by_offering"] else "") + ")"
+                 (f"; {x['covered_by_offering']} printed bonds = tagged offering totals" if x["covered_by_offering"] else "") + \
+                 (f"; {x['covered_by_unkeyed']} printed = key instruments with no maturity, P39"
+                  if x.get("covered_by_unkeyed") else "") + ")"
     elif e["graded_level"] == "L2":
         x = g["l2"]
         printed, key, matched = x["ledger"], x["truth"], x["matched"]
@@ -239,8 +294,8 @@ def grade_one(ep_id: str, e: dict, ak) -> tuple[str, bool, list[str]]:
 
 
 def grade() -> int:
-    eps, held, fresh = episodes(EPISODES), episodes(HOLDOUT), episodes(HOLDOUT_W3)
-    ak = AnswerKey(extracted_periods(), {int(e["cik"]) for g in (eps, held, fresh) for e in g.values()})
+    eps, held, fresh, fresh4 = episodes(EPISODES), episodes(HOLDOUT), episodes(HOLDOUT_W3), episodes(HOLDOUT_W4)
+    ak = AnswerKey(extracted_periods(), {int(e["cik"]) for g in (eps, held, fresh, fresh4) for e in g.values()})
     head = ["| Episode | Company | Report | Level | Printed | Key | Matched | Totals within 2% | Agree? |",
             "|---|---|---|---|---|---|---|---|---|"]
     L = ["# Hand-check — the answer key against printed debt tables\n",
@@ -250,7 +305,8 @@ def grade() -> int:
     notes = []
     groups = (("Calibration set (DESIGN.md §11's 10 company-quarters)", eps),
               ("Week 2 held-out set, re-graded after the Week 3 fixes", held),
-              ("Week 3 held-out set (fresh; graded once)", fresh))
+              ("Week 3 held-out set, re-graded after the Week 4 fixes", fresh),
+              ("Week 4 held-out set (fresh; graded once)", fresh4))
     for title, group in groups:
         present = {k: v for k, v in group.items() if (HC / f"{k}.json").exists()}
         rows, agree, gradable = [], 0, len(group)
@@ -271,6 +327,8 @@ def grade() -> int:
             L += [HOLDOUT_FINDINGS + "\n"]
         if group is fresh:
             L += [FRESH_NOTE + "\n"]
+        if group is fresh4:
+            L += [FRESH_NOTE_W4 + "\n"]
     L += ["## Review notes\n"] + notes
     gate_path = ROOT / "manifests" / "week2_gate.json"
     gate = json.loads(gate_path.read_text(encoding="utf-8")) if gate_path.exists() else {}

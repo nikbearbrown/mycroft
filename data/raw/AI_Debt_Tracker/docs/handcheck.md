@@ -54,15 +54,15 @@ the table above shows it re-graded after those fixes. Week 3's fresh held-out se
 In Week 2, identity matching held up on this set — 27 of 29 printed bonds matched (AMD 5/5, Snowflake 2/2,
 Digital Realty 20/22); principal amounts on foreign-currency notes were the weak spot.
 
-## Week 3 held-out set (fresh; graded once): 1 of 3 agree (2 not gradable)
+## Week 3 held-out set, re-graded after the Week 4 fixes: 3 of 3 agree (2 not gradable)
 
 | Episode | Company | Report | Level | Printed | Key | Matched | Totals within 2% | Agree? |
 |---|---|---|---|---|---|---|---|---|
 | 1571996-2025-06-30 | Dell | 10-Q 20250731 | L3 | — | — | — | 2/2 | **yes** |
-| 1375365-2025-06-30 | Super Micro | 10-K 20250630 | L1 | 3 | 4 | 2 (principal 2/2) | 0/0 | **no** |
+| 1375365-2025-06-30 | Super Micro | 10-K 20250630 | L1 | 3 | 3 | 3 (principal 3/3) | 0/0 | **yes** |
 | 1819989-2024-09-30 | Cipher Mining | 10-Q 20240930 | L3 | none | none | — | — | not gradable (no debt on either side) |
 | 1083301-2024-09-30 | TeraWulf | 10-Q 20240930 | L3 | none | none | — | — | not gradable (no debt on either side) |
-| 1839341-2024-09-30 | Core Scientific | 10-Q 20240930 | L1 | 6 | 1 | 1 (principal 1/1) | 0/0 | **no** |
+| 1839341-2024-09-30 | Core Scientific | 10-Q 20240930 | L1 | 6 | 1 | 1 (principal 1/1; 5 printed = key instruments with no maturity, P39) | 0/0 | **yes** |
 
 Drawn by a fixed rule before any of these reports was read: one dev episode per company never
 hand-checked, in seeded random order (`HOLDOUT_W3` in `scripts/handcheck.py`). Three of the five are
@@ -83,6 +83,46 @@ fresh held-out check):
 So the fresh check found two more answer-key defects and one reading error by the checker. Dell's
 totals agree exactly.
 
+**Week 3's held-out result was 1 of 3.** In Week 4, P38 and P39 were fixed (an over-allotment member is a
+component of its base bond; a printed bond that is one of the key's instruments with no maturity is set
+aside, neither matched nor extra) and the Super Micro coupon was corrected in the transcription (recorded in
+the file's `corrections`). This set is therefore no longer held out: the table above shows it re-graded
+after those fixes. Week 4's fresh held-out set is below.
+
+## Week 4 held-out set (fresh; graded once): 1 of 5 agree
+
+| Episode | Company | Report | Level | Printed | Key | Matched | Totals within 2% | Agree? |
+|---|---|---|---|---|---|---|---|---|
+| 1868275-2025-03-31 | Constellation Energy | 10-Q 20250331 | L3 | — | — | — | 0/1 | **no** |
+| 50863-2024-12-31 | Intel | 10-K 20241228 | L1 | 43 | 35 | 34 (principal 34/34; 9 printed = key instruments with no maturity, P39) | 5/5 | **no** |
+| 1835632-2024-09-30 | Marvell | 10-Q 20241102 | L1 | 6 | 7 | 6 (principal 6/6) | 1/1 | **no** |
+| 1018724-2024-12-31 | Amazon | 10-K 20241231 | L3 | — | — | — | 5/5 | **yes** |
+| 1144879-2024-09-30 | Applied Digital | 10-Q 20240831 | L1 | 2 | 0 | 0 (principal 0/0) | 0/0 | **no** |
+
+Drawn by the same rule, after the P38–P39 fixes were written and before any of these reports was
+read (`HOLDOUT_W4`, reproducible with `draw("week 4")`): 28 eligible episodes from the 7 companies never
+hand-checked, seed 20261107, first 5 companies. Graded once.
+
+**A slip in the process, recorded.** While checking which totals the key tags for these five reports,
+the key's total values were printed once before the transcriptions were written. The transcriptions
+were then read from the printed reports only, each value with its source row, and nothing in the key or
+the grader was changed after that point. A reader should still weigh that the checker had seen the
+key's totals.
+
+**What the disagreements show** (diagnosed after grading, not fixed — fixing them against the reports
+that found them would turn the next check into a calibration):
+
+| # | Found on | What happened | Whose error |
+|---|---|---|---|
+| P41 | Constellation 10-Q | Total debt came from half a pair: the key sums "long-term debt, noncurrent + current", but the current part is tagged `LongTermDebtAndCapitalLeaseObligationsCurrent` ($1,037 m), which the key does not read, so total debt is the noncurrent $7,321 m alone against $8,358 m printed | Answer key: a pair with a missing half is not a total |
+| P42 | Marvell 10-Q | The 4.875% 2028 notes are tagged under two members (`MTGAndMTI2028SeniorNotes` with no coupon and `MTGAndMTISeniorNotesDueIn2028` at 4.88%), both $499.9 m, so the key holds 7 bonds against 6 printed | Answer key: two members with the same maturity and amount, one without a coupon, are one bond |
+| P43 | Intel 10-K | `OregonAndArizonaBondsDue2035To2040` names a range of years (printed as 3.80%–4.10%, due 2035–2040, one line) and is read as a single 2035 bond. The other 34 key bonds match, principal 34 of 34, and all five totals agree | Answer key: a member naming a range of maturities is several bonds, like P31's combined members |
+| P44 | Applied Digital 10-Q | Graded at L1 with no bond the key can identify: no instrument carries a maturity and no total is tagged, so its coverage is measured against its own instruments. The CIM promissory note's face tag is the $125 m commitment, not the $105 m drawn | Answer key: an L1 level needs at least one keyed bond and a measured total; a note's face can be a commitment |
+
+So the fresh check found four more answer-key defects, each in a different company's tagging. Amazon's
+five totals agree exactly. The P39 rule written this week did its job on Intel: nine printed bonds that
+the key holds without a maturity were set aside rather than counted as extras.
+
 ## Review notes
 
 - **Equinix 10-K 20241231** — Rows 30-57 (issued, maturity, Dec 31 2024 amount, effective rate, prior year). Foreign notes are printed as US-dollar equivalents, so their own-currency principal is not on the page: currency recorded, principal unscored. The 2.625% 2024 notes show '—' (repaid). Rows 1-29 are the cover page and exhibit list.
@@ -100,11 +140,18 @@ totals agree exactly.
 - **Snowflake 10-Q 20250731** — The convertible notes table (principal, unamortized issuance costs, net carrying amount, fair value): $1.15 bn 0% notes due 2027 and 2029. The 0% coupon is the notes' name in the report's text. Net carrying total $2,275.7 m.
 - **Dell 10-Q 20250731** — Totals only (the episode's level), from the balance sheet: short-term debt $7,154 m and long-term debt $21,535 m at Aug 1 2025, so total debt $28,689 m.
 - **Super Micro 10-K 20250630** — The convertible notes are described in Note 8's text, not a table: $700.0 m 2.25% notes due 2028, $1,725.0 m 0.0% notes due 2029, $2.3 bn notes due 2030 (no coupon printed, so none recorded). Term loans from the term-loan table (thousands). No single total-debt figure is printed, so no total is recorded.
-- **Super Micro**: disagreement — key members unmatched: ['ConvertibleSeniorNotesDue2029', 'ConvertibleSeniorNotesDue2030OverallotmentOption']; printed rows unexplained: 1; totals: {}
 - **Cipher Mining 10-Q 20240930** — No debt is printed: the balance sheet has no debt line (finance lease payments only), consistent with Cipher issuing its first notes in 2025.
 - **TeraWulf 10-Q 20240930** — No debt at the period end: the term loan line and the current portion of long-term debt are both '—' at Sep 30 2024 (repaid during the quarter; $139.4 m of principal payments). The convertible notes followed in October 2024.
 - **Core Scientific 10-Q 20240930** — Rows 1-22 of the notes payable table (in thousands: stated rate, effective rate, maturity, Sep 30 2024, Dec 31 2023); '—' means repaid or converted. Outstanding: the $460 m 3.00% 2029 convertible notes, four small notes, two loans (by the printed name), and the ACM note (stated rate '—'). Total notes payable, net $492,537 k.
-- **Core Scientific**: disagreement — key members unmatched: []; printed rows unexplained: 5; totals: {}
+- **Constellation Energy 10-Q 20250331** — Totals only (the episode's level), from Constellation Energy Corporation's balance sheet at Mar 31 2025: long-term debt due within one year $1,037 m and long-term debt $7,321 m, so total debt $8,358 m (the fair-value note prints the same $8,358 m 'Long-Term Debt, including amounts due within one year'). No commercial paper or short-term borrowings outstanding (the liquidity table shows none). Process note: before this transcription, the answer key's *totals* for the five Week 4 held-out reports were printed once by mistake while checking which totals the key tags; the values below are read from the printed report only, each with its source row.
+- **Constellation Energy**: disagreement — key members unmatched: []; printed rows unexplained: 0; totals: {'total_debt': (7321000000.0, 8358000000.0)}
+- **Intel 10-K 20241228** — Note 13's table at Dec 28 2024: 43 fixed-rate senior notes and Oregon/Arizona bonds with an amount outstanding (the 2.88% May 2024 and 2.70% June 2024 notes and the 5.00% June 2049 bonds show '—': repaid or remarketed), plus one Oregon/Arizona line printed as a range (3.80%-4.10%, due 2035-2040, $423 m) recorded as 'other' because it is several bonds on one line. Coupons are printed to two decimals (4.88% is the 4.875% notes). Total senior notes and other borrowings $50,985 m; long-term debt $50,011 m after premium/discount and hedge adjustments; current portion $3,729 m. Principal due 2025 $3,750 m, 2026-2029 $12,787 m (2,500 + 3,826 + 3,173 + 3,288), 2030 and after $34,448 m. Process note: before this transcription, the answer key's *totals* for the five Week 4 held-out reports were printed once by mistake while checking which totals the key tags; the values below are read from the printed report only, each with its source row.
+- **Intel**: disagreement — key members unmatched: ['OregonAndArizonaBondsDue2035To2040']; printed rows unexplained: 0; totals: {'total_debt': (50011000000.0, 50011000000.0), 'current': (3729000000.0, 3729000000.0), 'due_next_12m': (3750000000.0, 3750000000.0), 'due_2_5': (12787000000.0, 12787000000.0), 'due_after_5': (34448000000.0, 34448000000.0)}
+- **Marvell 10-Q 20241102** — Face value outstanding at Nov 2 2024: the 2026 term loan (5-year tranche) $623.4 m and six senior notes. Net carrying amount of debt $4,094.9 m, current portion $129.4 m (balance sheet: short-term debt $129.4 m, long-term debt $3,965.5 m). The maturity schedule is by fiscal year (remainder of FY2025 $32.8 m, FY2026 $131.2 m ...), not the next twelve months, so no 12-month figure is recorded. Process note: before this transcription, the answer key's *totals* for the five Week 4 held-out reports were printed once by mistake while checking which totals the key tags; the values below are read from the printed report only, each with its source row.
+- **Marvell**: disagreement — key members unmatched: ['MTGAndMTISeniorNotesDueIn2028']; printed rows unexplained: 0; totals: {'total_debt': (4094900000.0, 4094900000.0)}
+- **Amazon 10-K 20241231** — Totals only (the episode's level). At Dec 31 2024: total face value of long-term debt $58,000 m (six note issuances; the credit facility shows '—'), unamortized discount and issuance costs $360 m, current portion $5,017 m and long-term debt $52,623 m, so total debt on the balance-sheet basis $57,640 m. Face due 2025 $5,000 m, 2026-2029 $16,750 m (2,750 + 8,750 + 2,250 + 3,000), thereafter $36,250 m. Process note: before this transcription, the answer key's *totals* for the five Week 4 held-out reports were printed once by mistake while checking which totals the key tags; the values below are read from the printed report only, each with its source row.
+- **Applied Digital 10-Q 20240831** — Debt table at Aug 31 2024 (thousands): CIM promissory note $105,000 k (12%, June 2027), Starion Ellendale loan $15,214 k (7.48%, Feb 2028), Cornerstone Bank loan $14,923 k (8.59%, Mar 2029), Starion term loan $9,298 k (6.50%, Jul 2027), other long-term debt $12,285 k (no rate or year printed), Vantage transformer loan repaid ('—'). The Yorkville convertible notes are carried at fair value outside that table: outstanding principal $28,132 k, due April and June 2025, no rate printed. Notes are recorded as bonds and loans as facilities, as printed. Total debt on the balance sheet: current portion $6,892 k + current portion at fair value $30,464 k + long-term debt, net $106,227 k = $143,583 k. Process note: before this transcription, the answer key's *totals* for the five Week 4 held-out reports were printed once by mistake while checking which totals the key tags; the values below are read from the printed report only, each with its source row.
+- **Applied Digital**: disagreement — key members unmatched: []; printed rows unexplained: 2; totals: {}
 
 ## Who checked
 

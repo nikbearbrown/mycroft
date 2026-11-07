@@ -11,23 +11,29 @@ runs on local models only (Ollama on an 8 GB laptop GPU) — no paid APIs.
 
 ## Status
 
-**Week 3 complete — 2026-10-31.** The agent can now find the debt news: a timeline of every 8-K,
-prospectus and term sheet in an episode's window (subsidiaries included), triage that keeps the
-debt-relevant ones — **24 of 24** on a 50-filing labelled set, precision 92%, using rules for two
-thirds of filings and `qwen3:4b` for the rest — and a `docs` server that hands the agent a filing as
-addressable sentences and table cells. The answer key's P35–P37 are fixed; a fresh held-out hand-check
-found two more defects (P38–P39, open for Week 4). Om Mali delegated the week in advance and did not
-review it (`manifests/week3_gate.json`); the labels and transcriptions are Claude's model judgment.
-Weeks 1–2 gates: `manifests/week1_gate.json`, `manifests/week2_gate.json`.
+**Week 4 complete — 2026-11-07.** The agent can now read a debt filing into structured events: an
+event reader that points at the sentence or table cell stating each value and lets code parse it,
+refusing any "copied" value no passage contains. On the 24 debt-relevant filings of the Week 3 set it
+reads **157 of 167 fields (94%)** against **84%** for the regex baseline B1 — the Week 4 check passes —
+but the one-call baseline B2, where the model types the numbers itself, read **160 of 160**: the
+reader's gain is provenance, not accuracy. Two other checks did not go cleanly: a **fresh triage
+check found 8 of 9** debt filings (below the 95% line; one blank prospectus cover, P46), and a **fresh
+answer-key hand-check agreed on 1 of 5** reports (four new defects, P41–P44). All are recorded, not
+tuned away. Om Mali delegated Weeks 3 and 4 in advance and reviewed neither
+(`manifests/week3_gate.json`, `manifests/week4_gate.json`); labels, truth and transcriptions are
+Claude's model judgment. Weeks 1–2 gates: `manifests/week1_gate.json`, `manifests/week2_gate.json`.
 
-- [`docs/triage.md`](docs/triage.md) — triage scored on the labelled set and run over the dev pool; the Week 3 check.
-- [`docs/triage_labels.md`](docs/triage_labels.md) — the 50 labelled filings and why each label.
+- [`docs/reader.md`](docs/reader.md) — the event reader against B1 and B2; the Week 4 check.
+- [`docs/reader_truth.md`](docs/reader_truth.md) — what each of the 24 filings announces, labelled before any run.
+- [`docs/triage_labels_w4.md`](docs/triage_labels_w4.md) — the fresh 50-filing triage set (Week 4).
+- [`docs/triage.md`](docs/triage.md) — triage on the fresh and the Week 3 labelled sets, and over the dev pool.
+- [`docs/triage_labels.md`](docs/triage_labels.md) — Week 3's 50 labelled filings and why each label.
 - [`docs/answer_key.md`](docs/answer_key.md) — the answer key for every report, with its anomalies.
 - [`docs/baseline_b0.md`](docs/baseline_b0.md) — baseline B0 (carry forward) scored on dev.
-- [`docs/handcheck.md`](docs/handcheck.md) — the grader against printed debt tables; the Week 2 check.
+- [`docs/handcheck.md`](docs/handcheck.md) — the grader against printed debt tables, with three held-out sets.
 - [`docs/changes_dev.md`](docs/changes_dev.md) — which bond changes were announced in a filing.
 
-- [`DESIGN.md`](DESIGN.md) — data sources, problems and fixes (P1–P40), agents, MCP servers,
+- [`DESIGN.md`](DESIGN.md) — data sources, problems and fixes (P1–P46), agents, MCP servers,
   models, evaluation, ten-week plan.
 - [`docs/feasibility.md`](docs/feasibility.md) — every go/no-go check with its pass line and result,
   including the Week 1 re-runs.
@@ -77,8 +83,8 @@ $env:OLLAMA_MODELS = "<your models directory>"; ollama serve
 ```powershell
 $env:UV_PROJECT_ENVIRONMENT = "<your venv directory>"; $env:UV_CACHE_DIR = "<your uv cache>"
 uv sync                      # Python 3.11+, installs mcp (<2), scipy and pytest
-uv run pytest                # 122 offline tests: parser, matcher, answer key, grader, B0, edgar_pit's cut-off rule,
-                             # document parsing and store, timeline, triage rules
+uv run pytest                # 146 offline tests: parser, matcher, answer key, grader, B0, edgar_pit's cut-off rule,
+                             # document parsing and store, timeline, triage rules, value parsers, event reader, B1
 ```
 
 ## Reproducing Week 1
@@ -133,7 +139,7 @@ uv run python scripts/score_baseline.py dev
 uv run python scripts/handcheck.py grade                        # incl. the fresh held-out set (HOLDOUT_W3)
 uv run python scripts/explain_changes.py
 uv run python scripts/triage_eval.py pool                       # every candidate filing in every dev window (~600)
-uv run python scripts/triage_eval.py sample                     # the 50-filing labelled set; refuses once labelled
+uv run python scripts/triage_eval.py sample 3                   # the 50-filing labelled set; refuses once labelled
 uv run python scripts/triage_eval.py run qwen3:4b               # Ollama running; rules first, model for the rest
 uv run python scripts/triage_eval.py report qwen3:4b            # -> docs/triage.md, docs/triage_labels.md
 ```
@@ -148,6 +154,26 @@ through `edgar_pit`, and the target report is refused). Document keys are
 $env:EDGAR_PIT_TARGET = "<cik>:<target_adsh>"
 uv run python -m ai_debt_tracker.mcp_servers.docs               # tools: sections, sentences, tables, search, span
 ```
+
+## Reproducing Week 4
+
+```powershell
+$env:PYTHONPATH = "scripts"
+uv run python scripts/build_answer_key.py                       # after the P38-P39 fixes
+uv run python scripts/score_baseline.py dev
+uv run python scripts/handcheck.py extract                      # fetches the fresh held-out reports (HOLDOUT_W4)
+uv run python scripts/handcheck.py grade                        # graded once; transcriptions in manifests/handcheck/
+uv run python scripts/explain_changes.py
+uv run python scripts/triage_eval.py sample 4                   # the fresh labelled set; refuses once labelled
+uv run python scripts/triage_eval.py run qwen3:4b               # -> $AI_DEBT_DATA/week4/
+uv run python scripts/triage_eval.py report qwen3:4b            # -> docs/triage.md, triage_labels*.md
+uv run python scripts/reader_eval.py dev reader                 # development on the bake-off documents only
+uv run python scripts/reader_eval.py run b1                     # then b2, reader: once each, after the truth exists
+uv run python scripts/reader_eval.py report                     # -> docs/reader.md, docs/reader_truth.md
+```
+
+The event reader (`graph/nodes/reader.py`) is a function of a filing's parsed documents; it is not yet
+wired into a graph (Week 5).
 
 ## Reproducing the feasibility numbers (Week 0)
 

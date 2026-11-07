@@ -1,0 +1,845 @@
+{
+ "about": "Week 4 event-reader truth: what each of the 24 debt-relevant filings of Week 3's labelled triage set announces, instrument by instrument, read from the documents the reader reads (main document and EX-99 press releases). See scripts/reader_eval.py.",
+ "labelled_by": "Claude (Opus), reading each filing (model judgment, P8), not reviewed by a human",
+ "labelled_on": "2026-11-07",
+ "rules": "One entry per instrument (each tranche). principal = that instrument's amount (a facility: its commitment; a termination: the facility size); coupon = fixed annual rate, null if floating or blank; maturity = year. A value left blank in a preliminary prospectus is null. Debt named only in a use of proceeds is not an event of the filing. 'optional' = disclosed in passing (another subsidiary's deal, a sub-facility): counted only if a method reports it.",
+ "filings": [
+  {
+   "accession": "0001193125-25-113864",
+   "company": "Alphabet",
+   "form": "8-K",
+   "filing_date": "2025-05-06",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "EUR",
+     "principal": 1500000000.0,
+     "coupon_pct": 2.5,
+     "maturity_year": 2029,
+     "evidence": "s6"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "EUR",
+     "principal": 1500000000.0,
+     "coupon_pct": 3.0,
+     "maturity_year": 2033,
+     "evidence": "s6"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "EUR",
+     "principal": 1250000000.0,
+     "coupon_pct": 3.375,
+     "maturity_year": 2037,
+     "evidence": "s6"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "EUR",
+     "principal": 1250000000.0,
+     "coupon_pct": 3.875,
+     "maturity_year": 2045,
+     "evidence": "s6"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "EUR",
+     "principal": 1250000000.0,
+     "coupon_pct": 4.0,
+     "maturity_year": 2054,
+     "evidence": "s6"
+    }
+   ],
+   "note": "8-K Item 8.01: closed the five-tranche euro offering (s6)."
+  },
+  {
+   "accession": "0001193125-24-234446",
+   "company": "Dell",
+   "form": "8-K",
+   "filing_date": "2024-10-08",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 700000000.0,
+     "coupon_pct": 4.35,
+     "maturity_year": 2030,
+     "evidence": "s6"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 800000000.0,
+     "coupon_pct": 4.85,
+     "maturity_year": 2035,
+     "evidence": "s6"
+    }
+   ],
+   "note": "8-K Items 1.01/2.03: completed offering of two tranches (s6)."
+  },
+  {
+   "accession": "0001375365-24-000046",
+   "company": "Super Micro",
+   "form": "8-K",
+   "filing_date": "2024-12-27",
+   "label_event": "redemption_or_repayment",
+   "instruments": [
+    {
+     "action_class": "exit",
+     "kind": "other",
+     "currency": "USD",
+     "principal": 50000000.0,
+     "coupon_pct": null,
+     "maturity_year": null,
+     "evidence": "s7-s8"
+    }
+   ],
+   "note": "8-K Item 1.02: the $50 m HSBC Taiwan loan agreement was terminated (balance repaid in September, undrawn since). No rate or maturity stated."
+  },
+  {
+   "accession": "0001628280-24-050080",
+   "company": "Core Scientific",
+   "form": "8-K",
+   "filing_date": "2024-12-05",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "convertible_notes",
+     "currency": "USD",
+     "principal": 625000000.0,
+     "coupon_pct": 0.0,
+     "maturity_year": 2031,
+     "evidence": "d0:s6"
+    }
+   ],
+   "note": "8-K: completed offering of $625.0 m 0.00% convertible notes due 2031 including the option (d0:s6). The two attached press releases restate earlier steps of the same notes ($500 m launch, $550 m pricing); one instrument, at the closing amount."
+  },
+  {
+   "accession": "0001193125-24-215943",
+   "company": "Digital Realty",
+   "form": "8-K",
+   "filing_date": "2024-09-09",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "EUR",
+     "principal": 850000000.0,
+     "coupon_pct": 3.875,
+     "maturity_year": 2033,
+     "evidence": "d0:s21"
+    }
+   ],
+   "note": "8-K: priced \u20ac850 m 3.875% guaranteed notes due 2033 (Digital Dutch Finco)."
+  },
+  {
+   "accession": "0001140361-24-032697",
+   "company": "Broadcom",
+   "form": "FWP",
+   "filing_date": "2024-07-09",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1250000000.0,
+     "coupon_pct": 5.05,
+     "maturity_year": 2027,
+     "evidence": "t0.r1"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 2250000000.0,
+     "coupon_pct": 5.05,
+     "maturity_year": 2029,
+     "evidence": "t0.r1"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1500000000.0,
+     "coupon_pct": 5.15,
+     "maturity_year": 2031,
+     "evidence": "t0.r1"
+    }
+   ],
+   "note": "Pricing term sheet, three tranches."
+  },
+  {
+   "accession": "0001104659-24-095020",
+   "company": "Equinix",
+   "form": "424B2",
+   "filing_date": "2024-08-29",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "EUR",
+     "principal": 600000000.0,
+     "coupon_pct": 3.65,
+     "maturity_year": 2033,
+     "evidence": "s2"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "CHF",
+     "principal": 100000000.0,
+     "coupon_pct": 1.5575,
+     "maturity_year": 2029,
+     "evidence": "s115",
+     "optional": true
+    }
+   ],
+   "note": "Final prospectus supplement: \u20ac600 m 3.650% notes due 2033. Optional: the CHF 100 m 1.5575% bonds due 2029, priced by another finance subsidiary and disclosed under recent developments (counted only if a method reports them)."
+  },
+  {
+   "accession": "0001193125-24-227971",
+   "company": "Oracle",
+   "form": "8-K",
+   "filing_date": "2024-09-27",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1500000000.0,
+     "coupon_pct": 4.2,
+     "maturity_year": 2029,
+     "evidence": "s5"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1750000000.0,
+     "coupon_pct": 4.7,
+     "maturity_year": 2034,
+     "evidence": "s5"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1750000000.0,
+     "coupon_pct": 5.375,
+     "maturity_year": 2054,
+     "evidence": "s5"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1250000000.0,
+     "coupon_pct": 5.5,
+     "maturity_year": 2064,
+     "evidence": "s5"
+    }
+   ],
+   "note": "8-K: issued four tranches (s5). The 2024/2025 notes named in the use of proceeds are not redeemed by this filing."
+  },
+  {
+   "accession": "0001144879-24-000154",
+   "company": "Applied Digital",
+   "form": "8-K/A",
+   "filing_date": "2024-06-10",
+   "label_event": "new_loan_or_facility",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "other",
+     "currency": "USD",
+     "principal": null,
+     "coupon_pct": null,
+     "maturity_year": null,
+     "evidence": "EX-10.1 (not read)"
+    }
+   ],
+   "note": "8-K/A filing only exhibits for the CIM promissory note; the main document states no value, and its terms are in EX-10.1, which this round does not read. Counts only as an instrument with an action."
+  },
+  {
+   "accession": "0001375365-24-000027",
+   "company": "Super Micro",
+   "form": "8-K",
+   "filing_date": "2024-07-22",
+   "label_event": "new_loan_or_facility",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "term_loan",
+     "currency": "USD",
+     "principal": 500000000.0,
+     "coupon_pct": null,
+     "maturity_year": 2025,
+     "evidence": "s8, s13 (floating: Term SOFR + 1.25%)"
+    },
+    {
+     "action_class": "amend",
+     "kind": "revolving_facility",
+     "currency": "USD",
+     "principal": null,
+     "coupon_pct": null,
+     "maturity_year": null,
+     "evidence": "s14"
+    }
+   ],
+   "note": "8-K: new $500 m floating-rate term loan maturing January 17, 2025; and an amendment to the ABL agreement (no value stated)."
+  },
+  {
+   "accession": "0001193125-24-232279",
+   "company": "Dell",
+   "form": "424B5",
+   "filing_date": "2024-10-03",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 700000000.0,
+     "coupon_pct": 4.35,
+     "maturity_year": 2030,
+     "evidence": "s1"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 800000000.0,
+     "coupon_pct": 4.85,
+     "maturity_year": 2035,
+     "evidence": "s1"
+    }
+   ],
+   "note": "Final prospectus supplement, two tranches. The 5.850% 2025 notes are named only in the use of proceeds (the filing says it is not a notice of redemption)."
+  },
+  {
+   "accession": "0001104659-24-093615",
+   "company": "Equinix",
+   "form": "424B5",
+   "filing_date": "2024-08-28",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "EUR",
+     "principal": null,
+     "coupon_pct": null,
+     "maturity_year": null,
+     "evidence": "s137 (blank)"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "CHF",
+     "principal": 100000000.0,
+     "coupon_pct": 1.5575,
+     "maturity_year": 2029,
+     "evidence": "s115",
+     "optional": true
+    }
+   ],
+   "note": "Preliminary prospectus supplement: euro senior notes with amount, coupon and year left blank. Optional: the CHF 100 m bonds (recent developments)."
+  },
+  {
+   "accession": "0001140361-24-032854",
+   "company": "Broadcom",
+   "form": "424B2",
+   "filing_date": "2024-07-10",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1250000000.0,
+     "coupon_pct": 5.05,
+     "maturity_year": 2027,
+     "evidence": "s5"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 2250000000.0,
+     "coupon_pct": 5.05,
+     "maturity_year": 2029,
+     "evidence": "s5"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1500000000.0,
+     "coupon_pct": 5.15,
+     "maturity_year": 2031,
+     "evidence": "s5"
+    }
+   ],
+   "note": "Final prospectus supplement, three tranches. The term A-2 loan prepayment is a use of proceeds, not an event of this filing."
+  },
+  {
+   "accession": "0001193125-25-004476",
+   "company": "Broadcom",
+   "form": "8-K",
+   "filing_date": "2025-01-10",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1100000000.0,
+     "coupon_pct": 4.8,
+     "maturity_year": 2028,
+     "evidence": "s8"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 800000000.0,
+     "coupon_pct": 5.05,
+     "maturity_year": 2030,
+     "evidence": "s8"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1100000000.0,
+     "coupon_pct": 5.2,
+     "maturity_year": 2032,
+     "evidence": "s8"
+    }
+   ],
+   "note": "8-K: underwriting agreement and issue of three tranches (s8)."
+  },
+  {
+   "accession": "0001193125-25-064187",
+   "company": "Dell",
+   "form": "FWP",
+   "filing_date": "2025-03-26",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1000000000.0,
+     "coupon_pct": 4.75,
+     "maturity_year": 2028,
+     "evidence": "t2"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1000000000.0,
+     "coupon_pct": 5.0,
+     "maturity_year": 2030,
+     "evidence": "t4"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1000000000.0,
+     "coupon_pct": 5.3,
+     "maturity_year": 2032,
+     "evidence": "t5-t6"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1000000000.0,
+     "coupon_pct": 5.5,
+     "maturity_year": 2035,
+     "evidence": "t7"
+    }
+   ],
+   "note": "Pricing term sheet, four tranches of $1 bn."
+  },
+  {
+   "accession": "0001193125-25-110061",
+   "company": "Alphabet",
+   "form": "424B2",
+   "filing_date": "2025-05-01",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "EUR",
+     "principal": 1500000000.0,
+     "coupon_pct": 2.5,
+     "maturity_year": 2029,
+     "evidence": "s2"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "EUR",
+     "principal": 1500000000.0,
+     "coupon_pct": 3.0,
+     "maturity_year": 2033,
+     "evidence": "s2"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "EUR",
+     "principal": 1250000000.0,
+     "coupon_pct": 3.375,
+     "maturity_year": 2037,
+     "evidence": "s2"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "EUR",
+     "principal": 1250000000.0,
+     "coupon_pct": 3.875,
+     "maturity_year": 2045,
+     "evidence": "s2"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "EUR",
+     "principal": 1250000000.0,
+     "coupon_pct": 4.0,
+     "maturity_year": 2054,
+     "evidence": "s2"
+    }
+   ],
+   "note": "Final prospectus supplement, five euro tranches."
+  },
+  {
+   "accession": "0001193125-25-070461",
+   "company": "Dell",
+   "form": "8-K",
+   "filing_date": "2025-04-01",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1000000000.0,
+     "coupon_pct": 4.75,
+     "maturity_year": 2028,
+     "evidence": "s6"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1000000000.0,
+     "coupon_pct": 5.0,
+     "maturity_year": 2030,
+     "evidence": "s6"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1000000000.0,
+     "coupon_pct": 5.3,
+     "maturity_year": 2032,
+     "evidence": "s6"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1000000000.0,
+     "coupon_pct": 5.5,
+     "maturity_year": 2035,
+     "evidence": "s6"
+    }
+   ],
+   "note": "8-K: completed offering of four tranches (s6)."
+  },
+  {
+   "accession": "0001769628-25-000003",
+   "company": "CoreWeave",
+   "form": "8-K",
+   "filing_date": "2025-05-06",
+   "label_event": "facility_amendment",
+   "instruments": [
+    {
+     "action_class": "amend",
+     "kind": "revolving_facility",
+     "currency": "USD",
+     "principal": 1500000000.0,
+     "coupon_pct": null,
+     "maturity_year": 2028,
+     "evidence": "s6"
+    },
+    {
+     "action_class": "amend",
+     "kind": "other",
+     "currency": "USD",
+     "principal": 350000000.0,
+     "coupon_pct": null,
+     "maturity_year": null,
+     "evidence": "s6",
+     "optional": true
+    }
+   ],
+   "note": "8-K: Third Amendment raises the revolving credit facility to $1.5 bn and extends it to May 2, 2028. Optional: the letters-of-credit facility raised to $350 m."
+  },
+  {
+   "accession": "0001193125-25-123231",
+   "company": "Cipher Mining",
+   "form": "424B5",
+   "filing_date": "2025-05-20",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "convertible_notes",
+     "currency": "USD",
+     "principal": 150000000.0,
+     "coupon_pct": null,
+     "maturity_year": 2030,
+     "evidence": "s3"
+    }
+   ],
+   "note": "Preliminary prospectus supplement: $150,000,000 convertible notes due 2030, coupon left blank."
+  },
+  {
+   "accession": "0001193125-25-065592",
+   "company": "Dell",
+   "form": "424B2",
+   "filing_date": "2025-03-27",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1000000000.0,
+     "coupon_pct": 4.75,
+     "maturity_year": 2028,
+     "evidence": "s1"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1000000000.0,
+     "coupon_pct": 5.0,
+     "maturity_year": 2030,
+     "evidence": "s1"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1000000000.0,
+     "coupon_pct": 5.3,
+     "maturity_year": 2032,
+     "evidence": "s1"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1000000000.0,
+     "coupon_pct": 5.5,
+     "maturity_year": 2035,
+     "evidence": "s1"
+    }
+   ],
+   "note": "Final prospectus supplement, four tranches."
+  },
+  {
+   "accession": "0001193125-24-195428",
+   "company": "Meta",
+   "form": "424B2",
+   "filing_date": "2024-08-07",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": null,
+     "coupon_pct": null,
+     "maturity_year": null,
+     "evidence": "t12-t16 (blank)"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": null,
+     "coupon_pct": null,
+     "maturity_year": null,
+     "evidence": "t12-t16 (blank)"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": null,
+     "coupon_pct": null,
+     "maturity_year": null,
+     "evidence": "t12-t16 (blank)"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": null,
+     "coupon_pct": null,
+     "maturity_year": null,
+     "evidence": "t12-t16 (blank)"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": null,
+     "coupon_pct": null,
+     "maturity_year": null,
+     "evidence": "t12-t16 (blank)"
+    }
+   ],
+   "note": "Preliminary prospectus supplement: five series of senior notes, every amount, coupon and year left blank."
+  },
+  {
+   "accession": "0001193125-25-156324",
+   "company": "Broadcom",
+   "form": "FWP",
+   "filing_date": "2025-07-08",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1750000000.0,
+     "coupon_pct": 4.6,
+     "maturity_year": 2030,
+     "evidence": "t0.r1"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1750000000.0,
+     "coupon_pct": 4.9,
+     "maturity_year": 2032,
+     "evidence": "t0.r1"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 2500000000.0,
+     "coupon_pct": 5.2,
+     "maturity_year": 2035,
+     "evidence": "t0.r1"
+    }
+   ],
+   "note": "Pricing term sheet, three tranches."
+  },
+  {
+   "accession": "0001193125-24-230373",
+   "company": "Dell",
+   "form": "FWP",
+   "filing_date": "2024-10-02",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 700000000.0,
+     "coupon_pct": 4.35,
+     "maturity_year": 2030,
+     "evidence": "t2"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 800000000.0,
+     "coupon_pct": 4.85,
+     "maturity_year": 2035,
+     "evidence": "t4"
+    }
+   ],
+   "note": "Pricing term sheet, two tranches."
+  },
+  {
+   "accession": "0001193125-25-100802",
+   "company": "Alphabet",
+   "form": "FWP",
+   "filing_date": "2025-04-28",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 750000000.0,
+     "coupon_pct": 4.0,
+     "maturity_year": 2030,
+     "evidence": "t0.r5-r7"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1250000000.0,
+     "coupon_pct": 4.5,
+     "maturity_year": 2035,
+     "evidence": "t0.r5-r7"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1500000000.0,
+     "coupon_pct": 5.25,
+     "maturity_year": 2055,
+     "evidence": "t0.r5-r7"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1500000000.0,
+     "coupon_pct": 5.3,
+     "maturity_year": 2065,
+     "evidence": "t0.r5-r7"
+    }
+   ],
+   "note": "Pricing term sheet, four tranches."
+  }
+ ]
+}

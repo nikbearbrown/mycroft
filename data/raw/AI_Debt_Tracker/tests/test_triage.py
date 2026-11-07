@@ -116,3 +116,19 @@ def test_timeline_covers_subsidiaries_and_deduplicates_co_filings():
     assert [d["type"] for d in k.documents][0] == "8-K"                # main document first
     assert {d["type"] for d in k.documents} >= {"EX-99.1", "EX-4.1"}
     assert not any(d["document"].endswith((".jpg", ".xsd")) for d in k.documents)
+
+
+def test_item_heading_without_a_space_still_starts_the_lead():
+    """Week 3: an 8-K printing "Item1.01" defeated the cover-page strip."""
+    text = t("Item1.01 Entry into a Material Definitive Agreement. The Company entered into a Credit Agreement "
+             "with the lenders named therein providing for a $500 million term loan.")
+    assert tr._strip_boilerplate(text).startswith("Item1.01")
+    r = tr.triage("8-K", ["1.01"], {"8-K": text}, "acc", ask=lambda *a: pytest.fail("the model must not be asked"))
+    assert (r.relevant, r.decided_by, r.event_type) == (True, "rule R4", "new_loan_or_facility")
+
+
+def test_preliminary_424b_with_blank_coupon_and_year_is_a_notes_offering():
+    """Week 3: a preliminary cover leaves the coupon and the year blank ("% Senior Notes due 20")."""
+    cover = "Preliminary Prospectus Supplement $ Dell International L.L.C. $ % Senior Notes due 20 $ % Senior Notes due 20"
+    r = tr.triage("424B3", [], {"424B3": cover}, "acc", ask=lambda *a: pytest.fail("the model must not be asked"))
+    assert (r.relevant, r.decided_by, r.event_type) == (True, "rule R2", "new_bond_issue")
