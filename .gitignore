@@ -15,3 +15,10 @@ __pycache__/
 scripts/mycroft-main/
 docs/mycroft-main/
 data/mycroft-main/
+
+
+# Ignore vector database and logs
+provenance-gatekeeper/chroma_db/
+provenance-gatekeeper/gatekeeper_logs.db
+__pycache__/
+.pytest_cache/

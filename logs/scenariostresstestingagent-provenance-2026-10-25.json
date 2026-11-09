@@ -1,0 +1,22 @@
+{
+  "workflow": "ScenarioStressTestingAgent",
+  "source_paths": [
+    "recipes/scenariostresstestingagent.md",
+    "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Scenario_Stress_Testing_Agent/ScenarioStressTestingAgent.json"
+  ],
+  "exists": {
+    "recipes/scenariostresstestingagent.md": true,
+    "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Scenario_Stress_Testing_Agent/ScenarioStressTestingAgent.json": true
+  },
+  "parsed_ok": {
+    "recipes/scenariostresstestingagent.md": true,
+    "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Scenario_Stress_Testing_Agent/ScenarioStressTestingAgent.json": true
+  },
+  "node_table_match": true,
+  "chain_match": true,
+  "ported_nodes_ok": true,
+  "fixtures_ok": true,
+  "approval_state": "none (sample mode; no live action requested)",
+  "findings": [],
+  "checked_at": "2026-10-25T12:00:00+00:00"
+}

@@ -1,0 +1,40 @@
+{
+  "tool_name": "scenariostresstestingagent-run-approved-tools",
+  "input_path": "data/raw/scenariostresstestingagent/sample/clean",
+  "output_path": "data/verified/scenariostresstestingagent/clean/stress-results.json",
+  "action_taken": "ran the stress-test chain on 11 request(s); 1 stopped at the Groq handoff",
+  "approval_id": null,
+  "no_write_mode": false,
+  "mode": "sample",
+  "requests": 12,
+  "risk_levels": {
+    "CRITICAL": 7,
+    "HIGH": 1,
+    "MODERATE": 1,
+    "LOW": 2
+  },
+  "handoffs_not_made": [
+    {
+      "node": "Fetch_Data",
+      "action": "HTTP GET https://www.alphavantage.co/query (TIME_SERIES_DAILY, symbol NVDA)",
+      "approved_for_live_action": false,
+      "live_call_performed": false,
+      "note": "not made; in sample mode the merge after it carries only the Validate Portfolio item"
+    },
+    {
+      "node": "Basic LLM Chain / Groq Chat Model",
+      "action": "Groq chat completion that turns a custom scenario description into shocks",
+      "approved_for_live_action": false,
+      "live_call_performed": false,
+      "note": "not made; a request with a custom_scenario stops here and is recorded as a handoff, with no stress result"
+    },
+    {
+      "node": "Respond to Webhook",
+      "action": "reply to the caller with {success: true, data: <engine output>}",
+      "approved_for_live_action": false,
+      "live_call_performed": false,
+      "note": "not made; the engine output is written to a local file instead"
+    }
+  ],
+  "generated_at": "2026-10-25T12:00:00+00:00"
+}

@@ -1,0 +1,158 @@
+{
+  "slug": "scenariostresstestingagent",
+  "frozen": "2026-10-25",
+  "invented": true,
+  "note": "Every portfolio, ticker choice and number is invented; nothing was fetched. Each file's SHA-256 is frozen here; a changed file fails provenance.",
+  "counts": {
+    "clean": 12,
+    "defective": 10
+  },
+  "files": {
+    "clean/c01-tech-crash-semiconductor-heavy.json": {
+      "sha256": "b577731968ab6631326572b387a792ab674141e92442729e9cc6bb16920bd5d9",
+      "kind": "clean"
+    },
+    "clean/c02-rate-hike-mixed-book.json": {
+      "sha256": "1f929a9272c78c18bdda58f08b68b87d5f74440bf50882f1dfd3cfaf2fd3ddc9",
+      "kind": "clean"
+    },
+    "clean/c03-ai-regulation-outside-the-map.json": {
+      "sha256": "b1a970cdfeba3f2294f1fe4a48e47b57c8e57b1eac882290d075749728f825b7",
+      "kind": "clean"
+    },
+    "clean/c04-chip-shortage-mostly-unmapped.json": {
+      "sha256": "183733d6768fc8c134261676e4fdac3ffb594d160cc84eefb6ba4c8f8e626e03",
+      "kind": "clean"
+    },
+    "clean/c05-black-swan-two-names.json": {
+      "sha256": "aad3b86c2da25dfa1c702f334fef351df57dca4cf41afc74172bd835c25b5505",
+      "kind": "clean"
+    },
+    "clean/c06-weights-sum-to-six-tenths.json": {
+      "sha256": "46707c4bd7254b2ac4e06fe64eba34958eb17f30836eb691e34b316dae7db949",
+      "kind": "clean"
+    },
+    "clean/c07-weights-within-tolerance.json": {
+      "sha256": "e4f2fadaebfb8edcc18440f74448cebf8abb0645bed45ce807980622702ce2f1",
+      "kind": "clean"
+    },
+    "clean/c08-weights-sum-to-one-point-two.json": {
+      "sha256": "ae34897049f53842369d1243a6b885f6313ca54b59a9bd2b307a2dc840cee19b",
+      "kind": "clean"
+    },
+    "clean/c09-scenario-type-absent.json": {
+      "sha256": "84c85c79b2dab984bab14a4af7cea2fadfabd4eec81161c0732ad7363eece139",
+      "kind": "clean"
+    },
+    "clean/c10-custom-scenario-needs-the-llm.json": {
+      "sha256": "1efd449df49ff30c49bb8de3f38e28b219fe7dca5cfb78070fa60335f3be6059",
+      "kind": "clean"
+    },
+    "clean/c11-exactly-ten-percent.json": {
+      "sha256": "cdd84c2dec2e27eb880a279a4a91b161f55b0ba5279807c054ba4f97a6a67e17",
+      "kind": "clean"
+    },
+    "clean/c12-growth-stack-rate-hike.json": {
+      "sha256": "cf93ce3a38f1fddc2eb7d680bfc15a0886d39f35e3a02c38565956dc771bc29d",
+      "kind": "clean"
+    },
+    "defective/d01-portfolio-missing.json": {
+      "sha256": "b8fe37ce4b71c76a554f62e7a3a8853ad3b6c032cada0f7fdf999d90903c2326",
+      "kind": "defective"
+    },
+    "defective/d02-holdings-missing.json": {
+      "sha256": "b97b5a0411f3ccf105c6f2196a7a83e7ec4c643576a748eef8fe4c890987b77f",
+      "kind": "defective"
+    },
+    "defective/d03-holding-without-ticker.json": {
+      "sha256": "e7a06c09c7e3e5d3a7785377b92cbdc7bdd5f69ad4d150048e8f5e141a2bb0e7",
+      "kind": "defective"
+    },
+    "defective/d04-holdings-is-an-object.json": {
+      "sha256": "2f620630064a5428fdd22a62a5cf0f2d9b75c43aff65f5a34dd29e5e2e6410f2",
+      "kind": "defective"
+    },
+    "defective/d05-weight-is-a-string.json": {
+      "sha256": "1f51d6ea86fd094c94abf0f2dab0f6dad114f73b641014a24447bb1674aa7750",
+      "kind": "defective"
+    },
+    "defective/d06-all-weights-zero.json": {
+      "sha256": "2d059ec58e6a8d568fbc332b5af61b13a745d8b3d2341d46e9ee2c3bdf6afc44",
+      "kind": "defective"
+    },
+    "defective/d07-negative-weight.json": {
+      "sha256": "3da598c962570f6bd92e1e9555764a115b9d60ffed443ce452c6efa41d3254d6",
+      "kind": "defective"
+    },
+    "defective/d08-unknown-scenario-type.json": {
+      "sha256": "75c2ef1165a5308c53d2fcfd18fce3d311386963759240700a56f1900bec785c",
+      "kind": "defective"
+    },
+    "defective/d09-empty-holdings.json": {
+      "sha256": "cba2f3874e02bfb04f1ff25a743852b93792dc7a49e124935c72b58ae2dadb05",
+      "kind": "defective"
+    },
+    "defective/d10-weight-missing.json": {
+      "sha256": "fa1dca22005315893161b2bf0fcb182d3a43723f4a5a1b10e6edea78583b9b37",
+      "kind": "defective"
+    }
+  },
+  "catalog": {
+    "clean": {
+      "c01-tech-crash-semiconductor-heavy": "tech_crash on a semiconductor-heavy book; weights sum to exactly 1.0; every ticker in the sector map (CRITICAL)",
+      "c02-rate-hike-mixed-book": "rate_hike; two mapped big-tech tickers and two invented tickers outside the map, which fall back to tech_sector (MODERATE)",
+      "c03-ai-regulation-outside-the-map": "ai_regulation on invented tickers the map does not know: only the market shock reaches them (LOW)",
+      "c04-chip-shortage-mostly-unmapped": "chip_shortage; one mapped semiconductor, two unmapped (HIGH, 29 percent)",
+      "c05-black-swan-two-names": "black_swan; weights exactly 1.0 (CRITICAL, the market shock alone)",
+      "c06-weights-sum-to-six-tenths": "weights sum to 0.6, so Validate Portfolio rescales them to 1.0",
+      "c07-weights-within-tolerance": "weights sum to 1.005: inside the 0.01 tolerance, so nothing is rescaled",
+      "c08-weights-sum-to-one-point-two": "weights sum to 1.2, so they are rescaled",
+      "c09-scenario-type-absent": "no scenario_type and no custom scenario: Load_Template_Scenario falls back to tech_crash",
+      "c10-custom-scenario-needs-the-llm": "custom_scenario set: the workflow routes to the Groq chain, which this contribution never calls (a recorded handoff)",
+      "c11-exactly-ten-percent": "rate_hike on two big-tech names: drawdown is exactly 10.0 percent, and the engine's rule is 'above 10' (LOW)",
+      "c12-growth-stack-rate-hike": "rate_hike on four growth names (CRITICAL, 33.75 percent)"
+    },
+    "defective": {
+      "d01-portfolio-missing": {
+        "defect": "no portfolio at all",
+        "what_the_workflow_does": "workflow throws: Portfolio must have holdings array"
+      },
+      "d02-holdings-missing": {
+        "defect": "a portfolio object with no holdings",
+        "what_the_workflow_does": "workflow throws: Portfolio must have holdings array"
+      },
+      "d03-holding-without-ticker": {
+        "defect": "the second holding has no ticker",
+        "what_the_workflow_does": "workflow throws: Each holding must have a ticker"
+      },
+      "d04-holdings-is-an-object": {
+        "defect": "holdings is an object, not an array",
+        "what_the_workflow_does": "workflow throws a JavaScript TypeError (not iterable)"
+      },
+      "d05-weight-is-a-string": {
+        "defect": "a weight written as a string",
+        "what_the_workflow_does": "workflow runs on JavaScript's string arithmetic (not modelled by the port); the gate refuses it"
+      },
+      "d06-all-weights-zero": {
+        "defect": "every weight is 0, so the total is 0",
+        "what_the_workflow_does": "workflow rescales by 0 and the weights become NaN; the engine then fails on them"
+      },
+      "d07-negative-weight": {
+        "defect": "one weight is negative and the sum is 1.0",
+        "what_the_workflow_does": "workflow runs and treats the negative weight as a short position without saying so"
+      },
+      "d08-unknown-scenario-type": {
+        "defect": "scenario_type is not one of the five templates",
+        "what_the_workflow_does": "workflow runs the default tech_crash template without saying so"
+      },
+      "d09-empty-holdings": {
+        "defect": "holdings is an empty array",
+        "what_the_workflow_does": "workflow runs and returns a zero-loss LOW result for nothing"
+      },
+      "d10-weight-missing": {
+        "defect": "the second holding has no weight and the others sum to 1.0",
+        "what_the_workflow_does": "Validate Portfolio passes it; the engine fails on the missing weight"
+      }
+    }
+  }
+}

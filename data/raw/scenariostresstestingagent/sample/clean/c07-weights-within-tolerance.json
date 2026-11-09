@@ -1,0 +1,18 @@
+{
+  "body": {
+    "portfolio": {
+      "holdings": [
+        {
+          "ticker": "AMD",
+          "weight": 0.5
+        },
+        {
+          "ticker": "OMNI",
+          "weight": 0.505
+        }
+      ]
+    },
+    "scenario_type": "chip_shortage",
+    "horizon_days": 30
+  }
+}

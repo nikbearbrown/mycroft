@@ -1,0 +1,156 @@
+{
+  "workflow": "ScenarioStressTestingAgent",
+  "run_id": "sample-2026-11-01-clean",
+  "mode": "sample",
+  "steps_completed": [
+    1,
+    3,
+    4,
+    5,
+    6
+  ],
+  "records_seen": 12,
+  "rejects": [],
+  "duplicates": [],
+  "flags": [
+    {
+      "id": "c02-rate-hike-mixed-book",
+      "flag": "default-sector",
+      "detail": "50% of the book is in tickers the workflow's sector map does not list, so it gets the default tech_sector shock"
+    },
+    {
+      "id": "c03-ai-regulation-outside-the-map",
+      "flag": "default-sector",
+      "detail": "100% of the book is in tickers the workflow's sector map does not list, so it gets the default tech_sector shock"
+    },
+    {
+      "id": "c04-chip-shortage-mostly-unmapped",
+      "flag": "default-sector",
+      "detail": "90% of the book is in tickers the workflow's sector map does not list, so it gets the default tech_sector shock"
+    },
+    {
+      "id": "c05-black-swan-two-names",
+      "flag": "default-sector",
+      "detail": "100% of the book is in tickers the workflow's sector map does not list, so it gets the default tech_sector shock"
+    },
+    {
+      "id": "c06-weights-sum-to-six-tenths",
+      "flag": "rescaled",
+      "detail": "the request's weights add to 0.6; the workflow rescaled them to 1.0"
+    },
+    {
+      "id": "c07-weights-within-tolerance",
+      "flag": "majority-holding",
+      "detail": "OMNI is 50.5% of the book after rescaling, more than half"
+    },
+    {
+      "id": "c07-weights-within-tolerance",
+      "flag": "default-sector",
+      "detail": "50% of the book is in tickers the workflow's sector map does not list, so it gets the default tech_sector shock"
+    },
+    {
+      "id": "c08-weights-sum-to-one-point-two",
+      "flag": "rescaled",
+      "detail": "the request's weights add to 1.2; the workflow rescaled them to 1.0"
+    },
+    {
+      "id": "c09-scenario-type-absent",
+      "flag": "scenario-defaulted",
+      "detail": "no scenario_type in the request; the workflow runs the default, tech_crash"
+    },
+    {
+      "id": "c10-custom-scenario-needs-the-llm",
+      "flag": "handoff",
+      "detail": "Groq chat call needed for a custom scenario: not approved, not made"
+    },
+    {
+      "id": "c11-exactly-ten-percent",
+      "flag": "on-threshold",
+      "detail": "drawdown -10.0% sits within 0.05 points of the 10% line; the rule is 'above', so the level is LOW"
+    }
+  ],
+  "stop_conditions": [
+    {
+      "condition": "Stop if credentials, API keys, database destinations, email addresses, or tokens are hardcoded instead of read from environment variables.",
+      "triggered": false,
+      "evidence": "scanned 41 file(s) (this recipe's scripts, its raw data and the recipe) for a quoted literal assigned to an api key, secret, token, password or authorization, an `sk-` key or a Bearer token: none found"
+    },
+    {
+      "condition": "Stop if live external calls, database writes, notifications, trades, or publication actions are requested without explicit human approval.",
+      "triggered": false,
+      "evidence": "run envelope: live_calls False, network False, database_writes False; nothing live requested, so no approval is needed; 3 hand-off(s) recorded in the step-5 log, none made"
+    },
+    {
+      "condition": "Stop if required local source data is missing and no approved live-call path is available.",
+      "triggered": false,
+      "evidence": "the `clean` sample folder exists with 12 request file(s) and the manifest exists; step 3 read 12"
+    },
+    {
+      "condition": "Stop if generated outputs omit provenance or make unsupported analytical claims.",
+      "triggered": false,
+      "evidence": "the log lists 14 source file(s); the report carries Source inventory and Inputs used, and keeps readings of the sample under Inferred findings, labelled"
+    }
+  ],
+  "todo_items": [
+    "Step 2 (Ingest declared inputs): `[TODO: DEV]` scripts/ingest/scenariostresstestingagent-ingest-inputs.py",
+    "Script mapping: `scripts/tools/scenariostresstestingagent-respond-to-webhook.py`",
+    "Script mapping: `scripts/tools/scenariostresstestingagent-produce-human-report.py`"
+  ],
+  "source_files": [
+    "recipes/scenariostresstestingagent.md",
+    "data/raw/scenariostresstestingagent/run-envelope.json",
+    "data/raw/scenariostresstestingagent/sample/clean/c01-tech-crash-semiconductor-heavy.json",
+    "data/raw/scenariostresstestingagent/sample/clean/c02-rate-hike-mixed-book.json",
+    "data/raw/scenariostresstestingagent/sample/clean/c03-ai-regulation-outside-the-map.json",
+    "data/raw/scenariostresstestingagent/sample/clean/c04-chip-shortage-mostly-unmapped.json",
+    "data/raw/scenariostresstestingagent/sample/clean/c05-black-swan-two-names.json",
+    "data/raw/scenariostresstestingagent/sample/clean/c06-weights-sum-to-six-tenths.json",
+    "data/raw/scenariostresstestingagent/sample/clean/c07-weights-within-tolerance.json",
+    "data/raw/scenariostresstestingagent/sample/clean/c08-weights-sum-to-one-point-two.json",
+    "data/raw/scenariostresstestingagent/sample/clean/c09-scenario-type-absent.json",
+    "data/raw/scenariostresstestingagent/sample/clean/c10-custom-scenario-needs-the-llm.json",
+    "data/raw/scenariostresstestingagent/sample/clean/c11-exactly-ten-percent.json",
+    "data/raw/scenariostresstestingagent/sample/clean/c12-growth-stack-rate-hike.json"
+  ],
+  "gate_decisions": [
+    {
+      "gate": "1 Source gate",
+      "result": "PASS"
+    },
+    {
+      "gate": "2 Scope gate",
+      "result": "PASS"
+    },
+    {
+      "gate": "3 Data-shape gate",
+      "result": "PASS"
+    },
+    {
+      "gate": "4 Script-readiness gate",
+      "result": "PASS"
+    },
+    {
+      "gate": "5 Approval gate",
+      "result": "NOT NEEDED (sample mode)"
+    },
+    {
+      "gate": "6 Report gate",
+      "result": "PASS"
+    },
+    {
+      "gate": "human clearance",
+      "result": "none recorded"
+    }
+  ],
+  "generated_at": "2026-11-01T09:00:00Z",
+  "raw_output_paths": [
+    "data/raw/scenariostresstestingagent/run-envelope.json"
+  ],
+  "verified_output_paths": [
+    "data/verified/scenariostresstestingagent/clean/validated.json",
+    "data/verified/scenariostresstestingagent/clean/stress-results.json",
+    "data/verified/scenariostresstestingagent/clean/quality-check.json",
+    "data/verified/scenariostresstestingagent/clean/quality-notes.md"
+  ],
+  "report_path": "reports/generated/scenariostresstestingagent-2026-11-01.md"
+}

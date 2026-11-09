@@ -1,0 +1,66 @@
+{
+  "name": "Gatekeeper Hallucination Alert",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "hallucination-alert",
+        "options": {}
+      },
+      "name": "Webhook (Gatekeeper)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "hallucination-alert"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.variance_type }}",
+              "operation": "contains",
+              "value2": "Magnitude Error"
+            }
+          ]
+        }
+      },
+      "name": "Severity Router",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 🚨 CRITICAL AI HALLUCINATION\n**Claim ID:** {{$json.body.claim_id}}\n**Error Type:** {{$json.body.variance_type}}\n**Details:** {{$json.body.explanation}}\n\n*This payload was blocked from reaching the ledger.*"
+      },
+      "name": "Format Slack/Email Alert",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        700,
+        280
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook (Gatekeeper)": {
+      "main": [
+        [
+          {
+            "node": "Severity Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true
+}

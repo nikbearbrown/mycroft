@@ -2,6 +2,9 @@ FROM python:3.10-slim
 
 WORKDIR /code
 
+# Install system dependencies required for C++ compilation (bcrypt / chromadb)
+RUN apt-get update && apt-get install -y build-essential curl
+
 # Copy requirements first to leverage Docker layer caching
 COPY requirements.txt .
 

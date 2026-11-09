@@ -1,0 +1,60 @@
+name: Provenance Gatekeeper CI
+
+on:
+  push:
+    paths:
+      - 'provenance-gatekeeper/**'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    paths:
+      - 'provenance-gatekeeper/**'
+      - '.github/workflows/ci.yml'
+
+jobs:
+  test-gatekeeper:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./provenance-gatekeeper
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest requests httpx
+
+    - name: Run Unit Tests (Regex, Evaluation & API)
+      env:
+        GATEKEEPER_SECRET_KEY: ci-test-secret-key
+        ALERT_WEBHOOK_URL: http://localhost:5678/webhook/test
+      run: |
+        # Explicitly target ONLY the unit tests so we don't trigger live HTTP calls yet
+        python -m pytest tests/test_main.py tests/test_api.py -v
+
+    - name: Start Gatekeeper Service via Docker Compose
+      run: |
+        docker compose up -d --build
+        # Allow the FastAPI container and model weights to load
+        sleep 12
+
+    - name: Seed ChromaDB Ground Truth
+      run: |
+        python seed.py
+
+    - name: Execute Adversarial Stress Test
+      run: |
+        python tests/stress_test.py
+
+    - name: Tear Down Docker Containers
+      if: always()
+      run: |
+        docker compose down -v

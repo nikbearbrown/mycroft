@@ -1,0 +1,18 @@
+{
+  "body": {
+    "portfolio": {
+      "holdings": [
+        {
+          "ticker": "AAPL",
+          "weight": 0.5
+        },
+        {
+          "ticker": "MSFT",
+          "weight": 0.5
+        }
+      ]
+    },
+    "scenario_type": "rate_hike",
+    "horizon_days": 30
+  }
+}

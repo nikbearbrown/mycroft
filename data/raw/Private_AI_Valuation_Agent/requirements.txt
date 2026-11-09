@@ -1,0 +1,53 @@
+# Week 1-2 (ingestion) — install these now
+requests==2.32.3
+python-dotenv==1.0.1
+duckdb==1.1.3
+psycopg2-binary==2.9.10
+pytest==8.3.4
+
+# Week 3-4 (deterministic matching)
+rapidfuzz==3.11.0
+
+# Week 5 (local LLM adjudication) — no new Python dependency.
+#
+# plan.md pins `ollama==0.4.5`. src/resolve/llm.py talks to the same HTTP API
+# with `requests`, which is already pinned above, because the surface needed is
+# one POST to one endpoint. It also lets OLLAMA_HOST point at another machine
+# without a code change. The runtime dependency is external:
+#
+#   winget install --id Ollama.Ollama --scope user
+#   ollama pull llama3.1:8b        # 4.9 GB, 8.0B params, Q4_K_M
+#
+# Set OLLAMA_MODEL / OLLAMA_HOST to override the defaults.
+
+# Week 6 (resolution graph and human review queue) — installed
+langgraph==0.2.60
+langgraph-checkpoint-postgres==2.0.9
+#
+# langgraph-checkpoint-postgres pulls in psycopg 3 (plus psycopg-pool), which
+# now sits alongside psycopg2-binary. The two are not interchangeable and both
+# are needed: the checkpointer is written against psycopg 3, and every query in
+# src/db and src/graphs is psycopg2. Nothing shares a connection across the two
+# drivers — the graph takes a psycopg2 connection and the checkpointer opens its
+# own from the same URL.
+psycopg[binary]==3.3.5
+
+# Week 10 (MCP server) -- installed
+#
+# plan.md pins fastmcp==2.2.0. That release predates the 2.x tool-decorator
+# API src/mcp/server.py uses and does not resolve against the `mcp` package
+# this environment needs, so 2.11.3 is pinned instead. Logged as a deviation
+# in docs/worklog.md.
+fastmcp==2.11.3
+
+# Week 11 (commentary, signal contract) -- installed
+#
+# plan.md pins groq==0.15.0; 1.7.0 is what pip resolves today and the only
+# surface used is chat.completions.create. jsonschema validates the frozen
+# schema_version 1.0 contract in src/signal/contract.py.
+groq==1.7.0
+jsonschema==4.26.0
+#
+# The commentary backend is pluggable and Groq is preferred per plan.md.
+# Without GROQ_API_KEY the graph falls back to a local Ollama model, and with
+# neither it refuses to write a note rather than substituting a template.

@@ -12,10 +12,14 @@
     "eval:report": "node scripts/eval/report.mjs",
     "svg-to-png": "node scripts/svg-to-png.mjs",
     "audit:layout": "node scripts/svg-layout-audit.mjs",
-    "postsvg-to-png": "node scripts/svg-layout-audit.mjs images || true"
+    "postsvg-to-png": "node scripts/svg-layout-audit.mjs images || true",
+    "snickerdoodle": "node scripts/snickerdoodle.mjs"
   },
   "dependencies": {
     "glob": "^10.0.0",
     "sharp": "^0.33.0"
+  },
+  "bin": {
+    "snickerdoodle": "scripts/snickerdoodle.mjs"
   }
 }

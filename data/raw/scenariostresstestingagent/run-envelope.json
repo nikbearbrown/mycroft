@@ -1,0 +1,10 @@
+{
+  "workflow": "ScenarioStressTestingAgent",
+  "slug": "scenariostresstestingagent",
+  "mode": "sample",
+  "live_calls": false,
+  "network": false,
+  "database_writes": false,
+  "declared": "2026-10-25",
+  "meaning": "Sample mode: every input is the frozen invented corpus. The Groq call, the Alpha Vantage fetch and the webhook response are never made."
+}

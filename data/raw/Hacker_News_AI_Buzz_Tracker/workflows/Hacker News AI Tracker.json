@@ -1,0 +1,1408 @@
+{
+  "name": "Hacker News AI Tracker",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -272,
+        96
+      ],
+      "id": "125e7176-1325-45d6-a320-443e9a52ee75",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        -96
+      ],
+      "id": "2894528d-7b7a-40da-a7c5-bd01cd9529f0",
+      "name": "Manual Trigger"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# Loop over input items and add a new field called 'my_new_field' to the JSON of each one\nimport time\n\nwindowHours = 24\n\nreturn [{\n    \"json\": {\n        \"sinceUnix\": int(time.time()) - windowHours * 3600\n    }\n}]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        -96
+      ],
+      "id": "62fa4450-1dfb-42e0-88a8-e18686b39bfe",
+      "name": "Get Day Ago Unix Time"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# Loop over input items and add a new field called 'my_new_field' to the JSON of each one\nreturn [\n    { \n        \"entity\": \"NVIDIA\", \n        \"ticker\": \"NVDA\",\n        \"queryTerms\": [\"NVIDIA\", \"Nvidia\", \"CUDA\"],\n        \"frontPagePoints\": 100, \n        \"breakoutThreshold\": 70\n    },\n    {\n        \"entity\": \"OpenAI\",\n        \"ticker\": None,\n        \"queryTerms\": [\"OpenAI\",\"ChatGPT\",\"GPT-5\",\"Sora\"],\n        \"frontPagePoints\": 100,\n        \"breakoutThreshold\": 70\n    },\n    {\n        \"entity\": \"Microsoft (Copilot)\",\n        \"ticker\": \"MSFT\",\n        \"queryTerms\": [\"Microsoft Copilot\",\"GitHub Copilot\"],\n        \"frontPagePoints\": 100,\n        \"breakoutThreshold\": 70\n    },\n    {\n        \"entity\": \"Google (Gemini)\",\n        \"ticker\": \"GOOGL\",\n        \"queryTerms\": [\"Gemini\",\"DeepMind\",\"Google AI\"],\n        \"frontPagePoints\": 100,\n        \"breakoutThreshold\": 70\n    },\n    {\n        \"entity\": \"Meta (Llama)\",\n        \"ticker\": \"META\",\n        \"queryTerms\": [\"Llama\",\"Meta AI\"],\n        \"frontPagePoints\": 100,\n        \"breakoutThreshold\": 70\n    },\n    {\n        \"entity\": \"AMD\",\n        \"ticker\": \"AMD\",\n        \"queryTerms\": [\"AMD\",\"ROCm\",\"Instinct MI300\"],\n        \"frontPagePoints\": 100,\n        \"breakoutThreshold\": 70\n    },\n    {\n        \"entity\": \"Palantir\",\n        \"ticker\": \"PLTR\",\n        \"queryTerms\": [\"Palantir\"],\n        \"frontPagePoints\": 75,\n        \"breakoutThreshold\": 60\n    },\n    {\n        \"entity\": \"Amazon (AWS AI)\",\n        \"ticker\": \"AMZN\",\n        \"queryTerms\": [\"AWS Bedrock\",\"Amazon Bedrock\",\"Trainium\"],\n        \"frontPagePoints\": 100,\n        \"breakoutThreshold\": 70\n    },\n    {\n        \"entity\": \"Apple (Apple Intelligence)\",\n        \"ticker\": \"AAPL\",\n        \"queryTerms\": [\"Apple Intelligence\"],\n        \"frontPagePoints\": 75,\n        \"breakoutThreshold\": 60\n    },\n    {\n        \"entity\": \"Tesla (AI/FSD)\",\n        \"ticker\": \"TSLA\",\n        \"queryTerms\": [\"Tesla FSD\",\"Tesla Optimus\",\"Dojo\"],\n        \"frontPagePoints\": 100,\n        \"breakoutThreshold\": 70\n    },\n    {\n        \"entity\": \"Anthropic\",\n        \"ticker\": None,\n        \"queryTerms\": [\"Anthropic\",\"Claude\"],\n        \"frontPagePoints\": 75,\n        \"breakoutThreshold\": 60\n    },\n    {\n        \"entity\": \"Mistral\",\n        \"ticker\": None,\n        \"queryTerms\": [\"Mistral AI\",\"Mistral\"],\n        \"frontPagePoints\": 75,\n        \"breakoutThreshold\": 60\n    }\n]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        96
+      ],
+      "id": "e24662e9-7a9c-477d-b179-6dc6d546d1d3",
+      "name": "WatchList"
+    },
+    {
+      "parameters": {
+        "mode": "combineBySql",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        192,
+        -80
+      ],
+      "id": "902df6dc-27ef-46af-9c80-1684ce0eecf6",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "url": "https://hn.algolia.com/api/v1/search_by_date",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $json.queryTerm }}"
+            },
+            {
+              "name": "tags",
+              "value": "story"
+            },
+            {
+              "name": "=numericFilters",
+              "value": "=created_at_i>{{ $json.sinceUnix }}"
+            },
+            {
+              "name": "hitsPerPage",
+              "value": "100"
+            },
+            {
+              "name": "page",
+              "value": "0"
+            },
+            {
+              "name": "advancedSyntax",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "pagination": {},
+          "timeout": 15000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        512,
+        256
+      ],
+      "id": "cf049feb-66fe-4ea2-9170-f5bad6d62b49",
+      "name": "HTTP Request",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        368,
+        -80
+      ],
+      "id": "3d493991-360a-4690-9b7c-69ecb2ce230c",
+      "name": "Loop Over Entities"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# # Loop over input items and add a new field called 'my_new_field' to the JSON of each one\n# for item in _items:\n#   item[\"json\"][\"my_new_field\"] = 1\n# return _items\n\n# tmp = []\n# for item in _items:\n#   item[\"json\"][\"tmp\"] = 1\n\n# return _items\n\nres = []\nfor item in _items:\n  for query in item[\"json\"][\"queryTerms\"]:\n    res.append({\n      \"entity\": item[\"json\"][\"entity\"],\n      \"term\": query,\n      \"queryTerm\": f'\"{query}\"',\n      \"sinceUnix\": item[\"json\"][\"sinceUnix\"],\n      \"ticker\": item[\"json\"][\"ticker\"],\n      \"frontPagePoints\": item[\"json\"][\"frontPagePoints\"],\n      \"breakoutThreshold\": item[\"json\"][\"breakoutThreshold\"],\n    })\n\nreturn res\n# for query in _input.item.json.queryTerms:\n#   print(query)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        528,
+        48
+      ],
+      "id": "b0688d19-8d05-4253-9540-0dd63c54dfb3",
+      "name": "Entity Term Pair"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "entity"
+            },
+            {
+              "name": "term"
+            },
+            {
+              "name": "queryTerm"
+            },
+            {
+              "name": "sinceUnix",
+              "type": "number"
+            },
+            {
+              "name": "ticker"
+            },
+            {
+              "name": "frontPagePoints",
+              "type": "number"
+            },
+            {
+              "name": "breakoutThreshold",
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        368,
+        400
+      ],
+      "id": "3b71acfb-7f89-438d-8630-4be6d34fd6aa",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "query",
+              "field2": "queryTerm"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        656,
+        384
+      ],
+      "id": "c284194b-9a09-4188-99cf-227cab47d0b3",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# n8n code node: Get Metrics\nfrom datetime import datetime, timezone\n\n\ndef parse_hit(hit):\n    \"\"\"Keep only the fields we need; drop _highlightResult / _tags noise.\"\"\"\n    return {\n        \"title\": hit.get(\"title\"),\n        \"url\": hit.get(\"url\"),\n        \"points\": hit.get(\"points\") or 0,\n        \"num_comments\": hit.get(\"num_comments\") or 0,\n        \"created_at_i\": hit.get(\"created_at_i\"),\n        \"objectID\": hit.get(\"objectID\"),\n    }\n\n\ndef run_date_from_since(since):\n    \"\"\"Window-start date as YYYY-MM-DD (UTC). Falls back to None if unset.\"\"\"\n    if since is None:\n        return None\n    return datetime.fromtimestamp(since, tz=timezone.utc).strftime(\"%Y-%m-%d\")\n\n\n# --- Week 10 story->entity relevance (mirrors story_relevance.py; see that file\n# and tests/test_story_relevance.py for the rationale and the Bento fixture) ---\ndef title_matches(title, terms):\n    \"\"\"True if any of the entity's query terms is in the story TITLE (ci).\"\"\"\n    if not title:\n        return False\n    t = title.lower()\n    for term in terms or []:\n        term = (term or \"\").strip().lower()\n        if term and term in t:\n            return True\n    return False\n\n\ndef func(_items):\n    # Per-execution accumulators (local, so nothing leaks between entity runs).\n    hits_by_id = {}     # objectID -> parsed_hit  (dedupe: same story across terms counts once)\n    entity = None       # canonical entity name (same across all input items)\n    since = None        # smallest sinceUnix seen across this entity's terms\n    query_terms = []    # this entity's query terms, collected from the fanned-out items\n    seen_terms = set()\n    meta = {            # per-entity config, captured from the first item that has it\n        \"ticker\": None,\n        \"frontPagePoints\": 100,\n        \"breakoutThreshold\": 70,\n    }\n    meta_captured = False\n\n    for item in _items:\n        try:\n            data = item.get(\"json\", {})\n\n            # All items belong to the same entity; capture the name + meta once.\n            if entity is None and data.get(\"entity\"):\n                entity = data.get(\"entity\")\n            if not meta_captured and data.get(\"entity\"):\n                meta = {\n                    \"ticker\": data.get(\"ticker\"),\n                    \"frontPagePoints\": data.get(\"frontPagePoints\", 100),\n                    \"breakoutThreshold\": data.get(\"breakoutThreshold\", 70),\n                }\n                meta_captured = True\n\n            # Collect the query term this item searched on (threaded via Merge1),\n            # so top-story selection can require a title match (Week 10).\n            term = data.get(\"term\")\n            if term and term not in seen_terms:\n                seen_terms.add(term)\n                query_terms.append(term)\n\n            term_since = data.get(\"sinceUnix\")\n            if term_since is not None:\n                since = term_since if since is None else min(since, term_since)\n\n            for hit in (data.get(\"hits\") or []):\n                rec = parse_hit(hit)\n                oid = rec[\"objectID\"]\n                if oid is None:\n                    continue\n                hits_by_id[oid] = rec\n        except Exception:\n            # Empty / malformed response for one term: skip the term, keep going.\n            continue\n\n    fp_points = meta[\"frontPagePoints\"]\n    hits = list(hits_by_id.values())\n\n    # Buzz-score metrics are computed over ALL deduped hits (unchanged) — the\n    # Week 10 relevance filter applies only to top-story SELECTION below.\n    story_count = len(hits)\n    total_points = sum(h[\"points\"] for h in hits)\n    total_comments = sum(h[\"num_comments\"] for h in hits)\n    front_page_count = sum(1 for h in hits if h[\"points\"] >= fp_points)\n\n    # Top-3 stories by points, RELEVANCE-FILTERED (Week 10): a story qualifies as\n    # a top story only if a query term appears in its title, so the narrative and\n    # the Community Opinion comment fetch target stories actually about the entity.\n    # Metrics stay over all hits; this only governs narrative/opinion attribution.\n    # If query_terms is empty (terms didn't thread through), fall back to points\n    # ranking so we degrade to old behavior rather than emptying every entity.\n    ranked = sorted(hits, key=lambda h: h[\"points\"], reverse=True)\n    if query_terms:\n        relevant = [h for h in ranked if title_matches(h[\"title\"], query_terms)]\n        relevance_filtered = True\n    else:\n        relevant = ranked\n        relevance_filtered = False\n\n    top_story = None\n    top_stories = []\n    for h in relevant[:3]:\n        top_stories.append({\n            \"title\": h[\"title\"], \"url\": h[\"url\"], \"points\": h[\"points\"],\n            \"num_comments\": h[\"num_comments\"], \"objectID\": h[\"objectID\"],\n            \"permalink\": f\"https://news.ycombinator.com/item?id={h['objectID']}\",\n            \"titleMatch\": True,\n        })\n    if top_stories:\n        top_story = top_stories[0]\n\n    return {\n        \"json\": {\n            \"entity\": entity,\n            \"ticker\": meta[\"ticker\"],\n            \"breakoutThreshold\": meta[\"breakoutThreshold\"],\n            \"runDate\": run_date_from_since(since),\n            \"rawMetrics\": {\n                \"storyCount\": story_count,        # = deduped hit count (all hits)\n                \"totalPoints\": total_points,\n                \"totalComments\": total_comments,\n                \"frontPageCount\": front_page_count,\n            },\n            \"topStory\": top_story,\n            \"topStories\": top_stories,\n            \"lowConfidence\": story_count < 3,      # sparse-entity floor (plan.md)\n            # Week 10 attribution audit fields:\n            \"relevanceFiltered\": relevance_filtered,   # False = terms missing, fell back\n            \"storiesConsidered\": story_count,          # all deduped hits\n            \"relevantStories\": len(relevant),          # hits with a title match\n        }\n    }\n\n\nreturn func(_items)\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        384
+      ],
+      "id": "75902126-b940-4d94-b40b-5dee2b9ff329",
+      "name": "Get Metrics"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT run_date, leaderboard\nFROM hn_buzz_runs\nWHERE complete = true AND watchlist_version = 'v1'\nORDER BY created_at DESC\nLIMIT 1;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        -256
+      ],
+      "id": "b7b4cf18-f40d-4c5b-8b6f-bc8bfdfab3a8",
+      "name": "Get Previous Run",
+      "credentials": {
+        "postgres": {
+          "id": "Utf7akeIjwVRiOaF",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "import math\n\n# --- calibration knobs (Week 3 deliverable; tune against fixtures)---\nVOLUME_REF    = 30    # storyCount that earns ~full volume points\nENGAGEMENT_REF = 1000 # (points+comments) that earns ~full engagement points\nFRONTPAGE_REF = 5     # frontPageCount that earns full front-page points\n\n# --- Week 4 acceleration bounds (per plan.md / S0-10) ---\nACCEL_MIN = -1.0      # full negative velocity floor (score dropped to ~0 or below)\nACCEL_MAX = 2.0       # cap reward at +200% growth vs the prior run\n\n\ndef clamp(x, lo=0.0, hi=1.0):\n    return max(lo, min(hi, x))\n\n\ndef base_of(entry):\n    \"\"\"Reconstruct an entry's non-acceleration score from its stored components.\n\n    Yesterday's snapshot stores scoreComponents; the acceleration part is\n    excluded so today's velocity is measured against yesterday's *base*, not a\n    figure that already contained yesterday's own acceleration (avoids compounding).\n    \"\"\"\n    c = entry.get(\"scoreComponents\", {}) or {}\n    return c.get(\"volume\", 0) + c.get(\"engagement\", 0) + c.get(\"frontPage\", 0)\n\n\ndef split_inputs(_items):\n    \"\"\"Separate the single previous-run item (has a 'leaderboard' key) from the\n    current per-entity metric items. Returns (prev_leaderboard, current_items).\"\"\"\n    prev_leaderboard = []\n    current = []\n    for item in _items:\n        d = item.get(\"json\", {})\n        if \"leaderboard\" in d:\n            # The DB read row merged in before this node.\n            prev_leaderboard = d.get(\"leaderboard\") or []\n        elif \"rawMetrics\" in d:\n            current.append(d)\n    return prev_leaderboard, current\n\n\ndef func(_items):\n    prev_leaderboard, current = split_inputs(_items)\n    prev_by_entity = {e.get(\"entity\"): e for e in prev_leaderboard if e.get(\"entity\")}\n\n    out = []\n    for d in current:\n        m = d[\"rawMetrics\"]\n        story_count = m[\"storyCount\"]\n        engagement = m[\"totalPoints\"] + m[\"totalComments\"]\n        fp_count = m[\"frontPageCount\"]\n        low_conf = d.get(\"lowConfidence\", False)\n\n        if low_conf:\n            # Sparse-entity floor: absolute scale, not the cross-entity log scale.\n            volume_score = 30.0 * clamp(story_count / 3.0)\n            engagement_score = 30.0 * clamp(engagement / 50.0)\n            front_page_score = 0.0\n        else:\n            volume_score = 30.0 * clamp(math.log1p(story_count) / math.log1p(VOLUME_REF))\n            engagement_score = 30.0 * clamp(math.log1p(engagement) / math.log1p(ENGAGEMENT_REF))\n            front_page_score = 20.0 * clamp(fp_count / FRONTPAGE_REF)\n\n        today_base = volume_score + engagement_score + front_page_score\n\n        # --- Acceleration vs the previous run (Week 4) ---\n        prev = prev_by_entity.get(d[\"entity\"])\n        if prev is None:\n            # Cold start: entity unseen (first run, or newly added at a version boundary).\n            accel_score = 0.0\n            cold_start = True\n        else:\n            yesterday_base = base_of(prev)\n            if yesterday_base <= 0:\n                # Zero-denominator guard: no meaningful baseline to grow from.\n                accel_score = 0.0\n            else:\n                delta = today_base - yesterday_base\n                accel_score = 20.0 * clamp(delta / yesterday_base, ACCEL_MIN, ACCEL_MAX)\n            cold_start = False\n\n        buzz = round(today_base + accel_score, 1)\n\n        buzz_score = clamp(buzz, 0, 100)\n        d[\"buzzScore\"] = buzz_score\n        d[\"scoreComponents\"] = {\n            \"volume\": round(volume_score, 1),\n            \"engagement\": round(engagement_score, 1),\n            \"frontPage\": round(front_page_score, 1),\n            \"acceleration\": round(accel_score, 1),\n        }\n        d[\"velocity\"] = round(accel_score, 1)   # exposed for the digest / JSON signal\n        d[\"coldStart\"] = cold_start\n        d[\"breakout\"] = buzz_score >= d.get(\"breakoutThreshold\", 70)\n        out.append({\"json\": d})\n\n    # Ranked leaderboard, highest first.\n    out.sort(key=lambda i: i[\"json\"][\"buzzScore\"], reverse=True)\n    return out\n\nreturn func(_items)\n\n# for item in _items:\n#   print(item)\n# # print(_items)\n\n# # First input connection\n# input_0 = _input.all(0)\n\n# # Second input connection\n# input_1 = _input.all(1)\n\n# print(input_0)\n# print(input_1)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        816,
+        -112
+      ],
+      "id": "b6659bf9-2c32-4f56-833c-1ad96bd7ff44",
+      "name": "Computer Buzz Score"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        592,
+        -112
+      ],
+      "id": "aad01a31-7586-445e-bdad-c0e63332334e",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "def func(_items):\n    leaderboard = [i[\"json\"] for i in _items]           # already sorted by score\n    run_date = leaderboard[0].get(\"runDate\") if leaderboard else None\n    raw_metrics = {i[\"entity\"]: i[\"rawMetrics\"] for i in leaderboard}\n    return [{\"json\": {\n        \"run_date\": run_date,\n        \"window_hours\": 24,\n        \"leaderboard\": leaderboard,\n        \"raw_metrics\": raw_metrics,\n        \"complete\": len(leaderboard) == len(_items) and len(leaderboard) > 0,\n        \"watchlist_version\": \"v1\"\n    }}]\n\nreturn func(_items)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1088,
+        -112
+      ],
+      "id": "7ad6ff88-5796-4b32-a0a3-ef0d13456c79",
+      "name": "Build Run Row"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "def func(_items):\n    row = _items[0][\"json\"]\n    lb = row.get(\"leaderboard\", [])\n\n    signal = {\n        \"source\": \"hacker_news_buzz\",\n        \"schema_version\": \"1.0\",\n        \"run_date\": row.get(\"run_date\"),\n        \"window_hours\": row.get(\"window_hours\", 24),\n        \"complete\": row.get(\"complete\", True),\n        \"entities\": [\n            {\n                \"entity\": e.get(\"entity\"),\n                \"ticker\": e.get(\"ticker\"),\n                \"buzz_score\": e.get(\"buzzScore\"),\n                \"velocity\": e.get(\"velocity\", 0),\n                \"breakout\": e.get(\"breakout\", False),\n                \"low_confidence\": e.get(\"lowConfidence\", False),\n                \"cold_start\": e.get(\"coldStart\", False),\n            }\n            for e in lb\n        ],\n    }\n    return [{\"json\": signal}]\n\nreturn func(_items)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4480,
+        384
+      ],
+      "id": "aefbcc9b-def6-4068-ac9a-634dc43077e5",
+      "name": "Code in Python"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "efbaf2c1-a361-42ce-bf14-652a77eff41d",
+              "leftValue": "={{ $json.leaderboard.some(e => e.breakout === true) }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        4480,
+        528
+      ],
+      "id": "d8bc5fdd-0cfe-44c1-a477-c78fdd93fe79",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# n8n code node: Code in Python1  (Week 10 — richer HTML email digest)\n# Human-readable digest ONLY. The machine JSON signal is the separate \"Code in\n# Python\" node; the two are deliberately distinct outputs (plan.md).\n# Reads the run row after narratives + community opinions + sector narrative are\n# attached: each leaderboard entity carries e[\"narrative\"], e[\"communityOpinion\"];\n# the row carries row[\"sectorNarrative\"].\nimport html as _html\n\nOCHRE = \"#C8860E\"   # negative / mixed sentiment (brand-safe; no green, no danger-red)\nRED   = \"#C8102E\"   # breakout emphasis only\nINK   = \"#2a1a0e\"\nSEC   = \"#545454\"\n\n\ndef esc(s):\n    return _html.escape(str(s if s is not None else \"\"))\n\n\ndef arrow(v):\n    if v > 0: return \"&#9650;\"   # ▲\n    if v < 0: return \"&#9660;\"   # ▼\n    return \"&mdash;\"\n\n\ndef sentiment_color(s):\n    return OCHRE if s in (\"negative\", \"mixed\") else SEC\n\n\ndef func(_items):\n    row = _items[0][\"json\"]\n    lb = row.get(\"leaderboard\", [])\n    run_date = row.get(\"run_date\", \"\")\n    sector = row.get(\"sectorNarrative\") or {}\n\n    # --- Sector narrative (only if present and not degraded) ---\n    sector_html = \"\"\n    if sector.get(\"narrative\") and not sector.get(\"degraded\"):\n        themes = \" &middot; \".join(esc(t) for t in (sector.get(\"crossEntityThemes\") or [])[:6])\n        sector_html = (\n            f'<p style=\"font-family:sans-serif;font-size:14px;color:{INK};margin:8px 0 16px\">'\n            f'<b>Sector this week:</b> {esc(sector[\"narrative\"])}'\n            + (f'<br><span style=\"color:{SEC};font-size:12px\">Themes: {themes}</span>' if themes else \"\")\n            + '</p>'\n        )\n\n    # --- Leaderboard table ---\n    rows = []\n    for i, e in enumerate(lb, 1):\n        top = e.get(\"topStory\") or {}\n        narr = e.get(\"narrative\") or {}\n        badges = \"\"\n        if e.get(\"breakout\"):\n            badges += f' <span style=\"color:{RED};font-weight:bold\">BREAKOUT</span>'\n        if e.get(\"lowConfidence\"):\n            badges += f' <span style=\"color:{SEC}\">&#9888;</span>'  # ⚠\n        ticker = f' <span style=\"color:{SEC};font-size:12px\">{esc(e.get(\"ticker\"))}</span>' if e.get(\"ticker\") else \"\"\n        theme_tone = \"\"\n        if narr.get(\"theme\") or narr.get(\"tone\"):\n            theme_tone = f'{esc(narr.get(\"theme\") or \"—\")} / {esc(narr.get(\"tone\") or \"—\")}'\n        top_cell = \"&mdash;\"\n        if top:\n            top_cell = (f'<a href=\"{esc(top.get(\"permalink\") or top.get(\"url\"))}\">'\n                        f'{esc(top.get(\"title\") or \"—\")}</a> '\n                        f'<span style=\"color:{SEC}\">({esc(top.get(\"points\", 0))} pts)</span>')\n        rows.append(\n            f'<tr>'\n            f'<td>{i}</td>'\n            f'<td><b>{esc(e.get(\"entity\"))}</b>{ticker}{badges}</td>'\n            f'<td align=\"right\">{esc(e.get(\"buzzScore\"))}</td>'\n            f'<td align=\"right\">{arrow(e.get(\"velocity\", 0))} {esc(e.get(\"velocity\", 0))}</td>'\n            f'<td>{theme_tone}</td>'\n            f'<td>{top_cell}</td>'\n            f'</tr>'\n        )\n\n    # --- Community Opinion section (per entity, in leaderboard order) ---\n    op_blocks = []\n    for e in lb:\n        op = e.get(\"communityOpinion\") or {}\n        if op.get(\"degraded\") or not op.get(\"summary\"):\n            continue\n        sent = op.get(\"sentiment\") or \"neutral\"\n        low = ' <span style=\"color:%s;font-size:12px\">(low confidence)</span>' % OCHRE if op.get(\"lowConfidence\") else \"\"\n        themes = \" &middot; \".join(esc(t) for t in (op.get(\"themes\") or [])[:5])\n        op_blocks.append(\n            f'<div style=\"margin:10px 0;padding:8px 12px;border-left:3px solid {SEC}\">'\n            f'<b>{esc(e.get(\"entity\"))}</b> '\n            f'<span style=\"color:{sentiment_color(sent)};text-transform:capitalize\">{esc(sent)}</span>{low}<br>'\n            f'<span style=\"font-size:13px;color:{INK}\">{esc(op.get(\"summary\"))}</span>'\n            + (f'<br><span style=\"color:{SEC};font-size:12px\">Themes: {themes}</span>' if themes else \"\")\n            + '</div>'\n        )\n    opinions_html = \"\"\n    if op_blocks:\n        opinions_html = (f'<h3 style=\"font-family:sans-serif;color:{INK};margin-top:20px\">'\n                         f'Community Opinion</h3>' + \"\".join(op_blocks))\n\n    html = f\"\"\"\n    <div style=\"font-family:sans-serif;color:{INK};max-width:760px\">\n    <h2 style=\"margin-bottom:4px\">Hacker News AI Buzz &mdash; {esc(run_date)}</h2>\n    {sector_html}\n    <table cellpadding=\"6\" cellspacing=\"0\"\n           style=\"border-collapse:collapse;font-size:14px;width:100%;border:1px solid #D4D4D4\">\n      <tr style=\"background:#F0EBE3;text-align:left\">\n        <th>#</th><th>Entity</th><th>Buzz</th><th>Velocity</th><th>Theme / Tone</th><th>Top story</th>\n      </tr>\n      {''.join(rows)}\n    </table>\n    {opinions_html}\n    <p style=\"color:{SEC};font-size:12px;margin-top:16px\">\n      &#9888; = low-confidence (sparse). Ochre = negative/mixed sentiment.\n      Top stories are relevance-filtered (title must mention the entity). Automated digest.\n    </p>\n    </div>\n    \"\"\"\n    return [{\"json\": {\"subject\": f\"HN AI Buzz — {run_date}\", \"html\": html}}]\n\n\nreturn func(_items)\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4704,
+        512
+      ],
+      "id": "f646228b-61d5-415c-a818-b20b86cd6856",
+      "name": "Code in Python1"
+    },
+    {
+      "parameters": {
+        "fromEmail": "maliom9393@gmail.com",
+        "toEmail": "maliom9393@gmail.com",
+        "subject": "= {{ $json.subject }}",
+        "html": "={{ $json.html }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        4880,
+        512
+      ],
+      "id": "6fef0ac3-e237-471a-b11a-a733a5a7f5c6",
+      "name": "Send an Email",
+      "webhookId": "e7c5d2ad-7ef5-4dcd-bbcb-da8a6d4a9d86",
+      "credentials": {
+        "smtp": {
+          "id": "OrMIYXVynix2p7gH",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO hn_buzz_runs (run_date, window_hours,  watchlist_version, leaderboard, narratives, community_opinions, sector_narrative, raw_metrics, complete)\nVALUES ($1, $2, $3, $4::jsonb, $5::jsonb, $6::jsonb,$7::jsonb, $8::jsonb, $9);",
+        "options": {
+          "queryReplacement": "={{ $json.run_date }}, {{ $json.window_hours }}, {{ $json.watchlist_version }}, {{ JSON.stringify($json.leaderboard) }}, {{ JSON.stringify($json.narratives) }}, {{ JSON.stringify($json.community_opinions) }}, {{ JSON.stringify($json.sectorNarrative) }}, {{ JSON.stringify($json.raw_metrics) }}, {{ $json.complete }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4480,
+        224
+      ],
+      "id": "0e53a1de-b3d9-4cc5-b990-36cabcbcef88",
+      "name": "Save Snapshot",
+      "credentials": {
+        "postgres": {
+          "id": "Utf7akeIjwVRiOaF",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "vW8ckxU63krtcKPO",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/vW8ckxU63krtcKPO",
+          "cachedResultName": "Hacker News AI Tracker"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sinceUnix": "={{ $json.sinceUnix }}",
+            "frontPagePoints": "={{ $json.frontPagePoints }}",
+            "breakoutThreshold": "={{ $json.breakoutThreshold }}",
+            "entity": "={{ $json.entity }}",
+            "term": "={{ $json.term }}",
+            "queryTerm": "={{ $json.queryTerm }}",
+            "ticker": "={{ $json.ticker }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "entity",
+              "displayName": "entity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "term",
+              "displayName": "term",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "queryTerm",
+              "displayName": "queryTerm",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "sinceUnix",
+              "displayName": "sinceUnix",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "ticker",
+              "displayName": "ticker",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "frontPagePoints",
+              "displayName": "frontPagePoints",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "breakoutThreshold",
+              "displayName": "breakoutThreshold",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        688,
+        48
+      ],
+      "id": "ff6a12ec-151c-4d9d-a63c-669b7fb3d915",
+      "name": "Call 'Hacker News AI Tracker'"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "THEMES = [\"launch\",\"outage\",\"funding\",\"research\",\"controversy\",\"hiring\"]\nTONES  = [\"bullish\",\"bearish\",\"neutral\"]\ndef build(_items):\n    row = _items[0][\"json\"]; lb = row.get(\"leaderboard\", [])\n    out = []\n    for e in lb:\n        # Use the top-N stories for richer grounding; fall back to the single topStory.\n        tops = e.get(\"topStories\") or ([e[\"topStory\"]] if e.get(\"topStory\") else [])\n        lines = []\n        for i, s in enumerate(tops[:5], 1):\n            t = (s.get(\"title\") or \"\")[:200]\n            lines.append(f\"{i}. [{s.get('points', 0)} pts] {t}\")\n        stories = \"\\n\".join(lines) if lines else \"(no stories this window)\"\n        system = (\"You are a technical-community analyst for an AI-sector attention \"\n            \"tracker. Buzz measures ATTENTION, not price direction. Ground every \"\n            \"statement in the provided titles; never invent facts. Reply with one JSON object only.\")\n        user = (f\"Entity: {e.get('entity')} (ticker {e.get('ticker')})\\n\"\n            f\"Top Hacker News stories this window:\\n{stories}\\n\\n\"\n            f'Return JSON with keys: \"narrative\" (<=70 words, grounded), '\n            f'\"theme\" (one of {THEMES}), \"tone\" (one of {TONES}).')\n        body = {\"model\":\"llama-3.3-70b-versatile\",\"temperature\":0.3,\n            \"response_format\":{\"type\":\"json_object\"},\n            \"messages\":[{\"role\":\"system\",\"content\":system},{\"role\":\"user\",\"content\":user}]}\n        out.append({\"json\": {\"entity\": e.get(\"entity\"), \"row\": row, \"groqBody\": body}})\n    return out\nreturn build(_items)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        96
+      ],
+      "id": "8699da58-2691-4621-a182-e3ff49d74dd5",
+      "name": "Explode Entities"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.groqBody }}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 1750
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1376,
+        224
+      ],
+      "id": "9d0d8c74-c01c-4ef4-80cd-a21056a577ba",
+      "name": "HTTP Request1",
+      "retryOnFail": true,
+      "credentials": {
+        "groqApi": {
+          "id": "8VNpk4ei6U4iVaPj",
+          "name": "Groq account"
+        },
+        "httpHeaderAuth": {
+          "id": "a8iPPQVPyUK0lqQP",
+          "name": "Header Auth account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# n8n code node: Attach Narratives  (Week 7 — combine-by-position with the Groq response)\nimport json\nTHEMES = [\"launch\", \"outage\", \"funding\", \"research\", \"controversy\", \"hiring\"]\nTONES  = [\"bullish\", \"bearish\", \"neutral\"]\n\ndef merge(_items):\n    row = _items[0][\"json\"][\"row\"]\n    narr = {}\n    for it in _items:\n        j = it[\"json\"]\n        ent = j.get(\"entity\")\n        try:\n            content = j[\"choices\"][0][\"message\"][\"content\"]\n            o = json.loads(content)\n            theme = o.get(\"theme\") if o.get(\"theme\") in THEMES else \"research\"\n            tone  = o.get(\"tone\")  if o.get(\"tone\")  in TONES  else \"neutral\"\n            narr[ent] = {\"narrative\": (o.get(\"narrative\") or \"\").strip(), \"theme\": theme, \"tone\": tone}\n        except Exception as ex:\n            narr[ent] = {\"narrative\": None, \"theme\": None, \"tone\": None, \"degraded\": True, \"reason\": str(ex)}\n    for e in row.get(\"leaderboard\", []):\n        e[\"narrative\"] = narr.get(e.get(\"entity\"))\n    row[\"narratives\"] = narr\n    return [{\"json\": row}]\n\n\nreturn merge(_items)\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1648,
+        96
+      ],
+      "id": "59cfdee5-896e-4d13-a3c6-77d7618e09e9",
+      "name": "Attach Narratives"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1488,
+        96
+      ],
+      "id": "68eaf659-2216-47fe-bbd7-c1ca719ac7f4",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# n8n code node: Explode For Story Fetch  (Week 9 — one item per (entity, story))\ndef build(_items):\n    row = _items[0][\"json\"]\n    out = []\n    for e in row.get(\"leaderboard\", []):\n        tops = e.get(\"topStories\") or ([e[\"topStory\"]] if e.get(\"topStory\") else [])\n        for s in tops[:3]:\n            if s.get(\"objectID\"):\n                out.append({\"json\": {\"entity\": e.get(\"entity\"), \"ticker\": e.get(\"ticker\"),\n                                       \"row\": row, \"storyObjectID\": s[\"objectID\"]}})\n    return out\n\nreturn build(_items)\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1856,
+        96
+      ],
+      "id": "67ff7db2-fc8c-4396-a823-1808b1f1f02f",
+      "name": "Explode For Story Fetch"
+    },
+    {
+      "parameters": {
+        "url": "=https://hacker-news.firebaseio.com/v0/item/{{ $json.storyObjectID }}.json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2016,
+        160
+      ],
+      "id": "ae419255-6c48-4bd3-853f-64f71d258279",
+      "name": "Fetch Story Item",
+      "retryOnFail": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2192,
+        112
+      ],
+      "id": "f8f179f6-f0e0-4c4e-964f-c4c940b0a781",
+      "name": "Merge Story Kids",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# n8n code node: Extract Comment IDs  (Week 9 — one item per (entity, comment id))\ndef build(_items):\n    out = []\n    for it in _items:\n        j = it[\"json\"]\n        for kid in (j.get(\"kids\") or [])[:15]:\n            out.append({\"json\": {\"entity\": j[\"entity\"], \"ticker\": j[\"ticker\"],\n                                   \"row\": j[\"row\"], \"commentID\": kid}})\n    return out\n\n\nreturn build(_items)\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1856,
+        304
+      ],
+      "id": "9e2499c7-fc3e-4465-a333-ac0882dad74c",
+      "name": "Extract Comment IDs"
+    },
+    {
+      "parameters": {
+        "url": "=https://hacker-news.firebaseio.com/v0/item/{{ $json.commentID }}.json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2016,
+        368
+      ],
+      "id": "b876a530-8ac4-4f96-80e3-c46e3751132e",
+      "name": "Fetch Comment Item",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2192,
+        320
+      ],
+      "id": "0adc2c93-cc46-4207-b7a5-97bbc8abd20f",
+      "name": "Merge Comment Text"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# n8n code node: Clean & Group Comments  (Week 9 — HTML clean, dedupe, group per entity)\nimport html, re\nTAG_RE = re.compile(r\"<[^>]+>\")\nMAX_COMMENT_CHARS = 500\nCOMMENT_CAP = 15\n\ndef clean_comment(raw):\n    if not raw:\n        return None\n    text = TAG_RE.sub(\" \", raw)\n    text = html.unescape(text)\n    text = re.sub(r\"\\s+\", \" \", text).strip()\n    return text[:MAX_COMMENT_CHARS] if text else None\n\ndef build(_items):\n    by_entity = {}\n    for it in _items:\n        j = it[\"json\"]\n        if j.get(\"deleted\") or j.get(\"dead\"):\n            continue\n        c = clean_comment(j.get(\"text\"))\n        if not c:\n            continue\n        ent = j[\"entity\"]\n        bucket = by_entity.setdefault(ent, {\"ticker\": j[\"ticker\"], \"row\": j[\"row\"], \"comments\": [], \"seen\": set()})\n        if c not in bucket[\"seen\"]:\n            bucket[\"seen\"].add(c)\n            bucket[\"comments\"].append(c)\n    out = []\n    for ent, b in by_entity.items():\n        out.append({\"json\": {\"entity\": ent, \"ticker\": b[\"ticker\"], \"row\": b[\"row\"],\n                               \"comments\": b[\"comments\"][:COMMENT_CAP],\n                               \"commentsAnalyzed\": len(b[\"comments\"][:COMMENT_CAP])}})\n    return out\n\n\nreturn build(_items)\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2512,
+        320
+      ],
+      "id": "956803d1-6e61-435f-904c-8f9dd57cc395",
+      "name": "Clean & Group Comments"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "SENTIMENTS = [\"positive\", \"negative\", \"mixed\", \"neutral\"]\n\ndef build(_items):\n    out = []\n    for it in _items:\n        j = it[\"json\"]\n        lines = [f\"{i}. {c}\" for i, c in enumerate(j[\"comments\"], 1)]\n        block = \"\\n\".join(lines) if lines else \"(no comments)\"\n        system = (\"You are a technical-community analyst for an AI-sector attention \"\n            \"tracker. You read verbatim Hacker News comment text about one entity and \"\n            \"summarize the community's OPINION, grounded only in what commenters wrote. \"\n            \"Never invent a fact, quote, or event not present in the comments. Reply \"\n            \"with a single valid JSON object only -- no markdown code fences, no text \"\n            \"before or after the object.\")\n        user = (f\"Entity: {j['entity']} (ticker {j.get('ticker')})\\n\"\n            f\"Top-level Hacker News comments on this entity's top stories:\\n{block}\\n\\n\"\n            'Return a JSON object with exactly these keys: \"summary\" (2-3 sentences, '\n            f'grounded), \"sentiment\" (one of {SENTIMENTS}), \"themes\" (<=5 short strings), '\n            '\"notableOpinions\" (<=3 short paraphrased highlights of what commenters said, '\n            'each under 120 characters -- do NOT copy punctuation-heavy text verbatim; '\n            'paraphrase so the JSON stays valid).')\n        body = {\"model\": \"llama-3.3-70b-versatile\", \"temperature\": 0.3, \"max_tokens\": 1000,\n            \"messages\": [{\"role\": \"system\", \"content\": system}, {\"role\": \"user\", \"content\": user}]}\n        out.append({\"json\": {\"entity\": j[\"entity\"], \"row\": j[\"row\"], \"groqBody\": body,\n                               \"commentsAnalyzed\": j[\"commentsAnalyzed\"]}})\n    return out\n\n\nreturn build(_items)\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2672,
+        320
+      ],
+      "id": "853a3f9d-24a0-4dc9-8776-b81c4b50c396",
+      "name": "Build Opinion Prompts"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.groqBody }}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 1750
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2832,
+        384
+      ],
+      "id": "c2d774ce-11e4-433d-9d36-bb7b46bb3566",
+      "name": "Community Opinion (Groq)",
+      "credentials": {
+        "groqApi": {
+          "id": "8VNpk4ei6U4iVaPj",
+          "name": "Groq account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2992,
+        336
+      ],
+      "id": "6ff143e4-6ac0-47b9-93fd-084f580b5081",
+      "name": "Merge Opinions"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# n8n code node: Attach Opinions  (Week 9 — parse per-entity Groq responses)\nimport json\nimport re\nSENTIMENTS = [\"positive\", \"negative\", \"mixed\", \"neutral\"]\n\n# An opinion built on very few comments is thin evidence — mirror the buzz-score\n# sparse-entity floor (<3 stories) with a <3 comments confidence floor. NOTE: this\n# only bounds THIN-DATA noise; it does NOT fix story->entity misattribution (an\n# opinion can have 15 comments that are all about the wrong subject). That upstream\n# relevance fix is Week 10 in plan.md.\nOPINION_MIN_COMMENTS = 3\n\ndef extract_json_object(text):\n    \"\"\"Content is no longer guaranteed strict JSON (no response_format), so strip\n    markdown fences and fall back to the outermost {...} span before parsing.\"\"\"\n    text = (text or \"\").strip()\n    if text.startswith(\"```\"):\n        text = re.sub(r\"^```(json)?\", \"\", text).strip()\n        text = re.sub(r\"```$\", \"\", text).strip()\n    if text.startswith(\"{\"):\n        return text\n    start, end = text.find(\"{\"), text.rfind(\"}\")\n    if start == -1 or end == -1:\n        raise ValueError(\"no JSON object in model output\")\n    return text[start:end + 1]\n\ndef build(_items):\n    row = _items[0][\"json\"][\"row\"]\n    opinions = {}\n    for it in _items:\n        j = it[\"json\"]\n        ent = j.get(\"entity\")\n        ca = j.get(\"commentsAnalyzed\", 0)\n        try:\n            if \"choices\" not in j:\n                raise RuntimeError(f\"Groq error: {j.get('error') or j}\")\n            content = j[\"choices\"][0][\"message\"][\"content\"]\n            o = json.loads(extract_json_object(content))\n            sentiment = o.get(\"sentiment\") if o.get(\"sentiment\") in SENTIMENTS else \"neutral\"\n            opinions[ent] = {\n                \"summary\": (o.get(\"summary\") or \"\").strip(), \"sentiment\": sentiment,\n                \"themes\": [str(t).strip() for t in (o.get(\"themes\") or [])][:5],\n                \"notableOpinions\": [str(q).strip() for q in (o.get(\"notableOpinions\") or [])][:3],\n                \"commentsAnalyzed\": ca,\n                \"lowConfidence\": ca < OPINION_MIN_COMMENTS,\n                \"degraded\": False,\n            }\n        except Exception as ex:\n            opinions[ent] = {\"summary\": None, \"sentiment\": None, \"themes\": [], \"notableOpinions\": [],\n                             \"commentsAnalyzed\": ca, \"lowConfidence\": True,\n                             \"degraded\": True, \"reason\": str(ex)}\n    # Entities with zero comments never reached this node — fill degraded here.\n    for e in row.get(\"leaderboard\", []):\n        ent = e.get(\"entity\")\n        if ent not in opinions:\n            opinions[ent] = {\"summary\": None, \"sentiment\": None, \"themes\": [],\n                               \"notableOpinions\": [], \"commentsAnalyzed\": 0,\n                               \"lowConfidence\": True, \"degraded\": True,\n                               \"reason\": \"no comments available\"}\n        e[\"communityOpinion\"] = opinions[ent]\n    row[\"community_opinions\"] = opinions\n    return [{\"json\": row}]\n\n\nreturn build(_items)\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3152,
+        336
+      ],
+      "id": "0697671e-eac9-4c07-84de-75240ac12790",
+      "name": "Attach Opinions"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "\ndef build(_items):\n    row = _items[0][\"json\"]\n    opinions = row.get(\"community_opinions\", {})\n    lines = []\n    for ent, op in opinions.items():\n        # Cluster only robust opinions: skip degraded/empty AND low-confidence ones\n        # (built on <3 comments) so a 1-2 comment opinion can't steer the sector\n        # narrative. If that leaves nothing usable, hasUsableOpinions=False below.\n        if not op or op.get(\"degraded\") or not op.get(\"summary\") or op.get(\"lowConfidence\"):\n            continue\n        themes = \", \".join(op.get(\"themes\") or [])\n        lines.append(f\"- {ent}: [{op.get('sentiment')}] {op['summary']} (themes: {themes})\")\n\n    if not lines:\n        return [{\"json\": {\"row\": row, \"hasUsableOpinions\": False}}]\n\n    block = \"\\n\".join(lines)\n    system = (\"You are a technical-community analyst summarizing this week's AI-sector \"\n        \"discussion across tracked entities. Ground every statement in the summaries \"\n        \"given; never invent facts about entities not listed. Reply with a single valid \"\n        \"JSON object only -- no markdown code fences, no text before or after the object.\")\n    user = (f\"Per-entity Community Opinion summaries this window:\\n{block}\\n\\n\"\n        'Return a JSON object with exactly these keys: \"sectorNarrative\" (2-4 sentences '\n        'on cross-cutting themes/mood), \"crossEntityThemes\" (<=6 short strings).')\n    body = {\"model\": \"llama-3.3-70b-versatile\", \"temperature\": 0.3, \"max_tokens\": 600,\n        \"messages\": [{\"role\": \"system\", \"content\": system}, {\"role\": \"user\", \"content\": user}]}\n    return [{\"json\": {\"row\": row, \"groqBody\": body, \"hasUsableOpinions\": True}}]\n\n\nreturn build(_items)\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3408,
+        336
+      ],
+      "id": "d7f200f2-be63-4063-909c-c622bcaafc94",
+      "name": "Build Sector Prompt"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.groqBody }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3792,
+        176
+      ],
+      "id": "3ee4ee89-332e-44d9-a692-868774a76704",
+      "name": "Cluster Sector Themes (Groq)",
+      "credentials": {
+        "groqApi": {
+          "id": "8VNpk4ei6U4iVaPj",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4016,
+        336
+      ],
+      "id": "357283aa-3a12-4c99-9d35-1d586f00e22e",
+      "name": "Merge Sector Response"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "import json\n\ndef build(_items):\n    row = _items[0][\"json\"][\"row\"]\n    try:\n        j = _items[0][\"json\"]\n        if \"choices\" not in j:\n            raise RuntimeError(f\"Groq error: {j.get('error') or j}\")\n        content = _items[0][\"json\"][\"choices\"][0][\"message\"][\"content\"]\n        o = json.loads(content)\n        row[\"sectorNarrative\"] = {\"narrative\": (o.get(\"sectorNarrative\") or \"\").strip(),\n                                    \"crossEntityThemes\": (o.get(\"crossEntityThemes\") or [])[:6],\n                                    \"degraded\": False}\n    except Exception as ex:\n        row[\"sectorNarrative\"] = {\"narrative\": None, \"crossEntityThemes\": [],\n                                    \"degraded\": True, \"reason\": str(ex)}\n    return [{\"json\": row}]\nreturn build(_items)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4208,
+        336
+      ],
+      "id": "ac4e1bfc-6c44-4448-bbb2-33c5073a49bd",
+      "name": "Attach Sector Narrative"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e315379b-faa8-4a70-9256-ca80df4f6132",
+              "leftValue": "={{ $json.hasUsableOpinions }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3584,
+        336
+      ],
+      "id": "c19469f2-9972-4eb2-82b0-64b7daae0279",
+      "name": "Has Usable Opinions"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "def build(_items):\n    row = _items[0][\"json\"][\"row\"]\n    row[\"sectorNarrative\"] = {\n        \"narrative\": None,\n        \"crossEntityThemes\": [],\n        \"degraded\": True,\n        \"reason\": \"no non-degraded entity opinions this run\",\n    }\n    return [{\"json\": row}]\nreturn build(_items)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4208,
+        480
+      ],
+      "id": "d0de7e52-69ec-4581-bf27-5718e351a032",
+      "name": "Skip Sector Clustering"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Day Ago Unix Time",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "WatchList",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Previous Run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Day Ago Unix Time",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "WatchList",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Previous Run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Day Ago Unix Time": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WatchList": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Entities",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Entities": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Entity Term Pair",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Entity Term Pair": {
+      "main": [
+        [
+          {
+            "node": "Call 'Hacker News AI Tracker'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get Metrics": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Entities",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Previous Run": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Computer Buzz Score": {
+      "main": [
+        [
+          {
+            "node": "Build Run Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Computer Buzz Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Run Row": {
+      "main": [
+        [
+          {
+            "node": "Explode Entities",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code in Python1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python1": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Hacker News AI Tracker'": {
+      "main": [
+        [
+          {
+            "node": "Get Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Explode Entities": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Attach Narratives": {
+      "main": [
+        [
+          {
+            "node": "Explode For Story Fetch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Attach Narratives",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Explode For Story Fetch": {
+      "main": [
+        [
+          {
+            "node": "Fetch Story Item",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge Story Kids",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Story Item": {
+      "main": [
+        [
+          {
+            "node": "Merge Story Kids",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Story Kids": {
+      "main": [
+        [
+          {
+            "node": "Extract Comment IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Comment IDs": {
+      "main": [
+        [
+          {
+            "node": "Fetch Comment Item",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge Comment Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Comment Item": {
+      "main": [
+        [
+          {
+            "node": "Merge Comment Text",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Comment Text": {
+      "main": [
+        [
+          {
+            "node": "Clean & Group Comments",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean & Group Comments": {
+      "main": [
+        [
+          {
+            "node": "Build Opinion Prompts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Opinion Prompts": {
+      "main": [
+        [
+          {
+            "node": "Community Opinion (Groq)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge Opinions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Community Opinion (Groq)": {
+      "main": [
+        [
+          {
+            "node": "Merge Opinions",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Opinions": {
+      "main": [
+        [
+          {
+            "node": "Attach Opinions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach Opinions": {
+      "main": [
+        [
+          {
+            "node": "Build Sector Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Sector Prompt": {
+      "main": [
+        [
+          {
+            "node": "Has Usable Opinions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cluster Sector Themes (Groq)": {
+      "main": [
+        [
+          {
+            "node": "Merge Sector Response",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Sector Response": {
+      "main": [
+        [
+          {
+            "node": "Attach Sector Narrative",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach Sector Narrative": {
+      "main": [
+        [
+          {
+            "node": "Save Snapshot",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code in Python",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Usable Opinions": {
+      "main": [
+        [
+          {
+            "node": "Cluster Sector Themes (Groq)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge Sector Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Skip Sector Clustering",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skip Sector Clustering": {
+      "main": [
+        [
+          {
+            "node": "Code in Python",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Save Snapshot",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "qFWaHv9Ns03089jf",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "608491cb-a9a8-4dc9-9383-0cf358aa0a75",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d0a68b696e02b2fc92bad4789630b17f2998255dc1653cae92dc42ce1fb35cfe"
+  },
+  "nodeGroups": [],
+  "id": "vW8ckxU63krtcKPO",
+  "tags": []
+}

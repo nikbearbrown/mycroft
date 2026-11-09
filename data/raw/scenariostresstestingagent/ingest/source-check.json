@@ -1,0 +1,65 @@
+{
+  "workflow": "ScenarioStressTestingAgent",
+  "step": "ingest-inputs",
+  "checked_at": "2026-11-09T00:00:00+00:00",
+  "mode": "sample",
+  "run_envelope": "data/raw/scenariostresstestingagent/run-envelope.json",
+  "live_calls": false,
+  "network": false,
+  "database_writes": false,
+  "approval_record_present": false,
+  "sources": [
+    {
+      "role": "trigger: POST /stress-test request body",
+      "status": "available",
+      "reason": "sample mode: the 22 invented requests under data/raw/scenariostresstestingagent/sample/ stand in for webhook bodies",
+      "records": 22,
+      "node": "Webhook Trigger",
+      "node_type": "n8n-nodes-base.webhook",
+      "credential_env": "none known",
+      "credential_present": null,
+      "approval_record_present": null,
+      "approved_for_live_action": false,
+      "live_call_performed": false
+    },
+    {
+      "role": "trigger: chat message",
+      "status": "skipped",
+      "reason": "the invented corpus has no chat-message fixture, so the chat entry point is not exercised in sample mode",
+      "node": "When chat message received",
+      "node_type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "credential_env": "none known",
+      "credential_present": null,
+      "approval_record_present": null,
+      "approved_for_live_action": false,
+      "live_call_performed": false
+    },
+    {
+      "role": "live model call (llama-3.1-8b-instant)",
+      "status": "approval-required",
+      "reason": "a live model call; sample mode never makes it, and a live run needs an approval record and a credential from the environment",
+      "node": "Groq Chat Model",
+      "node_type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "credential_env": "GROQ_API_KEY",
+      "credential_present": false,
+      "approval_record_present": false,
+      "approved_for_live_action": false,
+      "live_call_performed": false
+    },
+    {
+      "role": "live HTTP request to www.alphavantage.co",
+      "status": "approval-required",
+      "reason": "a live network call; sample mode never makes it, and a live run needs an approval record and a credential from the environment",
+      "node": "Fetch_Data",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "credential_env": "ALPHA_VANTAGE_API_KEY",
+      "credential_present": false,
+      "approval_record_present": false,
+      "approved_for_live_action": false,
+      "live_call_performed": false
+    }
+  ],
+  "handoff_condition": "every source is available, skipped with a reason, or approval-required",
+  "handoff_condition_met": true,
+  "problems": []
+}

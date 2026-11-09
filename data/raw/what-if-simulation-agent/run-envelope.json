@@ -1,0 +1,10 @@
+{
+  "workflow": "What-If Simulation Agent",
+  "slug": "what-if-simulation-agent",
+  "mode": "sample",
+  "live_calls": false,
+  "network": false,
+  "database_writes": false,
+  "declared": "2026-10-17",
+  "meaning": "Sample mode: every input is the frozen invented corpus. The Groq call and the PostgreSQL write are never made."
+}

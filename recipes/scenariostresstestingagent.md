@@ -1,3 +1,11 @@
+---
+status: DRAFT
+todos_open: 0
+last_gate: null
+attestation: null
+recipe_version: 0.4.0
+---
+
 # ScenarioStressTestingAgent
 
 ## Purpose
@@ -53,32 +61,44 @@ ScenarioStressTestingAgent defines a Mycroft pipeline for collecting, transformi
 ## Steps
 
 1. Step name: Verify provenance. Labor: AI with Human gate.
-   Script called: `scripts/tools/scenariostresstestingagent-verify-provenance.py` [TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.
+   Script called: `scripts/tools/scenariostresstestingagent-verify-provenance.py`
+   Closed 2026-10-25 (the script above is built and exercised). Original note, kept for the record: `[TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.`
+   Status: Built and exercised. Input: this recipe (its node table and its declared workflow JSON), that workflow, the sample fixture manifest (a SHA-256 per fixture) and the approval record, if any. Output: the fields below plus node_table_match, chain_match, ported_nodes_ok, fixtures_ok and findings, in `logs/scenariostresstestingagent-provenance-<date>.json`. Errors: a missing or unparseable workflow, a node-table mismatch, connections that differ from the 18-edge wiring the step-5 port assumes (the custom-scenario branch, the template branch and the two merges included), a ported node whose language is not the one the port copies, or a fixture changed since the manifest froze it stops the run (exit 1); the record is still written. Evidence: self-test (provenance as declared, and three deliberate breaks: a renamed node, a rewired connection, a tampered fixture).
    Input: declared recipe inputs, prior step outputs, and gate decisions for `scenariostresstestingagent`.
    Output: workflow, source_paths, exists, parsed_ok, approval_state, checked_at.
    Where output goes: `logs/`
 2. Step name: Ingest declared inputs. Labor: AI with Human gate.
-   Script called: `scripts/ingest/scenariostresstestingagent-ingest-inputs.py` [TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.
+   Script called: `scripts/ingest/scenariostresstestingagent-ingest-inputs.py`
+   Closed 2026-11-09 (the script above is built and exercised). Original note, kept for the record: `[TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.`
+   Status: Built and exercised (sample mode only; this is the conductor's "Source and Credential Check"). Input: the run envelope, the workflow JSON this recipe declares, the sample fixtures with their frozen manifest, the environment (only to see whether a credential name is set, never its value) and the approval record, if any. Output: under `data/raw/scenariostresstestingagent/ingest/`: `clean/ingested.json` and `defective/ingested.json` (the fields below plus record_count), `source-check.json` (each source the workflow names, as available, skipped with a reason, or approval-required: the webhook is available through the 22 fixtures, the chat trigger is skipped because the corpus has no chat fixture, the Alpha Vantage request and the Groq call are approval-required) and `ingest-audit.md`. Errors: exit 1, stopping before transformation, if the run envelope is missing or is not sample mode with no live calls, network or database writes; if the workflow or the manifest is missing; or if a fixture is missing, unlisted, changed since it was frozen, or not valid JSON; the files are still written so the reason is kept. It does not judge a request's shape (step 3 does), so the defective folder ingests too. Left out on purpose: the live Alpha Vantage fetch and the Groq call, named as handoffs and never made. Evidence: `scripts/tools/scenariostresstestingagent-ingest-self-test.py`, results in `logs/scenariostresstestingagent/ingest-self-test-results.md`.
    Input: declared recipe inputs, prior step outputs, and gate decisions for `scenariostresstestingagent`.
    Output: records, source_name, source_type, fetched_at, sample_mode, rejects.
    Where output goes: `data/raw/scenariostresstestingagent/`
 3. Step name: Validate data shape. Labor: AI with Human gate.
-   Script called: `scripts/gigo/scenariostresstestingagent-validate-data-shape.py` [TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.
+   Script called: `scripts/gigo/scenariostresstestingagent-validate-data-shape.py`
+   Closed 2026-10-25 (the script above is built and exercised). Original note, kept for the record: `[TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.`
+   Status: Built and exercised (sample mode: reads a fixture folder from `data/raw/scenariostresstestingagent/sample/` directly; step 2 ingests the same fixtures, and its self-test checks that the ingested records are those bytes). Contract, taken from the workflow's Validate Portfolio node: holdings must exist (the node's own message: Portfolio must have holdings array), every holding needs a ticker (Each holding must have a ticker), weights default to 0 and are rescaled to 1.0 when the total is more than 0.01 from it (the node's own rules, shared with the step-5 port so the two cannot drift apart); one stated addition at this gate, marked in every reason that comes from it: holdings a non-empty array of objects; every weight present, finite and not negative with a positive total; scenario_type one of the five templates (or absent, when the workflow's default applies); custom_scenario a string. Output: the fields below plus the accepted and the rejected requests in `data/verified/scenariostresstestingagent/<clean|defective>/validated.json`, with a `validate-audit.md` beside it. Errors: any rejected request makes the run exit 1 (the files are still written); a fixture changed since the manifest froze it stops the run before anything is read (exit 2). Evidence: self-test (clean set 12/12 accepted; defective set 10/10 rejected, each for its own reason).
    Input: declared recipe inputs, prior step outputs, and gate decisions for `scenariostresstestingagent`.
    Output: record_count, required_fields_present, missing_fields, parse_errors, schema_version.
    Where output goes: `data/verified/scenariostresstestingagent/`
 4. Step name: Transform and quality check. Labor: AI with Human gate.
-   Script called: `scripts/gigo/scenariostresstestingagent-transform-quality-check.py` [TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.
+   Script called: `scripts/gigo/scenariostresstestingagent-transform-quality-check.py`
+   Closed 2026-11-01 (the script above is built and exercised). Original note, kept for the record: `[TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.`
+   Status: Built and exercised (sample mode). Input: the step-3 `validated.json` and the step-5 `stress-results.json` for one sample folder (default `clean`), plus the workflow's own template shocks, sector map and risk lines read from the step-5 script as data (its engine is never called). Output: `quality-check.json` (verified_records, handed_off, record_count, duplicates, rejects, flags, quality_notes, the checks run, failures) and `quality-notes.md`, beside the data. What it does: re-derives every position's shock from the template and recomputes each loss, final value, total, drawdown and risk level with exact decimals, and checks the weights (within 0.01 of 1.0 after the workflow's rescale), the ordering of positions and the top losers, and that the scenario name is the template's; looks for duplicates by id and by content (same holdings under the same scenario); and raises advisory flags for a human (weights rescaled, a majority holding, at least half the book in tickers the sector map does not list, a drawdown within 0.05 points of a risk line, a defaulted scenario, a handoff). How it stops: exit 1 if anything was rejected at step 3, a result fails a check or a duplicate is found (the files are still written); exit 2, nothing written, if `validated.json` is missing or unparseable. Evidence: on the 12 clean requests, 11 stress results reconcile on every check and 1 stops at the Groq handoff; on the 10 defective requests, 10 rejects and nothing to check; `scripts/tools/scenariostresstestingagent-report-self-test.py` breaks a result in eight ways and every one is caught.
    Input: declared recipe inputs, prior step outputs, and gate decisions for `scenariostresstestingagent`.
    Output: verified_records, record_count, duplicates, rejects, flags, quality_notes.
    Where output goes: `data/verified/scenariostresstestingagent/`
 5. Step name: Run approved tools. Labor: AI with Human gate.
-   Script called: `scripts/tools/scenariostresstestingagent-run-approved-tools.py` [TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.
+   Script called: `scripts/tools/scenariostresstestingagent-run-approved-tools.py`
+   Closed 2026-10-25 (the script above is built and exercised). Original note, kept for the record: `[TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.`
+   Status: Built and exercised. A Python port of four of the workflow's five code nodes in the workflow's own order, with the set node (Edit Fields) and the IF node (Custom Scenario?) modelled between them: Validate Portfolio, then, for a template scenario, Load_Template_Scenario and Stress_Test_Engine, or, for a custom scenario, Save_Portfolio_Before_LLM and then the Groq handoff. It copies what JavaScript does where it differs from Python in Validate Portfolio (`||` defaults, Math.abs, division by zero giving NaN, NaN becoming null between nodes); it does not model JavaScript's string arithmetic, which the step-3 gate refuses first. Parse_LLM_Response is not ported: it only runs after the Groq call. Checked against the original code, extracted from the workflow JSON at run time (Validate Portfolio under node; the three Python nodes by exec inside a small shim), on all 21 sample requests and 3 direct engine inputs: every node output identical, or the same error message. Input: the sample folder; every request first goes through the step-3 gate and the tools refuse the folder if any request was rejected (exit 1, nothing written). Output: the fields below, plus `stress-results.json` beside the validated file. The Alpha Vantage request (Fetch_Data), the Groq call (Basic LLM Chain, Groq Chat Model) and the webhook reply are recorded as handoffs with approved_for_live_action false and are never made. Evidence: `scripts/tools/scenariostresstestingagent-parity-check.py` (24 of 24 compared cases identical; one defective request, a string weight, is not modelled and is refused by the gate) and the self-test (eight deliberate breaks of the port, each caught).
    Input: declared recipe inputs, prior step outputs, and gate decisions for `scenariostresstestingagent`.
    Output: tool_name, input_path, output_path, action_taken, approval_id, no_write_mode.
    Where output goes: `logs/`
 6. Step name: Produce human report. Labor: AI with Human gate.
-   Script called: `scripts/tools/scenariostresstestingagent-produce-human-report.py` [TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.
+   Script called: `scripts/tools/scenariostresstestingagent-produce-human-report.py`
+   Closed 2026-11-01 (the script above is built and exercised). Original note, kept for the record: `[TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.`
+   Status: Built and exercised (sample mode). Input: the verified files of steps 3, 4 and 5 for one sample folder, the run envelope, the latest step-1 and step-5 logs and this recipe. Output: the report `reports/generated/scenariostresstestingagent-<DATE>.md` (the reader, the decision it enables and the Output Contract's fifteen sections, in order) and the agent log `logs/scenariostresstestingagent-<DATE>.json` (the contract's sixteen fields); the defective folder writes the same pair with `-defective` added. How the report is made: each phase gate is judged from evidence and not from the recipe's shell lines; findings the data supports (every figure re-read or recomputed from the files, with the path) are kept apart from readings of the invented sample, which are labelled inferred; the recommendation can only approve a sample-mode next phase and always blocks live execution while no approval record exists. How it stops: exit 2, nothing written, if step 4's output is missing or does not account for exactly the requests step 3 accepted and step 5 ran, or if the run envelope declares live calls, network or database writes. The recipe's four stop conditions are judged from evidence and recorded in the agent log, each with its own evidence string (a scan of this recipe's scripts, raw data and recipe for a hardcoded credential, the run envelope and the approval record, the sample folder and its manifest, and the report's provenance sections), and the report's run summary says how many triggered; if any does, the recommendation to approve turns to NO. `--now` pins the date. Evidence: the report and log for both folders, two runs giving identical bytes, and `scripts/tools/scenariostresstestingagent-report-self-test.py`, whose checks include a hardcoded key planted in a script, which must trip condition 1.
    Input: declared recipe inputs, prior step outputs, and gate decisions for `scenariostresstestingagent`.
    Output: summary, sources_checked, gate_results, findings, typed_todos, next_decision.
    Where output goes: `reports/generated/`
@@ -115,12 +135,12 @@ Sample mode (no live network calls, no writes):
 
 | Step | CLI Command | Flags |
 |---|---|---|
-| Verify provenance | `snickerdoodle run scenariostresstestingagent --step verify-provenance` | `--sample` `--no-write` |
-| Ingest declared inputs | `snickerdoodle run scenariostresstestingagent --step ingest-inputs` | `--sample` |
-| Validate data shape | `snickerdoodle run scenariostresstestingagent --step validate-data-shape` | `--sample` |
-| Transform and quality check | `snickerdoodle run scenariostresstestingagent --step transform-quality-check` | `--sample` |
-| Run approved tools | `snickerdoodle run scenariostresstestingagent --step run-approved-tools` | `--sample` `--no-write` |
-| Produce human report | `snickerdoodle run scenariostresstestingagent --step produce-human-report` | `--sample` `--no-write` |
+| Verify provenance | `snickerdoodle run scenariostresstestingagent --step verify-provenance` | `--no-write` `--now` `--repo` `--sample-dir` `--workflow` |
+| Ingest declared inputs | `snickerdoodle run scenariostresstestingagent --step ingest-inputs` | `--no-write` `--now` `--repo` `--sample` `--sample-dir` `--workflow` |
+| Validate data shape | `snickerdoodle run scenariostresstestingagent --step validate-data-shape` | `--out` `--sample-dir` |
+| Transform and quality check | `snickerdoodle run scenariostresstestingagent --step transform-quality-check` | `--verified-dir` |
+| Run approved tools | `snickerdoodle run scenariostresstestingagent --step run-approved-tools` | `--no-write` `--now` `--sample-dir` |
+| Produce human report | `snickerdoodle run scenariostresstestingagent --step produce-human-report` | `--folder` `--no-write` `--now` |
 
 ### Gate Commands
 
@@ -209,6 +229,7 @@ ScenarioStressTestingAgent defines a Mycroft pipeline for collecting, transformi
    Where output goes: logs/.
 7. Step name: Stress_Test_Engine. Labor: AI with Human gate.
    Script called: `scripts/tools/scenariostresstestingagent-stress-test-engine.py`
+   Also covered 2026-10-25 by the step-5 port in `scripts/tools/scenariostresstestingagent-run-approved-tools.py` (a faithful port of this node, parity-checked against the original); the generated script above is unchanged.
    Input: approved upstream output or sample fixture.
    Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
    Where output goes: logs/.
@@ -224,6 +245,7 @@ ScenarioStressTestingAgent defines a Mycroft pipeline for collecting, transformi
    Where output goes: data/raw/scenariostresstestingagent/.
 10. Step name: Save_Portfolio_Before_LLM. Labor: AI with Human gate.
    Script called: `scripts/tools/scenariostresstestingagent-save-portfolio-before-llm.py`
+   Also covered 2026-10-25 by the step-5 port in `scripts/tools/scenariostresstestingagent-run-approved-tools.py` (ported and parity-checked; the custom-scenario route stops after it at the Groq handoff); the generated script above is unchanged.
    Input: approved upstream output or sample fixture.
    Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
    Where output goes: logs/.

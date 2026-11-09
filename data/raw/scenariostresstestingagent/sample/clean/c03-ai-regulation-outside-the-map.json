@@ -1,0 +1,18 @@
+{
+  "body": {
+    "portfolio": {
+      "holdings": [
+        {
+          "ticker": "ZETA",
+          "weight": 0.5
+        },
+        {
+          "ticker": "OMNI",
+          "weight": 0.5
+        }
+      ]
+    },
+    "scenario_type": "ai_regulation",
+    "horizon_days": 30
+  }
+}

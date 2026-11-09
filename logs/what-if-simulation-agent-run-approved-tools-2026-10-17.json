@@ -1,0 +1,24 @@
+{
+  "tool_name": "what-if-simulation-agent (Parse & Validate Input, Sim 1, Sim 2, Sim 3, Aggregate & Score, Build AI Prompt)",
+  "input_path": "data/verified/what-if-simulation-agent/clean/validated.json",
+  "output_path": "data/verified/what-if-simulation-agent/clean/simulation-results.json",
+  "action_taken": "ran 15 request(s) through the six local deterministic nodes; wrote the results and the prompt the workflow would send",
+  "approval_id": null,
+  "no_write_mode": false,
+  "mode": "sample",
+  "live_handoffs": [
+    {
+      "node": "🤖 Groq — Generate Investment Insights",
+      "kind": "http POST (chat completions)",
+      "approved_for_live_action": false,
+      "reason": "no approval record; needs a credential named groqApi; not called"
+    },
+    {
+      "node": "💾 Save to PostgreSQL",
+      "kind": "database write",
+      "approved_for_live_action": false,
+      "reason": "no approval record; needs a credential named postgres; not called"
+    }
+  ],
+  "generated_at": "2026-10-17T19:55:03+00:00"
+}

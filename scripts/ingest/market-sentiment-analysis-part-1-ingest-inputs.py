@@ -392,10 +392,39 @@ def ingest_inputs(payload: Any = None, root: Path | None = None) -> dict[str, An
     }
 
 
+def _require_sample_mode() -> None:
+    """Enforce --sample: the run envelope must declare sample mode, or this stops.
+
+    The flag is an assertion, not decoration. Without this check `--sample` would be a
+    comfortable no-op that someone could pass at a live envelope and feel safe.
+    """
+    envelope = Path(__file__).resolve().parents[2] / f'data/raw/{WORKFLOW_SLUG}/run-envelope.json'
+    if not envelope.is_file():
+        return  # nothing declares a mode here; the step's own stop conditions still apply
+    try:
+        mode = json.loads(envelope.read_text(encoding='utf-8')).get('mode')
+    except (json.JSONDecodeError, OSError, UnicodeDecodeError):
+        return
+    if mode != 'sample':
+        raise SystemExit(
+            f"--sample was given, but the run envelope declares mode={mode!r}. "
+            'Refusing to run: the flag asserts a sample run and this is not one.'
+        )
+
+
 def load_input(sample: Any | None = None) -> dict[str, Any]:
     """Load overrides from --input or the --fixture-set shorthand, plus the optional --output path."""
     parser = argparse.ArgumentParser(description=f'Ingest declared inputs for {WORKFLOW_NAME}.')
     parser.add_argument('--input', help='JSON string or path to a JSON file with overrides (fixture_set).')
+    # The recipe's Step Commands table documents --sample for every step, so the step
+    # accepts it. It is an assertion, not a no-op: it requires the run to be a sample
+    # run and fails if the envelope declares anything else, so `--sample` cannot
+    # silently ride along on a live run.
+    parser.add_argument(
+        '--sample',
+        action='store_true',
+        help='Require sample mode; fail if the run envelope does not declare it.',
+    )
     parser.add_argument('--output', help='Optional path to write the run summary JSON.')
     parser.add_argument(
         '--fixture-set',
@@ -403,6 +432,8 @@ def load_input(sample: Any | None = None) -> dict[str, Any]:
         help='Override the envelope fixture_set for one run.',
     )
     args = parser.parse_args()
+    if args.sample:
+        _require_sample_mode()
     if args.input:
         candidate = Path(args.input)
         text = candidate.read_text(encoding='utf-8') if candidate.exists() else args.input

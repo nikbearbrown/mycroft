@@ -1,0 +1,86 @@
+[
+    { 
+        "entity": "NVIDIA", 
+        "ticker": "NVDA",
+        "queryTerms": ["NVIDIA", "Nvidia", "CUDA"],
+        "frontPagePoints": 100, 
+        "breakoutThreshold": 70
+    },
+    {
+        "entity": "OpenAI",
+        "ticker": null,
+        "queryTerms": ["OpenAI","ChatGPT","GPT-5","Sora"],
+        "frontPagePoints": 100,
+        "breakoutThreshold": 70
+    },
+    {
+        "entity": "Microsoft (Copilot)",
+        "ticker": "MSFT",
+        "queryTerms": ["Microsoft Copilot","GitHub Copilot"],
+        "frontPagePoints": 100,
+        "breakoutThreshold": 70
+    },
+    {
+        "entity": "Google (Gemini)",
+        "ticker": "GOOGL",
+        "queryTerms": ["Gemini","DeepMind","Google AI"],
+        "frontPagePoints": 100,
+        "breakoutThreshold": 70
+    },
+    {
+        "entity": "Meta (Llama)",
+        "ticker": "META",
+        "queryTerms": ["Llama","Meta AI"],
+        "frontPagePoints": 100,
+        "breakoutThreshold": 70
+    },
+    {
+        "entity": "AMD",
+        "ticker": "AMD",
+        "queryTerms": ["AMD","ROCm","Instinct MI300"],
+        "frontPagePoints": 100,
+        "breakoutThreshold": 70
+    },
+    {
+        "entity": "Palantir",
+        "ticker": "PLTR",
+        "queryTerms": ["Palantir"],
+        "frontPagePoints": 75,
+        "breakoutThreshold": 60
+    },
+    {
+        "entity": "Amazon (AWS AI)",
+        "ticker": "AMZN",
+        "queryTerms": ["AWS Bedrock","Amazon Bedrock","Trainium"],
+        "frontPagePoints": 100,
+        "breakoutThreshold": 70
+    },
+    {
+        "entity": "Apple (Apple Intelligence)",
+        "ticker": "AAPL",
+        "queryTerms": ["Apple Intelligence"],
+        "frontPagePoints": 75,
+        "breakoutThreshold": 60
+    },
+    {
+        "entity": "Tesla (AI/FSD)",
+        "ticker": "TSLA",
+        "queryTerms": ["Tesla FSD","Tesla Optimus","Dojo"],
+        "frontPagePoints": 100,
+        "breakoutThreshold": 70
+    },
+    {
+        "entity": "Anthropic",
+        "ticker": null,
+        "queryTerms": ["Anthropic","Claude"],
+        "frontPagePoints": 75,
+        "breakoutThreshold": 60
+    },
+    {
+        "entity": "Mistral",
+        "ticker": null,
+        "queryTerms": ["Mistral AI","Mistral"],
+        "frontPagePoints": 75,
+        "breakoutThreshold": 60
+    }
+]

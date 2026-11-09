@@ -1,3 +1,11 @@
+---
+status: DRAFT
+todos_open: 3
+last_gate: null
+attestation: null
+recipe_version: 0.2.1
+---
+
 # What-If Simulation Agent
 
 ## Purpose
@@ -48,7 +56,9 @@ What-If Simulation Agent defines a Mycroft pipeline for collecting, transforming
 ## Steps
 
 1. Step name: Verify provenance. Labor: AI with Human gate.
-   Script called: `scripts/tools/what-if-simulation-agent-verify-provenance.py` [TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.
+   Script called: `scripts/tools/what-if-simulation-agent-verify-provenance.py`
+   Closed 2026-10-17 (the script above is built and exercised). Original note, kept for the record: `[TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.`
+   Status: Built and exercised. Input: this recipe (its node table and its declared workflow JSON), that workflow, the sample fixture manifest (a SHA-256 per fixture) and the approval record, if any. Output: the fields below plus node_table_match, chain_match, fixtures_ok and findings, in `logs/what-if-simulation-agent-provenance-<date>.json`. Errors: a missing or unparseable workflow, a node-table mismatch, connections that do not form the chain the step-5 port assumes, a ported node with no code, or a fixture changed since the manifest froze it stops the run (exit 1); the record is still written. Evidence: self-test (provenance as declared, and three deliberate breaks).
    Input: declared recipe inputs, prior step outputs, and gate decisions for `what-if-simulation-agent`.
    Output: workflow, source_paths, exists, parsed_ok, approval_state, checked_at.
    Where output goes: `logs/`
@@ -58,7 +68,9 @@ What-If Simulation Agent defines a Mycroft pipeline for collecting, transforming
    Output: records, source_name, source_type, fetched_at, sample_mode, rejects.
    Where output goes: `data/raw/what-if-simulation-agent/`
 3. Step name: Validate data shape. Labor: AI with Human gate.
-   Script called: `scripts/gigo/what-if-simulation-agent-validate-data-shape.py` [TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.
+   Script called: `scripts/gigo/what-if-simulation-agent-validate-data-shape.py`
+   Closed 2026-10-17 (the script above is built and exercised). Original note, kept for the record: `[TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.`
+   Status: Built and exercised (sample mode: reads a fixture folder from `data/raw/what-if-simulation-agent/sample/` directly, since step 2 is still open). Contract, taken from the workflow's Parse & Validate Input node: every field has a default, so none is required; revenue_growth between -1.0 and 20.0, sentiment_score 0 to 1, risk_appetite low, medium or high, pe_ratio and debt_equity not negative (the node's own five messages, shared with the step-5 port so the two cannot drift apart); one stated addition at this gate: numeric fields must be finite. Output: the fields below plus the accepted and the rejected requests and, per accepted request, the fields the workflow's defaults filled, in `data/verified/what-if-simulation-agent/<clean|defective>/validated.json`, with a `validate-audit.md` beside it. Errors: any rejected request makes the run exit 1 (the files are still written); a fixture changed since the manifest froze it stops the run before anything is read (exit 2). Evidence: self-test (clean set 15/15 accepted; defective set 10/10 rejected, each for its own reason; a contract-drift check against the workflow's messages).
    Input: declared recipe inputs, prior step outputs, and gate decisions for `what-if-simulation-agent`.
    Output: record_count, required_fields_present, missing_fields, parse_errors, schema_version.
    Where output goes: `data/verified/what-if-simulation-agent/`
@@ -68,7 +80,9 @@ What-If Simulation Agent defines a Mycroft pipeline for collecting, transforming
    Output: verified_records, record_count, duplicates, rejects, flags, quality_notes.
    Where output goes: `data/verified/what-if-simulation-agent/`
 5. Step name: Run approved tools. Labor: AI with Human gate.
-   Script called: `scripts/tools/what-if-simulation-agent-run-approved-tools.py` [TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.
+   Script called: `scripts/tools/what-if-simulation-agent-run-approved-tools.py`
+   Closed 2026-10-17 (the script above is built and exercised). Original note, kept for the record: `[TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.`
+   Status: Built and exercised. A Python port of six nodes in the workflow's own order: Parse & Validate Input, Sim 1, Sim 2, Sim 3, Aggregate & Score All Simulations and Build AI Prompt, ending at the prompt the Groq node would send. It copies what JavaScript does where it differs from Python (Math.round, toFixed, number-to-string, parseFloat, `??` against `||`, Math.min and Math.max with NaN) and is checked against the original JavaScript, extracted from the workflow JSON at run time, on all 23 object-shaped sample requests, strings included. Input: the validator's output; it refuses that file if any request was rejected (exit 1, nothing written). Output: the fields below, plus `simulation-results.json` beside the validated file. The Groq call and the PostgreSQL write are recorded as handoffs with approved_for_live_action false and are never made. Evidence: `scripts/tools/what-if-simulation-agent-parity-check.py` (23/23 identical) and the self-test (four deliberate breaks of the port, each caught).
    Input: declared recipe inputs, prior step outputs, and gate decisions for `what-if-simulation-agent`.
    Output: tool_name, input_path, output_path, action_taken, approval_id, no_write_mode.
    Where output goes: `logs/`
@@ -110,11 +124,11 @@ Sample mode (no live network calls, no writes):
 
 | Step | CLI Command | Flags |
 |---|---|---|
-| Verify provenance | `snickerdoodle run what-if-simulation-agent --step verify-provenance` | `--sample` `--no-write` |
+| Verify provenance | `snickerdoodle run what-if-simulation-agent --step verify-provenance` | `--now` `--repo` |
 | Ingest declared inputs | `snickerdoodle run what-if-simulation-agent --step ingest-inputs` | `--sample` |
-| Validate data shape | `snickerdoodle run what-if-simulation-agent --step validate-data-shape` | `--sample` |
+| Validate data shape | `snickerdoodle run what-if-simulation-agent --step validate-data-shape` | `--out` `--sample-dir` |
 | Transform and quality check | `snickerdoodle run what-if-simulation-agent --step transform-quality-check` | `--sample` |
-| Run approved tools | `snickerdoodle run what-if-simulation-agent --step run-approved-tools` | `--sample` `--no-write` |
+| Run approved tools | `snickerdoodle run what-if-simulation-agent --step run-approved-tools` | `--now` `--output-dir` `--simulation-id` `--timestamp` |
 | Produce human report | `snickerdoodle run what-if-simulation-agent --step produce-human-report` | `--sample` `--no-write` |
 
 ### Gate Commands
@@ -183,7 +197,7 @@ What-If Simulation Agent defines a Mycroft pipeline for collecting, transforming
    Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
    Where output goes: logs/.
 3. Step name: 🔍 Parse & Validate Input. Labor: AI with Human gate.
-   Script called: `[TODO: DEV] Create or map script path: scripts/gigo/what-if-simulation-agent-parse-and-validate-input.py`
+   Script called: `scripts/gigo/what-if-simulation-agent-validate-data-shape.py` (mapped 2026-10-17: this node's defaults and five rules are the step-3 contract, and its normalisation is the first node of the step-5 port; original note, kept for the record: `[TODO: DEV] Create or map script path: scripts/gigo/what-if-simulation-agent-parse-and-validate-input.py`)
    Input: approved upstream output or sample fixture.
    Output: verified JSON fields: record_count, records, rejects, duplicates, missing_fields, validation_flags.
    Where output goes: data/verified/what-if-simulation-agent/.
@@ -193,7 +207,7 @@ What-If Simulation Agent defines a Mycroft pipeline for collecting, transforming
    Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
    Where output goes: logs/.
 5. Step name: 🧠 Aggregate & Score All Simulations. Labor: AI with Human gate.
-   Script called: `[TODO: DEV] Create or map script path: scripts/tools/what-if-simulation-agent-aggregate-and-score-all-simulations.py`
+   Script called: `scripts/tools/what-if-simulation-agent-run-approved-tools.py` (mapped 2026-10-17: Aggregate & Score All Simulations is one of the six nodes ported in step 5; original note, kept for the record: `[TODO: DEV] Create or map script path: scripts/tools/what-if-simulation-agent-aggregate-and-score-all-simulations.py`)
    Input: approved upstream output or sample fixture.
    Output: local handoff JSON fields: action, approved_for_live_action:false, input_refs, output_refs, flags, live_call_performed.
    Where output goes: logs/.

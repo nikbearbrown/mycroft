@@ -1,0 +1,107 @@
+{
+  "step": "transform-quality-check",
+  "mode": "sample",
+  "schema_version": "1",
+  "source_folder": "defective",
+  "verified_records": [],
+  "handed_off": [],
+  "record_count": 0,
+  "duplicates": [],
+  "rejects": [
+    {
+      "id": "d01-portfolio-missing",
+      "stage": "step 3 (validate data shape)",
+      "reasons": [
+        "Portfolio must have holdings array (the node's own rule)"
+      ]
+    },
+    {
+      "id": "d02-holdings-missing",
+      "stage": "step 3 (validate data shape)",
+      "reasons": [
+        "Portfolio must have holdings array (the node's own rule)"
+      ]
+    },
+    {
+      "id": "d03-holding-without-ticker",
+      "stage": "step 3 (validate data shape)",
+      "reasons": [
+        "Each holding must have a ticker (the node's own rule)"
+      ]
+    },
+    {
+      "id": "d04-holdings-is-an-object",
+      "stage": "step 3 (validate data shape)",
+      "reasons": [
+        "portfolio.holdings is not iterable (the node's own rule)",
+        "holdings is a dict, not an array (gate addition)"
+      ]
+    },
+    {
+      "id": "d05-weight-is-a-string",
+      "stage": "step 3 (validate data shape)",
+      "reasons": [
+        "holding 0 (NVDA) has a weight that is not a number ('0.5'): JavaScript would join it as text (gate addition)"
+      ]
+    },
+    {
+      "id": "d06-all-weights-zero",
+      "stage": "step 3 (validate data shape)",
+      "reasons": [
+        "weights total 0.0: rescaling by a zero total gives NaN weights (gate addition)"
+      ]
+    },
+    {
+      "id": "d07-negative-weight",
+      "stage": "step 3 (validate data shape)",
+      "reasons": [
+        "holding 1 (AMD) has a negative weight (-0.3): the engine would treat it as a short position without saying so (gate addition)"
+      ]
+    },
+    {
+      "id": "d08-unknown-scenario-type",
+      "stage": "step 3 (validate data shape)",
+      "reasons": [
+        "scenario_type 'meltdown' is not one of ['ai_regulation', 'black_swan', 'chip_shortage', 'rate_hike', 'tech_crash']: the workflow would silently run tech_crash (gate addition)"
+      ]
+    },
+    {
+      "id": "d09-empty-holdings",
+      "stage": "step 3 (validate data shape)",
+      "reasons": [
+        "holdings is empty: nothing to stress-test (gate addition)"
+      ]
+    },
+    {
+      "id": "d10-weight-missing",
+      "stage": "step 3 (validate data shape)",
+      "reasons": [
+        "holding 1 (AMD) has no weight: the node counts it as 0 and the engine then fails on it (gate addition)"
+      ]
+    }
+  ],
+  "flags": [],
+  "quality_notes": [
+    "0 request(s) came in from step 3 and 10 were rejected there; 0 have a step-5 result (0 stopped at a handoff).",
+    "0 result(s) reconciled on every check and 0 stopped at a handoff with nothing to reconcile; 0 failure(s); 0 duplicate group(s); 0 advisory flag(s).",
+    "Every figure was re-derived from the workflow's own template shocks (sector map, ai_stocks, growth_stocks) with exact decimals; the step-5 engine was not called.",
+    "Flags are for a human to read. They are not failures, and the checks do not judge whether the template shocks or risk thresholds are sound."
+  ],
+  "checks_run": [
+    "weights-sum",
+    "position-shock",
+    "position-initial",
+    "position-loss",
+    "position-final",
+    "total-loss",
+    "final-value",
+    "drawdown",
+    "risk-level",
+    "positions-order",
+    "top-losers",
+    "scenario-name",
+    "duplicate-id",
+    "duplicate-content"
+  ],
+  "failures": []
+}

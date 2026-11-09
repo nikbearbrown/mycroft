@@ -1,0 +1,168 @@
+{
+  "slug": "what-if-simulation-agent",
+  "javascript": "extracted from the workflow JSON at run time, run under node with the clock and Math.random pinned",
+  "pinned": {
+    "Date.now": 1700000000000,
+    "Math.random": 0.123456789
+  },
+  "requests": 23,
+  "matching": 23,
+  "mismatching": 0,
+  "rows": [
+    {
+      "id": "clean/c01-strong-buy-on-the-thresholds",
+      "js": "ok",
+      "python": "ok",
+      "differences": [],
+      "match": true
+    },
+    {
+      "id": "clean/c02-growth-ignored-by-the-market",
+      "js": "ok",
+      "python": "ok",
+      "differences": [],
+      "match": true
+    },
+    {
+      "id": "clean/c03-bubble-risk",
+      "js": "ok",
+      "python": "ok",
+      "differences": [],
+      "match": true
+    },
+    {
+      "id": "clean/c04-hold-on-both-lower-thresholds",
+      "js": "ok",
+      "python": "ok",
+      "differences": [],
+      "match": true
+    },
+    {
+      "id": "clean/c05-both-bearish",
+      "js": "ok",
+      "python": "ok",
+      "differences": [],
+      "match": true
+    },
+    {
+      "id": "clean/c06-empty-body-all-defaults",
+      "js": "ok",
+      "python": "ok",
+      "differences": [],
+      "match": true
+    },
+    {
+      "id": "clean/c07-webhook-body-wrapper",
+      "js": "ok",
+      "python": "ok",
+      "differences": [],
+      "match": true
+    },
+    {
+      "id": "clean/c08-text-numbers-and-mixed-case",
+      "js": "ok",
+      "python": "ok",
+      "differences": [],
+      "match": true
+    },
+    {
+      "id": "clean/c09-unknown-horizon-and-blank-name",
+      "js": "ok",
+      "python": "ok",
+      "differences": [],
+      "match": true
+    },
+    {
+      "id": "clean/c10-rounding-ties-js-vs-python",
+      "js": "ok",
+      "python": "ok",
+      "differences": [],
+      "match": true
+    },
+    {
+      "id": "clean/c11-aggressive-on-its-limits",
+      "js": "ok",
+      "python": "ok",
+      "differences": [],
+      "match": true
+    },
+    {
+      "id": "clean/c12-zero-values-are-values",
+      "js": "ok",
+      "python": "ok",
+      "differences": [],
+      "match": true
+    },
+    {
+      "id": "clean/c13-another-tie-65-and-a-half",
+      "js": "ok",
+      "python": "ok",
+      "differences": [],
+      "match": true
+    },
+    {
+      "id": "clean/c14-low-growth-middling-sentiment",
+      "js": "ok",
+      "python": "ok",
+      "differences": [],
+      "match": true
+    },
+    {
+      "id": "clean/c15-medium-growth-high-sentiment",
+      "js": "ok",
+      "python": "ok",
+      "differences": [],
+      "match": true
+    },
+    {
+      "id": "defective/d01-growth-above-20",
+      "js": "threw",
+      "python": "threw",
+      "match": true
+    },
+    {
+      "id": "defective/d02-sentiment-above-1",
+      "js": "threw",
+      "python": "threw",
+      "match": true
+    },
+    {
+      "id": "defective/d03-unknown-risk-appetite",
+      "js": "threw",
+      "python": "threw",
+      "match": true
+    },
+    {
+      "id": "defective/d04-negative-pe",
+      "js": "threw",
+      "python": "threw",
+      "match": true
+    },
+    {
+      "id": "defective/d05-negative-debt-equity",
+      "js": "threw",
+      "python": "threw",
+      "match": true
+    },
+    {
+      "id": "defective/d06-two-rules-broken-at-once",
+      "js": "threw",
+      "python": "threw",
+      "match": true
+    },
+    {
+      "id": "defective/d07-growth-is-not-a-number",
+      "js": "ok",
+      "python": "ok",
+      "differences": [],
+      "match": true
+    },
+    {
+      "id": "defective/d08-sentiment-is-empty-text",
+      "js": "ok",
+      "python": "ok",
+      "differences": [],
+      "match": true
+    }
+  ]
+}

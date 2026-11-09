@@ -1,0 +1,1153 @@
+{
+  "fdr_q": 0.05,
+  "primary": {
+    "metric": "storyCount",
+    "run_dates": [
+      "2026-04-11",
+      "2026-04-17",
+      "2026-04-24",
+      "2026-05-01",
+      "2026-05-08",
+      "2026-05-15",
+      "2026-05-22",
+      "2026-05-29",
+      "2026-06-05",
+      "2026-06-12",
+      "2026-06-19",
+      "2026-06-26",
+      "2026-07-03"
+    ],
+    "entities_in_panel": [
+      "AMD",
+      "Amazon (AWS AI)",
+      "Apple (Apple Intelligence)",
+      "Google (Gemini)",
+      "Meta (Llama)",
+      "Microsoft (Copilot)",
+      "NVIDIA",
+      "Palantir",
+      "Tesla (AI/FSD)"
+    ],
+    "pooled": [
+      {
+        "direction": "fwd",
+        "lag_weeks": 0,
+        "n_obs": 108,
+        "pearson_r": 0.123,
+        "p_value": 0.2048,
+        "fdr_q_value": 0.416,
+        "survives_fdr": false
+      },
+      {
+        "direction": "fwd",
+        "lag_weeks": 1,
+        "n_obs": 108,
+        "pearson_r": -0.1146,
+        "p_value": 0.2377,
+        "fdr_q_value": 0.416,
+        "survives_fdr": false
+      },
+      {
+        "direction": "fwd",
+        "lag_weeks": 2,
+        "n_obs": 99,
+        "pearson_r": -0.0575,
+        "p_value": 0.5718,
+        "fdr_q_value": 0.8005,
+        "survives_fdr": false
+      },
+      {
+        "direction": "fwd",
+        "lag_weeks": 4,
+        "n_obs": 81,
+        "pearson_r": -0.0196,
+        "p_value": 0.8622,
+        "fdr_q_value": 0.8656,
+        "survives_fdr": false
+      },
+      {
+        "direction": "rev",
+        "lag_weeks": 1,
+        "n_obs": 99,
+        "pearson_r": 0.0172,
+        "p_value": 0.8656,
+        "fdr_q_value": 0.8656,
+        "survives_fdr": false
+      },
+      {
+        "direction": "rev",
+        "lag_weeks": 2,
+        "n_obs": 90,
+        "pearson_r": 0.2335,
+        "p_value": 0.0267,
+        "fdr_q_value": 0.1869,
+        "survives_fdr": false
+      },
+      {
+        "direction": "rev",
+        "lag_weeks": 4,
+        "n_obs": 72,
+        "pearson_r": -0.1499,
+        "p_value": 0.209,
+        "fdr_q_value": 0.416,
+        "survives_fdr": false
+      }
+    ],
+    "per_entity": {
+      "NVIDIA": {
+        "ticker": "NVDA",
+        "tests": [
+          {
+            "direction": "fwd",
+            "lag_weeks": 0,
+            "n_obs": 12,
+            "pearson_r": -0.0754,
+            "p_value": 0.8158
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 1,
+            "n_obs": 12,
+            "pearson_r": -0.2312,
+            "p_value": 0.4697
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 2,
+            "n_obs": 11,
+            "pearson_r": 0.0518,
+            "p_value": 0.8799
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 4,
+            "n_obs": 9,
+            "pearson_r": -0.6565,
+            "p_value": 0.0548
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 1,
+            "n_obs": 11,
+            "pearson_r": -0.238,
+            "p_value": 0.481
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 2,
+            "n_obs": 10,
+            "pearson_r": 0.3229,
+            "p_value": 0.3628
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 4,
+            "n_obs": 8,
+            "pearson_r": -0.5087,
+            "p_value": 0.198
+          }
+        ]
+      },
+      "Microsoft (Copilot)": {
+        "ticker": "MSFT",
+        "tests": [
+          {
+            "direction": "fwd",
+            "lag_weeks": 0,
+            "n_obs": 12,
+            "pearson_r": 0.4688,
+            "p_value": 0.1242
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 1,
+            "n_obs": 12,
+            "pearson_r": -0.4632,
+            "p_value": 0.1294
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 2,
+            "n_obs": 11,
+            "pearson_r": -0.3134,
+            "p_value": 0.348
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 4,
+            "n_obs": 9,
+            "pearson_r": -0.1962,
+            "p_value": 0.613
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 1,
+            "n_obs": 11,
+            "pearson_r": 0.2639,
+            "p_value": 0.433
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 2,
+            "n_obs": 10,
+            "pearson_r": 0.0593,
+            "p_value": 0.8707
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 4,
+            "n_obs": 8,
+            "pearson_r": -0.2394,
+            "p_value": 0.568
+          }
+        ]
+      },
+      "Google (Gemini)": {
+        "ticker": "GOOGL",
+        "tests": [
+          {
+            "direction": "fwd",
+            "lag_weeks": 0,
+            "n_obs": 12,
+            "pearson_r": 0.088,
+            "p_value": 0.7857
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 1,
+            "n_obs": 12,
+            "pearson_r": 0.2044,
+            "p_value": 0.524
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 2,
+            "n_obs": 11,
+            "pearson_r": 0.1041,
+            "p_value": 0.7607
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 4,
+            "n_obs": 9,
+            "pearson_r": -0.2013,
+            "p_value": 0.6034
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 1,
+            "n_obs": 11,
+            "pearson_r": 0.5593,
+            "p_value": 0.0736
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 2,
+            "n_obs": 10,
+            "pearson_r": 0.7474,
+            "p_value": 0.013
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 4,
+            "n_obs": 8,
+            "pearson_r": 0.5617,
+            "p_value": 0.1473
+          }
+        ]
+      },
+      "Meta (Llama)": {
+        "ticker": "META",
+        "tests": [
+          {
+            "direction": "fwd",
+            "lag_weeks": 0,
+            "n_obs": 12,
+            "pearson_r": 0.3531,
+            "p_value": 0.2603
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 1,
+            "n_obs": 12,
+            "pearson_r": -0.2977,
+            "p_value": 0.3473
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 2,
+            "n_obs": 11,
+            "pearson_r": -0.0391,
+            "p_value": 0.9091
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 4,
+            "n_obs": 9,
+            "pearson_r": -0.2718,
+            "p_value": 0.4792
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 1,
+            "n_obs": 11,
+            "pearson_r": -0.0226,
+            "p_value": 0.9475
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 2,
+            "n_obs": 10,
+            "pearson_r": 0.1052,
+            "p_value": 0.7725
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 4,
+            "n_obs": 8,
+            "pearson_r": -0.7121,
+            "p_value": 0.0475
+          }
+        ]
+      },
+      "AMD": {
+        "ticker": "AMD",
+        "tests": [
+          {
+            "direction": "fwd",
+            "lag_weeks": 0,
+            "n_obs": 12,
+            "pearson_r": 0.0816,
+            "p_value": 0.801
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 1,
+            "n_obs": 12,
+            "pearson_r": -0.3317,
+            "p_value": 0.2922
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 2,
+            "n_obs": 11,
+            "pearson_r": -0.2178,
+            "p_value": 0.5201
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 4,
+            "n_obs": 9,
+            "pearson_r": -0.0905,
+            "p_value": 0.8168
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 1,
+            "n_obs": 11,
+            "pearson_r": -0.4943,
+            "p_value": 0.1222
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 2,
+            "n_obs": 10,
+            "pearson_r": -0.0841,
+            "p_value": 0.8174
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 4,
+            "n_obs": 8,
+            "pearson_r": -0.5199,
+            "p_value": 0.1866
+          }
+        ]
+      },
+      "Palantir": {
+        "ticker": "PLTR",
+        "tests": [
+          {
+            "direction": "fwd",
+            "lag_weeks": 0,
+            "n_obs": 12,
+            "pearson_r": 0.0845,
+            "p_value": 0.7939
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 1,
+            "n_obs": 12,
+            "pearson_r": 0.0605,
+            "p_value": 0.8519
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 2,
+            "n_obs": 11,
+            "pearson_r": -0.0659,
+            "p_value": 0.8474
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 4,
+            "n_obs": 9,
+            "pearson_r": -0.092,
+            "p_value": 0.8139
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 1,
+            "n_obs": 11,
+            "pearson_r": 0.0663,
+            "p_value": 0.8465
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 2,
+            "n_obs": 10,
+            "pearson_r": 0.4479,
+            "p_value": 0.1943
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 4,
+            "n_obs": 8,
+            "pearson_r": 0.2779,
+            "p_value": 0.5051
+          }
+        ]
+      },
+      "Amazon (AWS AI)": {
+        "ticker": "AMZN",
+        "tests": [
+          {
+            "direction": "fwd",
+            "lag_weeks": 0,
+            "n_obs": 12,
+            "pearson_r": 0.1689,
+            "p_value": 0.5998
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 1,
+            "n_obs": 12,
+            "pearson_r": -0.0532,
+            "p_value": 0.8695
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 2,
+            "n_obs": 11,
+            "pearson_r": 0.0554,
+            "p_value": 0.8715
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 4,
+            "n_obs": 9,
+            "pearson_r": 0.3239,
+            "p_value": 0.3951
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 1,
+            "n_obs": 11,
+            "pearson_r": 0.2608,
+            "p_value": 0.4386
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 2,
+            "n_obs": 10,
+            "pearson_r": -0.163,
+            "p_value": 0.6527
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 4,
+            "n_obs": 8,
+            "pearson_r": 0.2713,
+            "p_value": 0.5157
+          }
+        ]
+      },
+      "Apple (Apple Intelligence)": {
+        "ticker": "AAPL",
+        "tests": [
+          {
+            "direction": "fwd",
+            "lag_weeks": 0,
+            "n_obs": 12,
+            "pearson_r": -0.1308,
+            "p_value": 0.6854
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 1,
+            "n_obs": 12,
+            "pearson_r": -0.3998,
+            "p_value": 0.1979
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 2,
+            "n_obs": 11,
+            "pearson_r": 0.1214,
+            "p_value": 0.7221
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 4,
+            "n_obs": 9,
+            "pearson_r": 0.4263,
+            "p_value": 0.2526
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 1,
+            "n_obs": 11,
+            "pearson_r": -0.1593,
+            "p_value": 0.6398
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 2,
+            "n_obs": 10,
+            "pearson_r": 0.2384,
+            "p_value": 0.5071
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 4,
+            "n_obs": 8,
+            "pearson_r": 0.3724,
+            "p_value": 0.3637
+          }
+        ]
+      },
+      "Tesla (AI/FSD)": {
+        "ticker": "TSLA",
+        "tests": [
+          {
+            "direction": "fwd",
+            "lag_weeks": 0,
+            "n_obs": 12,
+            "pearson_r": 0.0454,
+            "p_value": 0.8887
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 1,
+            "n_obs": 12,
+            "pearson_r": 0.4953,
+            "p_value": 0.1015
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 2,
+            "n_obs": 11,
+            "pearson_r": -0.329,
+            "p_value": 0.3232
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 4,
+            "n_obs": 9,
+            "pearson_r": 0.491,
+            "p_value": 0.1795
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 1,
+            "n_obs": 11,
+            "pearson_r": -0.1217,
+            "p_value": 0.7214
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 2,
+            "n_obs": 10,
+            "pearson_r": 0.4685,
+            "p_value": 0.1721
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 4,
+            "n_obs": 8,
+            "pearson_r": -0.1764,
+            "p_value": 0.676
+          }
+        ]
+      }
+    }
+  },
+  "secondary_caveated": {
+    "metric": "totalPoints",
+    "run_dates": [
+      "2026-04-11",
+      "2026-04-17",
+      "2026-04-24",
+      "2026-05-01",
+      "2026-05-08",
+      "2026-05-15",
+      "2026-05-22",
+      "2026-05-29",
+      "2026-06-05",
+      "2026-06-12",
+      "2026-06-19",
+      "2026-06-26",
+      "2026-07-03"
+    ],
+    "entities_in_panel": [
+      "AMD",
+      "Amazon (AWS AI)",
+      "Apple (Apple Intelligence)",
+      "Google (Gemini)",
+      "Meta (Llama)",
+      "Microsoft (Copilot)",
+      "NVIDIA",
+      "Palantir",
+      "Tesla (AI/FSD)"
+    ],
+    "pooled": [
+      {
+        "direction": "fwd",
+        "lag_weeks": 0,
+        "n_obs": 108,
+        "pearson_r": -0.0136,
+        "p_value": 0.889
+      },
+      {
+        "direction": "fwd",
+        "lag_weeks": 1,
+        "n_obs": 108,
+        "pearson_r": -0.0693,
+        "p_value": 0.4761
+      },
+      {
+        "direction": "fwd",
+        "lag_weeks": 2,
+        "n_obs": 99,
+        "pearson_r": -0.0574,
+        "p_value": 0.5725
+      },
+      {
+        "direction": "fwd",
+        "lag_weeks": 4,
+        "n_obs": 81,
+        "pearson_r": -0.0099,
+        "p_value": 0.9304
+      },
+      {
+        "direction": "rev",
+        "lag_weeks": 1,
+        "n_obs": 99,
+        "pearson_r": 0.0759,
+        "p_value": 0.455
+      },
+      {
+        "direction": "rev",
+        "lag_weeks": 2,
+        "n_obs": 90,
+        "pearson_r": 0.1739,
+        "p_value": 0.1011
+      },
+      {
+        "direction": "rev",
+        "lag_weeks": 4,
+        "n_obs": 72,
+        "pearson_r": 0.1859,
+        "p_value": 0.118
+      }
+    ],
+    "per_entity": {
+      "NVIDIA": {
+        "ticker": "NVDA",
+        "tests": [
+          {
+            "direction": "fwd",
+            "lag_weeks": 0,
+            "n_obs": 12,
+            "pearson_r": -0.0303,
+            "p_value": 0.9256
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 1,
+            "n_obs": 12,
+            "pearson_r": -0.4042,
+            "p_value": 0.1925
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 2,
+            "n_obs": 11,
+            "pearson_r": -0.0038,
+            "p_value": 0.9911
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 4,
+            "n_obs": 9,
+            "pearson_r": -0.6044,
+            "p_value": 0.0847
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 1,
+            "n_obs": 11,
+            "pearson_r": 0.0205,
+            "p_value": 0.9522
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 2,
+            "n_obs": 10,
+            "pearson_r": -0.066,
+            "p_value": 0.8561
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 4,
+            "n_obs": 8,
+            "pearson_r": -0.2325,
+            "p_value": 0.5795
+          }
+        ]
+      },
+      "Microsoft (Copilot)": {
+        "ticker": "MSFT",
+        "tests": [
+          {
+            "direction": "fwd",
+            "lag_weeks": 0,
+            "n_obs": 12,
+            "pearson_r": 0.3567,
+            "p_value": 0.255
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 1,
+            "n_obs": 12,
+            "pearson_r": -0.0994,
+            "p_value": 0.7587
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 2,
+            "n_obs": 11,
+            "pearson_r": -0.2022,
+            "p_value": 0.5509
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 4,
+            "n_obs": 9,
+            "pearson_r": 0.0203,
+            "p_value": 0.9587
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 1,
+            "n_obs": 11,
+            "pearson_r": 0.68,
+            "p_value": 0.0213
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 2,
+            "n_obs": 10,
+            "pearson_r": -0.2541,
+            "p_value": 0.4787
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 4,
+            "n_obs": 8,
+            "pearson_r": 0.1309,
+            "p_value": 0.7573
+          }
+        ]
+      },
+      "Google (Gemini)": {
+        "ticker": "GOOGL",
+        "tests": [
+          {
+            "direction": "fwd",
+            "lag_weeks": 0,
+            "n_obs": 12,
+            "pearson_r": -0.0833,
+            "p_value": 0.7969
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 1,
+            "n_obs": 12,
+            "pearson_r": -0.0882,
+            "p_value": 0.7851
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 2,
+            "n_obs": 11,
+            "pearson_r": -0.2061,
+            "p_value": 0.5432
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 4,
+            "n_obs": 9,
+            "pearson_r": -0.0238,
+            "p_value": 0.9515
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 1,
+            "n_obs": 11,
+            "pearson_r": 0.662,
+            "p_value": 0.0265
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 2,
+            "n_obs": 10,
+            "pearson_r": 0.5226,
+            "p_value": 0.1212
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 4,
+            "n_obs": 8,
+            "pearson_r": 0.3935,
+            "p_value": 0.3348
+          }
+        ]
+      },
+      "Meta (Llama)": {
+        "ticker": "META",
+        "tests": [
+          {
+            "direction": "fwd",
+            "lag_weeks": 0,
+            "n_obs": 12,
+            "pearson_r": 0.2205,
+            "p_value": 0.4909
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 1,
+            "n_obs": 12,
+            "pearson_r": -0.0552,
+            "p_value": 0.8646
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 2,
+            "n_obs": 11,
+            "pearson_r": -0.0815,
+            "p_value": 0.8118
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 4,
+            "n_obs": 9,
+            "pearson_r": -0.2774,
+            "p_value": 0.4699
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 1,
+            "n_obs": 11,
+            "pearson_r": -0.372,
+            "p_value": 0.2599
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 2,
+            "n_obs": 10,
+            "pearson_r": -0.0923,
+            "p_value": 0.7998
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 4,
+            "n_obs": 8,
+            "pearson_r": 0.5295,
+            "p_value": 0.1771
+          }
+        ]
+      },
+      "AMD": {
+        "ticker": "AMD",
+        "tests": [
+          {
+            "direction": "fwd",
+            "lag_weeks": 0,
+            "n_obs": 12,
+            "pearson_r": -0.2295,
+            "p_value": 0.473
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 1,
+            "n_obs": 12,
+            "pearson_r": -0.1819,
+            "p_value": 0.5715
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 2,
+            "n_obs": 11,
+            "pearson_r": -0.3844,
+            "p_value": 0.2431
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 4,
+            "n_obs": 9,
+            "pearson_r": 0.1394,
+            "p_value": 0.7205
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 1,
+            "n_obs": 11,
+            "pearson_r": -0.8286,
+            "p_value": 0.0016
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 2,
+            "n_obs": 10,
+            "pearson_r": 0.2356,
+            "p_value": 0.5122
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 4,
+            "n_obs": 8,
+            "pearson_r": 0.0728,
+            "p_value": 0.8639
+          }
+        ]
+      },
+      "Palantir": {
+        "ticker": "PLTR",
+        "tests": [
+          {
+            "direction": "fwd",
+            "lag_weeks": 0,
+            "n_obs": 12,
+            "pearson_r": -0.0373,
+            "p_value": 0.9083
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 1,
+            "n_obs": 12,
+            "pearson_r": 0.0595,
+            "p_value": 0.8543
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 2,
+            "n_obs": 11,
+            "pearson_r": 0.1998,
+            "p_value": 0.5558
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 4,
+            "n_obs": 9,
+            "pearson_r": -0.2621,
+            "p_value": 0.4956
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 1,
+            "n_obs": 11,
+            "pearson_r": 0.1862,
+            "p_value": 0.5835
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 2,
+            "n_obs": 10,
+            "pearson_r": -0.1888,
+            "p_value": 0.6015
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 4,
+            "n_obs": 8,
+            "pearson_r": 0.4896,
+            "p_value": 0.2181
+          }
+        ]
+      },
+      "Amazon (AWS AI)": {
+        "ticker": "AMZN",
+        "tests": [
+          {
+            "direction": "fwd",
+            "lag_weeks": 0,
+            "n_obs": 12,
+            "pearson_r": -0.3021,
+            "p_value": 0.3399
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 1,
+            "n_obs": 12,
+            "pearson_r": -0.117,
+            "p_value": 0.7173
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 2,
+            "n_obs": 11,
+            "pearson_r": 0.2622,
+            "p_value": 0.4361
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 4,
+            "n_obs": 9,
+            "pearson_r": 0.4888,
+            "p_value": 0.1818
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 1,
+            "n_obs": 11,
+            "pearson_r": 0.3725,
+            "p_value": 0.2592
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 2,
+            "n_obs": 10,
+            "pearson_r": 0.0419,
+            "p_value": 0.9085
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 4,
+            "n_obs": 8,
+            "pearson_r": 0.107,
+            "p_value": 0.8008
+          }
+        ]
+      },
+      "Apple (Apple Intelligence)": {
+        "ticker": "AAPL",
+        "tests": [
+          {
+            "direction": "fwd",
+            "lag_weeks": 0,
+            "n_obs": 12,
+            "pearson_r": -0.1266,
+            "p_value": 0.6951
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 1,
+            "n_obs": 12,
+            "pearson_r": -0.3074,
+            "p_value": 0.3312
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 2,
+            "n_obs": 11,
+            "pearson_r": 0.0496,
+            "p_value": 0.8849
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 4,
+            "n_obs": 9,
+            "pearson_r": 0.0328,
+            "p_value": 0.9333
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 1,
+            "n_obs": 11,
+            "pearson_r": 0.2969,
+            "p_value": 0.3754
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 2,
+            "n_obs": 10,
+            "pearson_r": 0.304,
+            "p_value": 0.393
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 4,
+            "n_obs": 8,
+            "pearson_r": 0.6316,
+            "p_value": 0.093
+          }
+        ]
+      },
+      "Tesla (AI/FSD)": {
+        "ticker": "TSLA",
+        "tests": [
+          {
+            "direction": "fwd",
+            "lag_weeks": 0,
+            "n_obs": 12,
+            "pearson_r": 0.1202,
+            "p_value": 0.7099
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 1,
+            "n_obs": 12,
+            "pearson_r": 0.5561,
+            "p_value": 0.0604
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 2,
+            "n_obs": 11,
+            "pearson_r": -0.1865,
+            "p_value": 0.583
+          },
+          {
+            "direction": "fwd",
+            "lag_weeks": 4,
+            "n_obs": 9,
+            "pearson_r": 0.3221,
+            "p_value": 0.3979
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 1,
+            "n_obs": 11,
+            "pearson_r": -0.3367,
+            "p_value": 0.3113
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 2,
+            "n_obs": 10,
+            "pearson_r": 0.6324,
+            "p_value": 0.0498
+          },
+          {
+            "direction": "rev",
+            "lag_weeks": 4,
+            "n_obs": 8,
+            "pearson_r": -0.0259,
+            "p_value": 0.9515
+          }
+        ]
+      }
+    }
+  }
+}

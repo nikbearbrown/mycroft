@@ -1,0 +1,18 @@
+{
+  "body": {
+    "portfolio": {
+      "holdings": [
+        {
+          "ticker": "TSLA",
+          "weight": 0.6
+        },
+        {
+          "ticker": "GOOGL",
+          "weight": 0.6
+        }
+      ]
+    },
+    "scenario_type": "tech_crash",
+    "horizon_days": 30
+  }
+}

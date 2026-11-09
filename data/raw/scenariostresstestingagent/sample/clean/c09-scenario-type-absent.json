@@ -1,0 +1,17 @@
+{
+  "body": {
+    "portfolio": {
+      "holdings": [
+        {
+          "ticker": "META",
+          "weight": 0.5
+        },
+        {
+          "ticker": "AMZN",
+          "weight": 0.5
+        }
+      ]
+    },
+    "horizon_days": 30
+  }
+}

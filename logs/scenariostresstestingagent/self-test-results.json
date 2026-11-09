@@ -1,0 +1,279 @@
+{
+  "slug": "scenariostresstestingagent",
+  "node_found": true,
+  "checks": 27,
+  "as_expected": 27,
+  "skipped": 0,
+  "deliberate_breaks": 12,
+  "deliberate_breaks_caught": 12,
+  "results": [
+    {
+      "group": "provenance",
+      "check": "recipe node table = workflow nodes; connections = the wiring the port assumes; ported nodes have the language the port copies; fixtures intact",
+      "expected": "OK",
+      "observed": "OK",
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "validator",
+      "check": "clean set: all 12 accepted",
+      "expected": 12,
+      "observed": 12,
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "validator",
+      "check": "defective set: all 10 rejected, each with a reason",
+      "expected": 10,
+      "observed": 10,
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "validator",
+      "check": "each defect is rejected for its own reason",
+      "expected": true,
+      "observed": true,
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "port",
+      "check": "12 clean requests: 11 stress-tested, 1 stopped at the Groq handoff",
+      "expected": [
+        11,
+        1
+      ],
+      "observed": [
+        11,
+        1
+      ],
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "coverage",
+      "check": "all five template scenarios reached",
+      "expected": 5,
+      "observed": 5,
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "coverage",
+      "check": "all four risk levels reached",
+      "expected": [
+        "CRITICAL",
+        "HIGH",
+        "LOW",
+        "MODERATE"
+      ],
+      "observed": [
+        "CRITICAL",
+        "HIGH",
+        "LOW",
+        "MODERATE"
+      ],
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "coverage",
+      "check": "both sides of the rescale rule: some requests rescaled, some left alone",
+      "expected": [
+        true,
+        true
+      ],
+      "observed": [
+        true,
+        true
+      ],
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "coverage",
+      "check": "tickers both inside and outside the workflow's sector map",
+      "expected": [
+        true,
+        true
+      ],
+      "observed": [
+        true,
+        true
+      ],
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "coverage",
+      "check": "the 10-percent threshold is hit exactly (and is LOW: the rule is 'above 10')",
+      "expected": [
+        "LOW",
+        -10.0
+      ],
+      "observed": [
+        "LOW",
+        -10.0
+      ],
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "port",
+      "check": "a handoff is recorded for each live service, none approved or performed",
+      "expected": true,
+      "observed": true,
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "port",
+      "check": "rejected data is refused: the tools exit 1 and write nothing",
+      "expected": [
+        1,
+        false
+      ],
+      "observed": [
+        1,
+        false
+      ],
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "untouched",
+      "check": "the 8 generated per-node scripts are byte-identical to upstream/main",
+      "expected": [],
+      "observed": [],
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "parity",
+      "check": "port = original code on every request and every node (compared cases mismatching)",
+      "expected": 0,
+      "observed": 0,
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "parity",
+      "check": "cases compared (21 requests + 3 direct engine inputs; 1 not modelled and refused by the gate)",
+      "expected": [
+        24,
+        1
+      ],
+      "observed": [
+        24,
+        1
+      ],
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "deliberate break",
+      "check": "a port that skips the weight rescale: parity must catch it",
+      "expected": true,
+      "observed": true,
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "deliberate break",
+      "check": "a port with a wrong CRITICAL threshold (25, not 30): parity must catch it",
+      "expected": true,
+      "observed": true,
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "deliberate break",
+      "check": "a port that treats exactly 10.0 as MODERATE ('>=' for '>'): parity must catch it",
+      "expected": true,
+      "observed": true,
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "deliberate break",
+      "check": "a port that rounds positions to 1 decimal, not 2: parity must catch it",
+      "expected": true,
+      "observed": true,
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "deliberate break",
+      "check": "a port that also applies the all_sectors shock the engine never reads: parity must catch it",
+      "expected": true,
+      "observed": true,
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "deliberate break",
+      "check": "a port whose default scenario is rate_hike, not tech_crash: parity must catch it",
+      "expected": true,
+      "observed": true,
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "deliberate break",
+      "check": "a port with NVDA in the wrong sector: parity must catch it",
+      "expected": true,
+      "observed": true,
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "deliberate break",
+      "check": "a port that sends a custom scenario down the template branch: parity must catch it",
+      "expected": true,
+      "observed": true,
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "deliberate break",
+      "check": "a renamed node: provenance must fail",
+      "expected": false,
+      "observed": false,
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "deliberate break",
+      "check": "a rewired connection (the engine skipped): provenance must fail",
+      "expected": false,
+      "observed": false,
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "deliberate break",
+      "check": "a tampered fixture: provenance must fail and the validator must stop (exit 2)",
+      "expected": [
+        false,
+        2
+      ],
+      "observed": [
+        false,
+        2
+      ],
+      "as_expected": true,
+      "skipped": false
+    },
+    {
+      "group": "deliberate break",
+      "check": "a holding without a ticker: the gate must reject it with the node's own message",
+      "expected": true,
+      "observed": true,
+      "as_expected": true,
+      "skipped": false
+    }
+  ]
+}

@@ -1,0 +1,325 @@
+{
+  "step": "validate-data-shape",
+  "mode": "sample",
+  "schema_version": "1",
+  "record_count": 12,
+  "required_fields_present": true,
+  "missing_fields": [
+    "custom_scenario",
+    "scenario_type"
+  ],
+  "parse_errors": 0,
+  "contract": {
+    "source": "the workflow's Validate Portfolio node",
+    "required_fields": [
+      "portfolio.holdings",
+      "holding.ticker"
+    ],
+    "defaults": "weight defaults to 0; weights are rescaled to 1.0 when the total is more than 0.01 from 1.0",
+    "rules": [
+      "portfolio must have a holdings array (the node's message: Portfolio must have holdings array)",
+      "every holding must have a ticker (the node's message: Each holding must have a ticker)",
+      "weights default to 0 and are rescaled to 1.0 when the total is more than 0.01 from 1.0"
+    ],
+    "addition": [
+      "holdings must be a non-empty array of objects",
+      "every weight must be present, a finite number, and not negative; the total must be positive",
+      "scenario_type, if present, must be one of the five templates; with no custom_scenario and no scenario_type the workflow's default (tech_crash) applies",
+      "custom_scenario, if present, must be a string; horizon_days, if present, must be a finite number"
+    ]
+  },
+  "accepted": [
+    {
+      "id": "c01-tech-crash-semiconductor-heavy",
+      "source": "data/raw/scenariostresstestingagent/sample/clean/c01-tech-crash-semiconductor-heavy.json",
+      "request": {
+        "body": {
+          "portfolio": {
+            "holdings": [
+              {
+                "ticker": "NVDA",
+                "weight": 0.4
+              },
+              {
+                "ticker": "AMD",
+                "weight": 0.3
+              },
+              {
+                "ticker": "TSM",
+                "weight": 0.3
+              }
+            ]
+          },
+          "scenario_type": "tech_crash",
+          "horizon_days": 30
+        }
+      }
+    },
+    {
+      "id": "c02-rate-hike-mixed-book",
+      "source": "data/raw/scenariostresstestingagent/sample/clean/c02-rate-hike-mixed-book.json",
+      "request": {
+        "body": {
+          "portfolio": {
+            "holdings": [
+              {
+                "ticker": "AAPL",
+                "weight": 0.25
+              },
+              {
+                "ticker": "MSFT",
+                "weight": 0.25
+              },
+              {
+                "ticker": "ZETA",
+                "weight": 0.25
+              },
+              {
+                "ticker": "OMNI",
+                "weight": 0.25
+              }
+            ]
+          },
+          "scenario_type": "rate_hike",
+          "horizon_days": 60
+        }
+      }
+    },
+    {
+      "id": "c03-ai-regulation-outside-the-map",
+      "source": "data/raw/scenariostresstestingagent/sample/clean/c03-ai-regulation-outside-the-map.json",
+      "request": {
+        "body": {
+          "portfolio": {
+            "holdings": [
+              {
+                "ticker": "ZETA",
+                "weight": 0.5
+              },
+              {
+                "ticker": "OMNI",
+                "weight": 0.5
+              }
+            ]
+          },
+          "scenario_type": "ai_regulation",
+          "horizon_days": 30
+        }
+      }
+    },
+    {
+      "id": "c04-chip-shortage-mostly-unmapped",
+      "source": "data/raw/scenariostresstestingagent/sample/clean/c04-chip-shortage-mostly-unmapped.json",
+      "request": {
+        "body": {
+          "portfolio": {
+            "holdings": [
+              {
+                "ticker": "NVDA",
+                "weight": 0.1
+              },
+              {
+                "ticker": "ZETA",
+                "weight": 0.45
+              },
+              {
+                "ticker": "OMNI",
+                "weight": 0.45
+              }
+            ]
+          },
+          "scenario_type": "chip_shortage",
+          "horizon_days": 90
+        }
+      }
+    },
+    {
+      "id": "c05-black-swan-two-names",
+      "source": "data/raw/scenariostresstestingagent/sample/clean/c05-black-swan-two-names.json",
+      "request": {
+        "body": {
+          "portfolio": {
+            "holdings": [
+              {
+                "ticker": "PINE",
+                "weight": 0.5
+              },
+              {
+                "ticker": "LUXE",
+                "weight": 0.5
+              }
+            ]
+          },
+          "scenario_type": "black_swan",
+          "horizon_days": 30
+        }
+      }
+    },
+    {
+      "id": "c06-weights-sum-to-six-tenths",
+      "source": "data/raw/scenariostresstestingagent/sample/clean/c06-weights-sum-to-six-tenths.json",
+      "request": {
+        "body": {
+          "portfolio": {
+            "holdings": [
+              {
+                "ticker": "NVDA",
+                "weight": 0.3
+              },
+              {
+                "ticker": "MSFT",
+                "weight": 0.2
+              },
+              {
+                "ticker": "ZETA",
+                "weight": 0.1
+              }
+            ]
+          },
+          "scenario_type": "tech_crash",
+          "horizon_days": 30
+        }
+      }
+    },
+    {
+      "id": "c07-weights-within-tolerance",
+      "source": "data/raw/scenariostresstestingagent/sample/clean/c07-weights-within-tolerance.json",
+      "request": {
+        "body": {
+          "portfolio": {
+            "holdings": [
+              {
+                "ticker": "AMD",
+                "weight": 0.5
+              },
+              {
+                "ticker": "OMNI",
+                "weight": 0.505
+              }
+            ]
+          },
+          "scenario_type": "chip_shortage",
+          "horizon_days": 30
+        }
+      }
+    },
+    {
+      "id": "c08-weights-sum-to-one-point-two",
+      "source": "data/raw/scenariostresstestingagent/sample/clean/c08-weights-sum-to-one-point-two.json",
+      "request": {
+        "body": {
+          "portfolio": {
+            "holdings": [
+              {
+                "ticker": "TSLA",
+                "weight": 0.6
+              },
+              {
+                "ticker": "GOOGL",
+                "weight": 0.6
+              }
+            ]
+          },
+          "scenario_type": "tech_crash",
+          "horizon_days": 30
+        }
+      }
+    },
+    {
+      "id": "c09-scenario-type-absent",
+      "source": "data/raw/scenariostresstestingagent/sample/clean/c09-scenario-type-absent.json",
+      "request": {
+        "body": {
+          "portfolio": {
+            "holdings": [
+              {
+                "ticker": "META",
+                "weight": 0.5
+              },
+              {
+                "ticker": "AMZN",
+                "weight": 0.5
+              }
+            ]
+          },
+          "horizon_days": 30
+        }
+      }
+    },
+    {
+      "id": "c10-custom-scenario-needs-the-llm",
+      "source": "data/raw/scenariostresstestingagent/sample/clean/c10-custom-scenario-needs-the-llm.json",
+      "request": {
+        "body": {
+          "portfolio": {
+            "holdings": [
+              {
+                "ticker": "NVDA",
+                "weight": 0.5
+              },
+              {
+                "ticker": "INTC",
+                "weight": 0.5
+              }
+            ]
+          },
+          "custom_scenario": "An invented export ban on AI accelerators",
+          "horizon_days": 30
+        }
+      }
+    },
+    {
+      "id": "c11-exactly-ten-percent",
+      "source": "data/raw/scenariostresstestingagent/sample/clean/c11-exactly-ten-percent.json",
+      "request": {
+        "body": {
+          "portfolio": {
+            "holdings": [
+              {
+                "ticker": "AAPL",
+                "weight": 0.5
+              },
+              {
+                "ticker": "MSFT",
+                "weight": 0.5
+              }
+            ]
+          },
+          "scenario_type": "rate_hike",
+          "horizon_days": 30
+        }
+      }
+    },
+    {
+      "id": "c12-growth-stack-rate-hike",
+      "source": "data/raw/scenariostresstestingagent/sample/clean/c12-growth-stack-rate-hike.json",
+      "request": {
+        "body": {
+          "portfolio": {
+            "holdings": [
+              {
+                "ticker": "NVDA",
+                "weight": 0.25
+              },
+              {
+                "ticker": "TSLA",
+                "weight": 0.25
+              },
+              {
+                "ticker": "META",
+                "weight": 0.25
+              },
+              {
+                "ticker": "AMD",
+                "weight": 0.25
+              }
+            ]
+          },
+          "scenario_type": "rate_hike",
+          "horizon_days": 30
+        }
+      }
+    }
+  ],
+  "rejected": []
+}

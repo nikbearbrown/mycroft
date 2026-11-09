@@ -1,13 +1,4 @@
-
-# services:
-#   gatekeeper:
-#     build: .
-#     ports:
-#       - "8000:8000"
-#     volumes:
-#       # Mount local data directory for persistent ChromaDB storage and testing corpus
-#       - ./data:/code/data
-#       - ./chroma_db:/code/chroma_db
+version: '3.8'
 
 services:
   gatekeeper:
@@ -16,16 +7,36 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      # Your existing mappings
       - ./data:/code/data
       - ./chroma_db:/code/chroma_db
-      # CRITICAL: Mount your root SQLite database so it persists in the cloud
       - ./gatekeeper_logs.db:/code/gatekeeper_logs.db
     environment:
       - ENVIRONMENT=production
+      - GATEKEEPER_SECRET_KEY=super-secret-key-change-in-production
+      - ALERT_WEBHOOK_URL=http://n8n:5678/webhook/hallucination-alert
     restart: always
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
       interval: 30s
       timeout: 10s
       retries: 3
+    depends_on:
+      - n8n
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: n8n-automation
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - NODE_ENV=production
+      - WEBHOOK_URL=http://localhost:5678/
+      - GENERIC_TIMEZONE=America/New_York
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  n8n_data:

@@ -1,0 +1,274 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-10-02T17:11:46Z",
+  "period": {
+    "latest_period_end": "2026-04-30",
+    "first_period_end": "2022-11-30",
+    "periods": 55
+  },
+  "coverage": {
+    "companies": 10,
+    "managers": 30,
+    "marks": 5479,
+    "marks_published": 5178,
+    "opaque_spv_positions": 27
+  },
+  "companies": [
+    {
+      "company": "Databricks, Inc.",
+      "status": "full",
+      "marks": 2151,
+      "managers": 28,
+      "latest_period_end": "2026-04-30",
+      "latest_price_min": 169.12,
+      "latest_price_max": 198.0051,
+      "remark_rate": 0.8019,
+      "dispersion": {
+        "groups": 61,
+        "median_spread": 0.2193,
+        "max_spread": 1.1186,
+        "suppressed_reason": null
+      },
+      "propagation": {
+        "events": 14,
+        "median_days_to_half": 30,
+        "max_days_to_half": 92,
+        "suppressed_reason": null
+      }
+    },
+    {
+      "company": "Space Exploration Technologies Corp.",
+      "status": "full",
+      "marks": 1453,
+      "managers": 12,
+      "latest_period_end": "2026-04-30",
+      "latest_price_min": 514.8228,
+      "latest_price_max": 5265.9,
+      "remark_rate": 0.6259,
+      "dispersion": {
+        "groups": 33,
+        "median_spread": 0.036,
+        "max_spread": 0.8182,
+        "suppressed_reason": null
+      },
+      "propagation": {
+        "events": 8,
+        "median_days_to_half": 31,
+        "max_days_to_half": 92,
+        "suppressed_reason": null
+      }
+    },
+    {
+      "company": "Anduril Industries, Inc.",
+      "status": "full",
+      "marks": 509,
+      "managers": 8,
+      "latest_period_end": "2026-04-30",
+      "latest_price_min": 68.95,
+      "latest_price_max": 68.9527,
+      "remark_rate": 0.7609,
+      "dispersion": {
+        "groups": 14,
+        "median_spread": 0.1529,
+        "max_spread": 0.5165,
+        "suppressed_reason": null
+      },
+      "propagation": {
+        "events": 3,
+        "median_days_to_half": 30,
+        "max_days_to_half": 62,
+        "suppressed_reason": null
+      }
+    },
+    {
+      "company": "Anthropic PBC",
+      "status": "full",
+      "marks": 422,
+      "managers": 12,
+      "latest_period_end": "2026-04-30",
+      "latest_price_min": 259.1364,
+      "latest_price_max": 388.19,
+      "remark_rate": 0.9779,
+      "dispersion": {
+        "groups": 7,
+        "median_spread": 0.3403,
+        "max_spread": 0.8049,
+        "suppressed_reason": null
+      },
+      "propagation": {
+        "events": 3,
+        "median_days_to_half": 27,
+        "max_days_to_half": 27,
+        "suppressed_reason": null
+      }
+    },
+    {
+      "company": "X.AI Corp",
+      "status": "watchlist",
+      "marks": 268,
+      "managers": 8,
+      "latest_period_end": "2026-03-31",
+      "latest_price_min": 75.46,
+      "latest_price_max": 75.46,
+      "remark_rate": 0.5146,
+      "dispersion": {
+        "groups": 0,
+        "median_spread": null,
+        "max_spread": null,
+        "suppressed_reason": "coverage status is 'watchlist'"
+      },
+      "propagation": {
+        "events": 0,
+        "median_days_to_half": null,
+        "max_days_to_half": null,
+        "suppressed_reason": "coverage status is 'watchlist'"
+      }
+    },
+    {
+      "company": "OpenAI Group PBC",
+      "status": "full",
+      "marks": 233,
+      "managers": 12,
+      "latest_period_end": "2026-04-30",
+      "latest_price_min": 687.6869,
+      "latest_price_max": 687.69,
+      "remark_rate": 0.9895,
+      "dispersion": {
+        "groups": 7,
+        "median_spread": 0.0,
+        "max_spread": 0.1265,
+        "suppressed_reason": null
+      },
+      "propagation": {
+        "events": 4,
+        "median_days_to_half": 31,
+        "max_days_to_half": 31,
+        "suppressed_reason": null
+      }
+    },
+    {
+      "company": "Cerebras Systems Inc.",
+      "status": "full",
+      "marks": 80,
+      "managers": 3,
+      "latest_period_end": "2026-04-30",
+      "latest_price_min": 100.26,
+      "latest_price_max": 100.26,
+      "remark_rate": 0.9524,
+      "dispersion": {
+        "groups": 0,
+        "median_spread": null,
+        "max_spread": null,
+        "suppressed_reason": null
+      },
+      "propagation": {
+        "events": 0,
+        "median_days_to_half": null,
+        "max_days_to_half": null,
+        "suppressed_reason": null
+      }
+    },
+    {
+      "company": "Figure AI Inc.",
+      "status": "thin",
+      "marks": 31,
+      "managers": 2,
+      "latest_period_end": "2026-04-30",
+      "latest_price_min": 135.0,
+      "latest_price_max": 194.4,
+      "remark_rate": 0.8947,
+      "dispersion": {
+        "groups": 0,
+        "median_spread": null,
+        "max_spread": null,
+        "suppressed_reason": "coverage status is 'thin'"
+      },
+      "propagation": {
+        "events": 0,
+        "median_days_to_half": null,
+        "max_days_to_half": null,
+        "suppressed_reason": "coverage status is 'thin'"
+      }
+    },
+    {
+      "company": "Perplexity AI, Inc.",
+      "status": "watchlist",
+      "marks": 17,
+      "managers": 2,
+      "latest_period_end": "2026-01-31",
+      "latest_price_min": 695.4438,
+      "latest_price_max": 695.4438,
+      "remark_rate": 0.8,
+      "dispersion": {
+        "groups": 0,
+        "median_spread": null,
+        "max_spread": null,
+        "suppressed_reason": "coverage status is 'watchlist'"
+      },
+      "propagation": {
+        "events": 0,
+        "median_days_to_half": null,
+        "max_days_to_half": null,
+        "suppressed_reason": "coverage status is 'watchlist'"
+      }
+    },
+    {
+      "company": "Groq, Inc.",
+      "status": "watchlist",
+      "marks": 14,
+      "managers": 3,
+      "latest_period_end": "2026-04-30",
+      "latest_price_min": 64.0,
+      "latest_price_max": 64.0,
+      "remark_rate": 1.0,
+      "dispersion": {
+        "groups": 0,
+        "median_spread": null,
+        "max_spread": null,
+        "suppressed_reason": "coverage status is 'watchlist'"
+      },
+      "propagation": {
+        "events": 0,
+        "median_days_to_half": null,
+        "max_days_to_half": null,
+        "suppressed_reason": "coverage status is 'watchlist'"
+      }
+    }
+  ],
+  "guards": {
+    "change_blocked": 301,
+    "unadjudicated_splits": 0,
+    "confirmed_splits": 7,
+    "incomplete_runs": 0,
+    "unresolved_reviews": 0,
+    "unpriced_marks": 294
+  },
+  "commentary": {
+    "text": "The data set spans 55 periods from 2022\u201111\u201130 to 2026\u201104\u201130. Across the quarter there are 10 companies covered by 30 managers, yielding 5,479 marks of which 5,178 were published. Opaque SPV positions total 27.\n\nDatabricks, Inc. reports 2,151 marks from 28 managers. The latest price range is 169.12\u202f\u2013\u202f198.0051 and the remark rate is 0.8019. Dispersion is based on 61 groups with a median spread of 0.2193 and a max spread of 1.1186. Propagation shows 14 events, a median_days_to_half of 30 and a max of 92.\n\nSpace Exploration Technologies Corp. has 1,453 marks from 12 managers, price range 514.8228\u202f\u2013\u202f5,265.9, remark rate 0.6259. Dispersion involves 33 groups, median spread 0.036 and max spread 0.8182. Propagation includes 8 events, median_days_to_half 31 and max 92.\n\nAnduril Industries, Inc. records 509 marks from 8 managers, price range 68.95\u202f\u2013\u202f68.9527, remark rate 0.7609. Dispersion uses 14 groups, median spread 0.1529 and max spread 0.5165. Propagation shows 3 events, median_days_to_half 30 and max 62.\n\nAnthropic PBC provides 422 marks from 12 managers, price range 259.1364\u202f\u2013\u202f388.19, remark rate 0.9779. Dispersion is based on 7 groups, median spread 0.3403 and max spread 0.8049. Propagation includes 3 events, median_days_to_half 27 and max 27.\n\nOpenAI Group PBC lists 233 marks from 12 managers, price range 687.6869\u202f\u2013\u202f687.69, remark rate 0.9895. Dispersion involves 7 groups, median spread 0.0 and max spread 0.1265. Propagation shows 4 events, median_days_to_half 31 and max 31.\n\nCerebras Systems Inc. has 80 marks from 3 managers, price 100.26, remark rate 0.9524. Dispersion groups are 0; median and max spreads are not available. Propagation events are 0; median and max days to half are not available.\n\nX.AI Corp (watchlist) reports 268 marks from 8 managers, price 75.46, remark rate 0.5146. Dispersion groups are 0 and spreads are not available; propagation data are not available.\n\nFigure AI Inc. (thin) shows 31 marks from 2 managers, price range 135.0\u202f\u2013\u202f194.4, remark rate 0.8947. Dispersion and propagation metrics are not available.\n\nPerplexity AI, Inc. (watchlist) has 17 marks from 2 managers, price 695.4438, remark rate 0.8; dispersion and propagation metrics are not available.\n\nGroq, Inc. (watchlist) records 14 marks from 3 managers, price 64.0, remark rate 1.0; dispersion and propagation metrics are not available.\n\nGuards indicate 301 change\u2011blocked marks, 7 confirmed splits, and 294 unpriced marks; other guard categories are zero.",
+    "is_model_output": true,
+    "model": "groq/openai/gpt-oss-120b",
+    "generated_at": "2026-10-02T17:11:46Z",
+    "grounded_in": [
+      "companies",
+      "coverage",
+      "guards",
+      "not_supported",
+      "period"
+    ],
+    "refused": false,
+    "refusal_reason": null
+  },
+  "not_supported": [
+    "Company valuation or implied market cap. N-PORT reports a fund's share count, never the company's shares outstanding, so no company-level value is derivable from this data.",
+    "Any timely signal. Filings lag their period end by roughly 55-60 days and the bulk data sets lag those again by up to ~90 days.",
+    "Complete coverage. Some exposure sits in opaque SPVs that disclose no underlying, and the size of that gap cannot be quantified.",
+    "A return. A split-adjusted change series requires adjudicated split factors; blocked marks are excluded and counted in guards."
+  ],
+  "provenance": {
+    "source": "SEC Form N-PORT bulk data sets (DERA), Form D data sets, and N-CSR/N-CSRS restricted-securities footnotes",
+    "recipe": "data/raw/Private_AI_Valuation_Agent/plan.md",
+    "generated_by": "src/graphs/quarterly_graph.py",
+    "universe_version": 1,
+    "lag_note": "Every figure is as of a filed period end, not as of today. See not_supported."
+  }
+}

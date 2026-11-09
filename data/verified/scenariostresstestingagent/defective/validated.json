@@ -1,0 +1,102 @@
+{
+  "step": "validate-data-shape",
+  "mode": "sample",
+  "schema_version": "1",
+  "record_count": 10,
+  "required_fields_present": true,
+  "missing_fields": [],
+  "parse_errors": 0,
+  "contract": {
+    "source": "the workflow's Validate Portfolio node",
+    "required_fields": [
+      "portfolio.holdings",
+      "holding.ticker"
+    ],
+    "defaults": "weight defaults to 0; weights are rescaled to 1.0 when the total is more than 0.01 from 1.0",
+    "rules": [
+      "portfolio must have a holdings array (the node's message: Portfolio must have holdings array)",
+      "every holding must have a ticker (the node's message: Each holding must have a ticker)",
+      "weights default to 0 and are rescaled to 1.0 when the total is more than 0.01 from 1.0"
+    ],
+    "addition": [
+      "holdings must be a non-empty array of objects",
+      "every weight must be present, a finite number, and not negative; the total must be positive",
+      "scenario_type, if present, must be one of the five templates; with no custom_scenario and no scenario_type the workflow's default (tech_crash) applies",
+      "custom_scenario, if present, must be a string; horizon_days, if present, must be a finite number"
+    ]
+  },
+  "accepted": [],
+  "rejected": [
+    {
+      "id": "d01-portfolio-missing",
+      "source": "data/raw/scenariostresstestingagent/sample/defective/d01-portfolio-missing.json",
+      "reasons": [
+        "Portfolio must have holdings array (the node's own rule)"
+      ]
+    },
+    {
+      "id": "d02-holdings-missing",
+      "source": "data/raw/scenariostresstestingagent/sample/defective/d02-holdings-missing.json",
+      "reasons": [
+        "Portfolio must have holdings array (the node's own rule)"
+      ]
+    },
+    {
+      "id": "d03-holding-without-ticker",
+      "source": "data/raw/scenariostresstestingagent/sample/defective/d03-holding-without-ticker.json",
+      "reasons": [
+        "Each holding must have a ticker (the node's own rule)"
+      ]
+    },
+    {
+      "id": "d04-holdings-is-an-object",
+      "source": "data/raw/scenariostresstestingagent/sample/defective/d04-holdings-is-an-object.json",
+      "reasons": [
+        "portfolio.holdings is not iterable (the node's own rule)",
+        "holdings is a dict, not an array (gate addition)"
+      ]
+    },
+    {
+      "id": "d05-weight-is-a-string",
+      "source": "data/raw/scenariostresstestingagent/sample/defective/d05-weight-is-a-string.json",
+      "reasons": [
+        "holding 0 (NVDA) has a weight that is not a number ('0.5'): JavaScript would join it as text (gate addition)"
+      ]
+    },
+    {
+      "id": "d06-all-weights-zero",
+      "source": "data/raw/scenariostresstestingagent/sample/defective/d06-all-weights-zero.json",
+      "reasons": [
+        "weights total 0.0: rescaling by a zero total gives NaN weights (gate addition)"
+      ]
+    },
+    {
+      "id": "d07-negative-weight",
+      "source": "data/raw/scenariostresstestingagent/sample/defective/d07-negative-weight.json",
+      "reasons": [
+        "holding 1 (AMD) has a negative weight (-0.3): the engine would treat it as a short position without saying so (gate addition)"
+      ]
+    },
+    {
+      "id": "d08-unknown-scenario-type",
+      "source": "data/raw/scenariostresstestingagent/sample/defective/d08-unknown-scenario-type.json",
+      "reasons": [
+        "scenario_type 'meltdown' is not one of ['ai_regulation', 'black_swan', 'chip_shortage', 'rate_hike', 'tech_crash']: the workflow would silently run tech_crash (gate addition)"
+      ]
+    },
+    {
+      "id": "d09-empty-holdings",
+      "source": "data/raw/scenariostresstestingagent/sample/defective/d09-empty-holdings.json",
+      "reasons": [
+        "holdings is empty: nothing to stress-test (gate addition)"
+      ]
+    },
+    {
+      "id": "d10-weight-missing",
+      "source": "data/raw/scenariostresstestingagent/sample/defective/d10-weight-missing.json",
+      "reasons": [
+        "holding 1 (AMD) has no weight: the node counts it as 0 and the engine then fails on it (gate addition)"
+      ]
+    }
+  ]
+}

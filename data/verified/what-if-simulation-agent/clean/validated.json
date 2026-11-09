@@ -1,0 +1,293 @@
+{
+  "step": "validate-data-shape",
+  "mode": "sample",
+  "schema_version": "1",
+  "record_count": 15,
+  "required_fields_present": true,
+  "missing_fields": [
+    "company",
+    "current_price",
+    "debt_equity",
+    "market_cap_billions",
+    "pe_ratio",
+    "revenue_growth",
+    "risk_appetite",
+    "sentiment_score",
+    "ticker",
+    "time_horizon"
+  ],
+  "parse_errors": 0,
+  "contract": {
+    "source": "the workflow's Parse & Validate Input node",
+    "required_fields": [],
+    "defaults": "every field has one",
+    "rules": [
+      "revenue_growth must be between -1.0 and 20.0",
+      "sentiment_score must be 0–1",
+      "risk_appetite must be low | medium | high",
+      "pe_ratio must be positive",
+      "debt_equity must be positive"
+    ],
+    "addition": "numeric fields must be finite"
+  },
+  "accepted": [
+    {
+      "id": "c01-strong-buy-on-the-thresholds",
+      "source": "data/raw/what-if-simulation-agent/sample/clean/c01-strong-buy-on-the-thresholds.json",
+      "request": {
+        "company": "Alder Instruments",
+        "ticker": "ald",
+        "revenue_growth": 0.25,
+        "sentiment_score": 0.65,
+        "risk_appetite": "low",
+        "time_horizon": "1year",
+        "current_price": 48.2,
+        "pe_ratio": 22,
+        "debt_equity": 0.4,
+        "market_cap_billions": 6.5
+      },
+      "defaulted_fields": []
+    },
+    {
+      "id": "c02-growth-ignored-by-the-market",
+      "source": "data/raw/what-if-simulation-agent/sample/clean/c02-growth-ignored-by-the-market.json",
+      "request": {
+        "company": "Birchfield Systems",
+        "ticker": "BFS",
+        "revenue_growth": 0.3,
+        "sentiment_score": 0.3,
+        "risk_appetite": "high",
+        "time_horizon": "5year",
+        "current_price": 123.456,
+        "pe_ratio": 62,
+        "debt_equity": 1.2,
+        "market_cap_billions": 42
+      },
+      "defaulted_fields": []
+    },
+    {
+      "id": "c03-bubble-risk",
+      "source": "data/raw/what-if-simulation-agent/sample/clean/c03-bubble-risk.json",
+      "request": {
+        "company": "Cobalt Vale",
+        "ticker": "CVL",
+        "revenue_growth": 0.05,
+        "sentiment_score": 0.8,
+        "risk_appetite": "medium",
+        "time_horizon": "3month",
+        "current_price": 310,
+        "pe_ratio": 85,
+        "debt_equity": 1.4,
+        "market_cap_billions": 180
+      },
+      "defaulted_fields": []
+    },
+    {
+      "id": "c04-hold-on-both-lower-thresholds",
+      "source": "data/raw/what-if-simulation-agent/sample/clean/c04-hold-on-both-lower-thresholds.json",
+      "request": {
+        "company": "Dunmore Freight",
+        "ticker": "DMF",
+        "revenue_growth": 0.1,
+        "sentiment_score": 0.4,
+        "risk_appetite": "medium",
+        "time_horizon": "3month",
+        "current_price": 19.99,
+        "pe_ratio": 40,
+        "debt_equity": 0.8,
+        "market_cap_billions": 3.1
+      },
+      "defaulted_fields": []
+    },
+    {
+      "id": "c05-both-bearish",
+      "source": "data/raw/what-if-simulation-agent/sample/clean/c05-both-bearish.json",
+      "request": {
+        "company": "Elm Row Retail",
+        "ticker": "ELM",
+        "revenue_growth": -0.2,
+        "sentiment_score": 0.1,
+        "risk_appetite": "low",
+        "time_horizon": "1year",
+        "current_price": 7.5,
+        "pe_ratio": 9,
+        "debt_equity": 2.1,
+        "market_cap_billions": 0.8
+      },
+      "defaulted_fields": []
+    },
+    {
+      "id": "c06-empty-body-all-defaults",
+      "source": "data/raw/what-if-simulation-agent/sample/clean/c06-empty-body-all-defaults.json",
+      "request": {},
+      "defaulted_fields": [
+        "company",
+        "ticker",
+        "revenue_growth",
+        "sentiment_score",
+        "risk_appetite",
+        "time_horizon",
+        "current_price",
+        "pe_ratio",
+        "debt_equity",
+        "market_cap_billions"
+      ]
+    },
+    {
+      "id": "c07-webhook-body-wrapper",
+      "source": "data/raw/what-if-simulation-agent/sample/clean/c07-webhook-body-wrapper.json",
+      "request": {
+        "body": {
+          "company": "Fenwick Labs",
+          "ticker": "fwl",
+          "revenue_growth": 0.4,
+          "sentiment_score": 0.5,
+          "risk_appetite": "medium",
+          "time_horizon": "1year",
+          "current_price": 88,
+          "pe_ratio": 18,
+          "debt_equity": 0.3,
+          "market_cap_billions": 14
+        }
+      },
+      "defaulted_fields": []
+    },
+    {
+      "id": "c08-text-numbers-and-mixed-case",
+      "source": "data/raw/what-if-simulation-agent/sample/clean/c08-text-numbers-and-mixed-case.json",
+      "request": {
+        "company": "Garnet Hollow",
+        "ticker": "ghl",
+        "revenue_growth": "0.18",
+        "sentiment_score": "0.55",
+        "risk_appetite": "HIGH",
+        "time_horizon": "5Year",
+        "current_price": "52.10",
+        "pe_ratio": "30",
+        "debt_equity": "0.9",
+        "market_cap_billions": "9"
+      },
+      "defaulted_fields": []
+    },
+    {
+      "id": "c09-unknown-horizon-and-blank-name",
+      "source": "data/raw/what-if-simulation-agent/sample/clean/c09-unknown-horizon-and-blank-name.json",
+      "request": {
+        "company": "",
+        "ticker": "",
+        "revenue_growth": 0.12,
+        "sentiment_score": 0.45,
+        "risk_appetite": "low",
+        "time_horizon": "weekly",
+        "current_price": 15,
+        "pe_ratio": 20,
+        "debt_equity": 0.2,
+        "market_cap_billions": 1.2
+      },
+      "defaulted_fields": []
+    },
+    {
+      "id": "c10-rounding-ties-js-vs-python",
+      "source": "data/raw/what-if-simulation-agent/sample/clean/c10-rounding-ties-js-vs-python.json",
+      "request": {
+        "company": "Hartwell Optics",
+        "ticker": "HWO",
+        "revenue_growth": 0.125,
+        "sentiment_score": 0.345,
+        "risk_appetite": "medium",
+        "time_horizon": "1year",
+        "current_price": 64.5,
+        "pe_ratio": 25.25,
+        "debt_equity": 0.625,
+        "market_cap_billions": 7
+      },
+      "defaulted_fields": []
+    },
+    {
+      "id": "c11-aggressive-on-its-limits",
+      "source": "data/raw/what-if-simulation-agent/sample/clean/c11-aggressive-on-its-limits.json",
+      "request": {
+        "company": "Ironbridge Power",
+        "ticker": "IRB",
+        "revenue_growth": 0.05,
+        "sentiment_score": 0.35,
+        "risk_appetite": "high",
+        "time_horizon": "1year",
+        "current_price": 31,
+        "pe_ratio": 80,
+        "debt_equity": 1.5,
+        "market_cap_billions": 22
+      },
+      "defaulted_fields": []
+    },
+    {
+      "id": "c12-zero-values-are-values",
+      "source": "data/raw/what-if-simulation-agent/sample/clean/c12-zero-values-are-values.json",
+      "request": {
+        "company": "Juniper Quay",
+        "ticker": "JQY",
+        "revenue_growth": 5.0,
+        "sentiment_score": 0.875,
+        "risk_appetite": "medium",
+        "time_horizon": "1year",
+        "current_price": 0,
+        "pe_ratio": 0,
+        "debt_equity": 0,
+        "market_cap_billions": 0
+      },
+      "defaulted_fields": []
+    },
+    {
+      "id": "c13-another-tie-65-and-a-half",
+      "source": "data/raw/what-if-simulation-agent/sample/clean/c13-another-tie-65-and-a-half.json",
+      "request": {
+        "company": "Kestrel Bay",
+        "ticker": "KBY",
+        "revenue_growth": 0.655,
+        "sentiment_score": 0.655,
+        "risk_appetite": "high",
+        "time_horizon": "5year",
+        "current_price": 210.5,
+        "pe_ratio": 61,
+        "debt_equity": 0.95,
+        "market_cap_billions": 55
+      },
+      "defaulted_fields": []
+    },
+    {
+      "id": "c14-low-growth-middling-sentiment",
+      "source": "data/raw/what-if-simulation-agent/sample/clean/c14-low-growth-middling-sentiment.json",
+      "request": {
+        "company": "Larkspur Docks",
+        "ticker": "LKD",
+        "revenue_growth": 0.08,
+        "sentiment_score": 0.5,
+        "risk_appetite": "low",
+        "time_horizon": "5year",
+        "current_price": 12.4,
+        "pe_ratio": 14,
+        "debt_equity": 0.45,
+        "market_cap_billions": 2.2
+      },
+      "defaulted_fields": []
+    },
+    {
+      "id": "c15-medium-growth-high-sentiment",
+      "source": "data/raw/what-if-simulation-agent/sample/clean/c15-medium-growth-high-sentiment.json",
+      "request": {
+        "company": "Marlow Fields",
+        "ticker": "MLF",
+        "revenue_growth": 0.18,
+        "sentiment_score": 0.7,
+        "risk_appetite": "medium",
+        "time_horizon": "1year",
+        "current_price": 76,
+        "pe_ratio": 33,
+        "debt_equity": 0.6,
+        "market_cap_billions": 11
+      },
+      "defaulted_fields": []
+    }
+  ],
+  "rejected": []
+}

@@ -1,0 +1,26 @@
+{
+  "body": {
+    "portfolio": {
+      "holdings": [
+        {
+          "ticker": "NVDA",
+          "weight": 0.25
+        },
+        {
+          "ticker": "TSLA",
+          "weight": 0.25
+        },
+        {
+          "ticker": "META",
+          "weight": 0.25
+        },
+        {
+          "ticker": "AMD",
+          "weight": 0.25
+        }
+      ]
+    },
+    "scenario_type": "rate_hike",
+    "horizon_days": 30
+  }
+}

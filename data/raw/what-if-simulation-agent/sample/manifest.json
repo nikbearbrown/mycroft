@@ -1,0 +1,122 @@
+{
+  "slug": "what-if-simulation-agent",
+  "frozen": "2026-10-17",
+  "invented": true,
+  "note": "Every company, ticker and number is invented. Nothing was fetched. Each file's SHA-256 is frozen here; a changed file fails provenance.",
+  "counts": {
+    "clean": 15,
+    "defective": 10
+  },
+  "files": {
+    "clean/c01-strong-buy-on-the-thresholds.json": {
+      "sha256": "52fedba781e4663ce4357e9fb52ad2a9dc0e2d1b44611829964a71a234227a20",
+      "kind": "clean"
+    },
+    "clean/c02-growth-ignored-by-the-market.json": {
+      "sha256": "3e5207375554d76572fc1713bdc2d9ff66867ac62ab25029a31fcde3cd5c8970",
+      "kind": "clean"
+    },
+    "clean/c03-bubble-risk.json": {
+      "sha256": "e75dd3a9732237a5f3939eeb32a8f9642fa0f1bd682f2016fe11e0196177cca3",
+      "kind": "clean"
+    },
+    "clean/c04-hold-on-both-lower-thresholds.json": {
+      "sha256": "ea012b6686f253085a1c3d1933da8e21a8ca84304c2a45c9e22f685eef064695",
+      "kind": "clean"
+    },
+    "clean/c05-both-bearish.json": {
+      "sha256": "ea429fb6c32bfb5e1b4022f9bca7527b9c07684d4d1e645969e3be5220df1b96",
+      "kind": "clean"
+    },
+    "clean/c06-empty-body-all-defaults.json": {
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "kind": "clean"
+    },
+    "clean/c07-webhook-body-wrapper.json": {
+      "sha256": "cff0363eaf17077f1f76692f47fa78bf384cfa708214e47268e9bda12f04a219",
+      "kind": "clean"
+    },
+    "clean/c08-text-numbers-and-mixed-case.json": {
+      "sha256": "38da03a832abacaacf8e479a9a6e48c1c83c48d56d0cf3c9e98e65f07b1e3b09",
+      "kind": "clean"
+    },
+    "clean/c09-unknown-horizon-and-blank-name.json": {
+      "sha256": "a17b8f9096b934c29725d03dcdfb9c444aea8bdbcc3c42e00d31686d5a113dc0",
+      "kind": "clean"
+    },
+    "clean/c10-rounding-ties-js-vs-python.json": {
+      "sha256": "130c84c2a661eb9e5f033ce442764d44eb9b235c8bec137486d63c9e14e82f1c",
+      "kind": "clean"
+    },
+    "clean/c11-aggressive-on-its-limits.json": {
+      "sha256": "72a401990174ab693a4baed66a0b8b7f7943ae6d9b8df1c4a27becffd47d6aa1",
+      "kind": "clean"
+    },
+    "clean/c12-zero-values-are-values.json": {
+      "sha256": "48929e490fdff18b8f1b1d75af72c1dc296f767f08e73fb839012608736fb31a",
+      "kind": "clean"
+    },
+    "clean/c13-another-tie-65-and-a-half.json": {
+      "sha256": "b7baed9fe99d495a76b2425d2c0f87ef38981fda4c4306f71c08659c8cca9d17",
+      "kind": "clean"
+    },
+    "clean/c14-low-growth-middling-sentiment.json": {
+      "sha256": "80becae945f1758185a828d6d03571ae275f8642fdb17da4793caae244fb2fad",
+      "kind": "clean"
+    },
+    "clean/c15-medium-growth-high-sentiment.json": {
+      "sha256": "31d850b16b5f5e2f6e313148bc6e76eb6c5956d37c019fcfc3515bec543cf5bf",
+      "kind": "clean"
+    },
+    "defective/d01-growth-above-20.json": {
+      "sha256": "ea895909886c7f7dbae8dfc7b7ad5763476131d4385af931f5a84055f3c300aa",
+      "kind": "defective",
+      "why": "revenue_growth must be between -1.0 and 20.0 (the workflow's own rule)"
+    },
+    "defective/d02-sentiment-above-1.json": {
+      "sha256": "50673927b071e087a8cf64298566b4cd6fe4b6c9c10cfd6cdd9ea60a1a5b874b",
+      "kind": "defective",
+      "why": "sentiment_score must be 0-1 (the workflow's own rule)"
+    },
+    "defective/d03-unknown-risk-appetite.json": {
+      "sha256": "8c4dcc9126665eb86f1267870dde225edc9ac3e15eafd7101367bc6a17e12759",
+      "kind": "defective",
+      "why": "risk_appetite must be low | medium | high (the workflow's own rule)"
+    },
+    "defective/d04-negative-pe.json": {
+      "sha256": "7e8fe1009a406bdbe970599861b117a4c7be9170579a25dad4f8d18d957d8397",
+      "kind": "defective",
+      "why": "pe_ratio must be positive (the workflow's own rule)"
+    },
+    "defective/d05-negative-debt-equity.json": {
+      "sha256": "d40f6252dfba35a150ca27e4ff1b2cc6ff08389e24225548bca74da876d41197",
+      "kind": "defective",
+      "why": "debt_equity must be positive (the workflow's own rule)"
+    },
+    "defective/d06-two-rules-broken-at-once.json": {
+      "sha256": "1ffdb09e77c0605008681a98dbfc74bad4e029ab76de53793cd3ae6f84faafdb",
+      "kind": "defective",
+      "why": "two of the workflow's rules fail together; both reasons must be reported"
+    },
+    "defective/d07-growth-is-not-a-number.json": {
+      "sha256": "ac16c04965d7c92a0c0784f1481fceb6e457eec218c1323c3a0b72deb7a53a56",
+      "kind": "defective",
+      "why": "parseFloat gives NaN, which passes every comparison in the workflow; this gate rejects non-finite numbers"
+    },
+    "defective/d08-sentiment-is-empty-text.json": {
+      "sha256": "d153ef0b2000ece4235cdb2666acc618597cbc9933d65207dc91227a9f3a1904",
+      "kind": "defective",
+      "why": "parseFloat('') is NaN; this gate rejects non-finite numbers"
+    },
+    "defective/d09-payload-is-a-list.json": {
+      "sha256": "fbcd098215e9b438f44797ee2cb978928d36e2faef39256d05dca291857dca0a",
+      "kind": "defective",
+      "why": "a request must be a JSON object"
+    },
+    "defective/d10-truncated-json.txt": {
+      "sha256": "df2270f779693c7d4d77964e089276224cbe13f0b6de0a814ec6b21c815688cf",
+      "kind": "defective",
+      "why": "the file does not parse as JSON"
+    }
+  }
+}

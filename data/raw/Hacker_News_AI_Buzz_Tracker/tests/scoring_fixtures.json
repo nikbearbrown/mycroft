@@ -1,0 +1,64 @@
+[
+  {
+    "id": "busy",
+    "description": "High-volume entity with strong engagement and multiple front-page appearances",
+    "input": {
+      "storyCount": 30,
+      "totalPoints": 3000,
+      "totalComments": 1500,
+      "frontPageCount": 6,
+      "lowConfidence": false
+    },
+    "expected": {
+      "buzzMin": 75,
+      "buzzMax": 90,
+      "lowConfidencePathUsed": false
+    }
+  },
+  {
+    "id": "moderate",
+    "description": "Mid-tier entity with decent stories and one front-page hit",
+    "input": {
+      "storyCount": 10,
+      "totalPoints": 450,
+      "totalComments": 150,
+      "frontPageCount": 1,
+      "lowConfidence": false
+    },
+    "expected": {
+      "buzzMin": 40,
+      "buzzMax": 60,
+      "lowConfidencePathUsed": false
+    }
+  },
+  {
+    "id": "sparse",
+    "description": "Low-mention entity using the low-confidence floor path",
+    "input": {
+      "storyCount": 2,
+      "totalPoints": 25,
+      "totalComments": 5,
+      "frontPageCount": 0,
+      "lowConfidence": true
+    },
+    "expected": {
+      "buzzMax": 45,
+      "lowConfidencePathUsed": true
+    }
+  },
+  {
+    "id": "zero_hit",
+    "description": "Entity with zero mentions — score must be exactly 0 with no error",
+    "input": {
+      "storyCount": 0,
+      "totalPoints": 0,
+      "totalComments": 0,
+      "frontPageCount": 0,
+      "lowConfidence": true
+    },
+    "expected": {
+      "buzzExact": 0,
+      "lowConfidencePathUsed": true
+    }
+  }
+]

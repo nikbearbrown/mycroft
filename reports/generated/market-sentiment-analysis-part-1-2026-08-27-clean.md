@@ -24,8 +24,8 @@ Every file this run rests on, with the hash a reviewer can re-verify.
 
 | Path | Role | Present | SHA-256 (first 16) |
 |---|---|---|---|
-| `recipes/market-sentiment-analysis-part-1.md` | recipe under test - authoritative for intent (P6) | yes | a4e379c6ccb325ba… |
-| `conductor/market-sentiment-analysis-part-1.md` | conductor flow | yes | 02681428081972d1… |
+| `recipes/market-sentiment-analysis-part-1.md` | recipe under test - authoritative for intent (P6) | yes | 00a5dbee0a0d1ca6… |
+| `conductor/market-sentiment-analysis-part-1.md` | conductor flow | yes | 8cd7fc5422d2e649… |
 | `data/raw/market-sentiment-analysis-part-1/run-envelope.json` | run control file - declares mode and the frozen clock | yes | 33828ed47a8c38fc… |
 | `data/raw/market-sentiment-analysis-part-1/sample/fixture-manifest.json` | fixture manifest - schema and defect catalogue | yes | 7ee88528523d5780… |
 | `data/raw/market-sentiment-analysis-part-1/sample/FIXTURE_MANIFEST.md` | fixture manifest, human view (P5) | yes | 7033d7e4fd68306b… |
@@ -42,12 +42,12 @@ Every file this run rests on, with the hash a reviewer can re-verify.
 | `data/verified/market-sentiment-analysis-part-1/runs/sample-001-clean/quality-checked/reddit-wallstreetbets.json` | verified output (step 3 or 4) | yes | a7f06bd4857a79ce… |
 | `data/verified/market-sentiment-analysis-part-1/runs/sample-001-clean/reddit-wallstreetbets.json` | verified output (step 3 or 4) | yes | fe024130ac968bb7… |
 | `logs/market-sentiment-analysis-part-1/runs/sample-001-clean/sentiment-scores.json` | step-5 sentiment scores | yes | 3bdfdce2a9a3ffef… |
-| `scripts/tools/market-sentiment-analysis-part-1-verify-provenance.py` | step script | yes | 3afb272debc044ae… |
-| `scripts/ingest/market-sentiment-analysis-part-1-ingest-inputs.py` | step script | yes | 0b7d6e1ad217e312… |
-| `scripts/gigo/market-sentiment-analysis-part-1-validate-data-shape.py` | step script | yes | 1b21e1acdb2e308f… |
-| `scripts/gigo/market-sentiment-analysis-part-1-transform-quality-check.py` | step script | yes | 2cc69f0e1f81ee86… |
-| `scripts/tools/market-sentiment-analysis-part-1-run-approved-tools.py` | step script | yes | edb664608bbd2b21… |
-| `scripts/tools/market-sentiment-analysis-part-1-produce-human-report.py` | step script | yes | 3e65b2eb4117ced4… |
+| `scripts/tools/market-sentiment-analysis-part-1-verify-provenance.py` | step script | yes | 528414acb419e2c0… |
+| `scripts/ingest/market-sentiment-analysis-part-1-ingest-inputs.py` | step script | yes | 1a8b4e8384ffbcf5… |
+| `scripts/gigo/market-sentiment-analysis-part-1-validate-data-shape.py` | step script | yes | eecb06bedbb670e9… |
+| `scripts/gigo/market-sentiment-analysis-part-1-transform-quality-check.py` | step script | yes | 799f67a5a729531b… |
+| `scripts/tools/market-sentiment-analysis-part-1-run-approved-tools.py` | step script | yes | 4494ab482b8401d2… |
+| `scripts/tools/market-sentiment-analysis-part-1-produce-human-report.py` | step script | yes | fc2a2ddd30b4da06… |
 
 ## Inputs used
 

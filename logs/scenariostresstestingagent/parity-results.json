@@ -1,0 +1,233 @@
+{
+  "slug": "scenariostresstestingagent",
+  "original": "extracted from the workflow JSON at run time: Validate Portfolio under node; the three Python nodes by exec inside a small _input shim",
+  "if_node_condition": {
+    "left": "={{ $json.custom_scenario }}",
+    "operation": "notEmpty"
+  },
+  "requests": 24,
+  "matching": 24,
+  "mismatching": 0,
+  "not_modelled": 1,
+  "javascript_compared": true,
+  "rows": [
+    {
+      "id": "clean/c01-tech-crash-semiconductor-heavy",
+      "original": {
+        "validate": "ok",
+        "load_template_scenario": "ok",
+        "stress_test_engine": "ok"
+      },
+      "route": "template",
+      "match": true
+    },
+    {
+      "id": "clean/c02-rate-hike-mixed-book",
+      "original": {
+        "validate": "ok",
+        "load_template_scenario": "ok",
+        "stress_test_engine": "ok"
+      },
+      "route": "template",
+      "match": true
+    },
+    {
+      "id": "clean/c03-ai-regulation-outside-the-map",
+      "original": {
+        "validate": "ok",
+        "load_template_scenario": "ok",
+        "stress_test_engine": "ok"
+      },
+      "route": "template",
+      "match": true
+    },
+    {
+      "id": "clean/c04-chip-shortage-mostly-unmapped",
+      "original": {
+        "validate": "ok",
+        "load_template_scenario": "ok",
+        "stress_test_engine": "ok"
+      },
+      "route": "template",
+      "match": true
+    },
+    {
+      "id": "clean/c05-black-swan-two-names",
+      "original": {
+        "validate": "ok",
+        "load_template_scenario": "ok",
+        "stress_test_engine": "ok"
+      },
+      "route": "template",
+      "match": true
+    },
+    {
+      "id": "clean/c06-weights-sum-to-six-tenths",
+      "original": {
+        "validate": "ok",
+        "load_template_scenario": "ok",
+        "stress_test_engine": "ok"
+      },
+      "route": "template",
+      "match": true
+    },
+    {
+      "id": "clean/c07-weights-within-tolerance",
+      "original": {
+        "validate": "ok",
+        "load_template_scenario": "ok",
+        "stress_test_engine": "ok"
+      },
+      "route": "template",
+      "match": true
+    },
+    {
+      "id": "clean/c08-weights-sum-to-one-point-two",
+      "original": {
+        "validate": "ok",
+        "load_template_scenario": "ok",
+        "stress_test_engine": "ok"
+      },
+      "route": "template",
+      "match": true
+    },
+    {
+      "id": "clean/c09-scenario-type-absent",
+      "original": {
+        "validate": "ok",
+        "load_template_scenario": "ok",
+        "stress_test_engine": "ok"
+      },
+      "route": "template",
+      "match": true
+    },
+    {
+      "id": "clean/c10-custom-scenario-needs-the-llm",
+      "original": {
+        "validate": "ok",
+        "save_portfolio_before_llm": "ok"
+      },
+      "route": "custom_llm",
+      "match": true
+    },
+    {
+      "id": "clean/c11-exactly-ten-percent",
+      "original": {
+        "validate": "ok",
+        "load_template_scenario": "ok",
+        "stress_test_engine": "ok"
+      },
+      "route": "template",
+      "match": true
+    },
+    {
+      "id": "clean/c12-growth-stack-rate-hike",
+      "original": {
+        "validate": "ok",
+        "load_template_scenario": "ok",
+        "stress_test_engine": "ok"
+      },
+      "route": "template",
+      "match": true
+    },
+    {
+      "id": "defective/d01-portfolio-missing",
+      "original": {
+        "validate": "error: Portfolio must have holdings array"
+      },
+      "route": null,
+      "match": true
+    },
+    {
+      "id": "defective/d02-holdings-missing",
+      "original": {
+        "validate": "error: Portfolio must have holdings array"
+      },
+      "route": null,
+      "match": true
+    },
+    {
+      "id": "defective/d03-holding-without-ticker",
+      "original": {
+        "validate": "error: Each holding must have a ticker"
+      },
+      "route": null,
+      "match": true
+    },
+    {
+      "id": "defective/d04-holdings-is-an-object",
+      "original": {
+        "validate": "error: portfolio.holdings is not iterable"
+      },
+      "route": null,
+      "match": true
+    },
+    {
+      "id": "defective/d05-weight-is-a-string",
+      "match": null,
+      "note": "not modelled by the port (weight '0.5' is not a number (JavaScript would concatenate or coerce)); refused by the step-3 gate"
+    },
+    {
+      "id": "defective/d06-all-weights-zero",
+      "original": {
+        "validate": "ok",
+        "load_template_scenario": "ok",
+        "stress_test_engine": "error: TypeError: unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      "route": "template",
+      "match": true
+    },
+    {
+      "id": "defective/d07-negative-weight",
+      "original": {
+        "validate": "ok",
+        "load_template_scenario": "ok",
+        "stress_test_engine": "ok"
+      },
+      "route": "template",
+      "match": true
+    },
+    {
+      "id": "defective/d08-unknown-scenario-type",
+      "original": {
+        "validate": "ok",
+        "load_template_scenario": "ok",
+        "stress_test_engine": "ok"
+      },
+      "route": "template",
+      "match": true
+    },
+    {
+      "id": "defective/d09-empty-holdings",
+      "original": {
+        "validate": "ok",
+        "load_template_scenario": "ok",
+        "stress_test_engine": "ok"
+      },
+      "route": "template",
+      "match": true
+    },
+    {
+      "id": "defective/d10-weight-missing",
+      "original": {
+        "validate": "ok",
+        "load_template_scenario": "ok",
+        "stress_test_engine": "error: KeyError: 'weight'"
+      },
+      "route": "template",
+      "match": true
+    },
+    {
+      "id": "engine: no scenario in the item",
+      "match": true
+    },
+    {
+      "id": "engine: no portfolio anywhere",
+      "match": true
+    },
+    {
+      "id": "engine: portfolio without holdings",
+      "match": true
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+# Internal planning doc — not pushed to git
+plan.md
+prompts_and_problems.md
+
+# Secrets — never commit real keys
+.env
+
+# Node / n8n local data
+node_modules/
+.n8n/
+
+# Python virtual environment
+.venv/
+
+metric_generation.py
+
+.claude/
+reports/
+docs/worklog.md
+
+chapter_exercises/your-own-mycroft/.git.archived-nested-repo
+
+pics/

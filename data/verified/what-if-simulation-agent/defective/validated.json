@@ -1,0 +1,96 @@
+{
+  "step": "validate-data-shape",
+  "mode": "sample",
+  "schema_version": "1",
+  "record_count": 10,
+  "required_fields_present": true,
+  "missing_fields": [],
+  "parse_errors": 1,
+  "contract": {
+    "source": "the workflow's Parse & Validate Input node",
+    "required_fields": [],
+    "defaults": "every field has one",
+    "rules": [
+      "revenue_growth must be between -1.0 and 20.0",
+      "sentiment_score must be 0–1",
+      "risk_appetite must be low | medium | high",
+      "pe_ratio must be positive",
+      "debt_equity must be positive"
+    ],
+    "addition": "numeric fields must be finite"
+  },
+  "accepted": [],
+  "rejected": [
+    {
+      "id": "d01-growth-above-20",
+      "source": "data/raw/what-if-simulation-agent/sample/defective/d01-growth-above-20.json",
+      "reasons": [
+        "revenue_growth must be between -1.0 and 20.0"
+      ]
+    },
+    {
+      "id": "d02-sentiment-above-1",
+      "source": "data/raw/what-if-simulation-agent/sample/defective/d02-sentiment-above-1.json",
+      "reasons": [
+        "sentiment_score must be 0–1"
+      ]
+    },
+    {
+      "id": "d03-unknown-risk-appetite",
+      "source": "data/raw/what-if-simulation-agent/sample/defective/d03-unknown-risk-appetite.json",
+      "reasons": [
+        "risk_appetite must be low | medium | high"
+      ]
+    },
+    {
+      "id": "d04-negative-pe",
+      "source": "data/raw/what-if-simulation-agent/sample/defective/d04-negative-pe.json",
+      "reasons": [
+        "pe_ratio must be positive"
+      ]
+    },
+    {
+      "id": "d05-negative-debt-equity",
+      "source": "data/raw/what-if-simulation-agent/sample/defective/d05-negative-debt-equity.json",
+      "reasons": [
+        "debt_equity must be positive"
+      ]
+    },
+    {
+      "id": "d06-two-rules-broken-at-once",
+      "source": "data/raw/what-if-simulation-agent/sample/defective/d06-two-rules-broken-at-once.json",
+      "reasons": [
+        "revenue_growth must be between -1.0 and 20.0",
+        "pe_ratio must be positive"
+      ]
+    },
+    {
+      "id": "d07-growth-is-not-a-number",
+      "source": "data/raw/what-if-simulation-agent/sample/defective/d07-growth-is-not-a-number.json",
+      "reasons": [
+        "revenue_growth is not a finite number (the workflow's range checks let it through; this gate does not)"
+      ]
+    },
+    {
+      "id": "d08-sentiment-is-empty-text",
+      "source": "data/raw/what-if-simulation-agent/sample/defective/d08-sentiment-is-empty-text.json",
+      "reasons": [
+        "sentiment_score is not a finite number (the workflow's range checks let it through; this gate does not)"
+      ]
+    },
+    {
+      "id": "d09-payload-is-a-list",
+      "source": "data/raw/what-if-simulation-agent/sample/defective/d09-payload-is-a-list.json",
+      "reasons": [
+        "a request must be a JSON object"
+      ]
+    },
+    {
+      "id": "d10-truncated-json",
+      "source": "data/raw/what-if-simulation-agent/sample/defective/d10-truncated-json.txt",
+      "reasons": [
+        "does not parse as JSON (JSONDecodeError: Expecting ',' delimiter: line 1 column 72 (char 71))"
+      ]
+    }
+  ]
+}

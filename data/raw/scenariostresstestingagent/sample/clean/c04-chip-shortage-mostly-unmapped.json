@@ -1,0 +1,22 @@
+{
+  "body": {
+    "portfolio": {
+      "holdings": [
+        {
+          "ticker": "NVDA",
+          "weight": 0.1
+        },
+        {
+          "ticker": "ZETA",
+          "weight": 0.45
+        },
+        {
+          "ticker": "OMNI",
+          "weight": 0.45
+        }
+      ]
+    },
+    "scenario_type": "chip_shortage",
+    "horizon_days": 90
+  }
+}

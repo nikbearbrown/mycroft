@@ -71,7 +71,9 @@ def classify_claim(claim_number: int, claim_text: str, api_key: Optional[str] = 
         }],
     )
 
-    if not message.content:
+    # A refusal can arrive mid-answer, leaving partial JSON in content,
+    # so check stop_reason rather than only an empty response.
+    if not message.content or message.stop_reason == "refusal":
         return ScopeClassification(
             claim_number=claim_number,
             breadth="unclear",

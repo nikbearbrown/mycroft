@@ -1,0 +1,152 @@
+{
+  "slug": "what-if-simulation-agent",
+  "checks": 18,
+  "as_expected": 18,
+  "breaks": 10,
+  "rows": [
+    {
+      "name": "provenance as declared",
+      "kind": "check",
+      "ran": "verify-provenance on the declared workflow",
+      "saw": "exit 0; node table True, chain True, fixtures True",
+      "expected": "exit 0; all True",
+      "as_expected": true
+    },
+    {
+      "name": "BREAK: a node renamed in the workflow",
+      "kind": "break",
+      "ran": "rename 'Sim 1' in a copy of the workflow, run verify-provenance",
+      "saw": "exit 1; node table False; findings 2",
+      "expected": "exit 1; node table False",
+      "as_expected": true
+    },
+    {
+      "name": "BREAK: Sim 3 skipped in the connections",
+      "kind": "break",
+      "ran": "rewire Sim 2 straight to Aggregate in a copy, run verify-provenance",
+      "saw": "exit 1; chain False",
+      "expected": "exit 1; chain False",
+      "as_expected": true
+    },
+    {
+      "name": "BREAK: a fixture changed after it was frozen",
+      "kind": "break",
+      "ran": "change one digit in c01, run verify-provenance",
+      "saw": "exit 1; fixtures False",
+      "expected": "exit 1; fixtures False",
+      "as_expected": true
+    },
+    {
+      "name": "BREAK: the validator on the changed fixture",
+      "kind": "break",
+      "ran": "same copy, run validate-data-shape",
+      "saw": "exit 2; validated.json written: False",
+      "expected": "exit 2; nothing written",
+      "as_expected": true
+    },
+    {
+      "name": "clean set validates",
+      "kind": "check",
+      "ran": "validate-data-shape on sample/clean",
+      "saw": "exit 0; 15 accepted, 0 rejected, record_count 15",
+      "expected": "exit 0; 15 accepted, 0 rejected",
+      "as_expected": true
+    },
+    {
+      "name": "every catalogued defect rejected, for its own reason",
+      "kind": "check",
+      "ran": "validate-data-shape on sample/defective",
+      "saw": "exit 1; 10/10 rejected; wrong or missing reasons: none",
+      "expected": "exit 1 (by design); 10/10 rejected, each for its catalogued reason",
+      "as_expected": true
+    },
+    {
+      "name": "the contract has not drifted from the workflow's own rules",
+      "kind": "check",
+      "ran": "compare the validator's five messages with the errors.push() messages in the Parse & Validate Input node",
+      "saw": "workflow 5 messages, validator 5; equal: True",
+      "expected": "the same five messages in the same order",
+      "as_expected": true
+    },
+    {
+      "name": "approved tools run on the clean set",
+      "kind": "check",
+      "ran": "run-approved-tools on the validated clean set",
+      "saw": "exit 0; 15 results, each with an aggregate and a prompt: True",
+      "expected": "exit 0; 15 results",
+      "as_expected": true
+    },
+    {
+      "name": "the clean set reaches every branch",
+      "kind": "check",
+      "ran": "read the results: matrix cells, risk appetites, horizons, final recommendations",
+      "saw": "9/9 matrix cells; 3/3 risk appetites; 3/3 horizons; 5/5 final recommendations",
+      "expected": "9/9; 3/3; 3/3; 5/5",
+      "as_expected": true
+    },
+    {
+      "name": "rerun is byte-identical",
+      "kind": "check",
+      "ran": "run-approved-tools twice",
+      "saw": "identical: True",
+      "expected": "identical",
+      "as_expected": true
+    },
+    {
+      "name": "BREAK: the tools are handed rejected requests",
+      "kind": "break",
+      "ran": "run-approved-tools on the defective validated.json",
+      "saw": "exit 1; anything written: False",
+      "expected": "exit 1; nothing written",
+      "as_expected": true
+    },
+    {
+      "name": "BREAK: a clean file hand-edited to hold a rejected request",
+      "kind": "break",
+      "ran": "add one rejected entry to the clean validated.json, run-approved-tools",
+      "saw": "exit 1",
+      "expected": "exit 1",
+      "as_expected": true
+    },
+    {
+      "name": "parity with the original JavaScript",
+      "kind": "check",
+      "ran": "parity-check: original JS vs the port, 23 requests (15 clean, 8 object-shaped defective)",
+      "saw": "parity: 23/23 requests identical to the original JavaScript, 0 different",
+      "expected": "23/23 identical",
+      "as_expected": true
+    },
+    {
+      "name": "BREAK: rounding with Python's round() (half goes to even)",
+      "kind": "break",
+      "ran": "parity-check on a copy of the port with that one change",
+      "saw": "parity: 22/23 requests identical to the original JavaScript, 1 different",
+      "expected": "exit 1; the parity check must catch it",
+      "as_expected": true
+    },
+    {
+      "name": "BREAK: toFixed with Python's format (ties go to even)",
+      "kind": "break",
+      "ran": "parity-check on a copy of the port with that one change",
+      "saw": "parity: 19/23 requests identical to the original JavaScript, 4 different",
+      "expected": "exit 1; the parity check must catch it",
+      "as_expected": true
+    },
+    {
+      "name": "BREAK: Math.min/Math.max replaced by Python's min/max (NaN is not contagious)",
+      "kind": "break",
+      "ran": "parity-check on a copy of the port with that one change",
+      "saw": "parity: 21/23 requests identical to the original JavaScript, 2 different",
+      "expected": "exit 1; the parity check must catch it",
+      "as_expected": true
+    },
+    {
+      "name": "BREAK: numbers printed the Python way (100.0 for 100)",
+      "kind": "break",
+      "ran": "parity-check on a copy of the port with that one change",
+      "saw": "parity: 6/23 requests identical to the original JavaScript, 17 different",
+      "expected": "exit 1; the parity check must catch it",
+      "as_expected": true
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "body": {
+    "portfolio": {
+      "holdings": [
+        {
+          "ticker": "PINE",
+          "weight": 0.5
+        },
+        {
+          "ticker": "LUXE",
+          "weight": 0.5
+        }
+      ]
+    },
+    "scenario_type": "black_swan",
+    "horizon_days": 30
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "body": {
+    "portfolio": {
+      "holdings": [
+        {
+          "ticker": "NVDA",
+          "weight": 0.4
+        },
+        {
+          "ticker": "AMD",
+          "weight": 0.3
+        },
+        {
+          "ticker": "TSM",
+          "weight": 0.3
+        }
+      ]
+    },
+    "scenario_type": "tech_crash",
+    "horizon_days": 30
+  }
+}

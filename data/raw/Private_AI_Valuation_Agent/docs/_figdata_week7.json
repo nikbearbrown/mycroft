@@ -1,0 +1,432 @@
+{
+ "coverage": {
+  "holdings": 5806,
+  "rejected_not_in_universe": 28,
+  "superseded_by_amendment": 72,
+  "lines_in_marks": 5706,
+  "reconciles": true
+ },
+ "tolerance": 0.01,
+ "cap": 20,
+ "totals": {
+  "marks": 5479,
+  "priced": 5185,
+  "blocked": 301,
+  "blended": 6,
+  "opaque_spv": 27,
+  "re_marked": 3067,
+  "carried": 1019,
+  "first_obs": 1099,
+  "suspected": 11,
+  "securities": 232,
+  "periods": 55,
+  "companies": 10
+ },
+ "blocks": [
+  {
+   "reason": "not a share price: not_a_share_price",
+   "marks": 230
+  },
+  {
+   "reason": "not a share price: blended_classes",
+   "marks": 58
+  },
+  {
+   "reason": "confirmed split, awaiting adjustment (Week 8)",
+   "marks": 7
+  },
+  {
+   "reason": "blended lines: the price belongs to neither class",
+   "marks": 6
+  }
+ ],
+ "panel_rows": 861,
+ "quarantine": [
+  {
+   "company": "Perplexity AI, Inc.",
+   "class": "PFD:E-1",
+   "title": "PERPLEXITY AI SER E-1 CVT PFD PP",
+   "marks": 4,
+   "ratio_min": "10.0000",
+   "ratio_max": "10.0000",
+   "from_period": "2025-12-31",
+   "to_period": "2026-04-30",
+   "price_before": "695.4438",
+   "price_after": "69.5444",
+   "adjudicated": true,
+   "factor": "10.0000",
+   "blocked": 4,
+   "note": "split -- Om Mali: A real 10:1 split. Five T. Rowe Price funds show the share count multiplied by exactly ten with the dollar value unchanged to the cent. ARK's common line reads 11.93 because a 10:1 split and a 16 percent markdown fell in the same period. Week 8 divides by 10 and leaves the markdown as a real price move."
+  },
+  {
+   "company": "Perplexity AI, Inc.",
+   "class": "PFD:D-1",
+   "title": "PERPLEXITY AI SER D-1 CVT PFD PP",
+   "marks": 2,
+   "ratio_min": "10.0000",
+   "ratio_max": "10.0000",
+   "from_period": "2025-12-31",
+   "to_period": "2026-03-31",
+   "price_before": "695.4438",
+   "price_after": "69.5444",
+   "adjudicated": true,
+   "factor": "10.0000",
+   "blocked": 2,
+   "note": "split -- Om Mali: A real 10:1 split. Five T. Rowe Price funds show the share count multiplied by exactly ten with the dollar value unchanged to the cent. ARK's common line reads 11.93 because a 10:1 split and a 16 percent markdown fell in the same period. Week 8 divides by 10 and leaves the markdown as a real price move."
+  },
+  {
+   "company": "Anthropic PBC",
+   "class": "COM:UNSPECIFIED",
+   "title": "Anthropic, Inc.",
+   "marks": 1,
+   "ratio_min": "4.0181",
+   "ratio_max": "4.0181",
+   "from_period": "2023-10-31",
+   "to_period": "2024-01-31",
+   "price_before": "12.1800",
+   "price_after": "48.9400",
+   "adjudicated": true,
+   "factor": null,
+   "blocked": 0,
+   "note": "not_a_split -- Om Mali: Not a split. ARK holds 89,078 shares in every one of the thirteen periods; only the value moves. The 4.02 step from 12.18 to 48.94 reverses to 30.00 the following quarter, which a split never does. A genuine valuation move, and it belongs in the change series."
+  },
+  {
+   "company": "Perplexity AI, Inc.",
+   "class": "COM:UNSPECIFIED",
+   "title": "Perplexity AI, Inc.",
+   "marks": 1,
+   "ratio_min": "11.9300",
+   "ratio_max": "11.9300",
+   "from_period": "2026-01-30",
+   "to_period": "2026-04-30",
+   "price_before": "695.0374",
+   "price_after": "58.2595",
+   "adjudicated": true,
+   "factor": "10.0000",
+   "blocked": 1,
+   "note": "split -- Om Mali: A real 10:1 split. Five T. Rowe Price funds show the share count multiplied by exactly ten with the dollar value unchanged to the cent. ARK's common line reads 11.93 because a 10:1 split and a 16 percent markdown fell in the same period. Week 8 divides by 10 and leaves the markdown as a real price move."
+  },
+  {
+   "company": "Space Exploration Technologies Corp.",
+   "class": "COM:CLASS A",
+   "title": "SPACE EXPLORATION TECH CLASS A",
+   "marks": 1,
+   "ratio_min": "2.0000",
+   "ratio_max": "2.0000",
+   "from_period": "2025-09-30",
+   "to_period": "2025-12-31",
+   "price_before": "212.0000",
+   "price_after": "424.0000",
+   "adjudicated": true,
+   "factor": null,
+   "blocked": 0,
+   "note": "not_a_split -- Om Mali: Not a split. Neuberger Berman's share counts are constant at 22,368 and 3,428 while the value doubles exactly, 4,742,016 to 9,484,032 and 7,267,360 to 14,534,720. A 2x repricing from 212 to 424, which continues to 526.59 the next quarter."
+  },
+  {
+   "company": "Space Exploration Technologies Corp.",
+   "class": "PFD:E",
+   "title": "SPACE EXPLORATION TECH SER E P",
+   "marks": 1,
+   "ratio_min": "2.0000",
+   "ratio_max": "2.0000",
+   "from_period": "2025-09-30",
+   "to_period": "2025-12-31",
+   "price_before": "2120.0000",
+   "price_after": "4240.0000",
+   "adjudicated": true,
+   "factor": null,
+   "blocked": 0,
+   "note": "not_a_split -- Om Mali: Not a split. Neuberger Berman's share counts are constant at 22,368 and 3,428 while the value doubles exactly, 4,742,016 to 9,484,032 and 7,267,360 to 14,534,720. A 2x repricing from 212 to 424, which continues to 526.59 the next quarter."
+  },
+  {
+   "company": "Space Exploration Technologies Corp.",
+   "class": "COM:CLASS C",
+   "title": "SPACE EXPLORATION TECH CLASS C",
+   "marks": 1,
+   "ratio_min": "2.0000",
+   "ratio_max": "2.0000",
+   "from_period": "2025-09-30",
+   "to_period": "2025-12-31",
+   "price_before": "212.0000",
+   "price_after": "424.0000",
+   "adjudicated": true,
+   "factor": null,
+   "blocked": 0,
+   "note": "not_a_split -- Om Mali: Not a split. Neuberger Berman's share counts are constant at 22,368 and 3,428 while the value doubles exactly, 4,742,016 to 9,484,032 and 7,267,360 to 14,534,720. A 2x repricing from 212 to 424, which continues to 526.59 the next quarter."
+  }
+ ],
+ "perplexity": [
+  {
+   "period_end": "2025-09-30",
+   "shares": "19395",
+   "value_usd": "9548854.78",
+   "price": "492.3359",
+   "ratio": null,
+   "suspected": false
+  },
+  {
+   "period_end": "2025-12-31",
+   "shares": "19395",
+   "value_usd": "13488132.50",
+   "price": "695.4438",
+   "ratio": "1.4125",
+   "suspected": false
+  },
+  {
+   "period_end": "2026-03-31",
+   "shares": "193950",
+   "value_usd": "13488132.50",
+   "price": "69.5444",
+   "ratio": "10.0000",
+   "suspected": true
+  }
+ ],
+ "anthropic": [
+  {
+   "period_end": "2023-04-28",
+   "shares": "89078",
+   "value_usd": "1049998.46",
+   "price": "11.7874",
+   "ratio": null,
+   "suspected": false
+  },
+  {
+   "period_end": "2023-07-31",
+   "shares": "89078",
+   "value_usd": "1216805.48",
+   "price": "13.6600",
+   "ratio": "1.1589",
+   "suspected": false
+  },
+  {
+   "period_end": "2023-10-31",
+   "shares": "89078",
+   "value_usd": "1084970.04",
+   "price": "12.1800",
+   "ratio": "1.1215",
+   "suspected": false
+  },
+  {
+   "period_end": "2024-01-31",
+   "shares": "89078",
+   "value_usd": "4359477.32",
+   "price": "48.9400",
+   "ratio": "4.0181",
+   "suspected": true
+  },
+  {
+   "period_end": "2024-04-30",
+   "shares": "89078",
+   "value_usd": "2672340.00",
+   "price": "30.0000",
+   "ratio": "1.6313",
+   "suspected": false
+  },
+  {
+   "period_end": "2024-07-31",
+   "shares": "89078",
+   "value_usd": "2672340.00",
+   "price": "30.0000",
+   "ratio": "1.0000",
+   "suspected": false
+  },
+  {
+   "period_end": "2024-10-31",
+   "shares": "89078",
+   "value_usd": "2807738.56",
+   "price": "31.5200",
+   "ratio": "1.0507",
+   "suspected": false
+  },
+  {
+   "period_end": "2025-01-31",
+   "shares": "89078",
+   "value_usd": "4996385.02",
+   "price": "56.0900",
+   "ratio": "1.7795",
+   "suspected": false
+  },
+  {
+   "period_end": "2025-04-30",
+   "shares": "89078",
+   "value_usd": "4996385.02",
+   "price": "56.0900",
+   "ratio": "1.0000",
+   "suspected": false
+  },
+  {
+   "period_end": "2025-07-31",
+   "shares": "89078",
+   "value_usd": "5255602.00",
+   "price": "59.0000",
+   "ratio": "1.0519",
+   "suspected": false
+  },
+  {
+   "period_end": "2025-10-31",
+   "shares": "89078",
+   "value_usd": "12557325.66",
+   "price": "140.9700",
+   "ratio": "2.3893",
+   "suspected": false
+  },
+  {
+   "period_end": "2026-01-30",
+   "shares": "89078",
+   "value_usd": "13790877.80",
+   "price": "154.8180",
+   "ratio": "1.0982",
+   "suspected": false
+  },
+  {
+   "period_end": "2026-04-30",
+   "shares": "89078",
+   "value_usd": "23083672.92",
+   "price": "259.1400",
+   "ratio": "1.6738",
+   "suspected": false
+  }
+ ],
+ "spacex": [
+  {
+   "period_end": "2023-09-30",
+   "shares": "22368",
+   "value_usd": "1811808.00",
+   "price": "81.0000",
+   "ratio": null,
+   "suspected": false
+  },
+  {
+   "period_end": "2023-12-31",
+   "shares": "22368",
+   "value_usd": "2169696.00",
+   "price": "97.0000",
+   "ratio": "1.1975",
+   "suspected": false
+  },
+  {
+   "period_end": "2024-03-31",
+   "shares": "22368",
+   "value_usd": "2169696.00",
+   "price": "97.0000",
+   "ratio": "1.0000",
+   "suspected": false
+  },
+  {
+   "period_end": "2024-06-30",
+   "shares": "22368",
+   "value_usd": "2505216.00",
+   "price": "112.0000",
+   "ratio": "1.1546",
+   "suspected": false
+  },
+  {
+   "period_end": "2024-09-30",
+   "shares": "22368",
+   "value_usd": "2505216.00",
+   "price": "112.0000",
+   "ratio": "1.0000",
+   "suspected": false
+  },
+  {
+   "period_end": "2024-12-31",
+   "shares": "22368",
+   "value_usd": "4138080.00",
+   "price": "185.0000",
+   "ratio": "1.6518",
+   "suspected": false
+  },
+  {
+   "period_end": "2025-03-31",
+   "shares": "22368",
+   "value_usd": "4138080.00",
+   "price": "185.0000",
+   "ratio": "1.0000",
+   "suspected": false
+  },
+  {
+   "period_end": "2025-06-30",
+   "shares": "22368",
+   "value_usd": "4138080.00",
+   "price": "185.0000",
+   "ratio": "1.0000",
+   "suspected": false
+  },
+  {
+   "period_end": "2025-09-30",
+   "shares": "22368",
+   "value_usd": "4742016.00",
+   "price": "212.0000",
+   "ratio": "1.1459",
+   "suspected": false
+  },
+  {
+   "period_end": "2025-12-31",
+   "shares": "22368",
+   "value_usd": "9484032.00",
+   "price": "424.0000",
+   "ratio": "2.0000",
+   "suspected": true
+  },
+  {
+   "period_end": "2026-03-31",
+   "shares": "22368",
+   "value_usd": "11778765.12",
+   "price": "526.5900",
+   "ratio": "1.2420",
+   "suspected": false
+  }
+ ],
+ "checks": [
+  {
+   "check": "Anthropic / Fidelity / 2026-03-31 position",
+   "passed": true,
+   "note": ""
+  },
+  {
+   "check": "four managers agree at 259.14 in the 3/31-4/30 window",
+   "passed": true,
+   "note": ""
+  },
+  {
+   "check": "Anthropic 5/29-5/31 pair at ~589",
+   "passed": null,
+   "note": "Not a failure. The Week 1 hand-verification of 589.0095 stands on the live filings; the bulk archive ends at 2026-04-30 and cannot contain it."
+  },
+  {
+   "check": "Perplexity 695 -> 58 flagged and blocked",
+   "passed": true,
+   "note": ""
+  },
+  {
+   "check": "SpaceX 10x is a unit artifact, not a class differential",
+   "passed": true,
+   "note": ""
+  },
+  {
+   "check": "World Labs Series C vs C Prime is a real differential",
+   "passed": true,
+   "note": ""
+  },
+  {
+   "check": "every holding is accounted for",
+   "passed": true,
+   "note": ""
+  }
+ ],
+ "agreement": {
+  "families": 10,
+  "clusters": [
+   {
+    "price": "259.1364",
+    "families": 8,
+    "managers": "Alger, BlackRock, Capital Group, Coatue, Franklin Templeton, JPMorgan, New York Life, T. Rowe Price"
+   },
+   {
+    "price": "259.1400",
+    "families": 2,
+    "managers": "ARK, Fidelity"
+   }
+  ]
+ }
+}

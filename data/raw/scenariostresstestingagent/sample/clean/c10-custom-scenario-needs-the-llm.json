@@ -1,0 +1,18 @@
+{
+  "body": {
+    "portfolio": {
+      "holdings": [
+        {
+          "ticker": "NVDA",
+          "weight": 0.5
+        },
+        {
+          "ticker": "INTC",
+          "weight": 0.5
+        }
+      ]
+    },
+    "custom_scenario": "An invented export ban on AI accelerators",
+    "horizon_days": 30
+  }
+}

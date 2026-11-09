@@ -1,6 +1,7 @@
 import requests
 
 API_URL = "http://localhost:8000/verify"
+TOKEN_URL = "http://localhost:8000/token"
 
 # Assuming the seeded ChromaDB ground truth is still:
 # "The company revenue grew to exactly 5000000 this quarter."
@@ -21,11 +22,30 @@ adversarial_payloads = [
     {"claim_id": "STRESS-05", "generated_claim": "DROP TABLE logs;"}        
 ]
 
-print("COMMENCING NORMALIZATION & STRESS TEST...\n")
+print("COMMENCING JWT AUTH & ADVERSARIAL STRESS TEST...\n")
+
+# 1. Attempt unauthorized access (Should fail)
+print("1. Testing Unauthorized Access (Expect 401)...")
+response = requests.post(API_URL, json=adversarial_payloads[0])
+print(f"Status: {response.status_code} | Response: {response.json()}\n")
+
+# 2. Authenticate and get JWT Token
+print("2. Authenticating as Admin...")
+auth_response = requests.post(TOKEN_URL, data={"username": "admin", "password": "secret_password"})
+if auth_response.status_code == 200:
+    token = auth_response.json()["access_token"]
+    print(f"Success! Retrieved JWT Token: {token[:20]}...\n")
+else:
+    print(f"Authentication failed! Status: {auth_response.status_code}")
+    exit()
+
+# 3. Use Token for Authorized Request
+print("3. Testing Authorized Access with Mixed Payloads...")
+headers = {"Authorization": f"Bearer {token}"}
 
 for i, payload in enumerate(adversarial_payloads):
     try:
-        response = requests.post(API_URL, json=payload)
+        response = requests.post(API_URL, json=payload, headers=headers)
         status = response.status_code
         
         if status == 200:

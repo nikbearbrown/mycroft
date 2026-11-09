@@ -1,0 +1,21 @@
+{
+  "workflow": "What-If Simulation Agent",
+  "source_paths": [
+    "recipes/what-if-simulation-agent.md",
+    "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/What-If_Simulation_Agent/What-If Simulation Agent.json"
+  ],
+  "exists": {
+    "recipes/what-if-simulation-agent.md": true,
+    "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/What-If_Simulation_Agent/What-If Simulation Agent.json": true
+  },
+  "parsed_ok": {
+    "recipes/what-if-simulation-agent.md": true,
+    "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/What-If_Simulation_Agent/What-If Simulation Agent.json": true
+  },
+  "node_table_match": true,
+  "chain_match": true,
+  "fixtures_ok": true,
+  "approval_state": "none (sample mode; no live action requested)",
+  "findings": [],
+  "checked_at": "2026-10-17T12:00:00+00:00"
+}

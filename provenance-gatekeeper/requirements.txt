@@ -1,5 +1,10 @@
-fastapi==0.103.1
-uvicorn==0.23.2
-pydantic==2.3.0
-chromadb==0.4.13
-sentence-transformers==2.5.1
+fastapi
+uvicorn
+pydantic
+chromadb
+sentence-transformers
+pytest>=8.0.0
+
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart

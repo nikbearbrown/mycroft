@@ -1,4 +1,5 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
+from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
 import chromadb
 from sentence_transformers import SentenceTransformer
@@ -6,6 +7,10 @@ import sqlite3
 import requests
 import os
 import re
+from datetime import timedelta
+
+# Auth imports
+from .auth import Token, User, create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES, FAKE_USERS_DB, verify_password
 from . import dashboard
 
 app = FastAPI(title="Provenance Gatekeeper")
@@ -115,18 +120,41 @@ def log_evaluation(claim_id: str, generated_claim: str, verdict: str, variance_t
     conn.close()
 
 def trigger_alert(claim_id: str, variance_type: str, explanation: str):
-    webhook_url = os.getenv("ALERT_WEBHOOK_URL", "https://mock-webhook-url.com/alert")
+    webhook_url = os.getenv("ALERT_WEBHOOK_URL", "http://n8n:5678/webhook/hallucination-alert")
+    
+    # Send the exact JSON keys that n8n is waiting for
     payload = {
-        "text": f"🚨 **Gatekeeper Alert: Hallucination Intercepted!**\n*Claim ID:* {claim_id}\n*Type:* {variance_type}\n*Details:* {explanation}"
+        "claim_id": claim_id,
+        "variance_type": variance_type,
+        "explanation": explanation
     }
+    
     try:
-        print(f"ALERT SENT to {webhook_url}: {payload}")
+        # Actually fire the HTTP POST request to the n8n container
+        requests.post(webhook_url, json=payload, timeout=5)
+        print(f"REAL ALERT SENT to {webhook_url}: {payload}")
     except Exception as e:
         print(f"Failed to trigger external alert: {e}")
 
-# --- THE N8N WEBHOOK ---
+# --- WEEK 8: AUTHENTICATION ENDPOINT ---
+@app.post("/token", response_model=Token)
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+    user_dict = FAKE_USERS_DB.get(form_data.username)
+    if not user_dict or not verify_password(form_data.password, user_dict["hashed_password"]):
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user_dict["username"]}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+# --- THE N8N WEBHOOK (PROTECTED) ---
 @app.post("/verify", response_model=VerificationVerdict)
-def verify_claim(request: ClaimRequest):
+def verify_claim(request: ClaimRequest, current_user: User = Depends(get_current_user)):
     try:
         claim_embedding = model.encode(request.generated_claim).tolist()
         results = collection.query(query_embeddings=[claim_embedding], n_results=1)
