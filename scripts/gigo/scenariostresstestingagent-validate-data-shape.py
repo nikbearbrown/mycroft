@@ -5,7 +5,7 @@
          stricter than the node about weights (finite, non-negative numbers with a positive total), about holdings (a
          non-empty array of objects) and about the scenario (a known template name, or a non-empty custom_scenario string).
 Input: a folder of request files (default data/raw/scenariostresstestingagent/sample/clean/) and the sample manifest
-       beside it (sample mode: step 2, the ingest step, is still open, so this reads the fixture set directly).
+       beside it (sample mode: this reads the fixture set directly; step 2, the ingest step, ingests the same fixtures).
 Output: <out>/validated.json (record_count, required_fields_present, missing_fields, parse_errors, schema_version,
         plus accepted and rejected records) and <out>/validate-audit.md, a report for human judgment. Default <out>:
         data/verified/scenariostresstestingagent/<clean|defective>/ named after the input folder.

@@ -37,3 +37,7 @@ Run from the repository root, in this order:
 - Parse_LLM_Response is not ported: it only runs after the Groq call. A request with a `custom_scenario` stops at that handoff.
 - Live mode: no approval record exists; the Alpha Vantage request, the Groq call and the webhook reply are recorded as handoffs and never made.
 - The finance in the engine is ported faithfully, not judged. Every portfolio in the corpus is invented.
+
+## Later steps
+
+This page describes steps 1, 3 and 5 as they were on 2026-10-25, so its "not covered" list above has since moved on. Steps 4 and 6 are in `README-steps-4-and-6.md` (2026-11-01, with a correction on 2026-11-02) and step 2, the last open `[TODO: DEV]`, in `README-step-2.md` (2026-11-09), with a transcript of all six steps run through the CLI in `full-sample-run-2026-11-09.md`.

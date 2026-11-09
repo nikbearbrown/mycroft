@@ -126,12 +126,18 @@
       "passed": true
     },
     {
-      "check": "6 gates: 4 reads 5 of 6 scripts with step 2 open; 6 passes",
-      "expected": "5 of 6; step(s) 2; gate 6 PASS",
+      "check": "6 gates: 4 reads the recipe's own state (how many step scripts exist, which steps still carry a [TODO: DEV]); 6 passes",
+      "expected": "6 of 6 step scripts exist; step(s) none; gate 6 PASS",
       "observed": [
         true,
         true
       ],
+      "passed": true
+    },
+    {
+      "check": "6 the recommendation names an open step only when the recipe has one",
+      "expected": "'still open' present iff a step is open (open steps: none)",
+      "observed": "'still open' present: False",
       "passed": true
     },
     {
