@@ -874,3 +874,28 @@
 - **Fixed while building:** the first version of the planted-key check kept the credential-shaped text literally in the self-test's source, so the scan flagged the self-test file itself in a clean tree. The new "does not flag its own scripts" check caught it; the string is now assembled at run time, and a scan of the 41 files of this recipe finds nothing.
 - **Unchanged:** the eight generated per-node scripts, every file added on 2026-10-25, and step 4's outputs.
 - **Open issues:** as on 2026-11-01: step 2 (ingest) and the respond-to-webhook script mapping are still `[TODO: DEV]`, the report-script mapping line is left as its original wording (`todos_open` is 3), live mode has no approval record, and no human has yet cleared this sample run for the next phase.
+
+## 2026-11-09 -- scenariostresstestingagent: the last [TODO: DEV] closure (step 2, ingest declared inputs), sample mode; all six steps now run through the CLI
+
+- **What reading the repo's own tools showed:** `node scripts/snickerdoodle.mjs list` reported this recipe at 5/6 steps built, and `snickerdoodle run scenariostresstestingagent --sample` stopped at step 2 because the runner will not run an unbuilt step. Step 2 was the only open todo (`todos_open: 1`, after upstream's refresh).
+- **Added:**
+  - `scripts/ingest/scenariostresstestingagent-ingest-inputs.py`: the conductor's Source and Credential Check, sample mode. Reads the 22 frozen fixtures (SHA-256 against the manifest) and keeps each body unchanged; lists the workflow's sources (webhook available, chat skipped, Alpha Vantage and Groq approval-required); asks the environment only whether `ALPHA_VANTAGE_API_KEY` and `GROQ_API_KEY` are set; stops before transformation on any reject or a non-sample envelope. No network, no credential value read.
+  - `scripts/tools/scenariostresstestingagent-ingest-self-test.py`: 37 checks, including the deliberate breaks, an import scan, and a dummy credential that must reach no output.
+  - `data/raw/scenariostresstestingagent/ingest/` (`clean/ingested.json`, `defective/ingested.json`, `source-check.json`, `ingest-audit.md`), `logs/scenariostresstestingagent/ingest-self-test-results.{json,md}`, `README-step-2.md`, `full-sample-run-2026-11-09.md` (the CLI transcript, run on a scratch copy of the tree).
+  - `reports/generated/scenariostresstestingagent-2026-11-09.md` and `-defective.md`, and `logs/scenariostresstestingagent-2026-11-09.json` and `-defective.json`: step 6's report and agent log now that six steps are built (`steps_completed` 1 to 6), clock pinned.
+- **Changed (our own files, and the recipe):**
+  - `recipes/scenariostresstestingagent.md`: step 2 gets its closure note and status line in the format of the other five (original TODO wording kept); the Flags cell for step 2 lists what the script implements; step 3's status line no longer says step 2 is open; `todos_open` 1 to 0; `recipe_version` 0.3.2 to 0.4.0. `status` stays `DRAFT`.
+  - `scripts/tools/scenariostresstestingagent-produce-human-report.py`: the sentence "step 2 (ingest) is still open" in the decision recommendation was fixed text; it is now built from the recipe's open steps, so it is true whenever the report is made.
+  - `scripts/tools/scenariostresstestingagent-report-self-test.py`: its gate-4 check expected "5 of 6, step 2" and now reads the recipe's own state; one new check that the recommendation names an open step only when the recipe has one (31 checks, was 30). `report-self-test-results.{json,md}` regenerated.
+  - `scripts/gigo/scenariostresstestingagent-validate-data-shape.py`: one sentence in the docstring (it said step 2 was open); no behaviour change.
+  - `logs/scenariostresstestingagent/README.md`: a short pointer to the later READMEs appended.
+- **Commands:**
+  - step 2: exit 0; 12 clean and 10 defective read, 0 rejected; handoff condition met; `--no-write` writes nothing
+  - `python3 scripts/tools/scenariostresstestingagent-ingest-self-test.py`: exit 0, 37/37 checks as expected
+  - still passing: `scenariostresstestingagent-self-test.py` 27/27, the parity check 24/24, the report self-test 31/31
+  - `node scripts/snickerdoodle.mjs list`: 6/6 steps built; `check scenariostresstestingagent`: no contract defects
+  - `node scripts/snickerdoodle.mjs run scenariostresstestingagent --sample` on a scratch copy: exit 0, `All 6 steps completed.`
+  - `node scripts/conformance.mjs` (969 files) and `node scripts/manifest-check.mjs`: passed
+- **Found while building:** the first run of the new self-test came out 36/37: the recipe's Flags cell for step 2 listed only `--sample`, which is what the CLI's own check compares against. Running step 6 after the closure showed the fixed sentence about step 2 still being open, which is why that sentence now reads the recipe.
+- **Unchanged:** the eight generated per-node scripts, `scripts/ingest/scenariostresstestingagent-fetch-data.py`, the behaviour and outputs of steps 1, 3, 4 and 5, and every file added on 2026-10-25 and 2026-11-01.
+- **Open issues:** the closure takes the recipe to zero open todos by the repo's counting, but `status` is left `DRAFT` because two preserved script-mapping lines in "Existing Recipe Notes" still read `[TODO: DEV]`; a maintainer can promote it if that reading is right. Steps 3 to 6 still read the fixture folder directly rather than step 2's output. Live mode has no approval record, the chat entry point is not exercised, and no human has cleared any gate for this sample run.

@@ -198,6 +198,7 @@ def build(folder: str, now: datetime) -> tuple[str, dict, Path, Path]:
     steps = recipe["steps"]
     open_steps = [s for s in steps if s["open"]]
     closed_steps = [s["n"] for s in steps if not s["open"]]
+    open_clause = (", ".join(f"step {s['n']} ({s['name'].lower()})" for s in open_steps) + (" is" if len(open_steps) == 1 else " are") + " still open, ") if open_steps else ""   # read from the recipe, so it is true whenever the report is made
     todos = [f"Step {s['n']} ({s['name']}): `[TODO: DEV]` {s['script']}" for s in open_steps] + [f"Script mapping: `{m}`" for m in recipe["mapping_todos"]]
     rejected = validated["rejected"]
     n_in = len(acc_ids) + len(rejected)
@@ -266,7 +267,7 @@ def build(folder: str, now: datetime) -> tuple[str, dict, Path, Path]:
             else "This folder holds requests the gate rejects on purpose; nothing ran, so there is nothing to approve." if folder != "clean"
             else f"{n_trig} stop condition(s) triggered; see the agent log's stop_conditions for the evidence." if n_trig else "A request was rejected, failed a check or duplicated another; see the sections above."),
            f"- **Request source or schema fixes: {'YES' if fix else 'NO'}.** " + (f"{len(rejected)} reject(s), {len(failed_ids)} failed check(s), {len(quality['duplicates'])} duplicate group(s) are listed above." if fix else "None needed for the sample corpus."),
-           f"- **Block live execution: YES.** No approval record exists; step 2 (ingest) is still open, the Alpha Vantage request, the Groq call and the webhook reply are only recorded handoffs, and the custom-scenario route stops at the handoff."]
+           f"- **Block live execution: YES.** No approval record exists; {open_clause}the Alpha Vantage request, the Groq call and the webhook reply are only recorded handoffs, and the custom-scenario route stops at the handoff."]
     sec["Decision recommendation"] = dec
     for name in SECTIONS:
         R += [f"## {name}", ""] + sec[name] + [""]

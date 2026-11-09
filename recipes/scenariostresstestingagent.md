@@ -1,9 +1,9 @@
 ---
 status: DRAFT
-todos_open: 1
+todos_open: 0
 last_gate: null
 attestation: null
-recipe_version: 0.3.2
+recipe_version: 0.4.0
 ---
 
 # ScenarioStressTestingAgent
@@ -68,14 +68,16 @@ ScenarioStressTestingAgent defines a Mycroft pipeline for collecting, transformi
    Output: workflow, source_paths, exists, parsed_ok, approval_state, checked_at.
    Where output goes: `logs/`
 2. Step name: Ingest declared inputs. Labor: AI with Human gate.
-   Script called: `scripts/ingest/scenariostresstestingagent-ingest-inputs.py` [TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.
+   Script called: `scripts/ingest/scenariostresstestingagent-ingest-inputs.py`
+   Closed 2026-11-09 (the script above is built and exercised). Original note, kept for the record: `[TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.`
+   Status: Built and exercised (sample mode only; this is the conductor's "Source and Credential Check"). Input: the run envelope, the workflow JSON this recipe declares, the sample fixtures with their frozen manifest, the environment (only to see whether a credential name is set, never its value) and the approval record, if any. Output: under `data/raw/scenariostresstestingagent/ingest/`: `clean/ingested.json` and `defective/ingested.json` (the fields below plus record_count), `source-check.json` (each source the workflow names, as available, skipped with a reason, or approval-required: the webhook is available through the 22 fixtures, the chat trigger is skipped because the corpus has no chat fixture, the Alpha Vantage request and the Groq call are approval-required) and `ingest-audit.md`. Errors: exit 1, stopping before transformation, if the run envelope is missing or is not sample mode with no live calls, network or database writes; if the workflow or the manifest is missing; or if a fixture is missing, unlisted, changed since it was frozen, or not valid JSON; the files are still written so the reason is kept. It does not judge a request's shape (step 3 does), so the defective folder ingests too. Left out on purpose: the live Alpha Vantage fetch and the Groq call, named as handoffs and never made. Evidence: `scripts/tools/scenariostresstestingagent-ingest-self-test.py`, results in `logs/scenariostresstestingagent/ingest-self-test-results.md`.
    Input: declared recipe inputs, prior step outputs, and gate decisions for `scenariostresstestingagent`.
    Output: records, source_name, source_type, fetched_at, sample_mode, rejects.
    Where output goes: `data/raw/scenariostresstestingagent/`
 3. Step name: Validate data shape. Labor: AI with Human gate.
    Script called: `scripts/gigo/scenariostresstestingagent-validate-data-shape.py`
    Closed 2026-10-25 (the script above is built and exercised). Original note, kept for the record: `[TODO: DEV] Define input schema, output schema, transformation logic, and error handling for this script before implementation.`
-   Status: Built and exercised (sample mode: reads a fixture folder from `data/raw/scenariostresstestingagent/sample/` directly, since step 2 is still open). Contract, taken from the workflow's Validate Portfolio node: holdings must exist (the node's own message: Portfolio must have holdings array), every holding needs a ticker (Each holding must have a ticker), weights default to 0 and are rescaled to 1.0 when the total is more than 0.01 from it (the node's own rules, shared with the step-5 port so the two cannot drift apart); one stated addition at this gate, marked in every reason that comes from it: holdings a non-empty array of objects; every weight present, finite and not negative with a positive total; scenario_type one of the five templates (or absent, when the workflow's default applies); custom_scenario a string. Output: the fields below plus the accepted and the rejected requests in `data/verified/scenariostresstestingagent/<clean|defective>/validated.json`, with a `validate-audit.md` beside it. Errors: any rejected request makes the run exit 1 (the files are still written); a fixture changed since the manifest froze it stops the run before anything is read (exit 2). Evidence: self-test (clean set 12/12 accepted; defective set 10/10 rejected, each for its own reason).
+   Status: Built and exercised (sample mode: reads a fixture folder from `data/raw/scenariostresstestingagent/sample/` directly; step 2 ingests the same fixtures, and its self-test checks that the ingested records are those bytes). Contract, taken from the workflow's Validate Portfolio node: holdings must exist (the node's own message: Portfolio must have holdings array), every holding needs a ticker (Each holding must have a ticker), weights default to 0 and are rescaled to 1.0 when the total is more than 0.01 from it (the node's own rules, shared with the step-5 port so the two cannot drift apart); one stated addition at this gate, marked in every reason that comes from it: holdings a non-empty array of objects; every weight present, finite and not negative with a positive total; scenario_type one of the five templates (or absent, when the workflow's default applies); custom_scenario a string. Output: the fields below plus the accepted and the rejected requests in `data/verified/scenariostresstestingagent/<clean|defective>/validated.json`, with a `validate-audit.md` beside it. Errors: any rejected request makes the run exit 1 (the files are still written); a fixture changed since the manifest froze it stops the run before anything is read (exit 2). Evidence: self-test (clean set 12/12 accepted; defective set 10/10 rejected, each for its own reason).
    Input: declared recipe inputs, prior step outputs, and gate decisions for `scenariostresstestingagent`.
    Output: record_count, required_fields_present, missing_fields, parse_errors, schema_version.
    Where output goes: `data/verified/scenariostresstestingagent/`
@@ -134,7 +136,7 @@ Sample mode (no live network calls, no writes):
 | Step | CLI Command | Flags |
 |---|---|---|
 | Verify provenance | `snickerdoodle run scenariostresstestingagent --step verify-provenance` | `--no-write` `--now` `--repo` `--sample-dir` `--workflow` |
-| Ingest declared inputs | `snickerdoodle run scenariostresstestingagent --step ingest-inputs` | `--sample` |
+| Ingest declared inputs | `snickerdoodle run scenariostresstestingagent --step ingest-inputs` | `--no-write` `--now` `--repo` `--sample` `--sample-dir` `--workflow` |
 | Validate data shape | `snickerdoodle run scenariostresstestingagent --step validate-data-shape` | `--out` `--sample-dir` |
 | Transform and quality check | `snickerdoodle run scenariostresstestingagent --step transform-quality-check` | `--verified-dir` |
 | Run approved tools | `snickerdoodle run scenariostresstestingagent --step run-approved-tools` | `--no-write` `--now` `--sample-dir` |
