@@ -1,30 +1,30 @@
 {
-  "frozen_on": "2026-09-17",
-  "policy_version": "0.1.0",
+  "frozen_on": "2026-11-09",
+  "policy_version": "0.3.0",
   "fixture_count": 24,
   "files": {
     "contradiction_detection.jsonl": {
-      "sha256": "a539aa118a5ec76a7a5e03e70218130d87dd0c1e03cef2c0cd2b2fdfe4ed5927",
+      "sha256": "d1de254b906ef2bf20816509f05f8af4fba3a243b102a83d87a3adeeb069948f",
       "count": 4
     },
     "rag_answer.jsonl": {
-      "sha256": "4b7fc3d18ef9e94cc030817eedfd369d9f72d922cc7db2f3186e12d6500d0528",
+      "sha256": "d2d45ea08a7db621ae7138822d975ff3c64c73e221785b9f7e79a17d9dd8a310",
       "count": 4
     },
     "sentiment_classification.jsonl": {
-      "sha256": "aa7c681e97ba9ec34c11736fa7fb52670e641663295d91bb36722ea2ccefbfe3",
+      "sha256": "c9735fee612b4fcf30e84684c7138460a17c9b57c925e1fd855d8056bb421a6f",
       "count": 4
     },
     "structured_extraction.jsonl": {
-      "sha256": "0a378b586cf710396c767d3f87fdcd4c0eb577dec979e73195d23ec51316c19e",
+      "sha256": "6ecebff9d808ff29b3323778e3167696b10aea505b4729ba4331454fe0f27032",
       "count": 4
     },
     "summarization.jsonl": {
-      "sha256": "457e5db40b47944f5f96d3d12c06ca811bd35464fee6b82674eee9a595559025",
+      "sha256": "c65fdbe76f804b7aa7664ac930856bc95ceb253d2f792c5ddd8686ec0104e049",
       "count": 4
     },
     "topic_classification.jsonl": {
-      "sha256": "c207af5b0bbaa5e01486daae1cea91a52e5e8d4007b50be296ccedcefeff4bb7",
+      "sha256": "3da674c50897dc401d2a7cdfa6e54ee2d3ede3968ea0c7e84c3e83b6cd0caa34",
       "count": 4
     }
   }

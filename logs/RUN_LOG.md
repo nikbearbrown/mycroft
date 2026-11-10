@@ -899,3 +899,135 @@
 - **Found while building:** the first run of the new self-test came out 36/37: the recipe's Flags cell for step 2 listed only `--sample`, which is what the CLI's own check compares against. Running step 6 after the closure showed the fixed sentence about step 2 still being open, which is why that sentence now reads the recipe.
 - **Unchanged:** the eight generated per-node scripts, `scripts/ingest/scenariostresstestingagent-fetch-data.py`, the behaviour and outputs of steps 1, 3, 4 and 5, and every file added on 2026-10-25 and 2026-11-01.
 - **Open issues:** the closure takes the recipe to zero open todos by the repo's counting, but `status` is left `DRAFT` because two preserved script-mapping lines in "Existing Recipe Notes" still read `[TODO: DEV]`; a maintainer can promote it if that reading is right. Steps 3 to 6 still read the fixture folder directly rather than step 2's output. Live mode has no approval record, the chat entry point is not exercised, and no human has cleared any gate for this sample run.
+
+## 2026-10-01 -- Gateway Sprint 6: the scorer check
+
+- **Recipe:** Adaptive Model Routing & Inference Gateway (Sprint 6 of 9).
+- **Gate:** Blind human scoring of the judge's own pairs, by a named human,
+  before any agreement figure was computed.
+- **Cleared by:** Simba · 2026-10-01
+- **Inputs:** 24 fixtures re-frozen 2026-10-01 (answer key corrected); policy
+  0.2.0; tiers 0.4.0; prices 2026-09-17; GROQ_API_KEY.
+- **Commands:** `label.py --template answers.json --ids ...`;
+  `label.py --by "Simba" --from answers.json`; `audit.py --freeze`;
+  `judge_run.py --samples 4` (32 comparisons, 128 calls, $0.01911);
+  `score.py --by "Simba"` (32 scored); `agreement.py`;
+  `python -m pytest scripts/gateway/tests -q` (168 passed).
+- **Outputs:** `bench/score.py`, `bench/agreement.py`; `--samples` on
+  `bench/judge_run.py`; BOM-tolerant sheet reading and an unchanged-sheet
+  refusal in `bench/label.py`; `bench/scores/2026-10-01T061158-simba.json`;
+  `bench/results/2026-10-01T061158-judge.json` and `-agreement.json`;
+  `logs/gateway/runs/2026-10-01T061158-judge.jsonl`.
+- **Result:** **Cohen's kappa 0.00.** The judge returned `tie` on all 28
+  comparable pairs and no verdict on 4; the human picked a winner on 27 of 32
+  (cheap 11, mid 16, tie 5). Raw agreement 18%, exactly chance. Per task type:
+  rag_answer 27% raw / kappa 0.00; summarization 8% raw / kappa 0.00. Human
+  order bias: 13 first-shown vs 14 second-shown, none detectable.
+- **Answer key corrected first:** `sent-001` and `sent-004` changed from
+  `negative` to `positive`, and acceptable values were written for all four
+  extraction fixtures. Flagged in Sprint 3 review, confirmed in Sprint 5, fixed
+  here before anything was measured against them.
+- **Findings:** `scripts/gateway/FINDINGS.md` section 10. Section 9's
+  conclusion about cheap and mid being indistinguishable is withdrawn.
+- **Not verified:** whether a forced-choice judge (no TIE option) does better.
+  That is the next experiment and has not been run.
+- **Open issues:**
+  - `bench/score.py` and `bench/agreement.py` have no unit tests yet; the kappa
+    calculation in particular carries weight and needs them.
+  - The human's notes suggest a possible preference for longer answers; mid
+    writes longer answers. Confound to watch in Sprint 7.
+  - Coverage is 8 open-ended fixtures against a target of 30 per task type.
+  - `main` is behind `origin/main`.
+  - GROQ_API_KEY still needs rotating; it has now been exposed four times.
+
+## 2026-10-15 -- Gateway Sprint 8: the decision
+
+- **Recipe:** Adaptive Model Routing & Inference Gateway (Sprint 8 of 9).
+- **Gate:** Ship / do-not-ship, against thresholds fixed in August and not
+  revisited since.
+- **Cleared by:** Simba · 2026-10-15
+- **Inputs:** `bench/results/2026-10-08T161625-baseline.jsonl` (216 rows);
+  policy 0.2.0; tiers 0.4.0. No live calls.
+- **Commands:** `python scripts/gateway/bench/decide.py`.
+- **Outputs:** `bench/decide.py`; `bench/results/2026-10-15-decision.json`.
+- **Result:** Six policies replayed against the baseline, fitted on repeats 1-2
+  and evaluated on the held-out repeat 3. Only **always cheap** clears the
+  thresholds: $0.000067 against the incumbent's $0.000098 (31% cheaper), p50
+  438 ms against 633 ms (31% faster), correctness unchanged at 19/20. The
+  task-type table and the break-even rule both reached 14% cheaper -- short of
+  the 20% bar -- because both pay for mid on contradiction detection and
+  extraction, where mid's fitted advantage did not reproduce on the holdout.
+  The break-even rule reserved since Sprint 3 made choices identical to the
+  hand-written table.
+- **Findings:** `scripts/gateway/FINDINGS.md` section 12.
+- **Not verified:** the holdout separates quality poorly -- every policy but
+  always-strong scores 19/20, and the single error is `extract-004`, whose
+  answer key is disputed. No escalation fired in the held-out repeat, so the
+  retry rule is untested by this comparison.
+- **Open issues:**
+  - `contra-003` and `extract-004` still need a second reader's ruling.
+  - The strong tier should be dropped from the default ladder: dearer than mid
+    and less accurate on the two task types that fail.
+  - Sprint 5 and Sprint 7 RUN_LOG entries are still to be backfilled.
+  - GROQ_API_KEY still needs rotating.
+## 2026-11-09 -- Gateway Sprint 9: packaging the decision
+
+- **Recipe:** Adaptive Model Routing & Inference Gateway (Sprint 9 of 9).
+- **Gate:** Shipping the Sprint 8 decision into the configuration that runs,
+  with an attestation recorded.
+- **Cleared by:** Simba · 2026-11-09
+- **Inputs:** the Sprint 8 decision (`bench/results/2026-10-15-decision.json`);
+  policy 0.2.0 as shipped. No live calls.
+- **Commands:** `python -m pytest scripts/gateway/tests -q` (212 passed);
+  `python scripts/gateway/bench/audit.py --freeze`.
+- **Outputs:** `policy.json` 0.3.0; `policy.py` (`quality_check: "none"` now
+  legal); `README.md` for the gateway; `ATTESTATION.md`;
+  `tests/test_reliability.py` (13 tests); updated `tests/test_router.py`;
+  re-cut `bench/manifest.json`; `.gitattributes` entry pinning fixture line
+  endings.
+- **Result:** Every task type now starts on cheap and escalates to mid. Strong
+  is no longer a default escalation target. Summarization and rag_answer carry
+  `quality_check: "none"`, recording that they have no quality measure rather
+  than implying one.
+- **Manifest re-freeze, justified:** merging origin/main normalised line
+  endings in `sentiment_classification.jsonl` and `structured_extraction.jsonl`,
+  so their hashes stopped matching. The parsed content of both was verified
+  identical to commit `2df2f37` before the manifest was re-cut, so no label
+  changed. `.gitattributes` now pins those files to LF.
+- **Findings:** `scripts/gateway/FINDINGS.md` section 13. Attestation:
+  `scripts/gateway/ATTESTATION.md`.
+- **Not verified:** no real Mycroft traffic has passed through the gateway; two
+  of six task types have no quality measure; `contra-003` and `extract-004`
+  still need a second reader; the provider's usage console has never been
+  reconciled against the logged costs.
+
+## 2026-11-09 -- Gateway Sprint 10: the traffic inventory
+
+- **Recipe:** Adaptive Model Routing & Inference Gateway (Sprint 10; the first
+  of six taking the gateway from synthetic fixtures to real requests).
+- **Gate:** None cleared. This sprint reports what exists.
+- **By:** Simba · 2026-11-09
+- **Inputs:** every run artifact under `logs/`, read-only. No live calls.
+- **Commands:** `python scripts/gateway/bench/corpus.py --check`;
+  `python -m pytest scripts/gateway/tests -q` (222 passed).
+- **Outputs:** `bench/corpus.py` and `tests/test_corpus.py` (10 tests);
+  `bench/corpus/2026-11-09-corpus.jsonl` (509 records, no prompt text).
+- **Result:** 509 model requests exist in this repository. 493 are the
+  gateway's own, costing $0.06300 in total. 16 are prepared requests from
+  `contradiction-detection-agent` that were never sent. **Every run artifact in
+  the repository records `live_call_performed: false`** -- every recipe is
+  gated at Gate 5 and runs in sample mode. There is no live traffic to measure.
+- **The sixteen real requests cannot be served as written:** all name
+  `llama-3.3-70b-versatile`, which the price table has no rate for, and 11 ask
+  for 2,000 output tokens against tier budgets of 512/512/896. Prompt sizes
+  1,302-1,642 chars, so routing would send all of them to cheap; pricing and
+  budgets stop them first.
+- **Findings:** `scripts/gateway/FINDINGS.md` section 14.
+- **Plan changed:** the capture recorder planned for Sprint 11 is cancelled --
+  there is nothing to capture. Sprint 11 instead replays the sixteen prepared
+  requests offline to report what the gateway would do with each.
+- **Not verified:** whether `data/raw/Private_AI_Valuation_Agent` makes live
+  calls. It has real LLM code, is not a Mycroft recipe, and is not mine to
+  instrument.
+- **Open issues:** the Sprint 5 and 7 RUN_LOG backfill, the two disputed
+  fixtures, and the GROQ_API_KEY rotation.

@@ -1,8 +1,11 @@
 {
-  "version": "0.2.0",
+  "version": "0.3.0",
   "locked_on": "2026-09-10",
+  "revised_on": "2026-11-09",
   "_note": "The locked task-type vocabulary and the routing rule for each type, in one file so the router, the fixtures, and the validators cannot disagree about what task types exist. Changing this after the Sprint 7 baseline makes later results incomparable: any change is a version bump plus a RUN_LOG entry.",
   "_define_note": "Budgets and promote_above_chars are human [DEFINE] choices, not measurements. Provisional: revisit against Sprint 7 truncation and escalation rates.",
+  "_decision_note": "0.3.0 (2026-11-09) sets every task type to start on cheap, following the Sprint 8 decision (FINDINGS section 12). Replaying six policies against the Sprint 7 baseline, fitted on two repeats and evaluated on a held-out third, 'always cheap' was the only candidate to clear the thresholds fixed in August: 31% cheaper and 31% faster than policy 0.2.0 at unchanged correctness (19/20). The task-type table and the break-even rule both reached only 14% cheaper, because both pay for mid on contradiction detection and extraction, where mid's fitted accuracy advantage did not reproduce on the holdout. Escalation now targets mid everywhere; strong is no longer a default escalation target, since it is dearer than mid and less accurate than mid on the two task types that actually fail. Strong remains in tier_order and keeps its budget, because the context-window walk-up still uses it for an input that fits nothing smaller.",
+  "_reachability_note": "A consequence of starting every type on cheap: length promotion moves a request one tier, so it can now reach mid but not strong. Strong is reached only when an input does not fit mid's context window. That is intended, not an oversight.",
 
   "tier_order": ["cheap", "mid", "strong"],
 
@@ -52,9 +55,10 @@
       "output": "json",
       "validator": "required_keys",
       "quality_check": "deterministic",
-      "start_tier": "mid",
-      "escalate_to": "strong",
+      "start_tier": "cheap",
+      "escalate_to": "mid",
       "promote_above_chars": 8000,
+      "_tier_note": "Started on mid until 0.3.0. Mid graded 92% against cheap's 75% on the Sprint 7 fit split, but the gap did not reproduce on the held-out repeat, where the only error -- extract-004 -- was wrong on all three tiers.",
       "evidence": [
         "scripts/tools/my-workflow-7-groq-extract-guidance-signals.py",
         "scripts/tools/my-workflow-7-groq-extract-risk-admissions.py",
@@ -70,9 +74,10 @@
       "labels_source": "defined here -- recipe names the step but not its verdict vocabulary",
       "validator": "verdict_with_quote",
       "quality_check": "deterministic",
-      "start_tier": "mid",
-      "escalate_to": "strong",
+      "start_tier": "cheap",
+      "escalate_to": "mid",
       "promote_above_chars": 4000,
+      "_tier_note": "Started on mid until 0.3.0. Mid graded 100% against cheap's 83% on the fit split; on the holdout both were correct on every fixture except contra-003, which only strong got wrong, and whose answer key is disputed.",
       "evidence": [
         "scripts/tools/contradiction-detection-agent-groq-analyse-contradictions.py",
         "recipes/contradiction-detection-agent.md"
@@ -83,10 +88,11 @@
       "description": "Summarize an earnings call or portfolio into short prose, using only figures present in the input.",
       "output": "prose",
       "validator": "numbers_grounded",
-      "quality_check": "offline_judge",
-      "start_tier": "mid",
-      "escalate_to": "strong",
+      "quality_check": "none",
+      "start_tier": "cheap",
+      "escalate_to": "mid",
       "promote_above_chars": 12000,
+      "_quality_note": "quality_check was offline_judge until 0.3.0. The judge built for it scored Cohen's kappa 0.00 against blind human scoring (FINDINGS section 10) and was retired, so this task type has no quality measure at all and is routed on cost alone.",
       "evidence": [
         "scripts/tools/my-workflow-7-groq-generate-call-summary.py",
         "scripts/tools/portfolio-intelligence-agent-complete-with-rag-generate-ai-summary-groq.py"
@@ -97,10 +103,11 @@
       "description": "Answer a finance-literacy question from supplied context passages, citing the passage used.",
       "output": "prose",
       "validator": "cites_context",
-      "quality_check": "offline_judge",
-      "start_tier": "mid",
-      "escalate_to": "strong",
+      "quality_check": "none",
+      "start_tier": "cheap",
+      "escalate_to": "mid",
       "promote_above_chars": 6000,
+      "_quality_note": "quality_check was offline_judge until 0.3.0; see summarization. Cheap graded 100% on this task type across all three repeats of the Sprint 7 baseline.",
       "evidence": [
         "scripts/tools/finance-literacy-bot-rag-chatbot-groq-chat-model.py"
       ]

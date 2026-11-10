@@ -104,3 +104,5 @@ data/mycroft-main/**/*.csv -text
 # are text and must stay byte-stable like everything else; the extension only keeps them
 # out of the *.json globs that gate 3 and conformance use.
 *.json.broken text eol=lf
+
+scripts/gateway/bench/fixtures/*.jsonl -text

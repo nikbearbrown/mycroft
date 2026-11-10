@@ -56,20 +56,46 @@ def test_long_input_is_promoted_one_tier(policy, tiers):
     assert "promoted to mid" in d.explanation
 
 
-def test_extraction_starts_on_mid(policy, tiers):
-    d = route(task_type="structured_extraction", text="Q3 guidance raised",
-              policy=policy, tiers=tiers)
-    assert (d.tier, d.escalate_to) == ("mid", "strong")
+def test_every_task_type_starts_cheap_since_policy_0_3_0(policy, tiers):
+    """The Sprint 8 decision, pinned.
+
+    Policy 0.2.0 started extraction, contradiction detection, summarization and
+    rag_answer on mid. Replayed against the Sprint 7 baseline, always-cheap was
+    the only policy to clear the August thresholds -- 31% cheaper and 31%
+    faster at unchanged correctness (FINDINGS section 12). If this test fails,
+    someone has reintroduced a dearer default without a new measurement.
+    """
+    for task_type in policy.task_types:
+        d = route(task_type=task_type, text="short input", policy=policy, tiers=tiers)
+        assert (d.tier, d.escalate_to) == ("cheap", "mid"), task_type
 
 
-def test_promoted_to_the_top_has_nowhere_to_escalate(policy, tiers):
-    d = route(task_type="summarization", text="x" * 12001,
+def test_strong_is_no_longer_a_default_escalation_target(policy, tiers):
+    """Strong stays in tier_order for the context walk-up, not for quality.
+
+    It costs 3.1x cheap, leads on no task type, and is less accurate than mid
+    on the two that fail (FINDINGS section 11).
+    """
+    for task_type in policy.task_types:
+        assert policy.rule_for(task_type)["escalate_to"] != "strong", task_type
+
+
+def test_promoted_to_the_top_has_nowhere_to_escalate():
+    """Reaching strong now happens only via the context-window walk-up.
+
+    Length promotion moves one tier, and everything starts on cheap, so a long
+    input reaches mid and stops. An input that fits neither cheap nor mid still
+    walks up to strong, and there it has nowhere left to go.
+    """
+    policy, tiers = make({"cheap": 1000, "mid": 1000, "strong": 131072})
+    # 300 chars + 256 margin + 512 budget = 1,068 > 1,000 for cheap and mid.
+    d = route(task_type="sentiment_classification", text="x" * 300,
               policy=policy, tiers=tiers)
+
     assert (d.tier, d.escalate_to) == ("strong", None)
-    # Ask the policy rather than hardcoding a number: the strong budget moved
-    # from 1024 to 896 on 2026-09-17 to stay under the account's output cap.
     assert d.max_tokens == policy.max_tokens("strong")
     assert d.max_tokens > policy.max_tokens("cheap"), "strong gets a larger budget"
+    assert "context window" in d.explanation
 
 
 def test_unknown_task_type_is_refused(policy, tiers):
@@ -109,4 +135,4 @@ def test_every_task_type_routes_and_explains_itself(policy, tiers):
     for task_type in policy.task_types:
         d = route(task_type=task_type, text="short input", policy=policy, tiers=tiers)
         assert d.tier in policy.tier_order
-        assert d.tier in d.explanation   
+        assert d.tier in d.explanation

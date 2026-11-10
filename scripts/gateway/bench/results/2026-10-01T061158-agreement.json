@@ -1,0 +1,319 @@
+{
+  "run_id": "2026-10-01T061158",
+  "measured_on": "2026-10-01",
+  "scored_by": "Simba",
+  "scores_file": "2026-10-01T061158-simba.json",
+  "results_file": "2026-10-01T061158-judge.json",
+  "a_tier": "cheap",
+  "b_tier": "mid",
+  "report": {
+    "scored": 32,
+    "comparable": 28,
+    "not_a_verdict": 4,
+    "missing_from_results": [],
+    "agreed": 5,
+    "disagreed": 23,
+    "raw_agreement": 0.17857142857142858,
+    "kappa": 0.0,
+    "kappa_note": "",
+    "expected_by_chance": 0.17857142857142858,
+    "human_picks": {
+      "a": 11,
+      "b": 16,
+      "tie": 5
+    },
+    "judge_picks": {
+      "a": 0,
+      "b": 0,
+      "tie": 28
+    },
+    "decisive_pairs": 23,
+    "human_order_bias": {
+      "picked_the_first_shown": 13,
+      "picked_the_second_shown": 14
+    },
+    "per_task": {
+      "rag_answer": {
+        "comparable": 15,
+        "agreed": 4,
+        "raw_agreement": 0.26666666666666666,
+        "kappa": 0.0,
+        "kappa_note": "",
+        "human": {
+          "a": 3,
+          "b": 8,
+          "tie": 4
+        },
+        "judge": {
+          "a": 0,
+          "b": 0,
+          "tie": 15
+        }
+      },
+      "summarization": {
+        "comparable": 13,
+        "agreed": 1,
+        "raw_agreement": 0.07692307692307693,
+        "kappa": 0.0,
+        "kappa_note": "",
+        "human": {
+          "a": 5,
+          "b": 7,
+          "tie": 1
+        },
+        "judge": {
+          "a": 0,
+          "b": 0,
+          "tie": 13
+        }
+      }
+    },
+    "disagreements": [
+      {
+        "pair_id": "rag-001#2",
+        "task_type": "rag_answer",
+        "human": "b",
+        "judge": "tie",
+        "shown_first": "b",
+        "picked_position": "first",
+        "note": ""
+      },
+      {
+        "pair_id": "rag-002#1",
+        "task_type": "rag_answer",
+        "human": "b",
+        "judge": "tie",
+        "shown_first": "a",
+        "picked_position": "second",
+        "note": ""
+      },
+      {
+        "pair_id": "rag-002#2",
+        "task_type": "rag_answer",
+        "human": "b",
+        "judge": "tie",
+        "shown_first": "b",
+        "picked_position": "first",
+        "note": ""
+      },
+      {
+        "pair_id": "rag-002#3",
+        "task_type": "rag_answer",
+        "human": "b",
+        "judge": "tie",
+        "shown_first": "b",
+        "picked_position": "first",
+        "note": ""
+      },
+      {
+        "pair_id": "rag-002#4",
+        "task_type": "rag_answer",
+        "human": "b",
+        "judge": "tie",
+        "shown_first": "b",
+        "picked_position": "first",
+        "note": "it says (par) value"
+      },
+      {
+        "pair_id": "rag-003#1",
+        "task_type": "rag_answer",
+        "human": "a",
+        "judge": "tie",
+        "shown_first": "a",
+        "picked_position": "first",
+        "note": ""
+      },
+      {
+        "pair_id": "rag-003#2",
+        "task_type": "rag_answer",
+        "human": "b",
+        "judge": "tie",
+        "shown_first": "b",
+        "picked_position": "first",
+        "note": ""
+      },
+      {
+        "pair_id": "rag-003#4",
+        "task_type": "rag_answer",
+        "human": "b",
+        "judge": "tie",
+        "shown_first": "a",
+        "picked_position": "second",
+        "note": "well detailed"
+      },
+      {
+        "pair_id": "rag-004#2",
+        "task_type": "rag_answer",
+        "human": "a",
+        "judge": "tie",
+        "shown_first": "b",
+        "picked_position": "second",
+        "note": ""
+      },
+      {
+        "pair_id": "rag-004#3",
+        "task_type": "rag_answer",
+        "human": "a",
+        "judge": "tie",
+        "shown_first": "b",
+        "picked_position": "second",
+        "note": ""
+      },
+      {
+        "pair_id": "rag-004#4",
+        "task_type": "rag_answer",
+        "human": "b",
+        "judge": "tie",
+        "shown_first": "a",
+        "picked_position": "second",
+        "note": ""
+      },
+      {
+        "pair_id": "summ-001#1",
+        "task_type": "summarization",
+        "human": "b",
+        "judge": "tie",
+        "shown_first": "a",
+        "picked_position": "second",
+        "note": ""
+      },
+      {
+        "pair_id": "summ-001#2",
+        "task_type": "summarization",
+        "human": "a",
+        "judge": "tie",
+        "shown_first": "b",
+        "picked_position": "second",
+        "note": ""
+      },
+      {
+        "pair_id": "summ-001#3",
+        "task_type": "summarization",
+        "human": "b",
+        "judge": "tie",
+        "shown_first": "b",
+        "picked_position": "first",
+        "note": ""
+      },
+      {
+        "pair_id": "summ-001#4",
+        "task_type": "summarization",
+        "human": "a",
+        "judge": "tie",
+        "shown_first": "b",
+        "picked_position": "second",
+        "note": ""
+      },
+      {
+        "pair_id": "summ-002#1",
+        "task_type": "summarization",
+        "human": "b",
+        "judge": "tie",
+        "shown_first": "b",
+        "picked_position": "first",
+        "note": ""
+      },
+      {
+        "pair_id": "summ-002#4",
+        "task_type": "summarization",
+        "human": "a",
+        "judge": "tie",
+        "shown_first": "a",
+        "picked_position": "first",
+        "note": "more detailed"
+      },
+      {
+        "pair_id": "summ-003#1",
+        "task_type": "summarization",
+        "human": "b",
+        "judge": "tie",
+        "shown_first": "b",
+        "picked_position": "first",
+        "note": ""
+      },
+      {
+        "pair_id": "summ-003#3",
+        "task_type": "summarization",
+        "human": "b",
+        "judge": "tie",
+        "shown_first": "a",
+        "picked_position": "second",
+        "note": ""
+      },
+      {
+        "pair_id": "summ-003#4",
+        "task_type": "summarization",
+        "human": "b",
+        "judge": "tie",
+        "shown_first": "a",
+        "picked_position": "second",
+        "note": ""
+      },
+      {
+        "pair_id": "summ-004#1",
+        "task_type": "summarization",
+        "human": "b",
+        "judge": "tie",
+        "shown_first": "b",
+        "picked_position": "first",
+        "note": ""
+      },
+      {
+        "pair_id": "summ-004#3",
+        "task_type": "summarization",
+        "human": "a",
+        "judge": "tie",
+        "shown_first": "b",
+        "picked_position": "second",
+        "note": ""
+      },
+      {
+        "pair_id": "summ-004#4",
+        "task_type": "summarization",
+        "human": "a",
+        "judge": "tie",
+        "shown_first": "a",
+        "picked_position": "first",
+        "note": "more clearer"
+      }
+    ],
+    "judge_non_verdicts": [
+      {
+        "pair_id": "rag-003#3",
+        "task_type": "rag_answer",
+        "human": "b",
+        "judge": "inconsistent",
+        "shown_first": "a",
+        "picked_position": "second",
+        "note": ""
+      },
+      {
+        "pair_id": "summ-002#2",
+        "task_type": "summarization",
+        "human": "a",
+        "judge": "inconsistent",
+        "shown_first": "b",
+        "picked_position": "second",
+        "note": ""
+      },
+      {
+        "pair_id": "summ-002#3",
+        "task_type": "summarization",
+        "human": "a",
+        "judge": "inconsistent",
+        "shown_first": "b",
+        "picked_position": "second",
+        "note": ""
+      },
+      {
+        "pair_id": "summ-004#2",
+        "task_type": "summarization",
+        "human": "a",
+        "judge": "inconsistent",
+        "shown_first": "a",
+        "picked_position": "first",
+        "note": ""
+      }
+    ]
+  }
+}

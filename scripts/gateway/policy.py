@@ -10,6 +10,13 @@ Refusals, following the price-table and tier-config precedent:
 `escalate_to` may be null, meaning this task type is never retried. That is
 the only way to express a task starting on the top tier, where there is no
 higher tier to escalate to.
+
+`quality_check` may be "none", meaning this task type has no quality measure
+at all. That is not the same as not having bothered: summarization and
+rag_answer were "offline_judge" until policy 0.3.0, and the judge built for
+them scored Cohen's kappa 0.00 against blind human scoring (FINDINGS section
+10). Recording the absence is the point -- a task routed on cost alone should
+say so in the file that routes it, not only in a report.
 """
 
 from __future__ import annotations
@@ -28,7 +35,8 @@ VALIDATORS = frozenset({
     "label_in_set", "required_keys", "verdict_with_quote",
     "numbers_grounded", "cites_context",
 })
-QUALITY_CHECKS = frozenset({"deterministic", "offline_judge"})
+# "none" is a deliberate, recorded absence of a quality measure, not a default.
+QUALITY_CHECKS = frozenset({"deterministic", "offline_judge", "none"})
 _REQUIRED = ("description", "output", "validator", "quality_check", "start_tier")
 
 
@@ -82,7 +90,8 @@ class Policy:
                                   f"is not one of {sorted(VALIDATORS)}")
             if rule["quality_check"] not in QUALITY_CHECKS:
                 raise PolicyError(f"task type {name!r} quality_check "
-                                  f"{rule['quality_check']!r} is invalid")
+                                  f"{rule['quality_check']!r} is not one of "
+                                  f"{sorted(QUALITY_CHECKS)}")
 
             if rule["output"] in LABELLED_OUTPUTS:
                 labels = rule.get("labels")
