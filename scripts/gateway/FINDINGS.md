@@ -367,7 +367,6 @@ is 8.
 - Blind, independent scoring found this one week after the number was produced.
   The same discipline applied to section 9 at the time would have caught it
   immediately; the lesson is to run the check in the same sprint as the claim.
-@'
 
 ## 11. What the baseline showed
 
@@ -435,7 +434,6 @@ everything measurable and all-cheap becomes the honest recommendation.
 - 24 synthetic fixtures, three repeats, one provider, one day. The numbers are
   about these task types, not about Mycroft's traffic.
 
-  @'
 
 ## 12. The decision
 
@@ -505,4 +503,119 @@ redundant.
 - The honest headline is that the project set out to build adaptive routing and
   the measurement says not to. A rule that chooses per request has to beat a
   constant, and here it did not.
-'@ | Add-Content -Encoding utf8 scripts/gateway/FINDINGS.md
+
+
+## 13. What shipping it changed
+
+Sprint 9. The decision from section 12 is now what the code does.
+
+**policy.json 0.3.0** sets every task type to start on cheap and escalate to
+mid. Four types moved off mid: structured extraction, contradiction detection,
+summarization and rag_answer. Strong is no longer any task type's escalation
+target. It stays in `tier_order` and keeps its budget, because the
+context-window walk-up still needs it for an input that fits nothing smaller.
+
+A consequence worth naming rather than discovering: length promotion moves a
+request one tier, and everything now starts on cheap, so promotion reaches mid
+and stops. Strong is reachable only when an input does not fit mid's window.
+That is intended.
+
+**`quality_check: "none"`** is now a legal value, and summarization and
+rag_answer carry it. They were `offline_judge` until the judge scored kappa
+0.00 (section 10). A task routed on cost alone should say so in the file that
+routes it, not only in a report.
+
+**Reliability has tests rather than assumptions.** Thirteen new ones covering
+the two layers where failure is decided: how a provider error is classified
+(a bad key terminal, a pacing 429 retryable, an oversize 429 terminal despite
+being a 429, a timeout recorded as a timeout) and what the gateway does about
+it (a total outage returns a result and not an exception; every failed attempt
+still writes a row; a partial outage still answers). None touch the network.
+
+**The manifest was re-cut, and the reason matters.** Merging main normalised
+line endings in two fixture files, so their SHA-256 no longer matched. The
+parsed content was verified identical to commit `2df2f37` before re-freezing,
+and `.gitattributes` now pins those files so the hashes are stable across
+machines. A re-freeze without that verification would be indistinguishable
+from editing the answer key.
+
+**An attestation exists** (`ATTESTATION.md`), in the SNICKERDOODLE format,
+including the mandatory "did not test" section. Its largest entries are that
+no real Mycroft traffic has ever passed through the gateway, and that two of
+six task types have no quality measure at all.
+
+## 14. There is no traffic to measure
+
+Sprint 10. The plan was to capture Mycroft's real model requests and re-run
+the whole measurement against them, because every number in sections 1-13
+describes 24 synthetic fixtures. The inventory ended that plan in its first
+day.
+
+**Every run artifact in this repository says `live_call_performed: false`.**
+That holds for all six steps of `scenariostresstestingagent`, for
+`contradiction-detection-agent`, for `market-sentiment-analysis-part-1`, and
+for every `run-approved-tools` record. Every recipe is gated at Gate 5 and runs
+in sample mode. A recorder that captures live calls would capture nothing.
+
+`bench/corpus.py` collects every model request in the repository from both
+sources that exist -- prepared handoff artifacts and the gateway's own logbook
+-- and reports what it finds:
+
+| | |
+|---|---|
+| request records | 509 |
+| prepared but never sent | 16 (5 with empty payloads) |
+| calls that actually happened | 493, costing $0.06300 |
+| sources other than the gateway | 1 recipe, 16 requests |
+
+| caller | requests |
+|---|---|
+| bench/baseline.py | 228 |
+| bench/judge_run.py | 92 |
+| bench.judge | 92 |
+| bench/run.py | 81 |
+| contradiction-detection-agent | 16 |
+
+**The gateway is 97% of Mycroft's model traffic, and the only thing that has
+ever generated any.** The instrument built to measure the platform's spending
+is, so far, the platform's spending -- all $0.063 of it, across nine sprints.
+
+### What the sixteen real requests show
+
+They are not traffic, but they are real intentions: prompts written, a model
+named, a budget chosen, awaiting a gate that has not cleared. All sixteen come
+from `contradiction-detection-agent`, all name the same model, and all ask for
+the same budget. Prompt sizes run 1,302 to 1,642 characters, median 1,334 --
+comfortably under contradiction detection's 4,000-character promotion
+threshold, so policy 0.3.0 would route every one of them to the cheap tier.
+
+Routing is not the problem. **27 of them fail before routing matters:**
+
+- **16 unpriced model.** Every request names `llama-3.3-70b-versatile`, which
+  is not in the tier ladder and for which Groq publishes no per-token rate --
+  the reason the ladder moved off Llama in Sprint 2 (section 4). Sent through
+  the gateway today, each raises `UnknownModelPrice` and never reaches the
+  provider. The gateway cannot price the model Mycroft's recipes actually name.
+- **11 over budget.** Each asks for 2,000 output tokens. The tier budgets are
+  512, 512 and 896, and 2,000 is more than double the largest -- and twice the
+  strong tier's entire per-minute cap. Policy 0.3.0 would truncate all of them.
+
+The five requests with empty payloads are recorded as incomplete rather than
+dropped, because a corpus that hides its gaps is worse than one that shows
+them.
+
+### Consequences
+
+- The recorder planned for Sprint 11 is cancelled. There is nothing to record.
+- The question becomes answerable instead as: **can the gateway serve what
+  Mycroft's recipes intend to ask, and at what cost?** Sprint 11 replays the
+  sixteen offline against the router and price table.
+- Two concrete blockers now have owners: price `llama-3.3-70b-versatile` from
+  an evidenced source or map the recipe's intent onto a priced tier, and
+  establish whether 2,000 tokens is a measured requirement or an inherited
+  default.
+- Prompt text is deliberately absent from the corpus. Records carry a length
+  and a SHA-256, which is enough to size, price and deduplicate a request, and
+  keeps other people's data out of a committed file.
+- A standing caveat for every claim this project has made: nothing here has
+  been measured against production load, because there is no production load.

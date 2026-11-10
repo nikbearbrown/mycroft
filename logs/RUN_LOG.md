@@ -939,7 +939,6 @@
   - Coverage is 8 open-ended fixtures against a target of 30 per task type.
   - `main` is behind `origin/main`.
   - GROQ_API_KEY still needs rotating; it has now been exposed four times.
-@'
 
 ## 2026-10-15 -- Gateway Sprint 8: the decision
 
@@ -971,4 +970,64 @@
     and less accurate on the two task types that fail.
   - Sprint 5 and Sprint 7 RUN_LOG entries are still to be backfilled.
   - GROQ_API_KEY still needs rotating.
-'@ | Add-Content -Encoding utf8 logs/RUN_LOG.md
+## 2026-11-09 -- Gateway Sprint 9: packaging the decision
+
+- **Recipe:** Adaptive Model Routing & Inference Gateway (Sprint 9 of 9).
+- **Gate:** Shipping the Sprint 8 decision into the configuration that runs,
+  with an attestation recorded.
+- **Cleared by:** Simba · 2026-11-09
+- **Inputs:** the Sprint 8 decision (`bench/results/2026-10-15-decision.json`);
+  policy 0.2.0 as shipped. No live calls.
+- **Commands:** `python -m pytest scripts/gateway/tests -q` (212 passed);
+  `python scripts/gateway/bench/audit.py --freeze`.
+- **Outputs:** `policy.json` 0.3.0; `policy.py` (`quality_check: "none"` now
+  legal); `README.md` for the gateway; `ATTESTATION.md`;
+  `tests/test_reliability.py` (13 tests); updated `tests/test_router.py`;
+  re-cut `bench/manifest.json`; `.gitattributes` entry pinning fixture line
+  endings.
+- **Result:** Every task type now starts on cheap and escalates to mid. Strong
+  is no longer a default escalation target. Summarization and rag_answer carry
+  `quality_check: "none"`, recording that they have no quality measure rather
+  than implying one.
+- **Manifest re-freeze, justified:** merging origin/main normalised line
+  endings in `sentiment_classification.jsonl` and `structured_extraction.jsonl`,
+  so their hashes stopped matching. The parsed content of both was verified
+  identical to commit `2df2f37` before the manifest was re-cut, so no label
+  changed. `.gitattributes` now pins those files to LF.
+- **Findings:** `scripts/gateway/FINDINGS.md` section 13. Attestation:
+  `scripts/gateway/ATTESTATION.md`.
+- **Not verified:** no real Mycroft traffic has passed through the gateway; two
+  of six task types have no quality measure; `contra-003` and `extract-004`
+  still need a second reader; the provider's usage console has never been
+  reconciled against the logged costs.
+
+## 2026-11-09 -- Gateway Sprint 10: the traffic inventory
+
+- **Recipe:** Adaptive Model Routing & Inference Gateway (Sprint 10; the first
+  of six taking the gateway from synthetic fixtures to real requests).
+- **Gate:** None cleared. This sprint reports what exists.
+- **By:** Simba · 2026-11-09
+- **Inputs:** every run artifact under `logs/`, read-only. No live calls.
+- **Commands:** `python scripts/gateway/bench/corpus.py --check`;
+  `python -m pytest scripts/gateway/tests -q` (222 passed).
+- **Outputs:** `bench/corpus.py` and `tests/test_corpus.py` (10 tests);
+  `bench/corpus/2026-11-09-corpus.jsonl` (509 records, no prompt text).
+- **Result:** 509 model requests exist in this repository. 493 are the
+  gateway's own, costing $0.06300 in total. 16 are prepared requests from
+  `contradiction-detection-agent` that were never sent. **Every run artifact in
+  the repository records `live_call_performed: false`** -- every recipe is
+  gated at Gate 5 and runs in sample mode. There is no live traffic to measure.
+- **The sixteen real requests cannot be served as written:** all name
+  `llama-3.3-70b-versatile`, which the price table has no rate for, and 11 ask
+  for 2,000 output tokens against tier budgets of 512/512/896. Prompt sizes
+  1,302-1,642 chars, so routing would send all of them to cheap; pricing and
+  budgets stop them first.
+- **Findings:** `scripts/gateway/FINDINGS.md` section 14.
+- **Plan changed:** the capture recorder planned for Sprint 11 is cancelled --
+  there is nothing to capture. Sprint 11 instead replays the sixteen prepared
+  requests offline to report what the gateway would do with each.
+- **Not verified:** whether `data/raw/Private_AI_Valuation_Agent` makes live
+  calls. It has real LLM code, is not a Mycroft recipe, and is not mine to
+  instrument.
+- **Open issues:** the Sprint 5 and 7 RUN_LOG backfill, the two disputed
+  fixtures, and the GROQ_API_KEY rotation.

@@ -1,4 +1,3 @@
-@'
 # Attestation -- Inference Gateway
 
 - Component: `scripts/gateway/`, policy 0.3.0, tiers 0.4.0, prices 2026-09-17
@@ -66,4 +65,3 @@ with every figure traceable to a logged row. What it does not have is any
 evidence from real traffic, or any quality measure at all for two of its six
 task types. Treat it as a measured recommendation on a synthetic benchmark,
 not as a validated production router.
-'@ | Set-Content -Encoding utf8 scripts/gateway/ATTESTATION.md
