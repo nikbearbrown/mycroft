@@ -42,9 +42,16 @@ export default function ChatInterface({ selectedIds }) {
 
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
+      // FastAPI validation errors (422) arrive as error.response.data.detail, either a
+      // plain string or a list of {msg, ...} objects - axios's own error.message is just
+      // "Request failed with status code 422", which tells the user nothing.
+      const detail = error.response?.data?.detail;
+      const reason = Array.isArray(detail)
+        ? detail.map(d => d.msg || JSON.stringify(d)).join('; ')
+        : detail || error.message;
       const errorMessage = {
         role: 'error',
-        content: 'Failed to get response: ' + error.message,
+        content: 'Failed to get response: ' + reason,
         timestamp: new Date(),
       };
       setMessages(prev => [...prev, errorMessage]);

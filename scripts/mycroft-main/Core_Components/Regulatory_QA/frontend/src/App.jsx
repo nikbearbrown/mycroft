@@ -5,6 +5,10 @@ import FeedList from './components/FeedList';
 import ChatInterface from './components/ChatInterface';
 import { feedsAPI } from './api/client';
 
+// Must match the backend's FeedQuery.feed_ids max_items / config.max_context_feeds
+// (Regulatory_QA/backend/app/models.py, app/config.py) - the RAG context size limit.
+const MAX_SELECTABLE_FEEDS = 10;
+
 function App() {
   const [feeds, setFeeds] = useState([]);
   const [stats, setStats] = useState(null);
@@ -37,7 +41,7 @@ function App() {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
         newSet.delete(id);
-      } else {
+      } else if (newSet.size < MAX_SELECTABLE_FEEDS) {
         newSet.add(id);
       }
       return newSet;
@@ -45,7 +49,7 @@ function App() {
   };
 
   const handleSelectAll = () => {
-    setSelected(new Set(feeds.map(f => f.id)));
+    setSelected(new Set(feeds.slice(0, MAX_SELECTABLE_FEEDS).map(f => f.id)));
   };
 
   const handleClearAll = () => {
