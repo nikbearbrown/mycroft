@@ -1,0 +1,3509 @@
+{
+  "run_at": "2026-11-05T00:27:28.843Z",
+  "quarters": [
+    "2023q2",
+    "2023q3",
+    "2023q4",
+    "2024q1",
+    "2024q2",
+    "2024q3",
+    "2024q4",
+    "2025q1",
+    "2025q2",
+    "2025q3",
+    "2025q4",
+    "2026q1",
+    "2026q2",
+    "2026q3"
+  ],
+  "source_sha256": {
+    "2023q2": "7e636787231ae0f00accf5c3627298402dedd1aefffd7c50fb48292e5d3a8fbb",
+    "2023q3": "26947559fbd710ca4fb007e2ff0481b13ebc3ca47153e77a9b0bc84db250a48e",
+    "2023q4": "be19822ad9116ea6c1a55303b1f2e23864f21101e42d2da0455a6ff2b33e1a9e",
+    "2024q1": "8e9bb34335416829a88e4ca7d09bb8aaceca689da9718fef22c298d6f18c9b04",
+    "2024q2": "782abee663e466b243f953625ae319da93c3e896816007d5a375e558c94dc7c1",
+    "2024q3": "8b55b4ffd91e56770fc0e71f9b73e6886f3c60fac8b7266e4b3e5586d2857910",
+    "2024q4": "44763a00aa8a2077747bc015f12c6a4c09ba7cae4a2d031bf24398f9db9e52f3",
+    "2025q1": "37f6b4287df129b88acf0782498540640d055b1c893320877e329945b534a8c2",
+    "2025q2": "64e7f81328933b1281bd8737961048d76d2ab3d5d1d2d7149a32ec061b0e3ff2",
+    "2025q3": "9c57f272b7230500771f661bc1fe181527ed6b76a6f45d23a910c7fc7e9fcfa4",
+    "2025q4": "6af26a68f5834eab96dff2c568530d9213638d3e6c9d1256e4f6c9f8af1d2d28",
+    "2026q1": "3dcb680593f5829bc951cb0969e858b60fc21a6835b094838218093a849592d6",
+    "2026q2": "11f1b2bbbdcbe6347a34437c02d04202fda0eca1dbb023726e4b56504b802e27",
+    "2026q3": "a4e6a681cfcfa43a3d9e4ca9cfec1fd26a59d0a01eac7e9f7b5a0122092c90f3"
+  },
+  "halting_checks": {
+    "2023q2": {
+      "hash": {
+        "name": "hash",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "manifest SHA-256 7e636787231ae0f00accf5c3627298402dedd1aefffd7c50fb48292e5d3a8fbb",
+        "not_run": ""
+      },
+      "required_columns": {
+        "name": "required_columns",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "DATA_CONTRACT.md fields in 4 raw tables + parsed CSV header",
+        "not_run": ""
+      },
+      "keys": {
+        "name": "keys",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "68,588 NONDERIV_TRANS keys, 7,964 buys",
+        "not_run": ""
+      },
+      "dates": {
+        "name": "dates",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: DD-MON-YYYY, TRANS_DATE \u2264 FILING_DATE",
+        "not_run": ""
+      },
+      "codes": {
+        "name": "codes",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: SEC code list, A/D",
+        "not_run": ""
+      },
+      "buy_filter_purity": {
+        "name": "buy_filter_purity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "independent filter on raw: 7,964 buys; buys file: 7,964",
+        "not_run": ""
+      },
+      "identity": {
+        "name": "identity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "ISSUERCIK and RPTOWNERCIK, numeric",
+        "not_run": ""
+      }
+    },
+    "2023q3": {
+      "hash": {
+        "name": "hash",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "manifest SHA-256 26947559fbd710ca4fb007e2ff0481b13ebc3ca47153e77a9b0bc84db250a48e",
+        "not_run": ""
+      },
+      "required_columns": {
+        "name": "required_columns",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "DATA_CONTRACT.md fields in 4 raw tables + parsed CSV header",
+        "not_run": ""
+      },
+      "keys": {
+        "name": "keys",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "53,078 NONDERIV_TRANS keys, 5,785 buys",
+        "not_run": ""
+      },
+      "dates": {
+        "name": "dates",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: DD-MON-YYYY, TRANS_DATE \u2264 FILING_DATE",
+        "not_run": ""
+      },
+      "codes": {
+        "name": "codes",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: SEC code list, A/D",
+        "not_run": ""
+      },
+      "buy_filter_purity": {
+        "name": "buy_filter_purity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "independent filter on raw: 5,785 buys; buys file: 5,785",
+        "not_run": ""
+      },
+      "identity": {
+        "name": "identity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "ISSUERCIK and RPTOWNERCIK, numeric",
+        "not_run": ""
+      }
+    },
+    "2023q4": {
+      "hash": {
+        "name": "hash",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "manifest SHA-256 be19822ad9116ea6c1a55303b1f2e23864f21101e42d2da0455a6ff2b33e1a9e",
+        "not_run": ""
+      },
+      "required_columns": {
+        "name": "required_columns",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "DATA_CONTRACT.md fields in 4 raw tables + parsed CSV header",
+        "not_run": ""
+      },
+      "keys": {
+        "name": "keys",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "57,852 NONDERIV_TRANS keys, 6,240 buys",
+        "not_run": ""
+      },
+      "dates": {
+        "name": "dates",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: DD-MON-YYYY, TRANS_DATE \u2264 FILING_DATE",
+        "not_run": ""
+      },
+      "codes": {
+        "name": "codes",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: SEC code list, A/D",
+        "not_run": ""
+      },
+      "buy_filter_purity": {
+        "name": "buy_filter_purity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "independent filter on raw: 6,240 buys; buys file: 6,240",
+        "not_run": ""
+      },
+      "identity": {
+        "name": "identity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "ISSUERCIK and RPTOWNERCIK, numeric",
+        "not_run": ""
+      }
+    },
+    "2024q1": {
+      "hash": {
+        "name": "hash",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "manifest SHA-256 8e9bb34335416829a88e4ca7d09bb8aaceca689da9718fef22c298d6f18c9b04",
+        "not_run": ""
+      },
+      "required_columns": {
+        "name": "required_columns",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "DATA_CONTRACT.md fields in 4 raw tables + parsed CSV header",
+        "not_run": ""
+      },
+      "keys": {
+        "name": "keys",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "111,404 NONDERIV_TRANS keys, 5,214 buys",
+        "not_run": ""
+      },
+      "dates": {
+        "name": "dates",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: DD-MON-YYYY, TRANS_DATE \u2264 FILING_DATE",
+        "not_run": ""
+      },
+      "codes": {
+        "name": "codes",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: SEC code list, A/D",
+        "not_run": ""
+      },
+      "buy_filter_purity": {
+        "name": "buy_filter_purity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "independent filter on raw: 5,214 buys; buys file: 5,214",
+        "not_run": ""
+      },
+      "identity": {
+        "name": "identity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "ISSUERCIK and RPTOWNERCIK, numeric",
+        "not_run": ""
+      }
+    },
+    "2024q2": {
+      "hash": {
+        "name": "hash",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "manifest SHA-256 782abee663e466b243f953625ae319da93c3e896816007d5a375e558c94dc7c1",
+        "not_run": ""
+      },
+      "required_columns": {
+        "name": "required_columns",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "DATA_CONTRACT.md fields in 4 raw tables + parsed CSV header",
+        "not_run": ""
+      },
+      "keys": {
+        "name": "keys",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "69,412 NONDERIV_TRANS keys, 5,444 buys",
+        "not_run": ""
+      },
+      "dates": {
+        "name": "dates",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: DD-MON-YYYY, TRANS_DATE \u2264 FILING_DATE",
+        "not_run": ""
+      },
+      "codes": {
+        "name": "codes",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: SEC code list, A/D",
+        "not_run": ""
+      },
+      "buy_filter_purity": {
+        "name": "buy_filter_purity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "independent filter on raw: 5,444 buys; buys file: 5,444",
+        "not_run": ""
+      },
+      "identity": {
+        "name": "identity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "ISSUERCIK and RPTOWNERCIK, numeric",
+        "not_run": ""
+      }
+    },
+    "2024q3": {
+      "hash": {
+        "name": "hash",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "manifest SHA-256 8b55b4ffd91e56770fc0e71f9b73e6886f3c60fac8b7266e4b3e5586d2857910",
+        "not_run": ""
+      },
+      "required_columns": {
+        "name": "required_columns",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "DATA_CONTRACT.md fields in 4 raw tables + parsed CSV header",
+        "not_run": ""
+      },
+      "keys": {
+        "name": "keys",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "55,881 NONDERIV_TRANS keys, 5,070 buys",
+        "not_run": ""
+      },
+      "dates": {
+        "name": "dates",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: DD-MON-YYYY, TRANS_DATE \u2264 FILING_DATE",
+        "not_run": ""
+      },
+      "codes": {
+        "name": "codes",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: SEC code list, A/D",
+        "not_run": ""
+      },
+      "buy_filter_purity": {
+        "name": "buy_filter_purity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "independent filter on raw: 5,070 buys; buys file: 5,070",
+        "not_run": ""
+      },
+      "identity": {
+        "name": "identity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "ISSUERCIK and RPTOWNERCIK, numeric",
+        "not_run": ""
+      }
+    },
+    "2024q4": {
+      "hash": {
+        "name": "hash",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "manifest SHA-256 44763a00aa8a2077747bc015f12c6a4c09ba7cae4a2d031bf24398f9db9e52f3",
+        "not_run": ""
+      },
+      "required_columns": {
+        "name": "required_columns",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "DATA_CONTRACT.md fields in 4 raw tables + parsed CSV header",
+        "not_run": ""
+      },
+      "keys": {
+        "name": "keys",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "63,647 NONDERIV_TRANS keys, 5,983 buys",
+        "not_run": ""
+      },
+      "dates": {
+        "name": "dates",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: DD-MON-YYYY, TRANS_DATE \u2264 FILING_DATE",
+        "not_run": ""
+      },
+      "codes": {
+        "name": "codes",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: SEC code list, A/D",
+        "not_run": ""
+      },
+      "buy_filter_purity": {
+        "name": "buy_filter_purity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "independent filter on raw: 5,983 buys; buys file: 5,983",
+        "not_run": ""
+      },
+      "identity": {
+        "name": "identity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "ISSUERCIK and RPTOWNERCIK, numeric",
+        "not_run": ""
+      }
+    },
+    "2025q1": {
+      "hash": {
+        "name": "hash",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "manifest SHA-256 37f6b4287df129b88acf0782498540640d055b1c893320877e329945b534a8c2",
+        "not_run": ""
+      },
+      "required_columns": {
+        "name": "required_columns",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "DATA_CONTRACT.md fields in 4 raw tables + parsed CSV header",
+        "not_run": ""
+      },
+      "keys": {
+        "name": "keys",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "103,029 NONDERIV_TRANS keys, 5,285 buys",
+        "not_run": ""
+      },
+      "dates": {
+        "name": "dates",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: DD-MON-YYYY, TRANS_DATE \u2264 FILING_DATE",
+        "not_run": ""
+      },
+      "codes": {
+        "name": "codes",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: SEC code list, A/D",
+        "not_run": ""
+      },
+      "buy_filter_purity": {
+        "name": "buy_filter_purity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "independent filter on raw: 5,285 buys; buys file: 5,285",
+        "not_run": ""
+      },
+      "identity": {
+        "name": "identity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "ISSUERCIK and RPTOWNERCIK, numeric",
+        "not_run": ""
+      }
+    },
+    "2025q2": {
+      "hash": {
+        "name": "hash",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "manifest SHA-256 64e7f81328933b1281bd8737961048d76d2ab3d5d1d2d7149a32ec061b0e3ff2",
+        "not_run": ""
+      },
+      "required_columns": {
+        "name": "required_columns",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "DATA_CONTRACT.md fields in 4 raw tables + parsed CSV header",
+        "not_run": ""
+      },
+      "keys": {
+        "name": "keys",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "66,915 NONDERIV_TRANS keys, 6,297 buys",
+        "not_run": ""
+      },
+      "dates": {
+        "name": "dates",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: DD-MON-YYYY, TRANS_DATE \u2264 FILING_DATE",
+        "not_run": ""
+      },
+      "codes": {
+        "name": "codes",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: SEC code list, A/D",
+        "not_run": ""
+      },
+      "buy_filter_purity": {
+        "name": "buy_filter_purity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "independent filter on raw: 6,297 buys; buys file: 6,297",
+        "not_run": ""
+      },
+      "identity": {
+        "name": "identity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "ISSUERCIK and RPTOWNERCIK, numeric",
+        "not_run": ""
+      }
+    },
+    "2025q3": {
+      "hash": {
+        "name": "hash",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "manifest SHA-256 9c57f272b7230500771f661bc1fe181527ed6b76a6f45d23a910c7fc7e9fcfa4",
+        "not_run": ""
+      },
+      "required_columns": {
+        "name": "required_columns",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "DATA_CONTRACT.md fields in 4 raw tables + parsed CSV header",
+        "not_run": ""
+      },
+      "keys": {
+        "name": "keys",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "55,125 NONDERIV_TRANS keys, 4,788 buys",
+        "not_run": ""
+      },
+      "dates": {
+        "name": "dates",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: DD-MON-YYYY, TRANS_DATE \u2264 FILING_DATE",
+        "not_run": ""
+      },
+      "codes": {
+        "name": "codes",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: SEC code list, A/D",
+        "not_run": ""
+      },
+      "buy_filter_purity": {
+        "name": "buy_filter_purity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "independent filter on raw: 4,788 buys; buys file: 4,788",
+        "not_run": ""
+      },
+      "identity": {
+        "name": "identity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "ISSUERCIK and RPTOWNERCIK, numeric",
+        "not_run": ""
+      }
+    },
+    "2025q4": {
+      "hash": {
+        "name": "hash",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "manifest SHA-256 6af26a68f5834eab96dff2c568530d9213638d3e6c9d1256e4f6c9f8af1d2d28",
+        "not_run": ""
+      },
+      "required_columns": {
+        "name": "required_columns",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "DATA_CONTRACT.md fields in 4 raw tables + parsed CSV header",
+        "not_run": ""
+      },
+      "keys": {
+        "name": "keys",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "59,678 NONDERIV_TRANS keys, 5,313 buys",
+        "not_run": ""
+      },
+      "dates": {
+        "name": "dates",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: DD-MON-YYYY, TRANS_DATE \u2264 FILING_DATE",
+        "not_run": ""
+      },
+      "codes": {
+        "name": "codes",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: SEC code list, A/D",
+        "not_run": ""
+      },
+      "buy_filter_purity": {
+        "name": "buy_filter_purity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "independent filter on raw: 5,313 buys; buys file: 5,313",
+        "not_run": ""
+      },
+      "identity": {
+        "name": "identity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "ISSUERCIK and RPTOWNERCIK, numeric",
+        "not_run": ""
+      }
+    },
+    "2026q1": {
+      "hash": {
+        "name": "hash",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "manifest SHA-256 3dcb680593f5829bc951cb0969e858b60fc21a6835b094838218093a849592d6",
+        "not_run": ""
+      },
+      "required_columns": {
+        "name": "required_columns",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "DATA_CONTRACT.md fields in 4 raw tables + parsed CSV header",
+        "not_run": ""
+      },
+      "keys": {
+        "name": "keys",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "103,733 NONDERIV_TRANS keys, 4,817 buys",
+        "not_run": ""
+      },
+      "dates": {
+        "name": "dates",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: DD-MON-YYYY, TRANS_DATE \u2264 FILING_DATE",
+        "not_run": ""
+      },
+      "codes": {
+        "name": "codes",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: SEC code list, A/D",
+        "not_run": ""
+      },
+      "buy_filter_purity": {
+        "name": "buy_filter_purity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "independent filter on raw: 4,817 buys; buys file: 4,817",
+        "not_run": ""
+      },
+      "identity": {
+        "name": "identity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "ISSUERCIK and RPTOWNERCIK, numeric",
+        "not_run": ""
+      }
+    },
+    "2026q2": {
+      "hash": {
+        "name": "hash",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "manifest SHA-256 11f1b2bbbdcbe6347a34437c02d04202fda0eca1dbb023726e4b56504b802e27",
+        "not_run": ""
+      },
+      "required_columns": {
+        "name": "required_columns",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "DATA_CONTRACT.md fields in 4 raw tables + parsed CSV header",
+        "not_run": ""
+      },
+      "keys": {
+        "name": "keys",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "78,328 NONDERIV_TRANS keys, 5,180 buys",
+        "not_run": ""
+      },
+      "dates": {
+        "name": "dates",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: DD-MON-YYYY, TRANS_DATE \u2264 FILING_DATE",
+        "not_run": ""
+      },
+      "codes": {
+        "name": "codes",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: SEC code list, A/D",
+        "not_run": ""
+      },
+      "buy_filter_purity": {
+        "name": "buy_filter_purity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "independent filter on raw: 5,180 buys; buys file: 5,180",
+        "not_run": ""
+      },
+      "identity": {
+        "name": "identity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "ISSUERCIK and RPTOWNERCIK, numeric",
+        "not_run": ""
+      }
+    },
+    "2026q3": {
+      "hash": {
+        "name": "hash",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "manifest SHA-256 a4e6a681cfcfa43a3d9e4ca9cfec1fd26a59d0a01eac7e9f7b5a0122092c90f3",
+        "not_run": ""
+      },
+      "required_columns": {
+        "name": "required_columns",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "DATA_CONTRACT.md fields in 4 raw tables + parsed CSV header",
+        "not_run": ""
+      },
+      "keys": {
+        "name": "keys",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "59,885 NONDERIV_TRANS keys, 5,115 buys",
+        "not_run": ""
+      },
+      "dates": {
+        "name": "dates",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: DD-MON-YYYY, TRANS_DATE \u2264 FILING_DATE",
+        "not_run": ""
+      },
+      "codes": {
+        "name": "codes",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "promoted rows: SEC code list, A/D",
+        "not_run": ""
+      },
+      "buy_filter_purity": {
+        "name": "buy_filter_purity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "independent filter on raw: 5,115 buys; buys file: 5,115",
+        "not_run": ""
+      },
+      "identity": {
+        "name": "identity",
+        "passed": true,
+        "violations": 0,
+        "examples": [],
+        "detail": "ISSUERCIK and RPTOWNERCIK, numeric",
+        "not_run": ""
+      }
+    }
+  },
+  "cross_quarter_duplicate_keys": [],
+  "failed_checks": [],
+  "promoted": true,
+  "rows_promoted": 78495,
+  "findings": {
+    "2023q2": {
+      "prereg_rule1": {
+        "excluded_from_clustering": 178,
+        "private_flag": 76,
+        "espp_or_drip_flag": 102,
+        "both_flags": 0,
+        "plan_buys_strong_ineligible": 262,
+        "plan_buys_also_excluded": 4,
+        "unknown_10b5_1": 0,
+        "cluster_eligible": 7786
+      },
+      "amendments": {
+        "amendment_buys": 203,
+        "amendment_accessions": 114
+      },
+      "symbols": {
+        "buys": {
+          "N/A": 23,
+          "NONE": 112,
+          "NA": 2
+        },
+        "issuers": {
+          "N/A": 8,
+          "NONE": 33,
+          "NA": 1
+        }
+      },
+      "timeliness": {
+        "TRANS_TIMELINESS": {
+          "<blank: on time>": 7939,
+          "E": 25
+        },
+        "more_than_2_business_days": 1042,
+        "more_than_2_business_days_and_not_marked_L": 1042
+      },
+      "lag_calendar_days": {
+        "n": 7964,
+        "min": 0,
+        "p25": 1,
+        "median": 2,
+        "p75": 4,
+        "p90": 5,
+        "p99": 999,
+        "max": 2116,
+        "buckets": {
+          "0": 1294,
+          "1-2": 4000,
+          "3-5": 1899,
+          "6-30": 290,
+          "31-365": 320,
+          ">365": 161
+        }
+      },
+      "joint_filings": {
+        "buys": 960,
+        "accessions": 452,
+        "owner_count_distribution": {
+          "1": 7004,
+          "2": 375,
+          "3": 213,
+          "4": 81,
+          "5": 72,
+          "6": 123,
+          "7": 28,
+          "8": 33,
+          "9": 7,
+          "10": 28
+        }
+      },
+      "form4_rows_not_promoted": {
+        "trans_date_after_filing_date": 11,
+        "unparseable_dates": 0,
+        "code_blank_or_unrecognized": 0,
+        "acquired_disposed_not_A_or_D": 0
+      },
+      "precision": {
+        "max_decimals_price": 2,
+        "max_decimals_shares": 2,
+        "buys_price_below_1": 754,
+        "buys_price_at_most_0_05": 79
+      },
+      "parse": {
+        "funnel": {
+          "nonderiv_rows_total": 68588,
+          "form4_rows": 68493,
+          "form4_code_p_rows": 8238,
+          "qualifying_buys": 7964
+        },
+        "exclusions_by_reason": {
+          "code_A_grant_award": 19860,
+          "code_C_conversion": 902,
+          "code_D_disposition_to_issuer": 1083,
+          "code_F_tax_or_exercise_payment": 9093,
+          "code_G_gift": 1269,
+          "code_I_discretionary_16b3f": 59,
+          "code_J_other": 2109,
+          "code_L_small_acquisition": 81,
+          "code_M_option_exercise_16b3": 9851,
+          "code_S_sale": 15766,
+          "code_U_tender_change_of_control": 53,
+          "code_W_will_or_descent": 21,
+          "code_X_option_exercise_itm": 104,
+          "code_Z_voting_trust": 4,
+          "p_not_acquired": 21,
+          "p_shares_missing_or_not_positive": 7,
+          "p_price_missing_or_not_positive": 245,
+          "trans_date_after_filing": 1
+        }
+      }
+    },
+    "2023q3": {
+      "prereg_rule1": {
+        "excluded_from_clustering": 228,
+        "private_flag": 122,
+        "espp_or_drip_flag": 106,
+        "both_flags": 0,
+        "plan_buys_strong_ineligible": 484,
+        "plan_buys_also_excluded": 0,
+        "unknown_10b5_1": 0,
+        "cluster_eligible": 5557
+      },
+      "amendments": {
+        "amendment_buys": 107,
+        "amendment_accessions": 62
+      },
+      "symbols": {
+        "buys": {
+          "NONE": 188,
+          "N/A": 16,
+          "NA": 5
+        },
+        "issuers": {
+          "NONE": 38,
+          "N/A": 8,
+          "NA": 3
+        }
+      },
+      "timeliness": {
+        "TRANS_TIMELINESS": {
+          "<blank: on time>": 5781,
+          "E": 4
+        },
+        "more_than_2_business_days": 783,
+        "more_than_2_business_days_and_not_marked_L": 783
+      },
+      "lag_calendar_days": {
+        "n": 5785,
+        "min": 0,
+        "p25": 1,
+        "median": 2,
+        "p75": 3,
+        "p90": 5,
+        "p99": 388,
+        "max": 3212,
+        "buckets": {
+          "0": 823,
+          "1-2": 3074,
+          "3-5": 1378,
+          "6-30": 249,
+          "31-365": 192,
+          ">365": 69
+        }
+      },
+      "joint_filings": {
+        "buys": 1216,
+        "accessions": 516,
+        "owner_count_distribution": {
+          "1": 4569,
+          "2": 729,
+          "3": 148,
+          "4": 76,
+          "5": 45,
+          "6": 99,
+          "7": 27,
+          "8": 52,
+          "9": 4,
+          "10": 36
+        }
+      },
+      "form4_rows_not_promoted": {
+        "trans_date_after_filing_date": 1,
+        "unparseable_dates": 0,
+        "code_blank_or_unrecognized": 0,
+        "acquired_disposed_not_A_or_D": 0
+      },
+      "precision": {
+        "max_decimals_price": 2,
+        "max_decimals_shares": 2,
+        "buys_price_below_1": 588,
+        "buys_price_at_most_0_05": 30
+      },
+      "parse": {
+        "funnel": {
+          "nonderiv_rows_total": 53078,
+          "form4_rows": 52896,
+          "form4_code_p_rows": 6857,
+          "qualifying_buys": 5785
+        },
+        "exclusions_by_reason": {
+          "code_A_grant_award": 9397,
+          "code_C_conversion": 882,
+          "code_D_disposition_to_issuer": 1427,
+          "code_E_expiration_short_derivative": 1,
+          "code_F_tax_or_exercise_payment": 6861,
+          "code_G_gift": 1127,
+          "code_I_discretionary_16b3f": 39,
+          "code_J_other": 2033,
+          "code_L_small_acquisition": 110,
+          "code_M_option_exercise_16b3": 7416,
+          "code_O_option_exercise_otm": 6,
+          "code_S_sale": 16577,
+          "code_U_tender_change_of_control": 16,
+          "code_W_will_or_descent": 14,
+          "code_X_option_exercise_itm": 121,
+          "code_Z_voting_trust": 12,
+          "p_not_acquired": 10,
+          "p_shares_missing_or_not_positive": 27,
+          "p_price_missing_or_not_positive": 1034,
+          "trans_date_after_filing": 1
+        }
+      }
+    },
+    "2023q4": {
+      "prereg_rule1": {
+        "excluded_from_clustering": 168,
+        "private_flag": 72,
+        "espp_or_drip_flag": 96,
+        "both_flags": 0,
+        "plan_buys_strong_ineligible": 245,
+        "plan_buys_also_excluded": 0,
+        "unknown_10b5_1": 0,
+        "cluster_eligible": 6072
+      },
+      "amendments": {
+        "amendment_buys": 102,
+        "amendment_accessions": 65
+      },
+      "symbols": {
+        "buys": {
+          "N/A": 22,
+          "NONE": 168,
+          "NA": 2
+        },
+        "issuers": {
+          "N/A": 10,
+          "NONE": 33,
+          "NA": 2
+        }
+      },
+      "timeliness": {
+        "TRANS_TIMELINESS": {
+          "<blank: on time>": 6224,
+          "E": 16
+        },
+        "more_than_2_business_days": 684,
+        "more_than_2_business_days_and_not_marked_L": 684
+      },
+      "lag_calendar_days": {
+        "n": 6240,
+        "min": 0,
+        "p25": 1,
+        "median": 2,
+        "p75": 3,
+        "p90": 4,
+        "p99": 842,
+        "max": 4789,
+        "buckets": {
+          "0": 1023,
+          "1-2": 3126,
+          "3-5": 1658,
+          "6-30": 202,
+          "31-365": 133,
+          ">365": 98
+        }
+      },
+      "joint_filings": {
+        "buys": 1520,
+        "accessions": 734,
+        "owner_count_distribution": {
+          "1": 4720,
+          "2": 813,
+          "3": 224,
+          "4": 102,
+          "5": 37,
+          "6": 254,
+          "7": 20,
+          "8": 41,
+          "10": 29
+        }
+      },
+      "form4_rows_not_promoted": {
+        "trans_date_after_filing_date": 5,
+        "unparseable_dates": 0,
+        "code_blank_or_unrecognized": 0,
+        "acquired_disposed_not_A_or_D": 0
+      },
+      "precision": {
+        "max_decimals_price": 2,
+        "max_decimals_shares": 2,
+        "buys_price_below_1": 742,
+        "buys_price_at_most_0_05": 49
+      },
+      "parse": {
+        "funnel": {
+          "nonderiv_rows_total": 57852,
+          "form4_rows": 57574,
+          "form4_code_p_rows": 7265,
+          "qualifying_buys": 6240
+        },
+        "exclusions_by_reason": {
+          "code_A_grant_award": 9555,
+          "code_C_conversion": 776,
+          "code_D_disposition_to_issuer": 1537,
+          "code_F_tax_or_exercise_payment": 8137,
+          "code_G_gift": 2329,
+          "code_I_discretionary_16b3f": 37,
+          "code_J_other": 1662,
+          "code_L_small_acquisition": 341,
+          "code_M_option_exercise_16b3": 7720,
+          "code_S_sale": 17912,
+          "code_U_tender_change_of_control": 101,
+          "code_W_will_or_descent": 20,
+          "code_X_option_exercise_itm": 182,
+          "p_not_acquired": 22,
+          "p_shares_missing_or_not_positive": 25,
+          "p_price_missing_or_not_positive": 978
+        }
+      }
+    },
+    "2024q1": {
+      "prereg_rule1": {
+        "excluded_from_clustering": 227,
+        "private_flag": 95,
+        "espp_or_drip_flag": 132,
+        "both_flags": 0,
+        "plan_buys_strong_ineligible": 501,
+        "plan_buys_also_excluded": 0,
+        "unknown_10b5_1": 0,
+        "cluster_eligible": 4987
+      },
+      "amendments": {
+        "amendment_buys": 153,
+        "amendment_accessions": 81
+      },
+      "symbols": {
+        "buys": {
+          "NONE": 190,
+          "N/A": 43,
+          "NA": 2
+        },
+        "issuers": {
+          "NONE": 40,
+          "N/A": 13,
+          "NA": 1
+        }
+      },
+      "timeliness": {
+        "TRANS_TIMELINESS": {
+          "<blank: on time>": 5209,
+          "E": 5
+        },
+        "more_than_2_business_days": 881,
+        "more_than_2_business_days_and_not_marked_L": 881
+      },
+      "lag_calendar_days": {
+        "n": 5214,
+        "min": 0,
+        "p25": 1,
+        "median": 2,
+        "p75": 4,
+        "p90": 19,
+        "p99": 606,
+        "max": 2332,
+        "buckets": {
+          "0": 727,
+          "1-2": 2517,
+          "3-5": 1269,
+          "6-30": 231,
+          "31-365": 352,
+          ">365": 118
+        }
+      },
+      "joint_filings": {
+        "buys": 1397,
+        "accessions": 535,
+        "owner_count_distribution": {
+          "1": 3817,
+          "2": 881,
+          "3": 176,
+          "4": 112,
+          "5": 42,
+          "6": 55,
+          "7": 54,
+          "8": 43,
+          "9": 3,
+          "10": 31
+        }
+      },
+      "form4_rows_not_promoted": {
+        "trans_date_after_filing_date": 14,
+        "unparseable_dates": 0,
+        "code_blank_or_unrecognized": 0,
+        "acquired_disposed_not_A_or_D": 0
+      },
+      "precision": {
+        "max_decimals_price": 2,
+        "max_decimals_shares": 2,
+        "buys_price_below_1": 574,
+        "buys_price_at_most_0_05": 174
+      },
+      "parse": {
+        "funnel": {
+          "nonderiv_rows_total": 111404,
+          "form4_rows": 109741,
+          "form4_code_p_rows": 5696,
+          "qualifying_buys": 5214
+        },
+        "exclusions_by_reason": {
+          "code_A_grant_award": 25488,
+          "code_C_conversion": 934,
+          "code_D_disposition_to_issuer": 1855,
+          "code_E_expiration_short_derivative": 1,
+          "code_F_tax_or_exercise_payment": 27496,
+          "code_G_gift": 1584,
+          "code_I_discretionary_16b3f": 51,
+          "code_J_other": 1743,
+          "code_L_small_acquisition": 27,
+          "code_M_option_exercise_16b3": 17629,
+          "code_S_sale": 27080,
+          "code_U_tender_change_of_control": 52,
+          "code_W_will_or_descent": 22,
+          "code_X_option_exercise_itm": 76,
+          "code_Z_voting_trust": 7,
+          "p_not_acquired": 40,
+          "p_shares_missing_or_not_positive": 7,
+          "p_price_missing_or_not_positive": 432,
+          "trans_date_after_filing": 3
+        }
+      }
+    },
+    "2024q2": {
+      "prereg_rule1": {
+        "excluded_from_clustering": 195,
+        "private_flag": 74,
+        "espp_or_drip_flag": 121,
+        "both_flags": 0,
+        "plan_buys_strong_ineligible": 254,
+        "plan_buys_also_excluded": 0,
+        "unknown_10b5_1": 0,
+        "cluster_eligible": 5249
+      },
+      "amendments": {
+        "amendment_buys": 141,
+        "amendment_accessions": 89
+      },
+      "symbols": {
+        "buys": {
+          "NONE": 169,
+          "N/A": 23,
+          "NA": 4
+        },
+        "issuers": {
+          "NONE": 41,
+          "N/A": 7,
+          "NA": 2
+        }
+      },
+      "timeliness": {
+        "TRANS_TIMELINESS": {
+          "<blank: on time>": 5411,
+          "E": 33
+        },
+        "more_than_2_business_days": 586,
+        "more_than_2_business_days_and_not_marked_L": 586
+      },
+      "lag_calendar_days": {
+        "n": 5444,
+        "min": 0,
+        "p25": 1,
+        "median": 1,
+        "p75": 3,
+        "p90": 4,
+        "p99": 647,
+        "max": 730485,
+        "buckets": {
+          "0": 968,
+          "1-2": 2792,
+          "3-5": 1301,
+          "6-30": 208,
+          "31-365": 100,
+          ">365": 75
+        }
+      },
+      "joint_filings": {
+        "buys": 770,
+        "accessions": 384,
+        "owner_count_distribution": {
+          "1": 4674,
+          "2": 376,
+          "3": 221,
+          "4": 61,
+          "5": 37,
+          "6": 19,
+          "7": 11,
+          "8": 37,
+          "9": 7,
+          "10": 1
+        }
+      },
+      "form4_rows_not_promoted": {
+        "trans_date_after_filing_date": 17,
+        "unparseable_dates": 0,
+        "code_blank_or_unrecognized": 0,
+        "acquired_disposed_not_A_or_D": 0
+      },
+      "precision": {
+        "max_decimals_price": 2,
+        "max_decimals_shares": 2,
+        "buys_price_below_1": 472,
+        "buys_price_at_most_0_05": 40
+      },
+      "parse": {
+        "funnel": {
+          "nonderiv_rows_total": 69412,
+          "form4_rows": 69302,
+          "form4_code_p_rows": 5560,
+          "qualifying_buys": 5444
+        },
+        "exclusions_by_reason": {
+          "code_A_grant_award": 19052,
+          "code_C_conversion": 680,
+          "code_D_disposition_to_issuer": 1364,
+          "code_F_tax_or_exercise_payment": 9205,
+          "code_G_gift": 1281,
+          "code_I_discretionary_16b3f": 76,
+          "code_J_other": 1699,
+          "code_L_small_acquisition": 77,
+          "code_M_option_exercise_16b3": 10071,
+          "code_O_option_exercise_otm": 4,
+          "code_S_sale": 20096,
+          "code_U_tender_change_of_control": 51,
+          "code_W_will_or_descent": 21,
+          "code_X_option_exercise_itm": 65,
+          "p_not_acquired": 17,
+          "p_shares_missing_or_not_positive": 25,
+          "p_price_missing_or_not_positive": 72,
+          "trans_date_after_filing": 2
+        }
+      }
+    },
+    "2024q3": {
+      "prereg_rule1": {
+        "excluded_from_clustering": 211,
+        "private_flag": 112,
+        "espp_or_drip_flag": 99,
+        "both_flags": 0,
+        "plan_buys_strong_ineligible": 339,
+        "plan_buys_also_excluded": 0,
+        "unknown_10b5_1": 0,
+        "cluster_eligible": 4859
+      },
+      "amendments": {
+        "amendment_buys": 119,
+        "amendment_accessions": 75
+      },
+      "symbols": {
+        "buys": {
+          "N/A": 27,
+          "NONE": 144,
+          "NA": 1
+        },
+        "issuers": {
+          "N/A": 11,
+          "NONE": 35,
+          "NA": 1
+        }
+      },
+      "timeliness": {
+        "TRANS_TIMELINESS": {
+          "<blank: on time>": 5062,
+          "E": 8
+        },
+        "more_than_2_business_days": 588,
+        "more_than_2_business_days_and_not_marked_L": 588
+      },
+      "lag_calendar_days": {
+        "n": 5070,
+        "min": 0,
+        "p25": 1,
+        "median": 2,
+        "p75": 3,
+        "p90": 5,
+        "p99": 283,
+        "max": 1777,
+        "buckets": {
+          "0": 760,
+          "1-2": 2547,
+          "3-5": 1342,
+          "6-30": 217,
+          "31-365": 170,
+          ">365": 34
+        }
+      },
+      "joint_filings": {
+        "buys": 999,
+        "accessions": 413,
+        "owner_count_distribution": {
+          "1": 4071,
+          "2": 494,
+          "3": 152,
+          "4": 45,
+          "5": 41,
+          "6": 207,
+          "7": 38,
+          "8": 1,
+          "9": 17,
+          "10": 4
+        }
+      },
+      "form4_rows_not_promoted": {
+        "trans_date_after_filing_date": 5,
+        "unparseable_dates": 0,
+        "code_blank_or_unrecognized": 0,
+        "acquired_disposed_not_A_or_D": 0
+      },
+      "precision": {
+        "max_decimals_price": 2,
+        "max_decimals_shares": 2,
+        "buys_price_below_1": 592,
+        "buys_price_at_most_0_05": 44
+      },
+      "parse": {
+        "funnel": {
+          "nonderiv_rows_total": 55881,
+          "form4_rows": 55677,
+          "form4_code_p_rows": 5129,
+          "qualifying_buys": 5070
+        },
+        "exclusions_by_reason": {
+          "code_A_grant_award": 9243,
+          "code_C_conversion": 966,
+          "code_D_disposition_to_issuer": 1267,
+          "code_F_tax_or_exercise_payment": 7014,
+          "code_G_gift": 1209,
+          "code_I_discretionary_16b3f": 62,
+          "code_J_other": 1466,
+          "code_L_small_acquisition": 294,
+          "code_M_option_exercise_16b3": 7741,
+          "code_O_option_exercise_otm": 1,
+          "code_S_sale": 21053,
+          "code_U_tender_change_of_control": 52,
+          "code_W_will_or_descent": 6,
+          "code_X_option_exercise_itm": 166,
+          "code_Z_voting_trust": 8,
+          "p_not_acquired": 6,
+          "p_shares_missing_or_not_positive": 13,
+          "p_price_missing_or_not_positive": 40
+        }
+      }
+    },
+    "2024q4": {
+      "prereg_rule1": {
+        "excluded_from_clustering": 230,
+        "private_flag": 139,
+        "espp_or_drip_flag": 91,
+        "both_flags": 0,
+        "plan_buys_strong_ineligible": 525,
+        "plan_buys_also_excluded": 0,
+        "unknown_10b5_1": 0,
+        "cluster_eligible": 5753
+      },
+      "amendments": {
+        "amendment_buys": 135,
+        "amendment_accessions": 63
+      },
+      "symbols": {
+        "buys": {
+          "NONE": 182,
+          "N/A": 29,
+          "NA": 10
+        },
+        "issuers": {
+          "NONE": 42,
+          "N/A": 10,
+          "NA": 2
+        }
+      },
+      "timeliness": {
+        "TRANS_TIMELINESS": {
+          "<blank: on time>": 5748,
+          "E": 235
+        },
+        "more_than_2_business_days": 1300,
+        "more_than_2_business_days_and_not_marked_L": 1300
+      },
+      "lag_calendar_days": {
+        "n": 5983,
+        "min": 0,
+        "p25": 1,
+        "median": 2,
+        "p75": 4,
+        "p90": 31,
+        "p99": 4119,
+        "max": 4721,
+        "buckets": {
+          "0": 722,
+          "1-2": 2819,
+          "3-5": 1408,
+          "6-30": 429,
+          "31-365": 164,
+          ">365": 441
+        }
+      },
+      "joint_filings": {
+        "buys": 1584,
+        "accessions": 483,
+        "owner_count_distribution": {
+          "1": 4399,
+          "2": 632,
+          "3": 543,
+          "4": 241,
+          "5": 68,
+          "6": 47,
+          "7": 28,
+          "8": 21,
+          "9": 3,
+          "10": 1
+        }
+      },
+      "form4_rows_not_promoted": {
+        "trans_date_after_filing_date": 3,
+        "unparseable_dates": 0,
+        "code_blank_or_unrecognized": 0,
+        "acquired_disposed_not_A_or_D": 0
+      },
+      "precision": {
+        "max_decimals_price": 2,
+        "max_decimals_shares": 2,
+        "buys_price_below_1": 351,
+        "buys_price_at_most_0_05": 28
+      },
+      "parse": {
+        "funnel": {
+          "nonderiv_rows_total": 63647,
+          "form4_rows": 63585,
+          "form4_code_p_rows": 6111,
+          "qualifying_buys": 5983
+        },
+        "exclusions_by_reason": {
+          "code_A_grant_award": 9546,
+          "code_C_conversion": 998,
+          "code_D_disposition_to_issuer": 1221,
+          "code_E_expiration_short_derivative": 1,
+          "code_F_tax_or_exercise_payment": 8459,
+          "code_G_gift": 2239,
+          "code_I_discretionary_16b3f": 66,
+          "code_J_other": 1831,
+          "code_L_small_acquisition": 156,
+          "code_M_option_exercise_16b3": 8444,
+          "code_S_sale": 24412,
+          "code_U_tender_change_of_control": 31,
+          "code_W_will_or_descent": 6,
+          "code_X_option_exercise_itm": 60,
+          "code_Z_voting_trust": 4,
+          "p_not_acquired": 21,
+          "p_shares_missing_or_not_positive": 51,
+          "p_price_missing_or_not_positive": 55,
+          "trans_date_after_filing": 1
+        }
+      }
+    },
+    "2025q1": {
+      "prereg_rule1": {
+        "excluded_from_clustering": 204,
+        "private_flag": 115,
+        "espp_or_drip_flag": 89,
+        "both_flags": 0,
+        "plan_buys_strong_ineligible": 450,
+        "plan_buys_also_excluded": 0,
+        "unknown_10b5_1": 0,
+        "cluster_eligible": 5081
+      },
+      "amendments": {
+        "amendment_buys": 147,
+        "amendment_accessions": 87
+      },
+      "symbols": {
+        "buys": {
+          "NONE": 170,
+          "N/A": 40,
+          "NA": 2
+        },
+        "issuers": {
+          "NONE": 43,
+          "N/A": 19,
+          "NA": 1
+        }
+      },
+      "timeliness": {
+        "TRANS_TIMELINESS": {
+          "<blank: on time>": 5256,
+          "E": 29
+        },
+        "more_than_2_business_days": 754,
+        "more_than_2_business_days_and_not_marked_L": 754
+      },
+      "lag_calendar_days": {
+        "n": 5285,
+        "min": 0,
+        "p25": 1,
+        "median": 2,
+        "p75": 3,
+        "p90": 5,
+        "p99": 678,
+        "max": 4994,
+        "buckets": {
+          "0": 816,
+          "1-2": 2597,
+          "3-5": 1344,
+          "6-30": 186,
+          "31-365": 232,
+          ">365": 110
+        }
+      },
+      "joint_filings": {
+        "buys": 1018,
+        "accessions": 362,
+        "owner_count_distribution": {
+          "1": 4267,
+          "2": 454,
+          "3": 259,
+          "4": 125,
+          "5": 65,
+          "6": 62,
+          "7": 19,
+          "8": 14,
+          "9": 10,
+          "10": 10
+        }
+      },
+      "form4_rows_not_promoted": {
+        "trans_date_after_filing_date": 10,
+        "unparseable_dates": 0,
+        "code_blank_or_unrecognized": 1,
+        "acquired_disposed_not_A_or_D": 0
+      },
+      "precision": {
+        "max_decimals_price": 2,
+        "max_decimals_shares": 2,
+        "buys_price_below_1": 351,
+        "buys_price_at_most_0_05": 16
+      },
+      "parse": {
+        "funnel": {
+          "nonderiv_rows_total": 103029,
+          "form4_rows": 101541,
+          "form4_code_p_rows": 5389,
+          "qualifying_buys": 5285
+        },
+        "exclusions_by_reason": {
+          "code_missing": 1,
+          "code_A_grant_award": 24985,
+          "code_C_conversion": 794,
+          "code_D_disposition_to_issuer": 1862,
+          "code_F_tax_or_exercise_payment": 27339,
+          "code_G_gift": 1398,
+          "code_I_discretionary_16b3f": 83,
+          "code_J_other": 1853,
+          "code_L_small_acquisition": 47,
+          "code_M_option_exercise_16b3": 15985,
+          "code_O_option_exercise_otm": 5,
+          "code_S_sale": 21625,
+          "code_U_tender_change_of_control": 53,
+          "code_W_will_or_descent": 16,
+          "code_X_option_exercise_itm": 106,
+          "p_not_acquired": 17,
+          "p_shares_missing_or_not_positive": 30,
+          "p_price_missing_or_not_positive": 57
+        }
+      }
+    },
+    "2025q2": {
+      "prereg_rule1": {
+        "excluded_from_clustering": 174,
+        "private_flag": 100,
+        "espp_or_drip_flag": 74,
+        "both_flags": 0,
+        "plan_buys_strong_ineligible": 739,
+        "plan_buys_also_excluded": 4,
+        "unknown_10b5_1": 0,
+        "cluster_eligible": 6123
+      },
+      "amendments": {
+        "amendment_buys": 127,
+        "amendment_accessions": 73
+      },
+      "symbols": {
+        "buys": {
+          "NONE": 143,
+          "N/A": 46,
+          "NA": 1
+        },
+        "issuers": {
+          "NONE": 39,
+          "N/A": 13,
+          "NA": 1
+        }
+      },
+      "timeliness": {
+        "TRANS_TIMELINESS": {
+          "<blank: on time>": 6011,
+          "E": 286
+        },
+        "more_than_2_business_days": 975,
+        "more_than_2_business_days_and_not_marked_L": 975
+      },
+      "lag_calendar_days": {
+        "n": 6297,
+        "min": 0,
+        "p25": 1,
+        "median": 2,
+        "p75": 4,
+        "p90": 9,
+        "p99": 236,
+        "max": 2025,
+        "buckets": {
+          "0": 870,
+          "1-2": 3145,
+          "3-5": 1519,
+          "6-30": 445,
+          "31-365": 281,
+          ">365": 37
+        }
+      },
+      "joint_filings": {
+        "buys": 1152,
+        "accessions": 467,
+        "owner_count_distribution": {
+          "1": 5145,
+          "2": 659,
+          "3": 172,
+          "4": 152,
+          "5": 65,
+          "6": 42,
+          "7": 34,
+          "8": 24,
+          "9": 2,
+          "10": 2
+        }
+      },
+      "form4_rows_not_promoted": {
+        "trans_date_after_filing_date": 8,
+        "unparseable_dates": 0,
+        "code_blank_or_unrecognized": 0,
+        "acquired_disposed_not_A_or_D": 0
+      },
+      "precision": {
+        "max_decimals_price": 2,
+        "max_decimals_shares": 2,
+        "buys_price_below_1": 554,
+        "buys_price_at_most_0_05": 80
+      },
+      "parse": {
+        "funnel": {
+          "nonderiv_rows_total": 66915,
+          "form4_rows": 66719,
+          "form4_code_p_rows": 6399,
+          "qualifying_buys": 6297
+        },
+        "exclusions_by_reason": {
+          "code_A_grant_award": 18965,
+          "code_C_conversion": 696,
+          "code_D_disposition_to_issuer": 1608,
+          "code_F_tax_or_exercise_payment": 9039,
+          "code_G_gift": 1238,
+          "code_I_discretionary_16b3f": 35,
+          "code_J_other": 1796,
+          "code_L_small_acquisition": 58,
+          "code_M_option_exercise_16b3": 9507,
+          "code_O_option_exercise_otm": 1,
+          "code_S_sale": 17165,
+          "code_U_tender_change_of_control": 109,
+          "code_W_will_or_descent": 16,
+          "code_X_option_exercise_itm": 87,
+          "p_not_acquired": 29,
+          "p_shares_missing_or_not_positive": 18,
+          "p_price_missing_or_not_positive": 49,
+          "p_equity_swap": 3,
+          "trans_date_after_filing": 3
+        }
+      }
+    },
+    "2025q3": {
+      "prereg_rule1": {
+        "excluded_from_clustering": 211,
+        "private_flag": 137,
+        "espp_or_drip_flag": 74,
+        "both_flags": 0,
+        "plan_buys_strong_ineligible": 321,
+        "plan_buys_also_excluded": 0,
+        "unknown_10b5_1": 0,
+        "cluster_eligible": 4577
+      },
+      "amendments": {
+        "amendment_buys": 86,
+        "amendment_accessions": 56
+      },
+      "symbols": {
+        "buys": {
+          "NONE": 216,
+          "N/A": 57
+        },
+        "issuers": {
+          "NONE": 48,
+          "N/A": 15
+        }
+      },
+      "timeliness": {
+        "TRANS_TIMELINESS": {
+          "<blank: on time>": 4526,
+          "E": 262
+        },
+        "more_than_2_business_days": 736,
+        "more_than_2_business_days_and_not_marked_L": 736
+      },
+      "lag_calendar_days": {
+        "n": 4788,
+        "min": 0,
+        "p25": 1,
+        "median": 2,
+        "p75": 4,
+        "p90": 14,
+        "p99": 291,
+        "max": 7306,
+        "buckets": {
+          "0": 735,
+          "1-2": 2345,
+          "3-5": 1108,
+          "6-30": 329,
+          "31-365": 236,
+          ">365": 35
+        }
+      },
+      "joint_filings": {
+        "buys": 550,
+        "accessions": 252,
+        "owner_count_distribution": {
+          "1": 4238,
+          "2": 188,
+          "3": 64,
+          "4": 87,
+          "5": 36,
+          "6": 85,
+          "7": 9,
+          "8": 65,
+          "9": 1,
+          "10": 15
+        }
+      },
+      "form4_rows_not_promoted": {
+        "trans_date_after_filing_date": 2,
+        "unparseable_dates": 0,
+        "code_blank_or_unrecognized": 0,
+        "acquired_disposed_not_A_or_D": 0
+      },
+      "precision": {
+        "max_decimals_price": 2,
+        "max_decimals_shares": 2,
+        "buys_price_below_1": 272,
+        "buys_price_at_most_0_05": 42
+      },
+      "parse": {
+        "funnel": {
+          "nonderiv_rows_total": 55125,
+          "form4_rows": 54955,
+          "form4_code_p_rows": 4850,
+          "qualifying_buys": 4788
+        },
+        "exclusions_by_reason": {
+          "code_A_grant_award": 8976,
+          "code_C_conversion": 771,
+          "code_D_disposition_to_issuer": 1496,
+          "code_F_tax_or_exercise_payment": 6708,
+          "code_G_gift": 1219,
+          "code_I_discretionary_16b3f": 26,
+          "code_J_other": 1540,
+          "code_L_small_acquisition": 58,
+          "code_M_option_exercise_16b3": 6919,
+          "code_O_option_exercise_otm": 1,
+          "code_S_sale": 22167,
+          "code_U_tender_change_of_control": 128,
+          "code_W_will_or_descent": 37,
+          "code_X_option_exercise_itm": 51,
+          "code_Z_voting_trust": 8,
+          "p_not_acquired": 17,
+          "p_shares_missing_or_not_positive": 3,
+          "p_price_missing_or_not_positive": 42
+        }
+      }
+    },
+    "2025q4": {
+      "prereg_rule1": {
+        "excluded_from_clustering": 183,
+        "private_flag": 103,
+        "espp_or_drip_flag": 80,
+        "both_flags": 0,
+        "plan_buys_strong_ineligible": 138,
+        "plan_buys_also_excluded": 1,
+        "unknown_10b5_1": 0,
+        "cluster_eligible": 5130
+      },
+      "amendments": {
+        "amendment_buys": 91,
+        "amendment_accessions": 43
+      },
+      "symbols": {
+        "buys": {
+          "NONE": 186,
+          "N/A": 51
+        },
+        "issuers": {
+          "NONE": 49,
+          "N/A": 16
+        }
+      },
+      "timeliness": {
+        "TRANS_TIMELINESS": {
+          "<blank: on time>": 5231,
+          "E": 82
+        },
+        "more_than_2_business_days": 810,
+        "more_than_2_business_days_and_not_marked_L": 810
+      },
+      "lag_calendar_days": {
+        "n": 5313,
+        "min": 0,
+        "p25": 1,
+        "median": 2,
+        "p75": 4,
+        "p90": 6,
+        "p99": 614,
+        "max": 7309,
+        "buckets": {
+          "0": 741,
+          "1-2": 2554,
+          "3-5": 1473,
+          "6-30": 256,
+          "31-365": 214,
+          ">365": 75
+        }
+      },
+      "joint_filings": {
+        "buys": 588,
+        "accessions": 230,
+        "owner_count_distribution": {
+          "1": 4725,
+          "2": 226,
+          "3": 85,
+          "4": 106,
+          "5": 22,
+          "6": 50,
+          "7": 33,
+          "8": 38,
+          "9": 19,
+          "10": 9
+        }
+      },
+      "form4_rows_not_promoted": {
+        "trans_date_after_filing_date": 1,
+        "unparseable_dates": 0,
+        "code_blank_or_unrecognized": 1,
+        "acquired_disposed_not_A_or_D": 0
+      },
+      "precision": {
+        "max_decimals_price": 2,
+        "max_decimals_shares": 2,
+        "buys_price_below_1": 378,
+        "buys_price_at_most_0_05": 32
+      },
+      "parse": {
+        "funnel": {
+          "nonderiv_rows_total": 59678,
+          "form4_rows": 59517,
+          "form4_code_p_rows": 5426,
+          "qualifying_buys": 5313
+        },
+        "exclusions_by_reason": {
+          "code_missing": 1,
+          "code_A_grant_award": 8938,
+          "code_C_conversion": 756,
+          "code_D_disposition_to_issuer": 1374,
+          "code_E_expiration_short_derivative": 2,
+          "code_F_tax_or_exercise_payment": 8096,
+          "code_G_gift": 2341,
+          "code_I_discretionary_16b3f": 22,
+          "code_J_other": 1471,
+          "code_L_small_acquisition": 292,
+          "code_M_option_exercise_16b3": 8141,
+          "code_S_sale": 22483,
+          "code_U_tender_change_of_control": 66,
+          "code_W_will_or_descent": 15,
+          "code_X_option_exercise_itm": 93,
+          "p_not_acquired": 29,
+          "p_shares_missing_or_not_positive": 6,
+          "p_price_missing_or_not_positive": 78
+        }
+      }
+    },
+    "2026q1": {
+      "prereg_rule1": {
+        "excluded_from_clustering": 180,
+        "private_flag": 68,
+        "espp_or_drip_flag": 112,
+        "both_flags": 0,
+        "plan_buys_strong_ineligible": 188,
+        "plan_buys_also_excluded": 0,
+        "unknown_10b5_1": 0,
+        "cluster_eligible": 4637
+      },
+      "amendments": {
+        "amendment_buys": 97,
+        "amendment_accessions": 66
+      },
+      "symbols": {
+        "buys": {
+          "N/A": 75,
+          "NONE": 168,
+          "NA": 2
+        },
+        "issuers": {
+          "N/A": 21,
+          "NONE": 49,
+          "NA": 2
+        }
+      },
+      "timeliness": {
+        "TRANS_TIMELINESS": {
+          "<blank: on time>": 4802,
+          "E": 15
+        },
+        "more_than_2_business_days": 829,
+        "more_than_2_business_days_and_not_marked_L": 829
+      },
+      "lag_calendar_days": {
+        "n": 4817,
+        "min": 0,
+        "p25": 1,
+        "median": 2,
+        "p75": 4,
+        "p90": 11,
+        "p99": 1007,
+        "max": 8767,
+        "buckets": {
+          "0": 688,
+          "1-2": 2241,
+          "3-5": 1299,
+          "6-30": 229,
+          "31-365": 201,
+          ">365": 159
+        }
+      },
+      "joint_filings": {
+        "buys": 549,
+        "accessions": 235,
+        "owner_count_distribution": {
+          "1": 4268,
+          "2": 201,
+          "3": 67,
+          "4": 94,
+          "5": 46,
+          "6": 49,
+          "7": 37,
+          "8": 24,
+          "9": 19,
+          "10": 12
+        }
+      },
+      "form4_rows_not_promoted": {
+        "trans_date_after_filing_date": 8,
+        "unparseable_dates": 0,
+        "code_blank_or_unrecognized": 3,
+        "acquired_disposed_not_A_or_D": 0
+      },
+      "precision": {
+        "max_decimals_price": 2,
+        "max_decimals_shares": 2,
+        "buys_price_below_1": 254,
+        "buys_price_at_most_0_05": 6
+      },
+      "parse": {
+        "funnel": {
+          "nonderiv_rows_total": 103733,
+          "form4_rows": 101527,
+          "form4_code_p_rows": 4926,
+          "qualifying_buys": 4817
+        },
+        "exclusions_by_reason": {
+          "code_missing": 3,
+          "code_A_grant_award": 24489,
+          "code_C_conversion": 774,
+          "code_D_disposition_to_issuer": 2239,
+          "code_F_tax_or_exercise_payment": 26995,
+          "code_G_gift": 1361,
+          "code_I_discretionary_16b3f": 30,
+          "code_J_other": 1498,
+          "code_L_small_acquisition": 123,
+          "code_M_option_exercise_16b3": 16295,
+          "code_O_option_exercise_otm": 1,
+          "code_S_sale": 22615,
+          "code_U_tender_change_of_control": 66,
+          "code_W_will_or_descent": 18,
+          "code_X_option_exercise_itm": 93,
+          "code_Z_voting_trust": 1,
+          "p_not_acquired": 14,
+          "p_shares_missing_or_not_positive": 16,
+          "p_price_missing_or_not_positive": 79
+        }
+      }
+    },
+    "2026q2": {
+      "prereg_rule1": {
+        "excluded_from_clustering": 345,
+        "private_flag": 176,
+        "espp_or_drip_flag": 169,
+        "both_flags": 0,
+        "plan_buys_strong_ineligible": 246,
+        "plan_buys_also_excluded": 1,
+        "unknown_10b5_1": 0,
+        "cluster_eligible": 4835
+      },
+      "amendments": {
+        "amendment_buys": 91,
+        "amendment_accessions": 67
+      },
+      "symbols": {
+        "buys": {
+          "NONE": 134,
+          "N/A": 64
+        },
+        "issuers": {
+          "NONE": 42,
+          "N/A": 21
+        }
+      },
+      "timeliness": {
+        "TRANS_TIMELINESS": {
+          "<blank: on time>": 5065,
+          "E": 115
+        },
+        "more_than_2_business_days": 862,
+        "more_than_2_business_days_and_not_marked_L": 862
+      },
+      "lag_calendar_days": {
+        "n": 5180,
+        "min": 0,
+        "p25": 1,
+        "median": 2,
+        "p75": 4,
+        "p90": 7,
+        "p99": 254,
+        "max": 7294,
+        "buckets": {
+          "0": 774,
+          "1-2": 2294,
+          "3-5": 1472,
+          "6-30": 321,
+          "31-365": 279,
+          ">365": 40
+        }
+      },
+      "joint_filings": {
+        "buys": 566,
+        "accessions": 224,
+        "owner_count_distribution": {
+          "1": 4614,
+          "2": 194,
+          "3": 82,
+          "4": 94,
+          "5": 86,
+          "6": 43,
+          "7": 41,
+          "8": 9,
+          "9": 8,
+          "10": 9
+        }
+      },
+      "form4_rows_not_promoted": {
+        "trans_date_after_filing_date": 0,
+        "unparseable_dates": 0,
+        "code_blank_or_unrecognized": 2,
+        "acquired_disposed_not_A_or_D": 0
+      },
+      "precision": {
+        "max_decimals_price": 2,
+        "max_decimals_shares": 2,
+        "buys_price_below_1": 387,
+        "buys_price_at_most_0_05": 68
+      },
+      "parse": {
+        "funnel": {
+          "nonderiv_rows_total": 78328,
+          "form4_rows": 78181,
+          "form4_code_p_rows": 5311,
+          "qualifying_buys": 5180
+        },
+        "exclusions_by_reason": {
+          "code_missing": 2,
+          "code_A_grant_award": 19209,
+          "code_C_conversion": 880,
+          "code_D_disposition_to_issuer": 1710,
+          "code_F_tax_or_exercise_payment": 9357,
+          "code_G_gift": 1282,
+          "code_I_discretionary_16b3f": 32,
+          "code_J_other": 1746,
+          "code_L_small_acquisition": 54,
+          "code_M_option_exercise_16b3": 10778,
+          "code_O_option_exercise_otm": 3,
+          "code_S_sale": 27598,
+          "code_U_tender_change_of_control": 96,
+          "code_W_will_or_descent": 14,
+          "code_X_option_exercise_itm": 109,
+          "p_not_acquired": 35,
+          "p_shares_missing_or_not_positive": 14,
+          "p_price_missing_or_not_positive": 82
+        }
+      }
+    },
+    "2026q3": {
+      "prereg_rule1": {
+        "excluded_from_clustering": 336,
+        "private_flag": 135,
+        "espp_or_drip_flag": 201,
+        "both_flags": 0,
+        "plan_buys_strong_ineligible": 136,
+        "plan_buys_also_excluded": 0,
+        "unknown_10b5_1": 0,
+        "cluster_eligible": 4779
+      },
+      "amendments": {
+        "amendment_buys": 144,
+        "amendment_accessions": 92
+      },
+      "symbols": {
+        "buys": {
+          "NONE": 165,
+          "N/A": 45,
+          "NA": 3
+        },
+        "issuers": {
+          "NONE": 41,
+          "N/A": 21,
+          "NA": 1
+        }
+      },
+      "timeliness": {
+        "TRANS_TIMELINESS": {
+          "<blank: on time>": 5095,
+          "E": 20
+        },
+        "more_than_2_business_days": 791,
+        "more_than_2_business_days_and_not_marked_L": 791
+      },
+      "lag_calendar_days": {
+        "n": 5115,
+        "min": 0,
+        "p25": 1,
+        "median": 2,
+        "p75": 4,
+        "p90": 6,
+        "p99": 342,
+        "max": 7308,
+        "buckets": {
+          "0": 662,
+          "1-2": 2565,
+          "3-5": 1313,
+          "6-30": 360,
+          "31-365": 170,
+          ">365": 45
+        }
+      },
+      "joint_filings": {
+        "buys": 686,
+        "accessions": 231,
+        "owner_count_distribution": {
+          "1": 4429,
+          "2": 275,
+          "3": 85,
+          "4": 99,
+          "5": 75,
+          "6": 132,
+          "7": 7,
+          "8": 5,
+          "9": 8
+        }
+      },
+      "form4_rows_not_promoted": {
+        "trans_date_after_filing_date": 2,
+        "unparseable_dates": 0,
+        "code_blank_or_unrecognized": 4,
+        "acquired_disposed_not_A_or_D": 0
+      },
+      "precision": {
+        "max_decimals_price": 2,
+        "max_decimals_shares": 2,
+        "buys_price_below_1": 588,
+        "buys_price_at_most_0_05": 92
+      },
+      "parse": {
+        "funnel": {
+          "nonderiv_rows_total": 59885,
+          "form4_rows": 59834,
+          "form4_code_p_rows": 5183,
+          "qualifying_buys": 5115
+        },
+        "exclusions_by_reason": {
+          "code_missing": 4,
+          "code_A_grant_award": 9791,
+          "code_C_conversion": 902,
+          "code_D_disposition_to_issuer": 1382,
+          "code_F_tax_or_exercise_payment": 6801,
+          "code_G_gift": 1033,
+          "code_I_discretionary_16b3f": 23,
+          "code_J_other": 1672,
+          "code_L_small_acquisition": 63,
+          "code_M_option_exercise_16b3": 7433,
+          "code_O_option_exercise_otm": 1,
+          "code_S_sale": 25430,
+          "code_U_tender_change_of_control": 38,
+          "code_W_will_or_descent": 14,
+          "code_X_option_exercise_itm": 56,
+          "code_Z_voting_trust": 8,
+          "p_not_acquired": 6,
+          "p_shares_missing_or_not_positive": 8,
+          "p_price_missing_or_not_positive": 53,
+          "p_equity_swap": 1
+        }
+      }
+    }
+  },
+  "amendments_all_quarters": {
+    "amendment_buys": 1743,
+    "amendment_accessions": 1033,
+    "accessions_by_match": {
+      "none_in_study": 168,
+      "unique": 849,
+      "resolved_rule_2a": 9,
+      "multiple": 7
+    },
+    "links_to_an_earlier_quarter": 135,
+    "repeat_buys": 699,
+    "repeat_buys_across_quarters": 128,
+    "multiple_candidates": [
+      {
+        "accession_number": "0001104659-24-084337",
+        "source_quarter": "2024q3",
+        "issuer_cik": "0001137883",
+        "issuer_name": "BRAINSTORM CELL THERAPEUTICS INC.",
+        "date_of_orig_sub": "2024-05-07",
+        "candidates": [
+          "0001104659-24-057784",
+          "0001104659-24-058218"
+        ],
+        "buys": 1
+      },
+      {
+        "accession_number": "0001104659-24-084339",
+        "source_quarter": "2024q3",
+        "issuer_cik": "0001137883",
+        "issuer_name": "BRAINSTORM CELL THERAPEUTICS INC.",
+        "date_of_orig_sub": "2024-05-07",
+        "candidates": [
+          "0001104659-24-057784",
+          "0001104659-24-058218"
+        ],
+        "buys": 1
+      },
+      {
+        "accession_number": "0001415889-25-007591",
+        "source_quarter": "2025q1",
+        "issuer_cik": "0001697500",
+        "issuer_name": "Solaris Energy Infrastructure, Inc.",
+        "date_of_orig_sub": "2025-03-07",
+        "candidates": [
+          "0001415889-25-007343",
+          "0001415889-25-007362"
+        ],
+        "buys": 1
+      },
+      {
+        "accession_number": "0001437749-23-016605",
+        "source_quarter": "2023q2",
+        "issuer_cik": "0000719402",
+        "issuer_name": "FIRST NATIONAL CORP /VA/",
+        "date_of_orig_sub": "2023-05-24",
+        "candidates": [
+          "0001437749-23-015653",
+          "0001437749-23-015717"
+        ],
+        "buys": 1
+      },
+      {
+        "accession_number": "0001437749-24-037695",
+        "source_quarter": "2024q4",
+        "issuer_cik": "0001006830",
+        "issuer_name": "CONSUMERS BANCORP INC /OH/",
+        "date_of_orig_sub": "2024-12-16",
+        "candidates": [
+          "0001437749-24-037531",
+          "0001437749-24-037615"
+        ],
+        "buys": 1
+      },
+      {
+        "accession_number": "0001464631-24-000006",
+        "source_quarter": "2024q2",
+        "issuer_cik": "0001449794",
+        "issuer_name": "Embassy Bancorp, Inc.",
+        "date_of_orig_sub": "2024-05-24",
+        "candidates": [
+          "0001464631-24-000002",
+          "0001464631-24-000003"
+        ],
+        "buys": 1
+      },
+      {
+        "accession_number": "0001486189-24-000048",
+        "source_quarter": "2024q4",
+        "issuer_cik": "0001870144",
+        "issuer_name": "Cardio Diagnostics Holdings, Inc.",
+        "date_of_orig_sub": "2024-09-09",
+        "candidates": [
+          "0001486189-24-000044",
+          "0001486189-24-000045"
+        ],
+        "buys": 1
+      }
+    ]
+  },
+  "prereg_counts": {
+    "by_quarter": {
+      "2023q2": {
+        "buys": 7964,
+        "rule2_collapsed": 64,
+        "rule1_flagged": 178,
+        "rule3_stale": 457,
+        "rule4_below_1": 602,
+        "eligible": 6663
+      },
+      "2023q3": {
+        "buys": 5785,
+        "rule2_collapsed": 49,
+        "rule1_flagged": 228,
+        "rule3_stale": 236,
+        "rule4_below_1": 496,
+        "eligible": 4776
+      },
+      "2023q4": {
+        "buys": 6240,
+        "rule2_collapsed": 55,
+        "rule1_flagged": 165,
+        "rule3_stale": 203,
+        "rule4_below_1": 681,
+        "eligible": 5136
+      },
+      "2024q1": {
+        "buys": 5214,
+        "rule2_collapsed": 58,
+        "rule1_flagged": 223,
+        "rule3_stale": 416,
+        "rule4_below_1": 295,
+        "eligible": 4222
+      },
+      "2024q2": {
+        "buys": 5444,
+        "rule2_collapsed": 59,
+        "rule1_flagged": 181,
+        "rule3_stale": 109,
+        "rule4_below_1": 443,
+        "eligible": 4652
+      },
+      "2024q3": {
+        "buys": 5070,
+        "rule2_collapsed": 46,
+        "rule1_flagged": 204,
+        "rule3_stale": 168,
+        "rule4_below_1": 529,
+        "eligible": 4123
+      },
+      "2024q4": {
+        "buys": 5983,
+        "rule2_collapsed": 78,
+        "rule1_flagged": 230,
+        "rule3_stale": 568,
+        "rule4_below_1": 308,
+        "eligible": 4799
+      },
+      "2025q1": {
+        "buys": 5285,
+        "rule2_collapsed": 61,
+        "rule1_flagged": 201,
+        "rule3_stale": 291,
+        "rule4_below_1": 275,
+        "eligible": 4457
+      },
+      "2025q2": {
+        "buys": 6297,
+        "rule2_collapsed": 53,
+        "rule1_flagged": 174,
+        "rule3_stale": 275,
+        "rule4_below_1": 440,
+        "eligible": 5355
+      },
+      "2025q3": {
+        "buys": 4788,
+        "rule2_collapsed": 30,
+        "rule1_flagged": 210,
+        "rule3_stale": 254,
+        "rule4_below_1": 247,
+        "eligible": 4047
+      },
+      "2025q4": {
+        "buys": 5313,
+        "rule2_collapsed": 24,
+        "rule1_flagged": 182,
+        "rule3_stale": 268,
+        "rule4_below_1": 306,
+        "eligible": 4533
+      },
+      "2026q1": {
+        "buys": 4817,
+        "rule2_collapsed": 42,
+        "rule1_flagged": 179,
+        "rule3_stale": 302,
+        "rule4_below_1": 196,
+        "eligible": 4098
+      },
+      "2026q2": {
+        "buys": 5180,
+        "rule2_collapsed": 33,
+        "rule1_flagged": 344,
+        "rule3_stale": 289,
+        "rule4_below_1": 321,
+        "eligible": 4193
+      },
+      "2026q3": {
+        "buys": 5115,
+        "rule2_collapsed": 47,
+        "rule1_flagged": 333,
+        "rule3_stale": 192,
+        "rule4_below_1": 491,
+        "eligible": 4052
+      }
+    },
+    "total": {
+      "buys": 78495,
+      "rule2_collapsed": 699,
+      "rule1_flagged": 3032,
+      "rule3_stale": 4028,
+      "rule4_below_1": 5630,
+      "eligible": 65106
+    },
+    "eligible_issuers": 4146,
+    "eligible_plan_10b5_1": 4404,
+    "eligible_unknown_10b5_1": 0,
+    "eligible_strong_ineligible_plan_or_unknown": 4404,
+    "eligible_joint_filing": 11940,
+    "eligible_filings_rule5_insider_units": 38320
+  },
+  "spot_check": {
+    "run": true,
+    "n": 25,
+    "seed": 16486067862572434945,
+    "results": [
+      {
+        "accession_number": "0001761119-23-000003",
+        "nonderiv_trans_sk": "7761349",
+        "issuer_cik": "0000786035",
+        "issuer_name": "LIBERTY ALL STAR GROWTH FUND INC.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "1000.0",
+          "price": "5.27",
+          "date": "2023-08-29"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/786035/000176111923000003/0001761119-23-000003.txt",
+        "filing_sha256": "94a979b6e35418e5debea5c84fb7031473bedbf4d93600941815909219d7e87a",
+        "cached": false,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "1000",
+          "price": "5.27",
+          "date": "2023-08-29"
+        }
+      },
+      {
+        "accession_number": "0000824142-25-000084",
+        "nonderiv_trans_sk": "8380733",
+        "issuer_cik": "0000824142",
+        "issuer_name": "AAON, INC.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "1000.0",
+          "price": "80.86",
+          "date": "2025-03-05"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/824142/000082414225000084/0000824142-25-000084.txt",
+        "filing_sha256": "3f0c84ee4eab0b0968e779e116250253e0a376671585a947d4982fa6f0c69bbd",
+        "cached": false,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "1000",
+          "price": "80.86",
+          "date": "2025-03-05"
+        }
+      },
+      {
+        "accession_number": "0001104659-23-128118",
+        "nonderiv_trans_sk": "7745100",
+        "issuer_cik": "0000770460",
+        "issuer_name": "PEOPLES FINANCIAL CORP /MS/",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "384.0",
+          "price": "14.35",
+          "date": "2023-12-20"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/770460/000110465923128118/0001104659-23-128118.txt",
+        "filing_sha256": "b834cf15bf39ec5a63f0e362a5590aa6b42e1bbe033a3c7c139e5fe54a7a033f",
+        "cached": false,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "384",
+          "price": "14.3500",
+          "date": "2023-12-20"
+        }
+      },
+      {
+        "accession_number": "0000950170-24-049153",
+        "nonderiv_trans_sk": "8412752",
+        "issuer_cik": "0001929561",
+        "issuer_name": "RXO, Inc.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "100000.0",
+          "price": "19.79",
+          "date": "2024-04-25"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1929561/000095017024049153/0000950170-24-049153.txt",
+        "filing_sha256": "6f9e97750ce609ca7d0c0ce29a0194e4b76716c01bd57bad123edd8aa905da84",
+        "cached": false,
+        "xml_transactions": 2,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "100000",
+          "price": "19.79",
+          "date": "2024-04-25"
+        }
+      },
+      {
+        "accession_number": "0001654954-24-002049",
+        "nonderiv_trans_sk": "8701644",
+        "issuer_cik": "0000718413",
+        "issuer_name": "COMMUNITY BANCORP /VT",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "280.0",
+          "price": "17.35",
+          "date": "2024-02-21"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/718413/000165495424002049/0001654954-24-002049.txt",
+        "filing_sha256": "b21dab12bea1c30c1c21dc12a7c02d960a2b7227b1110269f3d5be58f8a10dff",
+        "cached": false,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "280.00",
+          "price": "17.35",
+          "date": "2024-02-21"
+        }
+      },
+      {
+        "accession_number": "0001225208-23-009811",
+        "nonderiv_trans_sk": "8066699",
+        "issuer_cik": "0000033185",
+        "issuer_name": "EQUIFAX INC",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "820.0",
+          "price": "166.19",
+          "date": "2023-10-26"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/33185/000122520823009811/0001225208-23-009811.txt",
+        "filing_sha256": "98c1957f4abffa54fb62315b37683cea7461d6ae3624d571972db971795d9694",
+        "cached": false,
+        "xml_transactions": 2,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": false,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "820.0000",
+          "price": "166.1941",
+          "date": "2023-10-26"
+        }
+      },
+      {
+        "accession_number": "0001174947-23-000740",
+        "nonderiv_trans_sk": "8239857",
+        "issuer_cik": "0000716605",
+        "issuer_name": "PENNS WOODS BANCORP INC",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "597.0",
+          "price": "22.21",
+          "date": "2023-05-08"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/716605/000117494723000740/0001174947-23-000740.txt",
+        "filing_sha256": "18948bb4196684002b64884940a01aa3b7faf651ffdf36ab7768244094be20d1",
+        "cached": false,
+        "xml_transactions": 4,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "597",
+          "price": "22.21",
+          "date": "2023-05-08"
+        }
+      },
+      {
+        "accession_number": "0001166586-26-000002",
+        "nonderiv_trans_sk": "8841334",
+        "issuer_cik": "0001639723",
+        "issuer_name": "Navan, Inc.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "466058.0",
+          "price": "16.27",
+          "date": "2026-01-02"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1639723/000116658626000002/0001166586-26-000002.txt",
+        "filing_sha256": "58d7aaebba91650bca044b0a5d69c58fc29b3e9c18b06aace2510d94d551adb4",
+        "cached": false,
+        "xml_transactions": 3,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "466058",
+          "price": "16.27",
+          "date": "2026-01-02"
+        }
+      },
+      {
+        "accession_number": "0001195734-24-000024",
+        "nonderiv_trans_sk": "8612316",
+        "issuer_cik": "0001195734",
+        "issuer_name": "POTBELLY CORP",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "1000.0",
+          "price": "11.65",
+          "date": "2024-03-12"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1195734/000119573424000024/0001195734-24-000024.txt",
+        "filing_sha256": "d4ccf586d4da2d290acd09c8118d0ee809bc8583a3d4b708416147272e42eb7e",
+        "cached": false,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "1000",
+          "price": "11.65",
+          "date": "2024-03-12"
+        }
+      },
+      {
+        "accession_number": "0001374339-26-000003",
+        "nonderiv_trans_sk": "8901059",
+        "issuer_cik": "0001374339",
+        "issuer_name": "ProMIS Neurosciences Inc.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "1000.0",
+          "price": "21.89",
+          "date": "2026-03-03"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1374339/000137433926000003/0001374339-26-000003.txt",
+        "filing_sha256": "8aef546547cac0c1088d1743ba119330d92a2ef58bff99f158ef3668de45634a",
+        "cached": false,
+        "xml_transactions": 3,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "1000",
+          "price": "21.89",
+          "date": "2026-03-03"
+        }
+      },
+      {
+        "accession_number": "0001104659-24-111249",
+        "nonderiv_trans_sk": "8432363",
+        "issuer_cik": "0001538379",
+        "issuer_name": "Ibotta, Inc.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "309.0",
+          "price": "71.17",
+          "date": "2024-10-22"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1538379/000110465924111249/0001104659-24-111249.txt",
+        "filing_sha256": "9f852708cf5e747e2264e52b45250816068ccf69d7eafe728d2fecf75984c296",
+        "cached": false,
+        "xml_transactions": 16,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": false,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "309",
+          "price": "71.1723",
+          "date": "2024-10-22"
+        }
+      },
+      {
+        "accession_number": "0001062993-25-015077",
+        "nonderiv_trans_sk": "8755624",
+        "issuer_cik": "0000707605",
+        "issuer_name": "AMERISERV FINANCIAL INC /PA/",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "3000.0",
+          "price": "3.04",
+          "date": "2025-08-28"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/707605/000106299325015077/0001062993-25-015077.txt",
+        "filing_sha256": "b400a6a737d09f8aa2651e3084c980a0b377facfe92178e31126bce541ebc08d",
+        "cached": false,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "3000",
+          "price": "3.04",
+          "date": "2025-08-28"
+        }
+      },
+      {
+        "accession_number": "0001127602-23-026668",
+        "nonderiv_trans_sk": "7955340",
+        "issuer_cik": "0001409970",
+        "issuer_name": "LendingClub Corp",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "10000.0",
+          "price": "5.2",
+          "date": "2023-10-31"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1409970/000112760223026668/0001127602-23-026668.txt",
+        "filing_sha256": "3c3df5da86aab9e39676f9c5f0bea7796466add23eed91278b807bc167f18573",
+        "cached": false,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": false,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "10000",
+          "price": "5.2003",
+          "date": "2023-10-31"
+        }
+      },
+      {
+        "accession_number": "0000950170-25-034655",
+        "nonderiv_trans_sk": "7961879",
+        "issuer_cik": "0001500881",
+        "issuer_name": "enCore Energy Corp.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "35000.0",
+          "price": "1.65",
+          "date": "2025-03-04"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1500881/000095017025034655/0000950170-25-034655.txt",
+        "filing_sha256": "abcb779cba3f96ca514bf0ec6a838af5cc8e939caa1bf7154547f3eb3efebd6a",
+        "cached": false,
+        "xml_transactions": 2,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": false,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "35000",
+          "price": "1.6484",
+          "date": "2025-03-04"
+        }
+      },
+      {
+        "accession_number": "0001641172-25-003675",
+        "nonderiv_trans_sk": "7358623",
+        "issuer_cik": "0001574094",
+        "issuer_name": "RenovoRx, Inc.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "6500.0",
+          "price": "0.79",
+          "date": "2025-04-10"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1574094/000164117225003675/0001641172-25-003675.txt",
+        "filing_sha256": "a640bafd854860bbf78e6a67357f29653e890614c88256b7eecfce28c567ac96",
+        "cached": false,
+        "xml_transactions": 3,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "6500",
+          "price": "0.79",
+          "date": "2025-04-10"
+        }
+      },
+      {
+        "accession_number": "0001641172-25-005318",
+        "nonderiv_trans_sk": "8416149",
+        "issuer_cik": "0001200375",
+        "issuer_name": "CODEXIS, INC.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "25000.0",
+          "price": "2.23",
+          "date": "2025-04-15"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1200375/000164117225005318/0001641172-25-005318.txt",
+        "filing_sha256": "7dcab28dae34ccc83c4a9007686b81c53a4983f117181bf554e08774befca473",
+        "cached": false,
+        "xml_transactions": 3,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": false,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "25000",
+          "price": "2.2288",
+          "date": "2025-04-15"
+        }
+      },
+      {
+        "accession_number": "0001628280-26-006249",
+        "nonderiv_trans_sk": "8867219",
+        "issuer_cik": "0002065601",
+        "issuer_name": "Central Bancompany, Inc.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "40000.0",
+          "price": "24.5",
+          "date": "2026-02-06"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/2065601/000162828026006249/0001628280-26-006249.txt",
+        "filing_sha256": "5f63e9e5244cbc9071d73b92b7b94eec8d24a449316e326f019876e44b266f9e",
+        "cached": false,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": false,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "40000",
+          "price": "24.497",
+          "date": "2026-02-06"
+        }
+      },
+      {
+        "accession_number": "0001062993-23-013757",
+        "nonderiv_trans_sk": "7165390",
+        "issuer_cik": "0001047862",
+        "issuer_name": "CONSOLIDATED EDISON INC",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "0.98",
+          "price": "92.95",
+          "date": "2023-06-15"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1047862/000106299323013757/0001062993-23-013757.txt",
+        "filing_sha256": "51a2caf83bb4746f0d0def96f83a6fe7e03c78d885a9fe2ae02b6e163caf2dc0",
+        "cached": false,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": false,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "0.9760",
+          "price": "92.95",
+          "date": "2023-06-15"
+        }
+      },
+      {
+        "accession_number": "0001207097-23-000293",
+        "nonderiv_trans_sk": "7957854",
+        "issuer_cik": "0000919567",
+        "issuer_name": "RENN Fund, Inc.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "8.0",
+          "price": "1.83",
+          "date": "2023-10-04"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/919567/000120709723000293/0001207097-23-000293.txt",
+        "filing_sha256": "ef0af0197e043ccc7eba02a282f2b2d70fc241e4a914a7786535678b72aa1e19",
+        "cached": false,
+        "xml_transactions": 5,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "8",
+          "price": "1.83",
+          "date": "2023-10-04"
+        }
+      },
+      {
+        "accession_number": "0001209191-23-047806",
+        "nonderiv_trans_sk": "7889122",
+        "issuer_cik": "0001604665",
+        "issuer_name": "Westlake Chemical Partners LP",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "10000.0",
+          "price": "22.74",
+          "date": "2023-08-29"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1604665/000120919123047806/0001209191-23-047806.txt",
+        "filing_sha256": "b38063ecec8be3f47f3ae4715102a2055a8cb6d5862f642c3ea8dc1470a1b118",
+        "cached": false,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": false,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "10000",
+          "price": "22.738",
+          "date": "2023-08-29"
+        }
+      },
+      {
+        "accession_number": "0001193125-26-394331",
+        "nonderiv_trans_sk": "9072279",
+        "issuer_cik": "0000849146",
+        "issuer_name": "Lifevantage Corp",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "976.0",
+          "price": "6.22",
+          "date": "2026-09-15"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/849146/000119312526394331/0001193125-26-394331.txt",
+        "filing_sha256": "6fd496e8512fa2cc58c8fc93dab66ac80641a8fb777452f09f59351c90c3cade",
+        "cached": false,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "976",
+          "price": "6.22",
+          "date": "2026-09-15"
+        }
+      },
+      {
+        "accession_number": "0001209191-23-048246",
+        "nonderiv_trans_sk": "7575320",
+        "issuer_cik": "0001627282",
+        "issuer_name": "CaliberCos Inc.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "25000.0",
+          "price": "1.5",
+          "date": "2023-08-31"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1627282/000120919123048246/0001209191-23-048246.txt",
+        "filing_sha256": "ab9adbd39c335d0d01625e54dc27a67cd44e2d942ec35159352d0486cf304892",
+        "cached": false,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": false,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "25000",
+          "price": "1.4996",
+          "date": "2023-08-31"
+        }
+      },
+      {
+        "accession_number": "0001176334-24-000168",
+        "nonderiv_trans_sk": "8625668",
+        "issuer_cik": "0001176334",
+        "issuer_name": "MARTIN MIDSTREAM PARTNERS L.P.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "17.12",
+          "price": "3.99",
+          "date": "2024-11-18"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1176334/000117633424000168/0001176334-24-000168.txt",
+        "filing_sha256": "0f9ba14c586721795ca71e8d5747f18e71bafb58592febfd589a3db2ef0e14fc",
+        "cached": false,
+        "xml_transactions": 1,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": false,
+        "rounding_only": true,
+        "fields": {
+          "code": true,
+          "shares": false,
+          "price": false,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "17.1186",
+          "price": "3.9874",
+          "date": "2024-11-18"
+        }
+      },
+      {
+        "accession_number": "0001214659-23-015748",
+        "nonderiv_trans_sk": "7967754",
+        "issuer_cik": "0001437491",
+        "issuer_name": "RiskOn International, Inc.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "1500.0",
+          "price": "0.35",
+          "date": "2023-11-27"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1437491/000121465923015748/0001214659-23-015748.txt",
+        "filing_sha256": "e7edf86045bcb29b40c0623d4a1f5ad3c31810c6bcd1eb75b3f3c4177dee2e55",
+        "cached": false,
+        "xml_transactions": 2,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "1500",
+          "price": "0.35",
+          "date": "2023-11-27"
+        }
+      },
+      {
+        "accession_number": "0000945621-24-000768",
+        "nonderiv_trans_sk": "8084253",
+        "issuer_cik": "0001959353",
+        "issuer_name": "Oxford Park Income Fund, Inc.",
+        "document_type": "4",
+        "dataset": {
+          "code": "P",
+          "shares": "84360.3",
+          "price": "28.45",
+          "date": "2024-05-01"
+        },
+        "url": "https://www.sec.gov/Archives/edgar/data/1959353/000094562124000768/0000945621-24-000768.txt",
+        "filing_sha256": "b6c49efd9482b5f54e2e7b6c806aa45d9739eda623f35d1272fcaced5d0db6a4",
+        "cached": false,
+        "xml_transactions": 2,
+        "document_type_xml": "4",
+        "document_type_match": true,
+        "issuer_cik_match": true,
+        "status": "compared",
+        "match": true,
+        "rounding_only": false,
+        "fields": {
+          "code": true,
+          "shares": true,
+          "price": true,
+          "date": true
+        },
+        "xml": {
+          "code": "P",
+          "shares": "84360.3",
+          "price": "28.45",
+          "date": "2024-05-01"
+        }
+      }
+    ],
+    "matched": 15,
+    "rounding_only": 10,
+    "substantive_mismatch": 0,
+    "requests": 25
+  },
+  "insider_buys_sha256": "a7ec55298bf886c0090f7c5fc4e93bfb18faeabc5d4c407db8d77abefdb75b16"
+}

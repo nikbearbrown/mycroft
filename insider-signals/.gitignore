@@ -1,0 +1,22 @@
+# Re-downloadable SEC files and rebuildable intermediates (provenance is in data/raw/form345/manifest.json)
+data/raw/form345/*.zip
+data/raw/form345/*/
+data/raw/parsed/*.csv
+# Price cache (re-downloadable; per-symbol SHA-256 and fetched_at are in prices_manifest.json, which is kept with the fetch log)
+data/raw/prices/*
+!data/raw/prices/prices_manifest.json
+!data/raw/prices/fetch_log.jsonl
+!data/raw/prices/splits_manifest.json
+# Spot-check filing copies (re-downloadable; URL + SHA-256 are in conformance_summary.json). The request log is kept.
+data/raw/filings/*
+!data/raw/filings/request_log.jsonl
+# Empty staging folders left by an interrupted promotion
+data/raw/conformance/stage-*/
+# Verified buys file: too large for git at the full study period (~45 MB). Its SHA-256 is in
+# data/verified/conformance_summary.json and status.md; rebuild with parse.py + conformance.py.
+data/verified/insider_buys.csv
+# 2023 Q1 parse outputs: outside the study period (2023 Q2 – 2026 Q3); kept on disk, not committed
+data/raw/parsed/2023q1_*
+# Enriched buys file (~same size as insider_buys.csv); SHA-256 in data/verified/enrich_summary.json
+data/verified/enriched_buys.csv
+data/raw/enrich/stage-*/

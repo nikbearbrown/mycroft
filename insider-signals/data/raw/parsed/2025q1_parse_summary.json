@@ -1,0 +1,233 @@
+{
+  "source_sha256": "37f6b4287df129b88acf0782498540640d055b1c893320877e329945b534a8c2",
+  "quarter": "2025q1",
+  "aff10b5one_column_present": true,
+  "funnel": {
+    "nonderiv_rows_total": 103029,
+    "form4_rows": 101541,
+    "form4_code_p_rows": 5389,
+    "qualifying_buys": 5285
+  },
+  "nonderiv_rows_by_document_type": {
+    "4": 100210,
+    "4/A": 1331,
+    "5": 1460,
+    "5/A": 28
+  },
+  "nonderiv_rows_without_submission": 0,
+  "form4_rows_by_trans_code": {
+    "F": 27339,
+    "A": 24985,
+    "S": 21625,
+    "M": 15985,
+    "P": 5389,
+    "D": 1862,
+    "J": 1853,
+    "G": 1398,
+    "C": 794,
+    "X": 106,
+    "I": 83,
+    "U": 53,
+    "L": 47,
+    "W": 16,
+    "O": 5,
+    "<blank>": 1
+  },
+  "exclusions_by_reason": {
+    "code_missing": 1,
+    "code_A_grant_award": 24985,
+    "code_C_conversion": 794,
+    "code_D_disposition_to_issuer": 1862,
+    "code_F_tax_or_exercise_payment": 27339,
+    "code_G_gift": 1398,
+    "code_I_discretionary_16b3f": 83,
+    "code_J_other": 1853,
+    "code_L_small_acquisition": 47,
+    "code_M_option_exercise_16b3": 15985,
+    "code_O_option_exercise_otm": 5,
+    "code_S_sale": 21625,
+    "code_U_tender_change_of_control": 53,
+    "code_W_will_or_descent": 16,
+    "code_X_option_exercise_itm": 106,
+    "p_not_acquired": 17,
+    "p_shares_missing_or_not_positive": 30,
+    "p_price_missing_or_not_positive": 57
+  },
+  "qualifying_buys_by_is_10b5_1": {
+    "plan": 450,
+    "no_plan": 4835,
+    "unknown": 0
+  },
+  "qualifying_buys_aff10b5one_raw_values": {
+    "0": 3794,
+    "false": 1041,
+    "true": 246,
+    "1": 204
+  },
+  "form4_submissions_aff10b5one_raw_values": {
+    "0": 42021,
+    "false": 11835,
+    "1": 3684,
+    "true": 1253
+  },
+  "qualifying_buys_footnote_mentions_10b5_1_by_is_10b5_1": {
+    "plan": 390,
+    "no_plan": 2
+  },
+  "qualifying_buy_flags": {
+    "espp_drip:ESPP": 36,
+    "espp_drip:dividend reinvestment": 53,
+    "espp_or_drip_flag": 89,
+    "joint_filing": 1018,
+    "private:IPO": 19,
+    "private:PIPE": 1,
+    "private:directed share program": 18,
+    "private:from the issuer": 9,
+    "private:private placement": 33,
+    "private:privately negotiated": 3,
+    "private:public offering": 41,
+    "private:registered direct": 10,
+    "private:securities purchase agreement": 29,
+    "private:subscription agreement": 6,
+    "private:underwritten": 20,
+    "private_purchase_flag": 115
+  },
+  "context": {
+    "form4_derivative_table_code_p_rows": 293,
+    "form4_rows_without_reporting_owner": 0,
+    "code_p_equity_swap_raw_values": {
+      "0": 4421,
+      "false": 968
+    },
+    "unrecognized_relationship_tokens": {}
+  },
+  "private_purchase_samples": [
+    {
+      "accession_number": "0001434728-25-000102",
+      "issuer": "Global Water Resources, Inc.",
+      "matched": [
+        "public offering"
+      ],
+      "snippet": "The purchase of common stock pursuant to public offering on March 27, 2025, offered at the public offering price of $10.00 per share."
+    },
+    {
+      "accession_number": "0001434728-25-000101",
+      "issuer": "Global Water Resources, Inc.",
+      "matched": [
+        "public offering"
+      ],
+      "snippet": "The purchase of common stock pursuant to public offering on March 27, 2025, offered at the public offering price of $10.00 per share."
+    },
+    {
+      "accession_number": "0000950170-25-047130",
+      "issuer": "F&G Annuities & Life, Inc.",
+      "matched": [
+        "public offering",
+        "underwritten"
+      ],
+      "snippet": "500,000 shares in F&G Annuities & Life, Inc.'s underwritten public offering, which closed on March 24, 2025."
+    },
+    {
+      "accession_number": "0000950170-25-047104",
+      "issuer": "Surrozen, Inc./DE",
+      "matched": [
+        "private placement"
+      ],
+      "snippet": ", LP (\"\"TCG Opportunity III LP\"\") purchased in the Issuer's private placement on March 24, 2025 (the \"\"2025 Private Placement\"\").\""
+    },
+    {
+      "accession_number": "0000950170-25-047104",
+      "issuer": "Surrozen, Inc./DE",
+      "matched": [
+        "private placement"
+      ],
+      "snippet": ", LP (\"\"TCG Opportunity III LP\"\") purchased in the Issuer's private placement on March 24, 2025 (the \"\"2025 Private Placement\"\").\""
+    },
+    {
+      "accession_number": "0000950170-25-047104",
+      "issuer": "Surrozen, Inc./DE",
+      "matched": [
+        "private placement"
+      ],
+      "snippet": ", LP (\"\"TCG Opportunity III LP\"\") purchased in the Issuer's private placement on March 24, 2025 (the \"\"2025 Private Placement\"\").\""
+    },
+    {
+      "accession_number": "0001079973-25-000529",
+      "issuer": "Oncology Institute, Inc.",
+      "matched": [
+        "private placement",
+        "securities purchase agreement"
+      ],
+      "snippet": "e of the securities to the reporting person pursuant to the Private Placement was approved by the Company's board of directors and was deemed an exempt transaction pursuant to Rule"
+    },
+    {
+      "accession_number": "0001079973-25-000527",
+      "issuer": "Oncology Institute, Inc.",
+      "matched": [
+        "private placement",
+        "securities purchase agreement"
+      ],
+      "snippet": "\"Represents securities purchased in a private placement transaction directly from the Company pursuant to a Securities Purchase Agreement, dated March 24, 2025 (the \"\"Private Place"
+    },
+    {
+      "accession_number": "0001079973-25-000525",
+      "issuer": "Oncology Institute, Inc.",
+      "matched": [
+        "private placement",
+        "securities purchase agreement"
+      ],
+      "snippet": "\"Represents securities purchased in a private placement transaction directly from the Company pursuant to a Securities Purchase Agreement, dated March 24, 2025 (the \"\"Private Place"
+    },
+    {
+      "accession_number": "0001079973-25-000523",
+      "issuer": "Oncology Institute, Inc.",
+      "matched": [
+        "private placement",
+        "securities purchase agreement"
+      ],
+      "snippet": "e of the securities to the reporting person pursuant to the Private Placement was approved by the Company's board of directors and was deemed an exempt transaction pursuant to Rule"
+    }
+  ],
+  "espp_or_drip_samples": [
+    {
+      "accession_number": "0001127602-25-010662",
+      "issuer": "KINGSWAY FINANCIAL SERVICES INC",
+      "matched": [
+        "ESPP"
+      ],
+      "snippet": "Plan, as amended and restated effective May 29, 2014 (the \"\"ESPP\"\"). Pursuant to the ESPP, eligible employees may contribute an amount up to 5% of adjusted salary for eac"
+    },
+    {
+      "accession_number": "0001415889-25-009209",
+      "issuer": "GERMAN AMERICAN BANCORP, INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "hares of common stock through participation in the Issuer's Dividend Reinvestment and Stock Purchase Plan (the \"\"Dividend Reinvestment Plan\"\").\""
+    },
+    {
+      "accession_number": "0001156375-25-000090",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Reflects shares that were acquired pursuant to a dividend reinvestment plan administered by the reporting person's broker. Actual amounts of fractional shares owned may vary slight"
+    },
+    {
+      "accession_number": "0001156375-25-000088",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "number of shares acquired on January 16, 2025 pursuant to a dividend reinvestment plan administered by the reporting person's broker. Subsequent to the purchase and the filing of"
+    },
+    {
+      "accession_number": "0001156375-25-000088",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "number of shares acquired on January 16, 2025 pursuant to a dividend reinvestment plan administered by the reporting person's broker. Subsequent to the purchase and the filing of"
+    }
+  ]
+}
