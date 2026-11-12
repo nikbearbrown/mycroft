@@ -5,6 +5,124 @@ Newest entries at top.
 
 ---
 
+## 2026-11-12 — Survivorship risk recorded; share-type counts (no returns viewed); Rule 10 proposed, not registered
+
+**Requested by:** Gomathy S.
+**Recipe:** insider-signal-agent v0.1.0 (DRAFT)
+
+**Survivorship risk** added to `status.md` and a new `## Risks` section of the recipe, in the owner's
+words. `no_data` by quarter: 1,800 / 7,964 (2023 Q2) falling to 64 / 5,115 (2026 Q3); total 8,832.
+
+**Share-type counts:** an ad-hoc classifier (session scratchpad `share_types.py`, not committed) read
+only `security_title`, `source_quarter`, `price_status`, `filing_price_check` from
+`enriched_buys.csv` (SHA-256 `fa146273…5bde`). No return, entry or exit column was read. First match
+wins: warrants, notes, depositary/ADR, preferred, units, rights/options (→ other), foreign/ordinary,
+common, other.
+
+| Category | Buys | Priced | Rule 9 mismatch |
+|---|---|---|---|
+| common | 72,537 | 59,500 | 1,308 |
+| foreign / ordinary | 1,716 | 1,077 | 352 |
+| other | 1,568 | 892 | 98 |
+| units | 1,236 | 990 | 3 |
+| preferred | 886 | 117 | 482 |
+| depositary / ADR | 529 | 291 | 88 |
+| notes | 22 | 1 | 21 |
+| warrants | 1 | 0 | 0 |
+| **total** | **78,495** | **62,868** | **2,352** |
+
+Totals match `enrich_summary.json`. Under a common-only rule (proposed Rule 10, strict match),
+coverage would be 59,500 / 78,495 = **75.80%** over all buys and 59,500 / 72,537 = **82.03%** over
+common buys. **Rule 10 is not registered or applied**; the decision is the owner's.
+
+**Process note:** recipe edited on the owner's explicit written instruction (exact text supplied),
+without a separate plan-mode step. **G3 not cleared.**
+
+---
+
+## 2026-11-09 — Rule 9 (filed price vs market) registered, built and run; coverage 80.09%
+
+**Decided by:** Gomathy S. (Rule 9 registered in `PRE_REGISTRATION.md`, dated 2026-11-09, before any
+returns were viewed; the first ENRICH run had computed per-buy returns, none viewed or summarized).
+
+**Rule 9:** a buy whose filed price differs by more than 25% from the stock's unadjusted close on
+`TRANS_DATE` (or the last bar before it), splits undone, gets `price_status = price_mismatch_vs_filing`
+and no prices or returns. **Built:** `enrich.py` (split cache, `filing_price_check` halting check,
+audit section); 9 new tests (suite 119, all pass; three deliberate Rule 9 bugs each failed them).
+
+**Run:** `python enrich.py` with the price cache → 0 price requests; split histories for the 3,741
+symbols with a priced buy, 94 batches of 40, 3 s apart, 2026-11-09 23:58 – 2026-11-10 00:10 UTC,
+**0 refusals**. Exit 0; `--check` all PASS; a second run made no requests and gave the same file.
+- `enriched_buys.csv` SHA-256 `fa14627333ac754a7f904e3417e5475241d7523659d46d6385779a7c65295bde`
+  (replaces `657b98cd…`, gitignored).
+- **Coverage 80.09%** (62,868 of 78,495; minimum 80%; thresholds unchanged). By quarter 71.58%
+  (2023 Q2) to 87.48% (2025 Q4); 2023 Q2 – 2024 Q4 each below 80%.
+- Rule 9: 65,220 checked → ok 61,688, **mismatch 2,352**, not checkable 1,180 (no bar on or before
+  the trade date; stay priced). Split adjustment applied to 6,484 checked buys (93.4% of them match
+  vs 96.7% without a split, consistent with Yahoo's Close being split-adjusted).
+- Mismatches: 535 issuers; largest TSM 211 (2026 Q2–Q3), AMH 79, GAM 72, ACR 51; 1,897 carry no
+  PARSE flag; 2,289 use a same-day bar.
+- Windows: 21d closed 62,864, series_ends_before_exit 4, not yet closed 0; 63d closed 59,754,
+  **not yet closed 3,114**. No return statistics were computed or reported.
+- File sizes: `prices_manifest.json` 1.55 MB, `fetch_log.jsonl` 0.10 MB, `splits_manifest.json`
+  0.84 MB, all under 5 MB, so committed.
+
+**Open:** G3 not cleared.
+
+---
+
+## 2026-11-09 — ENRICH built and run on the study period; 78,495 rows promoted (G3 not cleared)
+
+**Fellow:** Gomathy S.
+**Recipe:** insider-signal-agent v0.1.0 (DRAFT)
+
+**Built:** `enrich.py` (Rules 7–8) and `tests/test_enrich.py` (17 tests, no network; suite 110, all
+pass). Three deliberate bugs (entry on the filing day, exit one day early, no whole-batch refusal
+check) each made the tests fail.
+
+**Run:** `python enrich.py` (yfinance 1.3.0, pandas 3.0.3, in a virtual environment outside the
+repo) → exit 0. 4,641 symbols (4,640 from the buys + SPY) in 117 batches of 40, threads off, 3 s
+apart, 2026-11-09 23:18–23:39 UTC; **0 refusals**. Range 2023-03-24 to 2026-11-09 (exclusive); last
+SPY bar 2026-11-06. Cache: 3,833 symbols with data, 808 without. Then `--offline` (0 requests, same
+`enriched_buys.csv`) and `--check` → all checks PASS.
+- `enriched_buys.csv` SHA-256 `657b98cd80721c0ae5ab5cd2e1bff7a6a44b67bb5e6ff2fac86ea342c95f9448` (gitignored).
+- **Coverage 83.09%** (65,220 of 78,495 buys priced; minimum 80%). By quarter from 73.87% (2023 Q2)
+  rising to 92.53% (2026 Q2); 2023 Q2 – 2024 Q1 are each below 80%.
+- price_status: priced 65,220 · no_data 8,832 · placeholder_symbol 2,945 · series_starts_after_entry
+  1,014 · unparseable_symbol 298 · multiple_symbols 175 · no_bar_on_entry_date 11.
+- Windows: 21d closed 65,216, series_ends_before_exit 4, not yet closed 0. 63d closed 61,860,
+  **not yet closed 3,360** (all 2026 Q3).
+- No return statistics were computed or reported.
+
+**Findings for the owner:**
+- `no_data` has two kinds: 562 symbols Yahoo does not know ("no timezone found") and 246 it knows
+  but returned no bars for ("no price data found"), including symbols of companies expected to be
+  listed (TCBI, KFS). A re-request of TCBI and KFS outside the script (one request, same answer)
+  showed it is not transient. Not overridden.
+- 32 symbols are filed by more than one issuer CIK (729 buys); the symbol is not checked against the issuer.
+- Requests outside `fetch_log.jsonl`: the format probe disclosed in the Rules 7–8 entry, and the
+  TCBI/KFS re-request above.
+
+**Open:** G3 is not cleared until the owner logs it.
+
+---
+
+## 2026-11-09 — Decision: Rules 7–8 (return windows, G3 coverage); TODOs 4 and 5 closed
+
+**Decided by:** Gomathy S., before any prices for the study's buys were fetched and before any
+returns were computed.
+
+- **Rule 7:** primary return window 21 trading days; one secondary window of 63 trading days.
+- **Rule 8:** minimum price coverage for G3 is 80% of verified buys.
+- Registered in `PRE_REGISTRATION.md` (dated 2026-11-09). Recipe TODOs 4 and 5 closed;
+  `todos_open` 6 → 4.
+- **Disclosed:** before this entry was written, one yfinance format probe was made (SPY, AAPL and a
+  made-up symbol, 2026-10-01 to 2026-10-07). No study buy was priced and no return was computed.
+- Process note: the recipe was edited on the owner's explicit written instruction (CLAUDE.md asks
+  for plan mode before edits under `recipes/`).
+
+---
+
 ## 2026-11-05 — Decision: Rule 2b; TODO 3 closed; 2023 Q1 parse outputs kept out of git
 
 **Decided by:** Gomathy S.

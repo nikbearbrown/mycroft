@@ -1,0 +1,1200 @@
+{
+  "run_at": "2026-11-10T00:10:55+00:00",
+  "script": "enrich.py",
+  "promoted": true,
+  "failed_checks": [],
+  "halting_checks": [
+    {
+      "check": "input_hash",
+      "passed": true,
+      "violations": 0,
+      "detail": "insider_buys.csv SHA-256 = insider_buys_sha256 (G2)",
+      "examples": []
+    },
+    {
+      "check": "spy_present",
+      "passed": true,
+      "violations": 0,
+      "detail": "SPY cached and covering the first entry day",
+      "examples": []
+    },
+    {
+      "check": "cache_consistent",
+      "passed": true,
+      "violations": 0,
+      "detail": "every symbol fetched for [2023-03-24, 2026-11-09) like SPY",
+      "examples": []
+    },
+    {
+      "check": "status_complete",
+      "passed": true,
+      "violations": 0,
+      "detail": "every buy has a known status; no number without a closed window",
+      "examples": []
+    },
+    {
+      "check": "lookahead",
+      "passed": true,
+      "violations": 0,
+      "detail": "entry = first SPY day after FILING_DATE; exit = entry + N SPY days",
+      "examples": []
+    },
+    {
+      "check": "filing_price_check",
+      "passed": true,
+      "violations": 0,
+      "detail": "filed price within 25% of the split-adjusted unadjusted close on TRANS_DATE, else price_mismatch_vs_filing (Rule 9)",
+      "examples": []
+    },
+    {
+      "check": "coverage",
+      "passed": true,
+      "violations": 0,
+      "detail": "priced \u00f7 verified buys = 80.09% (minimum 80%, Rule 8)",
+      "examples": []
+    }
+  ],
+  "rules": {
+    "windows_trading_days": [
+      21,
+      63
+    ],
+    "min_coverage": 0.8,
+    "entry": "adjusted close, first SPY trading day after FILING_DATE",
+    "filing_price_tolerance": 0.25,
+    "registered": "PRE_REGISTRATION.md Rules 7-9 (2026-11-09)"
+  },
+  "input": {
+    "file": "data/verified/insider_buys.csv",
+    "sha256": "a7ec55298bf886c0090f7c5fc4e93bfb18faeabc5d4c407db8d77abefdb75b16",
+    "rows": 78495
+  },
+  "prices": {
+    "source": "Yahoo Finance via yfinance (adjusted close, auto_adjust=False)",
+    "requested_start": "2023-03-24",
+    "requested_end_exclusive": "2026-11-09",
+    "market_symbol": "SPY",
+    "market_as_of": "2026-11-06",
+    "manifest_sha256": "63591ff4809b8ac9a633653bffcf15c777971a6fc79da451bf311075c6eb58a3",
+    "fetch": {
+      "requested": 0,
+      "batches": 0
+    },
+    "fetch_log_totals": {
+      "batch_requests": 211,
+      "by_kind": {
+        "prices": 117,
+        "splits": 94
+      },
+      "symbol_requests": 8382,
+      "refused": 0,
+      "first_ts": "2026-11-09T23:18:21+00:00",
+      "last_ts": "2026-11-10T00:10:11+00:00"
+    },
+    "splits": {
+      "requested_start": "2023-03-24",
+      "requested_end_exclusive": "2026-11-10",
+      "symbols": 3741,
+      "fetch": {
+        "requested": 0,
+        "batches": 0
+      },
+      "manifest_sha256": "cbebca0285f652b9d9b36bc12d27cfd0ed25677d80953cd13333d5bb0902a99a"
+    },
+    "offline": false
+  },
+  "findings": {
+    "filing_price_check": {
+      "checked": 65220,
+      "verdicts": {
+        "ok": 61688,
+        "mismatch": 2352,
+        "not_checkable": 1180
+      },
+      "split_applied_in_checked": 6484,
+      "mismatch_kinds": {
+        "filed_price": {
+          "\u2265 $20": 920,
+          "$5\u201320": 597,
+          "$1\u20135": 422,
+          "< $1": 413
+        },
+        "direction": {
+          "filed 50\u201375% of close": 635,
+          "filed 10\u201350% of close": 549,
+          "filed 125\u2013200% of close": 430,
+          "filed 2\u201310\u00d7 close": 348,
+          "filed > 10\u00d7 close": 274,
+          "filed < 10% of close": 116
+        },
+        "flags": {
+          "no flag": 1897,
+          "private": 236,
+          "espp_or_drip": 219
+        },
+        "split_applied": {
+          "no": 1926,
+          "yes": 426
+        },
+        "ref_gap_days": {
+          "same day": 2289,
+          "1\u20133 days": 63
+        },
+        "document_type": {
+          "4": 2312,
+          "4/A": 40
+        },
+        "quarter": {
+          "2026q3": 387,
+          "2026q2": 300,
+          "2023q2": 182,
+          "2023q4": 173,
+          "2023q3": 156,
+          "2024q2": 149,
+          "2025q4": 144,
+          "2024q4": 133,
+          "2025q1": 133,
+          "2024q1": 132,
+          "2026q1": 130,
+          "2024q3": 128,
+          "2025q2": 120,
+          "2025q3": 85
+        }
+      },
+      "mismatch_issuers_top": [
+        {
+          "issuer_cik": "0001046179",
+          "issuer_name": "TAIWAN SEMICONDUCTOR MANUFACTURING CO LTD",
+          "symbol": "TSM",
+          "buys": 211
+        },
+        {
+          "issuer_cik": "0001562401",
+          "issuer_name": "American Homes 4 Rent",
+          "symbol": "AMH",
+          "buys": 79
+        },
+        {
+          "issuer_cik": "0000040417",
+          "issuer_name": "GENERAL AMERICAN INVESTORS CO INC",
+          "symbol": "GAM",
+          "buys": 72
+        },
+        {
+          "issuer_cik": "0001332551",
+          "issuer_name": "ACRES Commercial Realty Corp.",
+          "symbol": "ACR",
+          "buys": 51
+        },
+        {
+          "issuer_cik": "0000707388",
+          "issuer_name": "STAR EQUITY HOLDINGS, INC.",
+          "symbol": "STRR",
+          "buys": 45
+        },
+        {
+          "issuer_cik": "0000082473",
+          "issuer_name": "INNSUITES HOSPITALITY TRUST",
+          "symbol": "IHT",
+          "buys": 34
+        },
+        {
+          "issuer_cik": "0001726173",
+          "issuer_name": "Biglari Holdings Inc.",
+          "symbol": "BH",
+          "buys": 31
+        },
+        {
+          "issuer_cik": "0002115119",
+          "issuer_name": "Columbia Financial, Inc./MD/",
+          "symbol": "CLBK",
+          "buys": 30
+        },
+        {
+          "issuer_cik": "0001487718",
+          "issuer_name": "AMERICAN BATTERY MATERIALS, INC.",
+          "symbol": "BLTH",
+          "buys": 29
+        },
+        {
+          "issuer_cik": "0001160330",
+          "issuer_name": "BANK BRADESCO",
+          "symbol": "BBD",
+          "buys": 28
+        },
+        {
+          "issuer_cik": "0001895249",
+          "issuer_name": "ConnectM Technology Solutions, Inc.",
+          "symbol": "CNTM",
+          "buys": 24
+        },
+        {
+          "issuer_cik": "0001268884",
+          "issuer_name": "CBRE GLOBAL REAL ESTATE INCOME FUND",
+          "symbol": "IGR",
+          "buys": 22
+        },
+        {
+          "issuer_cik": "0001712184",
+          "issuer_name": "Liberty Latin America Ltd.",
+          "symbol": "LILA",
+          "buys": 21
+        },
+        {
+          "issuer_cik": "0001539850",
+          "issuer_name": "Starco Brands, Inc.",
+          "symbol": "STCB",
+          "buys": 20
+        },
+        {
+          "issuer_cik": "0001505497",
+          "issuer_name": "BioRestorative Therapies, Inc.",
+          "symbol": "BRTX",
+          "buys": 19
+        },
+        {
+          "issuer_cik": "0001011060",
+          "issuer_name": "Nordicus Partners Corp",
+          "symbol": "NORD",
+          "buys": 18
+        },
+        {
+          "issuer_cik": "0001754195",
+          "issuer_name": "Trulieve Cannabis Corp.",
+          "symbol": "TRUL",
+          "buys": 18
+        },
+        {
+          "issuer_cik": "0001345099",
+          "issuer_name": "MESOBLAST LTD",
+          "symbol": "MESO",
+          "buys": 18
+        },
+        {
+          "issuer_cik": "0001408534",
+          "issuer_name": "First Guaranty Bancshares, Inc.",
+          "symbol": "FGBI",
+          "buys": 18
+        },
+        {
+          "issuer_cik": "0001538495",
+          "issuer_name": "Earth Science Tech, Inc.",
+          "symbol": "ETST",
+          "buys": 17
+        }
+      ],
+      "mismatch_issuers": 535
+    },
+    "coverage": {
+      "2023q2": {
+        "buys": 7964,
+        "priced": 5701,
+        "pct": 71.58
+      },
+      "2023q3": {
+        "buys": 5785,
+        "priced": 4326,
+        "pct": 74.78
+      },
+      "2023q4": {
+        "buys": 6240,
+        "priced": 4650,
+        "pct": 74.52
+      },
+      "2024q1": {
+        "buys": 5214,
+        "priced": 3967,
+        "pct": 76.08
+      },
+      "2024q2": {
+        "buys": 5444,
+        "priced": 4227,
+        "pct": 77.65
+      },
+      "2024q3": {
+        "buys": 5070,
+        "priced": 4003,
+        "pct": 78.95
+      },
+      "2024q4": {
+        "buys": 5983,
+        "priced": 4726,
+        "pct": 78.99
+      },
+      "2025q1": {
+        "buys": 5285,
+        "priced": 4243,
+        "pct": 80.28
+      },
+      "2025q2": {
+        "buys": 6297,
+        "priced": 5268,
+        "pct": 83.66
+      },
+      "2025q3": {
+        "buys": 4788,
+        "priced": 4137,
+        "pct": 86.4
+      },
+      "2025q4": {
+        "buys": 5313,
+        "priced": 4648,
+        "pct": 87.48
+      },
+      "2026q1": {
+        "buys": 4817,
+        "priced": 4186,
+        "pct": 86.9
+      },
+      "2026q2": {
+        "buys": 5180,
+        "priced": 4493,
+        "pct": 86.74
+      },
+      "2026q3": {
+        "buys": 5115,
+        "priced": 4293,
+        "pct": 83.93
+      },
+      "all": {
+        "buys": 78495,
+        "priced": 62868,
+        "pct": 80.09
+      }
+    },
+    "price_status": {
+      "by_quarter": {
+        "2023q2": {
+          "no_data": 1800,
+          "priced": 5701,
+          "price_mismatch_vs_filing": 182,
+          "placeholder_symbol": 138,
+          "series_starts_after_entry": 88,
+          "multiple_symbols": 34,
+          "unparseable_symbol": 21
+        },
+        "2023q3": {
+          "priced": 4326,
+          "no_data": 999,
+          "placeholder_symbol": 211,
+          "multiple_symbols": 15,
+          "price_mismatch_vs_filing": 156,
+          "unparseable_symbol": 21,
+          "series_starts_after_entry": 57
+        },
+        "2023q4": {
+          "priced": 4650,
+          "placeholder_symbol": 192,
+          "no_data": 1143,
+          "price_mismatch_vs_filing": 173,
+          "series_starts_after_entry": 53,
+          "unparseable_symbol": 15,
+          "multiple_symbols": 13,
+          "no_bar_on_entry_date": 1
+        },
+        "2024q1": {
+          "priced": 3967,
+          "placeholder_symbol": 238,
+          "no_data": 816,
+          "series_starts_after_entry": 29,
+          "price_mismatch_vs_filing": 132,
+          "unparseable_symbol": 16,
+          "multiple_symbols": 16
+        },
+        "2024q2": {
+          "priced": 4227,
+          "placeholder_symbol": 196,
+          "no_data": 775,
+          "price_mismatch_vs_filing": 149,
+          "series_starts_after_entry": 69,
+          "multiple_symbols": 13,
+          "unparseable_symbol": 15
+        },
+        "2024q3": {
+          "priced": 4003,
+          "no_data": 703,
+          "placeholder_symbol": 172,
+          "price_mismatch_vs_filing": 128,
+          "multiple_symbols": 3,
+          "unparseable_symbol": 6,
+          "series_starts_after_entry": 55
+        },
+        "2024q4": {
+          "price_mismatch_vs_filing": 133,
+          "priced": 4726,
+          "placeholder_symbol": 222,
+          "no_data": 780,
+          "unparseable_symbol": 28,
+          "series_starts_after_entry": 79,
+          "multiple_symbols": 15
+        },
+        "2025q1": {
+          "priced": 4243,
+          "no_data": 567,
+          "placeholder_symbol": 212,
+          "price_mismatch_vs_filing": 133,
+          "unparseable_symbol": 12,
+          "series_starts_after_entry": 113,
+          "multiple_symbols": 5
+        },
+        "2025q2": {
+          "price_mismatch_vs_filing": 120,
+          "priced": 5268,
+          "placeholder_symbol": 192,
+          "no_data": 531,
+          "series_starts_after_entry": 163,
+          "unparseable_symbol": 23
+        },
+        "2025q3": {
+          "priced": 4137,
+          "placeholder_symbol": 277,
+          "no_data": 202,
+          "series_starts_after_entry": 79,
+          "multiple_symbols": 2,
+          "price_mismatch_vs_filing": 85,
+          "unparseable_symbol": 5,
+          "no_bar_on_entry_date": 1
+        },
+        "2025q4": {
+          "priced": 4648,
+          "no_data": 181,
+          "placeholder_symbol": 237,
+          "price_mismatch_vs_filing": 144,
+          "series_starts_after_entry": 65,
+          "multiple_symbols": 25,
+          "no_bar_on_entry_date": 3,
+          "unparseable_symbol": 10
+        },
+        "2026q1": {
+          "priced": 4186,
+          "no_data": 169,
+          "series_starts_after_entry": 63,
+          "price_mismatch_vs_filing": 130,
+          "placeholder_symbol": 245,
+          "multiple_symbols": 18,
+          "unparseable_symbol": 4,
+          "no_bar_on_entry_date": 2
+        },
+        "2026q2": {
+          "priced": 4493,
+          "placeholder_symbol": 198,
+          "price_mismatch_vs_filing": 300,
+          "series_starts_after_entry": 48,
+          "no_data": 102,
+          "unparseable_symbol": 39
+        },
+        "2026q3": {
+          "priced": 4293,
+          "series_starts_after_entry": 53,
+          "placeholder_symbol": 215,
+          "price_mismatch_vs_filing": 387,
+          "no_data": 64,
+          "unparseable_symbol": 83,
+          "no_bar_on_entry_date": 4,
+          "multiple_symbols": 16
+        }
+      },
+      "total": {
+        "no_data": 8832,
+        "priced": 62868,
+        "price_mismatch_vs_filing": 2352,
+        "placeholder_symbol": 2945,
+        "series_starts_after_entry": 1014,
+        "multiple_symbols": 175,
+        "unparseable_symbol": 298,
+        "no_bar_on_entry_date": 11
+      }
+    },
+    "windows": {
+      "21d": {
+        "by_quarter": {
+          "2023q2": {
+            "no_entry_price": 2263,
+            "closed": 5701
+          },
+          "2023q3": {
+            "closed": 4326,
+            "no_entry_price": 1459
+          },
+          "2023q4": {
+            "closed": 4650,
+            "no_entry_price": 1590
+          },
+          "2024q1": {
+            "closed": 3967,
+            "no_entry_price": 1247
+          },
+          "2024q2": {
+            "closed": 4227,
+            "no_entry_price": 1217
+          },
+          "2024q3": {
+            "closed": 4003,
+            "no_entry_price": 1067
+          },
+          "2024q4": {
+            "no_entry_price": 1257,
+            "closed": 4726
+          },
+          "2025q1": {
+            "closed": 4243,
+            "no_entry_price": 1042
+          },
+          "2025q2": {
+            "no_entry_price": 1029,
+            "closed": 5268
+          },
+          "2025q3": {
+            "closed": 4137,
+            "no_entry_price": 651
+          },
+          "2025q4": {
+            "closed": 4648,
+            "no_entry_price": 665
+          },
+          "2026q1": {
+            "closed": 4186,
+            "no_entry_price": 631
+          },
+          "2026q2": {
+            "closed": 4493,
+            "no_entry_price": 687
+          },
+          "2026q3": {
+            "closed": 4289,
+            "no_entry_price": 822,
+            "series_ends_before_exit": 4
+          }
+        },
+        "total": {
+          "no_entry_price": 15627,
+          "closed": 62864,
+          "series_ends_before_exit": 4
+        }
+      },
+      "63d": {
+        "by_quarter": {
+          "2023q2": {
+            "no_entry_price": 2263,
+            "closed": 5701
+          },
+          "2023q3": {
+            "closed": 4326,
+            "no_entry_price": 1459
+          },
+          "2023q4": {
+            "closed": 4650,
+            "no_entry_price": 1590
+          },
+          "2024q1": {
+            "closed": 3967,
+            "no_entry_price": 1247
+          },
+          "2024q2": {
+            "closed": 4227,
+            "no_entry_price": 1217
+          },
+          "2024q3": {
+            "closed": 4003,
+            "no_entry_price": 1067
+          },
+          "2024q4": {
+            "no_entry_price": 1257,
+            "closed": 4726
+          },
+          "2025q1": {
+            "closed": 4243,
+            "no_entry_price": 1042
+          },
+          "2025q2": {
+            "no_entry_price": 1029,
+            "closed": 5268
+          },
+          "2025q3": {
+            "closed": 4137,
+            "no_entry_price": 651
+          },
+          "2025q4": {
+            "closed": 4648,
+            "no_entry_price": 665
+          },
+          "2026q1": {
+            "closed": 4186,
+            "no_entry_price": 631
+          },
+          "2026q2": {
+            "closed": 4493,
+            "no_entry_price": 687
+          },
+          "2026q3": {
+            "closed": 1179,
+            "no_entry_price": 822,
+            "not_yet_closed": 3114
+          }
+        },
+        "total": {
+          "no_entry_price": 15627,
+          "closed": 59754,
+          "not_yet_closed": 3114
+        }
+      }
+    },
+    "unusual_symbols": [
+      {
+        "ticker_as_filed": "NONE",
+        "price_status": "placeholder_symbol",
+        "buys": 2256
+      },
+      {
+        "ticker_as_filed": "N/A",
+        "price_status": "placeholder_symbol",
+        "buys": 561
+      },
+      {
+        "ticker_as_filed": "AXIA3",
+        "price_status": "unparseable_symbol",
+        "buys": 50
+      },
+      {
+        "ticker_as_filed": "RANGER",
+        "price_status": "unparseable_symbol",
+        "buys": 50
+      },
+      {
+        "ticker_as_filed": "PPTINC",
+        "price_status": "unparseable_symbol",
+        "buys": 48
+      },
+      {
+        "ticker_as_filed": "none",
+        "price_status": "placeholder_symbol",
+        "buys": 44
+      },
+      {
+        "ticker_as_filed": "PRTFTM",
+        "price_status": "unparseable_symbol",
+        "buys": 40
+      },
+      {
+        "ticker_as_filed": "GEF, GEF-B",
+        "price_status": "multiple_symbols",
+        "buys": 36
+      },
+      {
+        "ticker_as_filed": "None",
+        "price_status": "placeholder_symbol",
+        "buys": 35
+      },
+      {
+        "ticker_as_filed": "NA",
+        "price_status": "placeholder_symbol",
+        "buys": 34
+      },
+      {
+        "ticker_as_filed": "HEI, HEI.A",
+        "price_status": "multiple_symbols",
+        "buys": 32
+      },
+      {
+        "ticker_as_filed": "SQFT,SQFTP",
+        "price_status": "multiple_symbols",
+        "buys": 22
+      },
+      {
+        "ticker_as_filed": "LEN, LEN.B",
+        "price_status": "multiple_symbols",
+        "buys": 22
+      },
+      {
+        "ticker_as_filed": "GEF,GEF.B",
+        "price_status": "multiple_symbols",
+        "buys": 22
+      },
+      {
+        "ticker_as_filed": "NASDAQ:DHC",
+        "price_status": "unparseable_symbol",
+        "buys": 14
+      },
+      {
+        "ticker_as_filed": "BCDA;BCDAW",
+        "price_status": "multiple_symbols",
+        "buys": 12
+      },
+      {
+        "ticker_as_filed": "SNV PRE",
+        "price_status": "unparseable_symbol",
+        "buys": 11
+      },
+      {
+        "ticker_as_filed": "NYSE:NYCB",
+        "price_status": "unparseable_symbol",
+        "buys": 9
+      },
+      {
+        "ticker_as_filed": "DMA; MSFIX",
+        "price_status": "multiple_symbols",
+        "buys": 9
+      },
+      {
+        "ticker_as_filed": "WLY, WLYB",
+        "price_status": "multiple_symbols",
+        "buys": 7
+      },
+      {
+        "ticker_as_filed": "WLY/WLYB",
+        "price_status": "unparseable_symbol",
+        "buys": 7
+      },
+      {
+        "ticker_as_filed": "JUSH/JUSHF",
+        "price_status": "unparseable_symbol",
+        "buys": 7
+      },
+      {
+        "ticker_as_filed": "NASDAQ:SVC",
+        "price_status": "unparseable_symbol",
+        "buys": 7
+      },
+      {
+        "ticker_as_filed": "N O G",
+        "price_status": "unparseable_symbol",
+        "buys": 7
+      },
+      {
+        "ticker_as_filed": "UHAL,UHALB",
+        "price_status": "multiple_symbols",
+        "buys": 6
+      },
+      {
+        "ticker_as_filed": "N.A.",
+        "price_status": "placeholder_symbol",
+        "buys": 5
+      },
+      {
+        "ticker_as_filed": "[NONE]",
+        "price_status": "placeholder_symbol",
+        "buys": 5
+      },
+      {
+        "ticker_as_filed": "AB-Lend",
+        "price_status": "unparseable_symbol",
+        "buys": 5
+      },
+      {
+        "ticker_as_filed": "NYSE:EVC",
+        "price_status": "unparseable_symbol",
+        "buys": 4
+      },
+      {
+        "ticker_as_filed": "CETXP,CETX",
+        "price_status": "multiple_symbols",
+        "buys": 4
+      },
+      {
+        "ticker_as_filed": "ASX:LNW",
+        "price_status": "unparseable_symbol",
+        "buys": 4
+      },
+      {
+        "ticker_as_filed": "BBXIA/B",
+        "price_status": "unparseable_symbol",
+        "buys": 3
+      },
+      {
+        "ticker_as_filed": "SNV PrE",
+        "price_status": "unparseable_symbol",
+        "buys": 3
+      },
+      {
+        "ticker_as_filed": "MDBH?",
+        "price_status": "unparseable_symbol",
+        "buys": 3
+      },
+      {
+        "ticker_as_filed": "SHFS)",
+        "price_status": "unparseable_symbol",
+        "buys": 2
+      },
+      {
+        "ticker_as_filed": "[ N/A ]",
+        "price_status": "placeholder_symbol",
+        "buys": 2
+      },
+      {
+        "ticker_as_filed": "[ NONE ]",
+        "price_status": "placeholder_symbol",
+        "buys": 2
+      },
+      {
+        "ticker_as_filed": "NYSE/TRN",
+        "price_status": "unparseable_symbol",
+        "buys": 2
+      },
+      {
+        "ticker_as_filed": "[HURC",
+        "price_status": "unparseable_symbol",
+        "buys": 2
+      },
+      {
+        "ticker_as_filed": "[ENTX]",
+        "price_status": "unparseable_symbol",
+        "buys": 2
+      },
+      {
+        "ticker_as_filed": "CSAN3",
+        "price_status": "unparseable_symbol",
+        "buys": 2
+      },
+      {
+        "ticker_as_filed": "9qgnc@ry",
+        "price_status": "unparseable_symbol",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "HLBZ,HLBZW",
+        "price_status": "multiple_symbols",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "PARAA,PARA",
+        "price_status": "multiple_symbols",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "BFRG,BFRGW",
+        "price_status": "multiple_symbols",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "PREDEX",
+        "price_status": "unparseable_symbol",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "HYAC U",
+        "price_status": "unparseable_symbol",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "(SIRI)",
+        "price_status": "unparseable_symbol",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "UHAL UHALB",
+        "price_status": "unparseable_symbol",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "(CALX)",
+        "price_status": "unparseable_symbol",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "[NONE",
+        "price_status": "placeholder_symbol",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "CCIX U",
+        "price_status": "unparseable_symbol",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "NCLH]",
+        "price_status": "unparseable_symbol",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "xw#w6qqr",
+        "price_status": "unparseable_symbol",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "GTII/GTBIF",
+        "price_status": "unparseable_symbol",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "NYSE: KRC",
+        "price_status": "unparseable_symbol",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "pm2c#xro",
+        "price_status": "unparseable_symbol",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "LBRA]",
+        "price_status": "unparseable_symbol",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "CLBR U",
+        "price_status": "unparseable_symbol",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "NYSE:FLG",
+        "price_status": "unparseable_symbol",
+        "buys": 1
+      },
+      {
+        "ticker_as_filed": "CFTR-PRA",
+        "price_status": "unparseable_symbol",
+        "buys": 1
+      }
+    ],
+    "unpriced_issuers_top": [
+      {
+        "issuer_cik": "0000867028",
+        "issuer_name": "FOMO WORLDWIDE, INC.",
+        "symbol": "FOMC",
+        "price_status": "no_data",
+        "buys": 242
+      },
+      {
+        "issuer_cik": "0001836057",
+        "issuer_name": "BlackRock Innovation & Growth Term Trust",
+        "symbol": "BIGZ",
+        "price_status": "no_data",
+        "buys": 195
+      },
+      {
+        "issuer_cik": "0001072627",
+        "issuer_name": "KINGSWAY FINANCIAL SERVICES INC",
+        "symbol": "KFS",
+        "price_status": "no_data",
+        "buys": 150
+      },
+      {
+        "issuer_cik": "0001077428",
+        "issuer_name": "TEXAS CAPITAL BANCSHARES INC/TX",
+        "symbol": "TCBI",
+        "price_status": "no_data",
+        "buys": 138
+      },
+      {
+        "issuer_cik": "0001842939",
+        "issuer_name": "Carmell Corp",
+        "symbol": "CTCX",
+        "price_status": "no_data",
+        "buys": 124
+      },
+      {
+        "issuer_cik": "0001562733",
+        "issuer_name": "Synergy CHC Corp.",
+        "symbol": "SNYR",
+        "price_status": "series_starts_after_entry",
+        "buys": 123
+      },
+      {
+        "issuer_cik": "0000102109",
+        "issuer_name": "UNIVERSAL SAFETY PRODUCTS, INC.",
+        "symbol": "UUU",
+        "price_status": "series_starts_after_entry",
+        "buys": 114
+      },
+      {
+        "issuer_cik": "0001258943",
+        "issuer_name": "PIONEER MUNICIPAL HIGH INCOME ADVANTAGE FUND, INC.",
+        "symbol": "MAV",
+        "price_status": "no_data",
+        "buys": 113
+      },
+      {
+        "issuer_cik": "0001372807",
+        "issuer_name": "Portman Ridge Finance Corp",
+        "symbol": "PTMN",
+        "price_status": "no_data",
+        "buys": 109
+      },
+      {
+        "issuer_cik": "0001339688",
+        "issuer_name": "LION COPPER & GOLD CORP.",
+        "symbol": "LCGMF",
+        "price_status": "series_starts_after_entry",
+        "buys": 96
+      },
+      {
+        "issuer_cik": "0001938109",
+        "issuer_name": "Pineapple Financial Inc.",
+        "symbol": "PAPL",
+        "price_status": "series_starts_after_entry",
+        "buys": 90
+      },
+      {
+        "issuer_cik": "0000883107",
+        "issuer_name": "NANOPHASE TECHNOLOGIES Corp",
+        "symbol": "NANX",
+        "price_status": "no_data",
+        "buys": 86
+      },
+      {
+        "issuer_cik": "0000893739",
+        "issuer_name": "180 DEGREE CAPITAL CORP. /NY/",
+        "symbol": "TURN",
+        "price_status": "no_data",
+        "buys": 83
+      },
+      {
+        "issuer_cik": "0001223026",
+        "issuer_name": "PIONEER MUNICIPAL HIGH INCOME FUND, INC.",
+        "symbol": "MHI",
+        "price_status": "no_data",
+        "buys": 82
+      },
+      {
+        "issuer_cik": "0001756908",
+        "issuer_name": "PIMCO Energy & Tactical Credit Opportunities Fund",
+        "symbol": "NRGX",
+        "price_status": "no_data",
+        "buys": 76
+      },
+      {
+        "issuer_cik": "0000929351",
+        "issuer_name": "LIONS GATE ENTERTAINMENT CORP /CN/",
+        "symbol": "LGF",
+        "price_status": "no_data",
+        "buys": 75
+      },
+      {
+        "issuer_cik": "0000740971",
+        "issuer_name": "OLD POINT FINANCIAL CORP",
+        "symbol": "OPOF",
+        "price_status": "no_data",
+        "buys": 71
+      },
+      {
+        "issuer_cik": "0000101594",
+        "issuer_name": "US ENERGY CORP",
+        "symbol": "USEG",
+        "price_status": "no_data",
+        "buys": 71
+      },
+      {
+        "issuer_cik": "0001313275",
+        "issuer_name": "BRIGHTCOVE INC",
+        "symbol": "BCOV",
+        "price_status": "no_data",
+        "buys": 70
+      },
+      {
+        "issuer_cik": "0001220754",
+        "issuer_name": "ModivCare Inc",
+        "symbol": "MODV",
+        "price_status": "no_data",
+        "buys": 67
+      },
+      {
+        "issuer_cik": "0000020520",
+        "issuer_name": "Frontier Communications Parent, Inc.",
+        "symbol": "FYBR",
+        "price_status": "no_data",
+        "buys": 65
+      },
+      {
+        "issuer_cik": "0000725394",
+        "issuer_name": "DALRADA FINANCIAL CORP",
+        "symbol": "DFCO",
+        "price_status": "no_data",
+        "buys": 63
+      },
+      {
+        "issuer_cik": "0001930313",
+        "issuer_name": "Pono Capital Two, Inc.",
+        "symbol": "PTWO",
+        "price_status": "no_data",
+        "buys": 63
+      },
+      {
+        "issuer_cik": "0001864290",
+        "issuer_name": "Pioneer Municipal High Income Opportunities Fund, Inc.",
+        "symbol": "MIO",
+        "price_status": "no_data",
+        "buys": 61
+      },
+      {
+        "issuer_cik": "0001104038",
+        "issuer_name": "VerifyMe, Inc.",
+        "symbol": "VRME",
+        "price_status": "no_data",
+        "buys": 58
+      }
+    ],
+    "symbols_shared_by_issuers": {
+      "count": 32,
+      "buys": 729,
+      "examples": {
+        "A": [
+          "0001090872",
+          "0001132651"
+        ],
+        "AESI": [
+          "0001910950",
+          "0001984060"
+        ],
+        "AKTS": [
+          "0001584754",
+          "0002035832"
+        ],
+        "AMAM": [
+          "0001836056",
+          "0001990550"
+        ],
+        "ASTR": [
+          "0001814329",
+          "0001828723"
+        ],
+        "BATRA": [
+          "0001560385",
+          "0001958140"
+        ],
+        "BEEP": [
+          "0001642985",
+          "0001847874"
+        ],
+        "CLBK": [
+          "0001723596",
+          "0002115119"
+        ],
+        "CLMT": [
+          "0001340122",
+          "0002013745"
+        ],
+        "CSAN": [
+          "0001402902",
+          "0001430162"
+        ],
+        "CWBC": [
+          "0001051343",
+          "0001127371"
+        ],
+        "DOC": [
+          "0000765880",
+          "0001574540"
+        ],
+        "FERG": [
+          "0001832433",
+          "0002011641"
+        ],
+        "ICCT": [
+          "0001408057",
+          "0001906133"
+        ],
+        "INBX": [
+          "0001739614",
+          "0002007919"
+        ]
+      }
+    },
+    "issuers_with_several_symbols": 183,
+    "distinct_symbols": 4640,
+    "cache_status": {
+      "ok": 3833,
+      "no_data": 808
+    }
+  },
+  "enriched_buys_sha256": "fa14627333ac754a7f904e3417e5475241d7523659d46d6385779a7c65295bde"
+}

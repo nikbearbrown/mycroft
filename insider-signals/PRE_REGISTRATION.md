@@ -111,13 +111,67 @@ cluster detection and scoring only; every row stays in `data/verified/insider_bu
 
 ---
 
+## Rules 7 and 8 — return windows and G3 price coverage (registered 2026-11-09)
+
+Set by Gomathy S. on 2026-11-09, **before any prices for the study's buys were fetched and before
+any returns were computed** (ENRICH not written). Closes recipe TODOs 4 and 5.
+
+Project state at registration (2026-11-09): `data/verified/insider_buys.csv` holds 78,495 buys
+(SHA-256 `a7ec5529…db75b16`, G2 cleared 2026-11-05). No prices, returns, clusters or scores.
+One format probe was made before this entry was written: a single yfinance request on 2026-11-09
+for SPY, AAPL and a made-up symbol, 2026-10-01 to 2026-10-07, to learn the response layout. No
+study buy was priced and no return was computed from it.
+
+| Rule | Applies to | Value |
+|---|---|---|
+| **7 — return windows** | every verified buy (ENRICH) | **primary window: 21 trading days**; **one secondary window: 63 trading days**; no other window is used for any reported result |
+| **8 — G3 minimum price coverage** | ENRICH, gate G3 | **80% of verified buys** priced |
+
+How Rule 7 is applied (from the recipe's ENRICH stage, fixed here so G3 and G4 can check it):
+
+- **Entry** = adjusted close on the **first trading day after** `FILING_DATE`.
+- **Exit** = adjusted close **21** (primary) or **63** (secondary) trading days after entry.
+- `stock_return = exit / entry − 1`; `spy_return` = SPY over the **identical** entry and exit dates;
+  `abnormal_return = stock_return − spy_return`.
+- A window whose exit date is after the last available market date is `not_yet_closed`; it has
+  no return and is never filled in.
+
+**Not decided by Rules 7–8:**
+- exactly which buys count as "priced" for the 80% (for example: an entry price only, or an
+  entry price and a closed primary window).
+
+---
+
+## Rule 9 — filed price vs market price (data quality; registered 2026-11-09)
+
+Set by Gomathy S. on 2026-11-09, **before any returns were viewed**. State at registration: the first
+ENRICH run (2026-11-09) computed per-buy returns into `data/verified/enriched_buys.csv`
+(SHA-256 `657b98cd…c95f9448`); no return, average or other return statistic had been viewed,
+summarized or reported. Only coverage and status counts had been seen.
+
+| Rule | Applies to | Treatment |
+|---|---|---|
+| **9 — filed price vs market** | every buy ENRICH would otherwise price | compare the filed price per share with the stock's **unadjusted close on `TRANS_DATE`** (or the nearest prior trading day), accounting for stock splits. If they differ by **more than 25%**, `price_status = price_mismatch_vs_filing`: the buy gets no entry price, exit price or returns, and counts as unpriced for Rule 8 |
+
+How Rule 9 is applied:
+
+- **Filed price** = `price` in `data/verified/insider_buys.csv` (the data set's value, 2 decimals).
+- **Reference close** = Yahoo's `Close` (split-adjusted, not dividend-adjusted) on the last day with
+  a bar on or before `TRANS_DATE`, multiplied by every split ratio with a split date **after**
+  `TRANS_DATE` and on or before the date the prices were fetched. A split on `TRANS_DATE` itself is
+  not applied (the trade is already post-split).
+- **Differ by more than 25%** means `|filed price ÷ reference close − 1| > 0.25`. Exactly 25% passes.
+- If the stock has no bar on or before `TRANS_DATE`, the check cannot run: the buy stays priced and
+  is marked `filing_price_check = not_checkable`.
+- Missing split data for a symbol is a halting failure, not a pass.
+
+---
+
 ## Not yet registered
 
 These must be registered here before ENRICH outcomes or SIGNALS labels are computed. The
 recipe's current values are proposals only and are **not** registered:
 
-- Return window N and at most one secondary window (recipe TODO 4)
-- Minimum price coverage for G3 (TODO 5)
 - Role weights and title → role mapping (TODO 7)
 - Size buckets and whether relative size is used (TODO 8)
 - T_strong (TODO 9)

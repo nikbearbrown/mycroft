@@ -1,6 +1,6 @@
 ---
 status: DRAFT          # DRAFT | SPECIFIED | RUNNABLE-SAMPLE | RUNNABLE-LIVE | VERIFIED
-todos_open: 6
+todos_open: 4
 last_gate: null
 attestation: null
 recipe_version: 0.1.0
@@ -242,15 +242,40 @@ quarter of the run.
 - **Entry** = adjusted close on the **first trading day after** `FILING_DATE`. The data
   set gives the filing date but not the acceptance time, so a filing accepted after the
   close could not have been traded the same day. Entering the next day avoids that.
-- **Exit** = adjusted close N trading days after entry. [TODO: DEFINE] N, fixed before any
-  outcome is looked at (proposed primary: 21 trading days ≈ 1 month; one secondary window
-  at most, declared in advance, to limit multiple comparisons).
+- **Exit** = adjusted close N trading days after entry: **primary N = 21 trading days, one
+  secondary window of 63** (decided by Gomathy S., 2026-11-09, `PRE_REGISTRATION.md` Rule 7,
+  before any prices were fetched). Reason: about one month and one quarter of trading, with only
+  one secondary window, declared in advance, to limit multiple comparisons.
 - `stock_return = exit / entry − 1`; `spy_return` over the **identical** window;
   `abnormal_return = stock_return − spy_return`.
 - Missing prices (delisted, renamed, foreign, bad symbol) are recorded with a reason
   (`price_status`). They are not dropped and not filled in.
-- Gate G3 checks price coverage. [TODO: DEFINE] the minimum coverage (proposed: 80% of
-  qualifying buys priced).
+- Gate G3 checks price coverage: **minimum 80% of verified buys priced** (decided by Gomathy S.,
+  2026-11-09, `PRE_REGISTRATION.md` Rule 8). Reason: below that, missing prices (often delistings)
+  could bias the results more than the signal being measured.
+
+**Implemented (2026-11-09, `enrich.py`):**
+- A trading day is a day with a SPY bar. Entry is the first SPY day strictly after `FILING_DATE`;
+  exits are exactly 21 and 63 SPY days later. A stock with no bar on the entry or exit day is
+  not priced for it (`no_bar_on_entry_date`, `no_bar_on_exit_date`); nothing is carried forward.
+- One row per verified buy in `enriched_buys.csv`; each window has its own columns and
+  `window_status_<N>d` (`closed`, `not_yet_closed`, …). Every `price_status` value is listed in
+  the `enrich.py` docstring.
+- Symbols are used as filed, normalized only mechanically (spaces trimmed, upper case,
+  `BRK.B` → `BRK-B`). Placeholders (`NONE`, `N/A`, `NA`, …), several symbols in one field, and
+  other shapes (`NASDAQ:DHC`, `AXIA3`) are reported, not mapped. The symbol is not checked
+  against the issuer CIK; the audit counts symbols filed by more than one issuer.
+- Prices are cached in `data/raw/prices/` (re-runs make no requests); requests go in batches of
+  40 with threads off and a 3 s pause; a refusal backs off 60 s and retries once, then halts (exit 3).
+- **Ticker sanity check (`PRE_REGISTRATION.md` Rule 9, decided by Gomathy S. 2026-11-09):** the
+  filed price must be within 25% of the stock's unadjusted close on `TRANS_DATE` (or the last bar
+  before it), splits undone using Yahoo's split history; otherwise `price_mismatch_vs_filing`, with
+  no prices or returns. Reason: a large gap between what the insider paid and the market price
+  usually means the filed symbol points at a different security, so its returns would not be the
+  insider's. Split histories are fetched only for symbols with a priced buy.
+- Halting checks: input hash (G2), SPY present, cache consistent, every status present, look-ahead
+  (entry, exit and returns recomputed), Rule 9 recomputed, coverage ≥ 80%. The audit reports no
+  return statistics.
 
 ### 5. SIGNALS — insider cluster buys → `data/verified/clusters.json`
 
@@ -364,6 +389,16 @@ Every number traces report → run log → script → recipe → filing (P3).
 
 ---
 
+## Risks
+
+- Survivorship risk: 8,832 buys have no price data, concentrated in older quarters, likely
+  including delisted companies. Missing delisted stocks can bias results upward. Must be
+  reported with the backtest. (Added by Gomathy S., 2026-11-12. `price_status = no_data` by
+  quarter: 1,800 of 7,964 in 2023 Q2, falling to 64 of 5,115 in 2026 Q3; source
+  `data/verified/enriched_buys.csv` SHA-256 `fa146273…5bde`.)
+
+---
+
 ## Phase Gates
 
 Lifecycle: `DRAFT → SPECIFIED → RUNNABLE-SAMPLE → RUNNABLE-LIVE → VERIFIED`
@@ -441,8 +476,6 @@ python langgraph_pipeline.py --no-llm         # AGENT      (G5) → review packe
 
 Open items (counted in `todos_open`):
 
-4. [TODO: DEFINE] Return window N (primary) and at most one secondary window.
-5. [TODO: DEFINE] Minimum price coverage for G3.
 7. [TODO: DEFINE] Role weights and title → role mapping.
 8. [TODO: DEFINE] Size buckets and whether relative size is used.
 9. [TODO: DEFINE] T_strong.
@@ -468,11 +501,18 @@ Closed 2026-11-05 (decision by Gomathy S., logged in `logs/RUN_LOG.md`):
 - ~~3. [TODO: DEV] 4/A → original accession matching rule~~ → `PRE_REGISTRATION.md` Rules 2,
   2a and 2b; implemented in `conformance.py` (`match_amendments`).
 
+Closed 2026-11-09 (decision by Gomathy S., logged in `logs/RUN_LOG.md`):
+
+- ~~4. [TODO: DEFINE] Return window N (primary) and at most one secondary window~~ → 21 trading
+  days primary, 63 secondary (`PRE_REGISTRATION.md` Rule 7).
+- ~~5. [TODO: DEFINE] Minimum price coverage for G3~~ → 80% of verified buys
+  (`PRE_REGISTRATION.md` Rule 8).
+
 Also open, not yet a counted TODO: **fund and trust issuers.** Identify issuers that are funds
 or trusts (for example via SEC industry / SIC codes) and decide whether to exclude them from
 clustering. In 2026 Q3 they appear among the buys (e.g. a closed-end investment trust and an
 oil ETF in the spot-check sample). Not implemented; raised by Gomathy S. on 2026-11-04.
 
 Also open, but not counted as recipe TODOs: complete `PRE_REGISTRATION.md` (created
-2026-11-04 with Rules 1–6 and 2a; Rule 2b added 2026-11-05) before week 8;
+2026-11-04 with Rules 1–6 and 2a; Rule 2b added 2026-11-05; Rules 7–9 added 2026-11-09) before week 8;
 DEV for each script listed in the CLI reference.
