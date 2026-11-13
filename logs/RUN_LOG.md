@@ -1031,3 +1031,25 @@
   instrument.
 - **Open issues:** the Sprint 5 and 7 RUN_LOG backfill, the two disputed
   fixtures, and the GROQ_API_KEY rotation.
+  ## 2026-11-12 -- Gateway Sprint 11: replaying the prepared requests
+
+- **Recipe:** Adaptive Model Routing & Inference Gateway (Sprint 11 of 15).
+- **Gate:** None cleared. Offline replay; nothing was called.
+- **By:** Simba · 2026-11-12
+- **Inputs:** `bench/corpus/2026-11-09-corpus.jsonl`; policy 0.3.0; tiers
+  0.4.0; prices 2026-09-17.
+- **Commands:** `python scripts/gateway/bench/replay.py`;
+  `python -m pytest scripts/gateway/tests -q` (233 passed).
+- **Outputs:** `bench/replay.py`, `tests/test_replay.py` (11 tests),
+  `bench/results/2026-11-12-replay.json`.
+- **Result:** 16 prepared requests, 11 routable, 5 with empty payloads. All 11
+  route to the cheap tier under policy 0.3.0. Whole batch costs $0.001976
+  estimated, $0.002835 upper bound. Serving the 2,000 output tokens each
+  request asks for would cost $0.006886 -- $0.004910 more for the batch. The
+  budget cut that truncates all eleven saves half a cent.
+- **Findings:** `scripts/gateway/FINDINGS.md` section 15.
+- **Not verified:** whether this account permits 2,000 output tokens on the
+  cheap tier's model; what a real contradiction review actually emits; and the
+  recipe's own cost, since the model it names has no published rate.
+- **Open issues:** the Sprint 5 and 7 RUN_LOG backfill, the two disputed
+  fixtures, and the GROQ_API_KEY rotation.

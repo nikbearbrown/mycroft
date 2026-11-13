@@ -619,3 +619,45 @@ them.
   keeps other people's data out of a committed file.
 - A standing caveat for every claim this project has made: nothing here has
   been measured against production load, because there is no production load.
+## 15. What the gateway would do with Mycroft's real requests
+
+Sprint 11. The 16 prepared requests found in section 14, replayed through the
+router and the price table. Nothing was called: the router is a pure function
+of task type and input length, and pricing is arithmetic.
+
+Eleven are routable; five have empty payloads. All eleven are between 1,302 and
+1,642 characters, far below contradiction detection's 4,000-character promotion
+threshold, so **every one routes to the cheap tier** under policy 0.3.0.
+
+| | estimate | upper bound |
+|---|---|---|
+| whole batch of 11 | $0.001976 | $0.002835 |
+
+The estimate reads four characters to a token; the upper bound reads one, and
+gives every request its full output budget. `contradiction-detection-agent`'s
+entire model workload costs about **two tenths of a cent**.
+
+**The budget cut is not an economic decision.** Each request asks for 2,000
+output tokens and policy 0.3.0 would serve 512, truncating all eleven. Serving
+the full 2,000 would cost **$0.006886** for the batch against $0.001976 — a
+difference of **$0.004910**. Half a cent buys the whole recipe its asked-for
+budget. The 512 limit was set from gate calls that used at most 77 output
+tokens on one-word answers; a contradiction review that must quote a
+conflicting span is not that shape of work, and nothing has measured what it
+actually needs.
+
+**What this cannot say.** The recipe names `llama-3.3-70b-versatile`, which has
+no published per-token rate, so there is no figure to compare the gateway's
+cost against. A cost is stated here; no saving is claimed.
+
+### Consequences
+
+- Raising the cheap tier's budget for this task type is a question about
+  truncation, not about money. It needs one measurement -- what a real
+  contradiction review actually emits -- not a cost argument.
+- Whether this account permits 2,000 output tokens on `openai/gpt-oss-20b` is
+  unverified. The 1,000-per-minute cap found in Sprint 4 was specific to the
+  strong tier's model.
+- The action-to-task mapping (`llm_review_of_flags` to
+  `contradiction_detection`) is a human judgment recorded in `replay.py`. An
+  unmapped action is reported, never guessed.
