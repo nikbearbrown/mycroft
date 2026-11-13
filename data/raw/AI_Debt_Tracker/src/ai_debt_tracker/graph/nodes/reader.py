@@ -48,6 +48,10 @@ ACT_A = re.compile(r"redeem|redemption|tender|repurchas|repa(?:y|id)|amend|price
                    re.I)
 TERM_ROW = re.compile(r"principal amount|aggregate principal|coupon|interest rate|maturity|title of (?:the )?securit|"
                       r"security type|price to public|issue price|settlement date|trade date", re.I)
+FACILITY_A = re.compile(r"term loan|credit (?:agreement|facilit)|revolving|delayed[- ]draw|loan agreement|"
+                        r"loan facilit|bridge (?:loan|facilit)", re.I)
+# P52: a preliminary prospectus whose cover leaves the terms blank ("$  % Senior Notes due 20  ")
+BLANK_COVER = re.compile(r"%\s+(?:[A-Za-z]+\s+){0,3}(?:notes|debentures|bonds)\s+due(?:\s+20)?(?!\s*\d)", re.I)
 MAX_PASSAGES, MAX_CHARS, PASSAGE_CHARS = 70, 14_000, 900
 NO_VALUE = {"null", "none", "n/a", "na", "not stated", "-", "—"}
 NUM_CTX, NUM_PREDICT = 12_288, 2_048
@@ -76,12 +80,16 @@ class ReaderResult:
     seconds: float
     error: str | None = None
     raw: str | None = None
+    set_aside: list = field(default_factory=list)   # P52: events read from existing-debt tables, not used
 
 
 # ------------------------------------------------------------------------------------ passages
 def _score(text: str) -> int:
+    # P51: "a $500 million term loan facility" states a loan's whole term with no rate or year; a facility word
+    # beside an amount scores one more, so such a sentence clears the threshold (Super Micro, Week 4).
     return (2 * bool(RATE_A.search(text)) + 2 * bool(DUE_A.search(text)) + 2 * bool(AMOUNT_A.search(text))
-            + bool(DEBT_A.search(text)) + bool(ACT_A.search(text)))
+            + bool(DEBT_A.search(text)) + bool(ACT_A.search(text))
+            + bool(AMOUNT_A.search(text) and FACILITY_A.search(text)))
 
 
 def select_passages(docs: list) -> list[tuple[str, str]]:
@@ -179,6 +187,13 @@ def _locate(copied: str | None, cited: str | None, passages: dict[str, str]) -> 
     for pid, t in passages.items():
         if V.grounded(copied, t):
             return pid, t, "relocated"
+    # P50: a currency sign rewritten while copying. The number is in the passage under another sign: the
+    # passage's own words are used (`resolve` re-reads them), and the citation says so.
+    order = ([cid] if cid in passages else []) + [p for p in passages if p != cid]
+    for pid in order:
+        own = V.source_currency_copy(str(copied), passages[pid])
+        if own:
+            return pid, passages[pid], "sign from source"
     return None, None, "ungrounded"
 
 
@@ -193,8 +208,14 @@ def resolve(answer: dict, passages: list[tuple[str, str]]) -> list[Event]:
             if how == "ungrounded":
                 dropped.append(f)
             elif pid:
-                cites[f] = {"id": pid, "text": str(ins.get(f"{f}_text")), "found": how}
-                vals[f] = (str(ins.get(f"{f}_text")), span)
+                text = str(ins.get(f"{f}_text"))
+                if how == "sign from source":          # P50: the filing's words, not the model's rewrite
+                    cites[f] = {"id": pid, "text": V.source_currency_copy(text, span), "found": how,
+                                "model_copied": text}
+                    text = cites[f]["text"]
+                else:
+                    cites[f] = {"id": pid, "text": text, "found": how}
+                vals[f] = (text, span)
         principal = currency = coupon = year = None
         if "principal" in vals:
             copied, span = vals["principal"]
@@ -221,6 +242,21 @@ def resolve(answer: dict, passages: list[tuple[str, str]]) -> list[Event]:
     full = {(e.action_class, e.coupon_pct, e.maturity_year) for e in events if e.principal is not None}
     return [e for e in events if e.principal is not None or e.coupon_pct is None or e.maturity_year is None
             or (e.action_class, e.coupon_pct, e.maturity_year) not in full]
+
+
+def _table_only(e: Event) -> bool:
+    return bool(e.cites) and all(".r" in c["id"].split(":", 1)[-1] for c in e.cites.values())
+
+
+def set_aside_existing(events: list[Event], passages: list[tuple[str, str]]) -> tuple[list[Event], list[Event]]:
+    """P52: on a preliminary prospectus whose cover leaves the terms blank, the notes being offered have no
+    amount, coupon or year yet. A *new* instrument whose every value comes from a table row is the cover's or the
+    capitalisation table's existing debt (Equinix, Aug 2024: 15 of the reader's 29 extras in Week 4), not the
+    offering. Set aside, and kept in the result so a reader of the record can see what was not used."""
+    if not any(BLANK_COVER.search(t) for _, t in passages):
+        return events, []
+    keep = [e for e in events if not (e.action_class == "new" and _table_only(e))]
+    return keep, [e for e in events if e not in keep]
 
 
 def salvage(raw: str) -> dict | None:
@@ -255,9 +291,11 @@ def read_filing(docs: list, accession: str, form: str, model: str = "qwen3:4b", 
         if answer is None:
             return ReaderResult(accession, [], len(passages), round(time.time() - t0, 2), error="answer did not parse",
                                 raw=(raw or "")[:2000])
-        return ReaderResult(accession, resolve(answer, passages), len(passages), round(time.time() - t0, 2),
-                            error="answer cut off; completed instruments kept", raw=raw[:4000])
-    return ReaderResult(accession, resolve(answer, passages), len(passages), round(time.time() - t0, 2), raw=raw[:4000])
+        events, aside = set_aside_existing(resolve(answer, passages), passages)
+        return ReaderResult(accession, events, len(passages), round(time.time() - t0, 2),
+                            error="answer cut off; completed instruments kept", raw=raw[:4000], set_aside=aside)
+    events, aside = set_aside_existing(resolve(answer, passages), passages)
+    return ReaderResult(accession, events, len(passages), round(time.time() - t0, 2), raw=raw[:4000], set_aside=aside)
 
 
 def to_json(r: ReaderResult) -> dict:

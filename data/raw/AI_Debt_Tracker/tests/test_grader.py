@@ -184,3 +184,11 @@ def test_p39_printed_bond_the_key_holds_without_a_maturity_is_set_aside():
     led = {"instruments": [bond(3.0, 2029, 4.6e8), bond(5.0, 2026, 1.0764e7), bond(7.0, 2027, 2e7)]}
     g = grade_l1(target, led)
     assert (g["matched"], g["covered_by_unkeyed"], g["extra"]) == (1, 1, 1)
+
+
+def test_p44_l1_episode_with_no_keyed_bond_is_graded_on_totals_only():
+    """Applied Digital: graded L1, but no instrument in the key carries a maturity. Every ledger bond would be
+    an extra; the grader grades totals only and says why."""
+    target = rec([inst("CIMPromissoryNote", 7.0, None, 1.25e8)], totals={"long_term_debt": 1.05e8})
+    g = grade_episode(target, {"instruments": [bond(7.0, 2027, 1.05e8)], "totals": {"total_debt": 1.05e8}}, "L1")
+    assert "l1" not in g and "P44" in g["level_note"] and g["l3"]["total_debt"]["ok"]

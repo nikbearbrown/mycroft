@@ -5,8 +5,8 @@
 ## Coverage
 
 - **1093** reports from **100** companies (25 AI, 75 generalisation); 798 of them for quarters inside the dev and test windows.
-- Finest level each report supports: **L1 900**, **L2 41**, **L3 152**.
-- Bonds in the key (outstanding, with a maturity year): **9,629**.
+- Finest level each report supports: **L1 888**, **L2 41**, **L3 164**.
+- Bonds in the key (outstanding, with a maturity year): **9,559**.
 - Episodes in `manifests/dev.csv` and `test.csv` without their start or target record: **0**.
 
 ## Anomalies (counted, not hidden)
@@ -14,17 +14,22 @@
 | Check | Reports | Examples |
 |---|---|---|
 | no total-debt tag | 139 | Micron 10-Q 20260228; Micron 10-Q 20260531; Digital Realty 10-Q 20240331; Digital Realty 10-Q 20240630 … |
-| itemised coverage > 120% | 89 | Broadcom 10-Q 20240430 (136%); Broadcom 10-Q 20240731 (132%); Broadcom 10-K 20241031 (127%); Super Micro 10-Q 20240331 (1186%) … |
+| itemised coverage > 120% | 84 | Broadcom 10-Q 20240430 (136%); Broadcom 10-Q 20240731 (132%); Broadcom 10-K 20241031 (127%); Super Micro 10-Q 20240331 (1186%) … |
 | L1 report with a bond lacking principal | 89 | Broadcom 10-Q 20240731; Equinix 10-K 20231231; Equinix 10-Q 20240331; Equinix 10-Q 20240630 … |
 
 *No total-debt tag*: the report's L3 total cannot be graded; its L1/L2 grading is unaffected. *Coverage > 120%*: tagged instruments add up to more than reported debt, usually face vs net carrying amounts or a subtotal tagged beside its parts. *Bond lacking principal*: matched on coupon and year, unscored on amount.
 
 ## Frozen levels vs today's rules
 
-Episode target levels were frozen at the Week 1 gate. Re-graded with today's answer-key rules, **6** of the 495 episode targets would get a different level. Episodes are still graded at their frozen level; a change needs a new gate.
+Episode target levels were frozen at the Week 1 gate. Re-graded with today's answer-key rules, **11** of the 495 episode targets would get a different level. Episodes are still graded at their frozen level; a change needs a new gate.
 
 - dev Cipher Mining 10-Q 20250630: frozen L1, now L3
 - test Constellation Energy 10-Q 20260331: frozen L3, now L1
+- test ALBERTSONS COMPANIES, INC. 10-Q 20250831: frozen L1, now L3
+- test ALBERTSONS COMPANIES, INC. 10-Q 20251130: frozen L1, now L3
+- test ALBERTSONS COMPANIES, INC. 10-K 20260228: frozen L1, now L3
+- test ALBERTSONS COMPANIES, INC. 10-Q 20260630: frozen L1, now L3
+- test JELD-WEN HOLDING, INC. 10-Q 20250930: frozen L1, now L3
 - test MOLSON COORS BEVERAGE CO 10-Q 20250930: frozen L1, now L2
 - test MOLSON COORS BEVERAGE CO 10-K 20251231: frozen L1, now L2
 - test MOLSON COORS BEVERAGE CO 10-Q 20260331: frozen L1, now L2
@@ -58,9 +63,9 @@ Episode target levels were frozen at the Week 1 gate. Re-graded with today's ans
 | Constellation Energy | power | 11 | L1 1, L3 10 | 10-Q 20260630 | 3 | 19.5 |
 | Salesforce | ai_software | 11 | L1 11 | 10-Q 20260731 | 14 | 39.3 |
 | Snowflake | ai_software | 11 | L1 8, L3 3 | 10-Q 20260731 | 2 | 0.0 |
-| IBM | ai_software | 11 | L3 11 | 10-Q 20260630 | 0 | 56.2 |
+| IBM | ai_software | 11 | L3 11 | 10-Q 20260630 | 0 | 62.0 |
 
 ## Generalisation set
 
-75 companies, 824 reports, 773 bonds in their latest reports. Per-company detail is in `index.json`.
+75 companies, 824 reports, 768 bonds in their latest reports. Per-company detail is in `index.json`.
 

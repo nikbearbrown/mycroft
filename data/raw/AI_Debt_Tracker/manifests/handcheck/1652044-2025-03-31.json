@@ -1,0 +1,35 @@
+{
+ "episode": "1652044-2025-03-31",
+ "company": "Alphabet",
+ "report": "10-Q 20250331",
+ "accession": "0001652044-25-000043",
+ "level": "L2",
+ "status": "reviewed",
+ "holdout": "week 5",
+ "reviewer": "Claude (model judgment, P8), 2026-11-13",
+ "source": "printed debt table / balance sheet / debt note text in the report's HTML",
+ "source_rows": "Debt table (in millions) rows 396-403; balance sheet row 62; short-term debt text",
+ "review": "Debt table at Mar 31 2025 (millions), two note issuances: 2016 notes $2,000 m (2.00%, due 2026) and 2020 notes $10,000 m (0.45%-2.25%, due 2025-2060); total face $12,000 m, unamortized discount and costs $114 m, current portion of long-term notes $1,000 m, long-term debt $10,886 m. Total debt on the balance-sheet basis $11,886 m (face less discount, current and noncurrent). Commercial paper of $2.5 bn is outside the long-term debt table and is not included. Process note: transcribed from the printed report only; the answer key's values for these five reports were not printed or read before this transcription was written.",
+ "instruments": [
+  {
+   "kind": "offering",
+   "currency": "USD",
+   "principal": 2000000000.0,
+   "issued": "2016",
+   "amount_usd": 2000000000.0,
+   "row": "2016 Notes issuance | 2026 | 2.00 % | 2.23 % | 2,000 | 2,000"
+  },
+  {
+   "kind": "offering",
+   "currency": "USD",
+   "principal": 10000000000.0,
+   "issued": "2020",
+   "amount_usd": 10000000000.0,
+   "row": "2020 Notes issuance | 2025 - 2060 | 0.45 % - 2.25 % | 0.57 % - 2.33 % | 10,000 | 10,000"
+  }
+ ],
+ "totals": {
+  "total_debt": 11886000000.0,
+  "current": 1000000000.0
+ }
+}

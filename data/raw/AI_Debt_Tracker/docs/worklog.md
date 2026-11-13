@@ -4,6 +4,50 @@ Newest first.
 
 ---
 
+## 2026-11-13 — Week 5: full episodes, from filings to a ledger
+
+**Week 4's leftovers.** The four answer-key defects (P41 half a total-debt pair, P42 one bond under two members, P43 a
+range of maturity years, P44 an L1 level with no keyed bond — now graded on totals only) are fixed; the key holds
+9,559 bonds. Week 4's held-out set re-grades 4 of 4 gradable (a calibration now). A **fresh held-out set** was drawn
+after the fixes (seed 20261113). Only 2 of the 25 companies had never been hand-checked, so the rule was extended before
+drawing: then one never-checked report per company. Graded once: **3 of 4 gradable agree** (Alphabet, IBM, Vistra).
+TeraWulf disagrees: its total is tagged only as convertible debt, which the key does not read (P47). Applied Digital
+again has no keyed bond (P48). The key's "due in 12 months" in 10-Qs is the next calendar year (P49, noted). B0 on dev:
+recall 90.9%, precision 92.8%, new bonds 0 of 34 (45 L1 episodes now, P44).
+
+**Triage, third fresh check.** P46 (a cover blank down to the century) and P45 (one document under several accessions:
+same day, form, file name and text is one filing) fixed. A third 50-filing set was drawn from the filings in neither
+earlier set, one copy per document, and labelled before the run (15 debt-relevant). **Recall 15 of 15 — passes**;
+precision 15 of 18. Two false alarms are new rule weaknesses, logged and not fixed: a mini-tender for *shares* read as a
+debt tender (P53), and an FWP for shares naming the concurrent notes (P54).
+
+**The reader, fresh.** The three Week 4 defects fixed: a rewritten currency sign is read from the filing's own words
+(P50), an amount-only facility sentence is a passage (P51), and table-read existing notes on a blank cover are set aside
+(P52). On the 15 fresh debt filings, truth labelled before any run: **reader 91%, B1 74%, B2 96%** of fields; extras
+reader 5, B2 15. P50 fired twice; P52 never fired on a real filing (Equinix's extras went away because P51 changed the
+passages).
+
+**The build: whole episodes.** `ledger/engine.py` (merge events on the match key, sweep matured bonds by B0's rule,
+apply new issues, add-ons and partial or full redemptions; a new bond with no year or an exit of an unknown bond
+becomes an open question; an uncited change is rejected), `ledger/checks.py` (six self-checks), the `ledger` MCP server
+(get as of a date, a dry-run `propose`, open questions), and `graph/supervisor.py`: a LangGraph graph, timeline →
+triage → one `Send` per relevant filing → ledger → checks, with SQLite checkpoints. **95 of 95 dev episodes ran end to
+end — the week 5 check.** With B0's opening ledger (oracle start), L1 recall **97.8%** vs 90.9% (+6.9 points, paired),
+precision **90.2%** vs 92.8% (−2.6), **new bonds caught 30 of 34** vs 0. The first run applied bonds priced after the
+quarter end (P55); fixed on dev and re-run from the saved readings, both runs reported. The 26 false additions left are
+existing notes read from a prospectus (P56), launch announcements with no coupon that cannot merge with the priced bond
+(P57), and the banks' option read as a bond (P58).
+
+**Process.** The laptop ran low on memory mid-run and the model server and the episode run were stopped; Om said
+"resume it", and they were restarted one job at a time with Ollama limited to one model and one slot. A dependency
+install first went to a mistyped directory outside the repo (the shell dropped the backslashes in the path); it was
+reinstalled correctly and the two stray folders are left for Om to delete.
+
+**Gate (P4):** Om delegated the week in advance and did not review it; `manifests/week5_gate.json` says so
+(DELEGATED). Weeks 3, 4 and 5 are all awaiting review. Git is Om's.
+
+---
+
 ## 2026-11-07 — Week 4: reading debt announcements into cited facts
 
 **Week 3's leftovers.** P38 (an over-allotment member is a component of its base bond; 19 such members in the key,

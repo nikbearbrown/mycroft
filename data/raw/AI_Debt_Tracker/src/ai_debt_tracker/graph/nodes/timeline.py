@@ -94,5 +94,29 @@ def timeline(pit, company_cik: int, start: str, end: str, subsidiaries: list[int
     return out
 
 
+def drop_duplicate_documents(rows: list[dict], text_of) -> list[dict]:
+    """P45: one document filed under several accessions. Dell's October 2024 pricing term sheet was filed five
+    times, once under each co-issuer's CIK, so de-duplicating by accession keeps every copy (Week 4 fresh triage
+    set). Filings on the same day, of the same form, whose main document has the same file name *and* the
+    same text are one document: the first is kept and lists the others in `also_filed_as`. The same file name
+    alone is not enough — `form8-k.htm` is used by many filers for different news.
+
+    `rows` are candidates as dicts (`to_json`), oldest first; `text_of(row)` returns the start of its main
+    document's text, or "" when it cannot be read (then nothing is dropped)."""
+    kept, first = [], {}
+    for r in rows:
+        key = (r["filing_date"], r["form"], r["primary_document"])
+        f = first.get(key)
+        if f is not None:
+            a, b = " ".join(text_of(f).split()), " ".join(text_of(r).split())
+            if a and a == b:
+                f.setdefault("also_filed_as", []).append({"cik": r["cik"], "accession": r["accession"]})
+                continue
+        else:
+            first[key] = r
+        kept.append(r)
+    return kept
+
+
 def to_json(cands: list[Candidate]) -> list[dict]:
     return [asdict(c) for c in cands]

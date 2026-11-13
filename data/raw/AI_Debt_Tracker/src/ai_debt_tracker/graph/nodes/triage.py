@@ -40,10 +40,11 @@ EVENT_TYPES = ["new_bond_issue", "new_loan_or_facility", "facility_amendment", "
                "tender_or_exchange", "conversion", "other_debt_event", "not_debt"]
 NOTE_WORDS = r"(?:senior\s+|subordinated\s+|secured\s+|unsecured\s+|convertible\s+|exchangeable\s+|guaranteed\s+|" \
              r"fixed[- ]rate\s+|floating[- ]rate\s+)*(?:notes|debentures|bonds)"
-# The last alternative is a preliminary prospectus cover that leaves the coupon and the year blank
-# ("$      % Senior Notes due 20  ") — Week 3 saw one escape rule R2 that way.
+# The last alternative is a preliminary prospectus cover that leaves the coupon and the year blank:
+# "$      % Senior Notes due 20  " (Week 3) and "€ % Notes due" with even the century blank (P46, Week 4's
+# fresh check). A "%" straight before the note words and "due" after them, whatever follows.
 NOTE_OFFER = re.compile(rf"\d{{1,2}}\.\d{{1,4}}\s?%\s+{NOTE_WORDS}|floating[- ]rate\s+notes|{NOTE_WORDS}\s+due\s+20\d\d|"
-                        rf"aggregate principal amount|%\s+{NOTE_WORDS}\s+due\s+20(?!\d)", re.I)
+                        rf"aggregate principal amount|%\s+{NOTE_WORDS}\s+due\b", re.I)
 EQUITY = re.compile(r"\bshares of (?:our |its )?(?:class [ab] )?common stock\b|\bcommon stock\b|\bwarrants\b|\bunits\b|"
                     r"\bdepositary shares\b|\bpreferred stock\b", re.I)
 DEBT_WORDS = re.compile(r"\bnotes?\b(?! to (?:the )?(?:condensed )?(?:consolidated )?financial)|\bdebentures?\b|\bbonds?\b|"
@@ -123,8 +124,9 @@ def rules(form: str, items: list[str], texts: dict[str, str]) -> TriageResult | 
         cover = main[:8_000]
         if NOTE_OFFER.search(cover):
             return res(True, "new_bond_issue", "R2", _quote(cover, NOTE_OFFER))
-        if EQUITY.search(cover):
-            return res(False, "not_debt", "R2", _quote(cover, EQUITY))
+        eq = _equity_offered(cover)
+        if eq:
+            return res(False, "not_debt", "R2", _quote(cover, eq))
     if form == "FWP":
         if NOTE_OFFER.search(main[:8_000]):
             return res(True, "new_bond_issue", "R3", _quote(main, NOTE_OFFER))
@@ -136,6 +138,16 @@ def rules(form: str, items: list[str], texts: dict[str, str]) -> TriageResult | 
             return res(True, ev, "R4", _quote(body, pat))
     if not DEBT_WORDS.search(_strip_boilerplate(allt)):
         return res(False, "not_debt", "R5", "no debt vocabulary in what was read")
+    return None
+
+
+def _equity_offered(cover: str) -> re.Pattern | None:
+    """An equity word on a prospectus cover, not counting a base prospectus's contents list ("Description of
+    Preferred Stock", "Description of Warrants"): P46's IBM cover was called a share sale on that alone."""
+    for m in EQUITY.finditer(cover):
+        if not re.search(r"description\s+of\s+(?:the\s+)?(?:our\s+)?(?:capital\s+stock|[\w\s]{0,20})$",
+                         cover[max(0, m.start() - 40): m.start()], re.I):
+            return re.compile(re.escape(m.group(0)), re.I)
     return None
 
 

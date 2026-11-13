@@ -48,6 +48,11 @@ POOL = config.data_dir() / "week3" / "pool.json"
 BAKEOFF = config.data_dir() / "week1" / "bakeoff" / "set.json"
 LABELS = ROOT / "manifests" / "triage_labels.json"
 TRUTH = ROOT / "manifests" / "reader_truth.json"
+# Week 5: the fresh check of the reader after its three Week 4 defects were fixed (P50-P52) — the debt-relevant
+# filings of Week 5's fresh triage set, truth labelled before any method ran (manifests/reader_truth_w5.json)
+OUT5 = config.data_dir() / "week5"
+LABELS_W5 = ROOT / "manifests" / "triage_labels_w5.json"
+TRUTH_W5 = ROOT / "manifests" / "reader_truth_w5.json"
 LOG = config.data_dir() / "logs" / "edgar_pit_week4.jsonl"
 METHODS = ("b1", "b2", "reader")
 NAMES = {"b1": "B1 regex", "b2": "B2 one call, model types the numbers", "reader": "Event reader (points, code parses)"}
@@ -58,9 +63,9 @@ def episodes() -> dict:
         return {e["episode_id"]: e for e in csv.DictReader(line for line in f if not line.startswith("#"))}
 
 
-def eval_set() -> list[dict]:
+def eval_set(week: str = "4") -> list[dict]:
     pool = {r["accession"]: r for r in json.loads(POOL.read_text(encoding="utf-8"))}
-    lab = json.loads(LABELS.read_text(encoding="utf-8"))["items"]
+    lab = json.loads((LABELS_W5 if week == "5" else LABELS).read_text(encoding="utf-8"))["items"]
     return [pool[x["accession"]] | {"label": x} for x in lab if x["relevant"]]
 
 
@@ -199,10 +204,10 @@ def dev(method: str) -> int:
 
 
 # ------------------------------------------------------------------------------------ evaluation
-def view() -> int:
+def view(week: str = "4") -> int:
     """For labelling: the debt passages of each evaluation filing, as the reader would select them,
     plus every sentence that names an amount and a debt word (so the labeller sees more than the reader)."""
-    for i, row in enumerate(eval_set()):
+    for i, row in enumerate(eval_set(week)):
         pit = pit_for(row["cik"], row["episode"])
         store = DocumentStore(pit)
         print(f"\n######## [{i}] {row['company']} {row['form']} {row['filing_date']} {row['accession']} "
@@ -222,16 +227,19 @@ def view() -> int:
     return 0
 
 
-def run(method: str) -> int:
-    assert TRUTH.exists(), "label the truth (manifests/reader_truth.json) before running any method on the set"
+def run(method: str, week: str = "4") -> int:
+    """`week` 4: Week 4's set (from Week 5 a calibration set; a rerun goes to week5/ as `_w4set`). 5: the fresh set."""
+    truth = TRUTH_W5 if week == "5" else TRUTH
+    assert truth.exists(), f"label the truth ({truth.name}) before running any method on the set"
     rows = []
-    for row in eval_set():
+    for row in eval_set(week):
         p = predict(method, row["cik"], row["episode"], row["accession"], row["form"], reading_docs(row))
         rows.append({"accession": row["accession"], "company": row["company"], "form": row["form"], **p})
         print(f"  {row['company'][:14]:14s} {row['form']:6s} {len(p['instruments'])} instruments {p['seconds']:.1f}s"
               + (f" ERROR {p['error']}" if p.get("error") else ""), flush=True)
-    OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / f"reader_{method}.json").write_text(json.dumps(rows, indent=1), encoding="utf-8")
+    out = OUT5 / (f"reader_{method}.json" if week == "5" else f"reader_{method}_w4set.json")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(rows, indent=1), encoding="utf-8")
     return 0
 
 
@@ -317,6 +325,110 @@ def _fmt(v, kind):
     return f"{v:g}" if kind == "coupon" else str(v)
 
 
+def _score_set(truth_path: Path, files: dict) -> tuple[dict, dict]:
+    truth = {t["accession"]: t for t in json.loads(truth_path.read_text(encoding="utf-8"))["filings"]}
+    res, per_filing = {}, {}
+    for m, path in files.items():
+        if not path.exists():
+            continue
+        rr = {r["accession"]: r for r in json.loads(path.read_text(encoding="utf-8"))}
+        per = []
+        for acc, t in truth.items():
+            sc = score_filing(t["instruments"], rr[acc]["instruments"])
+            per.append(sc)
+            per_filing.setdefault(acc, {})[m] = sc
+        c = Counter()
+        for r in rr.values():
+            for e in r["instruments"]:
+                for v in (e.get("cites") or {}).values():
+                    c[v["found"]] += 1
+                c["dropped"] += len(e.get("dropped") or [])
+        res[m] = summary(per) | {"cites": c, "set_aside": sum(len(r.get("set_aside") or []) for r in rr.values()),
+                                 "no_passages": sum(r.get("error") == "no debt passages" for r in rr.values())}
+    return res, per_filing
+
+
+def _row(name: str, s: dict) -> str:
+    return (f"| {name} | **{s['fields_ok']}/{s['fields_n']} = {s['field_rate']:.0%}** | {s['coupon_ok']}/{s['coupon_n']} | "
+            f"{s['maturity_ok']}/{s['maturity_n']} | {s['principal_ok']}/{s['principal_n']} | {s['action_ok']}/{s['action_n']} | "
+            f"{s['found']}/{s['truth']} | {s['extra']} |")
+
+
+def week5_section() -> list[str]:
+    """Week 5: the reader after the P50-P52 fixes, on a fresh set labelled before any method ran, against B1 and B2;
+    and the fixed reader re-run on Week 4's set (a calibration now: the defects were found there)."""
+    if not TRUTH_W5.exists() or not (OUT5 / "reader_reader.json").exists():
+        return []
+    res, per = _score_set(TRUTH_W5, {m: OUT5 / f"reader_{m}.json" for m in METHODS})
+    cal, _ = _score_set(TRUTH, {"before": OUT / "reader_reader.json", "after": OUT5 / "reader_reader_w4set.json"})
+    meta = json.loads(TRUTH_W5.read_text(encoding="utf-8"))
+    n_ins = sum(len(t["instruments"]) for t in meta["filings"])
+    kinds = Counter(i["action_class"] for t in meta["filings"] for i in t["instruments"])
+    head = ["| Method | Fields right | Coupon | Maturity | Principal | Action | Instruments found | Extra |",
+            "|---|---|---|---|---|---|---|---|"]
+    L = ["# Week 5 — the reader checked again, on fresh filings\n",
+         f"**The set:** the {len(meta['filings'])} debt-relevant filings of Week 5's fresh labelled triage set "
+         f"(`manifests/triage_labels_w5.json`), announcing {n_ins} instruments "
+         f"({', '.join(f'{k} {v}' for k, v in kinds.most_common())}). Labelled by {meta['labelled_by']}, on "
+         f"{meta['labelled_on']}.\n"]
+    L += head + [_row(NAMES[m], res[m]) for m in METHODS if m in res] + [""]
+    if "reader" in res:
+        c = res["reader"]["cites"]
+        L.append(f"Where the reader's values came from: **{c['cited']}** in the passage it cited, **{c['relocated']}** in "
+                 f"another passage, **{c['sign from source']}** with the currency sign read from the filing after the model "
+                 f"rewrote it (P50), **{c['dropped']}** copies in no passage and dropped. Instruments set aside as "
+                 f"existing debt read from a table on a blank preliminary cover (P52): {res['reader']['set_aside']}. "
+                 f"Filings with no passages selected: {res['reader']['no_passages']}.\n")
+    if "before" in cal and "after" in cal:
+        b, a = cal["before"], cal["after"]
+        L += ["## The fixes, on the set that found them (calibration, not evidence)\n",
+              "| Reader on Week 4's 24 filings | Fields right | Coupon | Maturity | Principal | Action | Instruments found | Extra |",
+              "|---|---|---|---|---|---|---|---|", _row("Week 4 (as recorded)", b), _row("Week 5, after P50-P52", a), "",
+              f"Values with the sign read from the source: {a['cites']['sign from source']}; copies dropped: "
+              f"{b['cites']['dropped']} then, {a['cites']['dropped']} now; set aside as existing debt: {a['set_aside']}. "
+              "The model is the same, at temperature 0, but a fix that changes the passages changes what the model is "
+              "shown, so other filings can move too.\n"]
+        if a["set_aside"] == 0:
+            L += ["**P52 did not fire here.** Equinix's preliminary prospectus, where it was found, went from 16 "
+                  "instruments to 1 because P51 changed which passages the model is shown and the model answered "
+                  "differently — not because of the set-aside rule. So P52 is tested only by its unit test, not by a real "
+                  "case yet. And one filing moved the other way: Dell's 424B5 now runs past the output cap (completed "
+                  "instruments kept), with 2 more extras.\n"]
+    L += ["## Filing by filing (Week 5)\n", "| # | Company | Form | True | " + " | ".join(NAMES[m].split(' ')[0] for m in METHODS if m in res)
+          + " |", "|---|---|---|---|" + "---|" * len(res)]
+    for i, t in enumerate(meta["filings"]):
+        cells = []
+        for m in METHODS:
+            if m in res:
+                sc = per[t["accession"]][m]
+                ok = sum(sc.get(f + "_ok", 0) for f in ("coupon", "maturity", "principal"))
+                n = sum(sc.get(f + "_n", 0) for f in ("coupon", "maturity", "principal"))
+                cells.append(f"{ok}/{n}" + (f", +{sc['extra']}" if sc["extra"] else ""))
+        L.append(f"| {i} | {t['company']} | {t['form']} | {len(t['instruments'])} | " + " | ".join(cells) + " |")
+    L += ["", "## What the Week 5 numbers say\n"] + NOTES_W5 + [""]
+    return L
+
+
+NOTES_W5: list[str] = [
+    "- **The reader beats B1 again on fresh filings, and B2 still reads more numbers.** Reader 48 of 53 fields (91%), B1 "
+    "39 of 53 (74%), B2 51 of 53 (96%). Week 4's ordering holds on a set nobody had read: the reader's gain over asking "
+    "the model directly is that every number has a cited passage behind it, not accuracy. B2 also reported 15 "
+    "instruments that are not in the filing; the reader 5.",
+    "- **P50 did its job, twice.** Two principals were 'copied' with a rewritten currency sign and read from the "
+    "filing's own words instead (`sign from source`); no copy was dropped this time.",
+    "- **What the reader still misses** (Week 6, not fixed against this set): a redemption whose coupon and year are in "
+    "a different sentence from its amount (Micron's $900 m 4.185% 2027 notes: the amount was read, the key fields not); "
+    "a redemption stated only in an exhibit's title (Core Scientific's 12.50% 2028 notes, EX-99.3); a coupon written "
+    "as words (\"zero percent (0%)\", Applied Digital's promissory note); and two extras of one kind — the banks' "
+    "option and the pre-upsize amount listed as instruments of their own (Applied Digital's $45 m, Core Scientific's "
+    "$400 m priced before the $460 m closing).",
+    "- **Instruments with no stated value cannot be found by the reader** (7 of the 26: a commenced offering, two "
+    "loan terminations, a blank four-tranche prospectus): it drops an instrument with nothing grounded, by design. "
+    "They count against 'instruments found', not against field accuracy.",
+    "- **Small, again.** 15 filings, 27 instruments, mostly new notes; one amendment and four exits. The truth is "
+    "Claude's reading (model judgment), written and hashed before any method ran.\n"]
+
+
 def report() -> int:
     truth = {t["accession"]: t for t in json.loads(TRUTH.read_text(encoding="utf-8"))["filings"]}
     runs = {m: {r["accession"]: r for r in json.loads((OUT / f"reader_{m}.json").read_text(encoding="utf-8"))}
@@ -335,11 +447,13 @@ def report() -> int:
     n_ins = sum(len(t["instruments"]) for t in truth.values())
     kinds = Counter(i["action_class"] for t in truth.values() for i in t["instruments"])
     meta = json.loads(TRUTH.read_text(encoding="utf-8"))
-    L = ["# The event reader against B1 and B2 (week 4)\n",
+    L = ["# The event reader against B1 and B2\n",
          "> Generated by `scripts/reader_eval.py report`. Reader: `src/ai_debt_tracker/graph/nodes/reader.py`; B1: "
-         "`eval/baselines/regex_reader.py`; B2: `eval/baselines/single_call.py`. Truth: `manifests/reader_truth.json` "
-         "([`reader_truth.md`](reader_truth.md)). Every answer: `$AI_DEBT_DATA/week4/`.\n",
-         "## The week 4 check\n"]
+         "`eval/baselines/regex_reader.py`; B2: `eval/baselines/single_call.py`. Truth: `manifests/reader_truth_w5.json` "
+         "(Week 5, fresh) and `manifests/reader_truth.json` ([`reader_truth.md`](reader_truth.md), Week 4). Every answer: "
+         "`$AI_DEBT_DATA/week5/` and `$AI_DEBT_DATA/week4/`.\n"]
+    L += week5_section()
+    L += ["# Week 4 (as recorded)\n", "## The week 4 check\n"]
     if "reader" in res and "b1" in res:
         r, b = res["reader"], res["b1"]
         verdict = "**passes**" if r["field_rate"] > b["field_rate"] else "**does not pass**"
@@ -401,4 +515,5 @@ def report() -> int:
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "report"
     arg = sys.argv[2] if len(sys.argv) > 2 else "reader"
-    sys.exit(dev(arg) if cmd == "dev" else run(arg) if cmd == "run" else view() if cmd == "view" else report())
+    week = sys.argv[3] if len(sys.argv) > 3 else "4"
+    sys.exit(dev(arg) if cmd == "dev" else run(arg, week) if cmd == "run" else view(arg) if cmd == "view" else report())

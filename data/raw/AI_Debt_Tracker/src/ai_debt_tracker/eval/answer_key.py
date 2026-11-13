@@ -70,12 +70,16 @@ TOTALS = {
     "notes_and_loans_noncurrent": "LongTermNotesAndLoans",
     "notes_payable_current": "NotesPayableCurrent",
     "debt_incl_finance_leases": "LongTermDebtAndCapitalLeaseObligationsIncludingCurrentMaturities",
+    # P41: Constellation tags its current debt only with the combined debt-and-lease tag
+    "debt_and_leases_current": "LongTermDebtAndCapitalLeaseObligationsCurrent",
 }
 # Total debt, first match wins; each entry is (basis label, keys summed). Filers name it differently.
 TOTAL_DEBT_CHAIN = [
     ("LongTermDebt", ("long_term_debt",)),
     ("DebtLongtermAndShorttermCombinedAmount", ("debt_combined",)),
-    ("LongTermDebtNoncurrent + current", ("long_term_debt_noncurrent", "long_term_debt_current|debt_current")),
+    # P41: the current half may be tagged with the debt-and-lease tag; without it, half a pair is summed
+    ("LongTermDebtNoncurrent + current", ("long_term_debt_noncurrent",
+                                          "long_term_debt_current|debt_current|debt_and_leases_current")),
     ("LongTermNotesAndLoans + NotesPayableCurrent", ("notes_and_loans_noncurrent", "notes_payable_current")),
     ("debt incl. finance leases", ("debt_incl_finance_leases",)),
     ("DebtInstrumentCarryingAmount (undimensioned)", ("carrying_total",)),
@@ -321,6 +325,21 @@ class AnswerKey:
                 if base:
                     i.klass = "component"
                     i.parse_notes = i.parse_notes + [f"over-allotment of {base[0].member} (P38)"]
+        # P42: one bond tagged under two members. Marvell tags its 4.875% 2028 notes as
+        # `MTGAndMTI2028SeniorNotes` (no coupon) and `MTGAndMTISeniorNotesDueIn2028` (4.88%), both
+        # $499.9 m (Week 4 fresh held-out check). A bond with no coupon whose maturity year and amount
+        # (within 0.5%) repeat a bond that has one is the same bond: a component, not a second bond.
+        def _amount(x):
+            return x.face if x.face is not None else x.carrying
+        for i in out:
+            if i.klass != "bond" or i.rate is not None or not i.maturity_year or not _amount(i):
+                continue
+            twin = [b for b in out if b is not i and b.klass == "bond" and b.rate is not None
+                    and b.maturity_year == i.maturity_year and _amount(b)
+                    and abs(_amount(b) - _amount(i)) <= 0.005 * max(_amount(b), _amount(i))]
+            if twin:
+                i.klass = "component"
+                i.parse_notes = i.parse_notes + [f"same bond as {twin[0].member}: no coupon, same year and amount (P42)"]
         out.sort(key=lambda i: (i.klass, i.maturity_year or 0, i.rate or 0, i.member))
         return out, dict(skipped)
 

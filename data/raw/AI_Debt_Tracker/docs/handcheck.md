@@ -89,15 +89,18 @@ aside, neither matched nor extra) and the Super Micro coupon was corrected in th
 the file's `corrections`). This set is therefore no longer held out: the table above shows it re-graded
 after those fixes. Week 4's fresh held-out set is below.
 
-## Week 4 held-out set (fresh; graded once): 1 of 5 agree
+## Week 4 held-out set, re-graded after the Week 5 fixes: 4 of 4 agree (1 not gradable)
 
 | Episode | Company | Report | Level | Printed | Key | Matched | Totals within 2% | Agree? |
 |---|---|---|---|---|---|---|---|---|
-| 1868275-2025-03-31 | Constellation Energy | 10-Q 20250331 | L3 | — | — | — | 0/1 | **no** |
-| 50863-2024-12-31 | Intel | 10-K 20241228 | L1 | 43 | 35 | 34 (principal 34/34; 9 printed = key instruments with no maturity, P39) | 5/5 | **no** |
-| 1835632-2024-09-30 | Marvell | 10-Q 20241102 | L1 | 6 | 7 | 6 (principal 6/6) | 1/1 | **no** |
+| 1868275-2025-03-31 | Constellation Energy | 10-Q 20250331 | L3 | — | — | — | 1/1 | **yes** |
+| 50863-2024-12-31 | Intel | 10-K 20241228 | L1 | 43 | 34 | 34 (principal 34/34; 9 printed = key instruments with no maturity, P39) | 5/5 | **yes** |
+| 1835632-2024-09-30 | Marvell | 10-Q 20241102 | L1 | 6 | 6 | 6 (principal 6/6) | 1/1 | **yes** |
 | 1018724-2024-12-31 | Amazon | 10-K 20241231 | L3 | — | — | — | 5/5 | **yes** |
-| 1144879-2024-09-30 | Applied Digital | 10-Q 20240831 | L1 | 2 | 0 | 0 (principal 0/0) | 0/0 | **no** |
+| 1144879-2024-09-30 | Applied Digital | 10-Q 20240831 | L1 | 6 | 0 | — (P44: totals only) | 0/0 | not gradable (P44) |
+
+*Graded once in Week 4: 1 of 5 agreed (Amazon).* The four disagreements diagnosed below, P41–P44, were
+fixed in Week 5, so this set is now a calibration; the table above shows it re-graded after those fixes.
 
 Drawn by the same rule, after the P38–P39 fixes were written and before any of these reports was
 read (`HOLDOUT_W4`, reproducible with `draw("week 4")`): 28 eligible episodes from the 7 companies never
@@ -123,6 +126,41 @@ So the fresh check found four more answer-key defects, each in a different compa
 five totals agree exactly. The P39 rule written this week did its job on Intel: nine printed bonds that
 the key holds without a maturity were set aside rather than counted as extras.
 
+## Week 5 held-out set (fresh; graded once): 3 of 4 agree (1 not gradable)
+
+| Episode | Company | Report | Level | Printed | Key | Matched | Totals within 2% | Agree? |
+|---|---|---|---|---|---|---|---|---|
+| 1652044-2025-03-31 | Alphabet | 10-Q 20250331 | L2 | 2 | 2 | 2 | 2/2 | **yes** |
+| 51143-2025-06-30 | IBM | 10-Q 20250630 | L3 | — | — | — | 1/1 | **yes** |
+| 1083301-2025-06-30 | TeraWulf | 10-Q 20250630 | L3 | — | — | — | 0/0 | **no** |
+| 1144879-2024-12-31 | Applied Digital | 10-Q 20241130 | L1 | 6 | 0 | — (P44: totals only) | 0/0 | not gradable (P44) |
+| 1692819-2024-09-30 | Vistra | 10-Q 20240930 | L3 | — | — | — | 1/1 | **yes** |
+
+Drawn after the P41–P44 fixes were written and before any of these reports was read
+(`HOLDOUT_W5`, reproducible with `draw("week 5")`, seed 20261113). Only two of the 25 companies had never
+been hand-checked (Alphabet and IBM), so the rule was extended before drawing: after those, one report never
+hand-checked, per company not already picked, in the same seed's order. Three of the five are therefore
+companies seen before, in a different quarter. Graded once. The key's values for these reports were not
+printed or read before the transcriptions were written.
+
+Three of the five are graded on totals only (their frozen level is L3), so this set tests the key's totals
+more than its bonds.
+
+**What the result shows** (diagnosed after grading, not fixed — the next fresh check would otherwise be a
+calibration):
+
+| # | Found on | What happened | Whose error |
+|---|---|---|---|
+| P47 | TeraWulf 10-Q | Its only debt, the 2.75% 2030 convertible notes ($488.7 m carrying), is tagged `ConvertibleDebt` / `ConvertibleDebtNoncurrent` without dimensions. The total-debt chain reads neither, so the key has no total and nothing to grade an L3 report on | Answer key: a filer whose only debt is convertible names its total with the convertible tags |
+| P48 | Applied Digital 10-Q | Graded L1 by the frozen manifest; again no instrument carries a maturity (`ConvertibleNotes`, `MacquariePromissoryNote` name no year and no maturity date is tagged), so P44 grades totals only and the key tags none: not gradable. The key also keeps the CIM promissory note outstanding at its $125 m face, though the report says it was repaid on 27 November 2024 | Answer key: same filer as P44; a repaid note carried at face |
+
+Alphabet's two offerings and both totals agree; IBM's and Vistra's total debt agree within 2% (the key tags no
+current portion for either). One more thing seen while checking which totals were compared (P49, noted, not
+graded): the key's "due in the next 12 months" for these two 10-Qs is the next *calendar year's* row of the
+printed ladder (IBM's 2026 row, $6,431 m; Vistra's 2025 row, $786 m), not the next twelve months. The
+transcriptions recorded no ladder for 10-Qs for exactly that reason, so it did not count here; B0 and the agent
+are graded against that figure on 10-Q targets.
+
 ## Review notes
 
 - **Equinix 10-K 20241231** — Rows 30-57 (issued, maturity, Dec 31 2024 amount, effective rate, prior year). Foreign notes are printed as US-dollar equivalents, so their own-currency principal is not on the page: currency recorded, principal unscored. The 2.625% 2024 notes show '—' (repaid). Rows 1-29 are the cover page and exhibit list.
@@ -144,14 +182,16 @@ the key holds without a maturity were set aside rather than counted as extras.
 - **TeraWulf 10-Q 20240930** — No debt at the period end: the term loan line and the current portion of long-term debt are both '—' at Sep 30 2024 (repaid during the quarter; $139.4 m of principal payments). The convertible notes followed in October 2024.
 - **Core Scientific 10-Q 20240930** — Rows 1-22 of the notes payable table (in thousands: stated rate, effective rate, maturity, Sep 30 2024, Dec 31 2023); '—' means repaid or converted. Outstanding: the $460 m 3.00% 2029 convertible notes, four small notes, two loans (by the printed name), and the ACM note (stated rate '—'). Total notes payable, net $492,537 k.
 - **Constellation Energy 10-Q 20250331** — Totals only (the episode's level), from Constellation Energy Corporation's balance sheet at Mar 31 2025: long-term debt due within one year $1,037 m and long-term debt $7,321 m, so total debt $8,358 m (the fair-value note prints the same $8,358 m 'Long-Term Debt, including amounts due within one year'). No commercial paper or short-term borrowings outstanding (the liquidity table shows none). Process note: before this transcription, the answer key's *totals* for the five Week 4 held-out reports were printed once by mistake while checking which totals the key tags; the values below are read from the printed report only, each with its source row.
-- **Constellation Energy**: disagreement — key members unmatched: []; printed rows unexplained: 0; totals: {'total_debt': (7321000000.0, 8358000000.0)}
 - **Intel 10-K 20241228** — Note 13's table at Dec 28 2024: 43 fixed-rate senior notes and Oregon/Arizona bonds with an amount outstanding (the 2.88% May 2024 and 2.70% June 2024 notes and the 5.00% June 2049 bonds show '—': repaid or remarketed), plus one Oregon/Arizona line printed as a range (3.80%-4.10%, due 2035-2040, $423 m) recorded as 'other' because it is several bonds on one line. Coupons are printed to two decimals (4.88% is the 4.875% notes). Total senior notes and other borrowings $50,985 m; long-term debt $50,011 m after premium/discount and hedge adjustments; current portion $3,729 m. Principal due 2025 $3,750 m, 2026-2029 $12,787 m (2,500 + 3,826 + 3,173 + 3,288), 2030 and after $34,448 m. Process note: before this transcription, the answer key's *totals* for the five Week 4 held-out reports were printed once by mistake while checking which totals the key tags; the values below are read from the printed report only, each with its source row.
-- **Intel**: disagreement — key members unmatched: ['OregonAndArizonaBondsDue2035To2040']; printed rows unexplained: 0; totals: {'total_debt': (50011000000.0, 50011000000.0), 'current': (3729000000.0, 3729000000.0), 'due_next_12m': (3750000000.0, 3750000000.0), 'due_2_5': (12787000000.0, 12787000000.0), 'due_after_5': (34448000000.0, 34448000000.0)}
 - **Marvell 10-Q 20241102** — Face value outstanding at Nov 2 2024: the 2026 term loan (5-year tranche) $623.4 m and six senior notes. Net carrying amount of debt $4,094.9 m, current portion $129.4 m (balance sheet: short-term debt $129.4 m, long-term debt $3,965.5 m). The maturity schedule is by fiscal year (remainder of FY2025 $32.8 m, FY2026 $131.2 m ...), not the next twelve months, so no 12-month figure is recorded. Process note: before this transcription, the answer key's *totals* for the five Week 4 held-out reports were printed once by mistake while checking which totals the key tags; the values below are read from the printed report only, each with its source row.
-- **Marvell**: disagreement — key members unmatched: ['MTGAndMTISeniorNotesDueIn2028']; printed rows unexplained: 0; totals: {'total_debt': (4094900000.0, 4094900000.0)}
 - **Amazon 10-K 20241231** — Totals only (the episode's level). At Dec 31 2024: total face value of long-term debt $58,000 m (six note issuances; the credit facility shows '—'), unamortized discount and issuance costs $360 m, current portion $5,017 m and long-term debt $52,623 m, so total debt on the balance-sheet basis $57,640 m. Face due 2025 $5,000 m, 2026-2029 $16,750 m (2,750 + 8,750 + 2,250 + 3,000), thereafter $36,250 m. Process note: before this transcription, the answer key's *totals* for the five Week 4 held-out reports were printed once by mistake while checking which totals the key tags; the values below are read from the printed report only, each with its source row.
-- **Applied Digital 10-Q 20240831** — Debt table at Aug 31 2024 (thousands): CIM promissory note $105,000 k (12%, June 2027), Starion Ellendale loan $15,214 k (7.48%, Feb 2028), Cornerstone Bank loan $14,923 k (8.59%, Mar 2029), Starion term loan $9,298 k (6.50%, Jul 2027), other long-term debt $12,285 k (no rate or year printed), Vantage transformer loan repaid ('—'). The Yorkville convertible notes are carried at fair value outside that table: outstanding principal $28,132 k, due April and June 2025, no rate printed. Notes are recorded as bonds and loans as facilities, as printed. Total debt on the balance sheet: current portion $6,892 k + current portion at fair value $30,464 k + long-term debt, net $106,227 k = $143,583 k. Process note: before this transcription, the answer key's *totals* for the five Week 4 held-out reports were printed once by mistake while checking which totals the key tags; the values below are read from the printed report only, each with its source row.
-- **Applied Digital**: disagreement — key members unmatched: []; printed rows unexplained: 2; totals: {}
+- **Applied Digital 10-Q 20240831** — P44: graded L1 but the key holds no bond with a maturity; graded on totals only; the key tags no total either, so there is nothing to compare
+- **Alphabet 10-Q 20250331** — Debt table at Mar 31 2025 (millions), two note issuances: 2016 notes $2,000 m (2.00%, due 2026) and 2020 notes $10,000 m (0.45%-2.25%, due 2025-2060); total face $12,000 m, unamortized discount and costs $114 m, current portion of long-term notes $1,000 m, long-term debt $10,886 m. Total debt on the balance-sheet basis $11,886 m (face less discount, current and noncurrent). Commercial paper of $2.5 bn is outside the long-term debt table and is not included. Process note: transcribed from the printed report only; the answer key's values for these five reports were not printed or read before this transcription was written.
+- **IBM 10-Q 20250630** — Totals only (the episode's level). At June 30 2025: long-term debt including current maturities $64,164 m after discount, issuance costs and fair value adjustment (from $65,242 m face incl. finance leases); current maturities $8,944 m; long-term debt $55,219 m. MD&A prints total debt $64,165 m (short-term debt $8,945 m on the balance sheet includes $1 m beyond current maturities); $64,165 m is recorded. The maturity ladder is printed by calendar year from 'remainder of 2025' ($2,968 m), which is not a next-12-months figure, so no ladder is recorded. Process note: transcribed from the printed report only; the answer key's values for these five reports were not printed or read before this transcription was written.
+- **TeraWulf 10-Q 20250630** — Totals only (the episode's level). At June 30 2025 the only debt is the 2.75% convertible senior notes due 2030: principal $500,000 k, less issuance costs $11,284 k, carrying $488,716 k, none due within one year. The Term Loans were repaid in July 2024. Total debt $488,716 k; no current portion (zero, so not recorded). Process note: transcribed from the printed report only; the answer key's values for these five reports were not printed or read before this transcription was written.
+- **TeraWulf**: disagreement — key members unmatched: []; printed rows unexplained: 0; totals: {}
+- **Applied Digital 10-Q 20241130** — P44: graded L1 but the key holds no bond with a maturity; graded on totals only; the key tags no total either, so there is nothing to compare
+- **Vistra 10-Q 20240930** — Totals only (the episode's level). At Sep 30 2024: total long-term debt including amounts due currently $14,730 m (face $14,870 m: term loans B-3 $2,481 m and Vistra Zero $697 m, senior secured notes $3,894 m, Energy Harbor revenue bonds $431 m, senior unsecured notes $7,300 m, equipment financing $67 m; less $140 m premiums, discounts and costs); due currently $785 m. Accounts receivable financing ($750 m) is a separate line and not included. The maturity ladder starts from 'remainder of 2024' ($20 m), not a next-12-months figure, so no ladder is recorded. Process note: transcribed from the printed report only; the answer key's values for these five reports were not printed or read before this transcription was written.
 
 ## Who checked
 

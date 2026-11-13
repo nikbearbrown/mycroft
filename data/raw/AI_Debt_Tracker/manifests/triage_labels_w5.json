@@ -1,0 +1,944 @@
+{
+ "about": "Week 5 triage labelled set; see scripts/triage_eval.py",
+ "seed": 20261113,
+ "definition": "graph/nodes/triage.py module docstring",
+ "items": [
+  {
+   "accession": "0001104659-24-098942",
+   "cik": 51143,
+   "company": "IBM",
+   "form": "8-K",
+   "items": [
+    "8.01",
+    "9.01"
+   ],
+   "filing_date": "2024-09-11",
+   "stratum": "random",
+   "documents": [
+    "8-K"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Item 8.01 pension annuity transfer to Prudential; not borrowing."
+  },
+  {
+   "accession": "0000002488-25-000064",
+   "cik": 2488,
+   "company": "AMD",
+   "form": "8-K",
+   "items": [
+    "5.07",
+    "9.01"
+   ],
+   "filing_date": "2025-05-16",
+   "stratum": "random",
+   "documents": [
+    "8-K"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Item 5.07 shareholder vote."
+  },
+  {
+   "accession": "0001640147-24-000183",
+   "cik": 1640147,
+   "company": "Snowflake",
+   "form": "8-K",
+   "items": [
+    "5.02"
+   ],
+   "filing_date": "2024-07-02",
+   "stratum": "random",
+   "documents": [
+    "8-K"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Item 5.02 executive resignation."
+  },
+  {
+   "accession": "0001045810-25-000039",
+   "cik": 1045810,
+   "company": "Nvidia",
+   "form": "8-K",
+   "items": [
+    "5.02"
+   ],
+   "filing_date": "2025-03-07",
+   "stratum": "random",
+   "documents": [
+    "8-K",
+    "EX-10.1"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Item 5.02 variable compensation plan."
+  },
+  {
+   "accession": "0001193125-24-212202",
+   "cik": 1819989,
+   "company": "Cipher Mining",
+   "form": "424B5",
+   "items": [],
+   "filing_date": "2024-09-03",
+   "stratum": "random",
+   "documents": [
+    "424B5"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "424B5 amendment to an at-the-market common stock programme."
+  },
+  {
+   "accession": "0001819989-25-000054",
+   "cik": 1819989,
+   "company": "Cipher Mining",
+   "form": "8-K",
+   "items": [
+    "5.07"
+   ],
+   "filing_date": "2025-06-09",
+   "stratum": "random",
+   "documents": [
+    "8-K"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Item 5.07 shareholder vote."
+  },
+  {
+   "accession": "0001493152-24-043070",
+   "cik": 1144879,
+   "company": "Applied Digital",
+   "form": "8-K",
+   "items": [
+    "8.01",
+    "9.01"
+   ],
+   "filing_date": "2024-10-30",
+   "stratum": "random",
+   "documents": [
+    "8-K",
+    "EX-99.1"
+   ],
+   "relevant": true,
+   "event_type": "new_bond_issue",
+   "note": "Proposed private offering of $300 m convertible senior notes due 2030 (8-K and EX-99.1)."
+  },
+  {
+   "accession": "0001819989-24-000026",
+   "cik": 1819989,
+   "company": "Cipher Mining",
+   "form": "8-K",
+   "items": [
+    "2.02",
+    "7.01",
+    "9.01"
+   ],
+   "filing_date": "2024-10-31",
+   "stratum": "random",
+   "documents": [
+    "8-K",
+    "EX-99.1",
+    "EX-99.2"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Q3 2024 business update and earnings; balances only."
+  },
+  {
+   "accession": "0000002488-24-000172",
+   "cik": 2488,
+   "company": "AMD",
+   "form": "8-K",
+   "items": [
+    "5.02",
+    "9.01"
+   ],
+   "filing_date": "2024-11-18",
+   "stratum": "random",
+   "documents": [
+    "8-K",
+    "EX-10.1"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Item 5.02 chief accounting officer departure."
+  },
+  {
+   "accession": "0001193125-25-052173",
+   "cik": 2488,
+   "company": "AMD",
+   "form": "8-K",
+   "items": [
+    "1.01",
+    "9.01"
+   ],
+   "filing_date": "2025-03-12",
+   "stratum": "random",
+   "documents": [
+    "8-K",
+    "EX-1.1"
+   ],
+   "relevant": true,
+   "event_type": "new_bond_issue",
+   "note": "Underwriting agreement for $1.5 bn senior notes: $875 m 4.212% due 2026 and $625 m 4.319% due 2028."
+  },
+  {
+   "accession": "0000051143-25-000005",
+   "cik": 51143,
+   "company": "IBM",
+   "form": "8-K",
+   "items": [
+    "2.02",
+    "9.01"
+   ],
+   "filing_date": "2025-01-29",
+   "stratum": "random",
+   "documents": [
+    "8-K",
+    "EX-99.1",
+    "EX-99.2"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Q4 2024 earnings release; total debt as a balance only."
+  },
+  {
+   "accession": "0001193125-25-141708",
+   "cik": 1297996,
+   "company": "Digital Realty",
+   "form": "8-K",
+   "items": [
+    "8.01"
+   ],
+   "filing_date": "2025-06-17",
+   "stratum": "random",
+   "documents": [
+    "8-K"
+   ],
+   "relevant": true,
+   "event_type": "new_bond_issue",
+   "note": "Digital Dutch Finco commenced an offering of euro guaranteed notes (terms at pricing)."
+  },
+  {
+   "accession": "0001045810-25-000082",
+   "cik": 1045810,
+   "company": "Nvidia",
+   "form": "8-K",
+   "items": [
+    "8.01"
+   ],
+   "filing_date": "2025-04-15",
+   "stratum": "random",
+   "documents": [
+    "8-K"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Item 8.01 export licence requirement for H20."
+  },
+  {
+   "accession": "0000950142-24-002980",
+   "cik": 1083301,
+   "company": "TeraWulf",
+   "form": "8-K",
+   "items": [
+    "8.01"
+   ],
+   "filing_date": "2024-12-23",
+   "stratum": "random",
+   "documents": [
+    "8-K"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Item 8.01 data center lease agreements with Core42; the forward-looking boilerplate mentions 'the offering ... the notes', but no offering is announced."
+  },
+  {
+   "accession": "0000050863-25-000037",
+   "cik": 50863,
+   "company": "Intel",
+   "form": "8-K/A",
+   "items": [
+    "5.02",
+    "9.01"
+   ],
+   "filing_date": "2025-03-14",
+   "stratum": "random",
+   "documents": [
+    "8-K/A"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "8-K/A Item 5.02 officer compensation."
+  },
+  {
+   "accession": "0001193125-24-238672",
+   "cik": 1692819,
+   "company": "Vistra",
+   "form": "8-K",
+   "items": [
+    "1.01",
+    "2.03"
+   ],
+   "filing_date": "2024-10-17",
+   "stratum": "random",
+   "documents": [
+    "8-K"
+   ],
+   "relevant": true,
+   "event_type": "facility_amendment",
+   "note": "Items 1.01/2.03: amendment to Vistra Operations' credit agreement (revolving credit)."
+  },
+  {
+   "accession": "0000050863-25-000063",
+   "cik": 50863,
+   "company": "Intel",
+   "form": "8-K",
+   "items": [
+    "1.01",
+    "8.01",
+    "9.01"
+   ],
+   "filing_date": "2025-04-17",
+   "stratum": "random",
+   "documents": [
+    "8-K"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Sale of a majority of Altera to Silver Lake; the purchaser's financing, not Intel's borrowing."
+  },
+  {
+   "accession": "0001193125-25-165924",
+   "cik": 1769628,
+   "company": "CoreWeave",
+   "form": "8-K",
+   "items": [
+    "1.01",
+    "2.03",
+    "7.01",
+    "9.01"
+   ],
+   "filing_date": "2025-07-28",
+   "stratum": "random",
+   "documents": [
+    "8-K",
+    "EX-4.1",
+    "EX-99.1"
+   ],
+   "relevant": true,
+   "event_type": "new_bond_issue",
+   "note": "Issued $1,750 m 9.000% senior notes due 2031 (closing; 8-K and EX-99.1)."
+  },
+  {
+   "accession": "0000950170-25-010484",
+   "cik": 789019,
+   "company": "Microsoft",
+   "form": "8-K",
+   "items": [
+    "2.02",
+    "9.01"
+   ],
+   "filing_date": "2025-01-29",
+   "stratum": "random",
+   "documents": [
+    "8-K",
+    "EX-99.1"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Q2 FY2025 earnings release."
+  },
+  {
+   "accession": "0001375365-24-000043",
+   "cik": 1375365,
+   "company": "Super Micro",
+   "form": "8-K",
+   "items": [
+    "1.02",
+    "9.01"
+   ],
+   "filing_date": "2024-11-26",
+   "stratum": "random",
+   "documents": [
+    "8-K"
+   ],
+   "relevant": true,
+   "event_type": "redemption_or_repayment",
+   "note": "Item 1.02: prepaid in full and terminated the Cathay Bank loan agreement and the Bank of America loan and security agreement."
+  },
+  {
+   "accession": "0001144879-24-000159",
+   "cik": 1144879,
+   "company": "Applied Digital",
+   "form": "8-K",
+   "items": [
+    "5.03",
+    "9.01"
+   ],
+   "filing_date": "2024-06-11",
+   "stratum": "random",
+   "documents": [
+    "8-K"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Item 5.03 increase in authorized shares."
+  },
+  {
+   "accession": "0000050863-24-000122",
+   "cik": 50863,
+   "company": "Intel",
+   "form": "8-K",
+   "items": [
+    "2.02",
+    "9.01"
+   ],
+   "filing_date": "2024-08-01",
+   "stratum": "random",
+   "documents": [
+    "8-K",
+    "EX-99.1"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Q2 2024 earnings; a plan to reduce debt, no transaction."
+  },
+  {
+   "accession": "0001144879-24-000140",
+   "cik": 1144879,
+   "company": "Applied Digital",
+   "form": "8-K",
+   "items": [
+    "1.01",
+    "2.03",
+    "3.02",
+    "8.01",
+    "9.01"
+   ],
+   "filing_date": "2024-05-24",
+   "stratum": "random",
+   "documents": [
+    "8-K",
+    "EX-10.1",
+    "EX-10.2",
+    "EX-10.3",
+    "EX-10.4",
+    "EX-99.1"
+   ],
+   "relevant": true,
+   "event_type": "new_bond_issue",
+   "note": "Items 1.01/2.03: $42.1 m unsecured convertible promissory note (debenture) issued to YA II PN under a prepaid advance agreement."
+  },
+  {
+   "accession": "0001652044-25-000056",
+   "cik": 1652044,
+   "company": "Alphabet",
+   "form": "8-K",
+   "items": [
+    "2.02",
+    "8.01",
+    "9.01"
+   ],
+   "filing_date": "2025-07-23",
+   "stratum": "random",
+   "documents": [
+    "8-K",
+    "EX-99.1"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Q2 2025 earnings release; recaps the May 2025 notes issuance (announced earlier)."
+  },
+  {
+   "accession": "0001193125-25-123591",
+   "cik": 1819989,
+   "company": "Cipher Mining",
+   "form": "FWP",
+   "items": [],
+   "filing_date": "2025-05-21",
+   "stratum": "random",
+   "documents": [
+    "FWP"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "FWP pricing term sheet for a borrowed common stock offering to facilitate hedging of the concurrent 1.75% convertible notes; the document offers shares, not the notes."
+  },
+  {
+   "accession": "0000002488-25-000039",
+   "cik": 2488,
+   "company": "AMD",
+   "form": "8-K",
+   "items": [
+    "8.01"
+   ],
+   "filing_date": "2025-04-16",
+   "stratum": "random",
+   "documents": [
+    "8-K"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Item 8.01 export control charge."
+  },
+  {
+   "accession": "0001493152-24-048706",
+   "cik": 1144879,
+   "company": "Applied Digital",
+   "form": "8-K",
+   "items": [
+    "5.02",
+    "9.01"
+   ],
+   "filing_date": "2024-12-04",
+   "stratum": "random",
+   "documents": [
+    "8-K",
+    "EX-10.1"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Item 5.02 COO offer letter."
+  },
+  {
+   "accession": "0001571996-24-000081",
+   "cik": 1571996,
+   "company": "Dell",
+   "form": "8-K",
+   "items": [
+    "2.02",
+    "9.01"
+   ],
+   "filing_date": "2024-08-29",
+   "stratum": "random",
+   "documents": [
+    "8-K",
+    "EX-99.1"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Q2 FY2025 earnings release; balances only."
+  },
+  {
+   "accession": "0001628280-24-037702",
+   "cik": 1839341,
+   "company": "Core Scientific",
+   "form": "8-K",
+   "items": [
+    "1.01",
+    "2.03",
+    "3.02",
+    "8.01",
+    "9.01"
+   ],
+   "filing_date": "2024-08-19",
+   "stratum": "random",
+   "documents": [
+    "8-K",
+    "EX-4.1",
+    "EX-99.1",
+    "EX-99.2",
+    "EX-99.3"
+   ],
+   "relevant": true,
+   "event_type": "new_bond_issue",
+   "note": "Completed $460 m 3.00% convertible senior notes due 2029; also a notice of full redemption of the 12.50% secured notes due 2028 (EX-99.3)."
+  },
+  {
+   "accession": "0001641172-25-008007",
+   "cik": 1144879,
+   "company": "Applied Digital",
+   "form": "8-K",
+   "items": [
+    "1.01",
+    "1.02",
+    "3.02",
+    "5.03",
+    "8.01",
+    "9.01"
+   ],
+   "filing_date": "2025-05-01",
+   "stratum": "random",
+   "documents": [
+    "8-K",
+    "EX-10.1",
+    "EX-99.1"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "$150 m convertible preferred equity facility (Series G preferred stock): equity, not borrowing."
+  },
+  {
+   "accession": "0001193125-25-142127",
+   "cik": 1297996,
+   "company": "Digital Realty",
+   "form": "8-K",
+   "items": [
+    "7.01",
+    "8.01",
+    "9.01"
+   ],
+   "filing_date": "2025-06-17",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "8-K",
+    "EX-99.1"
+   ],
+   "relevant": true,
+   "event_type": "new_bond_issue",
+   "note": "Pricing of EUR 850 m 3.875% guaranteed notes due 2034 (8-K and EX-99.1)."
+  },
+  {
+   "accession": "0001769628-25-000039",
+   "cik": 1769628,
+   "company": "CoreWeave",
+   "form": "8-K",
+   "items": [
+    "2.02",
+    "8.01",
+    "9.01"
+   ],
+   "filing_date": "2025-08-12",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "8-K",
+    "EX-99.1"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Q2 2025 earnings release; recaps the $2 bn 9.25% notes raised earlier."
+  },
+  {
+   "accession": "0001628280-24-050176",
+   "cik": 1839341,
+   "company": "Core Scientific",
+   "form": "424B3",
+   "items": [],
+   "filing_date": "2024-12-06",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "424B3"
+   ],
+   "relevant": true,
+   "event_type": "new_bond_issue",
+   "note": "424B3 supplement reproducing the 8-K on the completed $625 m 0.00% convertible senior notes due 2031."
+  },
+  {
+   "accession": "0001193125-25-037636",
+   "cik": 1692819,
+   "company": "Vistra",
+   "form": "8-K",
+   "items": [
+    "2.02",
+    "9.01"
+   ],
+   "filing_date": "2025-02-27",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "8-K",
+    "EX-99.1"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Q4 2024 earnings; liquidity and facility availability only."
+  },
+  {
+   "accession": "0000950142-24-002636",
+   "cik": 1083301,
+   "company": "TeraWulf",
+   "form": "8-K",
+   "items": [
+    "1.01",
+    "2.03",
+    "3.02",
+    "8.01",
+    "9.01"
+   ],
+   "filing_date": "2024-10-25",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "8-K",
+    "EX-10.1",
+    "EX-4.1",
+    "EX-99.1"
+   ],
+   "relevant": true,
+   "event_type": "new_bond_issue",
+   "note": "Completed $500 m 2.75% convertible senior notes due 2030 (8-K items 1.01/2.03 and EX-99.1)."
+  },
+  {
+   "accession": "0001730168-24-000095",
+   "cik": 1730168,
+   "company": "Broadcom",
+   "form": "8-K",
+   "items": [
+    "2.02",
+    "8.01",
+    "9.01"
+   ],
+   "filing_date": "2024-09-05",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "8-K",
+    "EX-99.1"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Q3 FY2024 earnings release."
+  },
+  {
+   "accession": "0001628280-24-030000",
+   "cik": 1839341,
+   "company": "Core Scientific",
+   "form": "424B3",
+   "items": [],
+   "filing_date": "2024-06-26",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "424B3"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "424B3 supplement reproducing an Item 7.01 on CoreWeave hosting agreements; share resale."
+  },
+  {
+   "accession": "0001326801-25-000014",
+   "cik": 1326801,
+   "company": "Meta",
+   "form": "8-K",
+   "items": [
+    "2.02",
+    "9.01"
+   ],
+   "filing_date": "2025-01-29",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "8-K",
+    "EX-99.1"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Q4 2024 earnings; long-term debt as a balance only."
+  },
+  {
+   "accession": "0001193125-25-107005",
+   "cik": 1652044,
+   "company": "Alphabet",
+   "form": "424B2",
+   "items": [],
+   "filing_date": "2025-04-30",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "424B2"
+   ],
+   "relevant": true,
+   "event_type": "new_bond_issue",
+   "note": "Prospectus supplement: $5 bn notes in four tranches (4.000% 2030, 4.500% 2035, 5.250% 2055, 5.300% 2065)."
+  },
+  {
+   "accession": "0001104659-25-041201",
+   "cik": 723125,
+   "company": "Micron",
+   "form": "8-K",
+   "items": [
+    "1.01",
+    "2.03",
+    "8.01",
+    "9.01"
+   ],
+   "filing_date": "2025-04-29",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "8-K",
+    "EX-4.2"
+   ],
+   "relevant": true,
+   "event_type": "new_bond_issue",
+   "note": "Settled $500 m 5.65% notes due 2032 and $1,250 m 6.05% notes due 2035."
+  },
+  {
+   "accession": "0001144879-24-000104",
+   "cik": 1144879,
+   "company": "Applied Digital",
+   "form": "424B5",
+   "items": [],
+   "filing_date": "2024-05-06",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "424B5"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "424B5 at-the-market common stock programme."
+  },
+  {
+   "accession": "0001045810-24-000315",
+   "cik": 1045810,
+   "company": "Nvidia",
+   "form": "8-K",
+   "items": [
+    "2.02",
+    "9.01"
+   ],
+   "filing_date": "2024-11-20",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "8-K",
+    "EX-99.1",
+    "EX-99.2"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Q3 FY2025 earnings release; balances only."
+  },
+  {
+   "accession": "0001493152-24-037817",
+   "cik": 1144879,
+   "company": "Applied Digital",
+   "form": "424B3",
+   "items": [],
+   "filing_date": "2024-09-23",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "424B3"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "424B3 for shares underlying a warrant issued with the CIM promissory note; the prospectus offers shares."
+  },
+  {
+   "accession": "0001652044-24-000097",
+   "cik": 1652044,
+   "company": "Alphabet",
+   "form": "8-K",
+   "items": [
+    "8.01",
+    "9.01"
+   ],
+   "filing_date": "2024-09-24",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "8-K",
+    "EX-99.1"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Mini-tender offer for Alphabet shares by a third party; not a debt tender."
+  },
+  {
+   "accession": "0001193125-25-063305",
+   "cik": 1571996,
+   "company": "Dell",
+   "form": "424B2",
+   "items": [],
+   "filing_date": "2025-03-26",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "424B2"
+   ],
+   "relevant": true,
+   "event_type": "new_bond_issue",
+   "note": "Preliminary prospectus supplement, co-issuers Dell International and EMC: four series of senior notes, coupons and years blank."
+  },
+  {
+   "accession": "0001628280-24-030005",
+   "cik": 1839341,
+   "company": "Core Scientific",
+   "form": "424B3",
+   "items": [],
+   "filing_date": "2024-06-26",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "424B3"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "424B3 supplement reproducing an Item 7.01 on a CoreWeave hosting option."
+  },
+  {
+   "accession": "0001193125-25-147007",
+   "cik": 1297996,
+   "company": "Digital Realty",
+   "form": "8-K",
+   "items": [
+    "1.01",
+    "2.03",
+    "9.01"
+   ],
+   "filing_date": "2025-06-25",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "8-K",
+    "EX-4.1"
+   ],
+   "relevant": true,
+   "event_type": "new_bond_issue",
+   "note": "Issued EUR 850 m 3.875% guaranteed notes due 2034 (closing, items 1.01/2.03)."
+  },
+  {
+   "accession": "0001868275-25-000006",
+   "cik": 1868275,
+   "company": "Constellation Energy",
+   "form": "8-K",
+   "items": [
+    "7.01",
+    "9.01"
+   ],
+   "filing_date": "2025-01-10",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "8-K",
+    "EX-99.1",
+    "EX-99.2"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Agreement to acquire Calpine, assuming about $12.7 bn of Calpine net debt at a future closing; no financing entered into in this filing."
+  },
+  {
+   "accession": "0000950142-24-002999",
+   "cik": 1083301,
+   "company": "TeraWulf",
+   "form": "8-K",
+   "items": [
+    "8.01",
+    "9.01"
+   ],
+   "filing_date": "2024-12-26",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "8-K",
+    "EX-99.1"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Conference call transcript on the Core42 partnership; boilerplate mentions an offering."
+  },
+  {
+   "accession": "0001868275-24-000051",
+   "cik": 1868275,
+   "company": "Constellation Energy",
+   "form": "8-K",
+   "items": [
+    "2.02",
+    "7.01",
+    "9.01"
+   ],
+   "filing_date": "2024-08-06",
+   "stratum": "debt-vocabulary",
+   "documents": [
+    "8-K",
+    "EX-99.1",
+    "EX-99.2"
+   ],
+   "relevant": false,
+   "event_type": "not_debt",
+   "note": "Q2 2024 earnings release."
+  }
+ ],
+ "labelled_by": "Claude (model judgment, P8), reading each filing's main document and press-release exhibits against the definition; delegated by Om Mali",
+ "labelled_on": "2026-11-13, before triage was run with this week's rules; Week 4's run over the same pool exists but was not read while labelling"
+}

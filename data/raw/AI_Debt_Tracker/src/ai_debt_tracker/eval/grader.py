@@ -352,6 +352,11 @@ def grade_l3(target: dict, ledger: dict) -> dict:
 
 def grade_episode(target: dict, ledger: dict, level: str, start: dict | None = None) -> dict:
     out = {"level": level, "l3": grade_l3(target, ledger)}
+    if level == "L1" and not truth_bonds(target):
+        # P44: an L1 report with no bond the key can identify (Applied Digital's 10-Q: no instrument carries a
+        # maturity) gives L1 nothing to grade; every printed bond would count as extra. Totals only.
+        out["level_note"] = "P44: graded L1 but the key holds no bond with a maturity; graded on totals only"
+        return out
     if level == "L1":
         out["l1"] = grade_l1(target, ledger, start)
     elif level == "L2":

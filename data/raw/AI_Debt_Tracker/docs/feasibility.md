@@ -154,3 +154,7 @@ changes are never announced in a filing" would itself be a useful finding for My
 | 2026-11-07 | Fresh held-out hand-check (after P38–P39) | 1 of 5 agree (Amazon); P41–P44 found, left open | — (evidence only) |
 | 2026-11-07 | Fresh triage check | recall 8 of 9 (89%) — **below the 95% line**; the miss is a blank preliminary cover (P46), left open | — (evidence; part of the Week 4 gate record) |
 | 2026-11-07 | Event reader (week 4 check) | 157 of 167 fields (94%) vs B1 84% — pass; B2 100% | **Delegated** in advance by **Om Mali**, not reviewed (`manifests/week4_gate.json`); truth is Claude's model judgment |
+| 2026-11-13 | Fresh held-out hand-check (after P41–P44) | 3 of 4 gradable agree; P47–P49 found, left open | — (evidence only) |
+| 2026-11-13 | Fresh triage check, third set (after P45–P46) | recall 15 of 15 — pass; precision 15 of 18; P53–P54 logged | — (evidence; part of the Week 5 gate record) |
+| 2026-11-13 | Event reader on fresh filings (after P50–P52) | 48 of 53 fields (91%) vs B1 74%; B2 96% | — (evidence; part of the Week 5 gate record) |
+| 2026-11-13 | Full episodes on dev (week 5 check), oracle start | 95 of 95 ran; L1 recall 97.8% vs B0 90.9%, precision 90.2% vs 92.8%; new bonds 30 of 34 vs 0 | **Delegated** in advance by **Om Mali**, not reviewed (`manifests/week5_gate.json`); labels and truth are Claude's model judgment |

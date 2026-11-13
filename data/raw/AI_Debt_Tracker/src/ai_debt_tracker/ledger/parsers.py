@@ -191,7 +191,12 @@ def _parse_text(text: str, as_of_year: int | None = None, as_of_month: int | Non
 
     word_years = _words_to_years(words)
     m = DUE_YEAR.search(norm)
-    if m:
+    rng = YEAR_RANGE.search(norm)
+    if m and rng and rng.group(1) == m.group(1) and rng.group(1) != rng.group(2):
+        # P43: "Oregon And Arizona Bonds Due 2035 To 2040" is a series of bonds on one line, not a 2035
+        # bond (Intel, Week 4 fresh held-out check). No single maturity, so no match key.
+        p.notes.append("due-year range — a series, not one maturity (P43)")
+    elif m:
         p.maturity_year = int(m.group(1))
     elif word_years and re.search(r"\bdue\b|matur", low):
         p.maturity_year = word_years[-1]

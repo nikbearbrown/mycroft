@@ -1,0 +1,25 @@
+{
+ "gate": "Week 5 check: full episodes run end to end on dev; first L1 bond recall/precision (DESIGN.md §11, P4)",
+ "status": "DELEGATED",
+ "delegated_by": "Om Mali",
+ "date": "2026-11-13",
+ "delegation": "Before the week's work began, Om Mali instructed Claude: \"Do all the work for next week. I dont want to be involved in it so complete everything end to end.\" When the laptop ran low on memory mid-week and the model server and the episode run were stopped, Om said \"resume it\". Om did not review the labels, the transcriptions or the results. This record does not claim a human review.",
+ "handoff_condition": "every AI-25 dev episode completes timeline -> triage -> readers -> ledger -> checks and is graded; L1 bond recall and precision reported against B0 on the same episodes",
+ "measured": "docs/episodes.md -- 95 of 95 dev episodes ran end to end (condition met). Oracle start (B0's opening ledger, ablation A4). L1 (45 episodes, 583 bonds): tracker recall 97.8% (96.0-99.3) vs B0 90.9%, paired +6.9 points (+4.7 to +9.4); precision 90.2% (85.8-93.5) vs B0 92.8%, paired -2.6 points (-5.7 to -0.2); new bonds caught 30 of 34 (B0 0); removed bonds caught 3 of 14 (B0 1)",
+ "dev_iteration": "The first full run applied events filed after the quarter end (P55); fixed on dev and re-run from the saved readings. First run: recall 97.8%, precision 89.2%. Both runs are in docs/episodes.md; the first run's records are kept in $AI_DEBT_DATA/week5/episodes_run1/. The test split was not touched.",
+ "also_checked_this_week": {
+  "triage_fresh_check": "docs/triage.md -- third fresh labelled set (after P45, P46): recall 15 of 15 -- PASSES the 95% line; precision 15 of 18. Labels manifests/triage_labels_w5.json, git blob 9d88931006c11346804e4cdbb16a3095d6ce7b4d before and after the run. Two new rule weaknesses, P53 and P54, logged and not fixed against the set",
+  "reader_fresh_check": "docs/reader.md -- after P50-P52, on the 15 debt-relevant filings of the fresh set: reader 48 of 53 fields (91%), B1 39 of 53 (74%), B2 51 of 53 (96%). Truth manifests/reader_truth_w5.json, git blob b3cd3a4932a82957694ba76b31d7fba3d235da0c before and after the runs. P52's set-aside did not fire on any real filing",
+  "answer_key_fresh_holdout": "docs/handcheck.md -- after P41-P44: 3 of 4 gradable agree (Alphabet, IBM, Vistra); TeraWulf disagrees (P47); Applied Digital not gradable (P44 rule; P48); P49 noted. Only 2 of the 25 companies had never been hand-checked, so the draw rule was extended before drawing (documented). Week 4's set re-graded: 4 of 4 gradable (calibration)"
+ },
+ "basis": "The 50 fresh triage labels, the reader truth (27 instruments) and the 5 held-out transcriptions are Claude's model judgment (P8), labelled as such in each file. Model decisions by qwen3:4b are flagged per record. The diagnosis of the 26 false additions (P56-P58) is Claude's reading of each one.",
+ "to_clear_after_review": "Om (or another named human) reads docs/episodes.md, docs/triage.md, docs/reader.md and docs/handcheck.md, then sets status to CLEARED (or HELD) with the date and logs it in logs/RUN_LOG.md",
+ "carried_forward": [
+  "P56-P58: false additions in the merge step (existing notes from a prospectus; keyless launch announcements; the banks' option)",
+  "P53-P54: triage rule weaknesses from the fresh set",
+  "P47-P49: answer-key findings from the fresh hand-check",
+  "reader misses on fresh filings: redemption terms split across sentences, a redemption only in an exhibit title, a coupon in words",
+  "53 open questions from the self-checks (29 new bonds without a maturity, 24 exits of unknown instruments) for the week 6 investigators",
+  "Week 3, 4 and 5 gates are all DELEGATED, not CLEARED"
+ ]
+}

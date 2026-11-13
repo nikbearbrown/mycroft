@@ -8,17 +8,17 @@ Reads nothing. It takes the last report itemised finely enough for the episode's
 
 ## Results
 
-**L1 — per bond** (47 episodes, 586 true bonds):
+**L1 — per bond** (45 episodes, 583 true bonds):
 
-- Bond recall: **91.0%** (87.7%–93.7%)
-- Bond precision: **92.2%** (88.6%–95.0%)
+- Bond recall: **90.9%** (87.9%–93.7%)
+- Bond precision: **92.8%** (89.3%–95.5%)
 - Principal accuracy on matched bonds: **99.2%** (98.0%–100.0%)
-- Episodes reproduced exactly (every bond, nothing extra): **19 of 47**
+- Episodes reproduced exactly (every bond, nothing extra): **20 of 45**
 
-**Change detection** (42 episodes whose start report is itemised too; 21 of them have at least one bond added or removed):
+**Change detection** (40 episodes whose start report is itemised too; 20 of them have at least one bond added or removed):
 
 - New bonds caught: **0.0%** (0.0%–0.0%) of 34
-- Removed bonds caught: **6.7%** (0.0%–21.1%) of 15
+- Removed bonds caught: **7.1%** (0.0%–21.4%) of 14
 
 B0 cannot catch a new bond by construction; it catches a removal only when the bond's maturity year has passed. **This is the headroom:** every new bond, and every early repayment, is something only reading the filings can find.
 
@@ -28,7 +28,7 @@ B0 cannot catch a new bond by construction; it catches a removal only when the b
 
 | Figure | Graded | Within 2% | B0 had no figure | Median abs. error where it had one |
 |---|---|---|---|---|
-| Total debt | 72 | 33 | 0 | 3.4% |
+| Total debt | 72 | 35 | 0 | 2.5% |
 | Current portion | 31 | 7 | 3 | 19.4% |
 | Due in 12 months | 45 | 20 | 3 | 6.3% |
 | Due in years 2-5 | 15 | 2 | 11 | 1.8% |
@@ -42,8 +42,8 @@ Most reports tag the maturity ladder only in the annual report, so a carried-for
 | Group | Episodes | Bond recall | Bond precision | Exact |
 |---|---|---|---|---|
 | ai_software | 8 | 93.8% | 100.0% | 7 |
-| chips_hardware | 23 | 91.6% | 95.3% | 12 |
-| datacentre_neocloud | 15 | 92.4% | 86.3% | 0 |
+| chips_hardware | 23 | 91.6% | 95.6% | 13 |
+| datacentre_neocloud | 13 | 92.4% | 87.6% | 0 |
 | hyperscaler | 1 | 77.8% | 94.6% | 0 |
 
 ## Where B0 is wrong most (L1)

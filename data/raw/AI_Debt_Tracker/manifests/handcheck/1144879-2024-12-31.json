@@ -1,0 +1,73 @@
+{
+ "episode": "1144879-2024-12-31",
+ "company": "Applied Digital",
+ "report": "10-Q 20241130",
+ "accession": "0001144879-25-000006",
+ "level": "L1",
+ "status": "reviewed",
+ "holdout": "week 5",
+ "reviewer": "Claude (model judgment, P8), 2026-11-13",
+ "source": "printed debt table / balance sheet / debt note text in the report's HTML",
+ "source_rows": "Debt table (in thousands) rows 280-291; balance sheet rows 51-52, 62",
+ "review": "Debt table at Nov 30 2024 (thousands): 2.75% convertible notes due June 2030 $450,000 k and the Macquarie promissory note (0.25%, May 2026) $166,500 k, both new this quarter; Starion Ellendale loan $14,256 k (7.48%, Feb 2028), Cornerstone Bank loan $14,255 k (8.59%, Mar 2029), Starion term loan $8,564 k (6.50%, Jul 2027), other long-term debt $12,259 k (incl. $12.0 m of SAFE agreements; no rate or year). The CIM promissory note was repaid in full on Nov 27 2024 and the Yorkville convertible debt and Vantage transformer loan show '\u2014'. Deferred financing costs $(191,047) k. Notes are recorded as bonds and loans as facilities, as printed. Total debt on the balance sheet: current portion $6,543 k + current portion at fair value $4,798 k + long-term debt $468,244 k = $479,585 k; current $11,341 k. Process note: transcribed from the printed report only; the answer key's values for these five reports were not printed or read before this transcription was written.",
+ "instruments": [
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 2.75,
+   "maturity_year": 2030,
+   "principal": 450000000.0,
+   "amount_usd": 450000000.0,
+   "row": "Senior Unsecured Convertible Notes | 2.75 % | June 2030 | 450,000 | \u2014"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 0.25,
+   "maturity_year": 2026,
+   "principal": 166500000.0,
+   "amount_usd": 166500000.0,
+   "row": "Macquarie Promissory Note (1) | 0.25 % | May 2026 | 166,500 | \u2014"
+  },
+  {
+   "kind": "facility",
+   "currency": "USD",
+   "coupon_pct": 7.48,
+   "maturity_year": 2028,
+   "principal": 14256000.0,
+   "amount_usd": 14256000.0,
+   "row": "Starion Ellendale Loan (2) | 7.48 % | February 2028 | 14,256 | 16,145"
+  },
+  {
+   "kind": "facility",
+   "currency": "USD",
+   "coupon_pct": 8.59,
+   "maturity_year": 2029,
+   "principal": 14255000.0,
+   "amount_usd": 14255000.0,
+   "row": "Cornerstone Bank Loan (3) | 8.59 % | March 2029 | 14,255 | 15,576"
+  },
+  {
+   "kind": "facility",
+   "currency": "USD",
+   "coupon_pct": 6.5,
+   "maturity_year": 2027,
+   "principal": 8564000.0,
+   "amount_usd": 8564000.0,
+   "row": "Starion Term Loan (4) | 6.50 % | July 2027 | 8,564 | 10,021"
+  },
+  {
+   "kind": "other",
+   "currency": "USD",
+   "coupon_pct": null,
+   "maturity_year": null,
+   "principal": 12259000.0,
+   "amount_usd": 12259000.0,
+   "row": "Other long-term debt (5) | 12,259 | 297"
+  }
+ ],
+ "totals": {
+  "total_debt": 479585000.0,
+  "current": 11341000.0
+ }
+}

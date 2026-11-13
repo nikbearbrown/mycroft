@@ -1,0 +1,18 @@
+{
+ "episode": "51143-2025-06-30",
+ "company": "IBM",
+ "report": "10-Q 20250630",
+ "accession": "0000051143-25-000052",
+ "level": "L3",
+ "status": "reviewed",
+ "holdout": "week 5",
+ "reviewer": "Claude (model judgment, P8), 2026-11-13",
+ "source": "printed debt table / balance sheet / debt note text in the report's HTML",
+ "source_rows": "Debt table (in millions) rows 583-639; total debt row 1263; balance sheet rows 144, 151",
+ "review": "Totals only (the episode's level). At June 30 2025: long-term debt including current maturities $64,164 m after discount, issuance costs and fair value adjustment (from $65,242 m face incl. finance leases); current maturities $8,944 m; long-term debt $55,219 m. MD&A prints total debt $64,165 m (short-term debt $8,945 m on the balance sheet includes $1 m beyond current maturities); $64,165 m is recorded. The maturity ladder is printed by calendar year from 'remainder of 2025' ($2,968 m), which is not a next-12-months figure, so no ladder is recorded. Process note: transcribed from the printed report only; the answer key's values for these five reports were not printed or read before this transcription was written.",
+ "instruments": [],
+ "totals": {
+  "total_debt": 64165000000.0,
+  "current": 8944000000.0
+ }
+}

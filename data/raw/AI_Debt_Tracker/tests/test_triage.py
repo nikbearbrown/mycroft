@@ -132,3 +132,31 @@ def test_preliminary_424b_with_blank_coupon_and_year_is_a_notes_offering():
     cover = "Preliminary Prospectus Supplement $ Dell International L.L.C. $ % Senior Notes due 20 $ % Senior Notes due 20"
     r = tr.triage("424B3", [], {"424B3": cover}, "acc", ask=lambda *a: pytest.fail("the model must not be asked"))
     assert (r.relevant, r.decided_by, r.event_type) == (True, "rule R2", "new_bond_issue")
+
+
+def test_p46_cover_blank_down_to_the_century_is_a_note_offer():
+    """IBM's euro preliminary prospectus: "€ % Notes due", and "Preferred Stock" only in the contents list."""
+    cover = ("Subject to completion. Preliminary prospectus supplement. € % Notes due  € % Notes due "
+             "International Business Machines Corporation. TABLE OF CONTENTS Description of Debt Securities "
+             "Description of Preferred Stock Description of Depositary Shares")
+    r = tr.rules("424B2", [], {"424B2": cover})
+    assert r.relevant and r.event_type == "new_bond_issue"
+
+
+def test_p46_contents_list_alone_is_not_a_share_sale_but_a_real_one_is():
+    contents = "PROSPECTUS SUPPLEMENT TABLE OF CONTENTS Description of Preferred Stock Description of Warrants"
+    assert tr._equity_offered(contents) is None
+    assert tr._equity_offered("We are offering 5,000,000 shares of our common stock.") is not None
+
+
+def test_p45_same_document_under_two_accessions_is_kept_once():
+    from ai_debt_tracker.graph.nodes.timeline import drop_duplicate_documents
+    rows = [{"cik": 1, "accession": "a1", "filing_date": "2024-10-02", "form": "FWP", "primary_document": "d1fwp.htm"},
+            {"cik": 2, "accession": "a2", "filing_date": "2024-10-02", "form": "FWP", "primary_document": "d1fwp.htm"},
+            {"cik": 3, "accession": "a3", "filing_date": "2024-10-02", "form": "8-K", "primary_document": "form8-k.htm"},
+            {"cik": 4, "accession": "a4", "filing_date": "2024-10-02", "form": "8-K", "primary_document": "form8-k.htm"}]
+    text = {"a1": "Pricing term sheet  5.30% Notes", "a2": "Pricing term sheet 5.30% Notes",
+            "a3": "Item 8.01 one thing", "a4": "Item 2.03 another"}
+    kept = drop_duplicate_documents(rows, lambda r: text[r["accession"]])
+    assert [r["accession"] for r in kept] == ["a1", "a3", "a4"]
+    assert kept[0]["also_filed_as"] == [{"cik": 2, "accession": "a2"}]

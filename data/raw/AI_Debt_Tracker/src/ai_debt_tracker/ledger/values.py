@@ -92,6 +92,26 @@ def norm(text: str) -> str:
     return " ".join(t.split()).lower()
 
 
+SIGN = re.compile(r"^\s*(?:[$€£]|us\$|usd|eur|gbp|chf|jpy)\s*", re.I)
+
+
+def source_currency_copy(copied: str, span_text: str) -> str | None:
+    """P50 (Week 4): the model 'copied' "$1,500,000,000" where the filing says "€1,500,000,000" — it rewrote the
+    currency sign. If the copy with its sign removed *is* in the span, return the span's own words for it (its
+    sign and number), so the amount and currency are read from the filing, never from the model. None when the
+    bare number is not in the span, or the span shows no sign in front of it (nothing to correct from)."""
+    if not copied or not SIGN.match(copied):
+        return None
+    bare = SIGN.sub("", copied).strip()
+    if not bare or not re.match(r"\d", bare):
+        return None
+    m = re.search(r"([$€£]|\b(?:US\$|USD|EUR|GBP|CHF|JPY)\b)\s?" + re.escape(bare), span_text, re.I)
+    if not m:
+        return None
+    found = m.group(0)
+    return found if norm(found) != norm(copied) else None
+
+
 def grounded(copied: str, span_text: str) -> bool:
     """Is the copied value really in the cited span? Spacing around '%' and '$' is forgiven
     ("4.750 %" in a table cell vs "4.750%" copied); nothing else is."""

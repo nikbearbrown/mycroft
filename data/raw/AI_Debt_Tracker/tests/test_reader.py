@@ -111,3 +111,37 @@ def test_the_reader_never_imports_the_grader_side():
 
 def test_the_word_null_is_no_value_not_a_failed_copy():
     assert rd._locate("null", "d0:s1", {"d0:s1": "anything"}) == (None, None, None)
+
+
+def test_p50_a_rewritten_currency_sign_is_read_from_the_filing():
+    """Alphabet's euro notes: the model 'copied' "$1,500,000,000" where the 8-K says "€1,500,000,000". The amount
+    and currency come from the filing's own words; the model's copy is kept beside them."""
+    ps = [("d0:s6", "Alphabet issued €1,500,000,000 aggregate principal amount of 2.500% Notes due 2029.")]
+    ans = {"instruments": [{"action": "new_issue", "kind": "notes", "principal_text": "$1,500,000,000",
+                            "principal_id": "d0:s6", "coupon_text": "2.500%", "coupon_id": "d0:s6",
+                            "maturity_text": "2029", "maturity_id": "d0:s6", "floating": False}]}
+    (e,) = rd.resolve(ans, ps)
+    assert (e.principal, e.currency) == (1.5e9, "EUR")
+    assert e.cites["principal"]["found"] == "sign from source" and e.cites["principal"]["text"] == "€1,500,000,000"
+    assert e.cites["principal"]["model_copied"] == "$1,500,000,000"
+    # a number the filing does not state is still refused, whatever its sign
+    assert V.source_currency_copy("$2,000,000,000", ps[0][1]) is None
+
+
+def test_p51_an_amount_only_facility_sentence_is_a_passage():
+    s = "On May 1, 2024, the Company entered into a $500 million term loan facility with Bank of America."
+    assert rd._score(s) >= 4
+
+
+def test_p52_existing_notes_read_from_a_table_on_a_blank_preliminary_cover_are_set_aside():
+    ps = [("d0:s1", "$ % Senior Notes due 20 We are offering $ aggregate principal amount of % Senior Notes due 20."),
+          ("d0:t3.r2", "1.250% Senior Notes due 2025 | 1,000")]
+    table = rd.Event("new_issue", "new", "notes", "USD", 1e9, 1.25, False, 2025,
+                     cites={"principal": {"id": "d0:t3.r2", "text": "1,000", "found": "cited"},
+                            "coupon": {"id": "d0:t3.r2", "text": "1.250%", "found": "cited"}})
+    blank = rd.Event("new_issue", "new", "notes", None, None, None, False, None, cites={})
+    keep, aside = rd.set_aside_existing([table, blank], ps)
+    assert keep == [blank] and aside == [table]
+    # on a priced document the same table row is not set aside
+    keep, aside = rd.set_aside_existing([table], [("d0:s1", "4.350% Senior Notes due 2030"), ps[1]])
+    assert keep == [table] and aside == []

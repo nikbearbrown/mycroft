@@ -1,0 +1,18 @@
+{
+ "episode": "1692819-2024-09-30",
+ "company": "Vistra",
+ "report": "10-Q 20240930",
+ "accession": "0001692819-24-000069",
+ "level": "L3",
+ "status": "reviewed",
+ "holdout": "week 5",
+ "reviewer": "Claude (model judgment, P8), 2026-11-13",
+ "source": "printed debt table / balance sheet / debt note text in the report's HTML",
+ "source_rows": "Debt note tables (in millions) rows 561-610; balance sheet row 259",
+ "review": "Totals only (the episode's level). At Sep 30 2024: total long-term debt including amounts due currently $14,730 m (face $14,870 m: term loans B-3 $2,481 m and Vistra Zero $697 m, senior secured notes $3,894 m, Energy Harbor revenue bonds $431 m, senior unsecured notes $7,300 m, equipment financing $67 m; less $140 m premiums, discounts and costs); due currently $785 m. Accounts receivable financing ($750 m) is a separate line and not included. The maturity ladder starts from 'remainder of 2024' ($20 m), not a next-12-months figure, so no ladder is recorded. Process note: transcribed from the printed report only; the answer key's values for these five reports were not printed or read before this transcription was written.",
+ "instruments": [],
+ "totals": {
+  "total_debt": 14730000000.0,
+  "current": 785000000.0
+ }
+}

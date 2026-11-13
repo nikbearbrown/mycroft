@@ -7,6 +7,9 @@ dependencies = [
     # Week 1: the edgar_pit MCP server. Held below 2.0: mcp 2.x renamed FastMCP to MCPServer,
     # and langchain-mcp-adapters (week 5) is written against the 1.x API.
     "mcp>=1.9,<2",
+    # Week 5: the episode supervisor (StateGraph, Send fan-out to readers) and its SQLite checkpointer
+    "langgraph>=0.2",
+    "langgraph-checkpoint-sqlite>=2",
     # Week 2: the grader's one-to-one bond assignment (Hungarian algorithm, DESIGN.md §9.1)
     "scipy>=1.13",
 ]

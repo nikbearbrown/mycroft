@@ -1,0 +1,402 @@
+{
+ "about": "Week 5 fresh event-reader truth: what each of the 15 debt-relevant filings of Week 5's fresh labelled triage set announces, instrument by instrument, read from the documents the reader reads (main document and EX-99 press releases). See scripts/reader_eval.py.",
+ "labelled_by": "Claude (Opus), reading each filing (model judgment, P8), not reviewed by a human; delegated by Om Mali",
+ "labelled_on": "2026-11-13, after the P50-P52 reader fixes were written and before any method was run on these filings",
+ "rules": "One entry per instrument (each tranche). principal = that instrument's amount (a facility: its commitment; a termination: the facility size); coupon = fixed annual rate, null if floating or blank; maturity = year. A value left blank in a preliminary prospectus is null. Debt named only in a use of proceeds is not an event of the filing. 'optional' = disclosed in passing (another subsidiary's deal, a sub-facility): counted only if a method reports it.",
+ "filings": [
+  {
+   "accession": "0001493152-24-043070",
+   "company": "Applied Digital",
+   "form": "8-K",
+   "filing_date": "2024-10-30",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "convertible_notes",
+     "currency": "USD",
+     "principal": 300000000.0,
+     "coupon_pct": null,
+     "maturity_year": 2030,
+     "evidence": "d0:s9, d1:s1"
+    }
+   ],
+   "note": "Proposed $300 m convertible senior notes due 2030; rate set at pricing (d1:s12). The $45 m option is part of the same notes. The ~$6.9 m promissory note repayment is anticipated, not done (d0:s14)."
+  },
+  {
+   "accession": "0001193125-25-052173",
+   "company": "AMD",
+   "form": "8-K",
+   "filing_date": "2025-03-12",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 875000000.0,
+     "coupon_pct": 4.212,
+     "maturity_year": 2026,
+     "evidence": "d0:s6, s7"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 625000000.0,
+     "coupon_pct": 4.319,
+     "maturity_year": 2028,
+     "evidence": "d0:s6, s7"
+    }
+   ],
+   "note": "Underwriting agreement for two tranches."
+  },
+  {
+   "accession": "0001193125-25-141708",
+   "company": "Digital Realty",
+   "form": "8-K",
+   "filing_date": "2025-06-17",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "EUR",
+     "principal": null,
+     "coupon_pct": null,
+     "maturity_year": null,
+     "evidence": "8-K Item 8.01"
+    }
+   ],
+   "note": "Commenced an offering of euro guaranteed notes; every term to be set at pricing."
+  },
+  {
+   "accession": "0001193125-24-238672",
+   "company": "Vistra",
+   "form": "8-K",
+   "filing_date": "2024-10-17",
+   "label_event": "facility_amendment",
+   "instruments": [
+    {
+     "action_class": "amend",
+     "kind": "revolving_facility",
+     "currency": "USD",
+     "principal": 3440000000.0,
+     "coupon_pct": null,
+     "maturity_year": 2029,
+     "evidence": "d0:s8"
+    }
+   ],
+   "note": "2022 Extended Revolving Credit Facility: maturity extended from 2027 to 2029 and commitments raised from $3.175 bn to $3.440 bn (principal = commitment after the amendment)."
+  },
+  {
+   "accession": "0001193125-25-165924",
+   "company": "CoreWeave",
+   "form": "8-K",
+   "filing_date": "2025-07-28",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1750000000.0,
+     "coupon_pct": 9.0,
+     "maturity_year": 2031,
+     "evidence": "d0:s6, d1:s1"
+    }
+   ],
+   "note": "Closing of the 9.000% notes."
+  },
+  {
+   "accession": "0001375365-24-000043",
+   "company": "Super Micro",
+   "form": "8-K",
+   "filing_date": "2024-11-26",
+   "label_event": "redemption_or_repayment",
+   "instruments": [
+    {
+     "action_class": "exit",
+     "kind": "term_loan",
+     "currency": "USD",
+     "principal": null,
+     "coupon_pct": null,
+     "maturity_year": null,
+     "evidence": "d0:s7"
+    },
+    {
+     "action_class": "exit",
+     "kind": "revolving_facility",
+     "currency": "USD",
+     "principal": null,
+     "coupon_pct": null,
+     "maturity_year": null,
+     "evidence": "d0:s7"
+    }
+   ],
+   "note": "Item 1.02: prepaid in full and terminated the Cathay Bank loan agreement and the Bank of America loan and security agreement; no amount, rate or date stated."
+  },
+  {
+   "accession": "0001144879-24-000140",
+   "company": "Applied Digital",
+   "form": "8-K",
+   "filing_date": "2024-05-24",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "convertible_notes",
+     "currency": "USD",
+     "principal": 42131579.0,
+     "coupon_pct": 0.0,
+     "maturity_year": null,
+     "evidence": "d0:s15, s20"
+    }
+   ],
+   "note": "Convertible unsecured promissory note, principal $42,131,579, zero percent interest; the term is 54 weeks, no maturity date or year stated. The earlier $40 m and $10 m notes are past events (s36)."
+  },
+  {
+   "accession": "0001628280-24-037702",
+   "company": "Core Scientific",
+   "form": "8-K",
+   "filing_date": "2024-08-19",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "convertible_notes",
+     "currency": "USD",
+     "principal": 460000000.0,
+     "coupon_pct": 3.0,
+     "maturity_year": 2029,
+     "evidence": "d0:s6, s8"
+    },
+    {
+     "action_class": "exit",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": null,
+     "coupon_pct": 12.5,
+     "maturity_year": 2028,
+     "evidence": "d3 EX-99.3 notice title, s2"
+    },
+    {
+     "action_class": "exit",
+     "kind": "term_loan",
+     "currency": "USD",
+     "principal": 61200000.0,
+     "coupon_pct": null,
+     "maturity_year": null,
+     "evidence": "d0:s25",
+     "optional": true
+    }
+   ],
+   "note": "Closed the 3.00% convertible notes (incl. the $60 m option); EX-99.3 is a notice of full redemption of the 12.50% secured notes due 2028 (the $150 m is the aggregate redemption *price*, not a principal, so principal is null). The $61.2 m repayment of the credit and guaranty agreement loans is told as a use of proceeds already applied: optional."
+  },
+  {
+   "accession": "0001193125-25-142127",
+   "company": "Digital Realty",
+   "form": "8-K",
+   "filing_date": "2025-06-17",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "EUR",
+     "principal": 850000000.0,
+     "coupon_pct": 3.875,
+     "maturity_year": 2034,
+     "evidence": "d0:s21, s27"
+    }
+   ],
+   "note": "Pricing of the euro notes."
+  },
+  {
+   "accession": "0001628280-24-050176",
+   "company": "Core Scientific",
+   "form": "424B3",
+   "filing_date": "2024-12-06",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "convertible_notes",
+     "currency": "USD",
+     "principal": 625000000.0,
+     "coupon_pct": 0.0,
+     "maturity_year": 2031,
+     "evidence": "d0:s21"
+    }
+   ],
+   "note": "424B3 supplement reproducing the 8-K on the completed 0.00% convertible notes (incl. the $75 m option)."
+  },
+  {
+   "accession": "0000950142-24-002636",
+   "company": "TeraWulf",
+   "form": "8-K",
+   "filing_date": "2024-10-25",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "convertible_notes",
+     "currency": "USD",
+     "principal": 500000000.0,
+     "coupon_pct": 2.75,
+     "maturity_year": 2030,
+     "evidence": "d0:s12, s14, s20"
+    }
+   ],
+   "note": "Closing of the 2.75% convertible notes (incl. the $75 m option)."
+  },
+  {
+   "accession": "0001193125-25-107005",
+   "company": "Alphabet",
+   "form": "424B2",
+   "filing_date": "2025-04-30",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 750000000.0,
+     "coupon_pct": 4.0,
+     "maturity_year": 2030,
+     "evidence": "d0:s2"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1250000000.0,
+     "coupon_pct": 4.5,
+     "maturity_year": 2035,
+     "evidence": "d0:s2"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1500000000.0,
+     "coupon_pct": 5.25,
+     "maturity_year": 2055,
+     "evidence": "d0:s2"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1500000000.0,
+     "coupon_pct": 5.3,
+     "maturity_year": 2065,
+     "evidence": "d0:s2"
+    }
+   ],
+   "note": "Final prospectus supplement, four tranches."
+  },
+  {
+   "accession": "0001104659-25-041201",
+   "company": "Micron",
+   "form": "8-K",
+   "filing_date": "2025-04-29",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 500000000.0,
+     "coupon_pct": 5.65,
+     "maturity_year": 2032,
+     "evidence": "d0:s8, s12"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 1250000000.0,
+     "coupon_pct": 6.05,
+     "maturity_year": 2035,
+     "evidence": "d0:s8, s13"
+    },
+    {
+     "action_class": "exit",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": 900000000.0,
+     "coupon_pct": 4.185,
+     "maturity_year": 2027,
+     "evidence": "d0:s28, s30"
+    }
+   ],
+   "note": "Settled two tranches; also a notice (issued April 24) to redeem in full the $900 m 4.185% notes due 2027, stated in this filing."
+  },
+  {
+   "accession": "0001193125-25-063305",
+   "company": "Dell",
+   "form": "424B2",
+   "filing_date": "2025-03-26",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": null,
+     "coupon_pct": null,
+     "maturity_year": null,
+     "evidence": "cover"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": null,
+     "coupon_pct": null,
+     "maturity_year": null,
+     "evidence": "cover"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": null,
+     "coupon_pct": null,
+     "maturity_year": null,
+     "evidence": "cover"
+    },
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "USD",
+     "principal": null,
+     "coupon_pct": null,
+     "maturity_year": null,
+     "evidence": "cover"
+    }
+   ],
+   "note": "Preliminary prospectus, co-issuers Dell International and EMC: four series of senior notes, every amount, coupon and year blank."
+  },
+  {
+   "accession": "0001193125-25-147007",
+   "company": "Digital Realty",
+   "form": "8-K",
+   "filing_date": "2025-06-25",
+   "label_event": "new_bond_issue",
+   "instruments": [
+    {
+     "action_class": "new",
+     "kind": "notes",
+     "currency": "EUR",
+     "principal": 850000000.0,
+     "coupon_pct": 3.875,
+     "maturity_year": 2034,
+     "evidence": "d0:s15, s26"
+    }
+   ],
+   "note": "Closing of the euro notes."
+  }
+ ]
+}

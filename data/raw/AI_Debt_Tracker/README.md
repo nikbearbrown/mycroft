@@ -11,29 +11,30 @@ runs on local models only (Ollama on an 8 GB laptop GPU) — no paid APIs.
 
 ## Status
 
-**Week 4 complete — 2026-11-07.** The agent can now read a debt filing into structured events: an
-event reader that points at the sentence or table cell stating each value and lets code parse it,
-refusing any "copied" value no passage contains. On the 24 debt-relevant filings of the Week 3 set it
-reads **157 of 167 fields (94%)** against **84%** for the regex baseline B1 — the Week 4 check passes —
-but the one-call baseline B2, where the model types the numbers itself, read **160 of 160**: the
-reader's gain is provenance, not accuracy. Two other checks did not go cleanly: a **fresh triage
-check found 8 of 9** debt filings (below the 95% line; one blank prospectus cover, P46), and a **fresh
-answer-key hand-check agreed on 1 of 5** reports (four new defects, P41–P44). All are recorded, not
-tuned away. Om Mali delegated Weeks 3 and 4 in advance and reviewed neither
-(`manifests/week3_gate.json`, `manifests/week4_gate.json`); labels, truth and transcriptions are
-Claude's model judgment. Weeks 1–2 gates: `manifests/week1_gate.json`, `manifests/week2_gate.json`.
+**Week 5 complete — 2026-11-13.** The tracker now runs whole episodes: for one company-quarter, a LangGraph graph
+lists the filings in the window, triages them, reads every relevant filing in parallel (`Send`), merges the events,
+sweeps matured bonds and applies the rest to the opening ledger, then self-checks the result. **All 95 dev episodes ran
+end to end** (the week 5 check). Opening from B0's ledger (oracle start), the tracker's L1 bond recall is **97.8%**
+against B0's 90.9% (+6.9 points, paired), and it caught **30 of 34 new bonds** that B0 cannot; its precision is
+**90.2%** against 92.8%, because 26 of the bonds it added are not in the target report (P56–P58, logged). One engine
+defect found by the first run was fixed on dev and both runs are reported (P55). Fresh checks, each labelled before
+its run: **triage 15 of 15** (passes, after Week 4's 8 of 9), **answer key 3 of 4** gradable reports, **reader 91% vs
+B1 74%** (B2 96%). Om Mali delegated Weeks 3, 4 and 5 in advance and has reviewed none of them
+(`manifests/week3_gate.json`, `week4_gate.json`, `week5_gate.json`); labels, truth and transcriptions are Claude's model
+judgment. Weeks 1–2 gates: `manifests/week1_gate.json`, `manifests/week2_gate.json`.
 
-- [`docs/reader.md`](docs/reader.md) — the event reader against B1 and B2; the Week 4 check.
+- [`docs/episodes.md`](docs/episodes.md) — full episodes on dev against B0; the Week 5 check.
+- [`docs/reader.md`](docs/reader.md) — the event reader against B1 and B2, on a fresh set (Week 5) and Week 4's.
 - [`docs/reader_truth.md`](docs/reader_truth.md) — what each of the 24 filings announces, labelled before any run.
-- [`docs/triage_labels_w4.md`](docs/triage_labels_w4.md) — the fresh 50-filing triage set (Week 4).
-- [`docs/triage.md`](docs/triage.md) — triage on the fresh and the Week 3 labelled sets, and over the dev pool.
+- [`docs/triage_labels_w5.md`](docs/triage_labels_w5.md), [`triage_labels_w4.md`](docs/triage_labels_w4.md) — the fresh 50-filing triage sets (Weeks 5, 4).
+- [`docs/triage.md`](docs/triage.md) — triage on all three labelled sets, and over the dev pool.
 - [`docs/triage_labels.md`](docs/triage_labels.md) — Week 3's 50 labelled filings and why each label.
 - [`docs/answer_key.md`](docs/answer_key.md) — the answer key for every report, with its anomalies.
 - [`docs/baseline_b0.md`](docs/baseline_b0.md) — baseline B0 (carry forward) scored on dev.
-- [`docs/handcheck.md`](docs/handcheck.md) — the grader against printed debt tables, with three held-out sets.
+- [`docs/handcheck.md`](docs/handcheck.md) — the grader against printed debt tables, with four held-out sets.
 - [`docs/changes_dev.md`](docs/changes_dev.md) — which bond changes were announced in a filing.
 
-- [`DESIGN.md`](DESIGN.md) — data sources, problems and fixes (P1–P46), agents, MCP servers,
+- [`DESIGN.md`](DESIGN.md) — data sources, problems and fixes (P1–P58), agents, MCP servers,
   models, evaluation, ten-week plan.
 - [`docs/feasibility.md`](docs/feasibility.md) — every go/no-go check with its pass line and result,
   including the Week 1 re-runs.
@@ -82,9 +83,10 @@ $env:OLLAMA_MODELS = "<your models directory>"; ollama serve
 
 ```powershell
 $env:UV_PROJECT_ENVIRONMENT = "<your venv directory>"; $env:UV_CACHE_DIR = "<your uv cache>"
-uv sync                      # Python 3.11+, installs mcp (<2), scipy and pytest
-uv run pytest                # 146 offline tests: parser, matcher, answer key, grader, B0, edgar_pit's cut-off rule,
-                             # document parsing and store, timeline, triage rules, value parsers, event reader, B1
+uv sync                      # Python 3.11+, installs mcp (<2), scipy, langgraph (+ SQLite checkpointer) and pytest
+uv run pytest                # 166 offline tests: parser, matcher, answer key, grader, B0, edgar_pit's cut-off rule,
+                             # document parsing and store, timeline, triage rules, value parsers, event reader, B1,
+                             # ledger engine, self-checks, ledger server, the episode graph on fakes
 ```
 
 ## Reproducing Week 1
@@ -172,8 +174,29 @@ uv run python scripts/reader_eval.py run b1                     # then b2, reade
 uv run python scripts/reader_eval.py report                     # -> docs/reader.md, docs/reader_truth.md
 ```
 
-The event reader (`graph/nodes/reader.py`) is a function of a filing's parsed documents; it is not yet
-wired into a graph (Week 5).
+The event reader (`graph/nodes/reader.py`) is a function of a filing's parsed documents; Week 5 wires it into
+the episode graph.
+
+## Reproducing Week 5
+
+```powershell
+$env:PYTHONPATH = "src;scripts"
+uv run python scripts/build_answer_key.py                       # after the P41-P44 fixes
+uv run python scripts/score_baseline.py dev
+uv run python scripts/handcheck.py extract                      # the fresh held-out reports (HOLDOUT_W5)
+uv run python scripts/handcheck.py grade                        # graded once
+uv run python scripts/triage_eval.py sample 5                   # third fresh set, one copy per document; refuses once labelled
+uv run python scripts/triage_eval.py run qwen3:4b               # -> $AI_DEBT_DATA/week5/
+uv run python scripts/triage_eval.py report qwen3:4b
+uv run python scripts/reader_eval.py run reader 5               # then b1, b2 (fresh set); `run reader 4` re-runs Week 4's set
+uv run python scripts/reader_eval.py report
+uv run python scripts/run_episodes.py run                       # every AI-25 dev episode; resumes from checkpoints
+uv run python scripts/run_episodes.py score                     # -> docs/episodes.md (with B0, paired)
+uv run python -m ai_debt_tracker.mcp_servers.ledger             # the ledger MCP server (stdio)
+```
+
+On an 8 GB laptop, start Ollama with `OLLAMA_NUM_PARALLEL=1` and `OLLAMA_MAX_LOADED_MODELS=1`, and run one model job at a
+time: the first Week 5 run was stopped by the machine running low on memory and resumed from the saved episodes.
 
 ## Reproducing the feasibility numbers (Week 0)
 

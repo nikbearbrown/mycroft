@@ -232,3 +232,35 @@ def test_p38_over_allotment_member_is_a_component_of_its_base_bond(key):
     m, _ = by_member(key)
     assert m["ConvertibleSeniorNotesDue2030"].klass == "bond"
     assert m["ConvertibleSeniorNotesDue2030OverallotmentOption"].klass == "component"
+
+
+def test_p42_bond_tagged_under_two_members_is_one_bond(key):
+    """Marvell: the 4.875% 2028 notes under a coupon-less member and a member with the coupon, same amount
+    (Week 4 fresh held-out check). The coupon-less twin is a component."""
+    key.dims["0xc1"] = "DebtInstrument=MTGAndMTI2028SeniorNotes;"
+    key.labels[("MTGAndMTI2028SeniorNotesMember", A)] = "MTG and MTI 2028 Senior Notes"
+    key.dims["0xc2"] = "DebtInstrument=MTGAndMTISeniorNotesDueIn2028;"
+    key.labels[("MTGAndMTISeniorNotesDueIn2028Member", A)] = "MTG and MTI Senior Notes Due in 2028"
+    for dimh, tag, v, uom in (("0xc1", "DebtInstrumentCarryingAmount", "499900000", "USD"),
+                              ("0xc2", "DebtInstrumentCarryingAmount", "499900000", "USD"),
+                              ("0xc2", "DebtInstrumentInterestRateStatedPercentage", "0.04875", "pure")):
+        key.num[A].append({"adsh": A, "tag": tag, "version": "us-gaap/2025", "ddate": "20260630",
+                           "qtrs": "0", "uom": uom, "dimh": dimh, "coreg": "", "value": v, "dcml": "-5"})
+    m, _ = by_member(key)
+    assert m["MTGAndMTISeniorNotesDueIn2028"].klass == "bond"
+    assert m["MTGAndMTI2028SeniorNotes"].klass == "component"
+
+
+def test_p43_member_naming_a_range_of_due_years_is_not_one_bond():
+    """Intel: "Oregon And Arizona Bonds Due 2035 To 2040" is a series, not a 2035 bond."""
+    from ai_debt_tracker.ledger.parsers import parse_member
+    p = parse_member("OregonAndArizonaBondsDue2035To2040", "Oregon and Arizona Bonds Due 2035 to 2040")
+    assert p.maturity_year is None and any("P43" in n for n in p.notes)
+    assert parse_member("SeniorNotesDue2035", "3.80% Senior Notes due 2035").maturity_year == 2035
+
+
+def test_p41_current_half_of_the_total_may_carry_the_debt_and_lease_tag():
+    """Constellation: noncurrent $7,321 m plus a current part tagged only as debt-and-lease, $1,037 m."""
+    from ai_debt_tracker.eval.grader import total_debt
+    total, basis = total_debt({"long_term_debt_noncurrent": 7.321e9, "debt_and_leases_current": 1.037e9})
+    assert total == pytest.approx(8.358e9) and basis.startswith("LongTermDebtNoncurrent")

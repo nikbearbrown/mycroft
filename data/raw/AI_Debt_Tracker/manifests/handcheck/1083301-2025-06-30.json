@@ -1,0 +1,17 @@
+{
+ "episode": "1083301-2025-06-30",
+ "company": "TeraWulf",
+ "report": "10-Q 20250630",
+ "accession": "0001083301-25-000061",
+ "level": "L3",
+ "status": "reviewed",
+ "holdout": "week 5",
+ "reviewer": "Claude (model judgment, P8), 2026-11-13",
+ "source": "printed debt table / balance sheet / debt note text in the report's HTML",
+ "source_rows": "Convertible notes table (in thousands) rows 277-281; balance sheet row 67",
+ "review": "Totals only (the episode's level). At June 30 2025 the only debt is the 2.75% convertible senior notes due 2030: principal $500,000 k, less issuance costs $11,284 k, carrying $488,716 k, none due within one year. The Term Loans were repaid in July 2024. Total debt $488,716 k; no current portion (zero, so not recorded). Process note: transcribed from the printed report only; the answer key's values for these five reports were not printed or read before this transcription was written.",
+ "instruments": [],
+ "totals": {
+  "total_debt": 488716000.0
+ }
+}
