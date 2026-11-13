@@ -1031,3 +1031,53 @@
   instrument.
 - **Open issues:** the Sprint 5 and 7 RUN_LOG backfill, the two disputed
   fixtures, and the GROQ_API_KEY rotation.
+## 2026-11-13 -- The map now covers the repository: 10 contributor subsystems classified, status.md and session-handoff.md refreshed
+
+- **Artifacts:** `_MANIFEST.md`, `.ai/manifest.yaml`, `status.md`, `session-handoff.md`.
+- **Inputs:** a top-level inventory of all 57 entries (tracked file counts from
+  `git ls-files`, last-touch date and author from `git log`), plus
+  `node scripts/conformance.mjs <path>` run once per unclassified tree.
+- **Why:** `_MANIFEST.md` is the portable read-first map, and it classified 12
+  top-level paths out of 51. Ten contributor subsystems -- 1,005 tracked files,
+  including `projects/` (435), `case-study-workflows/` (277),
+  `verification-layer/` (154) and `multi-agents/` (41) -- were named by no Tier 1
+  file, so an agent obeying the map would never load them.
+- **Result:** every top-level path is now classified. The ten subsystems are
+  recorded with `reviewed: false`, which is a deliberate claim: they have been
+  listed, not checked against `SNICKERDOODLE.md`. Listing a thing is not
+  reviewing it, and collapsing the two would resolve an open question silently.
+- **Nothing was moved, renamed or deleted.** `_mvtest2` (0 bytes, 2026-06-15),
+  `answers.json` and `answers1.json` are documented in place. Every unclassified
+  tree belongs to a named contributor; the map grew to fit the repository rather
+  than the repository being rearranged to fit the map.
+- **Two conformance failures found and recorded, not fixed:**
+  - `projects/finance-event-signals/deploy/k8s/{infra,observability,pipeline}.yaml`
+    are multi-document YAML, which is standard for Kubernetes manifests. The
+    files are valid. `scripts/conformance.mjs` calls `yaml.safe_load`, which
+    reads a single document; `safe_load_all` is what these need. **The defect is
+    in our checker, not in those files.**
+  - `congressional-signals/data/verified/conformance_report.json` contains bare
+    `NaN` literals. Python's `json.dump` emits them by default; they are not
+    valid JSON, so `JSON.parse` rejects the file. Owned by that subsystem.
+- **Also recorded:** none of the ten subsystems is inside conformance's
+  `DEFAULT_PATHS`, so `npm run verify` has never reached any of them. Eight
+  scoped `CLAUDE.md` files exist outside the generated set and are not covered by
+  `manifest-check`.
+- **status.md** was five months stale and is Tier 1 -- it reported 99 recipes and
+  still listed the recipe lifecycle as an open question. Refreshed against
+  measured counts (97 recipes: 95 DRAFT, 2 RUNNABLE-SAMPLE; `check --all` = 5
+  defects, all in `recipes/gru.md`). The 2026-06-15 snapshot is preserved
+  verbatim below the new content rather than overwritten; all 24 of its lines
+  were verified present afterwards.
+- **session-handoff.md** was rewritten as a resume point, which is what it is for.
+  One action from the June handoff -- run the `eval/` suite for real -- was still
+  genuinely open (both runs under `eval/runs/` are named `__example`), so it was
+  carried forward instead of dropped.
+- **Verified:** `npm run verify` passes (993 files conform; manifest check
+  passes, no W3 drift between `_MANIFEST.md` Tier 1 and `.ai/manifest.yaml`
+  `canonical`). The insertion into `_MANIFEST.md` was placed after the existing
+  Tier 2 section and guarded by an offset check, because `manifest-check.mjs`
+  parses Tier 1 by slicing from the first "Tier 1" to the first "Tier 2".
+- **Open issues:** the ten subsystems remain unreviewed; the multi-document YAML
+  defect in `conformance.mjs` is unfixed; `scenariostresstestingagent` still
+  reads DRAFT while carrying the evidence for a promotion.
