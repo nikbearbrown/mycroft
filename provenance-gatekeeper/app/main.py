@@ -7,6 +7,8 @@ import sqlite3
 import requests
 import os
 import re
+import redis
+import json
 from datetime import timedelta
 
 # Auth imports
@@ -21,6 +23,7 @@ app.include_router(dashboard.router)
 model = SentenceTransformer('all-MiniLM-L6-v2')
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
 collection = chroma_client.get_or_create_collection(name="financial_ledger")
+redis_client = redis.Redis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379/0"), decode_responses=True)
 
 # --- WEEK 4: Tracking Log Initialization ---
 def init_db():
@@ -156,15 +159,31 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 @app.post("/verify", response_model=VerificationVerdict)
 def verify_claim(request: ClaimRequest, current_user: User = Depends(get_current_user)):
     try:
-        claim_embedding = model.encode(request.generated_claim).tolist()
-        results = collection.query(query_embeddings=[claim_embedding], n_results=1)
+        # 1. Check Redis Cache First
+        cache_key = f"claim:{request.generated_claim}"
+        cached_result = redis_client.get(cache_key)
         
-        if not results['documents'][0]:
-            raise HTTPException(status_code=404, detail="No relevant ground truth found in ledger.")
+        if cached_result:
+            print("⚡ Cache Hit! Skipping vector search.")
+            evaluation = json.loads(cached_result)
+            ground_truth = evaluation.get("ground_truth", "Retrieved from cache")
+        else:
+            print("🐢 Cache Miss. Running ChromaDB semantic search.")
+            # 2. Run expensive ML embedding and Vector Search
+            claim_embedding = model.encode(request.generated_claim).tolist()
+            results = collection.query(query_embeddings=[claim_embedding], n_results=1)
             
-        ground_truth = results['documents'][0][0]
-        evaluation = evaluate_variance(request.generated_claim, ground_truth)
+            if not results['documents'][0]:
+                raise HTTPException(status_code=404, detail="No relevant ground truth found in ledger.")
+                
+            ground_truth = results['documents'][0][0]
+            evaluation = evaluate_variance(request.generated_claim, ground_truth)
+            evaluation["ground_truth"] = ground_truth
+            
+            # 3. Store in Redis for 1 hour (3600 seconds)
+            redis_client.setex(cache_key, 3600, json.dumps(evaluation))
         
+        # 4. Log and Alert
         log_evaluation(
             claim_id=request.claim_id, 
             generated_claim=request.generated_claim, 
