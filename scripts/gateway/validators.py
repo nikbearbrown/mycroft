@@ -6,7 +6,8 @@ sarcastic post still returns an allowed label, so `label_in_set` passes it and
 nothing escalates. These checks catch malformed answers -- empty, cut off,
 unparseable, unlabelled, ungrounded -- and nothing else. Judging correctness
 needs an answer key (the benchmark has one; production does not) or a stronger
-model (which costs as much as just retrying).
+model (which costs as much as just retrying, and on 2026-10-01 scored kappa
+0.00 against a human -- FINDINGS section 10).
 
 Every check is a pure function of text already in hand, so running them adds
 no cost and no latency, which is what makes them safe to run on every call.
@@ -27,6 +28,18 @@ from typing import Any, Callable
 NUMBER = re.compile(r"-?\d[\d,]*(?:\.\d+)?")
 CITATION = re.compile(r"\[(\d+)\]")
 FENCE = re.compile(r"```(?:json)?\s*(.*?)```", re.DOTALL)
+
+# Models sometimes cite with fullwidth brackets -- 【0】 instead of [0] -- even
+# though the prompt shows the ASCII form. The citation is right and only the
+# glyph differs, so rejecting it escalates a correct answer to a dearer tier
+# over punctuation. Seen on 3 of 8 answers in the 2026-09-24 judge run, all
+# from the mid tier. Widening the check is the fix; the prompt already asks
+# for [0] and asking harder did not stop it.
+FULLWIDTH_BRACKETS = str.maketrans({
+    "【": "[", "】": "]",
+    "［": "[", "］": "]",
+    "〔": "[", "〕": "]",
+})
 
 
 class UnknownValidator(KeyError):
@@ -55,8 +68,13 @@ def _normalize_label(text: str) -> str:
     return cleaned.strip().strip(".`\"'*").strip().lower()
 
 
-def _extract_json(text: str) -> Any:
-    """Parse JSON from a response that may be fenced or have prose around it."""
+def extract_json(text: str) -> Any:
+    """Parse JSON from a response that may be fenced or have prose around it.
+
+    Public because grading needs the same parse the check used: a grader that
+    parsed the answer differently from the validator would disagree with it
+    for reasons that have nothing to do with the model.
+    """
     for candidate in (text, *(m.group(1) for m in FENCE.finditer(text))):
         try:
             return json.loads(candidate.strip())
@@ -96,7 +114,7 @@ def _required_keys(text: str, *, required_keys: list[str] | None = None, **_) ->
     if not required_keys:
         raise ValueError("required_keys needs the key list")
 
-    data = _extract_json(text)
+    data = extract_json(text)
     if not isinstance(data, dict):
         return {"passed": False, "reason": "not_a_json_object", "got": text[:120]}
 
@@ -111,7 +129,7 @@ def _verdict_with_quote(text: str, *, labels: list[str] | None = None,
     if not labels:
         raise ValueError("verdict_with_quote needs the allowed verdicts")
 
-    data = _extract_json(text)
+    data = extract_json(text)
     if not isinstance(data, dict):
         return {"passed": False, "reason": "not_a_json_object", "got": text[:120]}
 
@@ -140,7 +158,7 @@ def _numbers_grounded(text: str, *, input_text: str = "", **_) -> dict[str, Any]
 
 def _cites_context(text: str, *, context: list[str] | None = None, **_) -> dict[str, Any]:
     passages = context or []
-    cited = [int(n) for n in CITATION.findall(text)]
+    cited = [int(n) for n in CITATION.findall(text.translate(FULLWIDTH_BRACKETS))]
     if not cited:
         return {"passed": False, "reason": "no_citation"}
     valid = [c for c in cited if 0 <= c < len(passages)]

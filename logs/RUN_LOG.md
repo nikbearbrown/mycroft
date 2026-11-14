@@ -874,3 +874,210 @@
 - **Fixed while building:** the first version of the planted-key check kept the credential-shaped text literally in the self-test's source, so the scan flagged the self-test file itself in a clean tree. The new "does not flag its own scripts" check caught it; the string is now assembled at run time, and a scan of the 41 files of this recipe finds nothing.
 - **Unchanged:** the eight generated per-node scripts, every file added on 2026-10-25, and step 4's outputs.
 - **Open issues:** as on 2026-11-01: step 2 (ingest) and the respond-to-webhook script mapping are still `[TODO: DEV]`, the report-script mapping line is left as its original wording (`todos_open` is 3), live mode has no approval record, and no human has yet cleared this sample run for the next phase.
+
+## 2026-11-09 -- scenariostresstestingagent: the last [TODO: DEV] closure (step 2, ingest declared inputs), sample mode; all six steps now run through the CLI
+
+- **What reading the repo's own tools showed:** `node scripts/snickerdoodle.mjs list` reported this recipe at 5/6 steps built, and `snickerdoodle run scenariostresstestingagent --sample` stopped at step 2 because the runner will not run an unbuilt step. Step 2 was the only open todo (`todos_open: 1`, after upstream's refresh).
+- **Added:**
+  - `scripts/ingest/scenariostresstestingagent-ingest-inputs.py`: the conductor's Source and Credential Check, sample mode. Reads the 22 frozen fixtures (SHA-256 against the manifest) and keeps each body unchanged; lists the workflow's sources (webhook available, chat skipped, Alpha Vantage and Groq approval-required); asks the environment only whether `ALPHA_VANTAGE_API_KEY` and `GROQ_API_KEY` are set; stops before transformation on any reject or a non-sample envelope. No network, no credential value read.
+  - `scripts/tools/scenariostresstestingagent-ingest-self-test.py`: 37 checks, including the deliberate breaks, an import scan, and a dummy credential that must reach no output.
+  - `data/raw/scenariostresstestingagent/ingest/` (`clean/ingested.json`, `defective/ingested.json`, `source-check.json`, `ingest-audit.md`), `logs/scenariostresstestingagent/ingest-self-test-results.{json,md}`, `README-step-2.md`, `full-sample-run-2026-11-09.md` (the CLI transcript, run on a scratch copy of the tree).
+  - `reports/generated/scenariostresstestingagent-2026-11-09.md` and `-defective.md`, and `logs/scenariostresstestingagent-2026-11-09.json` and `-defective.json`: step 6's report and agent log now that six steps are built (`steps_completed` 1 to 6), clock pinned.
+- **Changed (our own files, and the recipe):**
+  - `recipes/scenariostresstestingagent.md`: step 2 gets its closure note and status line in the format of the other five (original TODO wording kept); the Flags cell for step 2 lists what the script implements; step 3's status line no longer says step 2 is open; `todos_open` 1 to 0; `recipe_version` 0.3.2 to 0.4.0. `status` stays `DRAFT`.
+  - `scripts/tools/scenariostresstestingagent-produce-human-report.py`: the sentence "step 2 (ingest) is still open" in the decision recommendation was fixed text; it is now built from the recipe's open steps, so it is true whenever the report is made.
+  - `scripts/tools/scenariostresstestingagent-report-self-test.py`: its gate-4 check expected "5 of 6, step 2" and now reads the recipe's own state; one new check that the recommendation names an open step only when the recipe has one (31 checks, was 30). `report-self-test-results.{json,md}` regenerated.
+  - `scripts/gigo/scenariostresstestingagent-validate-data-shape.py`: one sentence in the docstring (it said step 2 was open); no behaviour change.
+  - `logs/scenariostresstestingagent/README.md`: a short pointer to the later READMEs appended.
+- **Commands:**
+  - step 2: exit 0; 12 clean and 10 defective read, 0 rejected; handoff condition met; `--no-write` writes nothing
+  - `python3 scripts/tools/scenariostresstestingagent-ingest-self-test.py`: exit 0, 37/37 checks as expected
+  - still passing: `scenariostresstestingagent-self-test.py` 27/27, the parity check 24/24, the report self-test 31/31
+  - `node scripts/snickerdoodle.mjs list`: 6/6 steps built; `check scenariostresstestingagent`: no contract defects
+  - `node scripts/snickerdoodle.mjs run scenariostresstestingagent --sample` on a scratch copy: exit 0, `All 6 steps completed.`
+  - `node scripts/conformance.mjs` (969 files) and `node scripts/manifest-check.mjs`: passed
+- **Found while building:** the first run of the new self-test came out 36/37: the recipe's Flags cell for step 2 listed only `--sample`, which is what the CLI's own check compares against. Running step 6 after the closure showed the fixed sentence about step 2 still being open, which is why that sentence now reads the recipe.
+- **Unchanged:** the eight generated per-node scripts, `scripts/ingest/scenariostresstestingagent-fetch-data.py`, the behaviour and outputs of steps 1, 3, 4 and 5, and every file added on 2026-10-25 and 2026-11-01.
+- **Open issues:** the closure takes the recipe to zero open todos by the repo's counting, but `status` is left `DRAFT` because two preserved script-mapping lines in "Existing Recipe Notes" still read `[TODO: DEV]`; a maintainer can promote it if that reading is right. Steps 3 to 6 still read the fixture folder directly rather than step 2's output. Live mode has no approval record, the chat entry point is not exercised, and no human has cleared any gate for this sample run.
+
+## 2026-10-01 -- Gateway Sprint 6: the scorer check
+
+- **Recipe:** Adaptive Model Routing & Inference Gateway (Sprint 6 of 9).
+- **Gate:** Blind human scoring of the judge's own pairs, by a named human,
+  before any agreement figure was computed.
+- **Cleared by:** Simba · 2026-10-01
+- **Inputs:** 24 fixtures re-frozen 2026-10-01 (answer key corrected); policy
+  0.2.0; tiers 0.4.0; prices 2026-09-17; GROQ_API_KEY.
+- **Commands:** `label.py --template answers.json --ids ...`;
+  `label.py --by "Simba" --from answers.json`; `audit.py --freeze`;
+  `judge_run.py --samples 4` (32 comparisons, 128 calls, $0.01911);
+  `score.py --by "Simba"` (32 scored); `agreement.py`;
+  `python -m pytest scripts/gateway/tests -q` (168 passed).
+- **Outputs:** `bench/score.py`, `bench/agreement.py`; `--samples` on
+  `bench/judge_run.py`; BOM-tolerant sheet reading and an unchanged-sheet
+  refusal in `bench/label.py`; `bench/scores/2026-10-01T061158-simba.json`;
+  `bench/results/2026-10-01T061158-judge.json` and `-agreement.json`;
+  `logs/gateway/runs/2026-10-01T061158-judge.jsonl`.
+- **Result:** **Cohen's kappa 0.00.** The judge returned `tie` on all 28
+  comparable pairs and no verdict on 4; the human picked a winner on 27 of 32
+  (cheap 11, mid 16, tie 5). Raw agreement 18%, exactly chance. Per task type:
+  rag_answer 27% raw / kappa 0.00; summarization 8% raw / kappa 0.00. Human
+  order bias: 13 first-shown vs 14 second-shown, none detectable.
+- **Answer key corrected first:** `sent-001` and `sent-004` changed from
+  `negative` to `positive`, and acceptable values were written for all four
+  extraction fixtures. Flagged in Sprint 3 review, confirmed in Sprint 5, fixed
+  here before anything was measured against them.
+- **Findings:** `scripts/gateway/FINDINGS.md` section 10. Section 9's
+  conclusion about cheap and mid being indistinguishable is withdrawn.
+- **Not verified:** whether a forced-choice judge (no TIE option) does better.
+  That is the next experiment and has not been run.
+- **Open issues:**
+  - `bench/score.py` and `bench/agreement.py` have no unit tests yet; the kappa
+    calculation in particular carries weight and needs them.
+  - The human's notes suggest a possible preference for longer answers; mid
+    writes longer answers. Confound to watch in Sprint 7.
+  - Coverage is 8 open-ended fixtures against a target of 30 per task type.
+  - `main` is behind `origin/main`.
+  - GROQ_API_KEY still needs rotating; it has now been exposed four times.
+
+## 2026-10-15 -- Gateway Sprint 8: the decision
+
+- **Recipe:** Adaptive Model Routing & Inference Gateway (Sprint 8 of 9).
+- **Gate:** Ship / do-not-ship, against thresholds fixed in August and not
+  revisited since.
+- **Cleared by:** Simba · 2026-10-15
+- **Inputs:** `bench/results/2026-10-08T161625-baseline.jsonl` (216 rows);
+  policy 0.2.0; tiers 0.4.0. No live calls.
+- **Commands:** `python scripts/gateway/bench/decide.py`.
+- **Outputs:** `bench/decide.py`; `bench/results/2026-10-15-decision.json`.
+- **Result:** Six policies replayed against the baseline, fitted on repeats 1-2
+  and evaluated on the held-out repeat 3. Only **always cheap** clears the
+  thresholds: $0.000067 against the incumbent's $0.000098 (31% cheaper), p50
+  438 ms against 633 ms (31% faster), correctness unchanged at 19/20. The
+  task-type table and the break-even rule both reached 14% cheaper -- short of
+  the 20% bar -- because both pay for mid on contradiction detection and
+  extraction, where mid's fitted advantage did not reproduce on the holdout.
+  The break-even rule reserved since Sprint 3 made choices identical to the
+  hand-written table.
+- **Findings:** `scripts/gateway/FINDINGS.md` section 12.
+- **Not verified:** the holdout separates quality poorly -- every policy but
+  always-strong scores 19/20, and the single error is `extract-004`, whose
+  answer key is disputed. No escalation fired in the held-out repeat, so the
+  retry rule is untested by this comparison.
+- **Open issues:**
+  - `contra-003` and `extract-004` still need a second reader's ruling.
+  - The strong tier should be dropped from the default ladder: dearer than mid
+    and less accurate on the two task types that fail.
+  - Sprint 5 and Sprint 7 RUN_LOG entries are still to be backfilled.
+  - GROQ_API_KEY still needs rotating.
+## 2026-11-09 -- Gateway Sprint 9: packaging the decision
+
+- **Recipe:** Adaptive Model Routing & Inference Gateway (Sprint 9 of 9).
+- **Gate:** Shipping the Sprint 8 decision into the configuration that runs,
+  with an attestation recorded.
+- **Cleared by:** Simba · 2026-11-09
+- **Inputs:** the Sprint 8 decision (`bench/results/2026-10-15-decision.json`);
+  policy 0.2.0 as shipped. No live calls.
+- **Commands:** `python -m pytest scripts/gateway/tests -q` (212 passed);
+  `python scripts/gateway/bench/audit.py --freeze`.
+- **Outputs:** `policy.json` 0.3.0; `policy.py` (`quality_check: "none"` now
+  legal); `README.md` for the gateway; `ATTESTATION.md`;
+  `tests/test_reliability.py` (13 tests); updated `tests/test_router.py`;
+  re-cut `bench/manifest.json`; `.gitattributes` entry pinning fixture line
+  endings.
+- **Result:** Every task type now starts on cheap and escalates to mid. Strong
+  is no longer a default escalation target. Summarization and rag_answer carry
+  `quality_check: "none"`, recording that they have no quality measure rather
+  than implying one.
+- **Manifest re-freeze, justified:** merging origin/main normalised line
+  endings in `sentiment_classification.jsonl` and `structured_extraction.jsonl`,
+  so their hashes stopped matching. The parsed content of both was verified
+  identical to commit `2df2f37` before the manifest was re-cut, so no label
+  changed. `.gitattributes` now pins those files to LF.
+- **Findings:** `scripts/gateway/FINDINGS.md` section 13. Attestation:
+  `scripts/gateway/ATTESTATION.md`.
+- **Not verified:** no real Mycroft traffic has passed through the gateway; two
+  of six task types have no quality measure; `contra-003` and `extract-004`
+  still need a second reader; the provider's usage console has never been
+  reconciled against the logged costs.
+
+## 2026-11-09 -- Gateway Sprint 10: the traffic inventory
+
+- **Recipe:** Adaptive Model Routing & Inference Gateway (Sprint 10; the first
+  of six taking the gateway from synthetic fixtures to real requests).
+- **Gate:** None cleared. This sprint reports what exists.
+- **By:** Simba · 2026-11-09
+- **Inputs:** every run artifact under `logs/`, read-only. No live calls.
+- **Commands:** `python scripts/gateway/bench/corpus.py --check`;
+  `python -m pytest scripts/gateway/tests -q` (222 passed).
+- **Outputs:** `bench/corpus.py` and `tests/test_corpus.py` (10 tests);
+  `bench/corpus/2026-11-09-corpus.jsonl` (509 records, no prompt text).
+- **Result:** 509 model requests exist in this repository. 493 are the
+  gateway's own, costing $0.06300 in total. 16 are prepared requests from
+  `contradiction-detection-agent` that were never sent. **Every run artifact in
+  the repository records `live_call_performed: false`** -- every recipe is
+  gated at Gate 5 and runs in sample mode. There is no live traffic to measure.
+- **The sixteen real requests cannot be served as written:** all name
+  `llama-3.3-70b-versatile`, which the price table has no rate for, and 11 ask
+  for 2,000 output tokens against tier budgets of 512/512/896. Prompt sizes
+  1,302-1,642 chars, so routing would send all of them to cheap; pricing and
+  budgets stop them first.
+- **Findings:** `scripts/gateway/FINDINGS.md` section 14.
+- **Plan changed:** the capture recorder planned for Sprint 11 is cancelled --
+  there is nothing to capture. Sprint 11 instead replays the sixteen prepared
+  requests offline to report what the gateway would do with each.
+- **Not verified:** whether `data/raw/Private_AI_Valuation_Agent` makes live
+  calls. It has real LLM code, is not a Mycroft recipe, and is not mine to
+  instrument.
+- **Open issues:** the Sprint 5 and 7 RUN_LOG backfill, the two disputed
+  fixtures, and the GROQ_API_KEY rotation.
+## 2026-11-13 -- The map now covers the repository: 10 contributor subsystems classified, status.md and session-handoff.md refreshed
+
+- **Artifacts:** `_MANIFEST.md`, `.ai/manifest.yaml`, `status.md`, `session-handoff.md`.
+- **Inputs:** a top-level inventory of all 57 entries (tracked file counts from
+  `git ls-files`, last-touch date and author from `git log`), plus
+  `node scripts/conformance.mjs <path>` run once per unclassified tree.
+- **Why:** `_MANIFEST.md` is the portable read-first map, and it classified 12
+  top-level paths out of 51. Ten contributor subsystems -- 1,005 tracked files,
+  including `projects/` (435), `case-study-workflows/` (277),
+  `verification-layer/` (154) and `multi-agents/` (41) -- were named by no Tier 1
+  file, so an agent obeying the map would never load them.
+- **Result:** every top-level path is now classified. The ten subsystems are
+  recorded with `reviewed: false`, which is a deliberate claim: they have been
+  listed, not checked against `SNICKERDOODLE.md`. Listing a thing is not
+  reviewing it, and collapsing the two would resolve an open question silently.
+- **Nothing was moved, renamed or deleted.** `_mvtest2` (0 bytes, 2026-06-15),
+  `answers.json` and `answers1.json` are documented in place. Every unclassified
+  tree belongs to a named contributor; the map grew to fit the repository rather
+  than the repository being rearranged to fit the map.
+- **Two conformance failures found and recorded, not fixed:**
+  - `projects/finance-event-signals/deploy/k8s/{infra,observability,pipeline}.yaml`
+    are multi-document YAML, which is standard for Kubernetes manifests. The
+    files are valid. `scripts/conformance.mjs` calls `yaml.safe_load`, which
+    reads a single document; `safe_load_all` is what these need. **The defect is
+    in our checker, not in those files.**
+  - `congressional-signals/data/verified/conformance_report.json` contains bare
+    `NaN` literals. Python's `json.dump` emits them by default; they are not
+    valid JSON, so `JSON.parse` rejects the file. Owned by that subsystem.
+- **Also recorded:** none of the ten subsystems is inside conformance's
+  `DEFAULT_PATHS`, so `npm run verify` has never reached any of them. Eight
+  scoped `CLAUDE.md` files exist outside the generated set and are not covered by
+  `manifest-check`.
+- **status.md** was five months stale and is Tier 1 -- it reported 99 recipes and
+  still listed the recipe lifecycle as an open question. Refreshed against
+  measured counts (97 recipes: 95 DRAFT, 2 RUNNABLE-SAMPLE; `check --all` = 5
+  defects, all in `recipes/gru.md`). The 2026-06-15 snapshot is preserved
+  verbatim below the new content rather than overwritten; all 24 of its lines
+  were verified present afterwards.
+- **session-handoff.md** was rewritten as a resume point, which is what it is for.
+  One action from the June handoff -- run the `eval/` suite for real -- was still
+  genuinely open (both runs under `eval/runs/` are named `__example`), so it was
+  carried forward instead of dropped.
+- **Verified:** `npm run verify` passes (993 files conform; manifest check
+  passes, no W3 drift between `_MANIFEST.md` Tier 1 and `.ai/manifest.yaml`
+  `canonical`). The insertion into `_MANIFEST.md` was placed after the existing
+  Tier 2 section and guarded by an offset check, because `manifest-check.mjs`
+  parses Tier 1 by slicing from the first "Tier 1" to the first "Tier 2".
+- **Open issues:** the ten subsystems remain unreviewed; the multi-document YAML
+  defect in `conformance.mjs` is unfixed; `scenariostresstestingagent` still
+  reads DRAFT while carrying the evidence for a promotion.

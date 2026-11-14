@@ -176,8 +176,15 @@ def main() -> int:
           f"12 request(s) read" in rep and f"{len(qc['verified_records'])} reconciled" in rep and f"{len(qc['flags'])} advisory flag" in rep and log["records_seen"] == 12)
     check("6 the recommendation always blocks live execution while no approval record exists", "contains 'Block live execution: YES'",
           "yes" if "Block live execution: YES" in rep else "no", "Block live execution: YES" in rep)
-    check("6 gates: 4 reads 5 of 6 scripts with step 2 open; 6 passes", "5 of 6; step(s) 2; gate 6 PASS",
-          ("5 of 6 step scripts exist; step(s) 2" in rep, "6 Report gate | PASS" in rep), "5 of 6 step scripts exist; step(s) 2" in rep and "6 Report gate | PASS" in rep)
+    steps_text = re.search(r"^## Steps\s*\n(.*?)(?=^## )", (REPO / "recipes" / f"{SLUG}.md").read_text(encoding="utf-8"), re.M | re.S).group(1)
+    blocks = re.findall(r"^(\d+)\. Step name: .*?\n(.*?)(?=^\d+\. Step name:|\Z)", steps_text, re.M | re.S)
+    open_n = [n for n, b_ in blocks if "[TODO: DEV]" in (re.search(r"Script called: (.+)", b_) or [None, ""])[1]]
+    want_gate = f"{len(blocks) - len(open_n)} of {len(blocks)} step scripts exist; step(s) {', '.join(open_n) or 'none'}"
+    check("6 gates: 4 reads the recipe's own state (how many step scripts exist, which steps still carry a [TODO: DEV]); 6 passes", f"{want_gate}; gate 6 PASS",
+          (want_gate in rep, "6 Report gate | PASS" in rep), want_gate in rep and "6 Report gate | PASS" in rep)
+    clause = "still open, the Alpha Vantage request" if open_n else "No approval record exists; the Alpha Vantage request"
+    check("6 the recommendation names an open step only when the recipe has one", "'still open' present iff a step is open" + f" (open steps: {', '.join(open_n) or 'none'})",
+          f"'still open' present: {'still open,' in rep.split('Block live execution')[-1]}", ("still open," in rep.split("Block live execution")[-1]) == bool(open_n) and clause in rep)
     stops = log.get("stop_conditions", [])
     ev = [x.get("evidence", "") for x in stops]
     check("6 stop conditions: four judged from evidence, none triggered, each with its own evidence", "4 conditions; none triggered; four different evidence strings, none the old placeholder",

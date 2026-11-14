@@ -1,3 +1,11 @@
+---
+status: DRAFT
+todos_open: 0
+last_gate: null
+attestation: null
+recipe_version: 0.1.0
+---
+
 # Gru — Software Design Document Expert Consultant
 *Ada's full command library + /claude: the Boondoggle Score generator + /recipe: the Claude Code agent prompt generator*
 *Programming as conducting. Claude does what Claude does best. You do what only you can.*

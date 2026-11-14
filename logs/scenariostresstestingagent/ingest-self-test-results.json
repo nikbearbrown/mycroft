@@ -1,0 +1,231 @@
+{
+  "recipe": "scenariostresstestingagent",
+  "steps": [
+    2
+  ],
+  "checks": [
+    {
+      "check": "2 run on the sample corpus: exit 0 and the four files written",
+      "expected": "exit 0; 4 files under ingest/",
+      "observed": "exit 0; 4 new files",
+      "passed": true
+    },
+    {
+      "check": "2 every request is ingested: 12 clean, 10 defective, no rejects",
+      "expected": "12; 10; 0; 0",
+      "observed": "12; 10; 0; 0",
+      "passed": true
+    },
+    {
+      "check": "2 the recipe's six step-2 output fields are present in both files",
+      "expected": "records, source_name, source_type, fetched_at, sample_mode, rejects",
+      "observed": "all present",
+      "passed": true
+    },
+    {
+      "check": "2 sample_mode is true and fetched_at is the pinned clock",
+      "expected": "true; 2026-11-09T00:00:00+00:00",
+      "observed": "True; 2026-11-09T00:00:00+00:00",
+      "passed": true
+    },
+    {
+      "check": "2 each record is its fixture, unchanged: body equal, SHA-256 equal to the manifest's",
+      "expected": "22 of 22 equal",
+      "observed": "22 of 22 equal",
+      "passed": true
+    },
+    {
+      "check": "2 record ids are unique and listed in order",
+      "expected": "22 unique, sorted per folder",
+      "observed": "22 unique",
+      "passed": true
+    },
+    {
+      "check": "2 a defective request ingests like any other (valid JSON); its shape is step 3's work",
+      "expected": "10 read, none judged here",
+      "observed": "10 read",
+      "passed": true
+    },
+    {
+      "check": "2 the four sources: webhook available, chat skipped, Alpha Vantage and Groq approval-required",
+      "expected": "Webhook Trigger available; When chat message received skipped; Fetch_Data approval-required; Groq Chat Model approval-required",
+      "observed": "Fetch_Data approval-required; Groq Chat Model approval-required; Webhook Trigger available; When chat message received skipped",
+      "passed": true
+    },
+    {
+      "check": "2 every source carries a reason, and none was contacted or approved",
+      "expected": "reasons; live_call_performed false; approved_for_live_action false",
+      "observed": "yes",
+      "passed": true
+    },
+    {
+      "check": "2 the handoff condition is met and no problems are listed",
+      "expected": "true; none",
+      "observed": "True; []",
+      "passed": true
+    },
+    {
+      "check": "2 credential names are reported as not set when the environment has none",
+      "expected": "False; False",
+      "observed": "ALPHA_VANTAGE_API_KEY False; GROQ_API_KEY False",
+      "passed": true
+    },
+    {
+      "check": "2 only files under data/raw/<slug>/ingest/ were created",
+      "expected": "4 files, all under ingest/",
+      "observed": "4 files; outside: []",
+      "passed": true
+    },
+    {
+      "check": "2 idempotent: a second run with the clock pinned gives the same bytes",
+      "expected": "identical",
+      "observed": "identical",
+      "passed": true
+    },
+    {
+      "check": "2 --no-write writes nothing",
+      "expected": "exit 0; no new file",
+      "observed": "exit 0; 0 new",
+      "passed": true
+    },
+    {
+      "check": "2 --sample is accepted and changes nothing; an unknown flag is refused by argparse (exit 2)",
+      "expected": "exit 0; exit 2",
+      "observed": "exit 0; exit 2",
+      "passed": true
+    },
+    {
+      "check": "2 the script imports nothing that can reach a network or start a process",
+      "expected": "none of socket, urllib, http, requests, ssl, subprocess, ftplib, smtplib, asyncio, shutil",
+      "observed": "imports: ['__future__', 'argparse', 'datetime', 'hashlib', 'json', 'os', 'pathlib', 're', 'sys', 'typing']",
+      "passed": true
+    },
+    {
+      "check": "2 the environment is only asked whether a name is set: every os.environ.get sits inside bool(), none is read by subscript",
+      "expected": "bool(os.environ.get(...)) only",
+      "observed": "1 get call(s), all inside bool(): True; subscripts: 0",
+      "passed": true
+    },
+    {
+      "check": "2 with both credentials set, each is reported as set",
+      "expected": "True; True",
+      "observed": "True; True",
+      "passed": true
+    },
+    {
+      "check": "2 the credential values appear in no output file and not on the screen",
+      "expected": "no value anywhere",
+      "observed": "found: none",
+      "passed": true
+    },
+    {
+      "check": "2 break caught: a fixture changed by one letter",
+      "expected": "exit 1; 'differs from the SHA-256 frozen'",
+      "observed": "exit 1; reason named",
+      "passed": true
+    },
+    {
+      "check": "2 the changed fixture is left out of the records and named in rejects; the other 11 still ingest",
+      "expected": "11 records; 1 reject named c01",
+      "observed": "11 records; rejects ['c01-tech-crash-semiconductor-heavy.json']",
+      "passed": true
+    },
+    {
+      "check": "2 break caught: a fixture deleted",
+      "expected": "exit 1; 'listed in the frozen manifest but not on disk'",
+      "observed": "exit 1; reason named",
+      "passed": true
+    },
+    {
+      "check": "2 break caught: an unlisted fixture added",
+      "expected": "exit 1; 'not in the frozen manifest'",
+      "observed": "exit 1; reason named",
+      "passed": true
+    },
+    {
+      "check": "2 break caught: a fixture that is not JSON, with the manifest updated to match",
+      "expected": "exit 1; 'not valid JSON'",
+      "observed": "exit 1; reason named",
+      "passed": true
+    },
+    {
+      "check": "2 break caught: the manifest removed",
+      "expected": "exit 1; 'frozen manifest is missing'",
+      "observed": "exit 1; reason named",
+      "passed": true
+    },
+    {
+      "check": "2 break caught: the run envelope says mode live",
+      "expected": "exit 1; 'sample mode only'",
+      "observed": "exit 1; reason named",
+      "passed": true
+    },
+    {
+      "check": "2 a refused scope writes nothing",
+      "expected": "no ingest folder",
+      "observed": "ingest folder exists: False",
+      "passed": true
+    },
+    {
+      "check": "2 break caught: the run envelope allows network",
+      "expected": "exit 1; 'network'",
+      "observed": "exit 1; reason named",
+      "passed": true
+    },
+    {
+      "check": "2 break caught: the run envelope allows live calls",
+      "expected": "exit 1; 'live_calls'",
+      "observed": "exit 1; reason named",
+      "passed": true
+    },
+    {
+      "check": "2 break caught: the run envelope removed",
+      "expected": "exit 1; 'run envelope is missing'",
+      "observed": "exit 1; reason named",
+      "passed": true
+    },
+    {
+      "check": "2 break caught: the declared workflow removed",
+      "expected": "exit 1; 'workflow JSON is missing'",
+      "observed": "exit 1; reason named",
+      "passed": true
+    },
+    {
+      "check": "2 break caught: the workflow declares no webhook trigger",
+      "expected": "exit 1; 'declares no webhook trigger'",
+      "observed": "exit 1; reason named",
+      "passed": true
+    },
+    {
+      "check": "2 a credentialed node of an unrecognised type is held back as approval-required, never passed as available",
+      "expected": "exit 0; Save Results approval-required; reason says 'unrecognised'",
+      "observed": "exit 0; approval-required; True",
+      "passed": true
+    },
+    {
+      "check": "2 an HTTP request to another host is still approval-required, with no credential name guessed",
+      "expected": "approval-required; 'none known'",
+      "observed": "approval-required; none known",
+      "passed": true
+    },
+    {
+      "check": "2 an approval record is noticed, but sample mode stays sample: still approval-required, nothing performed",
+      "expected": "approval_record_present true; statuses unchanged; live_call_performed false",
+      "observed": "True; ['available', 'skipped', 'approval-required', 'approval-required']; [False, False, False, False]",
+      "passed": true
+    },
+    {
+      "check": "2 the recipe's Flags cell for this step lists exactly the flags the script implements",
+      "expected": "--no-write, --now, --repo, --sample, --sample-dir, --workflow",
+      "observed": "--no-write, --now, --repo, --sample, --sample-dir, --workflow",
+      "passed": true
+    },
+    {
+      "check": "2 the recipe's Script Locations row points at this script, and the file exists",
+      "expected": "scripts/ingest/scenariostresstestingagent-ingest-inputs.py",
+      "observed": "present",
+      "passed": true
+    }
+  ],
+  "all_passed": true
+}

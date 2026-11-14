@@ -1,0 +1,205 @@
+{
+  "workflow": "ScenarioStressTestingAgent",
+  "step": "ingest-inputs",
+  "folder": "defective",
+  "source_name": "data/raw/scenariostresstestingagent/sample/defective",
+  "source_type": "sample fixtures (invented webhook request bodies)",
+  "fetched_at": "2026-11-09T00:00:00+00:00",
+  "sample_mode": true,
+  "record_count": 10,
+  "records": [
+    {
+      "record_id": "defective/d01-portfolio-missing.json",
+      "source_name": "d01-portfolio-missing.json",
+      "source_type": "sample fixture (invented webhook request body)",
+      "sha256": "b8fe37ce4b71c76a554f62e7a3a8853ad3b6c032cada0f7fdf999d90903c2326",
+      "body": {
+        "body": {
+          "scenario_type": "tech_crash"
+        }
+      }
+    },
+    {
+      "record_id": "defective/d02-holdings-missing.json",
+      "source_name": "d02-holdings-missing.json",
+      "source_type": "sample fixture (invented webhook request body)",
+      "sha256": "b97b5a0411f3ccf105c6f2196a7a83e7ec4c643576a748eef8fe4c890987b77f",
+      "body": {
+        "body": {
+          "portfolio": {
+            "name": "an invented book"
+          },
+          "scenario_type": "tech_crash"
+        }
+      }
+    },
+    {
+      "record_id": "defective/d03-holding-without-ticker.json",
+      "source_name": "d03-holding-without-ticker.json",
+      "source_type": "sample fixture (invented webhook request body)",
+      "sha256": "e7a06c09c7e3e5d3a7785377b92cbdc7bdd5f69ad4d150048e8f5e141a2bb0e7",
+      "body": {
+        "body": {
+          "portfolio": {
+            "holdings": [
+              {
+                "ticker": "NVDA",
+                "weight": 0.5
+              },
+              {
+                "weight": 0.5
+              }
+            ]
+          },
+          "scenario_type": "tech_crash"
+        }
+      }
+    },
+    {
+      "record_id": "defective/d04-holdings-is-an-object.json",
+      "source_name": "d04-holdings-is-an-object.json",
+      "source_type": "sample fixture (invented webhook request body)",
+      "sha256": "2f620630064a5428fdd22a62a5cf0f2d9b75c43aff65f5a34dd29e5e2e6410f2",
+      "body": {
+        "body": {
+          "portfolio": {
+            "holdings": {
+              "NVDA": 0.5,
+              "AMD": 0.5
+            }
+          },
+          "scenario_type": "tech_crash"
+        }
+      }
+    },
+    {
+      "record_id": "defective/d05-weight-is-a-string.json",
+      "source_name": "d05-weight-is-a-string.json",
+      "source_type": "sample fixture (invented webhook request body)",
+      "sha256": "1f51d6ea86fd094c94abf0f2dab0f6dad114f73b641014a24447bb1674aa7750",
+      "body": {
+        "body": {
+          "portfolio": {
+            "holdings": [
+              {
+                "ticker": "NVDA",
+                "weight": "0.5"
+              },
+              {
+                "ticker": "AMD",
+                "weight": 0.5
+              }
+            ]
+          },
+          "scenario_type": "tech_crash"
+        }
+      }
+    },
+    {
+      "record_id": "defective/d06-all-weights-zero.json",
+      "source_name": "d06-all-weights-zero.json",
+      "source_type": "sample fixture (invented webhook request body)",
+      "sha256": "2d059ec58e6a8d568fbc332b5af61b13a745d8b3d2341d46e9ee2c3bdf6afc44",
+      "body": {
+        "body": {
+          "portfolio": {
+            "holdings": [
+              {
+                "ticker": "NVDA",
+                "weight": 0
+              },
+              {
+                "ticker": "AMD",
+                "weight": 0
+              }
+            ]
+          },
+          "scenario_type": "tech_crash"
+        }
+      }
+    },
+    {
+      "record_id": "defective/d07-negative-weight.json",
+      "source_name": "d07-negative-weight.json",
+      "source_type": "sample fixture (invented webhook request body)",
+      "sha256": "3da598c962570f6bd92e1e9555764a115b9d60ffed443ce452c6efa41d3254d6",
+      "body": {
+        "body": {
+          "portfolio": {
+            "holdings": [
+              {
+                "ticker": "NVDA",
+                "weight": 1.3
+              },
+              {
+                "ticker": "AMD",
+                "weight": -0.3
+              }
+            ]
+          },
+          "scenario_type": "tech_crash"
+        }
+      }
+    },
+    {
+      "record_id": "defective/d08-unknown-scenario-type.json",
+      "source_name": "d08-unknown-scenario-type.json",
+      "source_type": "sample fixture (invented webhook request body)",
+      "sha256": "75c2ef1165a5308c53d2fcfd18fce3d311386963759240700a56f1900bec785c",
+      "body": {
+        "body": {
+          "portfolio": {
+            "holdings": [
+              {
+                "ticker": "NVDA",
+                "weight": 0.5
+              },
+              {
+                "ticker": "AMD",
+                "weight": 0.5
+              }
+            ]
+          },
+          "scenario_type": "meltdown"
+        }
+      }
+    },
+    {
+      "record_id": "defective/d09-empty-holdings.json",
+      "source_name": "d09-empty-holdings.json",
+      "source_type": "sample fixture (invented webhook request body)",
+      "sha256": "cba2f3874e02bfb04f1ff25a743852b93792dc7a49e124935c72b58ae2dadb05",
+      "body": {
+        "body": {
+          "portfolio": {
+            "holdings": []
+          },
+          "scenario_type": "tech_crash"
+        }
+      }
+    },
+    {
+      "record_id": "defective/d10-weight-missing.json",
+      "source_name": "d10-weight-missing.json",
+      "source_type": "sample fixture (invented webhook request body)",
+      "sha256": "fa1dca22005315893161b2bf0fcb182d3a43723f4a5a1b10e6edea78583b9b37",
+      "body": {
+        "body": {
+          "portfolio": {
+            "holdings": [
+              {
+                "ticker": "NVDA",
+                "weight": 1.0
+              },
+              {
+                "ticker": "AMD"
+              }
+            ]
+          },
+          "scenario_type": "tech_crash"
+        }
+      }
+    }
+  ],
+  "rejects": []
+}

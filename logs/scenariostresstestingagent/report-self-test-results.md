@@ -1,6 +1,6 @@
 # Self-test, steps 4 and 6: scenariostresstestingagent
 
-30 of 30 checks came out as expected. A check passes only if what was observed is what was expected; the deliberate breaks are meant to be caught. Every break ran on a temporary copy of the tree.
+31 of 31 checks came out as expected. A check passes only if what was observed is what was expected; the deliberate breaks are meant to be caught. Every break ran on a temporary copy of the tree.
 
 | Check | Expected | Observed | Result |
 |---|---|---|---|
@@ -24,7 +24,8 @@
 | 6 agent log: the contract's sixteen fields | workflow, run_id, mode, steps_completed, records_seen, rejects, duplicates, flags, stop_conditions, todo_items, source_files, gate_decisions, generated_at, raw_output_paths, verified_output_paths, report_path | workflow, run_id, mode, steps_completed, records_seen, rejects, duplicates, flags, stop_conditions, todo_items, source_files, gate_decisions, generated_at, raw_output_paths, verified_output_paths, report_path | as expected |
 | 6 the report's counts equal the files' counts | 12 requests in; 11 reconciled; 11 flags | 12 request(s) read; 11 reconciled; 11 advisory flag | as expected |
 | 6 the recommendation always blocks live execution while no approval record exists | contains 'Block live execution: YES' | yes | as expected |
-| 6 gates: 4 reads 5 of 6 scripts with step 2 open; 6 passes | 5 of 6; step(s) 2; gate 6 PASS | (True, True) | as expected |
+| 6 gates: 4 reads the recipe's own state (how many step scripts exist, which steps still carry a [TODO: DEV]); 6 passes | 6 of 6 step scripts exist; step(s) none; gate 6 PASS | (True, True) | as expected |
+| 6 the recommendation names an open step only when the recipe has one | 'still open' present iff a step is open (open steps: none) | 'still open' present: False | as expected |
 | 6 stop conditions: four judged from evidence, none triggered, each with its own evidence | 4 conditions; none triggered; four different evidence strings, none the old placeholder | 4 conditions; triggered: [False, False, False, False]; distinct evidence: 4 | as expected |
 | 6 the credential scan does not flag the report script itself | condition 1 says none found and names no script | et, token, password or authorization, an `sk-` key or a Bearer token: none found | as expected |
 | 6 the person's page and the machine's page agree on stop conditions | report: 'Stop conditions: 0 of 4 triggered'; log: 0 triggered | report line present: True; log triggered: 0 | as expected |
