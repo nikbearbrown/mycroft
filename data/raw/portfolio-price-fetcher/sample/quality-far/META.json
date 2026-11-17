@@ -1,0 +1,15 @@
+{
+ "_fixture_note": "Invented price for a Mycroft sample run. Not market data. Quality fixture: a valid response whose price is more than three times the workflow's buy price (320).",
+ "chart": {
+  "result": [
+   {
+    "meta": {
+     "symbol": "META",
+     "regularMarketPrice": 1100.0,
+     "previousClose": 1090.0
+    }
+   }
+  ],
+  "error": null
+ }
+}

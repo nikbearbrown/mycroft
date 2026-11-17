@@ -1,0 +1,114 @@
+{
+ "workflow": "Portfolio Price Fetcher",
+ "run_id": "portfolio-price-fetcher-2026-11-17-quality-duplicate",
+ "mode": "sample",
+ "steps_completed": [
+  1,
+  3,
+  4,
+  6
+ ],
+ "records_seen": 6,
+ "rejects": [
+  {
+   "file": "NVDA-restated.json",
+   "reason": "conflicting records for NVDA: 530.0 (NVDA-restated.json) vs 504.5625 (NVDA.json)"
+  },
+  {
+   "file": "NVDA.json",
+   "reason": "conflicting records for NVDA: 530.0 (NVDA-restated.json) vs 504.5625 (NVDA.json)"
+  }
+ ],
+ "duplicates": [
+  {
+   "ticker": "NVDA",
+   "files": [
+    "NVDA-restated.json",
+    "NVDA.json"
+   ],
+   "identical": false,
+   "action": "rejected every record for this ticker; a person decides which is right"
+  }
+ ],
+ "flags": [
+  {
+   "ticker": "NVDA",
+   "code": "HOLDING_MISSING",
+   "severity": "high",
+   "detail": "no verified price for NVDA (its records conflict (see rejects)); the portfolio summary would leave out 50 shares, cost basis 22,500.00"
+  },
+  {
+   "ticker": "GOOGL",
+   "code": "PRICE_FELL_BACK",
+   "severity": "medium",
+   "detail": "regularMarketPrice was null; the previous close 166.0 was used, so this is yesterday's price, not today's"
+  },
+  {
+   "ticker": "META",
+   "code": "PRICE_FELL_BACK",
+   "severity": "medium",
+   "detail": "regularMarketPrice was 0; the previous close 590.0 was used, so this is yesterday's price, not today's"
+  }
+ ],
+ "stop_conditions": [
+  {
+   "condition": "credentials, keys, database destinations, emails or tokens hardcoded",
+   "triggered": false,
+   "evidence": "scanned 12 files (this recipe's scripts, the envelope, the recipe) for key/secret/token/password assignments: none found"
+  },
+  {
+   "condition": "live calls, writes, notifications, trades or publication without approval",
+   "triggered": false,
+   "evidence": "envelope mode 'sample', live_calls_approved False; no approval record at logs/gate-decisions/portfolio-price-fetcher-approval.json; step 5's live handoff has approved_for_live_action False"
+  },
+  {
+   "condition": "required local source data missing and no approved live path",
+   "triggered": false,
+   "evidence": "step 3 and step 4 outputs present for set 'quality-duplicate'; step 5 summary absent for this set"
+  },
+  {
+   "condition": "outputs omit provenance or make unsupported analytical claims",
+   "triggered": false,
+   "evidence": "every figure below names the file it came from; findings are labelled verified or inferred; all fifteen sections are present"
+  }
+ ],
+ "todo_items": [
+  {
+   "step": 2,
+   "name": "Ingest declared inputs",
+   "text": "[TODO: DEV] marker still in the recipe text"
+  },
+  {
+   "step": 4,
+   "name": "Transform and quality check",
+   "text": "[TODO: DEV] marker still in the recipe text"
+  },
+  {
+   "step": 6,
+   "name": "Produce human report",
+   "text": "[TODO: DEV] marker still in the recipe text"
+  }
+ ],
+ "source_files": [
+  "data/mycroft-main/n8n-workflows/originals/n8n_Workflows/Portfolio_Visualization_Agent/Portfolio Price Fetcher.json",
+  "data/raw/portfolio-price-fetcher/run-envelope.json",
+  "data/raw/portfolio-price-fetcher/sample/quality-duplicate/AMD.json",
+  "data/raw/portfolio-price-fetcher/sample/quality-duplicate/GOOGL.json",
+  "data/raw/portfolio-price-fetcher/sample/quality-duplicate/META.json",
+  "data/raw/portfolio-price-fetcher/sample/quality-duplicate/MSFT.json",
+  "data/raw/portfolio-price-fetcher/sample/quality-duplicate/NVDA-restated.json",
+  "data/raw/portfolio-price-fetcher/sample/quality-duplicate/NVDA.json"
+ ],
+ "gate_decisions": [],
+ "generated_at": "2026-11-17T12:00:00+00:00",
+ "raw_output_paths": [
+  "data/raw/portfolio-price-fetcher/sample/quality-duplicate"
+ ],
+ "verified_output_paths": [
+  "data/verified/portfolio-price-fetcher/quality-duplicate/validated.json",
+  "data/verified/portfolio-price-fetcher/quality-duplicate/validate-audit.md",
+  "data/verified/portfolio-price-fetcher/quality-duplicate/quality-checked.json",
+  "data/verified/portfolio-price-fetcher/quality-duplicate/quality-audit.md"
+ ],
+ "report_path": "reports/generated/portfolio-price-fetcher-2026-11-17-quality-duplicate.md"
+}
