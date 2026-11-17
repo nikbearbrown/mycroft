@@ -1,0 +1,118 @@
+{
+ "recipe": "portfolio-price-fetcher",
+ "fixture_set": "quality-duplicate",
+ "parameters": {
+  "DAY_MOVE_LINE": 0.15,
+  "BUY_RATIO_HIGH": 3.0,
+  "BUY_RATIO_LOW": 0.3333,
+  "note": "ours, a judgment"
+ },
+ "record_count": 6,
+ "verified_count": 4,
+ "coverage": {
+  "expected": [
+   "NVDA",
+   "MSFT",
+   "GOOGL",
+   "META",
+   "AMD"
+  ],
+  "present": [
+   "MSFT",
+   "GOOGL",
+   "META",
+   "AMD"
+  ],
+  "missing": [
+   "NVDA"
+  ]
+ },
+ "verified_records": [
+  {
+   "ticker": "MSFT",
+   "file": "MSFT.json",
+   "effective_price": 412.0,
+   "price_source": "regularMarketPrice",
+   "day_change_pct": 0.61,
+   "price_vs_buy": 1.177,
+   "quality_flags": []
+  },
+  {
+   "ticker": "GOOGL",
+   "file": "GOOGL.json",
+   "effective_price": 166.0,
+   "price_source": "previousClose",
+   "day_change_pct": null,
+   "price_vs_buy": 1.186,
+   "quality_flags": [
+    "PRICE_FELL_BACK"
+   ]
+  },
+  {
+   "ticker": "META",
+   "file": "META.json",
+   "effective_price": 590.0,
+   "price_source": "previousClose",
+   "day_change_pct": null,
+   "price_vs_buy": 1.844,
+   "quality_flags": [
+    "PRICE_FELL_BACK"
+   ]
+  },
+  {
+   "ticker": "AMD",
+   "file": "AMD.json",
+   "effective_price": 102.0,
+   "price_source": "regularMarketPrice",
+   "day_change_pct": -2.16,
+   "price_vs_buy": 0.85,
+   "quality_flags": []
+  }
+ ],
+ "duplicates": [
+  {
+   "ticker": "NVDA",
+   "files": [
+    "NVDA-restated.json",
+    "NVDA.json"
+   ],
+   "identical": false,
+   "action": "rejected every record for this ticker; a person decides which is right"
+  }
+ ],
+ "rejects": [
+  {
+   "file": "NVDA-restated.json",
+   "reason": "conflicting records for NVDA: 530.0 (NVDA-restated.json) vs 504.5625 (NVDA.json)"
+  },
+  {
+   "file": "NVDA.json",
+   "reason": "conflicting records for NVDA: 530.0 (NVDA-restated.json) vs 504.5625 (NVDA.json)"
+  }
+ ],
+ "flags": [
+  {
+   "ticker": "NVDA",
+   "code": "HOLDING_MISSING",
+   "severity": "high",
+   "detail": "no verified price for NVDA (its records conflict (see rejects)); the portfolio summary would leave out 50 shares, cost basis 22,500.00"
+  },
+  {
+   "ticker": "GOOGL",
+   "code": "PRICE_FELL_BACK",
+   "severity": "medium",
+   "detail": "regularMarketPrice was null; the previous close 166.0 was used, so this is yesterday's price, not today's"
+  },
+  {
+   "ticker": "META",
+   "code": "PRICE_FELL_BACK",
+   "severity": "medium",
+   "detail": "regularMarketPrice was 0; the previous close 590.0 was used, so this is yesterday's price, not today's"
+  }
+ ],
+ "quality_notes": [
+  "The three numeric lines are ours, a judgment, not the workflow's: day move 15%, price over 3x or under 0.33x the buy price. A flag asks a person to look; it is not a verdict.",
+  "Every price in the sample corpus is invented. These checks say nothing about any real market.",
+  "Step 5 still reads step 3's output; this step's verified_records are written beside it for the report to cross-check."
+ ]
+}

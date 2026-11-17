@@ -1,0 +1,109 @@
+{
+ "recipe": "portfolio-price-fetcher",
+ "fixture_set": "quality-move",
+ "parameters": {
+  "DAY_MOVE_LINE": 0.15,
+  "BUY_RATIO_HIGH": 3.0,
+  "BUY_RATIO_LOW": 0.3333,
+  "note": "ours, a judgment"
+ },
+ "record_count": 5,
+ "verified_count": 5,
+ "coverage": {
+  "expected": [
+   "NVDA",
+   "MSFT",
+   "GOOGL",
+   "META",
+   "AMD"
+  ],
+  "present": [
+   "NVDA",
+   "MSFT",
+   "GOOGL",
+   "META",
+   "AMD"
+  ],
+  "missing": []
+ },
+ "verified_records": [
+  {
+   "ticker": "NVDA",
+   "file": "NVDA.json",
+   "effective_price": 504.5625,
+   "price_source": "regularMarketPrice",
+   "day_change_pct": 1.32,
+   "price_vs_buy": 1.121,
+   "quality_flags": []
+  },
+  {
+   "ticker": "MSFT",
+   "file": "MSFT.json",
+   "effective_price": 412.0,
+   "price_source": "regularMarketPrice",
+   "day_change_pct": 0.61,
+   "price_vs_buy": 1.177,
+   "quality_flags": []
+  },
+  {
+   "ticker": "GOOGL",
+   "file": "GOOGL.json",
+   "effective_price": 166.0,
+   "price_source": "previousClose",
+   "day_change_pct": null,
+   "price_vs_buy": 1.186,
+   "quality_flags": [
+    "PRICE_FELL_BACK"
+   ]
+  },
+  {
+   "ticker": "META",
+   "file": "META.json",
+   "effective_price": 590.0,
+   "price_source": "previousClose",
+   "day_change_pct": null,
+   "price_vs_buy": 1.844,
+   "quality_flags": [
+    "PRICE_FELL_BACK"
+   ]
+  },
+  {
+   "ticker": "AMD",
+   "file": "AMD.json",
+   "effective_price": 62.0,
+   "price_source": "regularMarketPrice",
+   "day_change_pct": -40.53,
+   "price_vs_buy": 0.517,
+   "quality_flags": [
+    "DAY_MOVE_LARGE"
+   ]
+  }
+ ],
+ "duplicates": [],
+ "rejects": [],
+ "flags": [
+  {
+   "ticker": "GOOGL",
+   "code": "PRICE_FELL_BACK",
+   "severity": "medium",
+   "detail": "regularMarketPrice was null; the previous close 166.0 was used, so this is yesterday's price, not today's"
+  },
+  {
+   "ticker": "META",
+   "code": "PRICE_FELL_BACK",
+   "severity": "medium",
+   "detail": "regularMarketPrice was 0; the previous close 590.0 was used, so this is yesterday's price, not today's"
+  },
+  {
+   "ticker": "AMD",
+   "code": "DAY_MOVE_LARGE",
+   "severity": "medium",
+   "detail": "price 62.0 is -40.5% against the previous close 104.25 (line: 15%)"
+  }
+ ],
+ "quality_notes": [
+  "The three numeric lines are ours, a judgment, not the workflow's: day move 15%, price over 3x or under 0.33x the buy price. A flag asks a person to look; it is not a verdict.",
+  "Every price in the sample corpus is invented. These checks say nothing about any real market.",
+  "Step 5 still reads step 3's output; this step's verified_records are written beside it for the report to cross-check."
+ ]
+}

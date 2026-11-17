@@ -1,0 +1,106 @@
+{
+ "recipe": "portfolio-price-fetcher",
+ "note": "SHA-256 of the quality fixtures added for steps 4 and 6. The original sample/manifest.json is untouched (it freezes clean/ and defective/ only). Every price is invented; not market data.",
+ "files": {
+  "quality-duplicate/AMD.json": {
+   "sha256": "532888a5c92e46f5e3157d64bd22d717fd439656d598ed72a7eec41b1932ec2f",
+   "set": "quality-duplicate",
+   "exercises": "two valid responses for NVDA that disagree"
+  },
+  "quality-duplicate/GOOGL.json": {
+   "sha256": "dbc623c1b7a48f8146ecd89f276bd4e085b9bdcb6400d3709c60de61f6e83eea",
+   "set": "quality-duplicate",
+   "exercises": "two valid responses for NVDA that disagree"
+  },
+  "quality-duplicate/META.json": {
+   "sha256": "aa1eaca6a1807c30524a99f354eeb8316b211ac7e631317426bcf073bda33914",
+   "set": "quality-duplicate",
+   "exercises": "two valid responses for NVDA that disagree"
+  },
+  "quality-duplicate/MSFT.json": {
+   "sha256": "d51610de8e6b5c9af01087bef3632d9e8aac96adcaacd3109df017770779b5c9",
+   "set": "quality-duplicate",
+   "exercises": "two valid responses for NVDA that disagree"
+  },
+  "quality-duplicate/NVDA-restated.json": {
+   "sha256": "4e18428b4e96d3150ac1b8518f6f402698acea2f38d11dd69f24bcf87a04728c",
+   "set": "quality-duplicate",
+   "exercises": "two valid responses for NVDA that disagree"
+  },
+  "quality-duplicate/NVDA.json": {
+   "sha256": "2633560d6573501e8f6d89aece824be75fe5954dec51b6ce0e710283f2ed294c",
+   "set": "quality-duplicate",
+   "exercises": "two valid responses for NVDA that disagree"
+  },
+  "quality-far/AMD.json": {
+   "sha256": "532888a5c92e46f5e3157d64bd22d717fd439656d598ed72a7eec41b1932ec2f",
+   "set": "quality-far",
+   "exercises": "META's price is 3.4x the buy price"
+  },
+  "quality-far/GOOGL.json": {
+   "sha256": "dbc623c1b7a48f8146ecd89f276bd4e085b9bdcb6400d3709c60de61f6e83eea",
+   "set": "quality-far",
+   "exercises": "META's price is 3.4x the buy price"
+  },
+  "quality-far/META.json": {
+   "sha256": "b5ae5a8c4ade84361d001aa7f1ddc7cf33a885b9c7467abae30b0399c400f574",
+   "set": "quality-far",
+   "exercises": "META's price is 3.4x the buy price"
+  },
+  "quality-far/MSFT.json": {
+   "sha256": "d51610de8e6b5c9af01087bef3632d9e8aac96adcaacd3109df017770779b5c9",
+   "set": "quality-far",
+   "exercises": "META's price is 3.4x the buy price"
+  },
+  "quality-far/NVDA.json": {
+   "sha256": "2633560d6573501e8f6d89aece824be75fe5954dec51b6ce0e710283f2ed294c",
+   "set": "quality-far",
+   "exercises": "META's price is 3.4x the buy price"
+  },
+  "quality-missing/GOOGL.json": {
+   "sha256": "dbc623c1b7a48f8146ecd89f276bd4e085b9bdcb6400d3709c60de61f6e83eea",
+   "set": "quality-missing",
+   "exercises": "one holding (AMD) has no response"
+  },
+  "quality-missing/META.json": {
+   "sha256": "aa1eaca6a1807c30524a99f354eeb8316b211ac7e631317426bcf073bda33914",
+   "set": "quality-missing",
+   "exercises": "one holding (AMD) has no response"
+  },
+  "quality-missing/MSFT.json": {
+   "sha256": "d51610de8e6b5c9af01087bef3632d9e8aac96adcaacd3109df017770779b5c9",
+   "set": "quality-missing",
+   "exercises": "one holding (AMD) has no response"
+  },
+  "quality-missing/NVDA.json": {
+   "sha256": "2633560d6573501e8f6d89aece824be75fe5954dec51b6ce0e710283f2ed294c",
+   "set": "quality-missing",
+   "exercises": "one holding (AMD) has no response"
+  },
+  "quality-move/AMD.json": {
+   "sha256": "1ee89efe8a9b730f59b407bd66a36a873e0f2497bedeedaa07a75173e8389403",
+   "set": "quality-move",
+   "exercises": "AMD's price is 40% below its previous close"
+  },
+  "quality-move/GOOGL.json": {
+   "sha256": "dbc623c1b7a48f8146ecd89f276bd4e085b9bdcb6400d3709c60de61f6e83eea",
+   "set": "quality-move",
+   "exercises": "AMD's price is 40% below its previous close"
+  },
+  "quality-move/META.json": {
+   "sha256": "aa1eaca6a1807c30524a99f354eeb8316b211ac7e631317426bcf073bda33914",
+   "set": "quality-move",
+   "exercises": "AMD's price is 40% below its previous close"
+  },
+  "quality-move/MSFT.json": {
+   "sha256": "d51610de8e6b5c9af01087bef3632d9e8aac96adcaacd3109df017770779b5c9",
+   "set": "quality-move",
+   "exercises": "AMD's price is 40% below its previous close"
+  },
+  "quality-move/NVDA.json": {
+   "sha256": "2633560d6573501e8f6d89aece824be75fe5954dec51b6ce0e710283f2ed294c",
+   "set": "quality-move",
+   "exercises": "AMD's price is 40% below its previous close"
+  }
+ }
+}
