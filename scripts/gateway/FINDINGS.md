@@ -661,3 +661,44 @@ cost against. A cost is stated here; no saving is claimed.
 - The action-to-task mapping (`llm_review_of_flags` to
   `contradiction_detection`) is a human judgment recorded in `replay.py`. An
   unmapped action is reported, never guessed.
+
+
+  ## 16. The model Mycroft's recipes name cannot be bought
+
+Sprint 12. Section 14 found that all 16 prepared requests name
+`llama-3.3-70b-versatile`, and that the price table has no rate for it. The
+assumption was that this was a gap in our table. Rechecking Groq's published
+model list on 2026-11-17 shows it is not.
+
+| model | published price | max completion tokens |
+|---|---|---|
+| llama-3.3-70b-versatile | **Contact Sales** (Enterprise tier) | 32,768 |
+| openai/gpt-oss-20b (cheap) | $0.075 / $0.60 per 1M | 65,536 |
+| openai/gpt-oss-120b (mid) | $0.15 / $0.60 per 1M | 65,536 |
+| qwen/qwen3.8-27b (strong) | $0.80 / $4.00 per 1M | 16,384 |
+
+**There is no rate to record.** The model is sold on an Enterprise tier with
+"Contact Sales" where a number would be. The price table now carries it as an
+entry marked `unpriced`, with the reason, so the refusal explains itself
+instead of telling a caller to go and add a figure that does not exist.
+`prices.py` now rejects any entry carrying neither rates nor a reason -- a
+half-finished price entry is how a rate later gets read as zero.
+
+**The recipe may not be able to run as written at all**, with or without the
+gateway. An Enterprise-only model on a developer-plan key is likely to be
+refused outright. That is worth telling `contradiction-detection-agent`'s owner
+before its approval gate clears rather than after.
+
+**All three tier prices were unchanged** from the 2026-09-17 reading, two
+months on. Re-stamped rather than re-derived.
+
+**2,000 output tokens is not a model limit.** `gpt-oss-20b` permits 65,536
+completion tokens, so the 512 that would truncate all 16 requests is purely our
+own policy budget. Whether the work needs 2,000 remains unmeasured; one call
+with a generous budget would settle it, and that is the next sprint.
+
+**A rate limit we had attributed to the model belongs to the account.** The
+published developer-plan limit is 250,000 tokens per minute. In Sprint 4 this
+account was refused at 1,000 output tokens per minute on qwen, which set the
+strong tier's 896-token budget. That cap is a property of this plan, not of the
+model, and a paid plan would lift it.

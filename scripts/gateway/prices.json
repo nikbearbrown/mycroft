@@ -1,10 +1,11 @@
 {
-  "version": "2026-09-17",
+  "version": "2026-11-17",
   "currency": "USD",
   "unit": "per_1k_tokens",
-  "_source": "https://console.groq.com/docs/models -- read 2026-09-02, rechecked 2026-09-17",
+  "_source": "https://console.groq.com/docs/models -- read 2026-09-02, rechecked 2026-09-17 and 2026-11-17",
   "_units_note": "Groq quotes per MILLION tokens; this table is per THOUSAND. Every figure below is the published per-1M price divided by 1000.",
   "_retired_note": "A retired model keeps its entry. Rows already logged cite the price-table version that produced their cost, so removing the entry would break that trace.",
+  "_recheck_2026_11_17": "All three tier prices were unchanged from the 2026-09-17 reading. The published max completion tokens are 65,536 for both gpt-oss models and 16,384 for qwen3.8-27b, so a 2,000-token request is nowhere near a model limit. The page lists 250K tokens/minute for the developer plan, while this account was refused at 1,000 output tokens/minute on qwen in Sprint 4 -- so that cap is a property of this account's plan, not of the model.",
 
   "models": {
     "groq:openai/gpt-oss-20b": {
@@ -12,8 +13,9 @@
       "output_per_1k": 0.0003,
       "basis": "list_price",
       "source": "https://console.groq.com/docs/models",
-      "read_on": "2026-09-02",
-      "published_per_1m": {"input": 0.075, "output": 0.30}
+      "read_on": "2026-11-17",
+      "published_per_1m": {"input": 0.075, "output": 0.30},
+      "max_completion_tokens": 65536
     },
 
     "groq:openai/gpt-oss-120b": {
@@ -21,8 +23,9 @@
       "output_per_1k": 0.0006,
       "basis": "list_price",
       "source": "https://console.groq.com/docs/models",
-      "read_on": "2026-09-02",
-      "published_per_1m": {"input": 0.15, "output": 0.60}
+      "read_on": "2026-11-17",
+      "published_per_1m": {"input": 0.15, "output": 0.60},
+      "max_completion_tokens": 65536
     },
 
     "groq:qwen/qwen3.8-27b": {
@@ -30,8 +33,18 @@
       "output_per_1k": 0.004,
       "basis": "list_price",
       "source": "https://console.groq.com/docs/models",
-      "read_on": "2026-09-17",
-      "published_per_1m": {"input": 0.80, "output": 4.00}
+      "read_on": "2026-11-17",
+      "published_per_1m": {"input": 0.80, "output": 4.00},
+      "max_completion_tokens": 16384
+    },
+
+    "groq:llama-3.3-70b-versatile": {
+      "unpriced": "sold on Groq's Enterprise tier with 'Contact Sales' in place of a published per-token rate",
+      "source": "https://console.groq.com/docs/models",
+      "read_on": "2026-11-17",
+      "named_by": "the 16 prepared requests in contradiction-detection-agent (FINDINGS section 14)",
+      "max_completion_tokens": 32768,
+      "_note": "Recorded so the refusal explains itself. This model cannot be priced, and on a developer-plan key it may not be callable at all. A recipe that names it needs a priced equivalent, not a new row here."
     },
 
     "groq:qwen/qwen3.6-27b": {

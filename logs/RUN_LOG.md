@@ -1053,3 +1053,34 @@
   recipe's own cost, since the model it names has no published rate.
 - **Open issues:** the Sprint 5 and 7 RUN_LOG backfill, the two disputed
   fixtures, and the GROQ_API_KEY rotation.
+
+
+  ## 2026-11-17 -- Gateway Sprint 12: the named model cannot be priced
+
+- **Recipe:** Adaptive Model Routing & Inference Gateway (Sprint 12 of 15).
+- **Gate:** None cleared. Published prices rechecked against the provider's
+  own documentation.
+- **By:** Simba · 2026-11-17
+- **Inputs:** https://console.groq.com/docs/models, read 2026-11-17. No live
+  calls.
+- **Commands:** `python -m pytest scripts/gateway/tests -q` (238 passed).
+- **Outputs:** `prices.json` version 2026-11-17; `prices.py` (entries may be
+  recorded as `unpriced` with a reason, and an entry with neither rates nor a
+  reason is now rejected); `tests/test_prices.py`.
+- **Result:** `llama-3.3-70b-versatile` is sold on Groq's Enterprise tier with
+  "Contact Sales" in place of a per-token rate, so there is no number to add.
+  It is now recorded as unpriced with that reason, and the refusal says so. All
+  three tier prices were unchanged after two months. Published max completion
+  tokens are 65,536 for both gpt-oss models, so the 2,000-token requests are
+  nowhere near a model limit -- the 512 budget that would truncate them is
+  policy, not capability.
+- **Findings:** `scripts/gateway/FINDINGS.md` section 16.
+- **Not verified:** what a real contradiction review actually emits. One live
+  call with a generous budget settles whether 2,000 is measured or inherited;
+  deferred to Sprint 13.
+- **Noted:** the documented developer-plan limit is 250K tokens/minute, while
+  this account was refused at 1,000 output tokens/minute in Sprint 4. The
+  strong tier's 896-token budget is therefore an artifact of this account's
+  plan, not of the model.
+- **Open issues:** unchanged -- the two disputed fixtures, the Sprint 5 and 7
+  RUN_LOG backfill, the key rotation, and the Sprint 11 PR to main.
