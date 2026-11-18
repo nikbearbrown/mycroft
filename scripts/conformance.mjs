@@ -17,6 +17,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 
 // Directory names skipped wherever they appear. These are genuinely non-source:
 // binaries, build scratch, and dependencies.
@@ -30,6 +31,10 @@ import { execSync } from 'node:child_process';
 const SKIP = new Set([
   '.git', 'node_modules', '.build', '__pycache__', 'output', 'images', 'd3',
   'MD', 'PSD', 'epub', 'front-back', 'wayback-machine', // heavy / non-source
+  // Local virtualenvs. Never tracked (no tracked path contains one), but the walker reads
+  // the filesystem, not git, so one inside a subsystem below would put thousands of
+  // site-packages files under py_compile on that contributor's machine only.
+  'env', '.venv', 'venv',
 ]);
 
 // Path prefixes skipped by location rather than by name, because the reason to
@@ -54,6 +59,15 @@ const DEFAULT_PATHS = [
   // for the whole repo instead of recipe by recipe. Quarantined and private trees
   // under data/ are excluded by SKIP_PREFIXES, not by skipping `data` wholesale.
   'data/raw', 'data/verified',
+  // Contributor subsystems, classified in _MANIFEST.md. Until these were added, npm run
+  // verify had never read a line of any of them. Two are left out on purpose:
+  //   congressional-signals/ -- data/verified/conformance_report.json holds bare NaN,
+  //     which is not JSON. Owned by that subsystem; adding it would fail every run on
+  //     a defect nobody here can fix. Add it once the producer stops emitting NaN.
+  //   archive/ -- superseded material. Making it block verify would demand upkeep of
+  //     files kept precisely so they stop changing.
+  'verification-layer', 'projects', 'case-study-workflows', 'case-studies',
+  'multi-agents', 'provenance-gatekeeper', 'github-assistant', 'my_chapters',
   'DOMAIN.md', 'CLAUDE.md', 'AGENTS.md', 'SNICKERDOODLE.md', 'README.md',
   'metadata.yaml', 'package.json',
 ];
@@ -182,22 +196,30 @@ function checkPyBatch(files) {
   return fails;
 }
 
+// safe_load_all, not safe_load: a YAML file may hold several documents separated by
+// `---`, which is standard for Kubernetes manifests. safe_load rejects those valid files
+// with "expected a single document in the stream". safe_load_all is a lazy generator, so
+// it is wrapped in list() -- without that nothing is parsed and every file would pass.
 function checkYamlBatch(files) {
   if (files.length === 0) return [];
   const script = [
     'import sys, yaml',
     'for f in sys.argv[1:]:',
     '    try:',
-    '        yaml.safe_load(open(f, encoding="utf-8"))',
+    '        list(yaml.safe_load_all(open(f, encoding="utf-8")))',
     '    except Exception as e:',
     '        print(f + "\\t" + str(e).split(chr(10))[0])',
   ].join('\n');
-  const runner = `${pythonCmd()} -c "${script.replace(/"/g, '\\"').replace(/\n/g, '\\n')}"`;
+  // The script goes to Python as one argv entry, with no shell in between. The first
+  // version built a shell string and replaced each newline with a literal backslash-n,
+  // so Python received a single line and raised SyntaxError on every run. execSync threw,
+  // the catch below fell back to per-file checks, and the batch had never once executed
+  // -- the results still looked right, so nothing showed it. No shell also means no
+  // quoting of file paths.
   const fails = [];
   for (const group of chunk(files)) {
-    const args = group.map((f) => `"${f}"`).join(' ');
     try {
-      const out = execSync(`${runner} ${args}`, { stdio: 'pipe' }).toString();
+      const out = execFileSync(pythonCmd(), ['-c', script, ...group], { stdio: 'pipe' }).toString();
       for (const l of out.split('\n')) {
         if (!l.includes('\t')) continue;
         const [file, ...rest] = l.split('\t');
