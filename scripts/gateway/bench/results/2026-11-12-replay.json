@@ -1,0 +1,310 @@
+{
+  "replayed_on": "2026-11-12",
+  "corpus": "2026-11-09-corpus.jsonl",
+  "policy_version": "0.3.0",
+  "tiers_version": "0.4.0",
+  "prices_version": "2026-09-17",
+  "action_to_task": {
+    "llm_review_of_flags": "contradiction_detection"
+  },
+  "chars_per_token_estimate": 4,
+  "summary": {
+    "requests": 16,
+    "routable": 11,
+    "by_tier": {
+      "cheap": 11
+    },
+    "problems": {
+      "named_model_unpriced": 11,
+      "budget_cut": 11,
+      "empty_payload": 5
+    },
+    "cost_upper_bound_usd": 0.002835,
+    "cost_estimate_usd": 0.001976
+  },
+  "rows": [
+    {
+      "source": "logs/contradiction-detection-agent/runs/sample-001-clean/llm-handoff/FXA.json",
+      "recipe": "contradiction-detection-agent",
+      "action": "llm_review_of_flags",
+      "prompt_chars": 1327,
+      "model_named": "llama-3.3-70b-versatile",
+      "max_tokens_asked": 2000,
+      "task_type": "contradiction_detection",
+      "tier": "cheap",
+      "escalate_to": "mid",
+      "max_tokens_served": 512,
+      "cost_upper_bound_usd": 0.000253125,
+      "cost_estimate_usd": 0.000178425,
+      "problems": [
+        "named_model_unpriced",
+        "budget_cut: asked 2000, would get 512"
+      ]
+    },
+    {
+      "source": "logs/contradiction-detection-agent/runs/sample-001-clean/llm-handoff/FXB.json",
+      "recipe": "contradiction-detection-agent",
+      "action": "llm_review_of_flags",
+      "prompt_chars": 0,
+      "model_named": "llama-3.3-70b-versatile",
+      "max_tokens_asked": null,
+      "task_type": "contradiction_detection",
+      "tier": null,
+      "escalate_to": null,
+      "max_tokens_served": null,
+      "cost_upper_bound_usd": null,
+      "cost_estimate_usd": null,
+      "problems": [
+        "empty_payload"
+      ]
+    },
+    {
+      "source": "logs/contradiction-detection-agent/runs/sample-001-clean/llm-handoff/FXC.json",
+      "recipe": "contradiction-detection-agent",
+      "action": "llm_review_of_flags",
+      "prompt_chars": 1642,
+      "model_named": "llama-3.3-70b-versatile",
+      "max_tokens_asked": 2000,
+      "task_type": "contradiction_detection",
+      "tier": "cheap",
+      "escalate_to": "mid",
+      "max_tokens_served": 512,
+      "cost_upper_bound_usd": 0.00027675,
+      "cost_estimate_usd": 0.00018434999999999998,
+      "problems": [
+        "named_model_unpriced",
+        "budget_cut: asked 2000, would get 512"
+      ]
+    },
+    {
+      "source": "logs/contradiction-detection-agent/runs/sample-001-clean/llm-handoff/FXD.json",
+      "recipe": "contradiction-detection-agent",
+      "action": "llm_review_of_flags",
+      "prompt_chars": 1302,
+      "model_named": "llama-3.3-70b-versatile",
+      "max_tokens_asked": 2000,
+      "task_type": "contradiction_detection",
+      "tier": "cheap",
+      "escalate_to": "mid",
+      "max_tokens_served": 512,
+      "cost_upper_bound_usd": 0.00025124999999999995,
+      "cost_estimate_usd": 0.000177975,
+      "problems": [
+        "named_model_unpriced",
+        "budget_cut: asked 2000, would get 512"
+      ]
+    },
+    {
+      "source": "logs/contradiction-detection-agent/runs/sample-001-clean/llm-handoff/FXE.json",
+      "recipe": "contradiction-detection-agent",
+      "action": "llm_review_of_flags",
+      "prompt_chars": 1353,
+      "model_named": "llama-3.3-70b-versatile",
+      "max_tokens_asked": 2000,
+      "task_type": "contradiction_detection",
+      "tier": "cheap",
+      "escalate_to": "mid",
+      "max_tokens_served": 512,
+      "cost_upper_bound_usd": 0.000255075,
+      "cost_estimate_usd": 0.00017894999999999999,
+      "problems": [
+        "named_model_unpriced",
+        "budget_cut: asked 2000, would get 512"
+      ]
+    },
+    {
+      "source": "logs/contradiction-detection-agent/runs/sample-001-clean/llm-handoff/FXF.json",
+      "recipe": "contradiction-detection-agent",
+      "action": "llm_review_of_flags",
+      "prompt_chars": 1313,
+      "model_named": "llama-3.3-70b-versatile",
+      "max_tokens_asked": 2000,
+      "task_type": "contradiction_detection",
+      "tier": "cheap",
+      "escalate_to": "mid",
+      "max_tokens_served": 512,
+      "cost_upper_bound_usd": 0.000252075,
+      "cost_estimate_usd": 0.0001782,
+      "problems": [
+        "named_model_unpriced",
+        "budget_cut: asked 2000, would get 512"
+      ]
+    },
+    {
+      "source": "logs/contradiction-detection-agent/runs/sample-001-clean/llm-handoff/FXG.json",
+      "recipe": "contradiction-detection-agent",
+      "action": "llm_review_of_flags",
+      "prompt_chars": 1314,
+      "model_named": "llama-3.3-70b-versatile",
+      "max_tokens_asked": 2000,
+      "task_type": "contradiction_detection",
+      "tier": "cheap",
+      "escalate_to": "mid",
+      "max_tokens_served": 512,
+      "cost_upper_bound_usd": 0.00025215,
+      "cost_estimate_usd": 0.0001782,
+      "problems": [
+        "named_model_unpriced",
+        "budget_cut: asked 2000, would get 512"
+      ]
+    },
+    {
+      "source": "logs/contradiction-detection-agent/runs/sample-001-clean/llm-handoff/FXH.json",
+      "recipe": "contradiction-detection-agent",
+      "action": "llm_review_of_flags",
+      "prompt_chars": 0,
+      "model_named": "llama-3.3-70b-versatile",
+      "max_tokens_asked": null,
+      "task_type": "contradiction_detection",
+      "tier": null,
+      "escalate_to": null,
+      "max_tokens_served": null,
+      "cost_upper_bound_usd": null,
+      "cost_estimate_usd": null,
+      "problems": [
+        "empty_payload"
+      ]
+    },
+    {
+      "source": "logs/contradiction-detection-agent/runs/sample-001-clean/llm-handoff/FXJ.json",
+      "recipe": "contradiction-detection-agent",
+      "action": "llm_review_of_flags",
+      "prompt_chars": 1370,
+      "model_named": "llama-3.3-70b-versatile",
+      "max_tokens_asked": 2000,
+      "task_type": "contradiction_detection",
+      "tier": "cheap",
+      "escalate_to": "mid",
+      "max_tokens_served": 512,
+      "cost_upper_bound_usd": 0.00025635,
+      "cost_estimate_usd": 0.00017925,
+      "problems": [
+        "named_model_unpriced",
+        "budget_cut: asked 2000, would get 512"
+      ]
+    },
+    {
+      "source": "logs/contradiction-detection-agent/runs/sample-001-clean/llm-handoff/FXK.json",
+      "recipe": "contradiction-detection-agent",
+      "action": "llm_review_of_flags",
+      "prompt_chars": 0,
+      "model_named": "llama-3.3-70b-versatile",
+      "max_tokens_asked": null,
+      "task_type": "contradiction_detection",
+      "tier": null,
+      "escalate_to": null,
+      "max_tokens_served": null,
+      "cost_upper_bound_usd": null,
+      "cost_estimate_usd": null,
+      "problems": [
+        "empty_payload"
+      ]
+    },
+    {
+      "source": "logs/contradiction-detection-agent/runs/sample-001-clean/llm-handoff/FXL.json",
+      "recipe": "contradiction-detection-agent",
+      "action": "llm_review_of_flags",
+      "prompt_chars": 1392,
+      "model_named": "llama-3.3-70b-versatile",
+      "max_tokens_asked": 2000,
+      "task_type": "contradiction_detection",
+      "tier": "cheap",
+      "escalate_to": "mid",
+      "max_tokens_served": 512,
+      "cost_upper_bound_usd": 0.000258,
+      "cost_estimate_usd": 0.00017969999999999998,
+      "problems": [
+        "named_model_unpriced",
+        "budget_cut: asked 2000, would get 512"
+      ]
+    },
+    {
+      "source": "logs/contradiction-detection-agent/runs/sample-001-clean/llm-handoff/FXM.json",
+      "recipe": "contradiction-detection-agent",
+      "action": "llm_review_of_flags",
+      "prompt_chars": 0,
+      "model_named": "llama-3.3-70b-versatile",
+      "max_tokens_asked": null,
+      "task_type": "contradiction_detection",
+      "tier": null,
+      "escalate_to": null,
+      "max_tokens_served": null,
+      "cost_upper_bound_usd": null,
+      "cost_estimate_usd": null,
+      "problems": [
+        "empty_payload"
+      ]
+    },
+    {
+      "source": "logs/contradiction-detection-agent/runs/sample-001-clean/llm-handoff/FXN.json",
+      "recipe": "contradiction-detection-agent",
+      "action": "llm_review_of_flags",
+      "prompt_chars": 0,
+      "model_named": "llama-3.3-70b-versatile",
+      "max_tokens_asked": null,
+      "task_type": "contradiction_detection",
+      "tier": null,
+      "escalate_to": null,
+      "max_tokens_served": null,
+      "cost_upper_bound_usd": null,
+      "cost_estimate_usd": null,
+      "problems": [
+        "empty_payload"
+      ]
+    },
+    {
+      "source": "logs/contradiction-detection-agent/runs/sample-001-clean/llm-handoff/FXP.json",
+      "recipe": "contradiction-detection-agent",
+      "action": "llm_review_of_flags",
+      "prompt_chars": 1598,
+      "model_named": "llama-3.3-70b-versatile",
+      "max_tokens_asked": 2000,
+      "task_type": "contradiction_detection",
+      "tier": "cheap",
+      "escalate_to": "mid",
+      "max_tokens_served": 512,
+      "cost_upper_bound_usd": 0.00027345,
+      "cost_estimate_usd": 0.000183525,
+      "problems": [
+        "named_model_unpriced",
+        "budget_cut: asked 2000, would get 512"
+      ]
+    },
+    {
+      "source": "logs/contradiction-detection-agent/runs/sample-001-clean/llm-handoff/FXQ.json",
+      "recipe": "contradiction-detection-agent",
+      "action": "llm_review_of_flags",
+      "prompt_chars": 1326,
+      "model_named": "llama-3.3-70b-versatile",
+      "max_tokens_asked": 2000,
+      "task_type": "contradiction_detection",
+      "tier": "cheap",
+      "escalate_to": "mid",
+      "max_tokens_served": 512,
+      "cost_upper_bound_usd": 0.00025305,
+      "cost_estimate_usd": 0.000178425,
+      "problems": [
+        "named_model_unpriced",
+        "budget_cut: asked 2000, would get 512"
+      ]
+    },
+    {
+      "source": "logs/contradiction-detection-agent/runs/sample-001-clean/llm-handoff/FXR.json",
+      "recipe": "contradiction-detection-agent",
+      "action": "llm_review_of_flags",
+      "prompt_chars": 1334,
+      "model_named": "llama-3.3-70b-versatile",
+      "max_tokens_asked": 2000,
+      "task_type": "contradiction_detection",
+      "tier": "cheap",
+      "escalate_to": "mid",
+      "max_tokens_served": 512,
+      "cost_upper_bound_usd": 0.00025365,
+      "cost_estimate_usd": 0.000178575,
+      "problems": [
+        "named_model_unpriced",
+        "budget_cut: asked 2000, would get 512"
+      ]
+    }
+  ]
+}

@@ -1,4 +1,16 @@
-"""Compute per-attempt cost from a versioned, human-maintained price table."""
+"""Compute per-attempt cost from a versioned, human-maintained price table.
+
+Two reasons a model has no price, and they need different answers:
+
+  not in the table  -- nobody has recorded it yet. Go and add it.
+  recorded as unpriced -- somebody looked, and there is no published rate to
+    record. `llama-3.3-70b-versatile`, the model Mycroft's own recipes name,
+    is sold "Contact Sales" on an Enterprise tier (checked 2026-11-17). Telling
+    a caller to add it to prices.json would send them after a number that does
+    not exist.
+
+Either way the call is refused. Cost is never defaulted to zero.
+"""
 
 from __future__ import annotations
 
@@ -10,7 +22,7 @@ DEFAULT_PRICE_TABLE = Path(__file__).with_name("prices.json")
 
 
 class UnknownModelPrice(KeyError):
-    """Raised when a (provider, model) pair has no entry in the price table."""
+    """Raised when a (provider, model) pair cannot be priced."""
 
 
 class PriceTableError(ValueError):
@@ -26,6 +38,20 @@ class PriceTable:
         if not isinstance(models, dict):
             raise PriceTableError("price table 'models' must be an object")
 
+        # An entry either carries rates or says in words why it has none.
+        # An entry with neither is a half-finished edit, and a half-finished
+        # price entry is the kind of thing that later gets read as zero.
+        for key, entry in models.items():
+            if not isinstance(entry, dict):
+                raise PriceTableError(f"price entry {key!r} must be an object")
+            has_rates = "input_per_1k" in entry and "output_per_1k" in entry
+            if not has_rates and not str(entry.get("unpriced") or "").strip():
+                raise PriceTableError(
+                    f"price entry {key!r} needs either input_per_1k and "
+                    f"output_per_1k, or a non-empty 'unpriced' explaining why "
+                    f"there is no rate to record"
+                )
+
         self.version = version
         self.unit = data.get("unit", "per_1k_tokens")
         if self.unit != "per_1k_tokens":
@@ -40,6 +66,11 @@ class PriceTable:
     def _key(provider: str, model: str) -> str:
         return f"{provider}:{model}"
 
+    def entry(self, provider: str, model: str) -> dict[str, Any] | None:
+        """The raw record, for callers that want the note rather than a number."""
+        found = self._models.get(self._key(provider, model))
+        return dict(found) if isinstance(found, dict) else None
+
     def rates(self, provider: str, model: str) -> tuple[float, float]:
         key = self._key(provider, model)
         entry = self._models.get(key)
@@ -49,6 +80,15 @@ class PriceTable:
                 f"Add it to prices.json with a source URL and the date read, then "
                 f"bump the table version. Cost is never defaulted to zero."
             )
+
+        reason = str(entry.get("unpriced") or "").strip()
+        if reason:
+            raise UnknownModelPrice(
+                f"{key!r} has no published rate: {reason} "
+                f"(price table version {self.version!r}). Serving this request "
+                f"needs a model that can be priced, not a new entry here."
+            )
+
         try:
             return float(entry["input_per_1k"]), float(entry["output_per_1k"])
         except (KeyError, TypeError, ValueError) as exc:
