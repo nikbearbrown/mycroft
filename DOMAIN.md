@@ -12,12 +12,27 @@ Mycroft is **both a book and an agentic Cowork system**: the manuscript explains
 | `reports/` | report templates the recipes emit |
 | `data/raw/`, `data/verified/` | the two-layer data architecture — nothing enters `verified/` without validation |
 | `data/mycroft-main/` | **quarantined Tier 3** (vendored upstream import); provenance only, do not load |
-| `pantry/` | raw provenance inputs the recipes were derived from |
+| `pantry/` | raw provenance inputs the recipes were derived from. **Local-only since `8d50977`** (2026-11): untracked and gitignored, so a fresh clone has none of it |
 | `logs/` | `RUN_LOG.md` (canonical log) + run artifacts — real run history |
 | `scripts/` | executable code only — `conformance.mjs`, `to-markdown.mjs`, `build-instructions.mjs`, `svg-to-png.mjs`, plus `ingest/`, `gigo/`, `tools/`. `scripts/mycroft-main/` is quarantined Tier 3 |
 | `chapters/` | the book manuscript (17 chapters + front/appendix) — no scripts or data here |
 | `docs/` | durable human docs (architecture, phase-gates, workflows, recipes, data-and-provenance, labor-separation…) |
 | `d3/`, `images/` | figures and authoring tools |
+
+### Contributor subsystems
+
+Self-contained work by named contributors, each with its own README. Classified in `_MANIFEST.md` (and `.ai/manifest.yaml`) as `reviewed: false` — listed, not yet checked against `SNICKERDOODLE.md`. All but two are inside the conformance default surface, so `npm run verify` reads them.
+
+| Path | What it is |
+|---|---|
+| `multi-agents/` | **The book's central claim, implemented.** A verification harness for policy-as-code: a human writes an answer key, it is frozen and hashed *before* AI code generation runs, two independent checkers (one executes the generated code, one re-reads the rule blind to the code) compare against it, and a human approves. `LIMITATIONS.md` states what it cannot see — a faithful translation of a discriminatory rule passes cleanly. Needs Docker and an API key; pins `claude-sonnet-4-5`. Not run from this repo yet. |
+| `verification-layer/` | verification subsystem with a scoped `CLAUDE.md`; network-free, model-free tests: `python -m unittest discover -s tests -t .` from inside it |
+| `provenance-gatekeeper/` | FastAPI gatekeeper service; the only subsystem with its own CI job (`.github/workflows/ci.yml`) |
+| `case-studies/`, `case-study-workflows/` | case-study narratives and their runnable workflow implementations, paired by topic |
+| `projects/` | per-project working trees (ECIS, Patents-Intelligence-Engine, finance-event-signals) |
+| `my_chapters/`, `github-assistant/` | a contributor manuscript workspace; a GitHub assistant utility |
+| `congressional-signals/` | congressional trading-signal pipeline. **Outside the conformance surface**: its `data/verified/conformance_report.json` contains bare `NaN`, which is not JSON |
+| `archive/` | superseded material under the never-delete rule. Outside the conformance surface on purpose — it is kept so it stops changing |
 
 ## Instruction files are generated (do not hand-edit)
 
