@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   gatekeeper:
     build: .
@@ -14,6 +12,7 @@ services:
       - ENVIRONMENT=production
       - GATEKEEPER_SECRET_KEY=super-secret-key-change-in-production
       - ALERT_WEBHOOK_URL=http://n8n:5678/webhook/hallucination-alert
+      - REDIS_URL=redis://redis-cache:6379/0
     restart: always
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
@@ -22,6 +21,16 @@ services:
       retries: 3
     depends_on:
       - n8n
+      - redis-cache
+
+  redis-cache:
+    image: redis:7-alpine
+    container_name: redis-cache
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: always
 
   n8n:
     image: docker.n8n.io/n8nio/n8n
@@ -40,3 +49,4 @@ services:
 
 volumes:
   n8n_data:
+  redis_data:

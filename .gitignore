@@ -22,3 +22,5 @@ provenance-gatekeeper/chroma_db/
 provenance-gatekeeper/gatekeeper_logs.db
 __pycache__/
 .pytest_cache/
+# Reference pantries are local-only; never publish them.
+**/[Pp][Aa][Nn][Tt][Rr][Yy]/

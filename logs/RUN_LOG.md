@@ -1031,56 +1031,53 @@
   instrument.
 - **Open issues:** the Sprint 5 and 7 RUN_LOG backfill, the two disputed
   fixtures, and the GROQ_API_KEY rotation.
-  ## 2026-11-12 -- Gateway Sprint 11: replaying the prepared requests
+## 2026-11-13 -- The map now covers the repository: 10 contributor subsystems classified, status.md and session-handoff.md refreshed
 
-- **Recipe:** Adaptive Model Routing & Inference Gateway (Sprint 11 of 15).
-- **Gate:** None cleared. Offline replay; nothing was called.
-- **By:** Simba · 2026-11-12
-- **Inputs:** `bench/corpus/2026-11-09-corpus.jsonl`; policy 0.3.0; tiers
-  0.4.0; prices 2026-09-17.
-- **Commands:** `python scripts/gateway/bench/replay.py`;
-  `python -m pytest scripts/gateway/tests -q` (233 passed).
-- **Outputs:** `bench/replay.py`, `tests/test_replay.py` (11 tests),
-  `bench/results/2026-11-12-replay.json`.
-- **Result:** 16 prepared requests, 11 routable, 5 with empty payloads. All 11
-  route to the cheap tier under policy 0.3.0. Whole batch costs $0.001976
-  estimated, $0.002835 upper bound. Serving the 2,000 output tokens each
-  request asks for would cost $0.006886 -- $0.004910 more for the batch. The
-  budget cut that truncates all eleven saves half a cent.
-- **Findings:** `scripts/gateway/FINDINGS.md` section 15.
-- **Not verified:** whether this account permits 2,000 output tokens on the
-  cheap tier's model; what a real contradiction review actually emits; and the
-  recipe's own cost, since the model it names has no published rate.
-- **Open issues:** the Sprint 5 and 7 RUN_LOG backfill, the two disputed
-  fixtures, and the GROQ_API_KEY rotation.
-
-
-  ## 2026-11-17 -- Gateway Sprint 12: the named model cannot be priced
-
-- **Recipe:** Adaptive Model Routing & Inference Gateway (Sprint 12 of 15).
-- **Gate:** None cleared. Published prices rechecked against the provider's
-  own documentation.
-- **By:** Simba · 2026-11-17
-- **Inputs:** https://console.groq.com/docs/models, read 2026-11-17. No live
-  calls.
-- **Commands:** `python -m pytest scripts/gateway/tests -q` (238 passed).
-- **Outputs:** `prices.json` version 2026-11-17; `prices.py` (entries may be
-  recorded as `unpriced` with a reason, and an entry with neither rates nor a
-  reason is now rejected); `tests/test_prices.py`.
-- **Result:** `llama-3.3-70b-versatile` is sold on Groq's Enterprise tier with
-  "Contact Sales" in place of a per-token rate, so there is no number to add.
-  It is now recorded as unpriced with that reason, and the refusal says so. All
-  three tier prices were unchanged after two months. Published max completion
-  tokens are 65,536 for both gpt-oss models, so the 2,000-token requests are
-  nowhere near a model limit -- the 512 budget that would truncate them is
-  policy, not capability.
-- **Findings:** `scripts/gateway/FINDINGS.md` section 16.
-- **Not verified:** what a real contradiction review actually emits. One live
-  call with a generous budget settles whether 2,000 is measured or inherited;
-  deferred to Sprint 13.
-- **Noted:** the documented developer-plan limit is 250K tokens/minute, while
-  this account was refused at 1,000 output tokens/minute in Sprint 4. The
-  strong tier's 896-token budget is therefore an artifact of this account's
-  plan, not of the model.
-- **Open issues:** unchanged -- the two disputed fixtures, the Sprint 5 and 7
-  RUN_LOG backfill, the key rotation, and the Sprint 11 PR to main.
+- **Artifacts:** `_MANIFEST.md`, `.ai/manifest.yaml`, `status.md`, `session-handoff.md`.
+- **Inputs:** a top-level inventory of all 57 entries (tracked file counts from
+  `git ls-files`, last-touch date and author from `git log`), plus
+  `node scripts/conformance.mjs <path>` run once per unclassified tree.
+- **Why:** `_MANIFEST.md` is the portable read-first map, and it classified 12
+  top-level paths out of 51. Ten contributor subsystems -- 1,005 tracked files,
+  including `projects/` (435), `case-study-workflows/` (277),
+  `verification-layer/` (154) and `multi-agents/` (41) -- were named by no Tier 1
+  file, so an agent obeying the map would never load them.
+- **Result:** every top-level path is now classified. The ten subsystems are
+  recorded with `reviewed: false`, which is a deliberate claim: they have been
+  listed, not checked against `SNICKERDOODLE.md`. Listing a thing is not
+  reviewing it, and collapsing the two would resolve an open question silently.
+- **Nothing was moved, renamed or deleted.** `_mvtest2` (0 bytes, 2026-06-15),
+  `answers.json` and `answers1.json` are documented in place. Every unclassified
+  tree belongs to a named contributor; the map grew to fit the repository rather
+  than the repository being rearranged to fit the map.
+- **Two conformance failures found and recorded, not fixed:**
+  - `projects/finance-event-signals/deploy/k8s/{infra,observability,pipeline}.yaml`
+    are multi-document YAML, which is standard for Kubernetes manifests. The
+    files are valid. `scripts/conformance.mjs` calls `yaml.safe_load`, which
+    reads a single document; `safe_load_all` is what these need. **The defect is
+    in our checker, not in those files.**
+  - `congressional-signals/data/verified/conformance_report.json` contains bare
+    `NaN` literals. Python's `json.dump` emits them by default; they are not
+    valid JSON, so `JSON.parse` rejects the file. Owned by that subsystem.
+- **Also recorded:** none of the ten subsystems is inside conformance's
+  `DEFAULT_PATHS`, so `npm run verify` has never reached any of them. Eight
+  scoped `CLAUDE.md` files exist outside the generated set and are not covered by
+  `manifest-check`.
+- **status.md** was five months stale and is Tier 1 -- it reported 99 recipes and
+  still listed the recipe lifecycle as an open question. Refreshed against
+  measured counts (97 recipes: 95 DRAFT, 2 RUNNABLE-SAMPLE; `check --all` = 5
+  defects, all in `recipes/gru.md`). The 2026-06-15 snapshot is preserved
+  verbatim below the new content rather than overwritten; all 24 of its lines
+  were verified present afterwards.
+- **session-handoff.md** was rewritten as a resume point, which is what it is for.
+  One action from the June handoff -- run the `eval/` suite for real -- was still
+  genuinely open (both runs under `eval/runs/` are named `__example`), so it was
+  carried forward instead of dropped.
+- **Verified:** `npm run verify` passes (993 files conform; manifest check
+  passes, no W3 drift between `_MANIFEST.md` Tier 1 and `.ai/manifest.yaml`
+  `canonical`). The insertion into `_MANIFEST.md` was placed after the existing
+  Tier 2 section and guarded by an offset check, because `manifest-check.mjs`
+  parses Tier 1 by slicing from the first "Tier 1" to the first "Tier 2".
+- **Open issues:** the ten subsystems remain unreviewed; the multi-document YAML
+  defect in `conformance.mjs` is unfixed; `scenariostresstestingagent` still
+  reads DRAFT while carrying the evidence for a promotion.

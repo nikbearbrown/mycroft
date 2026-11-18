@@ -77,3 +77,66 @@ permissions:
   forbidden:
     - "rm -rf"
     - "git push --force"
+
+# Contributor subsystems — tracked, self-contained, classified in _MANIFEST.md.
+# None is named by a Tier 1 file and none is inside the conformance DEFAULT_PATHS, so
+# `npm run verify` does not reach them; the conformance figures below come from naming
+# each path explicitly. `reviewed: false` means nobody has checked the subsystem against
+# SNICKERDOODLE.md — it does not mean the work is suspect.
+contributor_subsystems:
+  - path: verification-layer/
+    tracked: 154
+    reviewed: false
+    scoped_claude_md: true
+    tests: "python -m unittest discover -s tests -t ."
+    conformance: pass
+  - path: projects/
+    tracked: 435
+    reviewed: false
+    conformance: fail
+  - path: case-study-workflows/
+    tracked: 277
+    reviewed: false
+    conformance: pass
+    paired_with: case-studies/
+  - path: multi-agents/
+    tracked: 41
+    reviewed: false
+    conformance: pass
+  - path: congressional-signals/
+    tracked: 39
+    reviewed: false
+    conformance: fail
+  - path: provenance-gatekeeper/
+    tracked: 17
+    reviewed: false
+    conformance: pass
+    ci: .github/workflows/ci.yml
+  - path: case-studies/
+    tracked: 14
+    reviewed: false
+    conformance: pass
+    paired_with: case-study-workflows/
+  - path: archive/
+    tracked: 12
+    reviewed: false
+    conformance: pass
+  - path: my_chapters/
+    tracked: 10
+    reviewed: false
+    scoped_claude_md: true
+    conformance: pass
+  - path: github-assistant/
+    tracked: 6
+    reviewed: false
+    conformance: pass
+
+# Known conformance failures outside the default surface. Recorded, not fixed.
+known_conformance_failures:
+  - path: projects/finance-event-signals/deploy/k8s/
+    files: [infra.yaml, observability.yaml, pipeline.yaml]
+    cause: "Multi-document YAML. The files are valid; conformance.mjs calls yaml.safe_load, which reads one document. safe_load_all is required."
+    owner: our-checker
+  - path: congressional-signals/data/verified/conformance_report.json
+    cause: "Bare NaN literals. Python json.dump emits them by default; they are not valid JSON and JSON.parse rejects them."
+    owner: subsystem

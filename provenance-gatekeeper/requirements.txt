@@ -4,7 +4,9 @@ pydantic
 chromadb
 sentence-transformers
 pytest>=8.0.0
-
 python-jose[cryptography]
 passlib[bcrypt]
 python-multipart
+requests
+httpx
+redis

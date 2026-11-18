@@ -1,0 +1,15 @@
+{
+ "_fixture_note": "Invented price for a Mycroft sample run. Not market data. Quality fixture: a valid response whose price is 40% below the previous close.",
+ "chart": {
+  "result": [
+   {
+    "meta": {
+     "symbol": "AMD",
+     "regularMarketPrice": 62.0,
+     "previousClose": 104.25
+    }
+   }
+  ],
+  "error": null
+ }
+}

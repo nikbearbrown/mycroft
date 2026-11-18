@@ -1,0 +1,15 @@
+{
+ "_fixture_note": "Invented price for a Mycroft sample run. Not market data. Quality fixture: a second NVDA response that disagrees with NVDA.json (504.5625). Each file is valid on its own; only step 4 sees the pair.",
+ "chart": {
+  "result": [
+   {
+    "meta": {
+     "symbol": "NVDA",
+     "regularMarketPrice": 530.0,
+     "previousClose": 498.0
+    }
+   }
+  ],
+  "error": null
+ }
+}
