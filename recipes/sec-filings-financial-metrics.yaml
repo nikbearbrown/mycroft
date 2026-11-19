@@ -10,13 +10,15 @@ description: |
 
 status: SPECIFIED
 todos_open: 0
-recipe_version: 0.2.0
+recipe_version: 0.3.0
 last_gate: null
 attestation: null
 
 inputs:
   - ticker (string): US-listed stock ticker to analyze (e.g., "MSFT", "AAPL")
   - forms (array, optional): Filing forms to include (default ["10-K", "10-Q"])
+  - fiscal_year (integer, optional; agent tool only): fiscal year, labelled by the calendar year of the period-end date; default latest
+  - metrics (array, optional; agent tool only): canonical base metrics to return; default all
 
 outputs:
   - name: financial_metrics (JSON object)
@@ -34,13 +36,23 @@ outputs:
       Human-readable report: reported figures ($ millions), derived ratios,
       a validation summary, and a provenance appendix linking each fiscal year
       to the exact filing its numbers came from.
+  - name: verified_financials (JSON, agent tool)
+    description: |
+      Returned by the agent-callable tool get_verified_financials (secfma/tool.py)
+      for one company and fiscal year: base metrics (status OK with value and
+      provenance, or MISSING with value null and a reason), derived ratios, and
+      PASS/FAIL/UNKNOWN checks run on exactly the returned values. Expected
+      failures are returned as {ok: false, error: {type, message}} rather than
+      raised. Deterministic; no LLM in the path.
 
 phase_gates:
   - name: "Source gate — EDGAR concept mapping"
     status: "[PASS-sample]"
     description: |
       Each canonical metric resolves to a us-gaap tag via an ordered candidate
-      list, and the matched tag is recorded on every value. Metrics with no
+      list, per fiscal period (the highest-priority tag that reports that period
+      wins, so tag migration across years is handled), and the matched tag is
+      recorded on every value. Metrics with no
       matching tag are flagged MISSING (custom extension), never guessed.
       Evidence: missing_metrics list in the output JSON.
     owner: "Fellow (Asavari Shejwal)"
@@ -75,7 +87,10 @@ known_issues:
   - "[IMPROVEMENT] Fiscal-year label derived from period-end year; may differ from a company's own FY label for H1-ending fiscal years (documented convention)."
   - "[IMPROVEMENT] Derived ratios are annual (10-K/FY) only; quarterly ratios not yet supported."
   - "[IMPROVEMENT] Offline --sample mode ships one synthetic company (SMPL) fixture; add trimmed real-company fixtures if wider offline coverage is wanted."
-  - "[IMPROVEMENT] Expand the benchmark golden set with more companies and independently hand-verified figures; current seed = MSFT FY2023-25 + AAPL FY2024, 8/8 match at 0.5% tolerance."
+  - "[IMPROVEMENT] Benchmark covers 5 of 13 base metrics across 10 companies (46/46 scored rows match at 0.5%). Golden values come from an independent raw-EDGAR read and are marked for 10-K spot-check; derived ratios are not yet benchmarked."
+  - "[IMPROVEMENT] Walmart total_liabilities stays UNKNOWN: no aggregate Liabilities tag and no LiabilitiesNoncurrent component to rebuild it from (never derived as assets minus equity)."
+  - "[IMPROVEMENT] Accounting identity uses the stockholders_equity value returned; for filers reporting parent-only equity (e.g. XOM FY2024) it FAILs by the non-controlling interest (1.52%). Decide whether the check should use total equity including NCI when available."
+  - "[IMPROVEMENT] The agent tool is not yet wired into a calling agent (candidates: finance-event-signals, Agentic-Runway-Pipeline)."
 
 architecture:
   principle: |
@@ -94,21 +109,25 @@ architecture:
   pipeline:
     - resolve ticker to CIK
     - fetch + cache companyfacts (data/raw/, with fetch-timestamp provenance)
-    - extract canonical metrics; record matched us-gaap tag per value
+    - extract canonical metrics per fiscal period; record matched us-gaap tag per value
+    - rebuild total_liabilities from current + non-current liabilities when no aggregate tag exists
     - compute derived ratios per fiscal year (keyed by period-end date)
     - run rule-based validation (PASS/FAIL/UNKNOWN)
-    - emit verified JSON + human-readable Markdown report
+    - emit verified JSON + human-readable Markdown report, or return one fiscal year to a calling agent via get_verified_financials
 
 execution:
   current: "On-demand via CLI (python3 -m secfma.cli --ticker MSFT --report)"
   offline: "python3 -m secfma.cli --sample --report — full pipeline from a bundled fixture, zero network"
+  agent_tool: "get_verified_financials (secfma/tool.py); CLI: python3 -m secfma.tool --ticker MSFT --year 2024; spec: python3 -m secfma.tool --spec"
   latency: "First fetch a few seconds per company; cached and sample runs are near-instant"
   cache_ttl: "24 hours (configurable via SEC_CACHE_TTL_HOURS)"
-  verified_against: "Microsoft FY2020–2025 and Apple FY2024 — 8/8 golden-set match at 0.5% tolerance; balance sheet balances to the dollar"
+  verified_against: "10 companies (AAPL, CAT, JNJ, JPM, MSFT, NVDA, PG, VZ, WMT, XOM), 5 base metrics — 46/46 scored golden-set rows match at 0.5% tolerance (benchmark, 2026-10-31); 16/16 golden rows also match through the agent tool (2026-11-19)"
 
 scripts:
   package: scripts/sec-filings-financial-metrics/secfma/
   entry_point: scripts/sec-filings-financial-metrics/secfma/cli.py
+  agent_tool: scripts/sec-filings-financial-metrics/secfma/tool.py
+  tests: "scripts/sec-filings-financial-metrics/tests/ — python3 -m unittest discover -s tests (offline)"
   runtime: Python 3 standard library only
 
 related_recipes:

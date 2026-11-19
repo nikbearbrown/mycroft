@@ -60,6 +60,39 @@ python3 -m secfma.tool --openai-spec                     # same, OpenAI function
 
 Tests (offline, standard library only): `python3 -m unittest discover -s tests`
 
+**Example response** (abbreviated) from `python3 -m secfma.tool --sample --metrics revenue cash_and_equivalents`:
+
+```json
+{
+  "ok": true,
+  "company": {"ticker": "SMPL", "cik": "0000000001", "entity": "SAMPLE CORP"},
+  "fiscal_year": 2024, "period_end": "2024-12-31", "available_years": [2023, 2024],
+  "metrics": {
+    "revenue": {"status": "OK", "value": 1200000000, "unit": "USD",
+                "source_tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+                "tag_source": "us-gaap", "accession": "0000000001-25-000001",
+                "form": "10-K", "filed": "2025-02-15", "source_url": "https://www.sec.gov/Archives/..."},
+    "cash_and_equivalents": {"status": "MISSING", "value": null, "unit": "USD",
+                             "reason": "No us-gaap tag among (...) and no custom-extension override ..."}
+  },
+  "ratios": {"gross_margin": {"status": "OK", "value": 0.6167}, "...": "..."},
+  "validation": {"summary": {"PASS": 6, "FAIL": 0, "UNKNOWN": 0}, "checks": ["..."]},
+  "method": {"deterministic": true, "llm_in_path": false, "mode": "sample"}
+}
+```
+
+**Calling it from an agent.** The tool spec and the adapter are all an agent loop needs:
+
+```python
+from secfma.tool import TOOL_SPEC, run_tool
+
+tools = [TOOL_SPEC]                 # register with the model's tool list
+# ... when the model emits a call to TOOL_SPEC["name"] with JSON arguments:
+result = run_tool(arguments)        # dict in, dict out; never raises for expected failures
+# Return `result` as the tool result. A MISSING metric or a FAIL check is information
+# for the agent to report or route to a human, not a gap for the model to fill in.
+```
+
 ## Inputs
 
 - `--ticker` (required): US-listed stock ticker, e.g. `MSFT`.
@@ -98,8 +131,11 @@ from source data per `DATA_CONTRACT.md`).
 
 ## Status
 
-SPECIFIED. Verified against Microsoft (FY2020–2025) and Apple (FY2024): 8/8
-golden-set match at 0.5% tolerance; balance sheet balances to the dollar; offline
-sample run passes all checks. See the recipe's `known_issues` for remaining
-improvements (populate the override map for real filers, expand the golden set,
-quarterly ratios).
+SPECIFIED, recipe v0.3.0. The accuracy benchmark covers 10 companies (AAPL, CAT, JNJ, JPM, MSFT, NVDA, PG, VZ, WMT, XOM) and 5 base metrics: all 46 scored golden-set rows match within 0.5% (2026-10-31). The golden values come from an independent raw-EDGAR read and are marked for 10-K spot-check. The offline sample run passes all checks.
+
+Open items are in the recipe's `known_issues`:
+- Walmart total liabilities is UNKNOWN.
+- The accounting identity on parent-only equity (Exxon).
+- 8 of 13 base metrics and the derived ratios aren't benchmarked yet.
+- Quarterly ratios.
+- Wiring the agent tool into a calling agent.
