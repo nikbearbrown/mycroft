@@ -128,3 +128,31 @@ workflow changes.
 - **Outputs:** `data/verified/sec-filings-financial-metrics/SMPL_*.{json,md}` (generated, not committed).
 - **Result:** Offline run passes — 2 fiscal years, all 21 validation checks PASS, R&D resolved from a company-specific `smpl:` extension (tag_source=custom-extension), `cash_and_equivalents` correctly flagged MISSING (no tag/override) rather than guessed. MSFT live-path regression clean (1462 checks, 0 FAIL). Recipe promoted DRAFT -> SPECIFIED; todos_open 2 -> 0.
 - **Open issues:** Populate the override map for real filers as encountered; expand the benchmark golden set.
+
+## 2026-10-31 -- SEC metrics: fix three coverage gaps found by the 10-company benchmark (logged late, 2026-11-19)
+
+- **Recipe:** sec-filings-financial-metrics v0.2.0 (SPECIFIED).
+- **Commands:** Expanded `golden_set.csv` from 2 to 10 companies; ran `python3 -m secfma.benchmark --report` before and after the fixes.
+- **Result:** Before the fixes, 38/41 rows were found. After them, 46/46 scored rows match within 0.5% (100% coverage).
+  - Tag resolution is now per fiscal period (tag migration at JNJ, CAT and NVDA).
+  - Curated ticker->CIK override: "XOM" had resolved to a holdco shell with no history.
+  - `total_liabilities` is rebuilt from current + non-current liabilities when no aggregate tag exists (Verizon). It is never derived as assets minus equity.
+  - The golden values come from an independent raw-EDGAR read and are marked for 10-K spot-check.
+- **Open issues:** Walmart `total_liabilities` stays UNKNOWN (no component to rebuild from). Only 5 of 13 base metrics are benchmarked.
+
+## 2026-11-19 -- SEC metrics: agent-callable tool `get_verified_financials`
+
+- **Recipe:** sec-filings-financial-metrics v0.2.0 (SPECIFIED).
+- **Commands:**
+  - Added `secfma/tool.py`: function, `run_tool` adapter, JSON tool spec, CLI.
+  - Added `tests/test_tool.py`: 16 offline tests on the SMPL fixture.
+  - Ran `python3 -m unittest discover -s tests`: 16 OK on Python 3.9 and 3.11.
+  - Ran a live check of the golden set through the tool.
+- **Outputs:** none (the tool returns JSON; nothing written to data/).
+- **Result:** 16/16 golden rows match within 0.5% through the tool (MSFT FY2023–25, JNJ FY2024, XOM FY2024). The XOM FY2024 checks also surfaced two correct signals for the calling agent:
+  - The accounting identity FAILs by 1.52%, because parent-only equity excludes non-controlling interest.
+  - An R&D restatement ($987M -> $1,000M) is flagged UNKNOWN.
+- **Open issues:**
+  - Decide whether the identity check should use total equity including NCI when it's available.
+  - Wire the tool into an agent (candidates: finance-event-signals' LangGraph agent, Agentic-Runway-Pipeline).
+  - The recipe doesn't list the tool yet.

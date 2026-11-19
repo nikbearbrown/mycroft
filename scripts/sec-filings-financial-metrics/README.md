@@ -34,6 +34,32 @@ python3 -m secfma.benchmark --report
 python3 -m secfma.cli --sample --report
 ```
 
+## Agent tool: `get_verified_financials`
+
+Other Mycroft agents call this tool instead of asking a model for a financial figure. It wraps the same deterministic pipeline (`secfma/tool.py`), so no language model is involved.
+
+```python
+from secfma.tool import get_verified_financials, run_tool, TOOL_SPEC
+get_verified_financials("MSFT", fiscal_year=2024, metrics=["revenue", "net_income"])
+run_tool({"ticker": "MSFT", "fiscal_year": 2024})   # raw tool-call arguments from an agent
+```
+
+```bash
+python3 -m secfma.tool --ticker MSFT --year 2024        # JSON to stdout
+python3 -m secfma.tool --sample                          # offline, bundled fixture
+python3 -m secfma.tool --spec                            # tool definition (input_schema)
+python3 -m secfma.tool --openai-spec                     # same, OpenAI function format
+```
+
+**What a calling agent can rely on:**
+- **Deterministic.** The same inputs and cached SEC data always give the same output (`method.llm_in_path` is `false`).
+- **Never guesses.** A metric with no reliable source is `"status": "MISSING"` with `value: null` and a `reason`. Never 0.
+- **Provenance on every value.** Each value carries `source_tag`, `tag_source` (`us-gaap` / `custom-extension` / `derived`), `accession`, `form`, `filed` and `source_url`.
+- **Validation attached.** PASS / FAIL / UNKNOWN checks run on exactly the returned values. For example, a FAIL on the accounting identity tells the agent the balance sheet doesn't tie for that period.
+- **Errors are data.** Failures come back as `{"ok": false, "error": {"type": ...}}`. The types are `invalid_argument`, `unknown_metric`, `ticker_not_found`, `fiscal_year_not_found`, `no_annual_data`, `fetch_failed` and `no_sample_fixture`.
+
+Tests (offline, standard library only): `python3 -m unittest discover -s tests`
+
 ## Inputs
 
 - `--ticker` (required): US-listed stock ticker, e.g. `MSFT`.
