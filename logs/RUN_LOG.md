@@ -1081,3 +1081,61 @@
 - **Open issues:** the ten subsystems remain unreviewed; the multi-document YAML
   defect in `conformance.mjs` is unfixed; `scenariostresstestingagent` still
   reads DRAFT while carrying the evidence for a promotion.
+
+## 2026-11-18 -- conformance: the YAML batch had never run; 8 contributor subsystems added to the verify surface
+
+- **Artifacts:** `scripts/conformance.mjs`, `_MANIFEST.md`, `.ai/manifest.yaml`,
+  `DOMAIN.md`, `status.md`, `session-handoff.md`.
+- **Why:** the 2026-11-13 map work found three Kubernetes manifests under
+  `projects/finance-event-signals/deploy/k8s/` failing conformance. They are
+  multi-document YAML and valid; the checker called `yaml.safe_load`.
+- **What was actually wrong:** switching the batch to `safe_load_all` changed
+  nothing. Instrumenting a scratch copy showed why: the YAML batch runner built a
+  shell string and replaced every newline in its inline Python with a literal
+  backslash-n, so Python received one line and raised `SyntaxError` on every run.
+  `execSync` threw, the catch fell back to per-file `check()`, and the batch had
+  **never once executed** since it was added on 2026-10-09. Results still looked
+  right, because the fallback is correct for single-document files -- which is
+  why nothing showed it. The Python batch is unaffected (it passes files to
+  `-m py_compile`, no inline script).
+- **Fix:** the batch now passes its script to Python as one argv entry with
+  `execFileSync` and no shell, and uses `list(yaml.safe_load_all(...))`. The
+  `list()` is load-bearing: `safe_load_all` is a lazy generator, and without it
+  nothing is parsed and every file passes.
+- **Scope kept to our own lines.** All four modified lines are this author's
+  (2026-10-09). The per-file fallback line still calls `safe_load`; per `git
+  blame` it was last changed by another contributor on 2026-08-14 and was left
+  alone. It now runs only when the batch cannot start at all. The shared
+  `child_process` import line (2026-06-13, another author) was also left as is;
+  `execFileSync` is imported on a new line.
+- **Tested:** two valid YAML files (single and multi-document) pass; two invalid
+  ones fail, including one whose error is in the *second* document. An
+  instrumented copy confirmed no fallback fired and the messages are in the
+  batch's first-line format. The three manifests now pass; all of `projects/`
+  conforms (372 files). None of the manifests was changed.
+- **Surface widened:** `verification-layer`, `projects`, `case-study-workflows`,
+  `case-studies`, `multi-agents`, `provenance-gatekeeper`, `github-assistant`
+  and `my_chapters` added to `DEFAULT_PATHS`. Checked files 1,039 -> 1,853, all
+  conforming; the +814 equals the per-tree counts. Conformance runtime 4.8 s ->
+  12.1 s locally. `env`, `.venv` and `venv` added to `SKIP` -- no tracked path
+  contains one, but the walker reads the filesystem, so a local virtualenv
+  inside a subsystem would otherwise be compiled on that machine only.
+- **Left out on purpose, with the reason in a comment beside `DEFAULT_PATHS`:**
+  `congressional-signals/` (its `data/verified/conformance_report.json` holds
+  bare `NaN`; owned by that subsystem, so adding it would fail every run on a
+  defect nobody here can fix) and `archive/` (kept so it stops changing).
+- **Map drift corrected:** upstream `8d50977` made `pantry/` local-only, but the
+  map still listed it as Tier 2 in three places. Each now says so; the entries
+  were kept rather than removed.
+- **Not tested:** Python 3.12, which CI uses -- only 3.10 is installed here.
+  `py_compile` checks syntax only and all 1,113 files compile on 3.10, so the
+  risk is low, but the CI run on this change is the real check. The fallback
+  path when PyYAML or the interpreter is missing was not exercised.
+- **Also observed, not fixed:** `check --all` rose from 5 defects to 15 with
+  the upstream commits pulled today. All 10 new findings are `built-not-documented`
+  in `recipes/portfolio-price-fetcher.md`: steps 4 and 6 arrived in #90 with flags
+  their Step Commands rows do not list. Harmless at run time (an undocumented flag
+  is never passed through), and that recipe and its scripts are another
+  contributor's recent work, so it is recorded here rather than edited.
+- **Open issues:** `congressional-signals/` NaN; the ten subsystems remain
+  `reviewed: false`; `scenariostresstestingagent` still reads DRAFT.

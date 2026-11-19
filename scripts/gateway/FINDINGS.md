@@ -619,3 +619,86 @@ them.
   keeps other people's data out of a committed file.
 - A standing caveat for every claim this project has made: nothing here has
   been measured against production load, because there is no production load.
+## 15. What the gateway would do with Mycroft's real requests
+
+Sprint 11. The 16 prepared requests found in section 14, replayed through the
+router and the price table. Nothing was called: the router is a pure function
+of task type and input length, and pricing is arithmetic.
+
+Eleven are routable; five have empty payloads. All eleven are between 1,302 and
+1,642 characters, far below contradiction detection's 4,000-character promotion
+threshold, so **every one routes to the cheap tier** under policy 0.3.0.
+
+| | estimate | upper bound |
+|---|---|---|
+| whole batch of 11 | $0.001976 | $0.002835 |
+
+The estimate reads four characters to a token; the upper bound reads one, and
+gives every request its full output budget. `contradiction-detection-agent`'s
+entire model workload costs about **two tenths of a cent**.
+
+**The budget cut is not an economic decision.** Each request asks for 2,000
+output tokens and policy 0.3.0 would serve 512, truncating all eleven. Serving
+the full 2,000 would cost **$0.006886** for the batch against $0.001976 — a
+difference of **$0.004910**. Half a cent buys the whole recipe its asked-for
+budget. The 512 limit was set from gate calls that used at most 77 output
+tokens on one-word answers; a contradiction review that must quote a
+conflicting span is not that shape of work, and nothing has measured what it
+actually needs.
+
+**What this cannot say.** The recipe names `llama-3.3-70b-versatile`, which has
+no published per-token rate, so there is no figure to compare the gateway's
+cost against. A cost is stated here; no saving is claimed.
+
+### Consequences
+
+- Raising the cheap tier's budget for this task type is a question about
+  truncation, not about money. It needs one measurement -- what a real
+  contradiction review actually emits -- not a cost argument.
+- Whether this account permits 2,000 output tokens on `openai/gpt-oss-20b` is
+  unverified. The 1,000-per-minute cap found in Sprint 4 was specific to the
+  strong tier's model.
+- The action-to-task mapping (`llm_review_of_flags` to
+  `contradiction_detection`) is a human judgment recorded in `replay.py`. An
+  unmapped action is reported, never guessed.
+
+
+  ## 16. The model Mycroft's recipes name cannot be bought
+
+Sprint 12. Section 14 found that all 16 prepared requests name
+`llama-3.3-70b-versatile`, and that the price table has no rate for it. The
+assumption was that this was a gap in our table. Rechecking Groq's published
+model list on 2026-11-17 shows it is not.
+
+| model | published price | max completion tokens |
+|---|---|---|
+| llama-3.3-70b-versatile | **Contact Sales** (Enterprise tier) | 32,768 |
+| openai/gpt-oss-20b (cheap) | $0.075 / $0.60 per 1M | 65,536 |
+| openai/gpt-oss-120b (mid) | $0.15 / $0.60 per 1M | 65,536 |
+| qwen/qwen3.8-27b (strong) | $0.80 / $4.00 per 1M | 16,384 |
+
+**There is no rate to record.** The model is sold on an Enterprise tier with
+"Contact Sales" where a number would be. The price table now carries it as an
+entry marked `unpriced`, with the reason, so the refusal explains itself
+instead of telling a caller to go and add a figure that does not exist.
+`prices.py` now rejects any entry carrying neither rates nor a reason -- a
+half-finished price entry is how a rate later gets read as zero.
+
+**The recipe may not be able to run as written at all**, with or without the
+gateway. An Enterprise-only model on a developer-plan key is likely to be
+refused outright. That is worth telling `contradiction-detection-agent`'s owner
+before its approval gate clears rather than after.
+
+**All three tier prices were unchanged** from the 2026-09-17 reading, two
+months on. Re-stamped rather than re-derived.
+
+**2,000 output tokens is not a model limit.** `gpt-oss-20b` permits 65,536
+completion tokens, so the 512 that would truncate all 16 requests is purely our
+own policy budget. Whether the work needs 2,000 remains unmeasured; one call
+with a generous budget would settle it, and that is the next sprint.
+
+**A rate limit we had attributed to the model belongs to the account.** The
+published developer-plan limit is 250,000 tokens per minute. In Sprint 4 this
+account was refused at 1,000 output tokens per minute on qwen, which set the
+strong tier's 896-token budget. That cap is a property of this plan, not of the
+model, and a paid plan would lift it.
