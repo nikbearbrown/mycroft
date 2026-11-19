@@ -5,8 +5,13 @@ WORKDIR /code
 # Install system dependencies required for C++ compilation (bcrypt / chromadb)
 RUN apt-get update && apt-get install -y build-essential curl
 
-# Copy requirements first to leverage Docker layer caching
 COPY requirements.txt .
+
+# Upgrade pip first so it handles modern wheel metadata cleanly
+RUN pip install --upgrade pip
+
+# Install CPU-only PyTorch first to avoid 1GB+ of unused NVIDIA/Triton packages
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
 
 RUN pip install --default-timeout=1000 --no-cache-dir -r requirements.txt
 
