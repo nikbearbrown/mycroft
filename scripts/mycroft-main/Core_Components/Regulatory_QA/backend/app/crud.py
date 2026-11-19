@@ -175,7 +175,10 @@ class FeedCRUD:
             # By urgency - bucketed from impact_level, the column email generation
             # and every other consumer treats as authoritative (not re-derived from
             # urgency_score, which disagrees with impact_level on a real fraction of
-            # rows once keyword-rule or LLM corrections land - see D1-VERIFICATION.md)
+            # rows once keyword-rule or LLM corrections land - see D1-VERIFICATION.md).
+            # Unwindowed, same population as total_feeds and list_feeds (which the
+            # frontend's FeedList/"Select All" read directly) - see F1-VERIFICATION.md
+            # for why a 7-day window here silently zeroed this out against real data.
             cursor.execute("""
                 SELECT
                     COUNT(*) FILTER (WHERE impact_level = 'Critical') as critical,
@@ -183,7 +186,6 @@ class FeedCRUD:
                     COUNT(*) FILTER (WHERE impact_level = 'Medium') as medium,
                     COUNT(*) FILTER (WHERE impact_level = 'Low') as low
                 FROM regulatory_feeds
-                WHERE created_at >= NOW() - INTERVAL '7 days'
             """)
             urgency_stats = cursor.fetchone()
             
