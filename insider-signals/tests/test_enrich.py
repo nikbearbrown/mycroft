@@ -16,6 +16,10 @@ What is pinned here:
     once, a second refusal halts (exit 3) with nothing promoted and finished batches cached;
   - coverage below 80% (Rule 8) or an input hash mismatch halts (exit 1) and writes nothing to
     data/verified/; the failure audit goes to the staging folder;
+  - Rule 10: every row carries rule10_scope / rule10_reason from share_types.py; coverage and G3
+    use in-scope buys as the denominator (out-of-scope unpriced buys cannot fail G3, out-of-scope
+    priced buys cannot rescue it); the audit and summary show both coverage figures and the
+    Rule 11 periods; --check catches a tampered scope;
   - Rule 9: the filed price is compared with the unadjusted close on the trade date (or the
     prior trading day): forward and reverse splits after the trade are undone, a split on the
     trade day or after the price fetch is not; more than 25% off → price_mismatch_vs_filing with
@@ -100,13 +104,14 @@ class FakeSource:
         return data, errors
 
 
-def vrow(i: int, filing_date: str, ticker: str, quarter: str = "2024q1") -> dict:
+def vrow(i: int, filing_date: str, ticker: str, quarter: str = "2024q1",
+         title: str = "Common Stock") -> dict:
     r = {c: "" for c in conformance.VERIFIED_COLUMNS}
     r.update(accession_number=f"0000000000-24-{i:06d}", nonderiv_trans_sk=str(i),
              document_type="4", filing_date=filing_date, trans_date=filing_date,
              issuer_cik=str(1000 + i), issuer_name=f"Issuer {i}", ticker_as_filed=ticker,
              owner_count="1", rptowner_ciks=str(9000 + i), trans_code="P", shares="100",
-             price="10.00", source_quarter=quarter)
+             price="10.00", source_quarter=quarter, security_title=title)
     return r
 
 
@@ -567,6 +572,99 @@ class TestHaltingAndCheck(Base):
         self.assertIn("## Price coverage", audit)
         summary = json.loads((self.vdir / enrich.SUMMARY_NAME).read_text())
         self.assertNotIn("return", json.dumps(summary["findings"]).replace("not_yet_closed", ""))
+
+
+# --------------------------------------------------------------------------- Rule 10 / Rule 11
+
+class TestRule10Scope(Base):
+    PREF = "Series B Preferred Stock"
+
+    def setUp(self):
+        super().setUp()
+        self.script = {"SPY": bars(CAL, 400.0, 1.0), "AAA": bars(CAL, 10.0, 0.1)}
+
+    def summary(self):
+        return json.loads((self.vdir / enrich.SUMMARY_NAME).read_text())
+
+    def test_rows_carry_scope_and_reason(self):
+        rows = [vrow(1, CAL[5], "AAA"), vrow(2, CAL[5], "AAA", title=self.PREF),
+                vrow(3, CAL[5], "AAA", title="Common Shares (2330.TW)")]
+        rows += [vrow(10 + i, CAL[5], "AAA") for i in range(5)]
+        write_verified(self.vdir, rows, self.script)
+        self.assertEqual(self.run_enrich(FakeSource(self.script)), 0)
+        got = {r["nonderiv_trans_sk"]: (r["rule10_scope"], r["rule10_reason"])
+               for r in csv.DictReader(open(self.vdir / enrich.ENRICHED_NAME, newline=""))}
+        self.assertEqual(got["1"], ("in", "common"))
+        self.assertEqual(got["2"], ("out", "preferred"))
+        self.assertEqual(got["3"], ("out", "foreign_exchange_suffix"))
+
+    def test_unpriced_out_of_scope_buys_do_not_fail_g3(self):
+        # in scope: 8 priced + 2 unpriced = 80% · all buys: 8 / 13 = 61.5%
+        rows = [vrow(i, CAL[5], "AAA") for i in range(8)]
+        rows += [vrow(10 + i, CAL[5], "NONE") for i in range(2)]
+        rows += [vrow(20 + i, CAL[5], "NONE", title=self.PREF) for i in range(3)]
+        write_verified(self.vdir, rows, self.script)
+        self.assertEqual(self.run_enrich(FakeSource(self.script)), 0)
+        cov = self.summary()["findings"]["coverage"]["all"]
+        self.assertEqual((cov["in_scope"], cov["priced_in_scope"], cov["pct_in_scope"]), (10, 8, 80.0))
+        self.assertEqual((cov["buys"], cov["priced"], cov["pct"]), (13, 8, 61.54))
+        self.assertEqual(cov["pct_in_scope_over_all"], 61.54)   # priced in-scope ÷ all buys
+
+    def test_priced_out_of_scope_buys_cannot_rescue_g3(self):
+        # in scope: 7 / 10 = 70% · all buys: 17 / 20 = 85%
+        rows = [vrow(i, CAL[5], "AAA") for i in range(7)]
+        rows += [vrow(10 + i, CAL[5], "NONE") for i in range(3)]
+        rows += [vrow(20 + i, CAL[5], "AAA", title=self.PREF) for i in range(10)]
+        write_verified(self.vdir, rows, self.script)
+        self.assertEqual(self.run_enrich(FakeSource(self.script)), 1)
+        self.assertFalse((self.vdir / enrich.ENRICHED_NAME).exists())
+        failed = list(self.sdir.glob("enrich-audit-FAILED-*.md"))[0].read_text()
+        self.assertIn("coverage | **FAIL**", failed)
+        self.assertIn("in-scope buys priced = 70.00%", failed)
+        s = json.loads(list(self.sdir.glob("enrich_summary-FAILED-*.json"))[0].read_text())
+        cov = s["findings"]["coverage"]["all"]
+        self.assertEqual((cov["pct_in_scope_over_all"], cov["pct"]), (35.0, 85.0))
+
+    def test_no_in_scope_buys_fails_coverage(self):
+        rows = [vrow(i, CAL[5], "AAA", title=self.PREF) for i in range(5)]
+        write_verified(self.vdir, rows, self.script)
+        self.assertEqual(self.run_enrich(FakeSource(self.script)), 1)
+
+    def test_audit_and_summary_show_both_figures_and_rule_11_periods(self):
+        rows = [vrow(i, CAL[5], "AAA", quarter="2024q1") for i in range(4)]
+        rows += [vrow(10 + i, CAL[5], "AAA", quarter="2024q3") for i in range(4)]
+        rows += [vrow(20, CAL[5], "NONE", quarter="2024q3", title=self.PREF)]
+        write_verified(self.vdir, rows, self.script)
+        self.assertEqual(self.run_enrich(FakeSource(self.script)), 0)
+        s = self.summary()
+        self.assertEqual(s["rules"]["coverage_denominator"], "in-scope buys (Rule 10)")
+        per = s["findings"]["coverage_by_period"]
+        self.assertEqual(list(per), ["2023 Q2 – 2024 Q2", "2024 Q3 – 2026 Q3"])
+        self.assertEqual((per["2023 Q2 – 2024 Q2"]["buys"], per["2023 Q2 – 2024 Q2"]["pct_in_scope"]),
+                         (4, 100.0))
+        self.assertEqual((per["2024 Q3 – 2026 Q3"]["buys"], per["2024 Q3 – 2026 Q3"]["pct"],
+                          per["2024 Q3 – 2026 Q3"]["pct_in_scope"]), (5, 80.0, 100.0))
+        audit = (self.vdir / enrich.AUDIT_NAME).read_text()
+        self.assertIn("**Over in-scope**", audit)
+        self.assertIn("Over all buys", audit)
+        self.assertIn("Rule 11: 2024 Q3 – 2026 Q3", audit)
+        self.assertIn("| out | preferred | 1 | 0 |", audit)
+        self.assertIn("rule10_scope | PASS", audit)
+
+    def test_check_catches_a_tampered_scope(self):
+        write_verified(self.vdir, [vrow(i, CAL[5], "AAA") for i in range(3)], self.script)
+        self.assertEqual(self.run_enrich(FakeSource(self.script)), 0)
+        path = self.vdir / enrich.ENRICHED_NAME
+        rows = list(csv.DictReader(open(path, newline="")))
+        rows[0]["rule10_reason"] = "ordinary"
+        with open(path, "w", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=enrich.ENRICHED_COLUMNS, lineterminator="\n")
+            w.writeheader()
+            w.writerows(rows)
+        out = io.StringIO()
+        with redirect_stdout(out):
+            self.assertEqual(enrich.check(self.vdir, self.pdir), 1)
+        self.assertIn("FAIL  rule10_scope", out.getvalue())
 
 
 if __name__ == "__main__":

@@ -1,11 +1,11 @@
 # Enrich audit (G3)
 
-Run at 2026-11-10T00:10:55+00:00 by `enrich.py`. This audit reports what was found. The halting checks decide promotion; clearing G3 is the owner's logged decision.
+Run at 2026-11-13T21:02:43+00:00 by `enrich.py`. This audit reports what was found. The halting checks decide promotion; clearing G3 is the owner's logged decision.
 
 - Input: `data/verified/insider_buys.csv`, 78,495 buys, SHA-256 `a7ec55298bf886c0090f7c5fc4e93bfb18faeabc5d4c407db8d77abefdb75b16`
 - Prices: Yahoo Finance via yfinance (adjusted close, auto_adjust=False); requested 2023-03-24 to 2026-11-09 (end exclusive); market calendar = SPY bars, last bar **2026-11-06**
-- Rules: windows 21, 63 trading days; minimum coverage 80% (PRE_REGISTRATION.md Rules 7-9 (2026-11-09))
-- **Promoted:** `data/verified/enriched_buys.csv` (SHA-256 `fa14627333ac754a7f904e3417e5475241d7523659d46d6385779a7c65295bde`)
+- Rules: windows 21, 63 trading days; minimum coverage 80% over in-scope buys (Rule 10) (PRE_REGISTRATION.md Rules 7-9 (2026-11-09), 10-11 (2026-11-13))
+- **Promoted:** `data/verified/enriched_buys.csv` (SHA-256 `7868d1b32dfad10cf190e1be2049a3314d693e4196df7c7dbd02d2107470c04e`)
 
 **Returns are computed per buy in the enriched file but not summarized here:** no averages or other return statistics are reported before the signals are registered.
 
@@ -19,29 +19,59 @@ Run at 2026-11-10T00:10:55+00:00 by `enrich.py`. This audit reports what was fou
 | status_complete | PASS | 0 | every buy has a known status; no number without a closed window |
 | lookahead | PASS | 0 | entry = first SPY day after FILING_DATE; exit = entry + N SPY days |
 | filing_price_check | PASS | 0 | filed price within 25% of the split-adjusted unadjusted close on TRANS_DATE, else price_mismatch_vs_filing (Rule 9) |
-| coverage | PASS | 0 | priced ÷ verified buys = 80.09% (minimum 80%, Rule 8) |
+| rule10_scope | PASS | 0 | rule10_scope / rule10_reason recompute from security_title (Rule 10) |
+| coverage | PASS | 0 | priced ÷ in-scope buys = 81.93% (minimum 80%, Rules 8 and 10); priced in-scope ÷ all buys = 78.95% (reported, not gated) |
 
-## Price coverage (priced ÷ verified buys)
+## Price coverage (both figures, always: Rule 10)
 
-| Quarter | Buys | Priced | Coverage |
-|---|---:|---:|---:|
-| 2023q2 | 7,964 | 5,701 | 71.58% |
-| 2023q3 | 5,785 | 4,326 | 74.78% |
-| 2023q4 | 6,240 | 4,650 | 74.52% |
-| 2024q1 | 5,214 | 3,967 | 76.08% |
-| 2024q2 | 5,444 | 4,227 | 77.65% |
-| 2024q3 | 5,070 | 4,003 | 78.95% |
-| 2024q4 | 5,983 | 4,726 | 78.99% |
-| 2025q1 | 5,285 | 4,243 | 80.28% |
-| 2025q2 | 6,297 | 5,268 | 83.66% |
-| 2025q3 | 4,788 | 4,137 | 86.40% |
-| 2025q4 | 5,313 | 4,648 | 87.48% |
-| 2026q1 | 4,817 | 4,186 | 86.90% |
-| 2026q2 | 5,180 | 4,493 | 86.74% |
-| 2026q3 | 5,115 | 4,293 | 83.93% |
-| **All** | 78,495 | 62,868 | 80.09% |
+G3 gates on priced in-scope buys ÷ in-scope buys (Rules 8 and 10). Priced in-scope buys ÷ all buys is the second registered figure, reported and not gated. The last column (any priced buy ÷ all buys) is the pre-Rule 10 measure, kept for comparison.
 
-## price_status
+| Quarter | In-scope buys | Priced in scope | **Over in-scope** | All buys | **Over all buys** | Any priced ÷ all (pre-Rule 10) |
+|---|---:|---:|---:|---:|---:|---:|
+| 2023q2 | 7,609 | 5,614 | **73.78%** | 7,964 | **70.49%** | 71.58% |
+| 2023q3 | 5,628 | 4,291 | **76.24%** | 5,785 | **74.17%** | 74.78% |
+| 2023q4 | 6,017 | 4,537 | **75.40%** | 6,240 | **72.71%** | 74.52% |
+| 2024q1 | 5,070 | 3,927 | **77.46%** | 5,214 | **75.32%** | 76.08% |
+| 2024q2 | 5,285 | 4,179 | **79.07%** | 5,444 | **76.76%** | 77.65% |
+| 2024q3 | 4,947 | 3,964 | **80.13%** | 5,070 | **78.19%** | 78.95% |
+| 2024q4 | 5,847 | 4,685 | **80.13%** | 5,983 | **78.31%** | 78.99% |
+| 2025q1 | 5,128 | 4,182 | **81.55%** | 5,285 | **79.13%** | 80.28% |
+| 2025q2 | 6,177 | 5,250 | **84.99%** | 6,297 | **83.37%** | 83.66% |
+| 2025q3 | 4,604 | 4,084 | **88.71%** | 4,788 | **85.30%** | 86.40% |
+| 2025q4 | 5,126 | 4,593 | **89.60%** | 5,313 | **86.45%** | 87.48% |
+| 2026q1 | 4,628 | 4,096 | **88.50%** | 4,817 | **85.03%** | 86.90% |
+| 2026q2 | 4,886 | 4,408 | **90.22%** | 5,180 | **85.10%** | 86.74% |
+| 2026q3 | 4,686 | 4,159 | **88.75%** | 5,115 | **81.31%** | 83.93% |
+| **All** | 75,638 | 61,969 | **81.93%** | 78,495 | **78.95%** | 80.09% |
+| Rule 11: 2023 Q2 – 2024 Q2 | 29,609 | 22,548 | **76.15%** | 30,647 | **73.57%** | 74.63% |
+| Rule 11: 2024 Q3 – 2026 Q3 | 46,029 | 39,421 | **85.64%** | 47,848 | **82.39%** | 83.59% |
+
+## Instrument type (Rule 10, `share_types.py`)
+
+Out-of-scope buys keep their row and prices; they are excluded from coverage, clustering and scoring.
+
+| Scope | Reason | Buys | Priced |
+|---|---|---:|---:|
+| in | common | 71,507 | 59,077 |
+| in | ordinary | 1,407 | 1,039 |
+| in | beneficial_interest | 1,376 | 619 |
+| in | lp_common_units | 921 | 908 |
+| in | depositary_common | 247 | 205 |
+| in | share_equivalent_named | 180 | 121 |
+| out | preferred | 886 | 117 |
+| out | unclassifiable | 709 | 463 |
+| out | share_class_not_named_common | 420 | 149 |
+| out | units_not_lp_common | 315 | 82 |
+| out | foreign_exchange_suffix | 212 | 0 |
+| out | depositary_preferred | 200 | 59 |
+| out | depositary_underlying_unstated | 82 | 27 |
+| out | debt | 22 | 1 |
+| out | options | 7 | 1 |
+| out | rights | 2 | 0 |
+| out | convertible | 1 | 0 |
+| out | warrants | 1 | 0 |
+
+## price_status (all buys)
 
 | Status | Buys | Share |
 |---|---:|---:|
@@ -315,6 +345,6 @@ Issuers with the most unpriced buys (no data or a series that does not cover ent
 ## Fetch
 
 - Splits (Rule 9): 3,741 symbols with a priced buy; range 2023-03-24 to 2026-11-10 (end exclusive). This run requested 0 (ok 0, no data 0, errors 0, refusals 0).
-- This run: 0 symbols requested in 0 batches; ok 0, no data 0, errors 0, refusals 0. Every batch is in `data/raw/prices/fetch_log.jsonl`.
+- This run: 0 symbols requested in 0 batches; ok 0, no data 0, errors 0, refusals 0. Every batch is in `data/raw/prices/fetch_log.jsonl`. Offline run: no requests.
 - All runs (`fetch_log.jsonl`): 211 batch requests, 8,382 symbol requests, 0 refused; 2026-11-09T23:18:21+00:00 to 2026-11-10T00:10:11+00:00.
 - Yahoo Finance is not an authoritative source; adjusted closes reflect Yahoo's adjustments as of the fetch date (`prices_manifest.json`, `fetched_at`).

@@ -6,12 +6,16 @@ from Yahoo Finance (yfinance) and writes data/verified/enriched_buys.csv: one ro
 buy, with its entry price and, for each registered window, the exit price, stock_return,
 spy_return and abnormal_return.
 
-Rules applied (PRE_REGISTRATION.md Rules 7, 8 and 9, registered 2026-11-09):
+Rules applied (PRE_REGISTRATION.md Rules 7–9, registered 2026-11-09; Rules 10–11, 2026-11-13):
     entry   adjusted close on the first trading day after FILING_DATE
     exit    adjusted close 21 (primary) and 63 (secondary) trading days after entry
     returns stock_return = exit / entry − 1; spy_return over the identical dates;
             abnormal_return = stock_return − spy_return
-    G3      at least 80% of verified buys priced
+    G3      at least 80% of in-scope buys priced (Rule 8, denominator set by Rule 10)
+    Rule 10 each buy's SECURITY_TITLE is classified by share_types.py; rule10_scope (in / out)
+            and rule10_reason are written on every row. Out-of-scope buys keep their row and
+            prices but do not count toward coverage (nor, later, clustering or scoring)
+    Rule 11 coverage is also reported for 2023 Q2 – 2024 Q2 and 2024 Q3 – 2026 Q3 separately
     Rule 9  the filed price must be within 25% of the stock's unadjusted close on TRANS_DATE (or
             the last bar before it): Yahoo's Close (split-adjusted) × every split ratio after
             TRANS_DATE, through the price fetch date. Otherwise price_status =
@@ -66,9 +70,11 @@ to data/raw/enrich/):
                       after entry; returns recompute from the stored prices
     filing_price_check  every buy priced at entry has split data and its Rule 9 fields and
                       verdict recompute; mismatches carry no prices
-    coverage          priced buys ÷ verified buys ≥ 80% (Rule 8)
+    rule10_scope      every row's rule10_scope / rule10_reason recompute from security_title
+    coverage          priced in-scope buys ÷ in-scope buys ≥ 80% (Rules 8 and 10)
 
-The audit reports coverage, price_status and window status, by quarter. It reports no return
+The audit reports coverage over in-scope buys and over all buys (both, always: Rule 10),
+price_status and window status, by quarter and by Rule 11 period. It reports no return
 statistics: averages are not computed before the signals are registered.
 
 Exit codes: 0 promoted (or --check passed) · 1 halting check failed · 2 configuration refused ·
@@ -99,6 +105,7 @@ from typing import Callable, Iterable, Protocol
 
 import conformance
 import ingest
+import share_types
 
 csv.field_size_limit(sys.maxsize)
 
@@ -118,7 +125,9 @@ SPLITS_MANIFEST = "splits_manifest.json"
 
 MARKET = "SPY"
 WINDOWS = (21, 63)                 # PRE_REGISTRATION.md Rule 7: primary, secondary
-MIN_COVERAGE = 0.80                # PRE_REGISTRATION.md Rule 8
+MIN_COVERAGE = 0.80                # PRE_REGISTRATION.md Rule 8, over in-scope buys (Rule 10)
+RULE11_PERIODS = (("2023 Q2 – 2024 Q2", "2023q2", "2024q2"),   # PRE_REGISTRATION.md Rule 11
+                  ("2024 Q3 – 2026 Q3", "2024q3", "2026q3"))
 MISMATCH_TOLERANCE = 0.25          # PRE_REGISTRATION.md Rule 9: |filed / reference − 1| > 0.25
 START_PAD_DAYS = 10                # fetch from a little before the earliest filing date
 BATCH_SIZE = 40
@@ -133,7 +142,7 @@ FILING_CHECKS = ("ok", "mismatch", "not_checkable")
 WINDOW_STATUSES = ("closed", "not_yet_closed", "no_entry_price", "series_ends_before_exit",
                    "no_bar_on_exit_date", "invalid_exit_price")
 HALTING_CHECKS = ("input_hash", "spy_present", "cache_consistent", "status_complete",
-                  "lookahead", "filing_price_check", "coverage")
+                  "lookahead", "filing_price_check", "rule10_scope", "coverage")
 
 _TICKER = re.compile(r"^[A-Z]{1,5}$")
 _CLASS_TICKER = re.compile(r"^([A-Z]{1,4})[.\-]([A-Z]{1,2})$")
@@ -151,7 +160,7 @@ def window_columns(n: int) -> list[str]:
 
 ENRICH_COLUMNS = ["symbol_used", "price_status", "trade_ref_date", "trade_ref_close_unadjusted",
                   "split_factor", "filed_vs_close_ratio", "filing_price_check",
-                  "entry_date", "entry_price", "spy_entry_price"]
+                  "entry_date", "entry_price", "spy_entry_price", "rule10_scope", "rule10_reason"]
 CHECK_COLUMNS = ENRICH_COLUMNS[2:7]
 ENRICHED_COLUMNS = (conformance.VERIFIED_COLUMNS + ENRICH_COLUMNS +
                     [c for n in WINDOWS for c in window_columns(n)])
@@ -508,6 +517,7 @@ def enrich_row(row: dict, cache: PriceCache, cal: list[str], spy: dict[str, floa
     out = {c: row.get(c, "") for c in conformance.VERIFIED_COLUMNS}
     out.update({c: "" for c in ENRICHED_COLUMNS if c not in out})
     windows = tuple(windows)
+    out["rule10_scope"], out["rule10_reason"] = share_types.classify(row.get("security_title", ""))
     symbol, status = normalize_symbol(row.get("ticker_as_filed"))
     out["symbol_used"] = symbol or ""
     entry_i = bisect_right(cal, row["filing_date"])      # first SPY day strictly after filing
@@ -708,11 +718,24 @@ def run_checks(rows: list[dict], enriched: list[dict], cache: PriceCache, cal: l
                          f"filed price within {MISMATCH_TOLERANCE:.0%} of the split-adjusted "
                          "unadjusted close on TRANS_DATE, else price_mismatch_vs_filing (Rule 9)"))
 
-    priced = sum(e["price_status"] == "priced" for e in enriched)
-    cov = priced / len(enriched) if enriched else 0.0
-    checks.append(_check("coverage", [] if enriched and cov >= MIN_COVERAGE else
-                         [f"{priced:,} of {len(enriched):,} priced = {cov:.2%} < {MIN_COVERAGE:.0%}"],
-                         f"priced ÷ verified buys = {cov:.2%} (minimum {MIN_COVERAGE:.0%}, Rule 8)"))
+    scope = []
+    for e in enriched:
+        want = share_types.classify(e.get("security_title", ""))
+        if (e.get("rule10_scope"), e.get("rule10_reason")) != want:
+            scope.append(f"{e['accession_number']}#{e['nonderiv_trans_sk']}: rule10 "
+                         f"{e.get('rule10_scope')}/{e.get('rule10_reason')} ≠ {want[0]}/{want[1]}")
+    checks.append(_check("rule10_scope", scope,
+                         "rule10_scope / rule10_reason recompute from security_title (Rule 10)"))
+
+    in_scope = [e for e in enriched if e.get("rule10_scope") == share_types.IN]
+    priced = sum(e["price_status"] == "priced" for e in in_scope)
+    cov = priced / len(in_scope) if in_scope else 0.0
+    cov_all = priced / len(enriched) if enriched else 0.0     # Rule 10 figure "over all buys"
+    checks.append(_check("coverage", [] if in_scope and cov >= MIN_COVERAGE else
+                         [f"{priced:,} of {len(in_scope):,} in-scope buys priced = {cov:.2%} "
+                          f"< {MIN_COVERAGE:.0%}"],
+                         f"priced ÷ in-scope buys = {cov:.2%} (minimum {MIN_COVERAGE:.0%}, Rules 8 "
+                         f"and 10); priced in-scope ÷ all buys = {cov_all:.2%} (reported, not gated)"))
     return checks
 
 
@@ -732,11 +755,10 @@ def findings(enriched: list[dict], cache: PriceCache, windows: Iterable[int] = W
         total.update(c)
     n_all = sum(total.values())
 
-    coverage = {q: {"buys": sum(c.values()), "priced": c["priced"],
-                    "pct": round(100 * c["priced"] / sum(c.values()), 2)}
-                for q, c in sorted(by_q.items())}
-    coverage["all"] = {"buys": n_all, "priced": total["priced"],
-                       "pct": round(100 * total["priced"] / n_all, 2) if n_all else 0.0}
+    coverage = coverage_table(enriched)
+    scope_counts = Counter((e["rule10_scope"], e["rule10_reason"]) for e in enriched)
+    scope_priced = Counter((e["rule10_scope"], e["rule10_reason"]) for e in enriched
+                           if e["price_status"] == "priced")
 
     windows_out = {}
     for n in windows:
@@ -771,6 +793,10 @@ def findings(enriched: list[dict], cache: PriceCache, windows: Iterable[int] = W
     return {
         "filing_price_check": rule9_findings(enriched),
         "coverage": coverage,
+        "coverage_by_period": coverage_by_period(enriched),
+        "rule10": [{"scope": sc, "reason": r, "buys": k, "priced": scope_priced[(sc, r)]}
+                   for (sc, r), k in sorted(scope_counts.items(),
+                                            key=lambda x: (x[0][0] != share_types.IN, -x[1]))],
         "price_status": {"by_quarter": {q: dict(c) for q, c in sorted(by_q.items())},
                          "total": dict(total)},
         "windows": windows_out,
@@ -786,6 +812,32 @@ def findings(enriched: list[dict], cache: PriceCache, windows: Iterable[int] = W
         "distinct_symbols": len(sym_issuers),
         "cache_status": dict(cached),
     }
+
+
+def _cov(rows: list[dict]) -> dict:
+    """Both coverage figures for a set of buys (Rule 10: every report shows both)."""
+    ins = [e for e in rows if e["rule10_scope"] == share_types.IN]
+    p_all = sum(e["price_status"] == "priced" for e in rows)
+    p_in = sum(e["price_status"] == "priced" for e in ins)
+    return {"buys": len(rows), "priced": p_all,
+            "pct": round(100 * p_all / len(rows), 2) if rows else None,
+            "in_scope": len(ins), "priced_in_scope": p_in,
+            "pct_in_scope": round(100 * p_in / len(ins), 2) if ins else None,
+            "pct_in_scope_over_all": round(100 * p_in / len(rows), 2) if rows else None}
+
+
+def coverage_table(enriched: list[dict]) -> dict:
+    by_q: dict[str, list[dict]] = defaultdict(list)
+    for e in enriched:
+        by_q[e["source_quarter"]].append(e)
+    out = {q: _cov(rs) for q, rs in sorted(by_q.items())}
+    out["all"] = _cov(enriched)
+    return out
+
+
+def coverage_by_period(enriched: list[dict]) -> dict:
+    return {label: _cov([e for e in enriched if lo <= e["source_quarter"] <= hi])
+            for label, lo, hi in RULE11_PERIODS}
 
 
 def _band(x: float, edges: list[tuple[float, str]], last: str) -> str:
@@ -895,9 +947,13 @@ def run(verified_dir: Path, prices_dir: Path, staging_dir: Path, source: PriceSo
         "run_at": _utc_now(), "script": "enrich.py", "promoted": not failed,
         "failed_checks": failed, "halting_checks": checks,
         "rules": {"windows_trading_days": list(WINDOWS), "min_coverage": MIN_COVERAGE,
+                  "coverage_denominator": "in-scope buys (Rule 10)",
+                  "rule10_classifier": {"script": "share_types.py",
+                                        "sha256": ingest.sha256_file(Path(share_types.__file__))},
+                  "rule11_periods": [label for label, _, _ in RULE11_PERIODS],
                   "entry": "adjusted close, first SPY trading day after FILING_DATE",
                   "filing_price_tolerance": MISMATCH_TOLERANCE,
-                  "registered": "PRE_REGISTRATION.md Rules 7-9 (2026-11-09)"},
+                  "registered": "PRE_REGISTRATION.md Rules 7-9 (2026-11-09), 10-11 (2026-11-13)"},
         "input": {"file": f"data/verified/{BUYS_NAME}", "sha256": input_sha, "rows": len(rows)},
         "prices": {"source": "Yahoo Finance via yfinance (adjusted close, auto_adjust=False)",
                    "requested_start": start, "requested_end_exclusive": end_s,
@@ -924,8 +980,9 @@ def run(verified_dir: Path, prices_dir: Path, staging_dir: Path, source: PriceSo
         return 1
     _promote(verified_dir, staging_dir, stamp, enriched, summary)
     cov = summary["findings"]["coverage"]["all"]
-    log(f"enrich: promoted {len(enriched):,} rows → data/verified/{ENRICHED_NAME}; "
-        f"priced {cov['priced']:,} ({cov['pct']}%)")
+    log(f"enrich: promoted {len(enriched):,} rows → data/verified/{ENRICHED_NAME}; coverage "
+        f"over in-scope {cov['priced_in_scope']:,} / {cov['in_scope']:,} ({cov['pct_in_scope']}%), "
+        f"over all buys {cov['priced_in_scope']:,} / {cov['buys']:,} ({cov['pct_in_scope_over_all']}%)")
     return 0
 
 
@@ -1002,7 +1059,8 @@ def render_audit(s: dict) -> str:
          f"- Prices: {p['source']}; requested {p['requested_start']} to {p['requested_end_exclusive']} "
          f"(end exclusive); market calendar = {p['market_symbol']} bars, last bar **{p['market_as_of']}**",
          f"- Rules: windows {', '.join(str(n) for n in s['rules']['windows_trading_days'])} trading days; "
-         f"minimum coverage {s['rules']['min_coverage']:.0%} ({s['rules']['registered']})"]
+         f"minimum coverage {s['rules']['min_coverage']:.0%} over "
+         f"{s['rules'].get('coverage_denominator', 'verified buys')} ({s['rules']['registered']})"]
     if s["promoted"]:
         L.append(f"- **Promoted:** `data/verified/{ENRICHED_NAME}` "
                  f"(SHA-256 `{s.get('enriched_buys_sha256', '')}`)")
@@ -1018,14 +1076,30 @@ def render_audit(s: dict) -> str:
         for ex in c["examples"][:3]:
             L.append(f"| | | | ↳ {_md(ex)} |")
 
-    L += ["", "## Price coverage (priced ÷ verified buys)", "",
-          "| Quarter | Buys | Priced | Coverage |", "|---|---:|---:|---:|"]
-    for q, c in f["coverage"].items():
-        label = "**All**" if q == "all" else q
-        L.append(f"| {label} | {c['buys']:,} | {c['priced']:,} | {c['pct']:.2f}% |")
+    def pc(x):
+        return "—" if x is None else f"{x:.2f}%"
+
+    L += ["", "## Price coverage (both figures, always: Rule 10)", "",
+          "G3 gates on priced in-scope buys ÷ in-scope buys (Rules 8 and 10). Priced in-scope buys "
+          "÷ all buys is the second registered figure, reported and not gated. The last column "
+          "(any priced buy ÷ all buys) is the pre-Rule 10 measure, kept for comparison.", "",
+          "| Quarter | In-scope buys | Priced in scope | **Over in-scope** | All buys | **Over all buys** "
+          "| Any priced ÷ all (pre-Rule 10) |",
+          "|---|---:|---:|---:|---:|---:|---:|"]
+    rows_cov = list(f["coverage"].items()) + [(k, v) for k, v in f.get("coverage_by_period", {}).items()]
+    for q, c in rows_cov:
+        label = "**All**" if q == "all" else (q if q[:1] != "2" or "–" not in q else f"Rule 11: {q}")
+        L.append(f"| {label} | {c['in_scope']:,} | {c['priced_in_scope']:,} | "
+                 f"**{pc(c['pct_in_scope'])}** | {c['buys']:,} | **{pc(c['pct_in_scope_over_all'])}** "
+                 f"| {pc(c['pct'])} |")
+    if f.get("rule10"):
+        L += ["", "## Instrument type (Rule 10, `share_types.py`)", "",
+              "Out-of-scope buys keep their row and prices; they are excluded from coverage, "
+              "clustering and scoring.", "", "| Scope | Reason | Buys | Priced |", "|---|---|---:|---:|"]
+        L += [f"| {r['scope']} | {r['reason']} | {r['buys']:,} | {r['priced']:,} |" for r in f["rule10"]]
 
     statuses = [st for st in BUY_STATUSES if f["price_status"]["total"].get(st)]
-    L += ["", "## price_status", "", "| Status | Buys | Share |", "|---|---:|---:|"]
+    L += ["", "## price_status (all buys)", "", "| Status | Buys | Share |", "|---|---:|---:|"]
     n_all = f["coverage"]["all"]["buys"]
     for st in statuses:
         k = f["price_status"]["total"][st]

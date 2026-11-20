@@ -5,6 +5,98 @@ Newest entries at top.
 
 ---
 
+## 2026-11-13 — Decision: Rules 10 and 11 registered; Rule 8 denominator amended; ENRICH re-run offline
+
+**Decided by:** Gomathy S., **before any returns were viewed** (per-buy returns existed in
+`enriched_buys.csv` `fa146273…5bde`; none viewed, summarized or reported).
+
+- **Fix first:** `CONVERTIBLE` titles → out (new reason `convertible`; convertibles are usually
+  preferred). 1 buy moved out; in scope 75,639 → **75,638**. Tests added.
+- **Rule 10** (instrument type, `share_types.py` SHA-256 `551a5ca6…31de44`): in-scope reasons common,
+  ordinary, beneficial_interest, lp_common_units, depositary_common, share_equivalent_named;
+  everything else out, kept in `data/verified/` with its reason, excluded from clustering, scoring
+  and coverage. **Rule 8 is measured over in-scope buys** (logged under Amendments).
+  Registered text: "Both coverage figures (over all buys and over in-scope buys) were seen before
+  this denominator was chosen. Every report must show both."
+- **Rule 11:** results for 2023 Q2 – 2024 Q2 reported separately from 2024 Q3 – 2026 Q3, and combined.
+
+**Built:** `enrich.py`: `rule10_scope` / `rule10_reason` on every row; new halting check
+`rule10_scope`; `coverage` gates on priced in-scope ÷ in-scope; audit and summary show both figures
+(plus the pre-Rule 10 measure, any priced ÷ all buys = 80.09%, labelled) by quarter and by Rule 11
+period, and Rule 10 counts by reason. Test fixture `vrow` now defaults `security_title` to "Common
+Stock" (blank would be out of scope). 6 new enrich tests; suite **137, all pass**. Two deliberate bugs
+(gating on all buys; scope check disabled) each failed the tests.
+
+**Run:** `python enrich.py --offline` → exit 0; `fetch_log.jsonl` 211 lines before and after;
+price and split manifests unchanged (no requests). `--check`: all 10 checks PASS.
+- `enriched_buys.csv` SHA-256 `7868d1b32dfad10cf190e1be2049a3314d693e4196df7c7dbd02d2107470c04e`
+  (replaces `fa146273…`; gitignored).
+- Coverage: **81.93% over in-scope** (61,969 / 75,638; G3 measure) · **78.95% over all buys**
+  (61,969 / 78,495). Rule 11 periods, in-scope / all: 2023 Q2 – 2024 Q2 76.15% / 73.57%;
+  2024 Q3 – 2026 Q3 85.64% / 82.39%. Per-quarter figures match `share_types.py` exactly.
+- No return statistics computed or viewed.
+
+**Also changed:** recipe (G3 denominator, Rules 10–11), DATA_CONTRACT (new columns, G3 row), status.
+**Process note:** recipe and `data/verified/` changed on the owner's explicit written instruction,
+without a separate plan-mode step. **G3 not cleared.**
+
+---
+
+## 2026-11-13 — Rule 10 scope decisions (calls 1–5); `share_types.py` updated and re-run (not registered)
+
+**Decided by:** Gomathy S. (1) depositary with unstated underlying: out. (2) units that are not LP
+common units: out. (3) SUBORDINATE VOTING SHARES, REGISTERED SHARES and titles ending in STOCK: **in**
+(new reason `share_equivalent_named`); fund share classes (Class I, Z, Advisor, A1/A2/A3 …): out.
+(4) titles naming only a company: out (`unclassifiable`). (5) ADS / ADR without a stated underlying
+count as common: accepted.
+
+**Changed:** `share_types.py` (new in-scope rule after `common`); tests updated (suite 131, all pass).
+Applied as written: `CONVERTIBLE STOCK` (1 buy) ends in STOCK → in; `CLASS B STOCK, $0.01 PAR VALUE`
+(1) does not → out.
+
+**Run:** same input (SHA-256 `fa146273…5bde`) → in scope **75,639** (+181), out 2,856. Coverage over
+all buys **78.95%** (61,969 / 78,495); over in-scope **81.93%** (61,969 / 75,639). 2023 Q2 – 2024 Q2
+below 80% on both measures. No return, entry or exit column read.
+
+**Not done:** Rule 10 not registered; denominator not chosen; G3 not cleared; nothing committed.
+
+---
+
+## 2026-11-12 — Rule 10 revised on instrument type; `share_types.py` built and run (not registered)
+
+**Decided by:** Gomathy S. (scope by instrument type, not by coverage). **Recipe:** insider-signal-agent v0.1.0 (DRAFT)
+
+**Scope:** in: common stock, ordinary shares, LP common units, depositary / ADR shares representing
+common or ordinary shares, shares of beneficial interest. Out: preferred (incl. depositary for
+preferred), notes, debentures, bonds, warrants, rights, options, foreign-exchange suffix (e.g.
+`(2330.TW)`), unclassifiable titles. Three out-reasons are the **AI's reading** of "unclassifiable",
+for the owner to decide: `depositary_underlying_unstated` (82), `units_not_lp_common` (315),
+`share_class_not_named_common` (601).
+
+**Built:** `share_types.py` (stdlib; first-match rules, word boundaries, a fixed list of COMMON
+misspellings; halts if the input hash ≠ `enrich_summary.json`; reads only `security_title`,
+`source_quarter`, `price_status`, `filing_price_check`). `tests/test_share_types.py`: 12 tests, 66
+titles covering every reason, plus UNITED/UNITS, CYANOTECH/NOTE, BONDBLOXX/BOND, depositary for
+preferred, misspellings. Suite 131, all pass. Four deliberate bugs (no boundary on UNITS, no boundary
+on NOTE, depositary-for-preferred disabled, suffix rule after common) each failed the tests.
+Supersedes the scratchpad classifier in the entry below.
+
+**Run:** `python share_types.py` on `enriched_buys.csv` SHA-256 `fa146273…5bde` → in scope **75,458**,
+out 3,037. Outputs `data/raw/share_types/share_types_summary.json`, `share_types-audit.md`.
+- Coverage: current 80.09% (62,868 / 78,495); **Rule 10 over all buys 78.79%** (61,848 / 78,495);
+  **over in-scope buys 81.96%** (61,848 / 75,458). By quarter, over in-scope: 73.71% (2023 Q2) to
+  90.27% (2026 Q2); 2023 Q2 – 2024 Q2 below 80% on both measures.
+- All 212 `foreign_exchange_suffix` buys are Rule 9 mismatches (211 are `COMMON SHARES (2330.TW)`).
+- No return, entry or exit column was read.
+
+**Requirement set by the owner:** when Rule 10 is registered, the entry must state that both coverage
+figures were seen before the denominator was chosen, and every future report must show both
+(recorded in `PRE_REGISTRATION.md` → Not yet registered).
+
+**Not done:** Rule 10 not registered or applied; G3 not cleared.
+
+---
+
 ## 2026-11-12 — Survivorship risk recorded; share-type counts (no returns viewed); Rule 10 proposed, not registered
 
 **Requested by:** Gomathy S.

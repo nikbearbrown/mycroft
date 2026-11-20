@@ -1,5 +1,5 @@
 {
-  "run_at": "2026-11-10T00:10:55+00:00",
+  "run_at": "2026-11-13T21:02:43+00:00",
   "script": "enrich.py",
   "promoted": true,
   "failed_checks": [],
@@ -47,10 +47,17 @@
       "examples": []
     },
     {
+      "check": "rule10_scope",
+      "passed": true,
+      "violations": 0,
+      "detail": "rule10_scope / rule10_reason recompute from security_title (Rule 10)",
+      "examples": []
+    },
+    {
       "check": "coverage",
       "passed": true,
       "violations": 0,
-      "detail": "priced \u00f7 verified buys = 80.09% (minimum 80%, Rule 8)",
+      "detail": "priced \u00f7 in-scope buys = 81.93% (minimum 80%, Rules 8 and 10); priced in-scope \u00f7 all buys = 78.95% (reported, not gated)",
       "examples": []
     }
   ],
@@ -60,9 +67,18 @@
       63
     ],
     "min_coverage": 0.8,
+    "coverage_denominator": "in-scope buys (Rule 10)",
+    "rule10_classifier": {
+      "script": "share_types.py",
+      "sha256": "551a5ca6456bd3024a9e7b2dcc521450d469301068ef2ddcac16e3564631de44"
+    },
+    "rule11_periods": [
+      "2023 Q2 \u2013 2024 Q2",
+      "2024 Q3 \u2013 2026 Q3"
+    ],
     "entry": "adjusted close, first SPY trading day after FILING_DATE",
     "filing_price_tolerance": 0.25,
-    "registered": "PRE_REGISTRATION.md Rules 7-9 (2026-11-09)"
+    "registered": "PRE_REGISTRATION.md Rules 7-9 (2026-11-09), 10-11 (2026-11-13)"
   },
   "input": {
     "file": "data/verified/insider_buys.csv",
@@ -77,8 +93,7 @@
     "market_as_of": "2026-11-06",
     "manifest_sha256": "63591ff4809b8ac9a633653bffcf15c777971a6fc79da451bf311075c6eb58a3",
     "fetch": {
-      "requested": 0,
-      "batches": 0
+      "requested": 0
     },
     "fetch_log_totals": {
       "batch_requests": 211,
@@ -96,12 +111,11 @@
       "requested_end_exclusive": "2026-11-10",
       "symbols": 3741,
       "fetch": {
-        "requested": 0,
-        "batches": 0
+        "requested": 0
       },
       "manifest_sha256": "cbebca0285f652b9d9b36bc12d27cfd0ed25677d80953cd13333d5bb0902a99a"
     },
-    "offline": false
+    "offline": true
   },
   "findings": {
     "filing_price_check": {
@@ -289,79 +303,269 @@
       "2023q2": {
         "buys": 7964,
         "priced": 5701,
-        "pct": 71.58
+        "pct": 71.58,
+        "in_scope": 7609,
+        "priced_in_scope": 5614,
+        "pct_in_scope": 73.78,
+        "pct_in_scope_over_all": 70.49
       },
       "2023q3": {
         "buys": 5785,
         "priced": 4326,
-        "pct": 74.78
+        "pct": 74.78,
+        "in_scope": 5628,
+        "priced_in_scope": 4291,
+        "pct_in_scope": 76.24,
+        "pct_in_scope_over_all": 74.17
       },
       "2023q4": {
         "buys": 6240,
         "priced": 4650,
-        "pct": 74.52
+        "pct": 74.52,
+        "in_scope": 6017,
+        "priced_in_scope": 4537,
+        "pct_in_scope": 75.4,
+        "pct_in_scope_over_all": 72.71
       },
       "2024q1": {
         "buys": 5214,
         "priced": 3967,
-        "pct": 76.08
+        "pct": 76.08,
+        "in_scope": 5070,
+        "priced_in_scope": 3927,
+        "pct_in_scope": 77.46,
+        "pct_in_scope_over_all": 75.32
       },
       "2024q2": {
         "buys": 5444,
         "priced": 4227,
-        "pct": 77.65
+        "pct": 77.65,
+        "in_scope": 5285,
+        "priced_in_scope": 4179,
+        "pct_in_scope": 79.07,
+        "pct_in_scope_over_all": 76.76
       },
       "2024q3": {
         "buys": 5070,
         "priced": 4003,
-        "pct": 78.95
+        "pct": 78.95,
+        "in_scope": 4947,
+        "priced_in_scope": 3964,
+        "pct_in_scope": 80.13,
+        "pct_in_scope_over_all": 78.19
       },
       "2024q4": {
         "buys": 5983,
         "priced": 4726,
-        "pct": 78.99
+        "pct": 78.99,
+        "in_scope": 5847,
+        "priced_in_scope": 4685,
+        "pct_in_scope": 80.13,
+        "pct_in_scope_over_all": 78.31
       },
       "2025q1": {
         "buys": 5285,
         "priced": 4243,
-        "pct": 80.28
+        "pct": 80.28,
+        "in_scope": 5128,
+        "priced_in_scope": 4182,
+        "pct_in_scope": 81.55,
+        "pct_in_scope_over_all": 79.13
       },
       "2025q2": {
         "buys": 6297,
         "priced": 5268,
-        "pct": 83.66
+        "pct": 83.66,
+        "in_scope": 6177,
+        "priced_in_scope": 5250,
+        "pct_in_scope": 84.99,
+        "pct_in_scope_over_all": 83.37
       },
       "2025q3": {
         "buys": 4788,
         "priced": 4137,
-        "pct": 86.4
+        "pct": 86.4,
+        "in_scope": 4604,
+        "priced_in_scope": 4084,
+        "pct_in_scope": 88.71,
+        "pct_in_scope_over_all": 85.3
       },
       "2025q4": {
         "buys": 5313,
         "priced": 4648,
-        "pct": 87.48
+        "pct": 87.48,
+        "in_scope": 5126,
+        "priced_in_scope": 4593,
+        "pct_in_scope": 89.6,
+        "pct_in_scope_over_all": 86.45
       },
       "2026q1": {
         "buys": 4817,
         "priced": 4186,
-        "pct": 86.9
+        "pct": 86.9,
+        "in_scope": 4628,
+        "priced_in_scope": 4096,
+        "pct_in_scope": 88.5,
+        "pct_in_scope_over_all": 85.03
       },
       "2026q2": {
         "buys": 5180,
         "priced": 4493,
-        "pct": 86.74
+        "pct": 86.74,
+        "in_scope": 4886,
+        "priced_in_scope": 4408,
+        "pct_in_scope": 90.22,
+        "pct_in_scope_over_all": 85.1
       },
       "2026q3": {
         "buys": 5115,
         "priced": 4293,
-        "pct": 83.93
+        "pct": 83.93,
+        "in_scope": 4686,
+        "priced_in_scope": 4159,
+        "pct_in_scope": 88.75,
+        "pct_in_scope_over_all": 81.31
       },
       "all": {
         "buys": 78495,
         "priced": 62868,
-        "pct": 80.09
+        "pct": 80.09,
+        "in_scope": 75638,
+        "priced_in_scope": 61969,
+        "pct_in_scope": 81.93,
+        "pct_in_scope_over_all": 78.95
       }
     },
+    "coverage_by_period": {
+      "2023 Q2 \u2013 2024 Q2": {
+        "buys": 30647,
+        "priced": 22871,
+        "pct": 74.63,
+        "in_scope": 29609,
+        "priced_in_scope": 22548,
+        "pct_in_scope": 76.15,
+        "pct_in_scope_over_all": 73.57
+      },
+      "2024 Q3 \u2013 2026 Q3": {
+        "buys": 47848,
+        "priced": 39997,
+        "pct": 83.59,
+        "in_scope": 46029,
+        "priced_in_scope": 39421,
+        "pct_in_scope": 85.64,
+        "pct_in_scope_over_all": 82.39
+      }
+    },
+    "rule10": [
+      {
+        "scope": "in",
+        "reason": "common",
+        "buys": 71507,
+        "priced": 59077
+      },
+      {
+        "scope": "in",
+        "reason": "ordinary",
+        "buys": 1407,
+        "priced": 1039
+      },
+      {
+        "scope": "in",
+        "reason": "beneficial_interest",
+        "buys": 1376,
+        "priced": 619
+      },
+      {
+        "scope": "in",
+        "reason": "lp_common_units",
+        "buys": 921,
+        "priced": 908
+      },
+      {
+        "scope": "in",
+        "reason": "depositary_common",
+        "buys": 247,
+        "priced": 205
+      },
+      {
+        "scope": "in",
+        "reason": "share_equivalent_named",
+        "buys": 180,
+        "priced": 121
+      },
+      {
+        "scope": "out",
+        "reason": "preferred",
+        "buys": 886,
+        "priced": 117
+      },
+      {
+        "scope": "out",
+        "reason": "unclassifiable",
+        "buys": 709,
+        "priced": 463
+      },
+      {
+        "scope": "out",
+        "reason": "share_class_not_named_common",
+        "buys": 420,
+        "priced": 149
+      },
+      {
+        "scope": "out",
+        "reason": "units_not_lp_common",
+        "buys": 315,
+        "priced": 82
+      },
+      {
+        "scope": "out",
+        "reason": "foreign_exchange_suffix",
+        "buys": 212,
+        "priced": 0
+      },
+      {
+        "scope": "out",
+        "reason": "depositary_preferred",
+        "buys": 200,
+        "priced": 59
+      },
+      {
+        "scope": "out",
+        "reason": "depositary_underlying_unstated",
+        "buys": 82,
+        "priced": 27
+      },
+      {
+        "scope": "out",
+        "reason": "debt",
+        "buys": 22,
+        "priced": 1
+      },
+      {
+        "scope": "out",
+        "reason": "options",
+        "buys": 7,
+        "priced": 1
+      },
+      {
+        "scope": "out",
+        "reason": "rights",
+        "buys": 2,
+        "priced": 0
+      },
+      {
+        "scope": "out",
+        "reason": "convertible",
+        "buys": 1,
+        "priced": 0
+      },
+      {
+        "scope": "out",
+        "reason": "warrants",
+        "buys": 1,
+        "priced": 0
+      }
+    ],
     "price_status": {
       "by_quarter": {
         "2023q2": {
@@ -1196,5 +1400,5 @@
       "no_data": 808
     }
   },
-  "enriched_buys_sha256": "fa14627333ac754a7f904e3417e5475241d7523659d46d6385779a7c65295bde"
+  "enriched_buys_sha256": "7868d1b32dfad10cf190e1be2049a3314d693e4196df7c7dbd02d2107470c04e"
 }

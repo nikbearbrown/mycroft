@@ -23,7 +23,7 @@ Lifecycle: `DRAFT → SPECIFIED → RUNNABLE-SAMPLE → RUNNABLE-LIVE → VERIFI
 - Source: SEC Insider Transactions Data Sets, study period **2023 Q2 – 2026 Q3** (14 quarters; changed 2026-11-04 from 2023 Q1 – 2026 Q3). 2023 Q1 is downloaded and kept on disk but is not in the study.
 - Downloaded: **2023 Q1 – 2026 Q3** (15 quarters, G1 cleared 2026-11-04). Raw files are gitignored; `manifest.json` and `request_log.jsonl` are committed.
 - Verified (2026-11-04, 14 study quarters): `data/verified/insider_buys.csv`, **78,495 buys**, SHA-256 `a7ec55298bf886c0090f7c5fc4e93bfb18faeabc5d4c407db8d77abefdb75b16` (gitignored; rebuild with `parse.py` + `conformance.py --quarters 2023q2:2026q3`). Eligible for clustering under Rules 1–6, 2a and 2b: **65,106**.
-- Enriched (2026-11-09, not yet G3-cleared): `data/verified/enriched_buys.csv`, 78,495 rows, SHA-256 `fa14627333ac754a7f904e3417e5475241d7523659d46d6385779a7c65295bde` (gitignored). Price coverage **80.09%** after Rule 9 (minimum 80%, Rule 8); 2,352 buys `price_mismatch_vs_filing`; 63-day windows not yet closed: 3,114. Prices through 2026-11-06.
+- Enriched (re-run 2026-11-13 with Rule 10, offline from cache; not yet G3-cleared): `data/verified/enriched_buys.csv`, 78,495 rows, SHA-256 `7868d1b32dfad10cf190e1be2049a3314d693e4196df7c7dbd02d2107470c04e` (gitignored). In scope (Rule 10) 75,638. Coverage **81.93% over in-scope buys** (G3 measure, minimum 80%) · **78.95% over all buys**. 2,352 buys `price_mismatch_vs_filing`. Prices through 2026-11-06.
 
 ## Next actions (week 1–2)
 
@@ -43,6 +43,7 @@ Lifecycle: `DRAFT → SPECIFIED → RUNNABLE-SAMPLE → RUNNABLE-LIVE → VERIFI
 - ~~Build and run ENRICH~~ (2026-11-09: coverage 83.09%, then 80.09% after Rule 9; audit `data/verified/enrich-audit.md`).
 - ~~Ticker sanity check~~ (2026-11-09: Rule 9).
 - Read the enrich audit and log the G3 decision.
+- ~~Decide Rule 10~~ (2026-11-13: Rules 10 and 11 registered; G3 denominator = in-scope buys; both coverage figures in every report).
 - Next stage after G3: SIGNALS (needs TODOs 7–9 and the cluster definition registered first).
 
 ## Open decisions / blockers

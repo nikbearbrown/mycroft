@@ -250,9 +250,21 @@ quarter of the run.
   `abnormal_return = stock_return − spy_return`.
 - Missing prices (delisted, renamed, foreign, bad symbol) are recorded with a reason
   (`price_status`). They are not dropped and not filled in.
-- Gate G3 checks price coverage: **minimum 80% of verified buys priced** (decided by Gomathy S.,
-  2026-11-09, `PRE_REGISTRATION.md` Rule 8). Reason: below that, missing prices (often delistings)
-  could bias the results more than the signal being measured.
+- Gate G3 checks price coverage: **minimum 80% of in-scope buys priced** (decided by Gomathy S.,
+  2026-11-09, `PRE_REGISTRATION.md` Rule 8; denominator changed to in-scope buys on 2026-11-13 by
+  Rule 10, logged under Amendments). Reason: below that, missing prices (often delistings)
+  could bias the results more than the signal being measured. Every report shows both coverage
+  figures: over in-scope buys and over all buys.
+- **Instrument type (`PRE_REGISTRATION.md` Rule 10, decided by Gomathy S. 2026-11-13):**
+  `share_types.py` classifies each `SECURITY_TITLE`. In scope: common stock, ordinary shares,
+  shares of beneficial interest, LP common units, depositary / ADR shares for common or ordinary
+  shares, and named share equivalents (subordinate voting, registered, titles ending in STOCK).
+  Everything else (preferred, debt, warrants, rights, options, convertibles, foreign-exchange
+  listings, unclassifiable titles) is out: it keeps its row with `rule10_scope` /
+  `rule10_reason` and is excluded from clustering, scoring and coverage. Reason: the study
+  measures buys of common-equivalent shares, decided by instrument type, not by coverage.
+- **Reporting periods (`PRE_REGISTRATION.md` Rule 11, 2026-11-13):** results for 2023 Q2 –
+  2024 Q2 (in-scope coverage below 80%) are reported separately from 2024 Q3 – 2026 Q3, and combined.
 
 **Implemented (2026-11-09, `enrich.py`):**
 - A trading day is a day with a SPY bar. Entry is the first SPY day strictly after `FILING_DATE`;
@@ -407,7 +419,7 @@ Lifecycle: `DRAFT → SPECIFIED → RUNNABLE-SAMPLE → RUNNABLE-LIVE → VERIFI
 |---|---|---|---|
 | **G1 Ingest** | every requested quarter's ZIP present; SHA-256 recorded in `manifest.json` with source URL, time, User-Agent; `request_log.jsonl` shows ≤ the configured rate and no unhandled 403/429 | `python ingest.py --verify` | Gomathy S. — [TO] technical owner; approves the quarter range and the live fetch |
 | **G2 Parse + conformance** | all halting checks in GIGO pass; `conformance-audit.md` written, including exclusion counts and the filing spot-check; only then raw → verified | `python parse.py && python conformance.py` (exit 0) | Gomathy S. — [TO]; reads the audit before promotion |
-| **G3 Enrich** | price coverage ≥ the defined minimum; every unpriced buy has a `price_status` reason; windows use the look-ahead rule | `python enrich.py --check` | Gomathy S. — [PF] proof of fitness |
+| **G3 Enrich** | price coverage over in-scope buys (Rule 10) ≥ the defined minimum, with coverage over all buys reported; every unpriced buy has a `price_status` reason; windows use the look-ahead rule | `python enrich.py --check` | Gomathy S. — [PF] proof of fitness |
 | **G4 Signals** | cluster and label counts plus the skip rate logged; thresholds in code match `PRE_REGISTRATION.md` | `python signals.py --check-prereg` | Gomathy S. with reviewer — [IJ] interpretive judgment |
 | **G5 Agent / review packet** | graph completes; every signal has ≥ 2 filing links and a sample resolves on sec.gov; every LLM note labeled model judgment | `python langgraph_pipeline.py --no-llm`, then without `--no-llm` | Gomathy S. — [EI] external interface |
 | **G6 Attestation** | attestation record exists in SNICKERDOODLE format for this run and recipe version; only then is the report written | human review of the review packet → `logs/attestations/insider-signal-agent-<date>.md` | named reviewer (see Release approver above) — [PA] policy/approval |
