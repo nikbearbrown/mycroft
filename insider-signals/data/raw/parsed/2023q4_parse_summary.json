@@ -1,0 +1,231 @@
+{
+  "source_sha256": "be19822ad9116ea6c1a55303b1f2e23864f21101e42d2da0455a6ff2b33e1a9e",
+  "quarter": "2023q4",
+  "aff10b5one_column_present": true,
+  "funnel": {
+    "nonderiv_rows_total": 57852,
+    "form4_rows": 57574,
+    "form4_code_p_rows": 7265,
+    "qualifying_buys": 6240
+  },
+  "nonderiv_rows_by_document_type": {
+    "4": 56818,
+    "4/A": 756,
+    "5": 222,
+    "5/A": 56
+  },
+  "nonderiv_rows_without_submission": 0,
+  "form4_rows_by_trans_code": {
+    "S": 17912,
+    "A": 9555,
+    "F": 8137,
+    "M": 7720,
+    "P": 7265,
+    "G": 2329,
+    "J": 1662,
+    "D": 1537,
+    "C": 776,
+    "L": 341,
+    "X": 182,
+    "U": 101,
+    "I": 37,
+    "W": 20
+  },
+  "exclusions_by_reason": {
+    "code_A_grant_award": 9555,
+    "code_C_conversion": 776,
+    "code_D_disposition_to_issuer": 1537,
+    "code_F_tax_or_exercise_payment": 8137,
+    "code_G_gift": 2329,
+    "code_I_discretionary_16b3f": 37,
+    "code_J_other": 1662,
+    "code_L_small_acquisition": 341,
+    "code_M_option_exercise_16b3": 7720,
+    "code_S_sale": 17912,
+    "code_U_tender_change_of_control": 101,
+    "code_W_will_or_descent": 20,
+    "code_X_option_exercise_itm": 182,
+    "p_not_acquired": 22,
+    "p_shares_missing_or_not_positive": 25,
+    "p_price_missing_or_not_positive": 978
+  },
+  "qualifying_buys_by_is_10b5_1": {
+    "plan": 245,
+    "no_plan": 5995,
+    "unknown": 0
+  },
+  "qualifying_buys_aff10b5one_raw_values": {
+    "0": 5248,
+    "false": 747,
+    "1": 186,
+    "true": 59
+  },
+  "form4_submissions_aff10b5one_raw_values": {
+    "0": 27030,
+    "false": 4598,
+    "1": 3161,
+    "true": 504
+  },
+  "qualifying_buys_footnote_mentions_10b5_1_by_is_10b5_1": {
+    "plan": 178,
+    "no_plan": 2
+  },
+  "qualifying_buy_flags": {
+    "espp_drip:ESPP": 29,
+    "espp_drip:dividend reinvestment": 72,
+    "espp_or_drip_flag": 96,
+    "joint_filing": 1520,
+    "private:IPO": 4,
+    "private:PIPE": 3,
+    "private:from the issuer": 3,
+    "private:private placement": 21,
+    "private:privately negotiated": 2,
+    "private:public offering": 29,
+    "private:registered direct": 9,
+    "private:rights offering": 3,
+    "private:securities purchase agreement": 13,
+    "private:subscription agreement": 2,
+    "private:underwritten": 24,
+    "private_purchase_flag": 72
+  },
+  "context": {
+    "form4_derivative_table_code_p_rows": 1074,
+    "form4_rows_without_reporting_owner": 0,
+    "code_p_equity_swap_raw_values": {
+      "0": 6701,
+      "false": 563,
+      "1": 1
+    },
+    "unrecognized_relationship_tokens": {}
+  },
+  "private_purchase_samples": [
+    {
+      "accession_number": "0001209191-23-059892",
+      "issuer": "Astra Space, Inc.",
+      "matched": [
+        "privately negotiated"
+      ],
+      "snippet": "These shares were purchased in a privately negotiated transaction from an individual affiliated with ACME, LLC and not in the public market. The negotiated purchase price reflects"
+    },
+    {
+      "accession_number": "0001079973-23-001824",
+      "issuer": "ProtoKinetix, Inc.",
+      "matched": [
+        "private placement"
+      ],
+      "snippet": "Shares purchased in private placement of the Company."
+    },
+    {
+      "accession_number": "0001178913-23-003988",
+      "issuer": "Entera Bio Ltd.",
+      "matched": [
+        "securities purchase agreement"
+      ],
+      "snippet": "\"The Reporting Person entered into a Securities Purchase Agreement with the Issuer on December 20, 2023, pursuant to which, on December 22, 2023, the Reporting Person acquired an a"
+    },
+    {
+      "accession_number": "0001178913-23-003971",
+      "issuer": "Entera Bio Ltd.",
+      "matched": [
+        "securities purchase agreement"
+      ],
+      "snippet": "\"The Reporting Person entered into a Securities Purchase Agreement with the Issuer on December 20, 2023, pursuant to which, on December 22, 2023, the Reporting Person acquired an a"
+    },
+    {
+      "accession_number": "0001104659-23-129312",
+      "issuer": "Chavant Capital Acquisition Corp.",
+      "matched": [
+        "private placement",
+        "subscription agreement",
+        "PIPE"
+      ],
+      "snippet": "ach ordinary share of Chavant (\"\"Ordinary Share\"\") and each private placement warrant, exercisable to purchase one Ordinary Share for $11.50 per share, subject to certain adjustmen"
+    },
+    {
+      "accession_number": "0001104659-23-129186",
+      "issuer": "Cyclacel Pharmaceuticals, Inc.",
+      "matched": [
+        "private placement",
+        "securities purchase agreement"
+      ],
+      "snippet": "hased unregistered shares of the Issuer's common stock in a private placement, pursuant to a Securities Purchase Agreement between the Reporting Person and the Issuer."
+    },
+    {
+      "accession_number": "0001104659-23-129185",
+      "issuer": "Cyclacel Pharmaceuticals, Inc.",
+      "matched": [
+        "private placement",
+        "securities purchase agreement"
+      ],
+      "snippet": "hased unregistered shares of the Issuer's common stock in a private placement, pursuant to a Securities Purchase Agreement between the Reporting Person and the Issuer."
+    },
+    {
+      "accession_number": "0001477932-23-009286",
+      "issuer": "SinglePoint Inc.",
+      "matched": [
+        "public offering",
+        "underwritten"
+      ],
+      "snippet": "urchased from the underwriters in the Issuer's underwritten public offering that closed on December 19, 2023."
+    },
+    {
+      "accession_number": "0001912571-23-000005",
+      "issuer": "System1, Inc.",
+      "matched": [
+        "privately negotiated"
+      ],
+      "snippet": "Lone Star Friends Trust purchased 880,000 shares in a privately negotiated arm's length transaction from another existing holder of the Issuer's Class A common stock in a transacti"
+    },
+    {
+      "accession_number": "0001104659-23-126932",
+      "issuer": "Liquidia Corp",
+      "matched": [
+        "public offering",
+        "underwritten"
+      ],
+      "snippet": "es of common stock purchased by the Reporting Person at the public offering price in connection with the Issuer's underwritten public offering of common stock, which closed on Dece"
+    }
+  ],
+  "espp_or_drip_samples": [
+    {
+      "accession_number": "0001156375-23-000203",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "1. Reflects shares that were acquired pursuant to a dividend reinvestment plan administered by the reporting person's broker."
+    },
+    {
+      "accession_number": "0001156375-23-000203",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "1. Reflects shares that were acquired pursuant to a dividend reinvestment plan administered by the reporting person's broker."
+    },
+    {
+      "accession_number": "0000074260-23-000108",
+      "issuer": "OLD REPUBLIC INTERNATIONAL CORP",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Trade executed pursuant to Dividend Reinvestment Plan."
+    },
+    {
+      "accession_number": "0001209191-23-059455",
+      "issuer": "DoubleVerify Holdings, Inc.",
+      "matched": [
+        "ESPP"
+      ],
+      "snippet": "Pursuant to the DoubleVerify Holdings, Inc. 2021 Employee Stock Purchase Plan (ESPP), the purchase price per share reported reflects a discount of 15% of the lesser of the share pr"
+    },
+    {
+      "accession_number": "0000715579-23-000105",
+      "issuer": "ACNB CORP",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "omatic reinvestment of dividends under the ACNB Corporation Dividend Reinvestment and Stock Purchase Plan, which are exempt from the reporting requirements of Section 16 of the Sec"
+    }
+  ]
+}

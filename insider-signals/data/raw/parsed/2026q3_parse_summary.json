@@ -1,0 +1,237 @@
+{
+  "source_sha256": "a4e6a681cfcfa43a3d9e4ca9cfec1fd26a59d0a01eac7e9f7b5a0122092c90f3",
+  "quarter": "2026q3",
+  "aff10b5one_column_present": true,
+  "funnel": {
+    "nonderiv_rows_total": 59885,
+    "form4_rows": 59834,
+    "form4_code_p_rows": 5183,
+    "qualifying_buys": 5115
+  },
+  "nonderiv_rows_by_document_type": {
+    "4": 58855,
+    "4/A": 979,
+    "5": 51
+  },
+  "nonderiv_rows_without_submission": 0,
+  "form4_rows_by_trans_code": {
+    "S": 25430,
+    "A": 9791,
+    "M": 7433,
+    "F": 6801,
+    "P": 5183,
+    "J": 1672,
+    "D": 1382,
+    "G": 1033,
+    "C": 902,
+    "L": 63,
+    "X": 56,
+    "U": 38,
+    "I": 23,
+    "W": 14,
+    "Z": 8,
+    "<blank>": 4,
+    "O": 1
+  },
+  "exclusions_by_reason": {
+    "code_missing": 4,
+    "code_A_grant_award": 9791,
+    "code_C_conversion": 902,
+    "code_D_disposition_to_issuer": 1382,
+    "code_F_tax_or_exercise_payment": 6801,
+    "code_G_gift": 1033,
+    "code_I_discretionary_16b3f": 23,
+    "code_J_other": 1672,
+    "code_L_small_acquisition": 63,
+    "code_M_option_exercise_16b3": 7433,
+    "code_O_option_exercise_otm": 1,
+    "code_S_sale": 25430,
+    "code_U_tender_change_of_control": 38,
+    "code_W_will_or_descent": 14,
+    "code_X_option_exercise_itm": 56,
+    "code_Z_voting_trust": 8,
+    "p_not_acquired": 6,
+    "p_shares_missing_or_not_positive": 8,
+    "p_price_missing_or_not_positive": 53,
+    "p_equity_swap": 1
+  },
+  "qualifying_buys_by_is_10b5_1": {
+    "plan": 136,
+    "no_plan": 4979,
+    "unknown": 0
+  },
+  "qualifying_buys_aff10b5one_raw_values": {
+    "0": 3878,
+    "false": 1101,
+    "1": 80,
+    "true": 56
+  },
+  "form4_submissions_aff10b5one_raw_values": {
+    "0": 22803,
+    "false": 6310,
+    "1": 3798,
+    "true": 1237
+  },
+  "qualifying_buys_footnote_mentions_10b5_1_by_is_10b5_1": {
+    "plan": 106
+  },
+  "qualifying_buy_flags": {
+    "espp_drip:ESPP": 130,
+    "espp_drip:dividend reinvestment": 71,
+    "espp_or_drip_flag": 201,
+    "joint_filing": 686,
+    "private:IPO": 42,
+    "private:PIPE": 7,
+    "private:directed share program": 11,
+    "private:from the issuer": 4,
+    "private:private placement": 50,
+    "private:privately negotiated": 2,
+    "private:public offering": 61,
+    "private:securities purchase agreement": 27,
+    "private:subscription agreement": 12,
+    "private:underwritten": 20,
+    "private_purchase_flag": 135
+  },
+  "context": {
+    "form4_derivative_table_code_p_rows": 225,
+    "form4_rows_without_reporting_owner": 0,
+    "code_p_equity_swap_raw_values": {
+      "0": 4017,
+      "false": 1165,
+      "1": 1
+    },
+    "unrecognized_relationship_tokens": {}
+  },
+  "private_purchase_samples": [
+    {
+      "accession_number": "0000947871-26-000912",
+      "issuer": "ADARx Pharmaceuticals, Inc.",
+      "matched": [
+        "public offering",
+        "IPO"
+      ],
+      "snippet": "the Issuer's Common Stock purchased in the Issuer's initial public offering."
+    },
+    {
+      "accession_number": "0000947871-26-000911",
+      "issuer": "ADARx Pharmaceuticals, Inc.",
+      "matched": [
+        "public offering",
+        "IPO"
+      ],
+      "snippet": "the Issuer's Common Stock purchased in the Issuer's initial public offering."
+    },
+    {
+      "accession_number": "0000947871-26-000911",
+      "issuer": "ADARx Pharmaceuticals, Inc.",
+      "matched": [
+        "public offering",
+        "IPO"
+      ],
+      "snippet": "the Issuer's Common Stock purchased in the Issuer's initial public offering."
+    },
+    {
+      "accession_number": "0000947871-26-000911",
+      "issuer": "ADARx Pharmaceuticals, Inc.",
+      "matched": [
+        "public offering",
+        "IPO"
+      ],
+      "snippet": "the Issuer's Common Stock purchased in the Issuer's initial public offering."
+    },
+    {
+      "accession_number": "0000947871-26-000910",
+      "issuer": "ADARx Pharmaceuticals, Inc.",
+      "matched": [
+        "public offering",
+        "IPO"
+      ],
+      "snippet": "the Issuer's Common Stock purchased in the Issuer's initial public offering."
+    },
+    {
+      "accession_number": "0000947871-26-000910",
+      "issuer": "ADARx Pharmaceuticals, Inc.",
+      "matched": [
+        "public offering",
+        "IPO"
+      ],
+      "snippet": "the Issuer's Common Stock purchased in the Issuer's initial public offering."
+    },
+    {
+      "accession_number": "0000947871-26-000910",
+      "issuer": "ADARx Pharmaceuticals, Inc.",
+      "matched": [
+        "public offering",
+        "IPO"
+      ],
+      "snippet": "the Issuer's Common Stock purchased in the Issuer's initial public offering."
+    },
+    {
+      "accession_number": "0001493152-26-044992",
+      "issuer": "LIBERTY STAR URANIUM & METALS CORP.",
+      "matched": [
+        "private placement"
+      ],
+      "snippet": "ber 28, 2026 the reporting person acquired share units in a private placement purchase including 1 share and 1/2 warrant (right to buy) per share. Price is set by an average VWAP 4"
+    },
+    {
+      "accession_number": "0001193125-26-407271",
+      "issuer": "Heritage Global Inc.",
+      "matched": [
+        "privately negotiated"
+      ],
+      "snippet": "reported shares were purchased by Inductive Capital LP in a privately negotiated transaction from Ross Dove, Chief Executive Officer and a director of the Issuer, at a price of $1."
+    },
+    {
+      "accession_number": "0001437749-26-031181",
+      "issuer": "Harvard Apparatus Regenerative Technology, Inc.",
+      "matched": [
+        "private placement",
+        "securities purchase agreement"
+      ],
+      "snippet": "rchased 361,905 shares of common stock of the Issuer in the Private Placement for an aggregate cash purchase price of $380,000, or $1.05 per share, pursuant to a Securities Purchas"
+    }
+  ],
+  "espp_or_drip_samples": [
+    {
+      "accession_number": "0001072627-26-000056",
+      "issuer": "KINGSWAY Corp",
+      "matched": [
+        "ESPP"
+      ],
+      "snippet": "Plan, as amended and restated effective May 29, 2014 (the \"\"ESPP\"\"). Pursuant to the ESPP, eligible employees may contribute an amount up to 5% of adjusted salary for each regular"
+    },
+    {
+      "accession_number": "0001072627-26-000055",
+      "issuer": "KINGSWAY Corp",
+      "matched": [
+        "ESPP"
+      ],
+      "snippet": "Plan, as amended and restated effective May 29, 2014 (the \"\"ESPP\"\"). Pursuant to the ESPP, eligible employees may contribute an amount up to 5% of adjusted salary for each regular"
+    },
+    {
+      "accession_number": "0001628280-26-063755",
+      "issuer": "Finward Bancorp",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Shares acquired from the Dividend Reinvestment Plan"
+    },
+    {
+      "accession_number": "0001628280-26-063748",
+      "issuer": "Finward Bancorp",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Shares acquired from the Dividend Reinvestment Plan"
+    },
+    {
+      "accession_number": "0001628280-26-063746",
+      "issuer": "Finward Bancorp",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Shares acquired from the Dividend Reinvestment Plan"
+    }
+  ]
+}

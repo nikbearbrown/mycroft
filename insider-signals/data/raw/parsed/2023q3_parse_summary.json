@@ -1,0 +1,235 @@
+{
+  "source_sha256": "26947559fbd710ca4fb007e2ff0481b13ebc3ca47153e77a9b0bc84db250a48e",
+  "quarter": "2023q3",
+  "aff10b5one_column_present": true,
+  "funnel": {
+    "nonderiv_rows_total": 53078,
+    "form4_rows": 52896,
+    "form4_code_p_rows": 6857,
+    "qualifying_buys": 5785
+  },
+  "nonderiv_rows_by_document_type": {
+    "4": 52145,
+    "4/A": 751,
+    "5": 180,
+    "5/A": 2
+  },
+  "nonderiv_rows_without_submission": 0,
+  "form4_rows_by_trans_code": {
+    "S": 16577,
+    "A": 9397,
+    "M": 7416,
+    "F": 6861,
+    "P": 6857,
+    "J": 2033,
+    "D": 1427,
+    "G": 1127,
+    "C": 882,
+    "X": 121,
+    "L": 110,
+    "I": 39,
+    "U": 16,
+    "W": 14,
+    "Z": 12,
+    "O": 6,
+    "E": 1
+  },
+  "exclusions_by_reason": {
+    "code_A_grant_award": 9397,
+    "code_C_conversion": 882,
+    "code_D_disposition_to_issuer": 1427,
+    "code_E_expiration_short_derivative": 1,
+    "code_F_tax_or_exercise_payment": 6861,
+    "code_G_gift": 1127,
+    "code_I_discretionary_16b3f": 39,
+    "code_J_other": 2033,
+    "code_L_small_acquisition": 110,
+    "code_M_option_exercise_16b3": 7416,
+    "code_O_option_exercise_otm": 6,
+    "code_S_sale": 16577,
+    "code_U_tender_change_of_control": 16,
+    "code_W_will_or_descent": 14,
+    "code_X_option_exercise_itm": 121,
+    "code_Z_voting_trust": 12,
+    "p_not_acquired": 10,
+    "p_shares_missing_or_not_positive": 27,
+    "p_price_missing_or_not_positive": 1034,
+    "trans_date_after_filing": 1
+  },
+  "qualifying_buys_by_is_10b5_1": {
+    "plan": 484,
+    "no_plan": 5301,
+    "unknown": 0
+  },
+  "qualifying_buys_aff10b5one_raw_values": {
+    "0": 4672,
+    "false": 629,
+    "1": 477,
+    "true": 7
+  },
+  "form4_submissions_aff10b5one_raw_values": {
+    "0": 26480,
+    "false": 3637,
+    "1": 3128,
+    "true": 568
+  },
+  "qualifying_buys_footnote_mentions_10b5_1_by_is_10b5_1": {
+    "plan": 398,
+    "no_plan": 1
+  },
+  "qualifying_buy_flags": {
+    "espp_drip:ESPP": 36,
+    "espp_drip:dividend reinvestment": 73,
+    "espp_or_drip_flag": 106,
+    "joint_filing": 1216,
+    "private:IPO": 16,
+    "private:PIPE": 6,
+    "private:directed share program": 11,
+    "private:from the issuer": 12,
+    "private:private placement": 35,
+    "private:privately negotiated": 9,
+    "private:public offering": 67,
+    "private:registered direct": 1,
+    "private:rights offering": 1,
+    "private:securities purchase agreement": 12,
+    "private:subscription agreement": 4,
+    "private:underwritten": 30,
+    "private_purchase_flag": 122
+  },
+  "context": {
+    "form4_derivative_table_code_p_rows": 467,
+    "form4_rows_without_reporting_owner": 0,
+    "code_p_equity_swap_raw_values": {
+      "0": 6330,
+      "false": 526,
+      "1": 1
+    },
+    "unrecognized_relationship_tokens": {}
+  },
+  "private_purchase_samples": [
+    {
+      "accession_number": "0001062993-23-018574",
+      "issuer": "SOLENO THERAPEUTICS INC",
+      "matched": [
+        "public offering"
+      ],
+      "snippet": "Purchased in the Issuer's registered public offering scheduled to close on October 2, 2023."
+    },
+    {
+      "accession_number": "0001683168-23-006669",
+      "issuer": "PAM TRANSPORTATION SERVICES INC",
+      "matched": [
+        "privately negotiated"
+      ],
+      "snippet": "stock, individually, to the 2020 Lindsay Moroun Trust in a privately negotiated transaction. The reporting person serves as trustee of the 2020 Lindsay Moroun Trust. On August 3,"
+    },
+    {
+      "accession_number": "0000950170-23-049696",
+      "issuer": "UNIVERSAL LOGISTICS HOLDINGS, INC.",
+      "matched": [
+        "privately negotiated"
+      ],
+      "snippet": "as decanted November 28, 2020 (the \"\"Swiftsure Trust\"\"), in privately negotiated transactions.\" On August 3, 2023, the Reporting Person filed a Form 4 which reported a purchase pri"
+    },
+    {
+      "accession_number": "0000950170-23-049696",
+      "issuer": "UNIVERSAL LOGISTICS HOLDINGS, INC.",
+      "matched": [
+        "privately negotiated"
+      ],
+      "snippet": "as decanted November 28, 2020 (the \"\"Swiftsure Trust\"\"), in privately negotiated transactions.\" On August 3, 2023, the Reporting Person filed a Form 4 which reported a purchase pri"
+    },
+    {
+      "accession_number": "0001213900-23-078953",
+      "issuer": "BYTE Acquisition Corp.",
+      "matched": [
+        "privately negotiated"
+      ],
+      "snippet": "(\"\"Class A Shares\"\"), either in the open market or through privately negotiated transactions, at a price no higher than the redemption price per share that would be payable to pub"
+    },
+    {
+      "accession_number": "0000950170-23-049296",
+      "issuer": "Alpha Teknova, Inc.",
+      "matched": [
+        "private placement"
+      ],
+      "snippet": "Shares purchased in a private placement of Alpha Teknova, Inc."
+    },
+    {
+      "accession_number": "0000950170-23-049296",
+      "issuer": "Alpha Teknova, Inc.",
+      "matched": [
+        "private placement"
+      ],
+      "snippet": "Shares purchased in a private placement of Alpha Teknova, Inc."
+    },
+    {
+      "accession_number": "0001209191-23-050305",
+      "issuer": "RayzeBio, Inc.",
+      "matched": [
+        "public offering",
+        "IPO"
+      ],
+      "snippet": "The shares were purchased in the Issuer's initial public offering."
+    },
+    {
+      "accession_number": "0001209191-23-050305",
+      "issuer": "RayzeBio, Inc.",
+      "matched": [
+        "public offering",
+        "IPO"
+      ],
+      "snippet": "The shares were purchased in the Issuer's initial public offering."
+    },
+    {
+      "accession_number": "0001850902-23-000041",
+      "issuer": "Alpha Teknova, Inc.",
+      "matched": [
+        "private placement"
+      ],
+      "snippet": "Shares purchased in private placement of Alpha Teknova, Inc."
+    }
+  ],
+  "espp_or_drip_samples": [
+    {
+      "accession_number": "0000074260-23-000088",
+      "issuer": "OLD REPUBLIC INTERNATIONAL CORP",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Trade executed by Dividend Reinvestment Plan."
+    },
+    {
+      "accession_number": "0000715579-23-000083",
+      "issuer": "ACNB CORP",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "omatic reinvestment of dividends under the ACNB Corporation Dividend Reinvestment and Stock Purchase Plan, which are exempt from the reporting requirements of Section 16 of the Sec"
+    },
+    {
+      "accession_number": "0000715579-23-000075",
+      "issuer": "ACNB CORP",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "omatic reinvestment of dividends under the ACNB Corporation Dividend Reinvestment and Stock Purchase Plan, which are exempt from the reporting requirements of Section 16 of the Sec"
+    },
+    {
+      "accession_number": "0001127602-23-024297",
+      "issuer": "KINGSWAY FINANCIAL SERVICES INC",
+      "matched": [
+        "ESPP"
+      ],
+      "snippet": "Plan, as amended and restated effective May 29, 2014 (the \"\"ESPP\"\"). Pursuant to the ESPP, eligible employees may contribute an amount up to 5% of adjusted salary for eac"
+    },
+    {
+      "accession_number": "0001127602-23-024295",
+      "issuer": "KINGSWAY FINANCIAL SERVICES INC",
+      "matched": [
+        "ESPP"
+      ],
+      "snippet": "Plan, as amended and restated effective May 29, 2014 (the \"\"ESPP\"\"). Pursuant to the ESPP, eligible employees may contribute an amount up to 5% of adjusted salary for eac"
+    }
+  ]
+}

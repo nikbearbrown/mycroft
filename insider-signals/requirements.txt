@@ -1,0 +1,9 @@
+# insider-signals — Python dependencies.
+# Pins match versions already used elsewhere in this repo; confirm on first install.
+# Tests use the standard library only (unittest).
+pandas==3.0.3
+requests==2.34.2
+yfinance==1.3.0
+langgraph==1.2.8
+anthropic==0.116.0     # optional: LLM research notes (ANTHROPIC_API_KEY)
+fastmcp==3.2.4         # week 9: MCP tools

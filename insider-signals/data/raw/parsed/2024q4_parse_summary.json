@@ -1,0 +1,232 @@
+{
+  "source_sha256": "44763a00aa8a2077747bc015f12c6a4c09ba7cae4a2d031bf24398f9db9e52f3",
+  "quarter": "2024q4",
+  "aff10b5one_column_present": true,
+  "funnel": {
+    "nonderiv_rows_total": 63647,
+    "form4_rows": 63585,
+    "form4_code_p_rows": 6111,
+    "qualifying_buys": 5983
+  },
+  "nonderiv_rows_by_document_type": {
+    "4": 62964,
+    "4/A": 621,
+    "5": 62
+  },
+  "nonderiv_rows_without_submission": 0,
+  "form4_rows_by_trans_code": {
+    "S": 24412,
+    "A": 9546,
+    "F": 8459,
+    "M": 8444,
+    "P": 6111,
+    "G": 2239,
+    "J": 1831,
+    "D": 1221,
+    "C": 998,
+    "L": 156,
+    "I": 66,
+    "X": 60,
+    "U": 31,
+    "W": 6,
+    "Z": 4,
+    "E": 1
+  },
+  "exclusions_by_reason": {
+    "code_A_grant_award": 9546,
+    "code_C_conversion": 998,
+    "code_D_disposition_to_issuer": 1221,
+    "code_E_expiration_short_derivative": 1,
+    "code_F_tax_or_exercise_payment": 8459,
+    "code_G_gift": 2239,
+    "code_I_discretionary_16b3f": 66,
+    "code_J_other": 1831,
+    "code_L_small_acquisition": 156,
+    "code_M_option_exercise_16b3": 8444,
+    "code_S_sale": 24412,
+    "code_U_tender_change_of_control": 31,
+    "code_W_will_or_descent": 6,
+    "code_X_option_exercise_itm": 60,
+    "code_Z_voting_trust": 4,
+    "p_not_acquired": 21,
+    "p_shares_missing_or_not_positive": 51,
+    "p_price_missing_or_not_positive": 55,
+    "trans_date_after_filing": 1
+  },
+  "qualifying_buys_by_is_10b5_1": {
+    "plan": 525,
+    "no_plan": 5458,
+    "unknown": 0
+  },
+  "qualifying_buys_aff10b5one_raw_values": {
+    "0": 3924,
+    "false": 1534,
+    "1": 519,
+    "true": 6
+  },
+  "form4_submissions_aff10b5one_raw_values": {
+    "0": 24101,
+    "false": 6850,
+    "1": 3534,
+    "true": 1173
+  },
+  "qualifying_buys_footnote_mentions_10b5_1_by_is_10b5_1": {
+    "plan": 454,
+    "no_plan": 5
+  },
+  "qualifying_buy_flags": {
+    "espp_drip:ESPP": 31,
+    "espp_drip:dividend reinvestment": 66,
+    "espp_or_drip_flag": 91,
+    "joint_filing": 1584,
+    "private:IPO": 25,
+    "private:PIPE": 1,
+    "private:directed share program": 8,
+    "private:from the issuer": 15,
+    "private:private placement": 23,
+    "private:privately negotiated": 2,
+    "private:public offering": 48,
+    "private:registered direct": 10,
+    "private:rights offering": 17,
+    "private:securities purchase agreement": 23,
+    "private:subscription agreement": 12,
+    "private:underwritten": 22,
+    "private_purchase_flag": 139
+  },
+  "context": {
+    "form4_derivative_table_code_p_rows": 273,
+    "form4_rows_without_reporting_owner": 0,
+    "code_p_equity_swap_raw_values": {
+      "0": 5239,
+      "false": 872
+    },
+    "unrecognized_relationship_tokens": {}
+  },
+  "private_purchase_samples": [
+    {
+      "accession_number": "0001104659-24-132975",
+      "issuer": "Rain Enhancement Technologies Holdco, Inc.",
+      "matched": [
+        "private placement",
+        "subscription agreement"
+      ],
+      "snippet": "er share, at a price of approximately $11.39 per share in a private placement pursuant to a Subscription Agreement dated as of December 23, 2024, by and among the Reporting Person"
+    },
+    {
+      "accession_number": "0001104659-24-132190",
+      "issuer": "Quoin Pharmaceuticals, Ltd.",
+      "matched": [
+        "public offering"
+      ],
+      "snippet": "and a Series G Warrant to purchase one ADS in the Issuer's public offering which closed on December 23, 2024, at a combined public offering price of $0.45. The Series F Warrants a"
+    },
+    {
+      "accession_number": "0001104659-24-132188",
+      "issuer": "Quoin Pharmaceuticals, Ltd.",
+      "matched": [
+        "public offering"
+      ],
+      "snippet": "and a Series G Warrant to purchase one ADS in the Issuer's public offering which closed on December 23, 2024, at a combined public offering price of $0.45. The Series F Warrants a"
+    },
+    {
+      "accession_number": "0001104659-24-132187",
+      "issuer": "Quoin Pharmaceuticals, Ltd.",
+      "matched": [
+        "public offering"
+      ],
+      "snippet": "and a Series G Warrant to purchase one ADS in the Issuer's public offering which closed on December 23, 2024, at a combined public offering price of $0.45. The Series F Warrants a"
+    },
+    {
+      "accession_number": "0001104659-24-132185",
+      "issuer": "Quoin Pharmaceuticals, Ltd.",
+      "matched": [
+        "public offering"
+      ],
+      "snippet": "and a Series G Warrant to purchase one ADS in the Issuer's public offering which closed on December 23, 2024, at a combined public offering price of $0.45. The Series F Warrants a"
+    },
+    {
+      "accession_number": "0001493152-24-052101",
+      "issuer": "Anebulo Pharmaceuticals, Inc.",
+      "matched": [
+        "private placement"
+      ],
+      "snippet": "he shares were issued to 22NW Fund, LP in connection with a private placement offering of the Issuer."
+    },
+    {
+      "accession_number": "0001104659-24-131704",
+      "issuer": "Marker Therapeutics, Inc.",
+      "matched": [
+        "securities purchase agreement",
+        "from the issuer"
+      ],
+      "snippet": "Acquired from the Issuer on December 23, 2024 pursuant to a Securities Purchase Agreement dated December 19, 2024."
+    },
+    {
+      "accession_number": "0000950170-24-140372",
+      "issuer": "5C Lending Partners Corp.",
+      "matched": [
+        "subscription agreement"
+      ],
+      "snippet": "\"\"LMHC\"\") may be deemed to beneficially own pursuant to the Subscription Agreements, dated October 23, 2024 (the \"\"Subscription Agreements\"\"), entered into by each of the Subsidiar"
+    },
+    {
+      "accession_number": "0000950170-24-139757",
+      "issuer": "RumbleOn, Inc.",
+      "matched": [
+        "private placement",
+        "rights offering"
+      ],
+      "snippet": "f Class B Common Stock of the issuer pursuant to a backstop private placement of the issuer, whereby Partners, as previously agreed to, purchased the shares of Class B Common Stock"
+    },
+    {
+      "accession_number": "0002005814-24-000019",
+      "issuer": "F&M BANK CORP",
+      "matched": [
+        "from the issuer"
+      ],
+      "snippet": "Shares acquired from the issuer with proceeds of a quarterly retainer."
+    }
+  ],
+  "espp_or_drip_samples": [
+    {
+      "accession_number": "0001156375-24-000204",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Reflects shares that were acquired pursuant to a dividend reinvestment plan administered by the reporting person's broker. Actual amounts of fractional shares owned may vary slight"
+    },
+    {
+      "accession_number": "0001156375-24-000204",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Reflects shares that were acquired pursuant to a dividend reinvestment plan administered by the reporting person's broker. Actual amounts of fractional shares owned may vary slight"
+    },
+    {
+      "accession_number": "0000074260-24-000144",
+      "issuer": "OLD REPUBLIC INTERNATIONAL CORP",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Trade executed pursuant to Dividend Reinvestment Plan."
+    },
+    {
+      "accession_number": "0001127602-24-029632",
+      "issuer": "KINGSWAY FINANCIAL SERVICES INC",
+      "matched": [
+        "ESPP"
+      ],
+      "snippet": "Plan, as amended and restated effective May 29, 2014 (the \"\"ESPP\"\"). Pursuant to the ESPP, eligible employees may contribute an amount up to 5% of adjusted salary for eac"
+    },
+    {
+      "accession_number": "0001127602-24-029631",
+      "issuer": "KINGSWAY FINANCIAL SERVICES INC",
+      "matched": [
+        "ESPP"
+      ],
+      "snippet": "Plan, as amended and restated effective May 29, 2014 (the \"\"ESPP\"\").? Pursuant to the ESPP, eligible employees may contribute an amount up to 5% of adjusted salary for each regular"
+    }
+  ]
+}

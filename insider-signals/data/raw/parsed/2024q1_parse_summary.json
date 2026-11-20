@@ -1,0 +1,238 @@
+{
+  "source_sha256": "8e9bb34335416829a88e4ca7d09bb8aaceca689da9718fef22c298d6f18c9b04",
+  "quarter": "2024q1",
+  "aff10b5one_column_present": true,
+  "funnel": {
+    "nonderiv_rows_total": 111404,
+    "form4_rows": 109741,
+    "form4_code_p_rows": 5696,
+    "qualifying_buys": 5214
+  },
+  "nonderiv_rows_by_document_type": {
+    "4": 108212,
+    "4/A": 1529,
+    "5": 1634,
+    "5/A": 29
+  },
+  "nonderiv_rows_without_submission": 0,
+  "form4_rows_by_trans_code": {
+    "F": 27496,
+    "S": 27080,
+    "A": 25488,
+    "M": 17629,
+    "P": 5696,
+    "D": 1855,
+    "J": 1743,
+    "G": 1584,
+    "C": 934,
+    "X": 76,
+    "U": 52,
+    "I": 51,
+    "L": 27,
+    "W": 22,
+    "Z": 7,
+    "E": 1
+  },
+  "exclusions_by_reason": {
+    "code_A_grant_award": 25488,
+    "code_C_conversion": 934,
+    "code_D_disposition_to_issuer": 1855,
+    "code_E_expiration_short_derivative": 1,
+    "code_F_tax_or_exercise_payment": 27496,
+    "code_G_gift": 1584,
+    "code_I_discretionary_16b3f": 51,
+    "code_J_other": 1743,
+    "code_L_small_acquisition": 27,
+    "code_M_option_exercise_16b3": 17629,
+    "code_S_sale": 27080,
+    "code_U_tender_change_of_control": 52,
+    "code_W_will_or_descent": 22,
+    "code_X_option_exercise_itm": 76,
+    "code_Z_voting_trust": 7,
+    "p_not_acquired": 40,
+    "p_shares_missing_or_not_positive": 7,
+    "p_price_missing_or_not_positive": 432,
+    "trans_date_after_filing": 3
+  },
+  "qualifying_buys_by_is_10b5_1": {
+    "plan": 501,
+    "no_plan": 4713,
+    "unknown": 0
+  },
+  "qualifying_buys_aff10b5one_raw_values": {
+    "0": 3750,
+    "false": 963,
+    "1": 477,
+    "true": 24
+  },
+  "form4_submissions_aff10b5one_raw_values": {
+    "0": 46324,
+    "false": 11016,
+    "1": 4011,
+    "true": 1137
+  },
+  "qualifying_buys_footnote_mentions_10b5_1_by_is_10b5_1": {
+    "plan": 350,
+    "no_plan": 1
+  },
+  "qualifying_buy_flags": {
+    "espp_drip:ESPP": 50,
+    "espp_drip:dividend reinvestment": 95,
+    "espp_or_drip_flag": 132,
+    "joint_filing": 1397,
+    "private:IPO": 20,
+    "private:directed share program": 3,
+    "private:from the issuer": 17,
+    "private:private placement": 8,
+    "private:privately negotiated": 1,
+    "private:public offering": 47,
+    "private:registered direct": 10,
+    "private:rights offering": 2,
+    "private:securities purchase agreement": 25,
+    "private:subscription agreement": 3,
+    "private:underwritten": 28,
+    "private_purchase_flag": 95
+  },
+  "context": {
+    "form4_derivative_table_code_p_rows": 399,
+    "form4_rows_without_reporting_owner": 0,
+    "code_p_equity_swap_raw_values": {
+      "0": 4991,
+      "false": 705
+    },
+    "unrecognized_relationship_tokens": {}
+  },
+  "private_purchase_samples": [
+    {
+      "accession_number": "0001213900-24-028125",
+      "issuer": "Agrify Corp",
+      "matched": [
+        "public offering"
+      ],
+      "snippet": "8 per share of common stock in connection with the issuer's public offering that closed on February 28, 2024."
+    },
+    {
+      "accession_number": "0001213900-24-028125",
+      "issuer": "Agrify Corp",
+      "matched": [
+        "public offering"
+      ],
+      "snippet": "8 per share of common stock in connection with the issuer's public offering that closed on February 28, 2024."
+    },
+    {
+      "accession_number": "0000950170-24-038089",
+      "issuer": "Nkarta, Inc.",
+      "matched": [
+        "public offering",
+        "underwritten"
+      ],
+      "snippet": "Reports the purchase of shares in the underwritten public offering of common stock of the Issuer."
+    },
+    {
+      "accession_number": "0000950170-24-038089",
+      "issuer": "Nkarta, Inc.",
+      "matched": [
+        "public offering",
+        "underwritten"
+      ],
+      "snippet": "Reports the purchase of shares in the underwritten public offering of common stock of the Issuer."
+    },
+    {
+      "accession_number": "0000950170-24-036131",
+      "issuer": "COMSTOCK RESOURCES INC",
+      "matched": [
+        "subscription agreement"
+      ],
+      "snippet": "he closing of the transactions contemplated by that certain Subscription Agreement, dated March 20, 2024, by and among the Company, Arkoma and Williston.\""
+    },
+    {
+      "accession_number": "0000950170-24-035469",
+      "issuer": "Astera Labs, Inc.",
+      "matched": [
+        "public offering",
+        "IPO",
+        "directed share program"
+      ],
+      "snippet": "ected share program in connection with the Issuer's initial public offering."
+    },
+    {
+      "accession_number": "0000950170-24-035423",
+      "issuer": "Astera Labs, Inc.",
+      "matched": [
+        "public offering",
+        "IPO",
+        "directed share program"
+      ],
+      "snippet": "ected share program in connection with the Issuer's initial public offering."
+    },
+    {
+      "accession_number": "0000950170-24-035422",
+      "issuer": "Astera Labs, Inc.",
+      "matched": [
+        "public offering",
+        "IPO",
+        "directed share program"
+      ],
+      "snippet": "ected share program in connection with the Issuer's initial public offering."
+    },
+    {
+      "accession_number": "0001912571-24-000002",
+      "issuer": "System1, Inc.",
+      "matched": [
+        "privately negotiated"
+      ],
+      "snippet": "Lone Star Friends Trust purchased 880,281 shares in a privately negotiated arm's length transaction from another existing holder of the Issuer's Class A common stock in a transacti"
+    },
+    {
+      "accession_number": "0001731122-24-000450",
+      "issuer": "Landsea Homes Corp",
+      "matched": [
+        "public offering",
+        "underwritten"
+      ],
+      "snippet": "ock through participation as an investor in an underwritten public offering by Landsea Holdings Corporation, the issuer's largest stockholder, at the offering price of $11.60 per s"
+    }
+  ],
+  "espp_or_drip_samples": [
+    {
+      "accession_number": "0001156375-24-000065",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Reflects shares that were acquired pursuant to a dividend reinvestment plan administered by the reporting person's broker."
+    },
+    {
+      "accession_number": "0001156375-24-000065",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Reflects shares that were acquired pursuant to a dividend reinvestment plan administered by the reporting person's broker."
+    },
+    {
+      "accession_number": "0000715579-24-000044",
+      "issuer": "ACNB CORP",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "omatic reinvestment of dividends under the ACNB Corporation Dividend Reinvestment and Stock Purchase Plan, which are exempt from the reporting requirements of Section 16 of the Sec"
+    },
+    {
+      "accession_number": "0000715579-24-000039",
+      "issuer": "ACNB CORP",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "omatic reinvestment of dividends under the ACNB Corporation Dividend Reinvestment and Stock Purchase Plan, which are exempt from the reporting requirements of Section 16 of the Sec"
+    },
+    {
+      "accession_number": "0001628280-24-012047",
+      "issuer": "PHINIA INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "early reporting of shares acquired pursuant to an automatic dividend reinvestment feature of the reporting person's brokerage account."
+    }
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "source_sha256": "3dcb680593f5829bc951cb0969e858b60fc21a6835b094838218093a849592d6",
+  "quarter": "2026q1",
+  "aff10b5one_column_present": true,
+  "funnel": {
+    "nonderiv_rows_total": 103733,
+    "form4_rows": 101527,
+    "form4_code_p_rows": 4926,
+    "qualifying_buys": 4817
+  },
+  "nonderiv_rows_by_document_type": {
+    "4": 100341,
+    "4/A": 1186,
+    "5": 2168,
+    "5/A": 38
+  },
+  "nonderiv_rows_without_submission": 0,
+  "form4_rows_by_trans_code": {
+    "F": 26995,
+    "A": 24489,
+    "S": 22615,
+    "M": 16295,
+    "P": 4926,
+    "D": 2239,
+    "J": 1498,
+    "G": 1361,
+    "C": 774,
+    "L": 123,
+    "X": 93,
+    "U": 66,
+    "I": 30,
+    "W": 18,
+    "<blank>": 3,
+    "Z": 1,
+    "O": 1
+  },
+  "exclusions_by_reason": {
+    "code_missing": 3,
+    "code_A_grant_award": 24489,
+    "code_C_conversion": 774,
+    "code_D_disposition_to_issuer": 2239,
+    "code_F_tax_or_exercise_payment": 26995,
+    "code_G_gift": 1361,
+    "code_I_discretionary_16b3f": 30,
+    "code_J_other": 1498,
+    "code_L_small_acquisition": 123,
+    "code_M_option_exercise_16b3": 16295,
+    "code_O_option_exercise_otm": 1,
+    "code_S_sale": 22615,
+    "code_U_tender_change_of_control": 66,
+    "code_W_will_or_descent": 18,
+    "code_X_option_exercise_itm": 93,
+    "code_Z_voting_trust": 1,
+    "p_not_acquired": 14,
+    "p_shares_missing_or_not_positive": 16,
+    "p_price_missing_or_not_positive": 79
+  },
+  "qualifying_buys_by_is_10b5_1": {
+    "plan": 188,
+    "no_plan": 4629,
+    "unknown": 0
+  },
+  "qualifying_buys_aff10b5one_raw_values": {
+    "0": 3560,
+    "false": 1069,
+    "true": 111,
+    "1": 77
+  },
+  "form4_submissions_aff10b5one_raw_values": {
+    "0": 41708,
+    "false": 11278,
+    "1": 3610,
+    "true": 1161
+  },
+  "qualifying_buys_footnote_mentions_10b5_1_by_is_10b5_1": {
+    "plan": 142,
+    "no_plan": 3
+  },
+  "qualifying_buy_flags": {
+    "espp_drip:ESPP": 27,
+    "espp_drip:dividend reinvestment": 86,
+    "espp_or_drip_flag": 112,
+    "joint_filing": 549,
+    "private:IPO": 10,
+    "private:PIPE": 2,
+    "private:directed share program": 1,
+    "private:from the issuer": 9,
+    "private:private placement": 23,
+    "private:privately negotiated": 3,
+    "private:public offering": 17,
+    "private:registered direct": 1,
+    "private:rights offering": 1,
+    "private:securities purchase agreement": 6,
+    "private:subscription agreement": 12,
+    "private:underwritten": 19,
+    "private_purchase_flag": 68
+  },
+  "context": {
+    "form4_derivative_table_code_p_rows": 185,
+    "form4_rows_without_reporting_owner": 0,
+    "code_p_equity_swap_raw_values": {
+      "0": 3820,
+      "false": 1106
+    },
+    "unrecognized_relationship_tokens": {}
+  },
+  "private_purchase_samples": [
+    {
+      "accession_number": "0001104659-26-037865",
+      "issuer": "Zenas BioPharma, Inc.",
+      "matched": [
+        "public offering",
+        "underwritten"
+      ],
+      "snippet": "Acquired in an underwritten public offering, pursuant to which Zenas BioPharma, Inc. sold shares of common stock at a purchase price of $20.00 per share."
+    },
+    {
+      "accession_number": "0001700225-26-000003",
+      "issuer": "TALPHERA, INC.",
+      "matched": [
+        "securities purchase agreement",
+        "PIPE"
+      ],
+      "snippet": "On March 31, 2025, Talphera (the \"\"Issuer\"\") entered into a securities purchase agreement with the Reporting Person and certain other institutional investors (the \"\"PIPE\"\"). The"
+    },
+    {
+      "accession_number": "0001213900-26-034272",
+      "issuer": "Horizon Quantum Holdings Ltd.",
+      "matched": [
+        "subscription agreement"
+      ],
+      "snippet": "any, and Horizon Quantum Computing Pte. Ltd. entered into a subscription agreement with Penchant Family Holdings LLC, whereby the Company, upon the closing of the Company's busines"
+    },
+    {
+      "accession_number": "0001104659-26-033952",
+      "issuer": "Janus Living, Inc.",
+      "matched": [
+        "underwritten",
+        "IPO"
+      ],
+      "snippet": "Represents shares purchased from the underwriters in the IPO."
+    },
+    {
+      "accession_number": "0001104659-26-033948",
+      "issuer": "Janus Living, Inc.",
+      "matched": [
+        "underwritten",
+        "IPO"
+      ],
+      "snippet": "Represents shares purchased from the underwriters in the IPO."
+    },
+    {
+      "accession_number": "0001104659-26-033941",
+      "issuer": "Janus Living, Inc.",
+      "matched": [
+        "underwritten",
+        "IPO"
+      ],
+      "snippet": "Represents shares purchased from the underwriters in the IPO."
+    },
+    {
+      "accession_number": "0001104659-26-033940",
+      "issuer": "Janus Living, Inc.",
+      "matched": [
+        "underwritten",
+        "IPO"
+      ],
+      "snippet": "Represents shares purchased from the underwriters in the IPO."
+    },
+    {
+      "accession_number": "0001104659-26-033939",
+      "issuer": "Janus Living, Inc.",
+      "matched": [
+        "public offering",
+        "underwritten",
+        "IPO"
+      ],
+      "snippet": "res purchased from the underwriters in the Issuer's initial public offering of Class A-1 Common Stock (\"\"IPO\"\").\""
+    },
+    {
+      "accession_number": "0001104659-26-033937",
+      "issuer": "Janus Living, Inc.",
+      "matched": [
+        "public offering",
+        "underwritten",
+        "IPO"
+      ],
+      "snippet": "res purchased from the underwriters in the Issuer's initial public offering of Class A-1 Common Stock (\"\"IPO\"\").\""
+    },
+    {
+      "accession_number": "0001193125-26-122177",
+      "issuer": "5C Lending Partners Corp.",
+      "matched": [
+        "subscription agreement"
+      ],
+      "snippet": "issuer in the form of a capital call. Under the terms of a subscription agreement between the reporting persons and the issuer, the reporting persons are required to fund drawdown"
+    }
+  ],
+  "espp_or_drip_samples": [
+    {
+      "accession_number": "0001072627-26-000020",
+      "issuer": "KINGSWAY FINANCIAL SERVICES INC",
+      "matched": [
+        "ESPP"
+      ],
+      "snippet": "Plan, as amended and restated effective May 29, 2014 (the \"\"ESPP\"\"). Pursuant to the ESPP, eligible employees may contribute an amount up to 5% of adjusted salary for each regular"
+    },
+    {
+      "accession_number": "0001072627-26-000019",
+      "issuer": "KINGSWAY FINANCIAL SERVICES INC",
+      "matched": [
+        "ESPP"
+      ],
+      "snippet": "Plan, as amended and restated effective May 29, 2014 (the \"\"ESPP\"\"). Pursuant to the ESPP, eligible employees may contribute an amount up to 5% of adjusted salary for each regular"
+    },
+    {
+      "accession_number": "0001628280-26-022028",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Reflects shares that were acquired pursuant to a dividend reinvestment plan administered by the reporting person's broker. Actual amounts of fractional shares owned may vary slight"
+    },
+    {
+      "accession_number": "0001628280-26-022028",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Reflects shares that were acquired pursuant to a dividend reinvestment plan administered by the reporting person's broker. Actual amounts of fractional shares owned may vary slight"
+    },
+    {
+      "accession_number": "0001379195-26-000002",
+      "issuer": "GERMAN AMERICAN BANCORP, INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "hares of common stock through participation in the Issuer's Dividend Reinvestment and Stock Purchase Plan (the \"\"Dividend Reinvestment Plan\"\").\""
+    }
+  ]
+}

@@ -1,0 +1,232 @@
+{
+  "source_sha256": "7e636787231ae0f00accf5c3627298402dedd1aefffd7c50fb48292e5d3a8fbb",
+  "quarter": "2023q2",
+  "aff10b5one_column_present": true,
+  "funnel": {
+    "nonderiv_rows_total": 68588,
+    "form4_rows": 68493,
+    "form4_code_p_rows": 8238,
+    "qualifying_buys": 7964
+  },
+  "nonderiv_rows_by_document_type": {
+    "4": 67342,
+    "4/A": 1151,
+    "5": 91,
+    "5/A": 4
+  },
+  "nonderiv_rows_without_submission": 0,
+  "form4_rows_by_trans_code": {
+    "A": 19860,
+    "S": 15766,
+    "M": 9851,
+    "F": 9093,
+    "P": 8238,
+    "J": 2109,
+    "G": 1269,
+    "D": 1083,
+    "C": 902,
+    "X": 104,
+    "L": 81,
+    "I": 59,
+    "U": 53,
+    "W": 21,
+    "Z": 4
+  },
+  "exclusions_by_reason": {
+    "code_A_grant_award": 19860,
+    "code_C_conversion": 902,
+    "code_D_disposition_to_issuer": 1083,
+    "code_F_tax_or_exercise_payment": 9093,
+    "code_G_gift": 1269,
+    "code_I_discretionary_16b3f": 59,
+    "code_J_other": 2109,
+    "code_L_small_acquisition": 81,
+    "code_M_option_exercise_16b3": 9851,
+    "code_S_sale": 15766,
+    "code_U_tender_change_of_control": 53,
+    "code_W_will_or_descent": 21,
+    "code_X_option_exercise_itm": 104,
+    "code_Z_voting_trust": 4,
+    "p_not_acquired": 21,
+    "p_shares_missing_or_not_positive": 7,
+    "p_price_missing_or_not_positive": 245,
+    "trans_date_after_filing": 1
+  },
+  "qualifying_buys_by_is_10b5_1": {
+    "plan": 266,
+    "no_plan": 7698,
+    "unknown": 0
+  },
+  "qualifying_buys_aff10b5one_raw_values": {
+    "0": 6944,
+    "false": 754,
+    "1": 239,
+    "true": 27
+  },
+  "form4_submissions_aff10b5one_raw_values": {
+    "0": 43800,
+    "false": 4660,
+    "1": 2837,
+    "true": 494
+  },
+  "qualifying_buys_footnote_mentions_10b5_1_by_is_10b5_1": {
+    "plan": 172,
+    "no_plan": 54
+  },
+  "qualifying_buy_flags": {
+    "espp_drip:ESPP": 25,
+    "espp_drip:dividend reinvestment": 78,
+    "espp_or_drip_flag": 102,
+    "joint_filing": 960,
+    "plan_and_footnote_flag": 4,
+    "private:IPO": 14,
+    "private:PIPE": 5,
+    "private:directed share program": 11,
+    "private:from the issuer": 4,
+    "private:private placement": 20,
+    "private:public offering": 40,
+    "private:registered direct": 2,
+    "private:securities purchase agreement": 21,
+    "private:subscription agreement": 5,
+    "private:underwritten": 17,
+    "private_purchase_flag": 76
+  },
+  "context": {
+    "form4_derivative_table_code_p_rows": 374,
+    "form4_rows_without_reporting_owner": 0,
+    "code_p_equity_swap_raw_values": {
+      "0": 7663,
+      "false": 575
+    },
+    "unrecognized_relationship_tokens": {}
+  },
+  "private_purchase_samples": [
+    {
+      "accession_number": "0001493152-23-023195",
+      "issuer": "Progressive Care Inc.",
+      "matched": [
+        "securities purchase agreement"
+      ],
+      "snippet": "On May 5, 2023, the Issuer entered into a Securities Purchase Agreement with NextPlat Corp, whereby NextPlat Corp. agreed to purchase 455,000 units of securities, consisting of one"
+    },
+    {
+      "accession_number": "0001493152-23-023194",
+      "issuer": "Progressive Care Inc.",
+      "matched": [
+        "securities purchase agreement"
+      ],
+      "snippet": "On May 5, 2023, the Issuer entered into a Securities Purchase Agreement with NextPlat Corp, whereby NextPlat Corp. agreed to purchase 455,000 units of securities, consisting of one"
+    },
+    {
+      "accession_number": "0001209191-23-040091",
+      "issuer": "IGM Biosciences, Inc.",
+      "matched": [
+        "public offering",
+        "underwritten"
+      ],
+      "snippet": "The shares were purchased pursuant to an underwritten public offering of the Issuer's securities."
+    },
+    {
+      "accession_number": "0001104659-23-074791",
+      "issuer": "Lucid Group, Inc.",
+      "matched": [
+        "private placement",
+        "subscription agreement",
+        "public offering",
+        "underwritten",
+        "from the issuer"
+      ],
+      "snippet": "m the Issuer 265,693,703 shares of Issuer common stock in a private placement for an aggregate purchase price of approximately $1.8 billion in a private placement pursuant to a sub"
+    },
+    {
+      "accession_number": "0001829126-23-004338",
+      "issuer": "Rubicon Technologies, Inc.",
+      "matched": [
+        "private placement"
+      ],
+      "snippet": "e Issuer at a per share purchase price of $0.4164 through a private placement transaction."
+    },
+    {
+      "accession_number": "0001062993-23-013773",
+      "issuer": "SusGlobal Energy Corp.",
+      "matched": [
+        "private placement"
+      ],
+      "snippet": "Mr. Rintoul subscribed to the shares in a private placement with the Issuer."
+    },
+    {
+      "accession_number": "0001493152-23-021689",
+      "issuer": "LIBERTY STAR URANIUM & METALS CORP.",
+      "matched": [
+        "private placement"
+      ],
+      "snippet": "une 12,2023, the reporting person acquired share units in a private placement purchase including I share and 1/2 warrant (right to buy) per share. Price is set by an average VWAP 4"
+    },
+    {
+      "accession_number": "0001209191-23-037307",
+      "issuer": "Movano Inc.",
+      "matched": [
+        "public offering"
+      ],
+      "snippet": "son purchased 35,000 shares of Common Stock in the Issuer's public offering at a purchase price of $1.00 per share."
+    },
+    {
+      "accession_number": "0001209191-23-037306",
+      "issuer": "Movano Inc.",
+      "matched": [
+        "public offering"
+      ],
+      "snippet": "son purchased 25,000 shares of Common Stock in the Issuer's public offering at a purchase price of $1.00 per share."
+    },
+    {
+      "accession_number": "0001209191-23-037304",
+      "issuer": "Movano Inc.",
+      "matched": [
+        "public offering"
+      ],
+      "snippet": "son purchased 20,000 shares of Common Stock in the Issuer's public offering at a purchase price of $1.00 per share."
+    }
+  ],
+  "espp_or_drip_samples": [
+    {
+      "accession_number": "0001156375-23-000116",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Acquisition of shares under a broker-administered dividend reinvestment plan."
+    },
+    {
+      "accession_number": "0001156375-23-000116",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Acquisition of shares under a broker-administered dividend reinvestment plan."
+    },
+    {
+      "accession_number": "0000074260-23-000058",
+      "issuer": "OLD REPUBLIC INTERNATIONAL CORP",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Trade executed pursuant to Dividend Reinvestment Plan."
+    },
+    {
+      "accession_number": "0000074260-23-000058",
+      "issuer": "OLD REPUBLIC INTERNATIONAL CORP",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Trade executed pursuant to Dividend Reinvestment Plan."
+    },
+    {
+      "accession_number": "0001821850-23-000052",
+      "issuer": "Sunlight Financial Holdings Inc.",
+      "matched": [
+        "ESPP"
+      ],
+      "snippet": "payroll deductions under Sunlight Financial Holdings Inc.'s employee stock purchase plan."
+    }
+  ]
+}

@@ -1,0 +1,227 @@
+{
+  "source_sha256": "782abee663e466b243f953625ae319da93c3e896816007d5a375e558c94dc7c1",
+  "quarter": "2024q2",
+  "aff10b5one_column_present": true,
+  "funnel": {
+    "nonderiv_rows_total": 69412,
+    "form4_rows": 69302,
+    "form4_code_p_rows": 5560,
+    "qualifying_buys": 5444
+  },
+  "nonderiv_rows_by_document_type": {
+    "4": 68395,
+    "4/A": 907,
+    "5": 110
+  },
+  "nonderiv_rows_without_submission": 0,
+  "form4_rows_by_trans_code": {
+    "S": 20096,
+    "A": 19052,
+    "M": 10071,
+    "F": 9205,
+    "P": 5560,
+    "J": 1699,
+    "D": 1364,
+    "G": 1281,
+    "C": 680,
+    "L": 77,
+    "I": 76,
+    "X": 65,
+    "U": 51,
+    "W": 21,
+    "O": 4
+  },
+  "exclusions_by_reason": {
+    "code_A_grant_award": 19052,
+    "code_C_conversion": 680,
+    "code_D_disposition_to_issuer": 1364,
+    "code_F_tax_or_exercise_payment": 9205,
+    "code_G_gift": 1281,
+    "code_I_discretionary_16b3f": 76,
+    "code_J_other": 1699,
+    "code_L_small_acquisition": 77,
+    "code_M_option_exercise_16b3": 10071,
+    "code_O_option_exercise_otm": 4,
+    "code_S_sale": 20096,
+    "code_U_tender_change_of_control": 51,
+    "code_W_will_or_descent": 21,
+    "code_X_option_exercise_itm": 65,
+    "p_not_acquired": 17,
+    "p_shares_missing_or_not_positive": 25,
+    "p_price_missing_or_not_positive": 72,
+    "trans_date_after_filing": 2
+  },
+  "qualifying_buys_by_is_10b5_1": {
+    "plan": 254,
+    "no_plan": 5190,
+    "unknown": 0
+  },
+  "qualifying_buys_aff10b5one_raw_values": {
+    "0": 4146,
+    "false": 1044,
+    "1": 217,
+    "true": 37
+  },
+  "form4_submissions_aff10b5one_raw_values": {
+    "0": 35389,
+    "false": 10009,
+    "1": 3226,
+    "true": 1023
+  },
+  "qualifying_buys_footnote_mentions_10b5_1_by_is_10b5_1": {
+    "no_plan": 22,
+    "plan": 131
+  },
+  "qualifying_buy_flags": {
+    "espp_drip:ESPP": 25,
+    "espp_drip:dividend reinvestment": 96,
+    "espp_or_drip_flag": 121,
+    "joint_filing": 770,
+    "private:IPO": 15,
+    "private:directed share program": 7,
+    "private:from the issuer": 13,
+    "private:private placement": 20,
+    "private:public offering": 27,
+    "private:registered direct": 6,
+    "private:securities purchase agreement": 14,
+    "private:subscription agreement": 12,
+    "private:underwritten": 13,
+    "private_purchase_flag": 74
+  },
+  "context": {
+    "form4_derivative_table_code_p_rows": 269,
+    "form4_rows_without_reporting_owner": 0,
+    "code_p_equity_swap_raw_values": {
+      "0": 4618,
+      "false": 942
+    },
+    "unrecognized_relationship_tokens": {}
+  },
+  "private_purchase_samples": [
+    {
+      "accession_number": "0001104659-24-075270",
+      "issuer": "ClearSign Technologies Corp",
+      "matched": [
+        "securities purchase agreement"
+      ],
+      "snippet": "rein were issued to clirSPV LLC (\"\"clirSPV\"\") pursuant to a Securities Purchase Agreement, dated as of June 24, 2024, as amended on June 26, 2024 (as amended, the \"\"Purchase Agreem"
+    },
+    {
+      "accession_number": "0001079973-24-000893",
+      "issuer": "ProtoKinetix, Inc.",
+      "matched": [
+        "private placement"
+      ],
+      "snippet": "Shares purchased in private placement of the Company."
+    },
+    {
+      "accession_number": "0001079973-24-000893",
+      "issuer": "ProtoKinetix, Inc.",
+      "matched": [
+        "private placement"
+      ],
+      "snippet": "Shares purchased in private placement of the Company."
+    },
+    {
+      "accession_number": "0000950170-24-070675",
+      "issuer": "MSD Investment Corp.",
+      "matched": [
+        "subscription agreement"
+      ],
+      "snippet": "issuer in the form of a capital call. Under the terms of a subscription agreement between the reporting persons and the issuer, the reporting persons are required to fund drawdown"
+    },
+    {
+      "accession_number": "0000950170-24-070639",
+      "issuer": "MSD Investment Corp.",
+      "matched": [
+        "subscription agreement"
+      ],
+      "snippet": "he issuer in the form of a capital call. Under the terms of subscription agreements between the reporting persons and the issuer, the reporting persons are required to fund drawdow"
+    },
+    {
+      "accession_number": "0000950170-24-070639",
+      "issuer": "MSD Investment Corp.",
+      "matched": [
+        "subscription agreement"
+      ],
+      "snippet": "he issuer in the form of a capital call. Under the terms of subscription agreements between the reporting persons and the issuer, the reporting persons are required to fund drawdow"
+    },
+    {
+      "accession_number": "0001193805-24-000755",
+      "issuer": "electroCore, Inc.",
+      "matched": [
+        "private placement"
+      ],
+      "snippet": "On June 5, 2024, pursuant to a private placement offering by the Issuer, the Reporting Person acquired 38,505 Units, each Unit consisting of (i) one share of the Issuer's Common St"
+    },
+    {
+      "accession_number": "0001062993-24-011568",
+      "issuer": "Larimar Therapeutics, Inc.",
+      "matched": [
+        "underwritten"
+      ],
+      "snippet": "\"Represents shares of common stock purchased in the underwritten offering of Larimar Therapeutics, Inc. (the \"\"Company\"\") at the offering price, which closed on February 16, 2024.\""
+    },
+    {
+      "accession_number": "0000950170-24-066676",
+      "issuer": "FTAI Aviation Ltd.",
+      "matched": [
+        "public offering",
+        "underwritten"
+      ],
+      "snippet": "shares purchased by the reporting person in an underwritten public offering by the issuer that closed on May 30, 2024."
+    },
+    {
+      "accession_number": "0001628280-24-025650",
+      "issuer": "Bowhead Specialty Holdings Inc.",
+      "matched": [
+        "public offering",
+        "IPO",
+        "directed share program"
+      ],
+      "snippet": "purchased as issuer-directed shares in the Issuer's initial public offering."
+    }
+  ],
+  "espp_or_drip_samples": [
+    {
+      "accession_number": "0001628280-24-030527",
+      "issuer": "Noble Corp plc",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "ares acquired through inadvertent automatic enrollment in a dividend reinvestment program within the personal brokerage account of the Reporting Person. On the date of the transac"
+    },
+    {
+      "accession_number": "0001156375-24-000136",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Reflects shares that were acquired pursuant to a dividend reinvestment plan administered by the reporting person's broker."
+    },
+    {
+      "accession_number": "0001156375-24-000136",
+      "issuer": "CME GROUP INC.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Reflects shares that were acquired pursuant to a dividend reinvestment plan administered by the reporting person's broker."
+    },
+    {
+      "accession_number": "0001628280-24-029084",
+      "issuer": "Granite Ridge Resources, Inc.",
+      "matched": [
+        "dividend reinvestment"
+      ],
+      "snippet": "Shares acquired through automatic dividend reinvestment pursuant to the terms of a brokerage account."
+    },
+    {
+      "accession_number": "0001127602-24-018896",
+      "issuer": "KINGSWAY FINANCIAL SERVICES INC",
+      "matched": [
+        "ESPP"
+      ],
+      "snippet": "Plan, as amended and restated effective May 29, 2014 (the \"\"ESPP\"\"). Pursuant to the ESPP, eligible employees may contribute an amount up to 5% of adjusted salary for eac"
+    }
+  ]
+}

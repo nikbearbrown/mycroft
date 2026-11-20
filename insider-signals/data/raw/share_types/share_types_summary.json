@@ -1,0 +1,837 @@
+{
+ "run_at": "2026-11-20T21:46:04+00:00",
+ "input": "data/verified/enriched_buys.csv",
+ "input_sha256": "bd5fdf25b9df9bd584be2d6f5b1778e03d7656297dc4337dd3cc798b071aaafd",
+ "input_matches_enrich_summary": true,
+ "rule10_status": "proposed, not registered",
+ "rows": 78495,
+ "in_scope": 75638,
+ "out_of_scope": 2857,
+ "by_reason": {
+  "warrants": {
+   "decision": "out",
+   "buys": 1,
+   "priced": 0,
+   "rule9_mismatch": 0,
+   "distinct_titles": 1,
+   "examples": [
+    [
+     "WARRANTS TO PURCHASE CLASS A COMMON STOCK",
+     1
+    ]
+   ]
+  },
+  "debt": {
+   "decision": "out",
+   "buys": 22,
+   "priced": 1,
+   "rule9_mismatch": 21,
+   "distinct_titles": 13,
+   "examples": [
+    [
+     "5.65% SERIES WW SENIOR UNSECURED NOTES DUE MAY 22, 2031",
+     3
+    ],
+    [
+     "5.79% SERIES XX SENIOR UNSECURED NOTES DUE MAY 22, 2034",
+     3
+    ],
+    [
+     "5.45% SERIES ZZ SENIOR UNSECURED NOTES DUE SEP. 18, 2036",
+     3
+    ],
+    [
+     "5.79% SERIES VV SENIOR UNSECURED NOTES DUE JANUARY 10, 2034",
+     2
+    ],
+    [
+     "3.00% SERIES B SENIOR SECURED NOTES DUE JULY 22, 2026",
+     2
+    ],
+    [
+     "3.70% SERIES D SENIOR SECURED NOTES DUE AUGUST 10, 2032",
+     1
+    ],
+    [
+     "4.43% SERIES AAA SENIOR UNSECURED NOTES DUE OCTOBER 16, 2028",
+     1
+    ],
+    [
+     "4.60% SERIES BBB SENIOR UNSECURED NOTES DUE OCTOBER 15, 2030",
+     1
+    ],
+    [
+     "5.364% SERIES C SENIOR UNSECURED NOTES DUE JULY 8, 2030",
+     1
+    ],
+    [
+     "7.23% SERIES Q SENIOR SECURED NOTES DUE JANUARY 20, 2031",
+     1
+    ]
+   ]
+  },
+  "options": {
+   "decision": "out",
+   "buys": 7,
+   "priced": 1,
+   "rule9_mismatch": 0,
+   "distinct_titles": 2,
+   "examples": [
+    [
+     "OPTION (RIGHT TO BUY)",
+     6
+    ],
+    [
+     "STOCK OPTION (RIGHT TO BUY)",
+     1
+    ]
+   ]
+  },
+  "rights": {
+   "decision": "out",
+   "buys": 2,
+   "priced": 0,
+   "rule9_mismatch": 1,
+   "distinct_titles": 2,
+   "examples": [
+    [
+     "RIGHTS TO ACQUIRE COMMON SHARES",
+     1
+    ],
+    [
+     "STOCK APPRECIATION RIGHTS (2014)",
+     1
+    ]
+   ]
+  },
+  "depositary_preferred": {
+   "decision": "out",
+   "buys": 200,
+   "priced": 59,
+   "rule9_mismatch": 30,
+   "distinct_titles": 22,
+   "examples": [
+    [
+     "DEPOSITARY SHARES FOR SERIES B PREFERRED STOCK",
+     96
+    ],
+    [
+     "SERIES K PREFERRED STOCK DEPOSITARY SHARES",
+     11
+    ],
+    [
+     "DEPOSITARY SHARES - 8.375% B CUMULATIVE STOCK",
+     10
+    ],
+    [
+     "SERIES M PREFERRED STOCK DEPOSITARY SHARES",
+     10
+    ],
+    [
+     "DEPOSITARY SHARES, 1/40 INTEREST IN SERIES B PREFERRED STOCK",
+     9
+    ],
+    [
+     "DEPOSITARY SHARES - 8.375% SERIES B PERPETUAL PREFERRED",
+     1
+    ],
+    [
+     "DEPOSITARY SHARES REPRESENTING SERIES D PREFERRED STOCK",
+     1
+    ],
+    [
+     "DEPOSITORY SHARES-NON-CUMMULATIVE PERPETUAL PREFERRED SER A",
+     1
+    ],
+    [
+     "SERIES G PREFERRED STOCK DEPOSITARY SHARES",
+     1
+    ],
+    [
+     "SERIES A PREFERRED DEPOSITARY SHARES",
+     2
+    ]
+   ]
+  },
+  "preferred": {
+   "decision": "out",
+   "buys": 886,
+   "priced": 117,
+   "rule9_mismatch": 482,
+   "distinct_titles": 114,
+   "examples": [
+    [
+     "SERIES B PREFERRED SHARES",
+     108
+    ],
+    [
+     "SERIES G PERPETUAL PREFERRED SHARES",
+     81
+    ],
+    [
+     "5.95% PREFERRED STOCK",
+     72
+    ],
+    [
+     "7.875% SERIES D PREFERRED STOCK",
+     27
+    ],
+    [
+     "PREFERENCE SHARES - BBDC4",
+     25
+    ],
+    [
+     "6% SERIES A PREFERRED UNITS",
+     1
+    ],
+    [
+     "6.50% SERIES C CUMULATIVE REDEEMABLE PREFERRED STOCK",
+     1
+    ],
+    [
+     "6.50% SERIES C TERM PREFERRED STOCK DUE 2031",
+     1
+    ],
+    [
+     "7.25% SERIES B CUMULATIVE REDEEMABLE PREFERRED STOCK",
+     1
+    ],
+    [
+     "8.125% SERIES A TERM PREFERRED SHARES DUE 2029",
+     1
+    ]
+   ]
+  },
+  "convertible": {
+   "decision": "out",
+   "buys": 1,
+   "priced": 0,
+   "rule9_mismatch": 1,
+   "distinct_titles": 1,
+   "examples": [
+    [
+     "CONVERTIBLE STOCK",
+     1
+    ]
+   ]
+  },
+  "foreign_exchange_suffix": {
+   "decision": "out",
+   "buys": 212,
+   "priced": 0,
+   "rule9_mismatch": 212,
+   "distinct_titles": 2,
+   "examples": [
+    [
+     "COMMON SHARES (2330.TW)",
+     211
+    ],
+    [
+     "ORDINARY PARTICIPATION CERTIFICATES (CEMEX.CPO)",
+     1
+    ]
+   ]
+  },
+  "depositary_common": {
+   "decision": "in",
+   "buys": 247,
+   "priced": 205,
+   "rule9_mismatch": 6,
+   "distinct_titles": 14,
+   "examples": [
+    [
+     "AMERICAN DEPOSITARY SHARES",
+     169
+    ],
+    [
+     "ADSS",
+     11
+    ],
+    [
+     "AMERICAN DEPOSITARY SHARES (ADS)",
+     11
+    ],
+    [
+     "AMERICAN DEPOSITARY SHARES (TSM)",
+     9
+    ],
+    [
+     "ORDINARY SHARES (REPRESENTED BY AMERICAN DEPOSITARY SHARES)",
+     8
+    ],
+    [
+     "ADR",
+     1
+    ],
+    [
+     "ADSS REPRESENTING CLASS B SHARES",
+     1
+    ],
+    [
+     "AMERICAN DEPOSITARY SHARES (ADSS)",
+     1
+    ],
+    [
+     "AMERICAN DEPOSITORY SHARES",
+     3
+    ],
+    [
+     "ADS",
+     4
+    ]
+   ]
+  },
+  "depositary_underlying_unstated": {
+   "decision": "out",
+   "buys": 82,
+   "priced": 27,
+   "rule9_mismatch": 52,
+   "distinct_titles": 11,
+   "examples": [
+    [
+     "DEPOSITORY SHARES",
+     31
+    ],
+    [
+     "DEPOSITARY SHARES",
+     17
+    ],
+    [
+     "DEPOSITARY SHARES B",
+     13
+    ],
+    [
+     "SERIES B DEPOSITARY SHARES",
+     9
+    ],
+    [
+     "SERIES E DEPOSITARY SHARES",
+     5
+    ],
+    [
+     "DEPOSITARY SHARE",
+     1
+    ],
+    [
+     "DEPOSITARY SHARES (SERIES A)",
+     1
+    ],
+    [
+     "DEPOSITARY SHARES, SERIES G",
+     1
+    ],
+    [
+     "SERIES C DEPOSITARY SHARES",
+     1
+    ],
+    [
+     "SERIES D DEPOSITARY SHARES",
+     1
+    ]
+   ]
+  },
+  "lp_common_units": {
+   "decision": "in",
+   "buys": 921,
+   "priced": 908,
+   "rule9_mismatch": 2,
+   "distinct_titles": 8,
+   "examples": [
+    [
+     "COMMON UNITS",
+     597
+    ],
+    [
+     "COMMON UNITS REPRESENTING LIMITED PARTNER INTERESTS",
+     193
+    ],
+    [
+     "COMMON UNIT",
+     104
+    ],
+    [
+     "COMMON UNITS - CLASS A",
+     11
+    ],
+    [
+     "COMMON UNITS REPRESENTING LIMITED PARTNERSHIP INTERESTS",
+     8
+    ],
+    [
+     "COMMON UNITS (LIMITED PARTNER INTERESTS)",
+     1
+    ],
+    [
+     "COMMON UNITS REPRESENTING LIMITED PARTNER INTEREST",
+     1
+    ],
+    [
+     "SUNOCOCORP COMMON UNITS",
+     6
+    ]
+   ]
+  },
+  "units_not_lp_common": {
+   "decision": "out",
+   "buys": 315,
+   "priced": 82,
+   "rule9_mismatch": 1,
+   "distinct_titles": 36,
+   "examples": [
+    [
+     "UNITS OF BENEFICIAL INTEREST",
+     42
+    ],
+    [
+     "CLASS A UNITS",
+     39
+    ],
+    [
+     "LIMITED LIABILITY COMPANY UNITS",
+     38
+    ],
+    [
+     "LIMITED LIABILITY COMPANY MEMBERSHIP UNITS",
+     25
+    ],
+    [
+     "UNITS OF LIMITED LIABILITY COMPANY INTERESTS $10.00 PER UNIT",
+     21
+    ],
+    [
+     "BENEFICIAL UNIT CERTFICIATES",
+     1
+    ],
+    [
+     "BROOKFIELD INFRASTRUCTURE LP UNITS",
+     1
+    ],
+    [
+     "CLASS 4 UNITS",
+     1
+    ],
+    [
+     "CLASS A CAPITAL UNITS",
+     1
+    ],
+    [
+     "CLASS A MEMBERSHIP UNITS",
+     1
+    ]
+   ]
+  },
+  "beneficial_interest": {
+   "decision": "in",
+   "buys": 1376,
+   "priced": 619,
+   "rule9_mismatch": 1,
+   "distinct_titles": 42,
+   "examples": [
+    [
+     "COMMON SHARES OF BENEFICIAL INTEREST",
+     741
+    ],
+    [
+     "SHARES OF BENEFICIAL INTEREST",
+     206
+    ],
+    [
+     "CLASS I COMMON SHARES OF BENEFICIAL INTEREST",
+     103
+    ],
+    [
+     "COMMON SHARES OF BENEFICIAL INTEREST, PAR VALUE $0.001",
+     95
+    ],
+    [
+     "CLASS I SHARES OF BENEFICIAL INTEREST",
+     41
+    ],
+    [
+     "CLASS A SHARES OF BENEFICIAL INTEREST",
+     1
+    ],
+    [
+     "CLASS C SHARES OF BENEFICIAL INTEREST",
+     1
+    ],
+    [
+     "CLASS F COMMON SHARES OF BEN. INTEREST",
+     1
+    ],
+    [
+     "CLASS F SHARES OF BENEFICIAL INTEREST",
+     1
+    ],
+    [
+     "CLASS F-I COMMON SHARES OF BENEFICIAL INTEREST",
+     1
+    ]
+   ]
+  },
+  "ordinary": {
+   "decision": "in",
+   "buys": 1407,
+   "priced": 1039,
+   "rule9_mismatch": 122,
+   "distinct_titles": 43,
+   "examples": [
+    [
+     "ORDINARY SHARES",
+     749
+    ],
+    [
+     "CLASS A ORDINARY SHARES",
+     218
+    ],
+    [
+     "CLASS A ORDINARY SHARE, PAR VALUE US$0.0001",
+     120
+    ],
+    [
+     "CLASS A ORDINARY SHARES WITHOUT PAR VALUE",
+     54
+    ],
+    [
+     "ORDINARY SHARES, PAR VALUE NIS 1.00 PER SHARE.",
+     28
+    ],
+    [
+     "1CLASS A ORDINARY SHARES",
+     1
+    ],
+    [
+     "CLASS A ORDINARY SHARE, PAR VALUE $0.002 PER SHARE",
+     1
+    ],
+    [
+     "CLASS A ORDINARY SHARES, PAR VALUE $0.003 PER SHARE",
+     1
+    ],
+    [
+     "CLASS A ORDINARY SHARES, PAR VALUE $0.05 PER SHARE",
+     1
+    ],
+    [
+     "CLASS A ORDINARY SHARES, PAR VALUE US$0.000625",
+     1
+    ]
+   ]
+  },
+  "common": {
+   "decision": "in",
+   "buys": 71507,
+   "priced": 59101,
+   "rule9_mismatch": 1318,
+   "distinct_titles": 378,
+   "examples": [
+    [
+     "COMMON STOCK",
+     52327
+    ],
+    [
+     "CLASS A COMMON STOCK",
+     5436
+    ],
+    [
+     "COMMON SHARES",
+     2696
+    ],
+    [
+     "COMMON STOCK, PAR VALUE $0.01 PER SHARE",
+     916
+    ],
+    [
+     "COMMON STOCK, PAR VALUE $0.001 PER SHARE",
+     678
+    ],
+    [
+     "\"COMMON STOCK, $0.01 PAR VALUE PER SHARE (\"\"COMMON SHARES\"\")\"",
+     1
+    ],
+    [
+     "\"COMMON STOCK, PAR VALUE (\"\"COMMON STOCK\"\")\"",
+     1
+    ],
+    [
+     "\"COMMON STOCK, WITHOUT PAR VALUE (\"\"COMMON STOCK\"\")\"",
+     1
+    ],
+    [
+     "$1 PAR COMMON STOCK",
+     1
+    ],
+    [
+     "AIR LEASE CORPORATION - CLASS A COMMON STOCK",
+     1
+    ]
+   ]
+  },
+  "share_equivalent_named": {
+   "decision": "in",
+   "buys": 180,
+   "priced": 121,
+   "rule9_mismatch": 18,
+   "distinct_titles": 7,
+   "examples": [
+    [
+     "SUBORDINATE VOTING SHARES",
+     70
+    ],
+    [
+     "FIRST FINANCIAL CORP STOCK",
+     65
+    ],
+    [
+     "REGISTERED SHARES",
+     24
+    ],
+    [
+     "CLASS C CAPITAL STOCK",
+     15
+    ],
+    [
+     "CLASS A SUBORDINATE VOTING SHARES",
+     3
+    ],
+    [
+     "ENB FINANCIAL CORP STOCK",
+     1
+    ],
+    [
+     "CAPITAL STOCK",
+     2
+    ]
+   ]
+  },
+  "share_class_not_named_common": {
+   "decision": "out",
+   "buys": 420,
+   "priced": 149,
+   "rule9_mismatch": 4,
+   "distinct_titles": 41,
+   "examples": [
+    [
+     "CLASS I SHARES",
+     120
+    ],
+    [
+     "CLASS A SHARES",
+     69
+    ],
+    [
+     "CLASS Z SHARES",
+     45
+    ],
+    [
+     "SHARES OF LIMITED LIABILITY COMPANY INTERESTS",
+     30
+    ],
+    [
+     "LIMITED LIABILITY COMPANY SHARES, CLASS I",
+     27
+    ],
+    [
+     "ADVISOR CLASS SHARES",
+     1
+    ],
+    [
+     "CLASS A1 SHARES",
+     1
+    ],
+    [
+     "CLASS A2 SHARES",
+     1
+    ],
+    [
+     "CLASS A3 SHARES",
+     1
+    ],
+    [
+     "CLASS B SHARES",
+     1
+    ]
+   ]
+  },
+  "unclassifiable": {
+   "decision": "out",
+   "buys": 709,
+   "priced": 463,
+   "rule9_mismatch": 81,
+   "distinct_titles": 100,
+   "examples": [
+    [
+     "JCTC",
+     72
+    ],
+    [
+     "GIORGIO R. SAUMAT",
+     60
+    ],
+    [
+     "UMH PROPERTIES, INC.",
+     58
+    ],
+    [
+     "CTTH",
+     47
+    ],
+    [
+     "INNSUITES HOSPITALITY REIT",
+     34
+    ],
+    [
+     "AMSWA",
+     1
+    ],
+    [
+     "CALAMOS AKSIA ALTERNATIVE CREDIT & INCOME FUND",
+     1
+    ],
+    [
+     "CLASS A",
+     1
+    ],
+    [
+     "CLASS Y",
+     1
+    ],
+    [
+     "COLLER PRIVATE CREDIT SECONDARIES",
+     1
+    ]
+   ]
+  }
+ },
+ "coverage": {
+  "current_all_buys": {
+   "priced": 62892,
+   "of": 78495,
+   "pct": 80.12
+  },
+  "rule10_over_all_buys": {
+   "priced": 61993,
+   "of": 78495,
+   "pct": 78.98
+  },
+  "rule10_over_in_scope": {
+   "priced": 61993,
+   "of": 75638,
+   "pct": 81.96
+  }
+ },
+ "by_quarter": {
+  "2023q2": {
+   "buys": 7964,
+   "in_scope": 7609,
+   "priced_in_scope": 5614,
+   "priced_all": 5701,
+   "pct_over_all_buys": 70.49,
+   "pct_over_in_scope": 73.78
+  },
+  "2023q3": {
+   "buys": 5785,
+   "in_scope": 5628,
+   "priced_in_scope": 4291,
+   "priced_all": 4326,
+   "pct_over_all_buys": 74.17,
+   "pct_over_in_scope": 76.24
+  },
+  "2023q4": {
+   "buys": 6240,
+   "in_scope": 6017,
+   "priced_in_scope": 4537,
+   "priced_all": 4650,
+   "pct_over_all_buys": 72.71,
+   "pct_over_in_scope": 75.4
+  },
+  "2024q1": {
+   "buys": 5214,
+   "in_scope": 5070,
+   "priced_in_scope": 3928,
+   "priced_all": 3968,
+   "pct_over_all_buys": 75.34,
+   "pct_over_in_scope": 77.48
+  },
+  "2024q2": {
+   "buys": 5444,
+   "in_scope": 5285,
+   "priced_in_scope": 4193,
+   "priced_all": 4241,
+   "pct_over_all_buys": 77.02,
+   "pct_over_in_scope": 79.34
+  },
+  "2024q3": {
+   "buys": 5070,
+   "in_scope": 4947,
+   "priced_in_scope": 3964,
+   "priced_all": 4003,
+   "pct_over_all_buys": 78.19,
+   "pct_over_in_scope": 80.13
+  },
+  "2024q4": {
+   "buys": 5983,
+   "in_scope": 5847,
+   "priced_in_scope": 4685,
+   "priced_all": 4726,
+   "pct_over_all_buys": 78.31,
+   "pct_over_in_scope": 80.13
+  },
+  "2025q1": {
+   "buys": 5285,
+   "in_scope": 5128,
+   "priced_in_scope": 4184,
+   "priced_all": 4245,
+   "pct_over_all_buys": 79.17,
+   "pct_over_in_scope": 81.59
+  },
+  "2025q2": {
+   "buys": 6297,
+   "in_scope": 6177,
+   "priced_in_scope": 5251,
+   "priced_all": 5269,
+   "pct_over_all_buys": 83.39,
+   "pct_over_in_scope": 85.01
+  },
+  "2025q3": {
+   "buys": 4788,
+   "in_scope": 4604,
+   "priced_in_scope": 4084,
+   "priced_all": 4137,
+   "pct_over_all_buys": 85.3,
+   "pct_over_in_scope": 88.71
+  },
+  "2025q4": {
+   "buys": 5313,
+   "in_scope": 5126,
+   "priced_in_scope": 4596,
+   "priced_all": 4651,
+   "pct_over_all_buys": 86.5,
+   "pct_over_in_scope": 89.66
+  },
+  "2026q1": {
+   "buys": 4817,
+   "in_scope": 4628,
+   "priced_in_scope": 4099,
+   "priced_all": 4189,
+   "pct_over_all_buys": 85.09,
+   "pct_over_in_scope": 88.57
+  },
+  "2026q2": {
+   "buys": 5180,
+   "in_scope": 4886,
+   "priced_in_scope": 4408,
+   "priced_all": 4493,
+   "pct_over_all_buys": 85.1,
+   "pct_over_in_scope": 90.22
+  },
+  "2026q3": {
+   "buys": 5115,
+   "in_scope": 4686,
+   "priced_in_scope": 4159,
+   "priced_all": 4293,
+   "pct_over_all_buys": 81.31,
+   "pct_over_in_scope": 88.75
+  }
+ }
+}
