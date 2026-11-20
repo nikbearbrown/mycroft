@@ -2,7 +2,7 @@
 
 _Snapshot updated at the end of each working session. See `logs/RUN_LOG.md` for full history._
 
-**Last updated:** 2026-11-09
+**Last updated:** 2026-11-20
 **Fellow:** Gomathy S.
 **Module:** `insider-signals/`, which contributes the `insider-signal-agent` recipe.
 
@@ -12,9 +12,9 @@ _Snapshot updated at the end of each working session. See `logs/RUN_LOG.md` for 
 
 | Recipe | State | Evidence |
 |--------|-------|----------|
-| `insider-signal-agent` | **DRAFT** | 4 open TODOs; INGEST, PARSE, GIGO, ENRICH run on the study period (2023 Q2 – 2026 Q3); last gate G2 (cleared for the study period); G3 not yet cleared |
+| `insider-signal-agent` | **DRAFT** | 4 open TODOs; INGEST, PARSE, GIGO, ENRICH run on the study period (2023 Q2 – 2026 Q3); last gate G3 (cleared 2026-11-20) |
 
-**Last gate:** G2 (parse + conformance), cleared by Gomathy S. on 2026-11-05 for the study period 2023 Q2 – 2026 Q3: 98 of 98 halting checks pass; 78,495 buys promoted (SHA-256 `a7ec5529…db75b16`); spot-check 25/25 consistent (`logs/RUN_LOG.md#2026-11-05`). Earlier: G2 cleared 2026-11-04 for 2026 Q3; G1 cleared 2026-11-04 for 2023 Q1 – 2026 Q3.
+**Last gate:** G3 (enrich + price coverage), cleared by Gomathy S. on 2026-11-20: in-scope coverage 81.96% (61,993 / 75,638; all-buys 78.98%); 11 of 11 halting checks pass; `enriched_buys.csv` SHA-256 `bd5fdf25…aaafd` (`logs/RUN_LOG.md#2026-11-20`). Earlier: G2 cleared 2026-11-05 for the study period 2023 Q2 – 2026 Q3 (98 of 98 halting checks; 78,495 buys, `a7ec5529…db75b16`; spot-check 25/25); G2 cleared 2026-11-04 for 2026 Q3; G1 cleared 2026-11-04 for 2023 Q1 – 2026 Q3.
 
 Lifecycle: `DRAFT → SPECIFIED → RUNNABLE-SAMPLE → RUNNABLE-LIVE → VERIFIED`
 
@@ -23,7 +23,7 @@ Lifecycle: `DRAFT → SPECIFIED → RUNNABLE-SAMPLE → RUNNABLE-LIVE → VERIFI
 - Source: SEC Insider Transactions Data Sets, study period **2023 Q2 – 2026 Q3** (14 quarters; changed 2026-11-04 from 2023 Q1 – 2026 Q3). 2023 Q1 is downloaded and kept on disk but is not in the study.
 - Downloaded: **2023 Q1 – 2026 Q3** (15 quarters, G1 cleared 2026-11-04). Raw files are gitignored; `manifest.json` and `request_log.jsonl` are committed.
 - Verified (2026-11-04, 14 study quarters): `data/verified/insider_buys.csv`, **78,495 buys**, SHA-256 `a7ec55298bf886c0090f7c5fc4e93bfb18faeabc5d4c407db8d77abefdb75b16` (gitignored; rebuild with `parse.py` + `conformance.py --quarters 2023q2:2026q3`). Eligible for clustering under Rules 1–6, 2a and 2b: **65,106**.
-- Enriched (re-run 2026-11-13 with Rule 10, offline from cache; not yet G3-cleared): `data/verified/enriched_buys.csv`, 78,495 rows, SHA-256 `7868d1b32dfad10cf190e1be2049a3314d693e4196df7c7dbd02d2107470c04e` (gitignored). In scope (Rule 10) 75,638. Coverage **81.93% over in-scope buys** (G3 measure, minimum 80%) · **78.95% over all buys**. 2,352 buys `price_mismatch_vs_filing`. Prices through 2026-11-06.
+- Enriched (re-run 2026-11-20 after a one-time targeted retry of the 808 `no_data` symbols: 4 recovered, 24 buys; **G3 cleared 2026-11-20**): `data/verified/enriched_buys.csv`, 78,495 rows, SHA-256 `bd5fdf25b9df9bd584be2d6f5b1778e03d7656297dc4337dd3cc798b071aaafd` (gitignored). In scope (Rule 10) 75,638. Coverage **81.96% over in-scope buys** (G3 measure, minimum 80%) · **78.98% over all buys**. `no_data` buys now 8,808. 2,352 buys `price_mismatch_vs_filing`. Prices through 2026-11-06.
 
 ## Next actions (week 1–2)
 
@@ -42,12 +42,13 @@ Lifecycle: `DRAFT → SPECIFIED → RUNNABLE-SAMPLE → RUNNABLE-LIVE → VERIFI
 - ~~Register the return windows and G3 coverage~~ (2026-11-09: Rules 7–8; TODOs 4 and 5 closed).
 - ~~Build and run ENRICH~~ (2026-11-09: coverage 83.09%, then 80.09% after Rule 9; audit `data/verified/enrich-audit.md`).
 - ~~Ticker sanity check~~ (2026-11-09: Rule 9).
-- Read the enrich audit and log the G3 decision.
+- ~~Read the enrich audit and log the G3 decision~~ (G3 cleared 2026-11-20).
 - ~~Decide Rule 10~~ (2026-11-13: Rules 10 and 11 registered; G3 denominator = in-scope buys; both coverage figures in every report).
 - Next stage after G3: SIGNALS (needs TODOs 7–9 and the cluster definition registered first).
 
 ## Open decisions / blockers
 
 - G6 is a **self-attestation** (Gomathy S.) during development; external review pending.
-- Survivorship risk: 8,832 buys have no price data, concentrated in older quarters, likely including delisted companies. Missing delisted stocks can bias results upward. Must be reported with the backtest.
+- Survivorship risk: 8,808 buys have no price data (8,832 before the 2026-11-20 retry), concentrated in older quarters. They likely include delisted companies, plus some listed securities Yahoo did not return. Missing delisted stocks can bias results upward. Must be reported with the backtest.
+- Known limitation: 32 symbols are used by more than one issuer (729 buys); Rule 9 catches large price gaps but not all reuse.
 - See the `[TODO]` list in `recipes/insider-signal-agent.md`.

@@ -2,8 +2,8 @@
 
 **Proposal only: Rule 10 is not registered and not applied.** Counts, not outcomes: no entry, exit or return column was read.
 
-- Input: `data/verified/enriched_buys.csv` SHA-256 `fa14627333ac754a7f904e3417e5475241d7523659d46d6385779a7c65295bde` (matches `enrich_summary.json`: True)
-- Run at: 2026-11-13T20:59:47+00:00 · script `share_types.py`
+- Input: `data/verified/enriched_buys.csv` SHA-256 `bd5fdf25b9df9bd584be2d6f5b1778e03d7656297dc4337dd3cc798b071aaafd` (matches `enrich_summary.json`: True)
+- Run at: 2026-11-20T21:46:04+00:00 · script `share_types.py`
 - Buys: 78,495 · in scope 75,638 · out of scope 2,857
 
 ## Counts by decision
@@ -24,7 +24,7 @@
 | out | `units_not_lp_common` (owner-decided 2026-11-13) | 315 | 82 | 1 | 36 |
 | in | `beneficial_interest` | 1,376 | 619 | 1 | 42 |
 | in | `ordinary` | 1,407 | 1,039 | 122 | 43 |
-| in | `common` | 71,507 | 59,077 | 1,318 | 378 |
+| in | `common` | 71,507 | 59,101 | 1,318 | 378 |
 | in | `share_equivalent_named` (owner-decided 2026-11-13) | 180 | 121 | 18 | 7 |
 | out | `share_class_not_named_common` (owner-decided 2026-11-13) | 420 | 149 | 4 | 41 |
 | out | `unclassifiable` | 709 | 463 | 81 | 100 |
@@ -33,9 +33,9 @@
 
 | Measure | Priced | Of | Coverage |
 |---|---|---|---|
-| Current (no Rule 10), all buys | 62,868 | 78,495 | 80.09% |
-| Rule 10, over all buys | 61,969 | 78,495 | 78.95% |
-| Rule 10, over in-scope buys | 61,969 | 75,638 | 81.93% |
+| Current (no Rule 10), all buys | 62,892 | 78,495 | 80.12% |
+| Rule 10, over all buys | 61,993 | 78,495 | 78.98% |
+| Rule 10, over in-scope buys | 61,993 | 75,638 | 81.96% |
 
 ### By quarter
 
@@ -44,15 +44,15 @@
 | 2023 Q2 | 7,964 | 7,609 | 5,614 | 70.49% | 73.78% |
 | 2023 Q3 | 5,785 | 5,628 | 4,291 | 74.17% | 76.24% |
 | 2023 Q4 | 6,240 | 6,017 | 4,537 | 72.71% | 75.4% |
-| 2024 Q1 | 5,214 | 5,070 | 3,927 | 75.32% | 77.46% |
-| 2024 Q2 | 5,444 | 5,285 | 4,179 | 76.76% | 79.07% |
+| 2024 Q1 | 5,214 | 5,070 | 3,928 | 75.34% | 77.48% |
+| 2024 Q2 | 5,444 | 5,285 | 4,193 | 77.02% | 79.34% |
 | 2024 Q3 | 5,070 | 4,947 | 3,964 | 78.19% | 80.13% |
 | 2024 Q4 | 5,983 | 5,847 | 4,685 | 78.31% | 80.13% |
-| 2025 Q1 | 5,285 | 5,128 | 4,182 | 79.13% | 81.55% |
-| 2025 Q2 | 6,297 | 6,177 | 5,250 | 83.37% | 84.99% |
+| 2025 Q1 | 5,285 | 5,128 | 4,184 | 79.17% | 81.59% |
+| 2025 Q2 | 6,297 | 6,177 | 5,251 | 83.39% | 85.01% |
 | 2025 Q3 | 4,788 | 4,604 | 4,084 | 85.3% | 88.71% |
-| 2025 Q4 | 5,313 | 5,126 | 4,593 | 86.45% | 89.6% |
-| 2026 Q1 | 4,817 | 4,628 | 4,096 | 85.03% | 88.5% |
+| 2025 Q4 | 5,313 | 5,126 | 4,596 | 86.5% | 89.66% |
+| 2026 Q1 | 4,817 | 4,628 | 4,099 | 85.09% | 88.57% |
 | 2026 Q2 | 5,180 | 4,886 | 4,408 | 85.1% | 90.22% |
 | 2026 Q3 | 5,115 | 4,686 | 4,159 | 81.31% | 88.75% |
 

@@ -41,6 +41,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from contextlib import redirect_stdout
 from datetime import date, timedelta
 from pathlib import Path
@@ -669,3 +670,166 @@ class TestRule10Scope(Base):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+# --------------------------------------------------------------------------- targeted no_data retry
+
+class TestRetryNoData(Base):
+    """--retry-no-data re-requests only symbols cached as no_data, over the same range, with the
+    same batching and pauses; nothing else is downloaded again and no symbol is renamed."""
+
+    def setUp(self):
+        super().setUp()
+        self.script = {"SPY": bars(CAL, 400.0, 1.0), "AAA": bars(CAL, 10.0, 0.1),
+                       "CCC": bars(CAL, 30.0, 0.1)}
+        rows = [vrow(1, CAL[5], "AAA"), vrow(2, CAL[6], "BBB"), vrow(3, CAL[7], "DDD"),
+                vrow(4, CAL[8], "CCC")]
+        rows += [vrow(10 + i, CAL[10 + i], "AAA" if i % 2 else "CCC") for i in range(8)]
+        # 10 of 12 priced before the retry (83%), so the first run passes G3.
+        # Filed prices that pass Rule 9 once BBB has data.
+        full = dict(self.script, BBB=bars(CAL, 20.0, 0.1))
+        write_verified(self.vdir, rows, full)
+
+    def first_run(self):
+        from unittest import mock
+        with mock.patch.object(enrich, "_utc_now", lambda: "2024-07-01T12:00:00+00:00"):
+            self.assertEqual(self.run_enrich(FakeSource(self.script)), 0)  # BBB, DDD: no_data
+        m = json.loads((self.pdir / enrich.PRICES_MANIFEST).read_text())["symbols"]
+        self.assertEqual((m["BBB"]["status"], m["DDD"]["status"]), ("no_data", "no_data"))
+
+    def test_only_no_data_symbols_are_requested_again(self):
+        self.first_run()
+        from unittest import mock
+        src = FakeSource(dict(self.script, BBB=bars(CAL, 20.0, 0.1)))   # BBB recovers; DDD not
+        before = (self.pdir / enrich.FETCH_LOG).read_text().splitlines()
+        with mock.patch.object(enrich, "_utc_now", lambda: "2024-07-05T12:00:00+00:00"):
+            self.assertEqual(self.run_enrich(src, retry_no_data=True), 0)
+        self.assertEqual(src.calls, [["SPY", "BBB", "DDD"]])   # SPY as control; not AAA or CCC
+        self.assertEqual(src.split_calls, [["BBB"]])            # AAA, CCC splits not re-requested
+        new = [json.loads(l) for l in
+               (self.pdir / enrich.FETCH_LOG).read_text().splitlines()[len(before):]]
+        self.assertTrue(new and all(l.get("mode") == "retry_no_data" for l in new if l["kind"] == "prices"))
+        out = self.enriched()
+        self.assertEqual(out[f"BBB|{CAL[6]}"]["price_status"], "priced")
+        self.assertEqual(out[f"BBB|{CAL[6]}"]["symbol_used"], "BBB")
+        self.assertEqual(out[f"DDD|{CAL[7]}"]["price_status"], "no_data")
+        sm = json.loads((self.pdir / enrich.SPLITS_MANIFEST).read_text())["symbols"]
+        self.assertEqual(sm["AAA"]["requested_end"], "2024-07-02")   # its own fetch date + 1
+        self.assertEqual(sm["BBB"]["requested_end"], "2024-07-06")
+        pm = json.loads((self.pdir / enrich.PRICES_MANIFEST).read_text())["symbols"]
+        self.assertEqual(pm["AAA"]["fetched_at"][:10], "2024-07-01")  # untouched
+        with redirect_stdout(io.StringIO()):
+            self.assertEqual(enrich.check(self.vdir, self.pdir), 0)
+
+    def test_without_the_flag_nothing_cached_is_requested(self):
+        self.first_run()
+        src = FakeSource(dict(self.script, BBB=bars(CAL, 20.0, 0.1)))
+        self.assertEqual(self.run_enrich(src), 0)
+        self.assertEqual((src.calls, src.split_calls), ([], []))
+
+    def test_retry_uses_the_same_batching_and_pauses(self):
+        self.first_run()
+        src = FakeSource(self.script)
+        self.sleeps.clear()
+        self.assertEqual(self.run_enrich(src, retry_no_data=True, batch_size=2), 0)
+        self.assertEqual(src.calls, [["SPY", "BBB"], ["SPY", "DDD"]])
+        self.assertEqual(self.sleeps, [1.0])                     # one pause between two batches
+
+    def test_cli_refuses_retry_with_offline_or_refresh(self):
+        import contextlib
+        for extra in (["--offline"], ["--refresh"]):
+            with self.subTest(extra=extra), contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(enrich.main(["--retry-no-data", *extra,
+                                              "--verified-dir", str(self.vdir),
+                                              "--prices-dir", str(self.pdir)]), 2)
+
+    def spy_entry(self):
+        return json.loads((self.pdir / enrich.PRICES_MANIFEST).read_text())["symbols"]["SPY"]
+
+    def test_all_dead_batch_with_healthy_control_is_recorded_not_halted(self):
+        self.first_run()
+        spy_before = self.spy_entry()
+        spy_csv = (self.pdir / "SPY.csv").read_bytes()
+        dead = {f"Z{i:02d}" for i in range(12)}          # 12 dead symbols: ≥ 10, all fail
+        m = json.loads((self.pdir / enrich.PRICES_MANIFEST).read_text())
+        for z in dead:
+            m["symbols"][z] = dict(m["symbols"]["DDD"])
+        (self.pdir / enrich.PRICES_MANIFEST).write_text(json.dumps(m))
+        cache = enrich.PriceCache(self.pdir)
+        src = FakeSource(self.script)
+        stats = enrich.fetch_missing(dead | {"SPY"}, cache, src, m["symbols"]["SPY"]["requested_start"],
+                                     m["symbols"]["SPY"]["requested_end"], retry_no_data=True,
+                                     control="SPY", sleep=self.sleeps.append, log=self.logs.append)
+        self.assertEqual(src.calls, [["SPY", *sorted(dead)]])
+        self.assertEqual((stats["no_data"], stats.get("refusals", 0)), (12, 0))
+        self.assertEqual(self.spy_entry(), spy_before)                   # control never cached
+        self.assertEqual((self.pdir / "SPY.csv").read_bytes(), spy_csv)
+
+    def test_failed_control_halts(self):
+        self.first_run()
+        src = FakeSource({k: v for k, v in self.script.items() if k != "SPY"})   # SPY fails
+        self.assertEqual(self.run_enrich(src, retry_no_data=True), 3)
+        self.assertEqual(len(src.calls), 2)                              # one retry, then halt
+        m = json.loads((self.pdir / enrich.PRICES_MANIFEST).read_text())["symbols"]
+        self.assertEqual(m["BBB"]["fetched_at"][:10], "2024-07-01")      # nothing re-recorded
+
+    def test_each_symbol_is_retried_once(self):
+        self.first_run()
+        self.assertEqual(self.run_enrich(FakeSource(self.script), retry_no_data=True), 0)
+        src = FakeSource(self.script)
+        self.assertEqual(self.run_enrich(src, retry_no_data=True), 0)
+        self.assertEqual(src.calls, [])                                  # BBB, DDD already retried
+
+
+class TestUnpricedCurrent(Base):
+    """--check fails when the price cache now has data for a symbol the promoted file shows as
+    unpriced (the 2026-11-20 ADGM/ARAY case: retried and cached, but not yet promoted)."""
+
+    def setUp(self):
+        super().setUp()
+        self.script = {"SPY": bars(CAL, 400.0, 1.0), "AAA": bars(CAL, 10.0, 0.1)}
+        rows = [vrow(i, CAL[5 + i], "AAA") for i in range(10)]
+        rows += [vrow(20, CAL[6], "ADGM"), vrow(21, CAL[7], "ARAY")]
+        write_verified(self.vdir, rows, dict(self.script, ADGM=bars(CAL, 20.0, 0.1),
+                                             ARAY=bars(CAL, 30.0, 0.1)))
+        self.assertEqual(self.run_enrich(FakeSource(self.script)), 0)   # ADGM, ARAY: no_data
+
+    def check(self) -> str:
+        out = io.StringIO()
+        with redirect_stdout(out):
+            self.rc = enrich.check(self.vdir, self.pdir)
+        return out.getvalue()
+
+    def test_passes_when_the_cache_matches(self):
+        self.assertIn("PASS  unpriced_current", self.check())
+        self.assertEqual(self.rc, 0)
+
+    def test_adgm_aray_cached_after_promotion_fails_check(self):
+        # Recreate 2026-11-20: the retry caches prices for ADGM and ARAY, then halts before
+        # promoting. The promoted file still says no_data.
+        cache = enrich.PriceCache(self.pdir)
+        spy = cache.entry("SPY")
+        for sym, p0 in (("ADGM", 20.0), ("ARAY", 30.0)):
+            cache.record(sym, "ok", spy["requested_start"], spy["requested_end"],
+                         bars(CAL, p0, 0.1))
+        cache.save()
+        out = self.check()
+        self.assertEqual(self.rc, 1)
+        self.assertIn("FAIL  unpriced_current", out)
+        self.assertIn("ADGM: promoted no_data, cache now gives priced", out)
+        # Promoting from the cache clears it (offline re-run picks the data up).
+        src = FakeSource(dict(self.script, ADGM=bars(CAL, 20.0, 0.1), ARAY=bars(CAL, 30.0, 0.1)))
+        self.assertEqual(self.run_enrich(src), 0)
+        self.assertIn("PASS  unpriced_current", self.check())
+        self.assertEqual(self.rc, 0)
+
+    def test_a_cache_entry_changing_reason_also_fails(self):
+        # no_data in the file, but the symbol now has prices that start after the entry day.
+        cache = enrich.PriceCache(self.pdir)
+        spy = cache.entry("SPY")
+        cache.record("ARAY", "ok", spy["requested_start"], spy["requested_end"],
+                     bars(CAL[50:], 30.0, 0.1))
+        cache.save()
+        out = self.check()
+        self.assertEqual(self.rc, 1)
+        self.assertIn("ARAY: promoted no_data, cache now gives series_starts_after_entry", out)

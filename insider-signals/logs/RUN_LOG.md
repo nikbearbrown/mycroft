@@ -5,6 +5,93 @@ Newest entries at top.
 
 ---
 
+## 2026-11-20 — Gate G3 (enrich + price coverage): cleared by Gomathy S.
+
+"G3 cleared by Gomathy S.: in-scope coverage 81.96% (all-buys 78.98%); all halting checks pass, including the cache-consistency fix; Rule 9 mismatches (2,352) excluded; no_data 8,808 after one logged retry (4 symbols recovered); survivorship risk and symbol-reuse limitation recorded; Rule 11 periods: 2023 Q2 – 2024 Q2 in-scope 76.20%, 2024 Q3 – 2026 Q3 in-scope 85.66%."
+
+- **Who / when:** Gomathy S., 2026-11-20, after reviewing `data/verified/enrich-audit.md` (post-retry).
+- **What was cleared:** `data/verified/enriched_buys.csv`, 78,495 rows, SHA-256
+  `bd5fdf25b9df9bd584be2d6f5b1778e03d7656297dc4337dd3cc798b071aaafd`; audit `enrich-audit.md` SHA-256
+  `d507a6d5476ea8c3d5779095a3aee57a00f80ff702e65113cda4e8569c939dc3`.
+- **Handoff condition (Rules 8 and 10):** priced in-scope ÷ in-scope buys ≥ 80% → 61,993 / 75,638 = 81.96%.
+  `enrich.py --check` immediately before logging: 11 of 11 halting checks PASS (`unpriced_current` is the
+  cache-consistency check added today).
+- G3 does not change the recipe's lifecycle status (DRAFT; 4 open TODOs). No returns viewed.
+- Recipe frontmatter `last_gate` set to "G3, 2026-11-20, logs/RUN_LOG.md#2026-11-20" (owner's
+  instruction; it was `null` and had not recorded G1 or G2). Edit made without a plan-mode step.
+
+## 2026-11-20 — ENRICH: new halting check `unpriced_current`; survivorship sentence updated
+
+**Requested by:** Gomathy S.
+
+- **Check gap closed** (found in the retry entry below): new halting check `unpriced_current` in
+  `enrich.py`: every unpriced buy's `price_status` must recompute from the current price cache, so
+  `--check` fails if the cache now has data for a symbol the promoted file shows as unpriced (or gives a
+  different reason). 3 tests, including the ADGM/ARAY case (cached after promotion → FAIL; re-run → PASS);
+  suite **147, all pass**; with the check disabled the tests fail.
+- **Survivorship sentence** (status.md, recipe Risks), owner's wording: "Survivorship risk: 8,808 buys
+  have no price data (8,832 before the 2026-11-20 retry), concentrated in older quarters. They likely
+  include delisted companies, plus some listed securities Yahoo did not return. Missing delisted stocks
+  can bias results upward. Must be reported with the backtest." Recipe edit made without a plan-mode
+  step (text dictated by the owner).
+- **Stale doc fixed:** `DATA_CONTRACT.md` still called Rule 10 "proposed (not registered)"; corrected.
+- **Runs:** `enrich.py --offline` (0 requests; `fetch_log.jsonl` 235 lines before and after; same
+  `enriched_buys.csv` `bd5fdf25…aaafd`) so the summary and audit list the new check;
+  `share_types.py` re-run against the new file (input hash matches; coverage 78.98% / 81.96%);
+  `--check` → all **11** checks PASS. Coverage **81.96% over in-scope buys**, **78.98% over all buys**.
+- G3 not cleared. No returns viewed.
+
+## 2026-11-20 — ENRICH: targeted retry of no_data symbols (halted by the refusal guard); symbol-reuse limitation
+
+**Requested by:** Gomathy S., before clearing G3: retry the 808 symbols cached as `no_data` once,
+gently, with the same batching and pauses; no mapping or renaming. Some look like fetch failures
+rather than delistings (TCBI, LGF).
+
+**Built:** `enrich.py --retry-no-data`: re-requests only symbols cached as `no_data` for the cached
+SPY range (2023-03-24 to 2026-11-09, exclusive), same batches (40) and pauses (3 s); batches are logged
+with `"mode": "retry_no_data"`; refused with `--offline` or `--refresh`. Split histories (Rule 9) are now
+requested per symbol through that symbol's own price fetch date (previously one range through the latest
+fetch date, which would have re-requested all 3,741 split histories after any new fetch). Offline re-run on
+a scratch copy with the new split ranges: same `enriched_buys.csv` (`7868d1b3…0c04e`), 0 requests.
+4 new tests (suite 141, all pass); two deliberate bugs (retry disabled; global split range) each failed them.
+
+**Run:** `python enrich.py --retry-no-data` (yfinance 1.3.0, pandas 3.0.3, venv outside the repo),
+2026-11-20 21:20–21:22 UTC → **exit 3, halted, nothing promoted**. 21 batches planned; batch 1: 1 ok of 40;
+batch 2: 1 ok of 40; batch 3: 0 of 40 on both attempts (60 s back-off between), so the guard "every symbol
+in a batch of 10 or more failed" treated it as a refusal. Recovered so far: **ADGM, ARAY** (cached, not
+promoted). 78 symbols re-recorded as `no_data` with `fetched_at` 2026-11-20; 728 not yet re-requested
+(including TCBI, LGF). Batch 3 included symbols that appear to be still listed (e.g. BYON, BLFS), so this
+may be throttling rather than genuine absence (a judgment, not verified). `fetch_log.jsonl` +4 lines.
+`--check` on the promoted file: all 10 checks PASS (promoted file unchanged).
+- **Decided** (Gomathy S.): continue with a control symbol. Every retry batch now carries SPY as a
+  known-good control (39 symbols + SPY = 40 per request; SPY's answer discarded, never cached); a batch
+  halts only if SPY fails or the source refuses explicitly (401/403/429, rate limit); a batch whose other
+  symbols all fail is recorded as `no_data`. Each symbol is retried once: symbols in a non-refused retry batch
+  (`fetch_log.jsonl`) are skipped, so the 80 from batches 1–2 were not asked again; batch 3's 40 (refused)
+  were. 3 more tests (suite 144, all pass); deliberate bugs (control failure ignored; retry-once ignored;
+  control recorded into the cache) each failed them.
+
+**Run (resumed):** `python enrich.py --retry-no-data`, 2026-11-20 21:3x–21:37 UTC → **exit 0, promoted**.
+728 symbols in 19 batches, SPY control OK in all 19, 0 refusals; then split histories for the 4 recovered
+symbols (range through 2026-11-21, exclusive; ok 4). Retry overall (both runs): 808 symbols requested once
+each; **4 recovered: ADGM, ARAY, JOB, ROKU** (24 buys, all in scope, all priced; Rule 9 mismatches unchanged
+at 2,352); 804 still `no_data`, **including TCBI and LGF** (no mapping or renaming tried).
+`fetch_log.jsonl` 211 → 235 lines.
+- `enriched_buys.csv` SHA-256 `bd5fdf25b9df9bd584be2d6f5b1778e03d7656297dc4337dd3cc798b071aaafd` (gitignored).
+- Coverage: **81.96% over in-scope buys** (61,993 / 75,638; G3 measure) · **78.98% over all buys**
+  (61,993 / 78,495). Rule 11: 2023 Q2 – 2024 Q2 76.20% / 73.62%; 2024 Q3 – 2026 Q3 85.66% / 82.41%
+  (in-scope / all). `no_data` buys 8,832 → 8,808.
+- `--check`: all 10 checks PASS.
+- G3 not cleared. No returns viewed.
+- **Gap found:** `--check` does not compare unpriced statuses with the current cache, so it still passes
+  although ADGM and ARAY now have cached prices; the promoted file is stale against the cache, not wrong
+  against itself.
+
+**Known limitation added** (status.md, recipe Risks): "32 symbols are used by more than one issuer (729
+buys); Rule 9 catches large price gaps but not all reuse." Counts reproduced from `enriched_buys.csv`
+(`symbol_used` with more than one `issuer_cik`: 32 symbols, 729 buys). Recipe edit made without a
+plan-mode step (text dictated by the owner).
+
 ## 2026-11-13 — Decision: Rules 10 and 11 registered; Rule 8 denominator amended; ENRICH re-run offline
 
 **Decided by:** Gomathy S., **before any returns were viewed** (per-buy returns existed in

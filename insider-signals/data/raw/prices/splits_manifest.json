@@ -487,6 +487,19 @@
       "splits": [],
       "status": "ok"
     },
+    "ADGM": {
+      "error": "",
+      "fetched_at": "2026-11-20T21:37:28+00:00",
+      "requested_end": "2026-11-21",
+      "requested_start": "2023-03-24",
+      "splits": [
+        [
+          "2026-11-09",
+          0.03333333333333333
+        ]
+      ],
+      "status": "ok"
+    },
     "ADM": {
       "error": "",
       "fetched_at": "2026-11-09T23:58:13+00:00",
@@ -2143,6 +2156,19 @@
       "requested_end": "2026-11-10",
       "requested_start": "2023-03-24",
       "splits": [],
+      "status": "ok"
+    },
+    "ARAY": {
+      "error": "",
+      "fetched_at": "2026-11-20T21:37:28+00:00",
+      "requested_end": "2026-11-21",
+      "requested_start": "2023-03-24",
+      "splits": [
+        [
+          "2026-11-09",
+          0.025
+        ]
+      ],
       "status": "ok"
     },
     "ARCB": {
@@ -16942,6 +16968,19 @@
       "splits": [],
       "status": "ok"
     },
+    "JOB": {
+      "error": "",
+      "fetched_at": "2026-11-20T21:37:28+00:00",
+      "requested_end": "2026-11-21",
+      "requested_start": "2023-03-24",
+      "splits": [
+        [
+          "2026-11-10",
+          0.03333333333333333
+        ]
+      ],
+      "status": "ok"
+    },
     "JOBY": {
       "error": "",
       "fetched_at": "2026-11-10T00:04:05+00:00",
@@ -26771,6 +26810,14 @@
       "error": "",
       "fetched_at": "2026-11-10T00:07:28+00:00",
       "requested_end": "2026-11-10",
+      "requested_start": "2023-03-24",
+      "splits": [],
+      "status": "ok"
+    },
+    "ROKU": {
+      "error": "",
+      "fetched_at": "2026-11-20T21:37:28+00:00",
+      "requested_end": "2026-11-21",
       "requested_start": "2023-03-24",
       "splits": [],
       "status": "ok"

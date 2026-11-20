@@ -1,7 +1,7 @@
 ---
 status: DRAFT          # DRAFT | SPECIFIED | RUNNABLE-SAMPLE | RUNNABLE-LIVE | VERIFIED
 todos_open: 4
-last_gate: null
+last_gate: "G3, 2026-11-20, logs/RUN_LOG.md#2026-11-20"
 attestation: null
 recipe_version: 0.1.0
 ---
@@ -403,11 +403,13 @@ Every number traces report → run log → script → recipe → filing (P3).
 
 ## Risks
 
-- Survivorship risk: 8,832 buys have no price data, concentrated in older quarters, likely
-  including delisted companies. Missing delisted stocks can bias results upward. Must be
-  reported with the backtest. (Added by Gomathy S., 2026-11-12. `price_status = no_data` by
-  quarter: 1,800 of 7,964 in 2023 Q2, falling to 64 of 5,115 in 2026 Q3; source
-  `data/verified/enriched_buys.csv` SHA-256 `fa146273…5bde`.)
+- Survivorship risk: 8,808 buys have no price data (8,832 before the 2026-11-20 retry), concentrated in older quarters. They likely include delisted companies, plus some listed securities Yahoo did not return. Missing delisted stocks can bias results upward. Must be reported with the backtest.
+  (Added by Gomathy S., 2026-11-12; updated 2026-11-20 after the one-time retry of `no_data`
+  symbols, which recovered 4 symbols / 24 buys. Original 2026-11-12 counts by quarter: 1,800 of
+  7,964 in 2023 Q2, falling to 64 of 5,115 in 2026 Q3, source `enriched_buys.csv` `fa146273…5bde`;
+  current file `bd5fdf25…aaafd`.)
+- Known limitation: 32 symbols are used by more than one issuer (729 buys); Rule 9 catches large price gaps but not all reuse.
+  (Added by Gomathy S., 2026-11-20. Counted as `symbol_used` values with more than one `issuer_cik` in `data/verified/enriched_buys.csv` SHA-256 `7868d1b3…0c04e`; symbols are never mapped or renamed.)
 
 ---
 

@@ -53,7 +53,10 @@ Prices are cached in data/raw/prices/ (one CSV per symbol, plus prices_manifest.
 requested range, fetched_at and SHA-256), so a re-run makes no requests. Split histories for
 Rule 9 are cached in splits_manifest.json and fetched only for symbols with a priced buy. A symbol Yahoo had no
 data for is recorded too and not asked for again. `--refresh` re-downloads everything (to close
-windows that were still open). Requests go out in batches (default 40 symbols, threads off)
+windows that were still open); `--retry-no-data` re-requests only the symbols cached as no_data,
+over the cached SPY range, with the same batching and pauses (symbols are never mapped or
+renamed), once each; every retry batch carries SPY as a control (discarded, not cached), and a
+batch halts only if SPY fails or the source refuses explicitly. A symbol's split history covers its own price fetch date. Requests go out in batches (default 40 symbols, threads off)
 with a pause between batches (default 3 s), and every batch is logged in
 data/raw/prices/fetch_log.jsonl. If Yahoo refuses (rate limit, 401/403/429, or a whole batch
 failing at once), the batch is retried once after a back-off; a second refusal halts the run
@@ -70,6 +73,8 @@ to data/raw/enrich/):
                       after entry; returns recompute from the stored prices
     filing_price_check  every buy priced at entry has split data and its Rule 9 fields and
                       verdict recompute; mismatches carry no prices
+    unpriced_current  every unpriced buy's price_status recomputes from the current cache, so a
+                      symbol that has data now (e.g. after a retry) fails --check until re-run
     rule10_scope      every row's rule10_scope / rule10_reason recompute from security_title
     coverage          priced in-scope buys ÷ in-scope buys ≥ 80% (Rules 8 and 10)
 
@@ -83,6 +88,7 @@ Exit codes: 0 promoted (or --check passed) · 1 halting check failed · 2 config
 Usage
     python enrich.py                     # fetch what is not cached, then enrich and promote
     python enrich.py --offline           # cache only; uncached symbols → not_fetched
+    python enrich.py --retry-no-data     # re-request only no_data symbols, then enrich
     python enrich.py --check             # G3: re-verify data/verified/enriched_buys.csv
 """
 
@@ -142,7 +148,8 @@ FILING_CHECKS = ("ok", "mismatch", "not_checkable")
 WINDOW_STATUSES = ("closed", "not_yet_closed", "no_entry_price", "series_ends_before_exit",
                    "no_bar_on_exit_date", "invalid_exit_price")
 HALTING_CHECKS = ("input_hash", "spy_present", "cache_consistent", "status_complete",
-                  "lookahead", "filing_price_check", "rule10_scope", "coverage")
+                  "lookahead", "filing_price_check", "unpriced_current", "rule10_scope",
+                  "coverage")
 
 _TICKER = re.compile(r"^[A-Z]{1,5}$")
 _CLASS_TICKER = re.compile(r"^([A-Z]{1,4})[.\-]([A-Z]{1,2})$")
@@ -403,44 +410,74 @@ def _is_refusal(exc_or_msg) -> bool:
 def fetch_missing(symbols: Iterable[str], cache: PriceCache, source: PriceSource, start: str,
                   end: str, *, batch_size: int = BATCH_SIZE, pause_s: float = PAUSE_S,
                   backoff_s: float = BACKOFF_S, refresh: bool = False,
+                  retry_no_data: bool = False, control: str | None = None,
+                  skip: Iterable[str] = (),
                   sleep: Callable[[float], None] = time.sleep,
                   clock: Callable[[], float] = time.monotonic,
                   log: Callable[[str], None] = print, kind: str = "prices") -> dict:
     """Request every symbol not cached for [start, end). Saves the manifest after each batch.
     kind = "prices" (source.download → PriceCache) or "splits" (source.download_splits →
-    SplitCache)."""
+    SplitCache). retry_no_data also re-requests symbols cached as no_data for this range (and
+    nothing else that is final), except those in `skip` (already retried once).
+
+    control: a known-good symbol added to every batch (batch = control + batch_size - 1
+    symbols). Its data is discarded, never cached. With a control, a batch counts as refused
+    only when the control fails or the source says so explicitly (401/403/429, rate limit);
+    a batch whose other symbols all fail is then recorded as no_data, not treated as a refusal."""
     download = source.download if kind == "prices" else source.download_splits
-    todo = sorted(s for s in set(symbols) if refresh or not cache.is_final(s, start, end))
+    skip = set(skip)
+
+    def wanted(s: str) -> bool:
+        if s == control:
+            return False
+        if refresh or not cache.is_final(s, start, end):
+            return True
+        return retry_no_data and cache.entry(s)["status"] == "no_data" and s not in skip
+
+    todo = sorted(s for s in set(symbols) if wanted(s))
     if kind == "prices" and MARKET in todo:  # SPY first: nothing can be priced without it
         todo.remove(MARKET)
         todo.insert(0, MARKET)
     stats = Counter(requested=len(todo))
     log_path = cache.dir / FETCH_LOG
-    batches = [todo[i:i + batch_size] for i in range(0, len(todo), batch_size)]
+    if control and batch_size < 2:
+        raise EnrichError("a control symbol needs a batch size of at least 2")
+    step = batch_size - 1 if control else batch_size
+    batches = [todo[i:i + step] for i in range(0, len(todo), step)]
     for b, batch in enumerate(batches):
         if b:
             sleep(pause_s)
+        request = [control, *batch] if control else batch
         for attempt in (1, 2):
             t0 = clock()
             refused, why = False, ""
             try:
-                bars, errors = download(batch, start, end)
+                bars, errors = download(request, start, end)
             except Exception as exc:  # noqa: BLE001 - any failure is logged; refusals halt
-                bars, errors = {}, {s: f"{type(exc).__name__}: {exc}" for s in batch}
+                bars, errors = {}, {s: f"{type(exc).__name__}: {exc}" for s in request}
                 refused, why = _is_refusal(exc), f"{type(exc).__name__}: {exc}"
+            control_ok = None
+            if control:
+                control_ok = bool(bars.get(control))
+                bars = {k: v for k, v in bars.items() if k != control}
+                c_err = errors.pop(control, "")
             if not refused:
                 refusals = [m for m in errors.values() if _is_refusal(m)]
                 if refusals:
                     refused, why = True, refusals[0]
-                elif len(batch) >= 10 and not bars:
+                elif control and not control_ok:
+                    refused, why = True, f"control {control} failed: {c_err or 'no data'}"
+                elif not control and len(batch) >= 10 and not bars:
                     refused, why = True, "every symbol in the batch failed"
             line = {"ts": _utc_now(), "kind": kind, "batch": b + 1, "of": len(batches), "attempt": attempt,
+                    **({"mode": "retry_no_data"} if retry_no_data else {}),
+                    **({"control": control, "control_ok": control_ok} if control else {}),
                     "symbols": batch, "ok": len(bars), "failed": len(errors),
                     "refused": refused, "reason": why[:300],
                     "elapsed_ms": round((clock() - t0) * 1000)}
             with open(log_path, "a", encoding="utf-8") as fh:
                 fh.write(json.dumps(line) + "\n")
-            stats["requests"] += len(batch)
+            stats["requests"] += len(request)
             if not refused:
                 break
             stats["refusals"] += 1
@@ -586,11 +623,33 @@ def read_csv(path: Path) -> list[dict]:
         return list(csv.DictReader(fh))
 
 
-def splits_range(cache: PriceCache, start: str) -> tuple[str, str]:
-    """Splits from the price range start through the latest price fetch date (inclusive)."""
-    fetched = [e["fetched_at"][:10] for e in cache.manifest["symbols"].values() if e["status"] == "ok"]
-    last = max(fetched) if fetched else date.today().isoformat()
-    return start, (date.fromisoformat(last) + timedelta(days=1)).isoformat()
+def retried_symbols(prices_dir: Path) -> set[str]:
+    """Symbols already re-requested by --retry-no-data in a batch that was not refused (from
+    fetch_log.jsonl), so each no_data symbol is retried once."""
+    path = prices_dir / FETCH_LOG
+    out: set[str] = set()
+    if path.exists():
+        for line in path.read_text(encoding="utf-8").splitlines():
+            d = json.loads(line)
+            if d.get("mode") == "retry_no_data" and d.get("kind", "prices") == "prices" \
+                    and not d.get("refused"):
+                out.update(d["symbols"])
+    return out
+
+
+def splits_end(cache: PriceCache, symbol: str) -> str:
+    """Rule 9 un-adjusts a close with the splits after the trade date through the day that
+    symbol's prices were fetched (Yahoo's split adjustment is as of the fetch), so its split
+    history is requested through its own price fetch date (end exclusive = fetch date + 1)."""
+    return (date.fromisoformat(cache.entry(symbol)["fetched_at"][:10]) + timedelta(days=1)).isoformat()
+
+
+def splits_ranges(cache: PriceCache, symbols: Iterable[str], start: str) -> dict[str, list[str]]:
+    """end (exclusive) → symbols whose split history is requested for [start, end)."""
+    groups: dict[str, list[str]] = {}
+    for s in sorted(symbols):
+        groups.setdefault(splits_end(cache, s), []).append(s)
+    return groups
 
 
 def fetch_range(rows: list[dict], end: date) -> tuple[str, str]:
@@ -717,6 +776,25 @@ def run_checks(rows: list[dict], enriched: list[dict], cache: PriceCache, cal: l
     checks.append(_check("filing_price_check", fp,
                          f"filed price within {MISMATCH_TOLERANCE:.0%} of the split-adjusted "
                          "unadjusted close on TRANS_DATE, else price_mismatch_vs_filing (Rule 9)"))
+
+    # Every unpriced row must still be unpriced, for the same reason, against the cache as it
+    # is now: a symbol fetched (or re-fetched) after promotion makes the promoted file stale.
+    stale_rows = []
+    for e in enriched:
+        st = e["price_status"]
+        if st == "priced":
+            continue
+        now = enrich_row(e, cache, cal, spy or {}, windows=windows,
+                         offline=(st == "not_fetched"), splits=splits)["price_status"]
+        if now != st:
+            ce = cache.entry(e["symbol_used"]) if e["symbol_used"] else None
+            stale_rows.append(f"{e['accession_number']}#{e['nonderiv_trans_sk']} "
+                              f"{e['symbol_used'] or '—'}: promoted {st}, cache now gives {now}"
+                              + (f" (cache {ce['status']}, fetched {ce['fetched_at'][:10]})"
+                                 if ce else ""))
+    checks.append(_check("unpriced_current", stale_rows,
+                         "every unpriced buy's price_status recomputes from the current price "
+                         "cache (none has data now)"))
 
     scope = []
     for e in enriched:
@@ -892,7 +970,7 @@ def rule9_findings(enriched: list[dict]) -> dict:
 
 def run(verified_dir: Path, prices_dir: Path, staging_dir: Path, source: PriceSource | None,
         end: date, *, offline: bool = False, refresh: bool = False,
-        batch_size: int = BATCH_SIZE, pause_s: float = PAUSE_S, backoff_s: float = BACKOFF_S,
+        retry_no_data: bool = False, batch_size: int = BATCH_SIZE, pause_s: float = PAUSE_S, backoff_s: float = BACKOFF_S,
         sleep: Callable[[float], None] = time.sleep, clock: Callable[[], float] = time.monotonic,
         log: Callable[[str], None] = print) -> int:
     buys_path = verified_dir / BUYS_NAME
@@ -914,7 +992,11 @@ def run(verified_dir: Path, prices_dir: Path, staging_dir: Path, source: PriceSo
         try:
             fetch_stats = fetch_missing(symbols | {MARKET}, cache, source, start, end_s,
                                         batch_size=batch_size, pause_s=pause_s,
-                                        backoff_s=backoff_s, refresh=refresh, sleep=sleep,
+                                        backoff_s=backoff_s, refresh=refresh,
+                                        retry_no_data=retry_no_data,
+                                        control=MARKET if retry_no_data else None,
+                                        skip=retried_symbols(prices_dir) if retry_no_data else (),
+                                        sleep=sleep,
                                         clock=clock, log=log)
         except PriceSourceRefused as exc:
             log(f"enrich: HALT — {exc}")
@@ -925,18 +1007,23 @@ def run(verified_dir: Path, prices_dir: Path, staging_dir: Path, source: PriceSo
     # Rule 9 needs split histories: only for symbols with at least one buy priced at entry.
     pre = [enrich_row(r, cache, cal, spy or {}, offline=offline, apply_rule_9=False) for r in rows]
     split_symbols = {e["symbol_used"] for e in pre if e["price_status"] == "priced"}
-    s_start, s_end = splits_range(cache, start)
+    s_start = start
+    s_groups = splits_ranges(cache, split_symbols, start)
     splits = SplitCache(prices_dir)
-    split_stats: dict = {"requested": 0}
+    split_stats: Counter = Counter(requested=0)
     if not offline and split_symbols:
-        try:
-            split_stats = fetch_missing(split_symbols, splits, source, s_start, s_end,
-                                        batch_size=batch_size, pause_s=pause_s,
-                                        backoff_s=backoff_s, refresh=refresh, sleep=sleep,
-                                        clock=clock, log=log, kind="splits")
-        except PriceSourceRefused as exc:
-            log(f"enrich: HALT — {exc}")
-            return 3
+        for s_end_g, group in sorted(s_groups.items()):
+            try:
+                split_stats.update(fetch_missing(group, splits, source, s_start, s_end_g,
+                                                 batch_size=batch_size, pause_s=pause_s,
+                                                 backoff_s=backoff_s, refresh=refresh,
+                                                 sleep=sleep, clock=clock, log=log,
+                                                 kind="splits"))
+            except PriceSourceRefused as exc:
+                log(f"enrich: HALT — {exc}")
+                return 3
+    split_stats = dict(split_stats)
+    s_end = max(s_groups) if s_groups else None
     enriched = [enrich_row(r, cache, cal, spy or {}, offline=offline, splits=splits)
                 for r in rows]
     checks = run_checks(rows, enriched, cache, cal, spy, input_sha, expected_sha, start, end_s,
@@ -961,7 +1048,10 @@ def run(verified_dir: Path, prices_dir: Path, staging_dir: Path, source: PriceSo
                    "manifest_sha256": (ingest.sha256_file(prices_dir / PRICES_MANIFEST)
                                        if (prices_dir / PRICES_MANIFEST).exists() else None),
                    "fetch": fetch_stats, "fetch_log_totals": fetch_log_totals(prices_dir),
+                   "retry_no_data": retry_no_data,
                    "splits": {"requested_start": s_start, "requested_end_exclusive": s_end,
+                              "requested_end_exclusive_by_symbols": {
+                                  k: len(v) for k, v in sorted(s_groups.items())},
                               "symbols": len(split_symbols), "fetch": split_stats,
                               "manifest_sha256": (ingest.sha256_file(prices_dir / SPLITS_MANIFEST)
                                                   if (prices_dir / SPLITS_MANIFEST).exists()
@@ -1162,15 +1252,21 @@ def render_audit(s: dict) -> str:
     sp = p.get("splits", {})
     spf = sp.get("fetch", {})
     L += ["", "## Fetch", "",
-          f"- Splits (Rule 9): {sp.get('symbols', 0):,} symbols with a priced buy; range "
-          f"{sp.get('requested_start')} to {sp.get('requested_end_exclusive')} (end exclusive). "
+          f"- Splits (Rule 9): {sp.get('symbols', 0):,} symbols with a priced buy; each from "
+          f"{sp.get('requested_start')} through its own price fetch date (end exclusive: "
+          + ", ".join(f"{k} for {v:,}" for k, v in
+                      (sp.get("requested_end_exclusive_by_symbols")
+                       or {sp.get("requested_end_exclusive"): sp.get("symbols", 0)}).items())
+          + "). "
           f"This run requested {spf.get('requested', 0):,} (ok {spf.get('ok', 0):,}, no data "
           f"{spf.get('no_data', 0):,}, errors {spf.get('fetch_error', 0):,}, refusals "
           f"{spf.get('refusals', 0):,}).",
           f"- This run: {fs.get('requested', 0):,} symbols requested in {fs.get('batches', 0):,} "
           f"batches; ok {fs.get('ok', 0):,}, no data {fs.get('no_data', 0):,}, errors "
           f"{fs.get('fetch_error', 0):,}, refusals {fs.get('refusals', 0):,}. Every batch is in "
-          f"`data/raw/prices/{FETCH_LOG}`." + (" Offline run: no requests." if p["offline"] else ""),
+          f"`data/raw/prices/{FETCH_LOG}`." + (" Offline run: no requests." if p["offline"] else "")
+          + (" Targeted retry: only symbols cached as no_data were re-requested (`--retry-no-data`)."
+             if p.get("retry_no_data") else ""),
           "- All runs (`fetch_log.jsonl`): {batch_requests:,} batch requests, {symbol_requests:,} "
           "symbol requests, {refused:,} refused; {first_ts} to {last_ts}.".format(
               **{"symbol_requests": 0, "refused": 0, "first_ts": "—", "last_ts": "—",
@@ -1191,6 +1287,8 @@ def main(argv: list[str] | None = None) -> int:
                     help="last fetch date, exclusive (default: today, so the last bar is a full close)")
     ap.add_argument("--offline", action="store_true", help="use the cache only; no requests")
     ap.add_argument("--refresh", action="store_true", help="re-download every symbol")
+    ap.add_argument("--retry-no-data", action="store_true",
+                    help="re-request only symbols cached as no_data, over the cached SPY range")
     ap.add_argument("--check", action="store_true", help="G3: re-verify the promoted file")
     ap.add_argument("--batch-size", type=int, default=BATCH_SIZE)
     ap.add_argument("--pause", type=float, default=PAUSE_S, help="seconds between batches")
@@ -1201,16 +1299,21 @@ def main(argv: list[str] | None = None) -> int:
         print("enrich: refused — batch size must be 1–100 and the pause at least 1 s",
               file=sys.stderr)
         return 2
+    if a.retry_no_data and (a.offline or a.refresh):
+        print("enrich: refused — --retry-no-data cannot be combined with --offline or --refresh",
+              file=sys.stderr)
+        return 2
     end = a.end
     if end is None:
-        if a.offline:
+        if a.offline or a.retry_no_data:
             m = PriceCache(a.prices_dir).entry(MARKET)
             end = date.fromisoformat(m["requested_end"]) if m else date.today()
         else:
             end = date.today()
     try:
         return run(a.verified_dir, a.prices_dir, a.staging_dir, None, end, offline=a.offline,
-                   refresh=a.refresh, batch_size=a.batch_size, pause_s=a.pause)
+                   refresh=a.refresh, retry_no_data=a.retry_no_data,
+                   batch_size=a.batch_size, pause_s=a.pause)
     except EnrichError as exc:
         print(f"enrich: refused — {exc}", file=sys.stderr)
         return 2

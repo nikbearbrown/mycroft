@@ -1,11 +1,11 @@
 # Enrich audit (G3)
 
-Run at 2026-11-13T21:02:43+00:00 by `enrich.py`. This audit reports what was found. The halting checks decide promotion; clearing G3 is the owner's logged decision.
+Run at 2026-11-20T21:46:01+00:00 by `enrich.py`. This audit reports what was found. The halting checks decide promotion; clearing G3 is the owner's logged decision.
 
 - Input: `data/verified/insider_buys.csv`, 78,495 buys, SHA-256 `a7ec55298bf886c0090f7c5fc4e93bfb18faeabc5d4c407db8d77abefdb75b16`
 - Prices: Yahoo Finance via yfinance (adjusted close, auto_adjust=False); requested 2023-03-24 to 2026-11-09 (end exclusive); market calendar = SPY bars, last bar **2026-11-06**
 - Rules: windows 21, 63 trading days; minimum coverage 80% over in-scope buys (Rule 10) (PRE_REGISTRATION.md Rules 7-9 (2026-11-09), 10-11 (2026-11-13))
-- **Promoted:** `data/verified/enriched_buys.csv` (SHA-256 `7868d1b32dfad10cf190e1be2049a3314d693e4196df7c7dbd02d2107470c04e`)
+- **Promoted:** `data/verified/enriched_buys.csv` (SHA-256 `bd5fdf25b9df9bd584be2d6f5b1778e03d7656297dc4337dd3cc798b071aaafd`)
 
 **Returns are computed per buy in the enriched file but not summarized here:** no averages or other return statistics are reported before the signals are registered.
 
@@ -19,8 +19,9 @@ Run at 2026-11-13T21:02:43+00:00 by `enrich.py`. This audit reports what was fou
 | status_complete | PASS | 0 | every buy has a known status; no number without a closed window |
 | lookahead | PASS | 0 | entry = first SPY day after FILING_DATE; exit = entry + N SPY days |
 | filing_price_check | PASS | 0 | filed price within 25% of the split-adjusted unadjusted close on TRANS_DATE, else price_mismatch_vs_filing (Rule 9) |
+| unpriced_current | PASS | 0 | every unpriced buy's price_status recomputes from the current price cache (none has data now) |
 | rule10_scope | PASS | 0 | rule10_scope / rule10_reason recompute from security_title (Rule 10) |
-| coverage | PASS | 0 | priced ÷ in-scope buys = 81.93% (minimum 80%, Rules 8 and 10); priced in-scope ÷ all buys = 78.95% (reported, not gated) |
+| coverage | PASS | 0 | priced ÷ in-scope buys = 81.96% (minimum 80%, Rules 8 and 10); priced in-scope ÷ all buys = 78.98% (reported, not gated) |
 
 ## Price coverage (both figures, always: Rule 10)
 
@@ -31,20 +32,20 @@ G3 gates on priced in-scope buys ÷ in-scope buys (Rules 8 and 10). Priced in-sc
 | 2023q2 | 7,609 | 5,614 | **73.78%** | 7,964 | **70.49%** | 71.58% |
 | 2023q3 | 5,628 | 4,291 | **76.24%** | 5,785 | **74.17%** | 74.78% |
 | 2023q4 | 6,017 | 4,537 | **75.40%** | 6,240 | **72.71%** | 74.52% |
-| 2024q1 | 5,070 | 3,927 | **77.46%** | 5,214 | **75.32%** | 76.08% |
-| 2024q2 | 5,285 | 4,179 | **79.07%** | 5,444 | **76.76%** | 77.65% |
+| 2024q1 | 5,070 | 3,928 | **77.48%** | 5,214 | **75.34%** | 76.10% |
+| 2024q2 | 5,285 | 4,193 | **79.34%** | 5,444 | **77.02%** | 77.90% |
 | 2024q3 | 4,947 | 3,964 | **80.13%** | 5,070 | **78.19%** | 78.95% |
 | 2024q4 | 5,847 | 4,685 | **80.13%** | 5,983 | **78.31%** | 78.99% |
-| 2025q1 | 5,128 | 4,182 | **81.55%** | 5,285 | **79.13%** | 80.28% |
-| 2025q2 | 6,177 | 5,250 | **84.99%** | 6,297 | **83.37%** | 83.66% |
+| 2025q1 | 5,128 | 4,184 | **81.59%** | 5,285 | **79.17%** | 80.32% |
+| 2025q2 | 6,177 | 5,251 | **85.01%** | 6,297 | **83.39%** | 83.67% |
 | 2025q3 | 4,604 | 4,084 | **88.71%** | 4,788 | **85.30%** | 86.40% |
-| 2025q4 | 5,126 | 4,593 | **89.60%** | 5,313 | **86.45%** | 87.48% |
-| 2026q1 | 4,628 | 4,096 | **88.50%** | 4,817 | **85.03%** | 86.90% |
+| 2025q4 | 5,126 | 4,596 | **89.66%** | 5,313 | **86.50%** | 87.54% |
+| 2026q1 | 4,628 | 4,099 | **88.57%** | 4,817 | **85.09%** | 86.96% |
 | 2026q2 | 4,886 | 4,408 | **90.22%** | 5,180 | **85.10%** | 86.74% |
 | 2026q3 | 4,686 | 4,159 | **88.75%** | 5,115 | **81.31%** | 83.93% |
-| **All** | 75,638 | 61,969 | **81.93%** | 78,495 | **78.95%** | 80.09% |
-| Rule 11: 2023 Q2 – 2024 Q2 | 29,609 | 22,548 | **76.15%** | 30,647 | **73.57%** | 74.63% |
-| Rule 11: 2024 Q3 – 2026 Q3 | 46,029 | 39,421 | **85.64%** | 47,848 | **82.39%** | 83.59% |
+| **All** | 75,638 | 61,993 | **81.96%** | 78,495 | **78.98%** | 80.12% |
+| Rule 11: 2023 Q2 – 2024 Q2 | 29,609 | 22,563 | **76.20%** | 30,647 | **73.62%** | 74.68% |
+| Rule 11: 2024 Q3 – 2026 Q3 | 46,029 | 39,430 | **85.66%** | 47,848 | **82.41%** | 83.61% |
 
 ## Instrument type (Rule 10, `share_types.py`)
 
@@ -52,7 +53,7 @@ Out-of-scope buys keep their row and prices; they are excluded from coverage, cl
 
 | Scope | Reason | Buys | Priced |
 |---|---|---:|---:|
-| in | common | 71,507 | 59,077 |
+| in | common | 71,507 | 59,101 |
 | in | ordinary | 1,407 | 1,039 |
 | in | beneficial_interest | 1,376 | 619 |
 | in | lp_common_units | 921 | 908 |
@@ -75,11 +76,11 @@ Out-of-scope buys keep their row and prices; they are excluded from coverage, cl
 
 | Status | Buys | Share |
 |---|---:|---:|
-| priced | 62,868 | 80.09% |
+| priced | 62,892 | 80.12% |
 | placeholder_symbol | 2,945 | 3.75% |
 | multiple_symbols | 175 | 0.22% |
 | unparseable_symbol | 298 | 0.38% |
-| no_data | 8,832 | 11.25% |
+| no_data | 8,808 | 11.22% |
 | series_starts_after_entry | 1,014 | 1.29% |
 | no_bar_on_entry_date | 11 | 0.01% |
 | price_mismatch_vs_filing | 2,352 | 3.00% |
@@ -91,15 +92,15 @@ By quarter:
 | 2023q2 | 5,701 | 138 | 34 | 21 | 1,800 | 88 | 0 | 182 |
 | 2023q3 | 4,326 | 211 | 15 | 21 | 999 | 57 | 0 | 156 |
 | 2023q4 | 4,650 | 192 | 13 | 15 | 1,143 | 53 | 1 | 173 |
-| 2024q1 | 3,967 | 238 | 16 | 16 | 816 | 29 | 0 | 132 |
-| 2024q2 | 4,227 | 196 | 13 | 15 | 775 | 69 | 0 | 149 |
+| 2024q1 | 3,968 | 238 | 16 | 16 | 815 | 29 | 0 | 132 |
+| 2024q2 | 4,241 | 196 | 13 | 15 | 761 | 69 | 0 | 149 |
 | 2024q3 | 4,003 | 172 | 3 | 6 | 703 | 55 | 0 | 128 |
 | 2024q4 | 4,726 | 222 | 15 | 28 | 780 | 79 | 0 | 133 |
-| 2025q1 | 4,243 | 212 | 5 | 12 | 567 | 113 | 0 | 133 |
-| 2025q2 | 5,268 | 192 | 0 | 23 | 531 | 163 | 0 | 120 |
+| 2025q1 | 4,245 | 212 | 5 | 12 | 565 | 113 | 0 | 133 |
+| 2025q2 | 5,269 | 192 | 0 | 23 | 530 | 163 | 0 | 120 |
 | 2025q3 | 4,137 | 277 | 2 | 5 | 202 | 79 | 1 | 85 |
-| 2025q4 | 4,648 | 237 | 25 | 10 | 181 | 65 | 3 | 144 |
-| 2026q1 | 4,186 | 245 | 18 | 4 | 169 | 63 | 2 | 130 |
+| 2025q4 | 4,651 | 237 | 25 | 10 | 178 | 65 | 3 | 144 |
+| 2026q1 | 4,189 | 245 | 18 | 4 | 166 | 63 | 2 | 130 |
 | 2026q2 | 4,493 | 198 | 0 | 39 | 102 | 48 | 0 | 300 |
 | 2026q3 | 4,293 | 215 | 16 | 83 | 64 | 53 | 4 | 387 |
 
@@ -110,18 +111,18 @@ By quarter:
 | 2023q2 | 5,701 | 2,263 | 0 |
 | 2023q3 | 4,326 | 1,459 | 0 |
 | 2023q4 | 4,650 | 1,590 | 0 |
-| 2024q1 | 3,967 | 1,247 | 0 |
-| 2024q2 | 4,227 | 1,217 | 0 |
+| 2024q1 | 3,968 | 1,246 | 0 |
+| 2024q2 | 4,241 | 1,203 | 0 |
 | 2024q3 | 4,003 | 1,067 | 0 |
 | 2024q4 | 4,726 | 1,257 | 0 |
-| 2025q1 | 4,243 | 1,042 | 0 |
-| 2025q2 | 5,268 | 1,029 | 0 |
+| 2025q1 | 4,245 | 1,040 | 0 |
+| 2025q2 | 5,269 | 1,028 | 0 |
 | 2025q3 | 4,137 | 651 | 0 |
-| 2025q4 | 4,648 | 665 | 0 |
-| 2026q1 | 4,186 | 631 | 0 |
+| 2025q4 | 4,651 | 662 | 0 |
+| 2026q1 | 4,189 | 628 | 0 |
 | 2026q2 | 4,493 | 687 | 0 |
 | 2026q3 | 4,289 | 822 | 4 |
-| **All** | **62,864** | **15,627** | **4** |
+| **All** | **62,888** | **15,603** | **4** |
 
 ## Window 63d: window status
 
@@ -130,22 +131,22 @@ By quarter:
 | 2023q2 | 5,701 | 0 | 2,263 |
 | 2023q3 | 4,326 | 0 | 1,459 |
 | 2023q4 | 4,650 | 0 | 1,590 |
-| 2024q1 | 3,967 | 0 | 1,247 |
-| 2024q2 | 4,227 | 0 | 1,217 |
+| 2024q1 | 3,968 | 0 | 1,246 |
+| 2024q2 | 4,241 | 0 | 1,203 |
 | 2024q3 | 4,003 | 0 | 1,067 |
 | 2024q4 | 4,726 | 0 | 1,257 |
-| 2025q1 | 4,243 | 0 | 1,042 |
-| 2025q2 | 5,268 | 0 | 1,029 |
+| 2025q1 | 4,245 | 0 | 1,040 |
+| 2025q2 | 5,269 | 0 | 1,028 |
 | 2025q3 | 4,137 | 0 | 651 |
-| 2025q4 | 4,648 | 0 | 665 |
-| 2026q1 | 4,186 | 0 | 631 |
+| 2025q4 | 4,651 | 0 | 662 |
+| 2026q1 | 4,189 | 0 | 628 |
 | 2026q2 | 4,493 | 0 | 687 |
 | 2026q3 | 1,179 | 3,114 | 822 |
-| **All** | **59,754** | **3,114** | **15,627** |
+| **All** | **59,778** | **3,114** | **15,603** |
 
 ## Filed price vs market close (Rule 9)
 
-Checked 65,220 buys priced at entry: ok 61,688 · **mismatch 2,352** (→ `price_mismatch_vs_filing`, no returns) · not checkable 1,180 (no bar on or before the trade date). A split adjustment was applied to 6,484 checked buys. Mismatches come from 535 issuers.
+Checked 65,244 buys priced at entry: ok 61,712 · **mismatch 2,352** (→ `price_mismatch_vs_filing`, no returns) · not checkable 1,180 (no bar on or before the trade date). A split adjustment was applied to 6,506 checked buys. Mismatches come from 535 issuers.
 
 Mismatches by filed price:
 
@@ -242,7 +243,7 @@ Issuers with the most mismatches:
 
 ## Symbols
 
-- Distinct symbols requested from the buys: 4,640; price cache: no_data 808, ok 3,833
+- Distinct symbols requested from the buys: 4,640; price cache: no_data 804, ok 3,837
 - Symbols used by more than one issuer CIK: 32 (729 buys). The symbol is as filed and is not checked against the issuer; a shared symbol may be a reuse after a rename or a filing error.
 - Issuers filing under more than one symbol: 183
 
@@ -344,7 +345,7 @@ Issuers with the most unpriced buys (no data or a series that does not cover ent
 
 ## Fetch
 
-- Splits (Rule 9): 3,741 symbols with a priced buy; range 2023-03-24 to 2026-11-10 (end exclusive). This run requested 0 (ok 0, no data 0, errors 0, refusals 0).
+- Splits (Rule 9): 3,745 symbols with a priced buy; each from 2023-03-24 through its own price fetch date (end exclusive: 2026-11-10 for 3,741, 2026-11-21 for 4). This run requested 0 (ok 0, no data 0, errors 0, refusals 0).
 - This run: 0 symbols requested in 0 batches; ok 0, no data 0, errors 0, refusals 0. Every batch is in `data/raw/prices/fetch_log.jsonl`. Offline run: no requests.
-- All runs (`fetch_log.jsonl`): 211 batch requests, 8,382 symbol requests, 0 refused; 2026-11-09T23:18:21+00:00 to 2026-11-10T00:10:11+00:00.
+- All runs (`fetch_log.jsonl`): 235 batch requests, 9,274 symbol requests, 2 refused; 2026-11-09T23:18:21+00:00 to 2026-11-20T21:37:28+00:00.
 - Yahoo Finance is not an authoritative source; adjusted closes reflect Yahoo's adjustments as of the fetch date (`prices_manifest.json`, `fetched_at`).

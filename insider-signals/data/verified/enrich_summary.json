@@ -1,5 +1,5 @@
 {
-  "run_at": "2026-11-13T21:02:43+00:00",
+  "run_at": "2026-11-20T21:46:01+00:00",
   "script": "enrich.py",
   "promoted": true,
   "failed_checks": [],
@@ -47,6 +47,13 @@
       "examples": []
     },
     {
+      "check": "unpriced_current",
+      "passed": true,
+      "violations": 0,
+      "detail": "every unpriced buy's price_status recomputes from the current price cache (none has data now)",
+      "examples": []
+    },
+    {
       "check": "rule10_scope",
       "passed": true,
       "violations": 0,
@@ -57,7 +64,7 @@
       "check": "coverage",
       "passed": true,
       "violations": 0,
-      "detail": "priced \u00f7 in-scope buys = 81.93% (minimum 80%, Rules 8 and 10); priced in-scope \u00f7 all buys = 78.95% (reported, not gated)",
+      "detail": "priced \u00f7 in-scope buys = 81.96% (minimum 80%, Rules 8 and 10); priced in-scope \u00f7 all buys = 78.98% (reported, not gated)",
       "examples": []
     }
   ],
@@ -91,41 +98,46 @@
     "requested_end_exclusive": "2026-11-09",
     "market_symbol": "SPY",
     "market_as_of": "2026-11-06",
-    "manifest_sha256": "63591ff4809b8ac9a633653bffcf15c777971a6fc79da451bf311075c6eb58a3",
+    "manifest_sha256": "ff7ad25764eff56486819da1eba36622789c26014aeddba7825935dff134cfee",
     "fetch": {
       "requested": 0
     },
     "fetch_log_totals": {
-      "batch_requests": 211,
+      "batch_requests": 235,
       "by_kind": {
-        "prices": 117,
-        "splits": 94
+        "prices": 140,
+        "splits": 95
       },
-      "symbol_requests": 8382,
-      "refused": 0,
+      "symbol_requests": 9274,
+      "refused": 2,
       "first_ts": "2026-11-09T23:18:21+00:00",
-      "last_ts": "2026-11-10T00:10:11+00:00"
+      "last_ts": "2026-11-20T21:37:28+00:00"
     },
+    "retry_no_data": false,
     "splits": {
       "requested_start": "2023-03-24",
-      "requested_end_exclusive": "2026-11-10",
-      "symbols": 3741,
+      "requested_end_exclusive": "2026-11-21",
+      "requested_end_exclusive_by_symbols": {
+        "2026-11-10": 3741,
+        "2026-11-21": 4
+      },
+      "symbols": 3745,
       "fetch": {
         "requested": 0
       },
-      "manifest_sha256": "cbebca0285f652b9d9b36bc12d27cfd0ed25677d80953cd13333d5bb0902a99a"
+      "manifest_sha256": "8e3d7b03d5a97f42b9c471bb985e5509f952b82b4083a5d9fcd4962dccca8fcf"
     },
     "offline": true
   },
   "findings": {
     "filing_price_check": {
-      "checked": 65220,
+      "checked": 65244,
       "verdicts": {
-        "ok": 61688,
+        "ok": 61712,
         "mismatch": 2352,
         "not_checkable": 1180
       },
-      "split_applied_in_checked": 6484,
+      "split_applied_in_checked": 6506,
       "mismatch_kinds": {
         "filed_price": {
           "\u2265 $20": 920,
@@ -329,21 +341,21 @@
       },
       "2024q1": {
         "buys": 5214,
-        "priced": 3967,
-        "pct": 76.08,
+        "priced": 3968,
+        "pct": 76.1,
         "in_scope": 5070,
-        "priced_in_scope": 3927,
-        "pct_in_scope": 77.46,
-        "pct_in_scope_over_all": 75.32
+        "priced_in_scope": 3928,
+        "pct_in_scope": 77.48,
+        "pct_in_scope_over_all": 75.34
       },
       "2024q2": {
         "buys": 5444,
-        "priced": 4227,
-        "pct": 77.65,
+        "priced": 4241,
+        "pct": 77.9,
         "in_scope": 5285,
-        "priced_in_scope": 4179,
-        "pct_in_scope": 79.07,
-        "pct_in_scope_over_all": 76.76
+        "priced_in_scope": 4193,
+        "pct_in_scope": 79.34,
+        "pct_in_scope_over_all": 77.02
       },
       "2024q3": {
         "buys": 5070,
@@ -365,21 +377,21 @@
       },
       "2025q1": {
         "buys": 5285,
-        "priced": 4243,
-        "pct": 80.28,
+        "priced": 4245,
+        "pct": 80.32,
         "in_scope": 5128,
-        "priced_in_scope": 4182,
-        "pct_in_scope": 81.55,
-        "pct_in_scope_over_all": 79.13
+        "priced_in_scope": 4184,
+        "pct_in_scope": 81.59,
+        "pct_in_scope_over_all": 79.17
       },
       "2025q2": {
         "buys": 6297,
-        "priced": 5268,
-        "pct": 83.66,
+        "priced": 5269,
+        "pct": 83.67,
         "in_scope": 6177,
-        "priced_in_scope": 5250,
-        "pct_in_scope": 84.99,
-        "pct_in_scope_over_all": 83.37
+        "priced_in_scope": 5251,
+        "pct_in_scope": 85.01,
+        "pct_in_scope_over_all": 83.39
       },
       "2025q3": {
         "buys": 4788,
@@ -392,21 +404,21 @@
       },
       "2025q4": {
         "buys": 5313,
-        "priced": 4648,
-        "pct": 87.48,
+        "priced": 4651,
+        "pct": 87.54,
         "in_scope": 5126,
-        "priced_in_scope": 4593,
-        "pct_in_scope": 89.6,
-        "pct_in_scope_over_all": 86.45
+        "priced_in_scope": 4596,
+        "pct_in_scope": 89.66,
+        "pct_in_scope_over_all": 86.5
       },
       "2026q1": {
         "buys": 4817,
-        "priced": 4186,
-        "pct": 86.9,
+        "priced": 4189,
+        "pct": 86.96,
         "in_scope": 4628,
-        "priced_in_scope": 4096,
-        "pct_in_scope": 88.5,
-        "pct_in_scope_over_all": 85.03
+        "priced_in_scope": 4099,
+        "pct_in_scope": 88.57,
+        "pct_in_scope_over_all": 85.09
       },
       "2026q2": {
         "buys": 5180,
@@ -428,32 +440,32 @@
       },
       "all": {
         "buys": 78495,
-        "priced": 62868,
-        "pct": 80.09,
+        "priced": 62892,
+        "pct": 80.12,
         "in_scope": 75638,
-        "priced_in_scope": 61969,
-        "pct_in_scope": 81.93,
-        "pct_in_scope_over_all": 78.95
+        "priced_in_scope": 61993,
+        "pct_in_scope": 81.96,
+        "pct_in_scope_over_all": 78.98
       }
     },
     "coverage_by_period": {
       "2023 Q2 \u2013 2024 Q2": {
         "buys": 30647,
-        "priced": 22871,
-        "pct": 74.63,
+        "priced": 22886,
+        "pct": 74.68,
         "in_scope": 29609,
-        "priced_in_scope": 22548,
-        "pct_in_scope": 76.15,
-        "pct_in_scope_over_all": 73.57
+        "priced_in_scope": 22563,
+        "pct_in_scope": 76.2,
+        "pct_in_scope_over_all": 73.62
       },
       "2024 Q3 \u2013 2026 Q3": {
         "buys": 47848,
-        "priced": 39997,
-        "pct": 83.59,
+        "priced": 40006,
+        "pct": 83.61,
         "in_scope": 46029,
-        "priced_in_scope": 39421,
-        "pct_in_scope": 85.64,
-        "pct_in_scope_over_all": 82.39
+        "priced_in_scope": 39430,
+        "pct_in_scope": 85.66,
+        "pct_in_scope_over_all": 82.41
       }
     },
     "rule10": [
@@ -461,7 +473,7 @@
         "scope": "in",
         "reason": "common",
         "buys": 71507,
-        "priced": 59077
+        "priced": 59101
       },
       {
         "scope": "in",
@@ -597,18 +609,18 @@
           "no_bar_on_entry_date": 1
         },
         "2024q1": {
-          "priced": 3967,
+          "priced": 3968,
           "placeholder_symbol": 238,
-          "no_data": 816,
+          "no_data": 815,
           "series_starts_after_entry": 29,
           "price_mismatch_vs_filing": 132,
           "unparseable_symbol": 16,
           "multiple_symbols": 16
         },
         "2024q2": {
-          "priced": 4227,
+          "priced": 4241,
           "placeholder_symbol": 196,
-          "no_data": 775,
+          "no_data": 761,
           "price_mismatch_vs_filing": 149,
           "series_starts_after_entry": 69,
           "multiple_symbols": 13,
@@ -633,8 +645,8 @@
           "multiple_symbols": 15
         },
         "2025q1": {
-          "priced": 4243,
-          "no_data": 567,
+          "priced": 4245,
+          "no_data": 565,
           "placeholder_symbol": 212,
           "price_mismatch_vs_filing": 133,
           "unparseable_symbol": 12,
@@ -643,9 +655,9 @@
         },
         "2025q2": {
           "price_mismatch_vs_filing": 120,
-          "priced": 5268,
+          "priced": 5269,
           "placeholder_symbol": 192,
-          "no_data": 531,
+          "no_data": 530,
           "series_starts_after_entry": 163,
           "unparseable_symbol": 23
         },
@@ -660,8 +672,8 @@
           "no_bar_on_entry_date": 1
         },
         "2025q4": {
-          "priced": 4648,
-          "no_data": 181,
+          "priced": 4651,
+          "no_data": 178,
           "placeholder_symbol": 237,
           "price_mismatch_vs_filing": 144,
           "series_starts_after_entry": 65,
@@ -670,8 +682,8 @@
           "unparseable_symbol": 10
         },
         "2026q1": {
-          "priced": 4186,
-          "no_data": 169,
+          "priced": 4189,
+          "no_data": 166,
           "series_starts_after_entry": 63,
           "price_mismatch_vs_filing": 130,
           "placeholder_symbol": 245,
@@ -699,8 +711,8 @@
         }
       },
       "total": {
-        "no_data": 8832,
-        "priced": 62868,
+        "no_data": 8808,
+        "priced": 62892,
         "price_mismatch_vs_filing": 2352,
         "placeholder_symbol": 2945,
         "series_starts_after_entry": 1014,
@@ -725,12 +737,12 @@
             "no_entry_price": 1590
           },
           "2024q1": {
-            "closed": 3967,
-            "no_entry_price": 1247
+            "closed": 3968,
+            "no_entry_price": 1246
           },
           "2024q2": {
-            "closed": 4227,
-            "no_entry_price": 1217
+            "closed": 4241,
+            "no_entry_price": 1203
           },
           "2024q3": {
             "closed": 4003,
@@ -741,24 +753,24 @@
             "closed": 4726
           },
           "2025q1": {
-            "closed": 4243,
-            "no_entry_price": 1042
+            "closed": 4245,
+            "no_entry_price": 1040
           },
           "2025q2": {
-            "no_entry_price": 1029,
-            "closed": 5268
+            "no_entry_price": 1028,
+            "closed": 5269
           },
           "2025q3": {
             "closed": 4137,
             "no_entry_price": 651
           },
           "2025q4": {
-            "closed": 4648,
-            "no_entry_price": 665
+            "closed": 4651,
+            "no_entry_price": 662
           },
           "2026q1": {
-            "closed": 4186,
-            "no_entry_price": 631
+            "closed": 4189,
+            "no_entry_price": 628
           },
           "2026q2": {
             "closed": 4493,
@@ -771,8 +783,8 @@
           }
         },
         "total": {
-          "no_entry_price": 15627,
-          "closed": 62864,
+          "no_entry_price": 15603,
+          "closed": 62888,
           "series_ends_before_exit": 4
         }
       },
@@ -791,12 +803,12 @@
             "no_entry_price": 1590
           },
           "2024q1": {
-            "closed": 3967,
-            "no_entry_price": 1247
+            "closed": 3968,
+            "no_entry_price": 1246
           },
           "2024q2": {
-            "closed": 4227,
-            "no_entry_price": 1217
+            "closed": 4241,
+            "no_entry_price": 1203
           },
           "2024q3": {
             "closed": 4003,
@@ -807,24 +819,24 @@
             "closed": 4726
           },
           "2025q1": {
-            "closed": 4243,
-            "no_entry_price": 1042
+            "closed": 4245,
+            "no_entry_price": 1040
           },
           "2025q2": {
-            "no_entry_price": 1029,
-            "closed": 5268
+            "no_entry_price": 1028,
+            "closed": 5269
           },
           "2025q3": {
             "closed": 4137,
             "no_entry_price": 651
           },
           "2025q4": {
-            "closed": 4648,
-            "no_entry_price": 665
+            "closed": 4651,
+            "no_entry_price": 662
           },
           "2026q1": {
-            "closed": 4186,
-            "no_entry_price": 631
+            "closed": 4189,
+            "no_entry_price": 628
           },
           "2026q2": {
             "closed": 4493,
@@ -837,8 +849,8 @@
           }
         },
         "total": {
-          "no_entry_price": 15627,
-          "closed": 59754,
+          "no_entry_price": 15603,
+          "closed": 59778,
           "not_yet_closed": 3114
         }
       }
@@ -1396,9 +1408,9 @@
     "issuers_with_several_symbols": 183,
     "distinct_symbols": 4640,
     "cache_status": {
-      "ok": 3833,
-      "no_data": 808
+      "ok": 3837,
+      "no_data": 804
     }
   },
-  "enriched_buys_sha256": "7868d1b32dfad10cf190e1be2049a3314d693e4196df7c7dbd02d2107470c04e"
+  "enriched_buys_sha256": "bd5fdf25b9df9bd584be2d6f5b1778e03d7656297dc4337dd3cc798b071aaafd"
 }
