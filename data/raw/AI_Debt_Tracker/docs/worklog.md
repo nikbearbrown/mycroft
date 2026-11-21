@@ -4,6 +4,54 @@ Newest first.
 
 ---
 
+## 2026-11-20 — Week 6: reading the opening ledger, investigators, and the merge fixes
+
+**Week 5's leftovers.** The merge step no longer adds bonds that are not there: a launch notice with no coupon folds
+into the priced bond that follows it (P57), a bond named with no amount becomes a question instead of an addition
+(P56), and the banks' option to buy more is recorded, not added (P58). With the same readings and B0's opening ledger,
+the bonds added that the target report does not hold fell from **26 to 3**, and L1 precision rose from 90.2% to
+**93.3%** (recall 97.9%, new bonds caught 31 of 34). Against B0, paired: recall +7.0 points, precision +0.5 (−0.2 to
++1.4) — the precision loss is gone. Loans: a draw counts in total debt, a new commitment does not, and a repayment
+reduces it. P53 and P54 fixed in triage; the 593-filing pool re-run: every labelled set still at full recall, Week 5's
+precision now 15 of 17. There is no fresh triage set this week, which is stated in the report. P47 (a convertible-only
+filer's total) and P49 (the ladder graded on 10-K targets only) fixed; the key and B0 rebuilt (reports with no
+total-debt tag 139 → 126). A **fresh held-out hand-check** (seed 20261120), graded once: **4 of 5 agree**. Alphabet
+disagrees because its euro offering is keyed at the dollar carrying amount (P59, left open). Week 5's TeraWulf now
+agrees.
+
+**The opening-ledger reader** (`graph/nodes/opening.py`). Code scores the report's tables as debt tables; `qwen3:4b`
+names the rows that are one instrument and their kind; code reads each value from the cited cell and the row's label
+with the answer key's own parser, and the period-end column is taken from the header when the header settles it. On
+the 94 distinct opening reports of the dev episodes: **L1 recall 89.7%, precision 98.8%**; with no model, 83.8% and
+97.9%. The first pass found two code defects (P61: a rate column read as the amount at Salesforce; units lost from a
+caption the parser cut at Super Micro). They were fixed on dev and every report re-read with the model's saved answer.
+Both passes are reported (first pass: recall 89.4%, precision 96.5%). Nine stored answers had been cut at 3,000
+characters and were asked again, and Broadcom's came back different (36 → 22 and 36 → 40 bonds): the model's pointing
+is not the same from run to run. P60: four opening reports (Core Scientific's amendments, two late Super Micro
+reports) are refused to the agent by the point-in-time rule.
+
+**Investigators** (`graph/nodes/investigator.py`), one per open question, wired into the graph with a loop back to the
+ledger (at most two rounds). Each answer is an amendment to one event, citing a passage or the ledger row it matched.
+67 questions in 19 episodes: 21 settled (17 bonds named with no amount that the opening ledger already held, 2 the model judged not offered in the filing; 2 exits matched on a
+looser key), 46 left open. Every maturity question stayed open. **A1: no L1 grade changed**; most of what they settled the
+merge step had already kept out.
+
+**The week 6 check.** Three runs over the 95 dev episodes, each 95 of 95. **Agent start vs oracle start (A4): L1 recall
+90.1% vs 97.9%, −7.9 points paired (−15.3 to −2.0); precision 95.5% vs 93.3%.** Against B0, which still borrows the key's
+ledger, the agent is level on recall (−0.9 points) and ahead on precision (+2.6). Total debt within 2%: agent 26 of 79,
+oracle 44, B0 40. **Self-catch rate:** the checks flagged 17 of the 50 agent-start episodes that ended wrong (34%), and 11
+of 36 that ended right; oracle start 16 of 39 (41%). The gap comes from a few companies: Broadcom (the opening reader found 23 instruments
+where the report holds about 40, in two quarters), Snowflake and Super Micro (convertible tables not found), Core Scientific (P60).
+
+**Process.** The laptop ran low on memory again and the model server and the opening-ledger run were stopped; Om said
+"resume it", and the jobs were restarted one at a time with Ollama limited to one model and one slot. The 73 readings
+saved before the stop were reused. The model server was stopped once the runs finished.
+
+**Gate (P4):** Om delegated the week in advance and did not review it; `manifests/week6_gate.json` says so (DELEGATED).
+Weeks 3 to 6 are all awaiting review. Git is Om's.
+
+---
+
 ## 2026-11-13 — Week 5: full episodes, from filings to a ledger
 
 **Week 4's leftovers.** The four answer-key defects (P41 half a total-debt pair, P42 one bond under two members, P43 a

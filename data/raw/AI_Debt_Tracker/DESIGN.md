@@ -237,18 +237,21 @@ are still graded per bond. Evidence: [`docs/universe_v1_review.md`](docs/univers
 | P44 | **L1 with nothing to grade per bond.** No instrument carries a maturity and no total is tagged, so coverage is measured against the report's own instruments; and a note's face tag is its commitment ($125 m), not what is drawn ($105 m). | Week 4 fresh held-out check (Applied Digital 10-Q). | **Fixed (Week 5) in the grader:** an L1 episode whose target holds no bond with a maturity is graded on totals only, and says so (`level_note`). Changes B0's L1 count from 47 to 45 episodes. |
 | P45 | **One document, two accessions.** A co-issued term sheet is filed under each co-issuer's CIK with different accession numbers, so de-duplicating co-filings by accession keeps both copies. | Week 4 fresh triage set (Dell's October 2024 term sheet, under Dell International and EMC). | **Fixed (Week 5):** same day, form, file name *and* text = one filing; the first copy lists the others (`timeline.drop_duplicate_documents`). |
 | P46 | **A preliminary cover blank down to the century.** `€ % Notes due` (no "20") escapes the Week 4 blank-cover pattern, and rule R2 then reads "Preferred Stock" in the cover's contents as an equity offering. | Week 4 fresh triage check (IBM euro notes, Feb 2025) — the only miss, 8 of 9. | **Fixed (Week 5):** `% Notes due` with anything after it is a note offer, and a contents list ("Description of Preferred Stock") is not a share sale. Third fresh triage check: 15 of 15. |
-| P47 | **A convertible-only filer's total.** A company whose only debt is a convertible tags its total as `ConvertibleDebt` / `ConvertibleDebtNoncurrent`, which the total-debt chain does not read, so the key has no total. | Week 5 fresh held-out check (TeraWulf 10-Q, June 2025: $488.7 m). | Open (Week 6). |
-| P48 | **The same filer again: nothing keyed, and a repaid note carried.** No instrument names a year, so L1 has nothing to grade (P44), and the repaid CIM promissory note stays outstanding at its $125 m face. | Week 5 fresh held-out check (Applied Digital 10-Q, Nov 2024). | Open (Week 6). |
-| P49 | **"Due in the next 12 months" is the next calendar year.** In 10-Qs the key's `…InNextTwelveMonths` value is the next full year's row of the printed ladder. | Week 5 fresh held-out check (IBM: 2026 row $6,431 m; Vistra: 2025 row $786 m). | Noted; it affects every 10-Q target's L3 ladder grading. Open (Week 6). |
+| P47 | **A convertible-only filer's total.** A company whose only debt is a convertible tags its total as `ConvertibleDebt` / `ConvertibleDebtNoncurrent`, which the total-debt chain does not read, so the key has no total. | Week 5 fresh held-out check (TeraWulf 10-Q, June 2025: $488.7 m). | **Fixed (Week 6):** the convertible tags close the total-debt chain, last, so a filer with other debt is never totalled from its convertibles alone. |
+| P48 | **The same filer again: nothing keyed, and a repaid note carried.** No instrument names a year, so L1 has nothing to grade (P44), and the repaid CIM promissory note stays outstanding at its $125 m face. | Week 5 fresh held-out check (Applied Digital 10-Q, Nov 2024). | **Noted, not fixed (Week 6):** the tags cannot tell a repaid note from an outstanding one here, and the filer tags no total, so no graded number depends on it; its episodes stay graded on totals only (P44). |
+| P49 | **"Due in the next 12 months" is the next calendar year.** In 10-Qs the key's `…InNextTwelveMonths` value is the next full year's row of the printed ladder. | Week 5 fresh held-out check (IBM: 2026 row $6,431 m; Vistra: 2025 row $786 m). | **Fixed (Week 6, grader):** the maturity ladder is graded on 10-K targets only; on 10-Q targets total debt and the current portion are still graded. |
 | P50 | **The reader's currency sign rewritten while copying** (€1,500,000,000 "copied" as $1,500,000,000). | Week 4 reader evaluation (8 refused copies). | **Fixed (Week 5):** when the number is in the passage under another sign, the passage's own words are used and the citation says `sign from source`. |
 | P51 | **An amount-only facility sentence below the passage threshold** ("a $500 million term loan facility"). | Week 4 reader evaluation (Super Micro: no passages). | **Fixed (Week 5):** a facility word beside an amount scores one more. |
 | P52 | **Existing debt read from a blank prospectus's tables.** On a preliminary cover with every term blank, the model listed the existing-notes table as new issues. | Week 4 reader evaluation (Equinix: 15 of 29 extras). | **Fixed (Week 5):** on a blank cover, a new instrument whose every value comes from a table row is set aside (kept in the record, not used). |
-| P53 | **A share tender read as a debt tender.** Rule R4's tender pattern fires on a third party's mini-tender for shares. | Week 5 fresh triage set (Alphabet, Sept 2024). | Open (Week 6): not fixed against the set that found it. |
-| P54 | **An FWP for shares that names the concurrent notes.** Rule R3 keeps a borrowed-share pricing term sheet because it mentions the convertible notes. | Week 5 fresh triage set (Cipher Mining, May 2025). | Open (Week 6). |
+| P53 | **A share tender read as a debt tender.** Rule R4's tender pattern fires on a third party's mini-tender for shares. | Week 5 fresh triage set (Alphabet, Sept 2024). | **Fixed (Week 6):** a tender whose sentence names shares and no notes is not decided by rule R4 (the model decides). |
+| P54 | **An FWP for shares that names the concurrent notes.** Rule R3 keeps a borrowed-share pricing term sheet because it mentions the convertible notes. | Week 5 fresh triage set (Cipher Mining, May 2025). | **Fixed (Week 6):** an FWP whose every mention of notes sits beside "concurrent" goes to the model, not rule R3. |
 | P55 | **Events after the quarter end applied to it.** The window runs to the target report's filing, weeks after the quarter; the first full run put bonds priced after the quarter end into that quarter's ledger. | Week 5 first full run on dev (CoreWeave's July 2025 notes in the June quarter; Super Micro's early-2025 notes in two 2024 quarters). | **Fixed (Week 5, dev):** only events filed on or before the quarter end are applied; the rest stay in the record. Filing date stands in for settlement (P4) until settlement dates are parsed. |
-| P56 | **Existing notes read from a prospectus as new issues.** Descriptions of notes already outstanding, with no amount, added as new bonds. | Week 5 full run (Equinix, 10 of the 26 false additions in L1 episodes). | Open (Week 6). |
-| P57 | **A proposed offering added as its own bond.** A launch or blank preliminary prospectus has no coupon yet, so its event has no match key and cannot merge with the priced bond. | Week 5 full run (10 false additions: Oracle, CoreWeave, Super Micro, Cipher Mining, Applied Digital, Equinix). | Open (Week 6): merge a keyless *new* event into a priced one of the same kind and year in the window. |
-| P58 | **The banks' option read as a bond.** "Up to an additional $45 million" listed as an instrument (the reader's version of P38). | Week 5 full run (4 false additions) and fresh reader set. | Open (Week 6). |
+| P56 | **Existing notes read from a prospectus as new issues.** Descriptions of notes already outstanding, with no amount, added as new bonds. | Week 5 full run (Equinix, 10 of the 26 false additions in L1 episodes). | **Fixed (Week 6):** a new bond with no amount is not added; it becomes a question, and an investigator drops it when the ledger already holds that coupon and year in any currency, or when the model says the filing does not offer it. |
+| P57 | **A proposed offering added as its own bond.** A launch or blank preliminary prospectus has no coupon yet, so its event has no match key and cannot merge with the priced bond. | Week 5 full run (10 false additions: Oracle, CoreWeave, Super Micro, Cipher Mining, Applied Digital, Equinix). | **Fixed (Week 6):** a coupon-less new event is folded into a priced new event of the same year (and currency) filed the same day or later, unless its own filing prices other tranches (a floating-rate note) or it is marked floating; with no priced bond after it, it is a question, not a bond. |
+| P58 | **The banks' option read as a bond.** "Up to an additional $45 million" listed as an instrument (the reader's version of P38). | Week 5 full run (4 false additions) and fresh reader set. | **Fixed (Week 6):** code marks a new instrument whose cited amount follows "additional" or precedes the option words (`reader.mark_options`); the engine records it and does not add it, and its amount never wins a merged bond's principal. |
+| P59 | **An offering compared in the unit of its carrying tag.** Alphabet's 2025 euro notes are tagged with a €6.75 bn face and a $7,903 m carrying amount; the key's offering amount is the carrying one, so it is a *dollar* offering, and a currency-strict L2 comparison with the printed €6.75 bn fails. | Week 6 fresh held-out check (Alphabet 10-Q, June 2025: 3 of 4 offerings). | Open (Week 7): the offering-level twin of P37 — not fixed against the set that found it. |
+| P60 | **An opening report the agent may not read.** Core Scientific's opening reports for two dev episodes are amendments (a 10-K/A and a 10-Q/A) filed on the same day as the target report, and Super Micro's 10-K for June 2024 and 10-Q for September 2024 were filed late, close to the targets that follow them; `edgar_pit` refuses a filing that close to the cut-off (P29's margin), so agent start has no opening ledger there, while B0 and oracle start use it. | Week 6 opening-ledger reader. | Not a defect — the point-in-time rule doing its job. Counted in the A4 gap and stated. |
+| P61 | **The opening-ledger reader's column and units.** (a) A header with one cell per column (Salesforce: Instrument / Maturity Date / Principal Outstanding as of January 31, 2025 / Interest Terms / Contractual Interest Rate) was not read, so the last number in the row, the coupon, was taken as the amount (six bonds in each of two reports). (b) The parser keeps 160 characters of a caption, so "(in thousands)" can be cut off; the table then took the document's commonest unit and a Super Micro total was read in billions. (c) A table of *available* borrowings was read as debt. | Week 6 first pass of the opening-ledger reader on dev. | **Fixed (Week 6), on dev:** a header with one cell per column names the amount column by its period-end date, and a column headed as a rate is never the amount; the document's unit vote counts captions; available-borrowing tables score as off-topic. Every report re-read with the model's saved answer (a cut-off answer asked again); both passes are in `docs/opening_reader.md`. |
 
 ## 3.5 How the data is used
 
@@ -441,6 +444,8 @@ class EpisodeState(TypedDict):
 | **signals** | no | Computes Section 4.2 from the ledger plus company totals (D6). |
 | **note writer** | **yes** (optional) | Drafts the quarterly note; a grounding check rejects any number not present in the signal contract. Labelled as model-written. |
 
+*As built in week 6.* The **opening-ledger reader** (`graph/nodes/opening.py`) runs before the timeline, not beside triage: code scores the report's tables as debt tables, `qwen3:4b` points at the rows that are one instrument and their kind, and code reads every value from the cited cell and the row's label; the period-end column is settled by the header when it can be (P61). The **investigators** (`graph/nodes/investigator.py`) do less than the row above plans: they do not yet search older filings. An exit of an unknown bond is matched to the opening ledger on a looser key (same coupon and year in another currency; same year and principal with no coupon); a new bond named with no amount is dropped if the ledger already holds it, else the model says whether the filing offers it and points at the passage with its amount; a new bond with no maturity gets the passage with its due date. Each answer is an amendment to one event, and the graph loops back to the ledger, at most two rounds.
+
 ## 7.4 Graph
 
 ```
@@ -612,6 +617,8 @@ filings of a fresh labelled set (27 instruments, truth labelled before any run):
 **precision 90.2%** (85.8–93.5) vs 92.8%, **−2.6 points** (−5.7 to −0.2). **New bonds caught: 30 of 34** (B0: 0).
 Removed bonds caught: 3 of 14 (B0: 1). The precision loss is 26 bonds added that the report does not hold — P56–P58.
 
+*Week 6, the merge fixes and agent start* ([`docs/agent_start.md`](docs/agent_start.md)), the same 45 L1 episodes, graded with this week's P47 and P49 grader fixes. **Oracle start with P56–P58 fixed: recall 97.9%, precision 93.3%** (Week 5: 90.2%); the bonds added that the report does not hold fell from 26 to **3**; new bonds caught 31 of 34. Against B0, paired: recall +7.0 points (+4.9 to +9.6), precision +0.5 (−0.2 to +1.4) — the precision loss is gone. **Agent start** (the opening ledger read from the report, not borrowed): **recall 90.1%, precision 95.5%**; the A4 gap is **−7.9 points of recall** (−15.3 to −2.0) and +2.2 of precision; against B0 the agent is level on recall (−0.9, −9.4 to +6.0) and ahead on precision (+2.6). Total debt within 2%: oracle start 44 of 79, agent start 26 of 79, B0 40. The investigators (ablation A1) changed no L1 grade. The opening-ledger reader on its own ([`docs/opening_reader.md`](docs/opening_reader.md)), 94 dev reports: L1 recall 89.7%, precision 98.8% (rules only 83.8%, 97.9%).
+
 ## 9.4 Ablations
 
 | | Change | Question answered |
@@ -696,6 +703,10 @@ quarters). Full results in [`docs/feasibility.md`](docs/feasibility.md):
 | *Week 5:* triage on a third fresh labelled set (after P45, P46) | recall **15 of 15** — pass; precision 15 of 18 (two new rule weaknesses, P53, P54) |
 | *Week 5:* event reader on fresh filings (after P50–P52) | **91% vs B1 74%** of fields; B2 96% |
 | *Week 5:* full episodes end to end on dev (oracle start) | **95 of 95** ran; L1 recall **97.8%** vs B0 90.9%, precision 90.2% vs 92.8%; new bonds caught **30 of 34** vs 0 |
+| *Week 6:* the merge fixes P56–P58 (oracle start) | precision **93.3%** (was 90.2%), recall 97.9%; false additions 26 → 3 |
+| *Week 6:* agent start vs oracle start (A4) | recall **90.1% vs 97.9%** (−7.9 points, paired), precision 95.5% vs 93.3% — measured |
+| *Week 6:* self-catch rate | agent start: the checks flagged **17 of 50** episodes that ended wrong (34%), and 11 of 36 that ended right; oracle start 16 of 39 (41%) — measured |
+| *Week 6:* fresh held-out hand-check (after P47, P49) | **4 of 5** agree; Alphabet disagrees (P59, logged) |
 
 Verdict: **go.**
 
@@ -730,10 +741,13 @@ data/raw/AI_Debt_Tracker/
     graph/         nodes/timeline.py  nodes/triage.py                                                [week 3]
                    nodes/reader.py            # event reader: points at passages, code parses           [week 4]
                    supervisor.py              # LangGraph episode graph: Send fan-out, SQLite checkpoints  [week 5]
+                   nodes/opening.py           # opening-ledger reader (agent start)                     [week 6]
+                   nodes/investigator.py      # one per open question; amendments, max 2 rounds         [week 6]
                    state.py  scheduler.py  nodes/…
     ledger/        parsers.py  matcher.py                                                            [week 1]
                    values.py                  # amounts, rates, maturity years from cited words         [week 4]
                    engine.py  checks.py       # merge, maturity sweep, ledger; self-checks               [week 5]
+                                              # + launch folding, options, loans, amendments            [week 6]
     llm/           ollama_client.py  schemas.py
     signals/       compute.py  contract.py
     eval/          fsn.py  answer_key.py                                                             [week 1]
@@ -747,18 +761,21 @@ data/raw/AI_Debt_Tracker/
                    triage_eval.py                                                                    [week 3]
                    reader_eval.py                                                                    [week 4]
                    run_episodes.py  episodes_report.py                                               [week 5]
+                   opening_eval.py  run_week6.py  week6_report.py                                    [week 6]
                    demo.py
   manifests/       dev.csv  test.csv  generalisation.csv  week1_gate.json                            [week 1]
                    handcheck/<episode>.json   (13 transcriptions of printed debt tables)  week2_gate.json [week 2]
                    handcheck/ +5 (fresh held-out)  triage_labels.json  week3_gate.json               [week 3]
                    handcheck/ +5  triage_labels_w4.json  reader_truth.json  week4_gate.json          [week 4]
                    handcheck/ +5  triage_labels_w5.json  reader_truth_w5.json  week5_gate.json       [week 5]
+                   handcheck/ +5 (fresh held-out)  week6_gate.json                                   [week 6]
   docs/            feasibility.md  worklog.md  universe_v1_review.md  answer_key_week1.md
                    bakeoff.md  bakeoff_set.md  week1_review.md                                       [week 1]
                    answer_key.md  baseline_b0.md  handcheck.md  changes_dev.md                       [week 2]
                    triage.md  triage_labels.md                                                       [week 3]
                    reader.md  reader_truth.md  triage_labels_w4.md                                   [week 4]
                    episodes.md  triage_labels_w5.md                                                  [week 5]
+                   opening_reader.md  agent_start.md                                                 [week 6]
                    archive/   (superseded: universe_draft.json, run_log_pending.md)
                    (later: findings.md, demo.md, mcp_server.md)
   tests/
@@ -865,3 +882,9 @@ DELEGATED, not CLEARED.
 **Week 6 begins with** P56–P58 in the merge step (measured on dev, then on a fresh draw), P53–P54 in triage, P47–P49 in
 the answer key, and the reader's misses on fresh filings; then §11's week 6: the opening-ledger reader (agent start —
 the A4 gap), investigators for the 53 open questions, loan facilities (capacity vs drawn), and unannounced debt.
+
+*Done in week 6 (20 November 2026):* P47 (a convertible-only filer's total) and P49 (the ladder graded on 10-K targets only) fixed in the answer key and grader; P53 and P54 fixed in triage (re-run over the 593-filing pool: every labelled set still at full recall; no fresh triage set this week, so all three are calibrations). The merge fixes: a launch folds into the priced bond that follows it (P57), a bond named with no amount is a question, not an addition (P56), and the banks' option is recorded, not added (P58); loans: a draw counts in total debt, a new commitment does not, a repayment reduces it. A fresh held-out hand-check of five reports drawn before reading — **4 of 5 agree**; Alphabet disagrees (P59, left open); Week 5's TeraWulf now agrees. Built: the opening-ledger reader (two code defects found on its first pass and fixed on dev, P61; both passes reported) and the investigators, wired into the graph with a second round. **The week 6 check: the A4 gap measured — agent start −7.9 points of L1 recall against oracle start, +2.2 of precision; the self-catch rate measured — 17 of 50 wrong agent-start episodes flagged (34%).** With oracle start the merge fixes bring precision from 90.2% to 93.3% and the false additions from 26 to 3. The investigators settled 21 of 67 questions and changed no L1 grade. P60: four opening reports (Core Scientific, Super Micro) are refused to the agent by the point-in-time rule.
+
+**Week 6 gate** (`manifests/week6_gate.json`): delegated by Om Mali in advance, not reviewed. Weeks 3 to 6 are all DELEGATED, not CLEARED.
+
+**Week 7 begins with** the opening-ledger reader's misses (Broadcom's tables read differently run to run; Snowflake's and Super Micro's convertible tables; total debt within 2% on only 26 of 79 agent-start episodes), investigators that search older filings for the 15 unknown exits and the 24 maturity questions, P59, and the three additions still not in the report; then §11's week 7: tag **v1**, the batch scheduler, signals, and an unattended run of the whole dev window.

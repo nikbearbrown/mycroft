@@ -40,6 +40,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = config.data_dir() / "week3"
 OUT4 = config.data_dir() / "week4"
 OUT5 = config.data_dir() / "week5"
+OUT6 = config.data_dir() / "week6"
 POOL = OUT / "pool.json"
 TEXTS = OUT / "texts"
 LABELS = ROOT / "manifests" / "triage_labels.json"
@@ -151,8 +152,8 @@ def sample(week: str = "3") -> int:
 
 
 def run(model: str) -> int:
-    """Triage the whole dev pool. Week 5's run is written to `$AI_DEBT_DATA/week5/`, so Week 3's and Week 4's
-    runs (with the rules as they were) stay as they were recorded."""
+    """Triage the whole dev pool. Week 6's run is written to `$AI_DEBT_DATA/week6/`, so the Week 3, 4 and 5 runs
+    (with the rules as they were) stay as they were recorded."""
     rows = json.loads(POOL.read_text(encoding="utf-8"))
     results, t0 = [], time.time()
     for i, r in enumerate(rows):
@@ -163,8 +164,8 @@ def run(model: str) -> int:
         if res.decided_by == "model":
             print(f"  [{i:4d}] model {r['company'][:14]:14s} {r['form']:6s} {','.join(r['items']):18s} -> "
                   f"{res.relevant!s:5s} {res.event_type:24s} {res.seconds:.1f}s", flush=True)
-    OUT5.mkdir(parents=True, exist_ok=True)
-    (OUT5 / f"triage_{model.replace(':', '_')}.json").write_text(json.dumps(results, indent=0), encoding="utf-8")
+    OUT6.mkdir(parents=True, exist_ok=True)
+    (OUT6 / f"triage_{model.replace(':', '_')}.json").write_text(json.dumps(results, indent=0), encoding="utf-8")
     print(f"\n{len(results)} filings in {time.time() - t0:.0f}s; decided by {dict(Counter(r['decided_by'] for r in results))}")
     return 0
 
@@ -261,6 +262,8 @@ def report(model: str) -> int:
     fixed in Week 5: P45, P46). Week 3's and Week 4's sets are re-scored on the same run as calibrations, and the
     earlier runs are quoted as recorded."""
     name = f"triage_{model.replace(':', '_')}.json"
+    res6 = {r["accession"]: r for r in json.loads((OUT6 / name).read_text(encoding="utf-8"))} \
+        if (OUT6 / name).exists() else None
     res = {r["accession"]: r for r in json.loads((OUT5 / name).read_text(encoding="utf-8"))}
     res4 = {r["accession"]: r for r in json.loads((OUT4 / name).read_text(encoding="utf-8"))}
     res3 = {r["accession"]: r for r in json.loads((OUT / name).read_text(encoding="utf-8"))}
@@ -289,6 +292,31 @@ def report(model: str) -> int:
          "([`triage_labels_w4.md`](triage_labels_w4.md)) and `manifests/triage_labels.json` "
          "([`triage_labels.md`](triage_labels.md)). Every decision: `$AI_DEBT_DATA/week5/` (Week 5's run); "
          "`$AI_DEBT_DATA/week4/` and `$AI_DEBT_DATA/week3/` keep the earlier runs as recorded.\n"]
+    if res6 is not None:
+        t5, t4, t3 = score(lab5, res6), score(lab4, res6), score(lab3, res6)
+        changed6 = [a for a in res6 if a in res and (res6[a]["relevant"], res6[a]["decided_by"]) != (res[a]["relevant"], res[a]["decided_by"])]
+        dec6 = Counter(r["decided_by"] for r in res6.values())
+        L += ["## Week 6: P53 and P54 fixed, every set re-scored\n",
+              "Week 5's fresh check found two rule weaknesses, both false alarms: a tender offer for *shares* read as a "
+              "debt tender (P53) and an FWP for shares that names the concurrent notes (P54). Both are fixed: a tender "
+              "whose sentence names shares and no notes is not decided by rule R4, and an FWP whose every mention of "
+              "notes sits beside the word \"concurrent\" goes to the model instead of rule R3. "
+              f"Week 6's run over the same pool (`$AI_DEBT_DATA/week6/`) decided {len(changed6)} filing"
+              f"{'s' if len(changed6) != 1 else ''} differently from Week 5's: "
+              + "; ".join(f"{res6[a]['company']} {res6[a]['form']} {res6[a]['filing_date']} — {res[a]['decided_by']} "
+                          f"{'kept' if res[a]['relevant'] else 'dropped'} → {res6[a]['decided_by']} "
+                          f"{'kept' if res6[a]['relevant'] else 'dropped'}" for a in changed6) + ".\n",
+              "**No fresh labelled set this week.** The two fixes only remove false alarms, and Week 5's fresh check "
+              "passed; all three labelled sets are now calibrations. The next independent triage check is the test "
+              "split (week 8).\n",
+              "| Labelled set (all calibrations now) | Recall | Precision |", "|---|---|---|"]
+        for nm, t in (("Week 5's set (P53, P54 were found here)", t5), ("Week 4's set", t4), ("Week 3's set", t3)):
+            L.append(f"| {nm} | {len(t['tp'])} of {len(t['pos'])} | {len(t['tp'])} of {len(t['tp']) + len(t['fp'])} |")
+        ann6 = [a for a in ann if a in res6 and res6[a]["relevant"]]
+        L += ["", f"Week 2's announcement filings kept: {len(ann6)} of {len(ann)}. Whole pool: decided by "
+              + ", ".join(f"{k} {v}" for k, v in sorted(dec6.items()))
+              + f"; {sum(r['relevant'] for r in res6.values())} kept.\n",
+              "Everything below is Week 5's report, kept as it was recorded.\n"]
     L += _set_section("The triage check, third time — Week 5's fresh labelled set", s5, res)
     L += [f"The fresh set has **{len(s5['pos'])} debt-relevant filings** ({s5['by_stratum']['random']['pos']} of 30 at "
           f"random, {s5['by_stratum']['debt-vocabulary']['pos']} of 20 among filings with debt words). It was drawn after "

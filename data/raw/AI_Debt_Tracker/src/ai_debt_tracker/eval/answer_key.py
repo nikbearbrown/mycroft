@@ -72,6 +72,9 @@ TOTALS = {
     "debt_incl_finance_leases": "LongTermDebtAndCapitalLeaseObligationsIncludingCurrentMaturities",
     # P41: Constellation tags its current debt only with the combined debt-and-lease tag
     "debt_and_leases_current": "LongTermDebtAndCapitalLeaseObligationsCurrent",
+    # P47: a filer whose only debt is convertible names its total with the convertible tags (TeraWulf)
+    "convertible_total": "ConvertibleDebt", "convertible_noncurrent": "ConvertibleDebtNoncurrent",
+    "convertible_current": "ConvertibleDebtCurrent",
 }
 # Total debt, first match wins; each entry is (basis label, keys summed). Filers name it differently.
 TOTAL_DEBT_CHAIN = [
@@ -83,6 +86,9 @@ TOTAL_DEBT_CHAIN = [
     ("LongTermNotesAndLoans + NotesPayableCurrent", ("notes_and_loans_noncurrent", "notes_payable_current")),
     ("debt incl. finance leases", ("debt_incl_finance_leases",)),
     ("DebtInstrumentCarryingAmount (undimensioned)", ("carrying_total",)),
+    # P47 (Week 6): last in the chain, so a filer with other debt is never totalled from its convertibles alone
+    ("ConvertibleDebt (convertible-only filer)", ("convertible_total",)),
+    ("ConvertibleDebtNoncurrent + current", ("convertible_noncurrent", "convertible_current")),
 ]
 ADSH = re.compile(r"^\d{10}-\d{2}-\d{6}$")
 

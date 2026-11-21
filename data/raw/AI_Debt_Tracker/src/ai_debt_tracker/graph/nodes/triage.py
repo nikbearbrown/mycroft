@@ -89,12 +89,38 @@ class TriageResult:
     seconds: float = 0.0
 
 
+SHARES = re.compile(r"\bshares\b|capital stock|common stock", re.I)
+NOTE_MENTION = re.compile(rf"{NOTE_WORDS}|debt securities|\bnotes?\b", re.I)
+
+
+def _share_tender(text: str, m: re.Match) -> bool:
+    """P53 (Week 6): a tender offer for *shares* ("an unsolicited mini-tender offer … to purchase up to 350,000
+    shares of Alphabet's Class C capital stock") is not a debt event. The sentence of the match, and the next
+    one, name shares and no notes."""
+    end = m.end()
+    for _ in range(2):
+        nxt = re.search(r"\.\s", text[end:])
+        end = end + (nxt.end() if nxt else len(text) - end)
+    sentence = text[max(0, text.rfind(". ", 0, m.start()) + 1): end]
+    return bool(SHARES.search(sentence)) and not NOTE_MENTION.search(sentence)
+
+
 def lead_event(text: str) -> str | None:
     lead = text[:LEAD_CHARS]
     for event, pat in LEAD:
-        if pat.search(lead):
+        m = pat.search(lead)
+        if m and not (event == "tender_or_exchange" and _share_tender(lead, m)):
             return event
     return None
+
+
+def _concurrent_notes_only(text: str) -> bool:
+    """P54 (Week 6): an FWP for *shares* that names notes only as the concurrent offering ("investors subscribing
+    for our 1.75% convertible senior notes due 2030 … in the Concurrent Notes Offering. No new shares of Common Stock
+    will be issued in this offering"). Every note mention sits beside the word "concurrent", and shares are named."""
+    hits = list(NOTE_OFFER.finditer(text))
+    return bool(hits) and bool(SHARES.search(text)) and all(
+        re.search(r"concurrent", text[max(0, h.start() - 250): h.end() + 250], re.I) for h in hits)
 
 
 def event_from_text(text: str) -> str:
@@ -128,6 +154,8 @@ def rules(form: str, items: list[str], texts: dict[str, str]) -> TriageResult | 
         if eq:
             return res(False, "not_debt", "R2", _quote(cover, eq))
     if form == "FWP":
+        if _concurrent_notes_only(main[:8_000]):        # P54: shares, with notes only as the concurrent deal
+            return None                                   # doubtful: the model decides
         if NOTE_OFFER.search(main[:8_000]):
             return res(True, "new_bond_issue", "R3", _quote(main, NOTE_OFFER))
     for t in lead_docs:

@@ -28,11 +28,11 @@ B0 cannot catch a new bond by construction; it catches a removal only when the b
 
 | Figure | Graded | Within 2% | B0 had no figure | Median abs. error where it had one |
 |---|---|---|---|---|
-| Total debt | 72 | 35 | 0 | 2.5% |
+| Total debt | 79 | 40 | 2 | 1.9% |
 | Current portion | 31 | 7 | 3 | 19.4% |
-| Due in 12 months | 45 | 20 | 3 | 6.3% |
-| Due in years 2-5 | 15 | 2 | 11 | 1.8% |
-| Due after year 5 | 17 | 4 | 11 | 0.4% |
+| Due in 12 months | 14 | 0 | 12 | 42.1% |
+| Due in years 2-5 | 14 | 0 | 12 | 10.2% |
+| Due after year 5 | 15 | 1 | 13 | 4.4% |
 
 Most reports tag the maturity ladder only in the annual report, so a carried-forward 10-Q has no ladder to offer a 10-K target: those count under *B0 had no figure*.
 

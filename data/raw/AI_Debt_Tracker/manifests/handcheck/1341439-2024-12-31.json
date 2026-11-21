@@ -1,0 +1,18 @@
+{
+ "episode": "1341439-2024-12-31",
+ "company": "Oracle",
+ "report": "10-Q 20241130",
+ "accession": "0000950170-24-134973",
+ "level": "L3",
+ "status": "reviewed",
+ "holdout": "week 6",
+ "reviewer": "Claude (model judgment, P8), 2026-11-20",
+ "source": "printed debt table / balance sheet / debt note text in the report's HTML",
+ "source_rows": "Balance sheet (in millions) rows 28, 46 and 53; Note 3 text; fair-value text preceding Note 3",
+ "review": "Totals only (the episode's level). This 10-Q is for the quarter ended Nov 30 2024 (fiscal Q2 2025); the balance sheet's first column is Nov 30 2024. Notes payable and other borrowings: current $8,162 m, non-current $80,462 m, so total debt on the balance-sheet basis $88,624 m. This 10-Q prints no full debt table (Note 3 lists only the September 2024 issuance of $6,250 m face: 4.20% 2029, 4.70% 2034, 5.375% 2054, 5.50% 2064), and no maturity ladder. The fair-value text cites $88.6 bn of senior notes and other long-term borrowings outstanding at Nov 30 2024, consistent with the balance-sheet sum. Commercial paper outstanding is not separately stated; whatever is outstanding sits inside the 'notes payable and other borrowings' lines. Process note: transcribed from the printed report only; the answer key's values for these five reports were not printed or read before this transcription was written.",
+ "instruments": [],
+ "totals": {
+  "total_debt": 88624000000.0,
+  "current": 8162000000.0
+ }
+}

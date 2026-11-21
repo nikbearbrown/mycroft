@@ -1,0 +1,27 @@
+{
+ "gate": "Week 6 check: agent-start vs oracle-start gap measured; self-catch rate measured (DESIGN.md §11, P4)",
+ "status": "DELEGATED",
+ "delegated_by": "Om Mali",
+ "date": "2026-11-20",
+ "delegation": "Before the week's work began, Om Mali instructed Claude: \"Do all the work for next week. I dont want to be involved in it so complete everything end to end.\" When the laptop ran low on memory mid-week and the model server and the opening-ledger run were stopped, Om said \"resume it\". Om did not review the transcriptions or the results. This record does not claim a human review.",
+ "handoff_condition": "every AI-25 dev episode runs with the opening ledger read from the report (agent start) and with B0's (oracle start), with investigators; the paired L1 gap (A4) and the self-catch rate are reported",
+ "measured": "docs/agent_start.md -- 95 of 95 dev episodes ran in each of three runs (oracle start without and with investigators, agent start with investigators). L1 (45 episodes): agent start recall 90.1% (82.9-96.1) vs oracle start 97.9% (96.2-99.5), paired -7.9 points (-15.3 to -2.0); precision 95.5% vs 93.3%, paired +2.2 points (+0.1 to +4.2). Self-catch rate, agent start: 17 of 50 episodes that ended wrong were flagged (34%), and 11 of 36 that ended right; oracle start 16 of 39 (41%). Condition met: both measured",
+ "also_measured": {
+  "merge_fixes": "docs/agent_start.md -- P56-P58 fixed: oracle start precision 93.3% (Week 5 90.2%), recall 97.9%; bonds added that the report does not hold 26 -> 3; new bonds caught 31 of 34; vs B0 paired recall +7.0 points (+4.9 to +9.6), precision +0.5 (-0.2 to +1.4)",
+  "investigators_A1": "docs/agent_start.md -- 67 questions in 19 episodes; oracle start settled 21, 46 left open; no L1 grade changed (A1 +0.0 points)",
+  "opening_reader": "docs/opening_reader.md -- 94 distinct opening reports: L1 recall 89.7%, precision 98.8% (rules only 83.8%, 97.9%); total debt within 2% on 37 of 76. P61 found on the first pass and fixed on dev; both passes reported",
+  "answer_key_fresh_holdout": "docs/handcheck.md -- after P47 and P49: 4 of 5 agree (seed 20261120); Alphabet disagrees (P59, logged, not fixed against the set). Week 5's set re-graded: 4 of 4 gradable (TeraWulf now agrees; calibration)",
+  "triage": "docs/triage.md -- P53 and P54 fixed; the 593-filing pool re-run; Week 5's set 15 of 15 (precision 15 of 17), Week 4's 9 of 9, Week 3's 24 of 24. No fresh labelled set this week: all three are calibrations"
+ },
+ "dev_iteration": "The opening-ledger reader's first pass showed two code defects (P61: a rate column read as the amount; units lost from a cut caption). Fixed on dev and every report re-read with the model's saved answer; 9 answers stored cut at 3,000 characters were asked again. First pass: L1 recall 89.4%, precision 96.5%. First-pass readings kept in $AI_DEBT_DATA/week6/opening_run1/. The test split was not touched.",
+ "basis": "The 5 held-out transcriptions are Claude's model judgment (P8), labelled as such in each file. Model decisions by qwen3:4b (triage, which rows are instruments, which passage states a missing value) are flagged per record. Every number in a ledger was parsed by code from a cited cell, passage or ledger row.",
+ "to_clear_after_review": "Om (or another named human) reads docs/agent_start.md, docs/opening_reader.md and docs/handcheck.md, then sets status to CLEARED (or HELD) with the date and logs it in logs/RUN_LOG.md",
+ "carried_forward": [
+  "the opening-ledger reader's misses: Broadcom's tables read differently from run to run; Snowflake's and Super Micro's convertible tables; total debt within 2% on 26 of 79 agent-start episodes",
+  "P60: four opening reports (Core Scientific, Super Micro) refused to the agent by the point-in-time rule",
+  "investigators that search older filings: 15 exits of unknown bonds and 24 maturity questions left open",
+  "P59: an offering compared in the unit of its carrying tag (Alphabet)",
+  "three additions still not in the target report, not yet diagnosed",
+  "Week 3, 4, 5 and 6 gates are all DELEGATED, not CLEARED"
+ ]
+}

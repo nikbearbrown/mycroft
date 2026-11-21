@@ -35,6 +35,7 @@ NEW = {"new_issue", "add_on"}
 FACILITY = {"new_facility", "draw"}
 EXIT = {"redemption", "repayment", "tender_offer", "exchange", "conversion"}
 PARTIAL = 0.99
+LOAN_KINDS = {"term_loan", "revolving_facility", "delayed_draw_facility"}
 
 
 def _key(e: dict):
@@ -65,7 +66,9 @@ def merge_events(events: list[dict]) -> list[dict]:
         groups.setdefault(k, []).append(e)
     out = []
     for k, es in groups.items():
-        stated = [e["principal"] for e in es if e.get("principal")]
+        # P58: an amount the banks may still buy ("up to an additional $45 million") is not the bond's principal
+        stated = [e["principal"] for e in es if e.get("principal") and not e.get("option")] \
+            or [e["principal"] for e in es if e.get("principal")]
         counts = Counter(stated)
         principal = None
         if counts:
@@ -77,6 +80,7 @@ def merge_events(events: list[dict]) -> list[dict]:
         m.update({"principal": principal, "accepted": first.get("accepted"), "accession": first.get("accession"),
                   "sources": [s for e in es for s in _sources(e)], "merged_from": len(es),
                   "model_judgment": True,
+                  "option": all(e.get("option") for e in es),
                   # an add-on anywhere in the group wins: "new_issue" and "add_on" read from different filings
                   "action": "add_on" if any(e.get("action") == "add_on" for e in es) else first.get("action")})
         out.append(m)
@@ -93,6 +97,37 @@ def merge_events(events: list[dict]) -> list[dict]:
         if e.get("principal"):
             seen[k] = m
     return sorted(out, key=lambda x: (x.get("accepted") or "", x.get("accession") or ""))
+
+
+def fold_launches(merged: list[dict]) -> tuple[list[dict], list[dict]]:
+    """P57 (Week 6): a proposed offering is not a second bond. A launch announcement or a blank preliminary
+    prospectus states no coupon yet, so its event has no match key and `merge_events` cannot join it to the priced
+    bond that follows. A *new* event with no coupon is folded into a priced new event (one with a coupon) of the
+    same maturity year and currency (a launch that names none matches any) from a filing accepted the same day or
+    later — when the launch's own filing prices nothing. A filing that prices some tranches and leaves one without a
+    coupon is announcing a floating-rate note, not a launch, so its coupon-less tranches are left alone, as is any
+    event the reader marked floating. Returns (events, the launches folded), the latter kept for the record."""
+    priced_in = {e.get("accession") for e in merged if e.get("coupon_pct") is not None}
+    out, folded = [], []
+    for e in merged:
+        launch = (e.get("action_class") == "new" and e.get("action") in NEW and e.get("coupon_pct") is None
+                  and not e.get("floating") and e.get("maturity_year") and e.get("accession") not in priced_in)
+        if not launch:
+            out.append(e)
+            continue
+        cur = e.get("currency")
+        target = next((p for p in merged if p is not e and p.get("action") in NEW and p.get("coupon_pct") is not None
+                       and p.get("maturity_year") == e["maturity_year"]
+                       and (not cur or (p.get("currency") or "USD") == cur)
+                       and (p.get("accepted") or "") >= (e.get("accepted") or "")), None)
+        if target is not None:
+            target["sources"] = target.get("sources", []) + _sources(e)
+            target["merged_from"] = target.get("merged_from", 1) + e.get("merged_from", 1)
+            target.setdefault("launches", []).append(e.get("accession"))
+            folded.append(e | {"folded_into": target.get("accession")})
+        else:
+            out.append(e | {"launch": True})
+    return out, folded
 
 
 # ------------------------------------------------------------------------------------ sweep
@@ -135,6 +170,21 @@ def apply_events(opening: list[dict], events: list[dict], quarter_end: str) -> d
             rejected.append({"event": e, "why": "no citation (DESIGN.md §7.1 rule 3)"})
             continue
         stamp = {"action": act, "accepted": e.get("accepted"), "sources": src}
+        if act in NEW and e.get("option"):
+            # P58: the banks' option to buy more of a bond is part of that bond's deal, not a bond of its own
+            log.append({"change": "option, not a bond (P58)", "id": None, **stamp})
+            continue
+        if act in NEW and e.get("launch"):
+            questions.append({"type": "launch_not_priced", "event": e,
+                              "question": "A proposed offering with no coupon and no priced bond after it in the "
+                                          "window: was it priced, and when? (P57)"})
+            continue
+        if act in NEW and e.get("maturity_year") and not e.get("principal"):
+            # P56: a bond named with no amount is most often one already outstanding, described in a prospectus
+            questions.append({"type": "new_without_amount", "event": e,
+                              "question": "A new bond with no amount read: is it new, or one already outstanding "
+                                          "described in the filing? (P56)"})
+            continue
         if act in NEW:
             if not e.get("maturity_year"):
                 questions.append({"type": "new_without_maturity", "event": e,
@@ -162,11 +212,27 @@ def apply_events(opening: list[dict], events: list[dict], quarter_end: str) -> d
                 foreign += new["amount_usd"] is None
             log.append({"change": "added", "id": new["id"], **stamp})
         elif act in FACILITY:
+            # Week 6, capacity vs drawn: a new facility's size is a commitment, not money owed, and stays out of
+            # total debt; a draw is borrowed money and goes in. The reader says which (a model judgment).
+            drawn = act == "draw"
             insts.append({"id": f"fac-{n}", "kind": "facility", "currency": e.get("currency") or "USD",
                           "principal": e.get("principal"), "coupon_pct": e.get("coupon_pct"),
                           "maturity_year": e.get("maturity_year"), "status": "outstanding", "events": [stamp],
-                          "commitment_not_drawn": True, "model_judgment": True})
-            log.append({"change": "facility added (commitment; not in total debt)", "id": f"fac-{n}", **stamp})
+                          "commitment_not_drawn": not drawn, "drawn": drawn, "model_judgment": True})
+            if drawn and e.get("principal"):
+                added_usd += _usd(e["principal"], e.get("currency")) or 0.0
+                foreign += _usd(e["principal"], e.get("currency")) is None
+                log.append({"change": "loan drawn (in total debt)", "id": f"fac-{n}", "amount": e["principal"], **stamp})
+            else:
+                log.append({"change": "facility added (commitment; not in total debt)", "id": f"fac-{n}", **stamp})
+        elif act in EXIT and e.get("kind") in LOAN_KINDS:
+            # a loan repaid: loans are not itemised bond by bond, so it moves total debt and nothing else
+            if e.get("principal"):
+                removed_usd += _usd(e["principal"], e.get("currency")) or 0.0
+                foreign += _usd(e["principal"], e.get("currency")) is None
+                log.append({"change": "loan repaid (total debt)", "id": None, "amount": e["principal"], **stamp})
+            else:
+                log.append({"change": "loan repaid, amount not read (recorded only)", "id": None, **stamp})
         elif act in EXIT:
             held = next((i for i in insts if i["status"] == "outstanding" and _matches(i, e)), None) \
                 if e.get("maturity_year") else None
@@ -193,11 +259,47 @@ def apply_events(opening: list[dict], events: list[dict], quarter_end: str) -> d
             "added_usd": added_usd, "removed_usd": removed_usd, "foreign_changes_not_in_total": foreign}
 
 
-def closing_ledger(opening: list[dict], opening_totals: dict, events: list[dict], quarter_end: str) -> dict:
+def fingerprint(e: dict) -> str:
+    """A merged event's identity, stable across re-runs of the merge (the investigators address events by it)."""
+    return "|".join(str(e.get(k)) for k in ("action", "accession", "currency", "coupon_pct", "maturity_year",
+                                            "principal", "kind"))
+
+
+def amend(merged: list[dict], amendments: list[dict]) -> tuple[list[dict], list[dict]]:
+    """Apply the investigators' findings (week 6) to the merged events. Each amendment names an event by its
+    `fingerprint` and either drops it (`drop`: why) or replaces fields (`set`: {field: value}) — every replaced value
+    with the citation it was read from, so rule 3 still holds. `add` amendments carry whole new events. Returns
+    (events, the amendments that found their event)."""
+    by_fp = {a["fingerprint"]: a for a in amendments if a.get("fingerprint")}
+    out, used = [], []
+    for e in merged:
+        a = by_fp.get(fingerprint(e))
+        if a is None:
+            out.append(e)
+            continue
+        used.append(a)
+        if a.get("drop"):
+            continue
+        e = dict(e)
+        e.update(a.get("set", {}))
+        for k in ("launch", "option"):
+            if k in a.get("clear", []):
+                e.pop(k, None)
+        e["sources"] = e.get("sources", []) + a.get("sources", [])
+        e["investigated"] = a.get("resolution")
+        out.append(e)
+    out += [x["event"] for x in amendments if x.get("event")]
+    used += [x for x in amendments if x.get("event")]
+    return sorted(out, key=lambda x: (x.get("accepted") or "", x.get("accession") or "")), used
+
+
+def closing_ledger(opening: list[dict], opening_totals: dict, events: list[dict], quarter_end: str,
+                   amendments: list[dict] | None = None) -> dict:
     """The whole engine: merge → sweep → apply → totals. Totals start from the opening report's (as B0's do)
     and move by the swept and the applied USD amounts; foreign-currency changes are not converted and are
-    counted in `meta` instead."""
-    merged = merge_events(events)
+    counted in `meta` instead. `amendments` are the investigators' findings (week 6), applied after the merge."""
+    merged, folded = fold_launches(merge_events(events))                           # P57
+    merged, used = amend(merged, amendments or [])
     # P55 (Week 5, dev): the window runs to the target report's filing, weeks after the quarter ends. A bond priced
     # after the quarter end is not owed at it (P4: the ledger follows settlement). Settlement dates are not parsed
     # yet, so the filing's acceptance date stands in: events filed after the quarter end are kept in the record and
@@ -212,7 +314,8 @@ def closing_ledger(opening: list[dict], opening_totals: dict, events: list[dict]
         swept_usd = sum(i.get("amount_usd") or 0.0 for i in swept)
         totals["total_debt"] = totals["total_debt"] - swept_usd + res["added_usd"] - res["removed_usd"]
     return {"instruments": out, "totals": totals,
-            "meta": {"merged_events": merged, "after_quarter": later, "swept": len(swept), "log": res["log"],
+            "meta": {"merged_events": merged, "after_quarter": later, "launches_folded": folded, "amendments": used,
+                     "swept": len(swept), "log": res["log"],
                      "questions": res["questions"],
                      "rejected": res["rejected"], "repaid": [i for i in res["instruments"] if i["status"] == "repaid"],
                      "foreign_changes_not_in_total": res["foreign_changes_not_in_total"]}}

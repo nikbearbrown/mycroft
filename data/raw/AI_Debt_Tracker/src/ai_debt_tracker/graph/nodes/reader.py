@@ -259,6 +259,54 @@ def set_aside_existing(events: list[Event], passages: list[tuple[str, str]]) -> 
     return keep, [e for e in events if e not in keep]
 
 
+OPTION = re.compile(r"\boption\b|over-?allot|green\s*shoe", re.I)
+ADDITIONAL = re.compile(r"\badditional\b", re.I)
+
+
+def passage_text(docs: list, pid: str) -> str | None:
+    """The words of a passage id `d<k>:<sentence id>` or `d<k>:<table id>.r<row>`, from the opened documents."""
+    m = re.match(r"^d(\d+):(.+)$", pid or "")
+    if not m or int(m.group(1)) >= len(docs):
+        return None
+    doc, sid = docs[int(m.group(1))], m.group(2)
+    if ".r" in sid:
+        tid, row = sid.rsplit(".r", 1)
+        t = next((t for t in doc.tables if t.id == tid), None)
+        return " | ".join(t.rows[int(row)]) if t is not None and row.isdigit() and int(row) < len(t.rows) else None
+    return next((s["text"] for s in doc.sentences if s["id"] == sid), None)
+
+
+def is_option_amount(passage: str, copied: str | None) -> bool:
+    """P58: is the copied amount the banks' option to buy more notes, rather than the notes sold? "granted the
+    initial purchasers an option to purchase up to an additional $45 million" — the amount follows "additional";
+    "including $300 million ... issued pursuant to the exercise in full of their option to purchase additional
+    notes" — the option words follow the amount before any other amount does."""
+    if not passage or not copied:
+        return False
+    if ADDITIONAL.search(copied):
+        return True
+    i = passage.find(copied)
+    if i < 0:
+        return False
+    before = passage[max(0, i - 50):i]
+    if ADDITIONAL.search(before) and OPTION.search(passage):
+        return True
+    after = passage[i + len(copied): i + len(copied) + 220]
+    nxt = AMOUNT_A.search(after)
+    after = after[:nxt.start()] if nxt else after
+    return bool(re.search(r"includ", before, re.I) and OPTION.search(after) and ADDITIONAL.search(after))
+
+
+def mark_options(events: list[dict], docs: list) -> list[dict]:
+    """Marks a new instrument whose cited principal is the banks' option (P58, Week 6). Code over the cited words;
+    the event is kept and flagged `option`, and the ledger engine does not add it as a bond."""
+    for e in events:
+        c = (e.get("cites") or {}).get("principal")
+        if e.get("action_class") == "new" and c and is_option_amount(passage_text(docs, c.get("id")), c.get("text")):
+            e["option"] = True
+    return events
+
+
 def salvage(raw: str) -> dict | None:
     """The instruments a cut-off answer did complete. A runaway answer (the model repeating itself until
     the output cap) ends mid-object; every instrument closed before that point is still a whole answer.

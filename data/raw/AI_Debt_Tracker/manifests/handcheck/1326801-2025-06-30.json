@@ -1,0 +1,17 @@
+{
+ "episode": "1326801-2025-06-30",
+ "company": "Meta",
+ "report": "10-Q 20250630",
+ "accession": "0001628280-25-036791",
+ "level": "L3",
+ "status": "reviewed",
+ "holdout": "week 6",
+ "reviewer": "Claude (model judgment, P8), 2026-11-20",
+ "source": "printed debt table / balance sheet / debt note text in the report's HTML",
+ "source_rows": "Balance sheet (in millions) rows 32 and 53; Note 7 text; MD&A long-term debt text",
+ "review": "Totals only (the episode's level). At Jun 30 2025 the balance sheet shows long-term debt $28,832 m (Note 7: carrying amount of the fixed-rate senior unsecured notes $28.83 bn). MD&A prints aggregate principal $29.0 bn, maturing 2027 through 2064, so nothing is due within twelve months: there is no current-portion line on the balance sheet and none is recorded (not printed, rather than a printed zero). This 10-Q prints no per-offering debt table and no maturity ladder; total debt is the carrying amount $28,832 m. Process note: transcribed from the printed report only; the answer key's values for these five reports were not printed or read before this transcription was written.",
+ "instruments": [],
+ "totals": {
+  "total_debt": 28832000000.0
+ }
+}

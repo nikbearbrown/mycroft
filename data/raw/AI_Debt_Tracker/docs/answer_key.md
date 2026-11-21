@@ -13,8 +13,8 @@
 
 | Check | Reports | Examples |
 |---|---|---|
-| no total-debt tag | 139 | Micron 10-Q 20260228; Micron 10-Q 20260531; Digital Realty 10-Q 20240331; Digital Realty 10-Q 20240630 … |
-| itemised coverage > 120% | 84 | Broadcom 10-Q 20240430 (136%); Broadcom 10-Q 20240731 (132%); Broadcom 10-K 20241031 (127%); Super Micro 10-Q 20240331 (1186%) … |
+| no total-debt tag | 126 | Micron 10-Q 20260228; Micron 10-Q 20260531; Digital Realty 10-Q 20240331; Digital Realty 10-Q 20240630 … |
+| itemised coverage > 120% | 85 | Broadcom 10-Q 20240430 (136%); Broadcom 10-Q 20240731 (132%); Broadcom 10-K 20241031 (127%); Super Micro 10-Q 20240331 (1186%) … |
 | L1 report with a bond lacking principal | 89 | Broadcom 10-Q 20240731; Equinix 10-K 20231231; Equinix 10-Q 20240331; Equinix 10-Q 20240630 … |
 
 *No total-debt tag*: the report's L3 total cannot be graded; its L1/L2 grading is unaffected. *Coverage > 120%*: tagged instruments add up to more than reported debt, usually face vs net carrying amounts or a subtotal tagged beside its parts. *Bond lacking principal*: matched on coupon and year, unscored on amount.
@@ -57,12 +57,12 @@ Episode target levels were frozen at the Week 1 gate. Re-graded with today's ans
 | CoreWeave | datacentre_neocloud | 6 | L1 6 | 10-Q 20260630 | 7 | 35.6 |
 | Applied Digital | datacentre_neocloud | 11 | L1 8, L3 3 | 10-K 20260531 | 2 | 0.0 |
 | Cipher Mining | datacentre_neocloud | 11 | L1 4, L3 7 | 10-Q 20260630 | 5 | 5.4 |
-| TeraWulf | datacentre_neocloud | 11 | L1 6, L3 5 | 10-Q 20260630 | 3 | 0.0 |
+| TeraWulf | datacentre_neocloud | 11 | L1 6, L3 5 | 10-Q 20260630 | 3 | 1.1 |
 | Core Scientific | datacentre_neocloud | 11 | L1 10, L3 1 | 10-Q 20260630 | 3 | 4.3 |
 | Vistra | power | 11 | L3 11 | 10-Q 20260630 | 0 | 19.6 |
 | Constellation Energy | power | 11 | L1 1, L3 10 | 10-Q 20260630 | 3 | 19.5 |
 | Salesforce | ai_software | 11 | L1 11 | 10-Q 20260731 | 14 | 39.3 |
-| Snowflake | ai_software | 11 | L1 8, L3 3 | 10-Q 20260731 | 2 | 0.0 |
+| Snowflake | ai_software | 11 | L1 8, L3 3 | 10-Q 20260731 | 2 | 2.3 |
 | IBM | ai_software | 11 | L3 11 | 10-Q 20260630 | 0 | 62.0 |
 
 ## Generalisation set

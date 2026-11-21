@@ -68,6 +68,11 @@ def truth_totals(record: dict) -> dict:
     cur = t.get("long_term_debt_current") or t.get("debt_current")
     if cur:
         out["current"] = cur
+    if str(record.get("form", "")).startswith("10-Q"):
+        # P49 (Week 6): in a 10-Q the "next twelve months" tag holds the next *calendar year's* row of the printed
+        # ladder (IBM's 2026 row in its June 2025 10-Q), and years 2-5 shift with it. Not the bucket its name says,
+        # so the ladder is graded on 10-K targets only.
+        return out
     if t.get("due_next_12m") is not None and "due_next_12m" in t:
         out["due_next_12m"] = t["due_next_12m"]
     years = [t.get(f"due_year_{k}") for k in (2, 3, 4, 5)]

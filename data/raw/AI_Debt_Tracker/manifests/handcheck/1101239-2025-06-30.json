@@ -1,0 +1,298 @@
+{
+ "episode": "1101239-2025-06-30",
+ "company": "Equinix",
+ "report": "10-Q 20250630",
+ "accession": "0001101239-25-000029",
+ "level": "L1",
+ "status": "reviewed",
+ "holdout": "week 6",
+ "reviewer": "Claude (model judgment, P8), 2026-11-20",
+ "source": "printed debt table / balance sheet / debt note text in the report's HTML",
+ "source_rows": "Senior notes table (in millions) rows 348-384; mortgage and loans payable table rows 342-347; maturity table rows 385-392; balance sheet rows 58-59 and 64-65; Note 9 text (term loan facility, 2025 issuances)",
+ "review": "Senior notes table rows 349-384 (Jun 30 2025 amount and effective rate, then Dec 31 2024): 30 notes, all with an amount outstanding at Jun 30 2025 (the 1.250% and 1.000% notes due 2025 are still outstanding). Coupons are the stated rates in the labels, not the effective-rate column. Foreign notes are printed as US-dollar equivalents; own-currency principal is recorded only for the three notes issued this year whose principal Note 9's text prints (SGD 500 m 3.500% due 2030; EUR 750 m 3.250% due 2029; EUR 750 m 4.000% due 2034); the other EUR, CHF and JPY notes have currency recorded and principal null. Mortgage and loans payable table rows 342-347: 'Term loans' $687 m is recorded as one facility; the text says the 2022 Term Loan Facility is a GBP 500 m sterling term loan with $686 m outstanding net of issuance costs, so the $1 m gap to the $687 m line is unexplained (ambiguous: another small term loan or gross vs net), and no maturity for the term loan is printed in this 10-Q (maturity_year null). 'Mortgage payable and other loans payable' $29 m is several unnamed loans with no rate or maturity and is not recorded as an instrument, but it is in the totals. The $4.0 bn revolving facility had only $63 m of letters of credit issued (no borrowings). No single total-debt figure is printed: total_debt is the balance-sheet sum of senior notes net $17,219 m (1,899 current + 15,320 non-current) and mortgage and loans payable $716 m (14 + 702) = $17,935 m, excluding finance lease liabilities; current = 1,899 + 14 = $1,913 m. For reference, gross principal per the maturity table is $18,073 m, and MD&A's 'total indebtedness' of about $20.5 bn includes finance leases and is gross of discounts, so it is not used. The maturity ladder is by calendar year from '2025 (6 months remaining)' ($1,211 m), not a next-12-months figure, so no ladder is recorded. Process note: transcribed from the printed report only; the answer key's values for these five reports were not printed or read before this transcription was written.",
+ "instruments": [
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 1.25,
+   "maturity_year": 2025,
+   "principal": 500000000.0,
+   "amount_usd": 500000000.0,
+   "row": "1.250 % Senior Notes due 2025 | 500 | 1.46 | 500 | 1.46"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 1.0,
+   "maturity_year": 2025,
+   "principal": 700000000.0,
+   "amount_usd": 700000000.0,
+   "row": "1.000 % Senior Notes due 2025 | 700 | 1.18 | 700 | 1.18"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 1.45,
+   "maturity_year": 2026,
+   "principal": 700000000.0,
+   "amount_usd": 700000000.0,
+   "row": "1.450 % Senior Notes due 2026 | 700 | 1.64 | 700 | 1.64"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 2.9,
+   "maturity_year": 2026,
+   "principal": 600000000.0,
+   "amount_usd": 600000000.0,
+   "row": "2.900 % Senior Notes due 2026 | 600 | 3.04 | 600 | 3.04"
+  },
+  {
+   "kind": "bond",
+   "currency": "EUR",
+   "coupon_pct": 0.25,
+   "maturity_year": 2027,
+   "principal": null,
+   "amount_usd": 589000000.0,
+   "row": "0.250 % Euro Senior Notes due 2027 | 589 | 0.45 | 518 | 0.45"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 1.8,
+   "maturity_year": 2027,
+   "principal": 500000000.0,
+   "amount_usd": 500000000.0,
+   "row": "1.800 % Senior Notes due 2027 | 500 | 1.96 | 500 | 1.96"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 1.55,
+   "maturity_year": 2028,
+   "principal": 650000000.0,
+   "amount_usd": 650000000.0,
+   "row": "1.550 % Senior Notes due 2028 | 650 | 1.67 | 650 | 1.67"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 2.0,
+   "maturity_year": 2028,
+   "principal": 400000000.0,
+   "amount_usd": 400000000.0,
+   "row": "2.000 % Senior Notes due 2028 | 400 | 2.21 | 400 | 2.21"
+  },
+  {
+   "kind": "bond",
+   "currency": "CHF",
+   "coupon_pct": 2.875,
+   "maturity_year": 2028,
+   "principal": null,
+   "amount_usd": 378000000.0,
+   "row": "2.875 % Swiss Franc Senior Notes due 2028 | 378 | 3.05 | 331 | 3.05"
+  },
+  {
+   "kind": "bond",
+   "currency": "EUR",
+   "coupon_pct": 3.25,
+   "maturity_year": 2029,
+   "principal": 750000000.0,
+   "amount_usd": 883000000.0,
+   "row": "3.250 % Euro Senior Notes due 2029 | 883 | 3.45 | \u2014 | \u2014"
+  },
+  {
+   "kind": "bond",
+   "currency": "CHF",
+   "coupon_pct": 1.558,
+   "maturity_year": 2029,
+   "principal": null,
+   "amount_usd": 126000000.0,
+   "row": "1.558 % Swiss Franc Senior Notes due 2029 | 126 | 1.79 | 110 | 1.79"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 3.2,
+   "maturity_year": 2029,
+   "principal": 1200000000.0,
+   "amount_usd": 1200000000.0,
+   "row": "3.200 % Senior Notes due 2029 | 1,200 | 3.30 | 1,200 | 3.30"
+  },
+  {
+   "kind": "bond",
+   "currency": "SGD",
+   "coupon_pct": 3.5,
+   "maturity_year": 2030,
+   "principal": 500000000.0,
+   "amount_usd": 393000000.0,
+   "row": "3.500 % Singapore Dollar Senior Notes due 2030 | 393 | 3.67 | \u2014 | \u2014"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 2.15,
+   "maturity_year": 2030,
+   "principal": 1100000000.0,
+   "amount_usd": 1100000000.0,
+   "row": "2.150 % Senior Notes due 2030 | 1,100 | 2.27 | 1,100 | 2.27"
+  },
+  {
+   "kind": "bond",
+   "currency": "EUR",
+   "coupon_pct": 3.25,
+   "maturity_year": 2031,
+   "principal": null,
+   "amount_usd": 766000000.0,
+   "row": "3.250 % Euro Senior Notes due 2031 | 766 | 3.46 | 673 | 3.46"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 2.5,
+   "maturity_year": 2031,
+   "principal": 1000000000.0,
+   "amount_usd": 1000000000.0,
+   "row": "2.500 % Senior Notes due 2031 | 1,000 | 2.65 | 1,000 | 2.65"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 3.9,
+   "maturity_year": 2032,
+   "principal": 1200000000.0,
+   "amount_usd": 1200000000.0,
+   "row": "3.900 % Senior Notes due 2032 | 1,200 | 4.07 | 1,200 | 4.07"
+  },
+  {
+   "kind": "bond",
+   "currency": "EUR",
+   "coupon_pct": 1.0,
+   "maturity_year": 2033,
+   "principal": null,
+   "amount_usd": 707000000.0,
+   "row": "1.000 % Euro Senior Notes due 2033 | 707 | 1.18 | 622 | 1.18"
+  },
+  {
+   "kind": "bond",
+   "currency": "EUR",
+   "coupon_pct": 3.65,
+   "maturity_year": 2033,
+   "principal": null,
+   "amount_usd": 707000000.0,
+   "row": "3.650 % Euro Senior Notes due 2033 | 707 | 3.78 | 622 | 3.78"
+  },
+  {
+   "kind": "bond",
+   "currency": "EUR",
+   "coupon_pct": 4.0,
+   "maturity_year": 2034,
+   "principal": 750000000.0,
+   "amount_usd": 883000000.0,
+   "row": "4.000 % Euro Senior Notes due 2034 | 883 | 4.17 | \u2014 | \u2014"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 5.5,
+   "maturity_year": 2034,
+   "principal": 750000000.0,
+   "amount_usd": 750000000.0,
+   "row": "5.500 % Senior Notes due 2034 | 750 | 5.74 | 750 | 5.74"
+  },
+  {
+   "kind": "bond",
+   "currency": "EUR",
+   "coupon_pct": 3.625,
+   "maturity_year": 2034,
+   "principal": null,
+   "amount_usd": 589000000.0,
+   "row": "3.625 % Euro Senior Notes due 2034 | 589 | 3.75 | 518 | 3.75"
+  },
+  {
+   "kind": "bond",
+   "currency": "JPY",
+   "coupon_pct": 2.0,
+   "maturity_year": 2035,
+   "principal": null,
+   "amount_usd": 261000000.0,
+   "row": "2.000 % Japanese Yen Senior Notes Series A due 2035 | 261 | 2.07 | 239 | 2.07"
+  },
+  {
+   "kind": "bond",
+   "currency": "JPY",
+   "coupon_pct": 2.13,
+   "maturity_year": 2035,
+   "principal": null,
+   "amount_usd": 103000000.0,
+   "row": "2.130 % Japanese Yen Senior Notes Series C due 2035 | 103 | 2.20 | 94 | 2.20"
+  },
+  {
+   "kind": "bond",
+   "currency": "JPY",
+   "coupon_pct": 2.37,
+   "maturity_year": 2043,
+   "principal": null,
+   "amount_usd": 71000000.0,
+   "row": "2.370 % Japanese Yen Senior Notes Series B due 2043 | 71 | 2.42 | 65 | 2.42"
+  },
+  {
+   "kind": "bond",
+   "currency": "JPY",
+   "coupon_pct": 2.57,
+   "maturity_year": 2043,
+   "principal": null,
+   "amount_usd": 32000000.0,
+   "row": "2.570 % Japanese Yen Senior Notes Series D due 2043 | 32 | 2.62 | 29 | 2.62"
+  },
+  {
+   "kind": "bond",
+   "currency": "JPY",
+   "coupon_pct": 2.57,
+   "maturity_year": 2043,
+   "principal": null,
+   "amount_usd": 69000000.0,
+   "row": "2.570 % Japanese Yen Senior Notes Series E due 2043 | 69 | 2.62 | 64 | 2.62"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 3.0,
+   "maturity_year": 2050,
+   "principal": 500000000.0,
+   "amount_usd": 500000000.0,
+   "row": "3.000 % Senior Notes due 2050 | 500 | 3.09 | 500 | 3.09"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 2.95,
+   "maturity_year": 2051,
+   "principal": 500000000.0,
+   "amount_usd": 500000000.0,
+   "row": "2.950 % Senior Notes due 2051 | 500 | 3.00 | 500 | 3.00"
+  },
+  {
+   "kind": "bond",
+   "currency": "USD",
+   "coupon_pct": 3.4,
+   "maturity_year": 2052,
+   "principal": 500000000.0,
+   "amount_usd": 500000000.0,
+   "row": "3.400 % Senior Notes due 2052 | 500 | 3.50 | 500 | 3.50"
+  },
+  {
+   "kind": "facility",
+   "currency": "GBP",
+   "coupon_pct": null,
+   "maturity_year": null,
+   "principal": null,
+   "amount_usd": 687000000.0,
+   "row": "Term loans | 687 | 628"
+  }
+ ],
+ "totals": {
+  "total_debt": 17935000000.0,
+  "current": 1913000000.0
+ }
+}

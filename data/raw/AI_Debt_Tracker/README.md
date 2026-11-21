@@ -11,18 +11,10 @@ runs on local models only (Ollama on an 8 GB laptop GPU) — no paid APIs.
 
 ## Status
 
-**Week 5 complete — 2026-11-13.** The tracker now runs whole episodes: for one company-quarter, a LangGraph graph
-lists the filings in the window, triages them, reads every relevant filing in parallel (`Send`), merges the events,
-sweeps matured bonds and applies the rest to the opening ledger, then self-checks the result. **All 95 dev episodes ran
-end to end** (the week 5 check). Opening from B0's ledger (oracle start), the tracker's L1 bond recall is **97.8%**
-against B0's 90.9% (+6.9 points, paired), and it caught **30 of 34 new bonds** that B0 cannot; its precision is
-**90.2%** against 92.8%, because 26 of the bonds it added are not in the target report (P56–P58, logged). One engine
-defect found by the first run was fixed on dev and both runs are reported (P55). Fresh checks, each labelled before
-its run: **triage 15 of 15** (passes, after Week 4's 8 of 9), **answer key 3 of 4** gradable reports, **reader 91% vs
-B1 74%** (B2 96%). Om Mali delegated Weeks 3, 4 and 5 in advance and has reviewed none of them
-(`manifests/week3_gate.json`, `week4_gate.json`, `week5_gate.json`); labels, truth and transcriptions are Claude's model
-judgment. Weeks 1–2 gates: `manifests/week1_gate.json`, `manifests/week2_gate.json`.
+**Week 6 complete — 2026-11-20.** The tracker now reads its own opening ledger. The opening-ledger reader finds the debt table in the company's last report; `qwen3:4b` points at the rows and code reads the cells (94 dev reports: L1 recall 89.7%, precision 98.8%). **The week 6 check:** starting from that reading instead of B0's borrowed ledger costs **7.9 points of L1 recall** (90.1% vs 97.9%, paired) and gains 2.2 of precision; the self-checks flag **17 of the 50** agent-start episodes that end wrong (34%). The three merge fixes (P56–P58) cut the bonds added that the report does not hold from 26 to 3, and oracle-start precision rose from 90.2% to **93.3%**, level with B0, while recall stays 7.0 points above it. Investigators for the open questions run in the graph with a second round; they settled 21 of 67 questions and changed no L1 grade. A fresh held-out hand-check agrees on **4 of 5** reports (P59 logged). Om Mali delegated Weeks 3 to 6 in advance and has reviewed none of them (`manifests/week3_gate.json` … `week6_gate.json`); transcriptions and labels are Claude's model judgment. Weeks 1–2 gates: `manifests/week1_gate.json`, `manifests/week2_gate.json`.
 
+- [`docs/agent_start.md`](docs/agent_start.md) — agent start vs oracle start, the merge fixes, investigators, self-catch; the Week 6 check.
+- [`docs/opening_reader.md`](docs/opening_reader.md) — the opening-ledger reader against the 94 reports it read.
 - [`docs/episodes.md`](docs/episodes.md) — full episodes on dev against B0; the Week 5 check.
 - [`docs/reader.md`](docs/reader.md) — the event reader against B1 and B2, on a fresh set (Week 5) and Week 4's.
 - [`docs/reader_truth.md`](docs/reader_truth.md) — what each of the 24 filings announces, labelled before any run.
@@ -34,7 +26,7 @@ judgment. Weeks 1–2 gates: `manifests/week1_gate.json`, `manifests/week2_gate.
 - [`docs/handcheck.md`](docs/handcheck.md) — the grader against printed debt tables, with four held-out sets.
 - [`docs/changes_dev.md`](docs/changes_dev.md) — which bond changes were announced in a filing.
 
-- [`DESIGN.md`](DESIGN.md) — data sources, problems and fixes (P1–P58), agents, MCP servers,
+- [`DESIGN.md`](DESIGN.md) — data sources, problems and fixes (P1–P61), agents, MCP servers,
   models, evaluation, ten-week plan.
 - [`docs/feasibility.md`](docs/feasibility.md) — every go/no-go check with its pass line and result,
   including the Week 1 re-runs.
@@ -84,7 +76,7 @@ $env:OLLAMA_MODELS = "<your models directory>"; ollama serve
 ```powershell
 $env:UV_PROJECT_ENVIRONMENT = "<your venv directory>"; $env:UV_CACHE_DIR = "<your uv cache>"
 uv sync                      # Python 3.11+, installs mcp (<2), scipy, langgraph (+ SQLite checkpointer) and pytest
-uv run pytest                # 166 offline tests: parser, matcher, answer key, grader, B0, edgar_pit's cut-off rule,
+uv run pytest                # 182 offline tests: parser, matcher, answer key, grader, B0, edgar_pit's cut-off rule,
                              # document parsing and store, timeline, triage rules, value parsers, event reader, B1,
                              # ledger engine, self-checks, ledger server, the episode graph on fakes
 ```
@@ -197,6 +189,23 @@ uv run python -m ai_debt_tracker.mcp_servers.ledger             # the ledger MCP
 
 On an 8 GB laptop, start Ollama with `OLLAMA_NUM_PARALLEL=1` and `OLLAMA_MAX_LOADED_MODELS=1`, and run one model job at a
 time: the first Week 5 run was stopped by the machine running low on memory and resumed from the saved episodes.
+
+## Reproducing Week 6
+
+```powershell
+$env:PYTHONPATH = "src;scripts"
+uv run python scripts/build_answer_key.py                       # after P47
+uv run python scripts/score_baseline.py dev                     # graded with P49
+uv run python scripts/handcheck.py extract                      # the fresh held-out reports (HOLDOUT_W6)
+uv run python scripts/handcheck.py grade                        # graded once
+uv run python scripts/triage_eval.py run qwen3:4b               # after P53, P54 -> $AI_DEBT_DATA/week6/
+uv run python scripts/triage_eval.py report qwen3:4b
+uv run python scripts/opening_eval.py run                       # the opening-ledger reader on every opening report
+uv run python scripts/opening_eval.py reapply                   # after P61: re-read with the saved model answers
+uv run python scripts/opening_eval.py score                     # -> docs/opening_reader.md
+uv run python scripts/run_week6.py run oracle noinv             # then: oracle inv, agent inv (one model job at a time)
+uv run python scripts/run_week6.py score                        # -> docs/agent_start.md (with Week 5 and B0, paired)
+```
 
 ## Reproducing the feasibility numbers (Week 0)
 

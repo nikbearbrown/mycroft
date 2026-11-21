@@ -58,8 +58,13 @@ HOLDOUT_W4 = ["1868275-2025-03-31", "50863-2024-12-31", "1835632-2024-09-30", "1
 # company that has never itself been hand-checked, in the same seeded order. Graded once.
 HOLDOUT_W5 = ["1652044-2025-03-31", "51143-2025-06-30", "1083301-2025-06-30", "1144879-2024-12-31",
               "1692819-2024-09-30"]
+# Week 6's held-out set, drawn after the P47 and P49 fixes (seed 20261120) and before any of them was read: no
+# company is left that was never hand-checked, so the Week 5 continuation rule picks them all. Graded once.
+HOLDOUT_W6 = ["1341439-2024-12-31", "1652044-2025-06-30", "1835632-2024-12-31", "1101239-2025-06-30",
+              "1326801-2025-06-30"]
 DRAW_SEEDS = {"week 3": (20261031, EPISODES + HOLDOUT), "week 4": (20261107, EPISODES + HOLDOUT + HOLDOUT_W3),
-              "week 5": (20261113, EPISODES + HOLDOUT + HOLDOUT_W3 + HOLDOUT_W4)}
+              "week 5": (20261113, EPISODES + HOLDOUT + HOLDOUT_W3 + HOLDOUT_W4),
+              "week 6": (20261120, EPISODES + HOLDOUT + HOLDOUT_W3 + HOLDOUT_W4 + HOLDOUT_W5)}
 
 RATE = re.compile(r"(\d{1,2}\.\d{1,4})\s*%")
 YEAR = re.compile(r"\b(20[2-7]\d)\b")
@@ -71,7 +76,8 @@ CURRENCY = [("EUR", r"euro|€"), ("GBP", r"sterling|£|pound"), ("CHF", r"swiss
 def episodes(ids: list[str] | None = None) -> dict:
     with open(ROOT / "manifests" / "dev.csv", encoding="utf-8") as f:
         rows = {e["episode_id"]: e for e in csv.DictReader(line for line in f if not line.startswith("#"))}
-    return {k: rows[k] for k in (ids if ids is not None else EPISODES + HOLDOUT + HOLDOUT_W3 + HOLDOUT_W4 + HOLDOUT_W5)}
+    return {k: rows[k] for k in (ids if ids is not None
+                                 else EPISODES + HOLDOUT + HOLDOUT_W3 + HOLDOUT_W4 + HOLDOUT_W5 + HOLDOUT_W6)}
 
 
 def draw(week: str, n: int = 5) -> list[str]:
@@ -285,6 +291,27 @@ printed ladder (IBM's 2026 row, $6,431 m; Vistra's 2025 row, $786 m), not the ne
 transcriptions recorded no ladder for 10-Qs for exactly that reason, so it did not count here; B0 and the agent
 are graded against that figure on 10-Q targets."""
 
+FRESH_NOTE_W6 = """Drawn after the P47 and P49 fixes were written and before any of these reports was read
+(`HOLDOUT_W6`, reproducible with `draw("week 6")`, seed 20261120). Every company has now been hand-checked at
+least once, so all five come from Week 5's continuation rule: one report never hand-checked, per company. The five
+reports were transcribed from their printed text by a Claude subagent that was given only the printed text and the
+earlier transcriptions as format examples — not the answer key, the grader or this report (a model judgment, P8).
+Two transcriptions were spot-checked against the printed rows before grading. Graded once.
+
+Marvell's 10-K is the first fresh report with a printed maturity ladder graded (P49 keeps ladders to 10-K
+targets): next 12 months, years 2-5 and after year 5 all agree, with total debt and the current portion (4 of 4).
+Equinix's 30 notes all match, with all 15 principals the key can score.
+
+**What the result shows** (diagnosed after grading, not fixed):
+
+| # | Found on | What happened | Whose error |
+|---|---|---|---|
+| P59 | Alphabet 10-Q | The 2025 euro notes, an offering, are tagged with a €6.75 bn face and a $7,903 m carrying amount. The key measures an offering by its carrying amount, in that amount's unit, so it holds a *dollar* offering of $7,903 m; the printed note states €6.75 bn. A currency-strict L2 comparison cannot match them (3 of 4 offerings) | Grader: the offering-level twin of P37 — an offering's amount is compared in the unit of its carrying tag, not its own currency |
+
+Also seen (not graded): the Week 5 set's TeraWulf report now agrees — P47's fix gives the key a total for a
+convertible-only filer."""
+
+
 def grade_one(ep_id: str, e: dict, ak) -> tuple[str, bool, list[str]]:
     t = json.loads((HC / f"{ep_id}.json").read_text(encoding="utf-8"))
     if t.get("status") == "draft":
@@ -346,8 +373,9 @@ def grade_one(ep_id: str, e: dict, ak) -> tuple[str, bool, list[str]]:
 
 def grade() -> int:
     eps, held, fresh, fresh4 = episodes(EPISODES), episodes(HOLDOUT), episodes(HOLDOUT_W3), episodes(HOLDOUT_W4)
-    fresh5 = episodes(HOLDOUT_W5)
-    ak = AnswerKey(extracted_periods(), {int(e["cik"]) for g in (eps, held, fresh, fresh4, fresh5) for e in g.values()})
+    fresh5, fresh6 = episodes(HOLDOUT_W5), episodes(HOLDOUT_W6)
+    ak = AnswerKey(extracted_periods(), {int(e["cik"]) for g in (eps, held, fresh, fresh4, fresh5, fresh6)
+                                         for e in g.values()})
     head = ["| Episode | Company | Report | Level | Printed | Key | Matched | Totals within 2% | Agree? |",
             "|---|---|---|---|---|---|---|---|---|"]
     L = ["# Hand-check — the answer key against printed debt tables\n",
@@ -359,7 +387,8 @@ def grade() -> int:
               ("Week 2 held-out set, re-graded after the Week 3 fixes", held),
               ("Week 3 held-out set, re-graded after the Week 4 fixes", fresh),
               ("Week 4 held-out set, re-graded after the Week 5 fixes", fresh4),
-              ("Week 5 held-out set (fresh; graded once)", fresh5))
+              ("Week 5 held-out set, re-graded after the Week 6 fixes", fresh5),
+              ("Week 6 held-out set (fresh; graded once)", fresh6))
     for title, group in groups:
         present = {k: v for k, v in group.items() if (HC / f"{k}.json").exists()}
         rows, agree, gradable = [], 0, len(group)
@@ -384,6 +413,8 @@ def grade() -> int:
             L += [FRESH_NOTE_W4 + "\n"]
         if group is fresh5:
             L += [FRESH_NOTE_W5 + "\n"]
+        if group is fresh6:
+            L += [FRESH_NOTE_W6 + "\n"]
     L += ["## Review notes\n"] + notes
     gate_path = ROOT / "manifests" / "week2_gate.json"
     gate = json.loads(gate_path.read_text(encoding="utf-8")) if gate_path.exists() else {}

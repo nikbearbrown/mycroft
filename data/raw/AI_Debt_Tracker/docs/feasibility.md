@@ -158,3 +158,6 @@ changes are never announced in a filing" would itself be a useful finding for My
 | 2026-11-13 | Fresh triage check, third set (after P45–P46) | recall 15 of 15 — pass; precision 15 of 18; P53–P54 logged | — (evidence; part of the Week 5 gate record) |
 | 2026-11-13 | Event reader on fresh filings (after P50–P52) | 48 of 53 fields (91%) vs B1 74%; B2 96% | — (evidence; part of the Week 5 gate record) |
 | 2026-11-13 | Full episodes on dev (week 5 check), oracle start | 95 of 95 ran; L1 recall 97.8% vs B0 90.9%, precision 90.2% vs 92.8%; new bonds 30 of 34 vs 0 | **Delegated** in advance by **Om Mali**, not reviewed (`manifests/week5_gate.json`); labels and truth are Claude's model judgment |
+| 2026-11-20 | Fresh held-out hand-check (after P47, P49) | 4 of 5 agree; Alphabet disagrees (P59), left open | — (evidence only) |
+| 2026-11-20 | Merge fixes P56–P58 on dev, oracle start | precision 93.3% (was 90.2%), recall 97.9%; false additions 26 → 3 | — (evidence; part of the Week 6 gate record) |
+| 2026-11-20 | Agent start vs oracle start (week 6 check, A4) and self-catch rate | L1 recall 90.1% vs 97.9% (−7.9 points, paired), precision 95.5% vs 93.3%; self-catch 17 of 50 wrong episodes (34%) — measured | **Delegated** in advance by **Om Mali**, not reviewed (`manifests/week6_gate.json`); transcriptions are Claude's model judgment |
