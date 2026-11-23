@@ -1,0 +1,204 @@
+{
+ "recipe": "portfolio-price-fetcher",
+ "step": 2,
+ "checks": 28,
+ "as_expected": 28,
+ "results": [
+  {
+   "section": "clean set",
+   "ran": "step 2 on the clean set (the envelope's fixture_set)",
+   "saw": "exit 0; 5 ingested, 0 rejected; sample_mode True",
+   "expected": "exit 0; 5 ingested; 0 rejected; sample_mode true",
+   "as_expected": true
+  },
+  {
+   "section": "clean set",
+   "ran": "compare each ingested body and SHA-256 with the file on disk and the frozen manifest",
+   "saw": "bodies identical: True; hashes agree: True",
+   "expected": "both true: the body is kept unchanged",
+   "as_expected": true
+  },
+  {
+   "section": "clean set",
+   "ran": "read fetched_at",
+   "saw": "2026-10-10T00:00:00Z (the envelope's as_of is 2026-10-10T00:00:00Z)",
+   "expected": "equal, so reruns are byte-identical",
+   "as_expected": true
+  },
+  {
+   "section": "all sets",
+   "ran": "step 2 with --set all",
+   "saw": "exit 1; (ingested, rejected) by set: {'clean': (5, 0), 'defective': (4, 1), 'quality-duplicate': (6, 0), 'quality-far': (5, 0), 'quality-missing': (4, 0), 'quality-move': (5, 0)}",
+   "expected": "exit 1 (the defective set has one file that is not JSON); counts {'clean': (5, 0), 'defective': (4, 1), 'quality-duplicate': (6, 0), 'quality-far': (5, 0), 'quality-missing': (4, 0), 'quality-move': (5, 0)}",
+   "as_expected": true
+  },
+  {
+   "section": "all sets",
+   "ran": "the one reject in the defective set",
+   "saw": "[{'file': 'defective/truncated-json.txt', 'reason': 'not valid JSON (Invalid control character at)'}]",
+   "expected": "truncated-json.txt, not valid JSON",
+   "as_expected": true
+  },
+  {
+   "section": "against step 3",
+   "ran": "the files step 3 reads in each set versus the files step 2 ingests or rejects",
+   "saw": "identical in all 6 sets: True",
+   "expected": "the same file population in every set (step 2 neither adds nor loses a file)",
+   "as_expected": true
+  },
+  {
+   "section": "against step 3",
+   "ran": "the defective set: records step 2 ingests versus records step 3 promotes",
+   "saw": "step 2 ingests 4; step 3 promotes 0 of the same files",
+   "expected": "step 2 ingests the four that are valid JSON and step 3 promotes none (ingest does not judge a response)",
+   "as_expected": true
+  },
+  {
+   "section": "against step 3",
+   "ran": "the quality-duplicate set: two valid NVDA responses",
+   "saw": "ingested 2 (NVDA-restated.json, NVDA.json); rejects 0",
+   "expected": "both ingested, no reject: choosing between them is step 4's work",
+   "as_expected": true
+  },
+  {
+   "section": "naming ledger",
+   "ran": "the quality-missing set",
+   "saw": "holdings with no named file: ['AMD']; files named for no holding: []",
+   "expected": "AMD has no file; no stray file",
+   "as_expected": true
+  },
+  {
+   "section": "naming ledger",
+   "ran": "the quality-duplicate set, files named for NVDA",
+   "saw": "['NVDA-restated.json', 'NVDA.json']",
+   "expected": "NVDA.json and NVDA-restated.json (both claim NVDA by name)",
+   "as_expected": true
+  },
+  {
+   "section": "source check",
+   "ran": "every source-bearing node the workflow names",
+   "saw": "{'Manual Trigger': 'available', 'Define Portfolio': 'available', 'Fetch Stock Prices': 'approval-required'}",
+   "expected": "Manual Trigger and Define Portfolio available; Fetch Stock Prices approval-required",
+   "as_expected": true
+  },
+  {
+   "section": "source check",
+   "ran": "the live request row",
+   "saw": "live_call_performed False; approved_for_live_action False; approval record present False",
+   "expected": "false; false; false (no approval record exists)",
+   "as_expected": true
+  },
+  {
+   "section": "source check",
+   "ran": "the holdings Define Portfolio declares",
+   "saw": "read from the workflow itself: 5 holdings (AMD, GOOGL, META, MSFT, NVDA)",
+   "expected": "five holdings: AMD, GOOGL, META, MSFT, NVDA",
+   "as_expected": true
+  },
+  {
+   "section": "break: changed a byte",
+   "ran": "change one digit of clean/NVDA.json, then ingest",
+   "saw": "exit 1; ingested 4; reject: differs from the SHA-256 frozen in manifest.json (frozen 2633560d6573,",
+   "expected": "exit 1; 4 ingested; the changed file rejected for differing from its frozen SHA-256",
+   "as_expected": true
+  },
+  {
+   "section": "break: removed a file",
+   "ran": "delete clean/AMD.json, then ingest",
+   "saw": "exit 1; reject: listed in manifest.json but missing",
+   "expected": "exit 1; AMD.json reported as listed in the manifest but missing",
+   "as_expected": true
+  },
+  {
+   "section": "break: added a file",
+   "ran": "add clean/TSLA.json (not in any manifest), then ingest",
+   "saw": "exit 1; ingested 5; reject: not listed in a frozen manifest, so its origin is not vouche",
+   "expected": "exit 1; the five frozen files ingested; the stray file rejected as not listed",
+   "as_expected": true
+  },
+  {
+   "section": "break: broken JSON with a matching hash",
+   "ran": "replace clean/MSFT.json with truncated JSON and re-freeze its hash, then ingest",
+   "saw": "exit 1; reject: not valid JSON (Expecting value)",
+   "expected": "exit 1; rejected as not valid JSON (the hash check alone would not catch it)",
+   "as_expected": true
+  },
+  {
+   "section": "break: envelope mode live",
+   "ran": "set the run envelope to mode live, then ingest",
+   "saw": "exit 1; [\"STOP: the run envelope declares mode 'live'; this step implements sample mode only\"]",
+   "expected": "exit 1 with a STOP naming the envelope; no live action",
+   "as_expected": true
+  },
+  {
+   "section": "break: envelope live calls approved",
+   "ran": "set the run envelope to live calls approved, then ingest",
+   "saw": "exit 1; ['STOP: the run envelope declares live_calls_approved: True; sample mode needs false']",
+   "expected": "exit 1 with a STOP naming the envelope; no live action",
+   "as_expected": true
+  },
+  {
+   "section": "break: no envelope",
+   "ran": "delete the run envelope, then ingest",
+   "saw": "exit 1; ['STOP: the run envelope is missing (data/raw/portfolio-price-fetcher/run-envelope.json); no scope was declared']",
+   "expected": "exit 1: no scope was declared",
+   "as_expected": true
+  },
+  {
+   "section": "break: workflow without the fetch node",
+   "ran": "remove Fetch Stock Prices from the workflow copy, then ingest",
+   "saw": "exit 1; [\"STOP: the workflow has no 'Fetch Stock Prices' node\"]",
+   "expected": "exit 1: the source this step must account for is gone",
+   "as_expected": true
+  },
+  {
+   "section": "break: a manifest is missing",
+   "ran": "delete quality-manifest.json, then ingest --set all",
+   "saw": "exit 1; ['STOP: the manifest data/raw/portfolio-price-fetcher/sample/quality-manifest.json is missing']",
+   "expected": "exit 1: nothing is trusted without its frozen hashes",
+   "as_expected": true
+  },
+  {
+   "section": "break: a set that does not exist",
+   "ran": "ingest --set no-such-set",
+   "saw": "exit 2",
+   "expected": "exit 2",
+   "as_expected": true
+  },
+  {
+   "section": "approval record",
+   "ran": "add a stand-in approval record, then ingest",
+   "saw": "approval_record_present True; approved_for_live_action False; live_call_performed False",
+   "expected": "true; false; false (this step never makes the call, with or without a record)",
+   "as_expected": true
+  },
+  {
+   "section": "rerun",
+   "ran": "ingest --set all twice into separate copies and compare every output file",
+   "saw": "13 files; byte-identical: True",
+   "expected": "byte-identical",
+   "as_expected": true
+  },
+  {
+   "section": "rerun",
+   "ran": "the same with --now pinned to another time",
+   "saw": "13 of 13 files differ (the ones that carry the time)",
+   "expected": "only files carrying fetched_at or checked_at change",
+   "as_expected": true
+  },
+  {
+   "section": "reach",
+   "ran": "search the script for network, process and environment access",
+   "saw": "found: none",
+   "expected": "none: it cannot reach the network or read a credential",
+   "as_expected": true
+  },
+  {
+   "section": "committed outputs",
+   "ran": "regenerate data/raw/portfolio-price-fetcher/ingest/ and compare with what is committed",
+   "saw": "13 files; identical: True",
+   "expected": "identical",
+   "as_expected": true
+  }
+ ]
+}

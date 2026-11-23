@@ -1,0 +1,53 @@
+{
+ "recipe": "portfolio-price-fetcher",
+ "checked_at": "2026-10-10T00:00:00Z",
+ "mode": "sample",
+ "live_calls_approved": false,
+ "sources": [
+  {
+   "role": "trigger: manual start",
+   "status": "available",
+   "reason": "sample mode: the run envelope stands in for the manual start",
+   "node": "Manual Trigger",
+   "node_type": "n8n-nodes-base.manualTrigger",
+   "credential_env": "none known",
+   "approval_record_present": null,
+   "approved_for_live_action": false,
+   "live_call_performed": false
+  },
+  {
+   "role": "declared input: the holdings",
+   "status": "available",
+   "reason": "read from the workflow itself: 5 holdings (AMD, GOOGL, META, MSFT, NVDA)",
+   "records": 5,
+   "node": "Define Portfolio",
+   "node_type": "n8n-nodes-base.code",
+   "credential_env": "none known",
+   "approval_record_present": null,
+   "approved_for_live_action": false,
+   "live_call_performed": false
+  },
+  {
+   "role": "live HTTP request to query1.finance.yahoo.com",
+   "status": "approval-required",
+   "reason": "a live network call, one per holding; sample mode never makes it (the 30 invented fixtures stand in), and a live run needs an approval record",
+   "node": "Fetch Stock Prices",
+   "node_type": "n8n-nodes-base.httpRequest",
+   "credential_env": "none known (the public chart endpoint takes no key)",
+   "approval_record_present": false,
+   "approved_for_live_action": false,
+   "live_call_performed": false
+  }
+ ],
+ "prior_step_outputs": {
+  "step_1_provenance": {
+   "found": true,
+   "file": "logs/portfolio-price-fetcher-provenance-2026-10-10.json",
+   "readable": true,
+   "result": "pass",
+   "checked_at": "2026-10-10T00:00:00+00:00",
+   "approval_state": "no approval record: live mode not approved; sample mode only"
+  }
+ },
+ "stops": []
+}

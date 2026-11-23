@@ -1,0 +1,176 @@
+{
+ "recipe": "portfolio-price-fetcher",
+ "set": "quality-duplicate",
+ "source_name": "Yahoo Finance chart API (stood in for by invented sample fixtures)",
+ "source_type": "sample fixtures (invented Yahoo Finance chart responses)",
+ "fetched_at": "2026-10-10T00:00:00Z",
+ "sample_mode": true,
+ "record_count": 6,
+ "records": [
+  {
+   "file": "quality-duplicate/AMD.json",
+   "sha256": "532888a5c92e46f5e3157d64bd22d717fd439656d598ed72a7eec41b1932ec2f",
+   "manifest": "quality-manifest.json",
+   "exercises": "two valid responses for NVDA that disagree",
+   "body": {
+    "_fixture_note": "Invented price for a Mycroft sample run. Not market data.",
+    "chart": {
+     "result": [
+      {
+       "meta": {
+        "symbol": "AMD",
+        "regularMarketPrice": 102.0,
+        "previousClose": 104.25
+       }
+      }
+     ],
+     "error": null
+    }
+   }
+  },
+  {
+   "file": "quality-duplicate/GOOGL.json",
+   "sha256": "dbc623c1b7a48f8146ecd89f276bd4e085b9bdcb6400d3709c60de61f6e83eea",
+   "manifest": "quality-manifest.json",
+   "exercises": "two valid responses for NVDA that disagree",
+   "body": {
+    "_fixture_note": "Invented price for a Mycroft sample run. Not market data.",
+    "chart": {
+     "result": [
+      {
+       "meta": {
+        "symbol": "GOOGL",
+        "regularMarketPrice": null,
+        "previousClose": 166.0
+       }
+      }
+     ],
+     "error": null
+    }
+   }
+  },
+  {
+   "file": "quality-duplicate/META.json",
+   "sha256": "aa1eaca6a1807c30524a99f354eeb8316b211ac7e631317426bcf073bda33914",
+   "manifest": "quality-manifest.json",
+   "exercises": "two valid responses for NVDA that disagree",
+   "body": {
+    "_fixture_note": "Invented price for a Mycroft sample run. Not market data.",
+    "chart": {
+     "result": [
+      {
+       "meta": {
+        "symbol": "META",
+        "regularMarketPrice": 0,
+        "previousClose": 590.0
+       }
+      }
+     ],
+     "error": null
+    }
+   }
+  },
+  {
+   "file": "quality-duplicate/MSFT.json",
+   "sha256": "d51610de8e6b5c9af01087bef3632d9e8aac96adcaacd3109df017770779b5c9",
+   "manifest": "quality-manifest.json",
+   "exercises": "two valid responses for NVDA that disagree",
+   "body": {
+    "_fixture_note": "Invented price for a Mycroft sample run. Not market data.",
+    "chart": {
+     "result": [
+      {
+       "meta": {
+        "symbol": "MSFT",
+        "regularMarketPrice": 412.0,
+        "previousClose": 409.5
+       }
+      }
+     ],
+     "error": null
+    }
+   }
+  },
+  {
+   "file": "quality-duplicate/NVDA-restated.json",
+   "sha256": "4e18428b4e96d3150ac1b8518f6f402698acea2f38d11dd69f24bcf87a04728c",
+   "manifest": "quality-manifest.json",
+   "exercises": "two valid responses for NVDA that disagree",
+   "body": {
+    "_fixture_note": "Invented price for a Mycroft sample run. Not market data. Quality fixture: a second NVDA response that disagrees with NVDA.json (504.5625). Each file is valid on its own; only step 4 sees the pair.",
+    "chart": {
+     "result": [
+      {
+       "meta": {
+        "symbol": "NVDA",
+        "regularMarketPrice": 530.0,
+        "previousClose": 498.0
+       }
+      }
+     ],
+     "error": null
+    }
+   }
+  },
+  {
+   "file": "quality-duplicate/NVDA.json",
+   "sha256": "2633560d6573501e8f6d89aece824be75fe5954dec51b6ce0e710283f2ed294c",
+   "manifest": "quality-manifest.json",
+   "exercises": "two valid responses for NVDA that disagree",
+   "body": {
+    "_fixture_note": "Invented price for a Mycroft sample run. Not market data.",
+    "chart": {
+     "result": [
+      {
+       "meta": {
+        "symbol": "NVDA",
+        "regularMarketPrice": 504.5625,
+        "previousClose": 498.0
+       }
+      }
+     ],
+     "error": null
+    }
+   }
+  }
+ ],
+ "rejects": [],
+ "naming_ledger": {
+  "note": "File names against declared holdings only. What a file contains is judged by step 3 and the set by step 4; this ledger never looks inside.",
+  "holdings_declared": [
+   "AMD",
+   "GOOGL",
+   "META",
+   "MSFT",
+   "NVDA"
+  ],
+  "files_by_holding": {
+   "AMD": [
+    "AMD.json"
+   ],
+   "GOOGL": [
+    "GOOGL.json"
+   ],
+   "META": [
+    "META.json"
+   ],
+   "MSFT": [
+    "MSFT.json"
+   ],
+   "NVDA": [
+    "NVDA-restated.json",
+    "NVDA.json"
+   ]
+  },
+  "holdings_with_no_named_file": [],
+  "files_named_for_no_holding": []
+ },
+ "follows_step_1": {
+  "found": true,
+  "file": "logs/portfolio-price-fetcher-provenance-2026-10-10.json",
+  "readable": true,
+  "result": "pass",
+  "checked_at": "2026-10-10T00:00:00+00:00",
+  "approval_state": "no approval record: live mode not approved; sample mode only"
+ }
+}
