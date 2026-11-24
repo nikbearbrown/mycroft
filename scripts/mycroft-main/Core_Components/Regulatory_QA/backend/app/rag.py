@@ -169,7 +169,16 @@ Document URL: {feed.link}
         """Build vector store from selected feeds with full content"""
         print(f"\n🔨 Building vector store for {len(feeds)} feeds...")
         documents = self.create_documents(feeds)
-        
+
+        # chromadb's SharedSystemClient caches the in-memory store by settings,
+        # so persist_directory=None does NOT give each call a fresh collection -
+        # "regulatory_feeds" is the same collection every time, and prior calls'
+        # documents (random UUIDs, never replaced) stay in it and leak into later,
+        # unrelated chat turns' similarity_search results. Drop the stale
+        # collection before rebuilding - see G1-VERIFICATION.md.
+        if self.vectorstore is not None:
+            self.vectorstore._client.delete_collection("regulatory_feeds")
+
         self.vectorstore = Chroma.from_documents(
             documents=documents,
             embedding=self.embeddings,
