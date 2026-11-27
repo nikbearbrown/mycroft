@@ -1,7 +1,7 @@
 ---
-status: DRAFT
+status: RUNNABLE-SAMPLE
 todos_open: 0
-last_gate: null
+last_gate: "sample-run sign-off (Uday S), 2026-11-27, logs/RUN_LOG.md#2026-11-27"
 attestation: null
 recipe_version: 0.4.0
 ---

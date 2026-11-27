@@ -1139,3 +1139,54 @@
   contributor's recent work, so it is recorded here rather than edited.
 - **Open issues:** `congressional-signals/` NaN; the ten subsystems remain
   `reviewed: false`; `scenariostresstestingagent` still reads DRAFT.
+
+## 2026-11-27 -- scenariostresstestingagent: sample run reviewed and signed off; DRAFT -> RUNNABLE-SAMPLE
+
+- **Recipe:** `recipes/scenariostresstestingagent.md` v0.4.0 (body unchanged; frontmatter
+  `status` and `last_gate` only).
+- **Signed off by:** Uday S, 2026-11-27. Decision: approve promotion to
+  `RUNNABLE-SAMPLE`. Live execution stays blocked: there is no gate 5 approval record.
+- **Where it ran:** a clean scratch copy of HEAD `6b7b6ae` (`git archive`), following the
+  author's practice, so no committed artifact was overwritten. Windows, Python 3.10.6.
+- **Ran / saw / expected:**
+
+  | Ran | Saw | Expected |
+  |---|---|---|
+  | `snickerdoodle run scenariostresstestingagent --sample` | all 6 steps, exit 0 | all 6 steps complete |
+  | outputs vs the committed artifacts | 0 real differences once CRLF, path separators and timestamps are normalised | reproducible results |
+  | clean corpus (12 requests) | 12 accepted at step 3, 11 stress-tested, 1 stopped at the Groq handoff, 0 duplicates, 0 of 4 stop conditions | every valid request processed; custom scenario stops at the model handoff |
+  | defective corpus (10 planted defects; author's committed run) | 10 of 10 rejected at step 3, each with the reason the manifest's catalogue describes | every planted defect caught |
+  | `scenariostresstestingagent-self-test.py` | 27/27, 12/12 deliberate breaks caught, 1 skipped | pass |
+  | `scenariostresstestingagent-parity-check.py` | 24/24 identical to the original code | pass |
+  | `scenariostresstestingagent-report-self-test.py` | 31/31 | pass |
+  | `scenariostresstestingagent-ingest-self-test.py` | 36/37 | 37/37 (author's run) |
+  | `live_call_performed` across the run's logs | `false` in all 3 | no live call in sample mode |
+  | run envelope (gate 2) | `mode: sample` | sample declared before ingest |
+
+- **The one self-test miss is a Windows false alarm.** The check expects every output path
+  to start with `data/raw/<slug>/ingest/` written with forward slashes; on Windows the script
+  reports backslash paths, so all four files -- which are exactly in that folder -- are
+  listed as "outside". It would pass on POSIX. Same root cause as the OS-native paths in this
+  agent's verified data noted on 2026-11-05. Not changed: the test is the author's.
+- **Two judgment calls, made by the signer.** The author held the status at DRAFT because two
+  preserved n8n script-mapping lines in "Existing Recipe Notes" still read `[TODO: DEV]`.
+  Judged not open: `scripts/tools/scenariostresstestingagent-produce-human-report.py` exists;
+  `scripts/tools/scenariostresstestingagent-respond-to-webhook.py` does not and should not in
+  sample mode -- replying to the caller is an external write, and step 5 records it as an
+  approval-required handoff.
+- **Known issues, accepted as non-blocking for sample status:**
+  - three gate tests cannot fail as written: gate 1 ends in `|| true`; gate 3's
+    `find ... -exec python3 -m json.tool` exits 0 even when a file is invalid (checked with a
+    deliberately broken file); gate 6 tests a file named with the literal placeholder
+    `[DATE]`. Each gate's substance was checked by hand instead: the envelope declares
+    sample, conformance confirms every JSON file parses, and the dated log and report exist.
+  - steps 3 to 6 read the fixture folder directly rather than step 2's output (the author's
+    own open issue of 2026-11-09).
+- **Lifecycle evidence:** DRAFT -> SPECIFIED on zero open todos, each of the six DEV closures
+  recorded in the recipe and the two legacy lines judged above; SPECIFIED -> RUNNABLE-SAMPLE on
+  a completed sample run, conformance passing, and the audits generated
+  (`data/verified/scenariostresstestingagent/*/validate-audit.md`, `quality-notes.md`) and
+  read in this review.
+- **Not done:** no live run, no attestation, no gate decision records under
+  `logs/gate-decisions/` (not required for this transition). The scratch copy's outputs were
+  not committed; the committed artifacts stand as the evidence, since the run reproduced them.
